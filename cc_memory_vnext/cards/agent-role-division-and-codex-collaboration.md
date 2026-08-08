@@ -2,7 +2,7 @@
 id: agent-role-division-and-codex-collaboration
 kind: decision
 title: 多代理分工——Fable5=数学面负责人(定方向)、Opus leader=发布面负责人+半队长(协调+发布面直做)、实现优先派 codex 省额度;codex 一次性执行任务书 / 矛盾指令按序执行 / 冲突停下澄清 / 改动真实落盘
-summary: owner 2026-07-03 定的多代理分工模型 + 同日亲历的 codex 协作特性。**分工**:①**Fable5=数学面负责人**——数学面(routing/CP-SAT/canonical/生成器/loader 这类非对抗)的方向、计划、技术选择由它定,leader 不指挥不干预,最多给"当前情况说明"(leader 去指挥数学面反而拖累负责人);②**Opus leader(我)=发布面负责人+半个队长**——发布面(checker/reseal/close-kernel/外审 triage)直接做,队长那半=协调/派活/跨面编排,但对数学面只协调不指挥;③**具体实现优先派 codex 省额度**,不让负责人亲自写;方向已定的纯实现活直接 codex,只有需要定数学面方向/计划时才请 Fable5 出场、leader 只给情况不插手方向。判据:数学面任务"方向已拍板、纯执行"→ 直接 codex;"要定方向/计划"→ Fable5 定、codex 实现。**codex 协作特性**(2026-07-03 亲历):codex 子代理按**原始任务书一次性执行**,能收中途 SendMessage 但**按到达顺序执行**——发了自相矛盾两条(先"撤 X"后"别撤 X"),它先执行先到的、遇后到冲突时**停下来讲清楚、不默默处理**(很负责);铁律=**派 codex 指令一次写全、别指望中途改**。codex 改动**真实落盘**(别误判成 sandbox 隔离不同步——2026-07-03 我误判过,实为它忠实执行我"撤 T1"指令)。 **[订正 2026-08-08(跨层对账 G-2/3/4/10)：本卡「分工」段路由已整体过时——现行=主线程(Fable 本尊)不亲自实施、实施一律派 opus/wf;codex 额度随用量波动(08-07 曾见底、08-08 已刷新,现行=审查席直派+成块任务可端到端,以文件层路由卡现值为准);派 Fable 子代理需 owner 允许(08-07 硬规矩)。权威=文件层 codex-default-delegation-routing / ultracode-fable-spawn-discipline。本卡仍有效部分=codex 协作特性段(任务书一次写全/冲突不默默处理/改动真实落盘)。]**
+summary: owner 2026-07-03 定的多代理分工模型 + 同日亲历的 codex 协作特性。**分工**:①**Fable5=数学面负责人**——数学面(routing/CP-SAT/canonical/生成器/loader 这类非对抗)的方向、计划、技术选择由它定,leader 不指挥不干预,最多给"当前情况说明"(leader 去指挥数学面反而拖累负责人);②**Opus leader(我)=发布面负责人+半个队长**——发布面(checker/reseal/close-kernel/外审 triage)直接做,队长那半=协调/派活/跨面编排,但对数学面只协调不指挥;③**具体实现优先派 codex 省额度**,不让负责人亲自写;方向已定的纯实现活直接 codex,只有需要定数学面方向/计划时才请 Fable5 出场、leader 只给情况不插手方向。判据:数学面任务"方向已拍板、纯执行"→ 直接 codex;"要定方向/计划"→ Fable5 定、codex 实现。**codex 协作特性**(2026-07-03 亲历):codex 子代理按**原始任务书一次性执行**,能收中途 SendMessage 但**按到达顺序执行**——发了自相矛盾两条(先"撤 X"后"别撤 X"),它先执行先到的、遇后到冲突时**停下来讲清楚、不默默处理**(很负责);铁律=**派 codex 指令一次写全、别指望中途改**。codex 改动**真实落盘**(别误判成 sandbox 隔离不同步——2026-07-03 我误判过,实为它忠实执行我"撤 T1"指令)。 **[订正 2026-08-08(跨层对账 G-2/3/4/10)：本卡「分工」段路由已整体过时——现行=主线程(Fable 本尊)不亲自实施、实施一律派 opus/wf;codex 额度随用量波动(08-08 刷新后 owner 恢复原始分工:codex 实施主力、opus 审查席,以文件层路由卡现值为准);派 Fable 子代理需 owner 允许(08-07 硬规矩)。权威=文件层 codex-default-delegation-routing / ultracode-fable-spawn-discipline。本卡仍有效部分=codex 协作特性段(任务书一次写全/冲突不默默处理/改动真实落盘)。]**
 scope:
   domains:
     - multi-agent
@@ -125,4 +125,4 @@ P1.3A attach spike 的 codex 协作全链(同一 thread 三轮,threadId 复用�
 
 == 更新 2026-08-08（跨层对账 G-2/3/4/10 订正）==
 
-本卡「分工」段路由已整体过时——现行=主线程(Fable 本尊)不亲自实施、实施一律派 opus/wf;codex 额度随用量波动(08-07 曾见底、08-08 已刷新,现行=审查席直派+成块任务可端到端,以文件层路由卡现值为准);派 Fable 子代理需 owner 允许(08-07 硬规矩)。权威=文件层 codex-default-delegation-routing / ultracode-fable-spawn-discipline。本卡仍有效部分=codex 协作特性段(任务书一次写全/冲突不默默处理/改动真实落盘)。
+本卡「分工」段路由已整体过时——现行=主线程(Fable 本尊)不亲自实施、实施一律派 opus/wf;codex 额度随用量波动(08-08 刷新后 owner 恢复原始分工:codex 实施主力、opus 审查席,以文件层路由卡现值为准);派 Fable 子代理需 owner 允许(08-07 硬规矩)。权威=文件层 codex-default-delegation-routing / ultracode-fable-spawn-discipline。本卡仍有效部分=codex 协作特性段(任务书一次写全/冲突不默默处理/改动真实落盘)。
