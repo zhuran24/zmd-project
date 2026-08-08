@@ -2,8 +2,10 @@
 
 These tests bind the authority-sensitive runtime surfaces to exact authorized
 bytes.  Five production surfaces remain at the 398f872 baseline;
-preflight_gate.py is pinned to the memory-lane additive successor (2026-08-03,
-剪枝 v2 P2), which supersedes the timeout-scale-only successor from 8292983;
+preflight_gate.py is pinned to its latest authorized successor (see the
+succession chain above `_PROTECTED_SURFACE_SHA256` — this docstring had
+previously gone stale at the 2026-08-03 successor while the chain moved on,
+so the chain comment is the single authority now);
 and PROJECT_LOCK.md is pinned to the W0 D6 plus AB16 research-only protocol
 successor.
 The new semantic/family specifications may be imported by tests and by one
@@ -54,8 +56,16 @@ _BASELINE_SURFACE_SHA256 = {
     "src/search/benders_loop.py": "edeb594621c5f5fed140785c75419946ead74403ea6f72c1937822e1e8dfd852",
 }
 
-# The authorized preflight successor is the canonical semantics-amendment
-# freeze-ritual one (2026-08-08): FROZEN_ARTIFACTS re-pins
+# The authorized preflight successor is the memory-card verify gate one
+# (2026-08-08, 记忆系统复查会议批③ M-21): check_memory_cards runs
+# `zmem.py verify` inside the memory lane before its pytest block — a card
+# error blocks, a missing verifier blocks, a stale-index line warns.  The
+# authority is the memory-system meeting adjudication
+# (.artifacts/memsys_meeting_20260808/FINAL_VERDICT.md §5 批③); the change is
+# memory-lane additive only — no proof-lane gate logic moved.  It supersedes
+# the canonical semantics-amendment freeze-ritual successor (2026-08-08,
+# 8c2e5bf3cfa419b32e8f543b4d64c6fa687a290b3a703947f89318846735f3ef), which
+# was itself the freeze-ritual batch where FROZEN_ARTIFACTS re-pins
 # rules/canonical_rules.json after the semantics block gained the sorting-terminal
 # theorem, the terminal-clause instance discharge, the protocol-box cache
 # parameters, the conditional admission-port authority and the fifth/sixth
@@ -76,7 +86,7 @@ _BASELINE_SURFACE_SHA256 = {
 # framework — nothing in the cut lifecycle wiring moved.
 _PROTECTED_SURFACE_SHA256 = {
     **_BASELINE_SURFACE_SHA256,
-    "scripts/preflight_gate.py": "8c2e5bf3cfa419b32e8f543b4d64c6fa687a290b3a703947f89318846735f3ef",
+    "scripts/preflight_gate.py": "0cd7b9112c244685f7d0dcf037a75c9eb435ca73e8867c57c6656777e714ac01",
     "src/search/benders_loop.py": "34e198fc475ea2c7ea74ec05371fe59f8749a1e228ae68147577bd719be96a4e",
 }
 
