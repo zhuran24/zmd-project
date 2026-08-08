@@ -20,8 +20,9 @@
 
     - [title](文件名.md) — description
 
-`title` 缺失时，compile 优先逐字保留现存 MEMORY.md 行；仅无现存行时回退 `name`
-并提示。迁移前缺 title 属「迁移欠账」而不是 validate 硬错。
+`title` 读取顺序是顶层 `title`、`metadata.title`；两处都无有效值时，compile 优先逐字
+保留现存 MEMORY.md 行，仅无现存行时回退 `name` 并提示。迁移前缺 title 属「迁移欠账」
+而不是 validate 硬错。
 
 排序（FINAL_VERDICT §1/§4，C7 反转）：注入截断是**切尾保头**，所以新卡必须在前——
 以现有 MEMORY.md 行序为基线，已在索引的卡保持相对顺序，不在索引的新卡头插。
@@ -214,6 +215,66 @@ def _atomic_replace_bytes(
 # --------------------------------------------------------------------------------------
 
 
+TITLE_SOURCE_TOP_LEVEL = "top_level"
+TITLE_SOURCE_METADATA = "metadata"
+
+
+@dataclass(frozen=True)
+class TitleResolution:
+    value: str | None
+    source: str | None
+    top_level_raw: str | None
+    metadata_raw: str | None
+    top_level_value: str | None
+    metadata_value: str | None
+    top_level_present: bool
+    metadata_present: bool
+
+    @property
+    def conflict(self) -> bool:
+        return self.top_level_present and self.metadata_present
+
+
+def resolve_title(frontmatter: dict[str, Any] | None) -> TitleResolution:
+    """统一解析卡片 title：顶层优先，``metadata.title`` 等价回退。"""
+
+    if not isinstance(frontmatter, dict):
+        return TitleResolution(None, None, None, None, None, None, False, False)
+
+    top_level_present = "title" in frontmatter
+    top_raw = frontmatter.get("title")
+    top_level_raw = top_raw if isinstance(top_raw, str) else None
+    top_level_value = top_level_raw.strip() if top_level_raw and top_level_raw.strip() else None
+
+    metadata_block = frontmatter.get("metadata")
+    metadata_present = isinstance(metadata_block, dict) and "title" in metadata_block
+    metadata_title_raw = metadata_block.get("title") if isinstance(metadata_block, dict) else None
+    metadata_raw = metadata_title_raw if isinstance(metadata_title_raw, str) else None
+    metadata_value = (
+        metadata_raw.strip() if metadata_raw and metadata_raw.strip() else None
+    )
+
+    if top_level_value is not None:
+        value = top_level_value
+        source = TITLE_SOURCE_TOP_LEVEL
+    elif metadata_value is not None:
+        value = metadata_value
+        source = TITLE_SOURCE_METADATA
+    else:
+        value = None
+        source = None
+    return TitleResolution(
+        value=value,
+        source=source,
+        top_level_raw=top_level_raw,
+        metadata_raw=metadata_raw,
+        top_level_value=top_level_value,
+        metadata_value=metadata_value,
+        top_level_present=top_level_present,
+        metadata_present=metadata_present,
+    )
+
+
 @dataclass
 class Card:
     path: Path
@@ -243,9 +304,12 @@ class Card:
         return v.strip() if isinstance(v, str) else None
 
     @property
+    def title_resolution(self) -> TitleResolution:
+        return resolve_title(self.frontmatter)
+
+    @property
     def title(self) -> str | None:
-        v = self.fm_get("title")
-        return v.strip() if isinstance(v, str) and v.strip() else None
+        return self.title_resolution.value
 
     @property
     def description(self) -> str | None:
@@ -433,8 +497,14 @@ def validate_card(card: Card) -> CardReport:
     if not card.body.strip():
         rep.hard.append("H6 正文为空")
 
-    if card.title is None:
+    title_resolution = card.title_resolution
+    if title_resolution.value is None:
         rep.debt.append("D1 缺 title 字段（单门牌化迁移欠账：标题从 MEMORY.md 索引行回写）")
+
+    if title_resolution.source == TITLE_SOURCE_METADATA:
+        rep.info.append("I2 title 位于 metadata 内（CC auto-memory 归一化形态，不判错）")
+    if title_resolution.conflict:
+        rep.info.append("I3 顶层 title 与 metadata.title 同时存在（读取以顶层为准）")
 
     if isinstance(md_raw, dict) and "node_type" not in md_raw:
         rep.info.append("I1 metadata 无 node_type（真卡存在此形态，不判错）")
@@ -450,6 +520,9 @@ def cmd_validate(args: argparse.Namespace) -> int:
 
     hard_reports = [r for r in reports if r.hard]
     debt_reports = [r for r in reports if r.debt]
+    metadata_title_count = sum(
+        card.title_resolution.metadata_value is not None for card in cards
+    )
 
     lines: list[str] = []
     lines.append(f"# memory_plate_tool validate — {memory_dir}")
@@ -457,6 +530,7 @@ def cmd_validate(args: argparse.Namespace) -> int:
     lines.append(f"卡片数: {len(cards)}")
     lines.append(f"硬错卡数: {len(hard_reports)}")
     lines.append(f"迁移欠账卡数: {len(debt_reports)}")
+    lines.append(f"提示：{metadata_title_count} 张卡的 title 在 metadata 内（不判错）")
     lines.append("")
 
     lines.append("## 硬错（fail）")
@@ -522,6 +596,7 @@ class ApplyChange:
     original: bytes
     updated: bytes
     title_added: bool
+    title_conflict: bool
     body_added: bool
     source_device: int
     source_inode: int
@@ -620,7 +695,44 @@ def _frontmatter_field_matches(text: str, key: str, fm_end: int) -> list[re.Matc
     return list(pattern.finditer(text, 4, fm_end))
 
 
-def _rewrite_card_bytes(path: Path, original: bytes, title: str, description: str, body_addendum: str) -> tuple[bytes, bool, bool]:
+def _metadata_frontmatter_field_matches(
+    text: str, key: str, fm_end: int
+) -> list[re.Match[str]]:
+    """定位顶层 ``metadata`` 映射的直属纯文本键；无法证明时返回空。"""
+
+    metadata_lines = _frontmatter_field_matches(text, "metadata", fm_end)
+    if len(metadata_lines) != 1:
+        return []
+    metadata_line = metadata_lines[0]
+    inline_value = metadata_line.group(0).split(":", 1)[1].lstrip()
+    if inline_value and not inline_value.startswith("#"):
+        return []
+
+    next_top_level = re.compile(r"(?m)^[^\s#][^\n]*$").search(
+        text, metadata_line.end(), fm_end
+    )
+    block_end = next_top_level.start() if next_top_level is not None else fm_end
+    content_lines = list(
+        re.compile(r"(?m)^(?P<indent> +)(?P<content>[^ \n#][^\n]*)$").finditer(
+            text, metadata_line.end(), block_end
+        )
+    )
+    if not content_lines:
+        return []
+    direct_indent = min(len(match.group("indent")) for match in content_lines)
+    candidates = re.compile(rf"(?m)^(?P<indent> +){re.escape(key)}:[^\n]*$").finditer(
+        text, metadata_line.end(), block_end
+    )
+    return [match for match in candidates if len(match.group("indent")) == direct_indent]
+
+
+def _rewrite_card_bytes(
+    path: Path,
+    original: bytes,
+    title: str,
+    description: str,
+    body_addendum: str,
+) -> tuple[bytes, bool, bool, bool]:
     if b"\r" in original:
         raise ControlledWriteRefused(f"卡文件含 CR 行尾，拒绝隐式归一化: {path}")
     try:
@@ -634,13 +746,31 @@ def _rewrite_card_bytes(path: Path, original: bytes, title: str, description: st
         raise ControlledWriteRefused(f"卡文件缺少 frontmatter 结束分隔符: {path}")
     fm_end = closing.start()
 
+    original_fm_text, _ = split_frontmatter(text)
+    try:
+        original_frontmatter = yaml.safe_load(original_fm_text) if original_fm_text is not None else None
+    except yaml.YAMLError as exc:
+        raise ControlledWriteRefused(f"卡片原 frontmatter 无法解析: {path}: {exc}") from exc
+    if not isinstance(original_frontmatter, dict):
+        raise ControlledWriteRefused(f"卡片原 frontmatter 不是映射: {path}")
+    title_resolution = resolve_title(original_frontmatter)
+
     names = _frontmatter_field_matches(text, "name", fm_end)
     titles = _frontmatter_field_matches(text, "title", fm_end)
+    metadata_titles = _metadata_frontmatter_field_matches(text, "title", fm_end)
     descriptions = _frontmatter_field_matches(text, "description", fm_end)
     if len(names) != 1 or len(descriptions) != 1 or len(titles) > 1:
         raise ControlledWriteRefused(
             f"卡片必须有且仅有一个顶层 name/description，且至多一个 title: {path}"
         )
+    if title_resolution.top_level_present and len(titles) != 1:
+        raise ControlledWriteRefused(f"无法唯一定位卡片顶层 title: {path}")
+    if (
+        not title_resolution.top_level_present
+        and title_resolution.metadata_present
+        and len(metadata_titles) != 1
+    ):
+        raise ControlledWriteRefused(f"无法唯一定位卡片 metadata.title 直属单行字段: {path}")
     name_match = names[0]
     description_match = descriptions[0]
     if name_match.start() >= description_match.start():
@@ -656,8 +786,8 @@ def _rewrite_card_bytes(path: Path, original: bytes, title: str, description: st
     edits: list[tuple[int, int, str]] = [
         (description_match.start(), description_match.end(), description_line)
     ]
-    title_added = not titles
-    if titles:
+    title_added = not title_resolution.top_level_present and not title_resolution.metadata_present
+    if title_resolution.top_level_present:
         title_match = titles[0]
         raw_title = title_match.group(0).split(":", 1)[1].lstrip()
         if raw_title.startswith(("|", ">")):
@@ -665,8 +795,24 @@ def _rewrite_card_bytes(path: Path, original: bytes, title: str, description: st
         if not (name_match.start() < title_match.start() < description_match.start()):
             raise ControlledWriteRefused(f"现有 title 必须位于 name 之后、description 之前: {path}")
         edits.append((title_match.start(), title_match.end(), title_line))
+        title_location = TITLE_SOURCE_TOP_LEVEL
+    elif title_resolution.metadata_present:
+        title_match = metadata_titles[0]
+        raw_title = title_match.group(0).split(":", 1)[1].lstrip()
+        if raw_title.startswith(("|", ">")):
+            raise ControlledWriteRefused(f"{path} 的 metadata.title 使用块标量，无法安全做单行定点替换。")
+        indent = title_match.group("indent")
+        edits.append(
+            (
+                title_match.start(),
+                title_match.end(),
+                f"{indent}title: {_yaml_double_quoted(title)}",
+            )
+        )
+        title_location = TITLE_SOURCE_METADATA
     else:
         edits.append((name_match.end(), name_match.end(), "\n" + title_line))
+        title_location = TITLE_SOURCE_TOP_LEVEL
 
     rewritten = text
     for start, end, replacement in sorted(edits, reverse=True):
@@ -687,9 +833,18 @@ def _rewrite_card_bytes(path: Path, original: bytes, title: str, description: st
         parsed = yaml.safe_load(fm_text) if fm_text is not None else None
     except yaml.YAMLError as exc:
         raise ControlledWriteRefused(f"定点改写后的 frontmatter 无法解析: {path}: {exc}") from exc
-    if not isinstance(parsed, dict) or parsed.get("title") != title or parsed.get("description") != description:
+    rewritten_title = resolve_title(parsed if isinstance(parsed, dict) else None)
+    if title_location == TITLE_SOURCE_METADATA:
+        title_matches = (
+            not rewritten_title.top_level_present
+            and rewritten_title.metadata_present
+            and rewritten_title.metadata_raw == title
+        )
+    else:
+        title_matches = rewritten_title.top_level_present and rewritten_title.top_level_raw == title
+    if not isinstance(parsed, dict) or not title_matches or parsed.get("description") != description:
         raise ControlledWriteRefused(f"定点改写后的 title/description 无法精确回读: {path}")
-    return rewritten.encode("utf-8"), title_added, body_added
+    return rewritten.encode("utf-8"), title_added, title_resolution.conflict, body_added
 
 
 def _prepare_apply_changes(memory_dir: Path, proposals: Sequence[dict[str, str]]) -> list[ApplyChange]:
@@ -701,7 +856,7 @@ def _prepare_apply_changes(memory_dir: Path, proposals: Sequence[dict[str, str]]
             raise ControlledWriteRefused(f"同一卡片在 proposals 中重复出现: {path}")
         seen.add(path)
         original = path.read_bytes()
-        updated, title_added, body_added = _rewrite_card_bytes(
+        updated, title_added, title_conflict, body_added = _rewrite_card_bytes(
             path,
             original,
             proposal["title"],
@@ -715,6 +870,7 @@ def _prepare_apply_changes(memory_dir: Path, proposals: Sequence[dict[str, str]]
                 original=original,
                 updated=updated,
                 title_added=title_added,
+                title_conflict=title_conflict,
                 body_added=body_added,
                 source_device=source_stat.st_dev,
                 source_inode=source_stat.st_ino,
@@ -737,6 +893,11 @@ def _assert_apply_sources_unchanged(changes: Sequence[ApplyChange]) -> None:
 
 def _print_apply_diffs(changes: Sequence[ApplyChange]) -> None:
     for change in changes:
+        if change.title_conflict:
+            sys.stdout.write(
+                f"[apply] title 位置冲突: {change.path.name} 同时存在顶层 title 与 metadata.title；"
+                "读取与写入以顶层为准\n"
+            )
         before = change.original.decode("utf-8").splitlines(keepends=True)
         after = change.updated.decode("utf-8").splitlines(keepends=True)
         diff = "".join(
@@ -798,6 +959,7 @@ def cmd_apply(args: argparse.Namespace) -> int:
     sys.stdout.write(
         "[apply] 摘要: "
         f"改卡={len(changed)}，新增 title={sum(change.title_added for change in changed)}，"
+        f"title 冲突={sum(change.title_conflict for change in changes)}，"
         f"追加正文段={sum(change.body_added for change in changed)}，备份目录={backup_label}\n"
     )
     if not args.commit:

@@ -6,7 +6,7 @@
   1. 写出口硬判据：`--out` 指向 `.claude/projects/*/memory` 命名空间、或指向被读取的
      记忆目录本身/其内部/其祖先，一律 exit 2 且不创建任何目录。
   2. 排序：新卡头插（截断切尾保头 ⇒ 新卡必须活下来），旧卡保基线相对序。
-  3. compile 行优先级：title 字段 > 无 title 卡的现存索引原行 > name 回退。
+  3. compile 行优先级：顶层 title > metadata.title > 无 title 卡的现存索引原行 > name 回退。
   4. 水位算术：JS 字符 = UTF-16 code unit（星平面字符算 2 个），200 行上限，>80% 报警。
   5. migrate-plan 四类对账分类。
   6. apply 只定点改卡片的 title/description/正文追加，默认 dry-run，commit 必须先外部备份。
@@ -279,6 +279,102 @@ def test_missing_title_is_debt_not_hard_error(memory_dir: Path) -> None:
     assert "硬错卡数: 0" in res.stdout
     assert "迁移欠账卡数: 1" in res.stdout
     assert "D1" in res.stdout
+
+
+def test_metadata_title_validates_compiles_and_migrates_without_name_fallback(
+    memory_dir: Path, tmp_path: Path
+) -> None:
+    title = "mtime不是内容到达信号(08-08迁移自咬)"
+    raw = (
+        "---\n"
+        "name: mtime-is-not-an-arrival-signal\n"
+        'description: "测试描述"\n'
+        "metadata: \n"
+        "  node_type: memory\n"
+        f"  title: {title}\n"
+        "  type: feedback\n"
+        "  originSessionId: 4c4a1598-test\n"
+        "---\n\n正文\n"
+    )
+    write_card(memory_dir, "mtime-is-not-an-arrival-signal", raw=raw)
+
+    validated = run_tool("validate", "--memory-dir", str(memory_dir))
+
+    assert validated.returncode == 0, validated.stdout
+    assert "硬错卡数: 0" in validated.stdout
+    assert "迁移欠账卡数: 0" in validated.stdout
+    assert "提示：1 张卡的 title 在 metadata 内（不判错）" in validated.stdout
+    assert "D1" not in validated.stdout
+
+    compiled = run_tool("compile", "--memory-dir", str(memory_dir))
+    expected_line = (
+        f"- [{title}](mtime-is-not-an-arrival-signal.md) — 测试描述"
+    )
+    slug_fallback = (
+        "- [mtime-is-not-an-arrival-signal]"
+        "(mtime-is-not-an-arrival-signal.md) — 测试描述"
+    )
+    assert compiled.returncode == 0, compiled.stderr
+    assert expected_line in compiled.stdout
+    assert slug_fallback not in compiled.stdout
+    assert "已回退 name" not in compiled.stdout
+
+    out = tmp_path / "migrate-out"
+    migrated = run_tool(
+        "migrate-plan", "--memory-dir", str(memory_dir), "--out", str(out)
+    )
+    assert migrated.returncode == 0, migrated.stderr
+    preview = (out / "MEMORY.compiled.preview.md").read_text(encoding="utf-8")
+    assert expected_line in preview
+
+
+def test_apply_dual_title_prefers_top_level_and_reports_one_conflict(
+    cc_memory_dir: Path, tmp_path: Path
+) -> None:
+    raw = (
+        "---\n"
+        "name: dual\n"
+        'title: "顶层旧标题"\n'
+        'description: "描述保持"\n'
+        "metadata:\n"
+        "  node_type: memory\n"
+        '  title: "metadata 标题"\n'
+        "  type: project\n"
+        "---\n\n正文\n"
+    )
+    card = write_card(cc_memory_dir, "dual", raw=raw)
+    compiled = run_tool("compile", "--memory-dir", str(cc_memory_dir))
+
+    assert compiled.returncode == 0, compiled.stderr
+    assert "- [顶层旧标题](dual.md) — 描述保持" in compiled.stdout
+    assert "- [metadata 标题](dual.md)" not in compiled.stdout
+
+    proposals = write_proposals(
+        tmp_path / "dual-proposals.json",
+        [{"file": "dual.md", "title": "顶层新标题", "description": "描述保持"}],
+    )
+    backup_dir = tmp_path / "dual-backup"
+    applied = run_tool(
+        "apply",
+        "--memory-dir",
+        str(cc_memory_dir),
+        "--proposals",
+        str(proposals),
+        "--commit",
+        "--backup-dir",
+        str(backup_dir),
+    )
+
+    expected = raw.replace('title: "顶层旧标题"\n', 'title: "顶层新标题"\n', 1).encode(
+        "utf-8"
+    )
+    assert applied.returncode == 0, applied.stderr
+    assert card.read_bytes() == expected
+    assert '  title: "metadata 标题"' in card.read_text(encoding="utf-8")
+    assert "[apply] title 位置冲突: dual.md" in applied.stdout
+    assert "读取与写入以顶层为准" in applied.stdout
+    assert "title 冲突=1" in applied.stdout
+    assert "新增 title=0" in applied.stdout
 
 
 # --------------------------------------------------------------------------------------
@@ -631,6 +727,106 @@ def test_apply_existing_title_and_complex_description_round_trip(
     validated = run_tool("validate", "--memory-dir", str(cc_memory_dir))
     assert validated.returncode == 0, validated.stdout
     assert "迁移欠账卡数: 0" in validated.stdout
+
+
+def test_apply_updates_existing_metadata_title_in_place_exact_bytes(
+    cc_memory_dir: Path, tmp_path: Path
+) -> None:
+    raw = (
+        "---\n"
+        "name: metadata-only\n"
+        'description: "描述保持"\n'
+        "metadata: \n"
+        "  node_type: memory\n"
+        "  title: '旧 metadata 标题'   \n"
+        "  type: feedback\n"
+        "  originSessionId: session-metadata\n"
+        "  nested:\n"
+        '    title: "嵌套诱饵不得改"\n'
+        "---\n\n"
+        "正文里的 title: 也不得改。\n"
+    )
+    card = write_card(cc_memory_dir, "metadata-only", raw=raw)
+    before = card.read_bytes()
+    title = '新 metadata 标题: "保留"'
+    proposals = write_proposals(
+        tmp_path / "metadata-only-proposals.json",
+        [{"file": "metadata-only.md", "title": title, "description": "描述保持"}],
+    )
+    backup_dir = tmp_path / "metadata-only-backup"
+    expected = raw.replace(
+        "  title: '旧 metadata 标题'   \n",
+        f"  title: {json.dumps(title, ensure_ascii=False)}\n",
+        1,
+    ).encode("utf-8")
+
+    res = run_tool(
+        "apply",
+        "--memory-dir",
+        str(cc_memory_dir),
+        "--proposals",
+        str(proposals),
+        "--commit",
+        "--backup-dir",
+        str(backup_dir),
+    )
+
+    assert res.returncode == 0, res.stderr
+    assert card.read_bytes() == expected, "只允许 metadata.title 直属行变化"
+    assert (backup_dir / card.name).read_bytes() == before
+    assert b"\ntitle:" not in card.read_bytes(), "不得额外插入顶层 title"
+    assert card.read_bytes().count(b"\n  title:") == 1
+    assert '    title: "嵌套诱饵不得改"' in card.read_text(encoding="utf-8")
+    assert "新增 title=0" in res.stdout
+    assert "title 冲突=0" in res.stdout
+
+
+def test_apply_without_title_still_inserts_top_level_after_name_exact_bytes(
+    cc_memory_dir: Path, tmp_path: Path
+) -> None:
+    raw = (
+        "---\n"
+        "name: absent\n"
+        'description: "描述保持"\n'
+        "metadata:\n"
+        "  node_type: memory\n"
+        "  type: project\n"
+        "---\n\n正文\n"
+    )
+    card = write_card(cc_memory_dir, "absent", raw=raw)
+    before = card.read_bytes()
+    title = "新增顶层标题"
+    proposals = write_proposals(
+        tmp_path / "absent-proposals.json",
+        [{"file": "absent.md", "title": title, "description": "描述保持"}],
+    )
+    backup_dir = tmp_path / "absent-backup"
+    expected = raw.replace(
+        "name: absent\n",
+        f"name: absent\ntitle: {json.dumps(title, ensure_ascii=False)}\n",
+        1,
+    ).encode("utf-8")
+
+    res = run_tool(
+        "apply",
+        "--memory-dir",
+        str(cc_memory_dir),
+        "--proposals",
+        str(proposals),
+        "--commit",
+        "--backup-dir",
+        str(backup_dir),
+    )
+
+    assert res.returncode == 0, res.stderr
+    assert card.read_bytes() == expected
+    assert (backup_dir / card.name).read_bytes() == before
+    assert f"name: absent\ntitle: {json.dumps(title, ensure_ascii=False)}\n" in card.read_text(
+        encoding="utf-8"
+    )
+    assert "\n  title:" not in card.read_text(encoding="utf-8")
+    assert "新增 title=1" in res.stdout
+    assert "title 冲突=0" in res.stdout
 
 
 def test_apply_missing_card_fails_full_preflight_without_writes(
