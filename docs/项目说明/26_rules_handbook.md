@@ -259,6 +259,7 @@ python3 -c "import json;print(json.load(open('rules/canonical_rules.json'))['sem
 
 - ~~缓存槽 **fill-first** 前提（同种商品占满一槽后才开新槽）的明文，以及**单槽容量参数**未入 canonical~~ ⇒ **已结清**：入册为 `protocol_storage_box_wireless.slot_count_clause.cache_parameters`（`slot_capacity: 50` / `group_count: 6`，fill-first 与落位顺序写在同一 `statement`，另带 `provenance` 与 `evidence_grade`）。§4.1 的两本账现在有明文条款可引。
 - ~~协议箱由 `terminal_clause` class (2) 提升为 **drain 终点**的措辞改判~~ ⇒ **已结清，但落法与原议不同**：**类级规则一个字没动**（class (2) 仍是需清偿接收不变量的有界吸收体），改判落成 `mixed_commodity_flow.terminal_clause` 里的**实例级 discharge 注**——只对冻结的 266 实例集断言不变量已清偿，别的布局不继承。见 §4 class (2) 行。
+- **证据等级两句订正（新欠，挂下一次动 canonical 的批；owner 2026-08-08 深夜两笔口述定谳）**：①`cache_parameters.evidence_grade` 里 capacity-50 现归模拟器级——**错级**，owner 已答「条款」，应升 owner 口述定谳级（错级根因＝落地批沿用了份6 对勘书早于 08-07「口述即定谳」权威裁定的过时框架；declaration-order 落位机制的精度**仍留**模拟器级不动）。②`terminal_clause.adjudicated` 前提 (ii) 存货口半边的「EXTRAPOLATED FROM THE SIMULATOR … NOT owner-adjudicated」——owner 已定谳「仓库存货口与取货口只能放在仓库基线上，条款」，该半边升 owner 定谳级，X1 关案四前提全齐。两句都是**保守方向的错级**（低估口述权威、不危及 soundness），故不单独走 reseal、随下批 canonical 顺手改。
 
 **模型完整性欠账**：
 
