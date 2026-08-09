@@ -35,14 +35,6 @@
         "rationale": "Sealed P1.2 close packet; owner has not classified it for reference scanning."
       },
       {
-        "pattern": "cc_memory/**",
-        "rationale": "Memory layer truth source; its own scanner adapter owns it (prune v2 P2)."
-      },
-      {
-        "pattern": "cc_memory_vnext/**",
-        "rationale": "Memory card layer truth source; its own scanner adapter owns it (prune v2 P2)."
-      },
-      {
         "pattern": "certside/**",
         "rationale": "Certification-side note family; owner classification pending."
       },
@@ -173,15 +165,13 @@
       "id": "root_living_guides",
       "match": {
         "paths": [
-          "AGENTS.md",
           "BORROWED_COMPONENTS.md",
-          "CLAUDE.md",
           "FILE_STATUS.md",
           "NAV_MAP.md"
         ]
       },
       "document_class": "living",
-      "rationale": "Operating guidance read as current instruction; drift here misleads the next reader."
+      "rationale": "Operating guidance read as current instruction; drift here misleads the next reader. 2026-08-09: AGENTS.md and CLAUDE.md left this list when the agent-instruction surface and both memory subsystems were removed whole for a blank rebuild; the two cc_memory out_of_scope_notes went with them, since a registry entry naming nothing is itself an error here. Register them again when the rebuild lands."
     },
     {
       "id": "project_manual_living",
