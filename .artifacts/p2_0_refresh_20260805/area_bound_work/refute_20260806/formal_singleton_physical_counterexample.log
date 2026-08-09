@@ -1,0 +1,2 @@
+[Routing Model] build 0.0s
+{'status': 'FEASIBLE', 'ports': 2, 'physical_candidates': [(35, 35, 0, ('W',), ('E',), 'belt')], 'selected_physical_states': 1, 'terminal_incidence_size': 2, 'physical_singleton_exists': False, 'formal_singletons_remain_safe_as_relaxation': True}

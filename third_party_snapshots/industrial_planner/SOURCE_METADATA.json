@@ -1,0 +1,44 @@
+{
+  "upstream_repository": "https://github.com/hsyhhssyy/IndustrialPlanner",
+  "license_note": "vendored as build-time-only reference fixture; no runtime dependency; see upstream repository for license",
+  "vendored_at": "2026-07-18",
+  "vendored_by": "rules audit 2026-07-18 (docs/research/rules_audit_20260718/00_owner_adjudications_and_rule_corrections.md)",
+  "files": {
+    "entity-definition.master.ts": {
+      "upstream_path": "src/registry/entity-definition.ts",
+      "commit": "dd334ed5d3d650336a807822c5820c68a4811831",
+      "role": "primary fixture: entity geometry / ports / power for valley4-relevant devices"
+    },
+    "base-definition.master.ts": {
+      "upstream_path": "src/registry/base-definition.ts",
+      "commit": "dd334ed5d3d650336a807822c5820c68a4811831",
+      "role": "base definitions incl. valley4_protocol_core (70x70, builtin hub + external bus)"
+    },
+    "registry.tag-1.1.2.9.historical.ts": {
+      "upstream_path": "src/domain/registry.ts",
+      "commit_ref": "tag 1.1.2.9",
+      "role": "historical reference ONLY — contains known-wrong fields (protocol storage box requiresPower:false, later fixed upstream); kept as evidence of upstream drift, never as rule authority"
+    }
+  },
+  "trust_model": {
+    "rule": "upstream provides candidate rules; owner in-game adjudication is the only authority (rules_audit_20260718 SOP)",
+    "confidence_levels": {
+      "owner_adjudicated": "field confirmed by owner in-game test on game v1.1 valley4 protocol-core base",
+      "upstream_only": "field present in upstream data but not owner-verified; must be adjudicated before consumption"
+    },
+    "blacklist": [
+      "outerRing subsystem (all versions): parameters contradict between upstream versions (4/2/2/4 vs 5/5/5/5) and owner in-game test shows NOTHING can be placed outside the 70x70 area; ignore OuterRingAllowed/InnerRingNotAllowed tags entirely",
+      "IP tag numbers are NOT game version numbers (v1.1.0-beta pre-adapted unreleased game content); cite commits, never tags"
+    ],
+    "owner_adjudicated_fields_20260718": [
+      "protocol_storage_box: 3x3, 3 input (one side) + 3 output (opposite side), four orientation modes, requiresPower true, 6 dual-role cache slots, wireless only box->warehouse",
+      "protocol_core: 9x9, 14 universal warehouse-sink inputs (7+7 opposite sides pos 1-7), 6 universal warehouse-pickup outputs (3+3 opposite sides pos 1/4/7), no power needed, is the base power source, no own coverage range, builtin+movable",
+      "power_diffuser: 2x2, 12x12 coverage (powerRange 5+6 async clip), powered from hub unconditionally at any distance",
+      "unloader (boundary pickup port): 3x1, single output port middle cell, must sit against the hongs bus which is FIXED OUTSIDE the base on two edges in game v1.1 — project's 'left/bottom boundary' equivalence is correct",
+      "outermost ring of 70x70: machine bodies CAN occupy it, belts CAN run and turn on it; a port whose front cell falls outside the base is dead; belts cannot leave the base",
+      "splitter 1-in-3-out, converger 3-in-1-out (partial connection legal)",
+      "cross junction: perpendicular straight channels only; curved belt incompatible; parallel same-axis foreign belt blocks",
+      "item_log_admission (filter pass-through): exists in game, deliberately NOT modeled (geometry-equivalent to straight belt; filtering is throughput-scope)"
+    ]
+  }
+}

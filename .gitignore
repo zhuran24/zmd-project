@@ -1,0 +1,158 @@
+# ============================================================================
+# .gitignore — zmd_pj (OR-Tools certified-exact solver)
+# First .gitignore for this tree. Hand-tuned and SURGICAL: data/ and several
+# dot-dirs are MIXED (source-of-truth + generated). Do NOT replace the
+# anchored single-file / single-dir rules below with broad wildcards — a bare
+# data/, data/preprocessed/, data/solutions/, .artifacts/, or *.log rule would
+# silently drop committed frozen inputs, audit files, delivery surface, or
+# research evidence. Authoritative boundary spec: data/artifact_boundaries.json
+#   and data/external_artifacts.json (both committed).
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Python bytecode / build (regenerable, machine-specific)
+# ----------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+# pytest atomic-write temp .pyc with stray numeric (PID) suffix, e.g.
+# test_exact_contract.cpython-313-pytest-9.0.2.pyc.16492 — bare *.pyc misses these.
+*.pyc.*
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# ----------------------------------------------------------------------------
+# Virtualenvs
+# ----------------------------------------------------------------------------
+.venv/
+venv/
+env/
+
+# ----------------------------------------------------------------------------
+# Tool caches (ruff + pytest are used; caches will appear)
+# ----------------------------------------------------------------------------
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+# pytest.ini sets addopts = --basetemp=.pytest_tmp -> root basetemp on first run
+.pytest_tmp/
+# cc_memory prune scan reports (generated diagnostics)
+/.prune/
+# CodeGraph local code index (regenerable SQLite/cache; never proof/source truth)
+.codegraph/
+
+# ----------------------------------------------------------------------------
+# cc_memory — memory.db (the SQLite source of truth) AND memory_archive.db (the
+# hard-archive side store: nodes moved out of memory.db by `mem.py archive`) ARE
+# tracked: owner wants the whole memory system versioned in git for persistence/
+# backup (accept binary churn). Only transient SQLite sidecars and local backups
+# stay ignored.
+# ----------------------------------------------------------------------------
+/cc_memory/memory.db-wal
+/cc_memory/memory.db-shm
+/cc_memory/memory.db-journal
+/cc_memory/memory_archive.db-wal
+/cc_memory/memory_archive.db-shm
+/cc_memory/memory_archive.db-journal
+/cc_memory/*.bak
+/cc_memory/.finalize.lock
+
+# ----------------------------------------------------------------------------
+# OS / editor cruft
+# ----------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# ----------------------------------------------------------------------------
+# Local credentials / secrets (defense-in-depth — NONE exist in the tree today)
+# ----------------------------------------------------------------------------
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+*.cer
+*.crt
+*.keystore
+*.jks
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+.npmrc
+.pypirc
+.netrc
+.git-credentials
+**/*credentials*
+**/*secret*.json
+# Claude / machine-local agent state and local settings overrides
+.claude/
+settings.local.json
+
+# ----------------------------------------------------------------------------
+# Worktrees / archives (none present; pre-emptive)
+# ----------------------------------------------------------------------------
+_codex_archive/
+
+# ----------------------------------------------------------------------------
+# THE BIG OMITTED ARTIFACT (~43.65 MB, sha256 a914ba63...)
+# Superseded pre-corner-fix artifact: 45,773,799 bytes, sha256 adcc2a6e...; hash-incompatible.
+# EXTERNAL_FROZEN_ARTIFACT per data/external_artifacts.json. Restore before
+# certified runs:  python src/placement/placement_generator.py
+# Anchored to the leading slash so the small 363.9 KB viewer FIXTURE at
+# data/examples/industrial_planner/viewers/.../candidate_placements.json
+# is NOT caught and stays committed.
+# ----------------------------------------------------------------------------
+/data/preprocessed/candidate_placements.json
+
+# PR2 L0 dependency floor manifests are host-specific, but P1.2 close-kernel
+# provenance pins the reviewed canonical manifest bytes.
+
+# ----------------------------------------------------------------------------
+# Generated runtime / proof / delivery output dirs (purely generated — whole-dir
+# ignores are safe here). data/checkpoints/ exists (0 KB benders_cuts.jsonl);
+# the other three are absent-but-reserved (LOCK sec 2/2B) and pre-emptively
+# ignored so a future solve/delivery run does not auto-stage proof state.
+# ----------------------------------------------------------------------------
+/data/checkpoints/
+/data/cuts/
+/data/blueprints/
+/data/telemetry/
+
+# ----------------------------------------------------------------------------
+# Generated forbidden outputs inside the MIXED data/solutions/ dir.
+# IGNORE BY EXACT PATH ONLY — data/solutions/ also holds committed audit/legacy
+# source (current_preprocess_context, *_diff_report, exact_full_scale_status,
+# endfield_calc.* catalogs/diffs, cuts_*.json). NEVER wildcard data/solutions/.
+# ----------------------------------------------------------------------------
+/data/solutions/final_solution.json
+/data/solutions/certified_delivery_manifest.json
+
+# ----------------------------------------------------------------------------
+# .artifacts/ is MIXED per data/artifact_boundaries.json.
+# TRACKED historical evidence (MUST stay committed, do NOT ignore):
+#   v28_gpt_review/, phase3b_accel_tuning/, phase3b_ai_accel_20260429/, _v28_*.
+# Ignore ONLY the regenerable runtime prefixes named in that manifest:
+# ----------------------------------------------------------------------------
+/.artifacts/research_runs/
+/.artifacts/takeover_read_20260607/
+/.artifacts/industrial_planner_checked_artifacts/
+/.artifacts/industrial_planner_single_base_delivery_surface_alignment/
+
+# ----------------------------------------------------------------------------
+# Heavy generated research run-dumps (anchored single files).
+# NOTE: most of docs/research/ is COMMITTED evidence (incl. **/logs/*.log and
+# flamegraph .svg). Do NOT add a global *.log or broad docs/research ignore.
+# ----------------------------------------------------------------------------
+# Raw agent/LLM session transcripts (128 *.output files, ~12.85 MB)
+/docs/research/agent_transcripts/
+# One-off hint-experiment solver state/telemetry dumps (~8.8 MB)
+/docs/research/d_step2_hint_trials_20260516/baseline_pre_hint_state.json
+/docs/research/d_step2_hint_trials_20260516/baseline_pre_hint_telemetry.json
+/docs/research/d_step2_hint_trials_20260516/trial3_state.json
+.pytest_tmp*

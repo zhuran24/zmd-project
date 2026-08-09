@@ -1,0 +1,2 @@
+=== python3 -m pytest --randomly-seed=0 src/tests/test_delivery_manifest.py -q ===
+.......................                                                  [100%]

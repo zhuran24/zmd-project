@@ -1,0 +1,42 @@
+blue_iron_block          m_k =        1  (= 1.0000 件/tick)
+blue_iron_ore            m_k =        1  (= 1.0000 件/tick)
+blue_iron_powder         m_k =        1  (= 1.0000 件/tick)
+buckwheat                m_k =      1/3  (= 0.3333 件/tick)
+buckwheat_powder         m_k =      5/6  (= 0.8333 件/tick)
+buckwheat_seed           m_k =      1/3  (= 0.3333 件/tick)
+dense_blue_iron_powder   m_k =        1  (= 1.0000 件/tick)
+dense_source_powder      m_k =        1  (= 1.0000 件/tick)
+fine_buckwheat_powder    m_k =    11/12  (= 0.9167 件/tick)
+qiaoyu_capsule           m_k =    11/60  (= 0.1833 件/tick)
+sandleaf                 m_k =     7/22  (= 0.3182 件/tick)
+sandleaf_powder          m_k =    14/33  (= 0.4242 件/tick)
+sandleaf_seed            m_k =     4/11  (= 0.3636 件/tick)
+source_ore               m_k =        1  (= 1.0000 件/tick)
+source_powder            m_k =        1  (= 1.0000 件/tick)
+steel_block              m_k =      1/3  (= 0.3333 件/tick)
+steel_bottle             m_k =    11/12  (= 0.9167 件/tick)
+steel_part               m_k =        1  (= 1.0000 件/tick)
+valley_battery           m_k =      1/5  (= 0.2000 件/tick)
+
+中间品混流窗口（m_j+m_k ≤ 1）：21 对
+  buckwheat (1/3) + buckwheat (1/3) = 2/3
+  buckwheat (1/3) + buckwheat_seed (1/3) = 2/3
+  buckwheat (1/3) + sandleaf (7/22) = 43/66
+  buckwheat (1/3) + sandleaf_powder (14/33) = 25/33
+  buckwheat (1/3) + sandleaf_seed (4/11) = 23/33
+  buckwheat (1/3) + steel_block (1/3) = 2/3
+  buckwheat_seed (1/3) + buckwheat_seed (1/3) = 2/3
+  buckwheat_seed (1/3) + sandleaf (7/22) = 43/66
+  buckwheat_seed (1/3) + sandleaf_powder (14/33) = 25/33
+  buckwheat_seed (1/3) + sandleaf_seed (4/11) = 23/33
+  buckwheat_seed (1/3) + steel_block (1/3) = 2/3
+  sandleaf (7/22) + sandleaf (7/22) = 7/11
+  sandleaf (7/22) + sandleaf_powder (14/33) = 49/66
+  sandleaf (7/22) + sandleaf_seed (4/11) = 15/22
+  sandleaf (7/22) + steel_block (1/3) = 43/66
+  sandleaf_powder (14/33) + sandleaf_powder (14/33) = 28/33
+  sandleaf_powder (14/33) + sandleaf_seed (4/11) = 26/33
+  sandleaf_powder (14/33) + steel_block (1/3) = 25/33
+  sandleaf_seed (4/11) + sandleaf_seed (4/11) = 8/11
+  sandleaf_seed (4/11) + steel_block (1/3) = 23/33
+receipt -> /home/zhuran24/zmd-pj/docs/research/p2_0_specialized_20260807/maxmin_segment_receipt.json

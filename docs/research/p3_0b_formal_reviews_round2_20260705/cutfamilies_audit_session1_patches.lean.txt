@@ -1,0 +1,160 @@
+/-
+CutFamilies.lean statement-fidelity repair snippets
+Status: 未经编译（当前沙盒没有 lean/lake；`lean --version` 与 `lake --version` 均不可用）。
+These snippets are intended as direct replacement/reference theorem segments for the findings in the audit report.
+-/
+
+namespace ZmdFormal.CutFamilies
+
+/-! ## F1 repair: expose survey's group-level demand × cells_per_pose formula -/
+
+/-- F1 bound：group-level mandatory demand × cells_per_pose 的需求总和不超过区域自由格数。
+`used g` 表示 group `g` 的所有 demanded placements 在该 region 内占用的去重 cell 集；
+`hlower` 是 survey 点名的 pose-subset/pose-size 下界义务。 -/
+theorem f1_occupancy_bound {γ α : Type*} [DecidableEq γ] [DecidableEq α]
+    (C : Finset γ) (used : γ → Finset α) (Free : Finset α)
+    (demand cellsPerPose : γ → ℕ)
+    (hsub : ∀ g ∈ C, used g ⊆ Free)
+    (hdisj : ∀ g ∈ C, ∀ h ∈ C, g ≠ h → Disjoint (used g) (used h))
+    (hlower : ∀ g ∈ C, demand g * cellsPerPose g ≤ (used g).card) :
+    ∑ g ∈ C, demand g * cellsPerPose g ≤ Free.card :=
+  calc ∑ g ∈ C, demand g * cellsPerPose g ≤ ∑ g ∈ C, (used g).card :=
+        Finset.sum_le_sum hlower
+    _ = (C.biUnion used).card := (Finset.card_biUnion hdisj).symm
+    _ ≤ Free.card := Finset.card_le_card (Finset.biUnion_subset.mpr hsub)
+
+/-- F1 infeasible：Σ demand·cells_per_pose 超过区域容量 ⇒ 不存在满足 survey 三项义务的布局。 -/
+theorem f1_demand_overflow_infeasible {γ α : Type*} [DecidableEq γ] [DecidableEq α]
+    (C : Finset γ) (used : γ → Finset α) (Free : Finset α)
+    (demand cellsPerPose : γ → ℕ)
+    (hfire : Free.card < ∑ g ∈ C, demand g * cellsPerPose g) :
+    ¬ ((∀ g ∈ C, used g ⊆ Free) ∧
+       (∀ g ∈ C, ∀ h ∈ C, g ≠ h → Disjoint (used g) (used h)) ∧
+       (∀ g ∈ C, demand g * cellsPerPose g ≤ (used g).card)) := by
+  rintro ⟨hsub, hdisj, hlower⟩
+  exact absurd (f1_occupancy_bound C used Free demand cellsPerPose hsub hdisj hlower)
+    (Nat.not_le.mpr hfire)
+
+/-! ## F7 repair: make the replay-safe ghost/exterior scope and no-cover conclusion explicit -/
+
+/-- F7 no-cover predicate：给定 future free anchors 中不存在可覆盖 anchor。 -/
+def F7NoCover {α : Type*} (CanCover : α → Prop) (Free : Finset α) : Prop :=
+  ¬ ∃ a ∈ Free, CanCover a
+
+/-- F7 empty-cover soundness：在 ghost/exterior scope 的 anchor 集上已空，且未来 free anchors
+只是该 scope 的子集，则 future pose 没有可覆盖 pole anchor。
+使用时 `FreeScope` 应是 survey 中的 ghost-only mask，而不是含当前 `cell_owner` 的 full mask。 -/
+theorem f7_empty_cover_infeasible {α : Type*} [DecidableEq α]
+    (CanCover : α → Prop) [DecidablePred CanCover]
+    (FreeScope FutureFree : Finset α) (hfuture : FutureFree ⊆ FreeScope)
+    (hemptyScope : FreeScope.filter CanCover = ∅) :
+    F7NoCover CanCover FutureFree := by
+  rintro ⟨a, haFree, haCover⟩
+  have hEmptyFuture : FutureFree.filter CanCover = ∅ :=
+    f7_empty_cover_monotone CanCover FreeScope FutureFree hfuture hemptyScope
+  have ha : a ∈ FutureFree.filter CanCover := Finset.mem_filter.mpr ⟨haFree, haCover⟩
+  simpa [F7NoCover, hEmptyFuture] using ha
+
+/-! ## F6 repair: expose no-crossing as an existential interval assignment, not a fixed external bucket -/
+
+/-- F6 bucketed helper：保留原证明，但降级为内部 helper。 -/
+theorem f6_packing_bound_with_bucket {ι κ α : Type*}
+    [DecidableEq ι] [DecidableEq κ] [DecidableEq α]
+    (S : Finset ι) (J : Finset κ) (seg : ι → Finset α) (interval : κ → Finset α)
+    (L : ℕ) (hL : 0 < L) (bucket : ι → κ)
+    (hbucket : ∀ i ∈ S, bucket i ∈ J)
+    (hsub : ∀ i ∈ S, seg i ⊆ interval (bucket i))
+    (hcard : ∀ i ∈ S, (seg i).card = L)
+    (hdisj : ∀ i ∈ S, ∀ j ∈ S, i ≠ j → Disjoint (seg i) (seg j)) :
+    S.card ≤ ∑ j ∈ J, (interval j).card / L := by
+  rw [Finset.card_eq_sum_card_fiberwise hbucket]
+  apply Finset.sum_le_sum
+  intro j _
+  apply f6_strip_capacity (S.filter (fun i => bucket i = j)) (interval j) seg L hL
+  · intro i hi
+    exact hcard i (Finset.mem_filter.mp hi).1
+  · intro i hi
+    have hm := Finset.mem_filter.mp hi
+    rw [← hm.2]
+    exact hsub i hm.1
+  · intro i hi k hk hne
+    exact hdisj i (Finset.mem_filter.mp hi).1 k (Finset.mem_filter.mp hk).1 hne
+
+/-- F6 bound：survey 的“不跨阻挡”语义只要求每个 pose 存在某个自由区间容纳它；
+该区间归属可以由 witness/existential 给出，不应作为固定外部 bucket 前提。 -/
+theorem f6_packing_bound {ι κ α : Type*}
+    [DecidableEq ι] [DecidableEq κ] [DecidableEq α]
+    (S : Finset ι) (J : Finset κ) (seg : ι → Finset α) (interval : κ → Finset α)
+    (L : ℕ) (hL : 0 < L)
+    (hfit : ∃ bucket : ι → κ,
+      (∀ i ∈ S, bucket i ∈ J) ∧
+      (∀ i ∈ S, seg i ⊆ interval (bucket i)))
+    (hcard : ∀ i ∈ S, (seg i).card = L)
+    (hdisj : ∀ i ∈ S, ∀ j ∈ S, i ≠ j → Disjoint (seg i) (seg j)) :
+    S.card ≤ ∑ j ∈ J, (interval j).card / L := by
+  rcases hfit with ⟨bucket, hbucket, hsub⟩
+  exact f6_packing_bound_with_bucket S J seg interval L hL bucket hbucket hsub hcard hdisj
+
+/-- F6 infeasible：需求超过 Σ⌊len/L⌋ ⇒ 不存在任何 no-crossing interval assignment 的合法放置。 -/
+theorem f6_packing_overflow_infeasible {ι κ α : Type*}
+    [DecidableEq ι] [DecidableEq κ] [DecidableEq α]
+    (S : Finset ι) (J : Finset κ) (seg : ι → Finset α) (interval : κ → Finset α)
+    (L : ℕ) (hL : 0 < L)
+    (hfire : (∑ j ∈ J, (interval j).card / L) < S.card) :
+    ¬ ((∃ bucket : ι → κ,
+          (∀ i ∈ S, bucket i ∈ J) ∧
+          (∀ i ∈ S, seg i ⊆ interval (bucket i))) ∧
+       (∀ i ∈ S, (seg i).card = L) ∧
+       (∀ i ∈ S, ∀ j ∈ S, i ≠ j → Disjoint (seg i) (seg j))) := by
+  rintro ⟨hfit, hcard, hdisj⟩
+  exact absurd (f6_packing_bound S J seg interval L hL hfit hcard hdisj)
+    (Nat.not_le.mpr hfire)
+
+/-- F6 current-fire arithmetic core：若 cert 给出 `d ≤ D - C'` 且 `C < d`，
+则不存在一种 split，使本侧用量 `x` 不超过本侧容量 `C`、对侧用量 `y` 不超过 `C'`、
+且总放置数满足 demand `D`。这对应 survey 的 `C_R < d_R ≤ max(0,D−C_R')`。 -/
+theorem f6_cross_side_capacity_overflow_infeasible (D C C' d x y : ℕ)
+    (hdemand : d ≤ D - C') (hfire : C < d) :
+    ¬ (D ≤ x + y ∧ x ≤ C ∧ y ≤ C') := by
+  rintro ⟨htotal, hxcap, hycap⟩
+  have hdx : d ≤ x :=
+    le_trans hdemand (f6_cross_side_lower_bound D C' x y htotal hycap)
+  exact (Nat.not_lt_of_ge hxcap) (lt_of_lt_of_le hfire hdx)
+
+/-! ## F2 repair: separator hit property is a precondition, not part of “legal route” being refuted -/
+
+/-- F2 infeasible：若 separator/separation proof 已给出每条 route 必过 δ，且 route demand
+超过割边数，则不存在边不相交的 route family。 -/
+theorem f2_demand_overflow_infeasible {ι ε : Type*} [DecidableEq ι] [DecidableEq ε]
+    (routes : Finset ι) (edges : ι → Finset ε) (δ : Finset ε)
+    (hhit : ∀ i ∈ routes, ∃ e ∈ edges i, e ∈ δ)
+    (hfire : δ.card < routes.card) :
+    ¬ (∀ i ∈ routes, ∀ j ∈ routes, i ≠ j → Disjoint (edges i) (edges j)) := by
+  intro hdisj
+  exact absurd (f2_cutset_bound routes edges δ hhit hdisj) (Nat.not_le.mpr hfire)
+
+/-! ## F3 repair: lifecycle literal matching is multiset/submultiset, not Finset subset -/
+
+/-- F3 multiset-selected port exposure predicate.  This models lifecycle's anonymous literal
+multiset matching rather than a set of distinct literals. -/
+def PortExposureFreeMS {ι π α : Type*} [DecidableEq ι]
+    (selected : Multiset ι) (occupied : ι → Finset α)
+    (ports : ι → Finset π) (frontCell : π → α) : Prop :=
+  ∀ i, i ∈ selected → ∀ q ∈ ports i, ∀ j, j ∈ selected → frontCell q ∉ occupied j
+
+/-- F3 literal cut soundness：双 literal nogood 按 multiset 子集匹配；
+因此 `[A, B]` 在 `A = B` 时需要两份 occurrence，不会被 Finset `{A,B}` 折叠成一份。 -/
+theorem f3_pair_literal_cut_sound {ι π α : Type*} [DecidableEq ι]
+    (occupied : ι → Finset α) (ports : ι → Finset π) (frontCell : π → α)
+    {A B : ι} {p : π}
+    (hp : p ∈ ports A) (hblock : frontCell p ∈ occupied B) :
+    ∀ selected : Multiset ι, (([A, B] : List ι).toMultiset ≤ selected) →
+      ¬ PortExposureFreeMS selected occupied ports frontCell := by
+  intro selected hsub hfree
+  have hA_pair : A ∈ ([A, B] : List ι).toMultiset := by simp
+  have hB_pair : B ∈ ([A, B] : List ι).toMultiset := by simp
+  have hA : A ∈ selected := Multiset.mem_of_le hsub hA_pair
+  have hB : B ∈ selected := Multiset.mem_of_le hsub hB_pair
+  exact hfree A hA p hp B hB hblock
+
+end ZmdFormal.CutFamilies

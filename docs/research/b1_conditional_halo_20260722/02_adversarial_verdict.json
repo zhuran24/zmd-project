@@ -1,0 +1,110 @@
+{
+  "checks": [
+    {
+      "evidence": "The strict SHA is pinned; G is 0..69 squared, the pole body is exactly 2x2, anchors are 0..68 squared, and coverage offsets are [-5,6] squared.",
+      "id": "strict-coordinate-and-pole-domain",
+      "status": "CONFIRMED"
+    },
+    {
+      "evidence": "Independent expansion of the 14 rows gives 96 nonzero offsets, support [-8,9] squared, doubled total weight 792, and no negative weight.",
+      "id": "stencil-orbit-expansion",
+      "status": "CONFIRMED"
+    },
+    {
+      "evidence": "The proof uses [-5,6] squared only for coverage and the 14-orbit lambda2 stencil only for dual capacity.",
+      "id": "coverage-square-distinct-from-dual-stencil",
+      "status": "CONFIRMED"
+    },
+    {
+      "evidence": "The strict instance recount gives 219 powered manufacturing bodies of total area 3325 and total mandatory body area 3544.",
+      "id": "mandatory-powered-ledger",
+      "status": "CONFIRMED"
+    },
+    {
+      "evidence": "The relative anchor bounds enumerate every supported body that intersects the coverage square, with pole-body intersections excluded.",
+      "id": "local-placement-domain-complete",
+      "status": "CONFIRMED"
+    },
+    {
+      "evidence": "Independent enumeration gives 180+220+220+220=840 placements; every doubled slack is nonnegative and the minimum is zero.",
+      "id": "local-certificate-all-840",
+      "status": "CONFIRMED"
+    },
+    {
+      "evidence": "Actual facility bodies remain in G, so translating a checked local placement preserves its lambda2 inequality even when the pole stencil is clipped by the grid.",
+      "id": "grid-edge-translation-sound",
+      "status": "CONFIRMED"
+    },
+    {
+      "evidence": "The power predicate supplies a selected covering pole for every mandatory powered body; selecting one such pole partitions all 219 bodies.",
+      "id": "facility-to-covering-pole-partition",
+      "status": "CONFIRMED"
+    },
+    {
+      "evidence": "Bodies assigned to one pole are disjoint and lie in G minus R; nonnegative weights bound their summed certificate weight by C2_q(R).",
+      "id": "per-pole-disjoint-capacity-chain",
+      "status": "CONFIRMED"
+    },
+    {
+      "evidence": "The proof sums the covering poles and then adds nonnegative capacities of selected but unassigned poles; it never substitutes an arbitrary set of nine poles.",
+      "id": "all-selected-poles-quantifier",
+      "status": "CONFIRMED"
+    },
+    {
+      "evidence": "Each facility is assigned once while each pole has its own upper-bound chain; stencil overlap between poles only weakens the necessary inequality.",
+      "id": "cross-pole-overlap-no-subtraction",
+      "status": "CONFIRMED"
+    },
+    {
+      "evidence": "The 3325 ledger contains mandatory powered manufacturing only; omitting optional powered storage is a safe relaxation.",
+      "id": "optional-storage-omission-safe",
+      "status": "CONFIRMED"
+    },
+    {
+      "evidence": "Both algorithms clip to G before subtracting R; an edge spot check at q=(0,0), R=(1,1,34,35) gives clipped weight 218 and C2 20.",
+      "id": "translate-clip-remove-order",
+      "status": "CONFIRMED"
+    },
+    {
+      "evidence": "Disjoint mandatory bodies, 4P pole cells, R, and the inherited external-access lower bound yield the displayed actual-P formula.",
+      "id": "actual-p-area-ledger",
+      "status": "CONFIRMED"
+    },
+    {
+      "evidence": "ceil(3325/396)=9; the ceiling ledger is at least 1318 for P=9 and 1322 for P=10, so exact nine is derived rather than assumed.",
+      "id": "p-lower-bound-and-exact-nine",
+      "status": "CONFIRMED"
+    },
+    {
+      "evidence": "The ceiling has 2520 rectangles and 4761 pole anchors, hence 11997720 pairs; the independent body-intersection count is 3170162.",
+      "id": "full-ceiling-corpus",
+      "status": "CONFIRMED"
+    },
+    {
+      "evidence": "The direct range-add and independent prefix implementations agree on digest fe8da9696c2c7604f1153e4691ccdfe8e35b67a30adf54d301b421b113d096b2 and all reported ledgers; corpus_errors is empty.",
+      "id": "dual-recomputation-agreement-and-authority",
+      "status": "CONFIRMED"
+    },
+    {
+      "evidence": "The paper and reports are limited to necessary geometry; encoder translation, diagnostic completion, and any complete UNSAT prefix remain separate gates.",
+      "id": "claim-and-promotion-boundary",
+      "status": "CONFIRMED"
+    }
+  ],
+  "claim_boundary": [
+    "necessary_condition_recomputation_only",
+    "no_witness",
+    "no_attainability",
+    "no_routing_feasibility",
+    "no_upper_bound_improvement",
+    "no_global_optimality",
+    "no_production_CERTIFIED_status"
+  ],
+  "confirmed_count": 18,
+  "corpus_errors": [],
+  "document_type": "mathematical_adversarial_verdict",
+  "evidence_cutoff": "2026-07-22",
+  "schema_version": "b1_conditional_halo_geometry_adversarial_verdict_v1",
+  "scope": "geometry_only_pre_encoder",
+  "status": "PASS"
+}

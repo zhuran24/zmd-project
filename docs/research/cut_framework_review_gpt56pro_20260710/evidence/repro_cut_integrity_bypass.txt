@@ -1,0 +1,1 @@
+{'integrity_error_expected': True, 'attached': 1, 'master_calls': [{'group_cell_weights': {'boundary_io': 3}, 'capacity': 0, 'condition_lits': (<object object at 0x7ef0834d7d30>,)}]}

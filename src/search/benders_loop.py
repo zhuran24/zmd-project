@@ -1,0 +1,10096 @@
+"""
+Benders loop entrypoint（Benders 循环入口）.
+
+职责：
+1. certified_exact（严格认证精确）与 exploratory（探索）模式切换。
+2. exploratory 路径继续沿用 flow-driven 协同求解。
+3. certified_exact 路径改为 flow 仅作诊断，binding/routing 给正式证据。
+4. exact 路径只使用 safe static occupied-area lower bound。
+
+文件目录索引 (≈5550 行, 行号大约值, vintage 2026-05-16):
+- L1-50     模块 docstring + imports
+- L95-510   工具函数 helpers:
+    L95     _normalize_solve_mode (certified_exact / exploratory)
+    L108-300 anchor119 row domain guard advisory 系列 (Phase 3B)
+    L302-385 env resolvers (precheck max anchors, time budgets, log heartbeat lines)
+    L386    _resolve_ghost_anchor_filter_from_env
+    L445-510 instance solve_mode 归一化
+- L803-840  static area lower bound 计算 (safe LB for cuts)
+- L842-985  certification blockers 收集
+- L986      class ExactSearchSession — 单 candidate 的搜索会话
+- L1039     create_exact_search_session (工厂)
+- L1057-1700 precheck / proof summary / boundary port 兼容性
+- L1917     class LBBDController — Benders 主循环驱动 (主类)
+- L3464     LBBDController.run_with_status (公开入口)
+- L3558     _run_certified_exact (certified 路径主体, 含 warm-start + community hint)
+    L3562    self._greedy_hint = warm_start["solution_hint"]
+    L3565    EXACT_COMMUNITY_BLUEPRINT_HINT_PATH env 加载 + 合并 (2026-05-16 land)
+    L3766    solve_hint = self._greedy_hint or None  (iteration 1 hint 注入点)
+    L3844    self.master.solve(..., solution_hint=solve_hint, ...)
+- L5120-5460 run_benders_for_ghost_rect 外部入口
+- L5553      文件尾
+
+主要外部 API:
+- LBBDController(master, binding_solver, routing_solver, flow_solver,
+                 max_iterations=30, master_seconds=600.0, ...)
+    .run_with_status(...) -> (status_str, proof_summary)
+    内部 dispatch certified_exact vs exploratory.
+
+- create_exact_search_session(candidate_id, ghost_rect, ...) -> ExactSearchSession
+- run_benders_for_ghost_rect(...) -> Benders 单 candidate 完整运行
+
+env 变量 (本文件读): 见 docs/env_variable_index.md, 主要 A/B/D/G 组.
+"""
+
+from __future__ import annotations
+
+import copy
+import hashlib
+import itertools
+import json
+from collections import defaultdict
+from dataclasses import dataclass, field as dataclass_field
+import os
+import uuid
+from pathlib import Path
+import time
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    FrozenSet,
+    Iterable,
+    Iterator,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
+    cast,
+)
+
+from ortools.sat.python import cp_model
+
+from src.models.binding_subproblem import PortBindingModel
+from src.models.power_placement_subproblem import (
+    PowerPlacementSubproblem,
+    inject_power_poles_into_solution,
+)
+from src.models.cut_manager import (
+    BendersCut,
+    CutManager,
+    RUN_STATUS_CERTIFIED,
+    RUN_STATUS_INFEASIBLE,
+    RUN_STATUS_UNKNOWN,
+    RUN_STATUS_UNPROVEN,
+    _parse_ghost_anchor_condition_key,
+)
+from src.models.flow_subproblem import FlowSubproblem, build_flow_network
+from src.models.exact_coordinate_master import (  # noqa: F401
+    EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_BOUNDS,
+    EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_ENV,
+    EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_ENV,
+    EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_FINAL_TARGET,
+    EXACT_POWER_COVERAGE_WITNESS_BLOCK_SIZE_ENV,
+    EXACT_POWER_COVERAGE_WITNESS_BLOCK_TEMPLATES_ENV,
+    EXACT_POWER_COVERAGE_WITNESS_ENCODING_ELEMENT,
+    EXACT_POWER_COVERAGE_WITNESS_ENCODING_ENV,
+    EXACT_POWER_FAMILY_LOOKUP_ENCODING_ENV,
+    EXACT_POWER_FAMILY_LOOKUP_ENCODING_TABLE,
+    EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ELEMENT,
+    EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ENV,
+)
+from src.models.solution_hint_parser import parse_strict_int_hint_value
+from src.models.master_model import (
+    DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
+    EXACT_WARM_START_FAILED_ANCHOR_SAMPLE_LIMIT,
+    EXACT_WARM_START_FAILED_ANCHOR_SAMPLE_LIMIT_ENV,
+    ExactMasterCore,
+    MasterPlacementModel,
+    infer_certified_optional_lower_bounds_for_instances,
+    load_project_data,
+    load_project_data_from_texts,
+)
+from src.models.routing_subproblem import (
+    GHOST_RESERVED_OWNER_ID,
+    RoutingGrid,
+    RoutingPlacementCore,
+    RoutingSubproblem,
+    run_exact_routing_precheck,
+)
+from src.search.phase3b.anchor119.guard_controls import (
+    PHASE3B_ANCHOR119_ANCHOR_IDX,
+    build_phase3b_anchor119_guard_runtime_state,
+    build_phase3b_anchor119_guard_runtime_decision,
+)
+from src.search.phase3b.anchor119.guarded_precheck_runtime import (
+    evaluate_phase3b_anchor119_guarded_precheck_advisory,
+)
+from src.search.exact_campaign import (
+    ExactCampaign,
+    now_iso,
+    read_once_exact_artifact_snapshot,
+)
+from src.search.independent_infeasibility_reverifier import (
+    REVERIFY_STATUS_DIVERGED_FEASIBLE,
+    reverify_whole_layout_infeasibility,
+)
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+EXACT_REQUIRED_ARTIFACTS = {
+    "mandatory_exact_instances": "data/preprocessed/mandatory_exact_instances.json",
+    "candidate_placements": "data/preprocessed/candidate_placements.json",
+    "generic_io_requirements": "data/preprocessed/generic_io_requirements.json",
+    "canonical_rules": "rules/canonical_rules.json",
+}
+
+_EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE = "master_cut_added_continue"
+_EXACT_ROUTING_PRECHECK_MISSING_STATUS = "MISSING_STATUS"
+_EXACT_ROUTING_PRECHECK_VERIFIED_STATUSES = frozenset(
+    {"feasible", "front_blocked", "relaxed_disconnected"}
+)
+
+
+# Ids that name something other than a placed facility, and therefore have no
+# master pose literal to put into a conflict set.  "ghost_pick" is the solution
+# marker for the selected rect; GHOST_RESERVED_OWNER_ID is the owner-map label
+# strict emptiness puts on the ghost cells themselves.
+_GHOST_NON_FACILITY_CONFLICT_IDS = frozenset({"ghost_pick", GHOST_RESERVED_OWNER_ID})
+
+
+def _blocked_port_has_ghost_blocker(blocked_port: Mapping[str, Any]) -> bool:
+    """Return whether the hole itself is part of why this port is blocked.
+
+    Such a blockage is a fact about the current anchor only.  Any cut built from
+    it would be applied with no ghost condition attached and would then prune
+    layouts that are perfectly routable under another anchor.
+    """
+
+    candidate_ids: List[Any] = [blocked_port.get("instance_id")]
+    candidate_ids.extend(blocked_port.get("placement_level_conflict_set", []) or [])
+    candidate_ids.extend(blocked_port.get("blocking_instance_ids", []) or [])
+    return any(
+        str(instance_id) in _GHOST_NON_FACILITY_CONFLICT_IDS
+        for instance_id in candidate_ids
+        if instance_id is not None
+    )
+
+
+def _routing_precheck_blocked_ports_well_formed(value: Any) -> bool:
+    """Return whether front_blocked blocked_ports can carry cut evidence."""
+
+    if not isinstance(value, list) or not value:
+        return False
+    for blocked_port in value:
+        if not isinstance(blocked_port, Mapping):
+            return False
+        conflict_set = blocked_port.get("placement_level_conflict_set", [])
+        if not isinstance(conflict_set, list):
+            return False
+        if any(not isinstance(instance_id, str) for instance_id in conflict_set):
+            return False
+        instance_id = blocked_port.get("instance_id")
+        if instance_id is not None and not isinstance(instance_id, str):
+            return False
+        if str(instance_id) in _GHOST_NON_FACILITY_CONFLICT_IDS:
+            # The blocked port belongs to a facility; the ghost owns no port.
+            return False
+        blocking_instance_ids = blocked_port.get("blocking_instance_ids", [])
+        if not isinstance(blocking_instance_ids, list):
+            return False
+        if any(not isinstance(instance_id, str) for instance_id in blocking_instance_ids):
+            return False
+        if any(
+            str(instance_id) in _GHOST_NON_FACILITY_CONFLICT_IDS
+            for instance_id in blocking_instance_ids
+        ) and not any(
+            str(instance_id) in _GHOST_NON_FACILITY_CONFLICT_IDS
+            for instance_id in conflict_set
+        ):
+            # A ghost blocker that never reaches the conflict set would let the
+            # cut path mistake an anchor-local blockage for a facility one.
+            return False
+        for cell_key in ("port_cell", "front_cell"):
+            if cell_key not in blocked_port:
+                continue
+            cell = blocked_port.get(cell_key)
+            if not isinstance(cell, list) or len(cell) != 2:
+                return False
+            if any(isinstance(coord, bool) or not isinstance(coord, int) for coord in cell):
+                return False
+        if (
+            "dir" in blocked_port
+            and str(blocked_port.get("dir")) not in {"N", "S", "E", "W"}
+        ):
+            return False
+    return True
+
+
+_CERTIFIED_SOLVE_MODES = {"certified_exact", "exploratory"}
+_CampaignHeartbeatCallback = Callable[[Mapping[str, Any]], None]
+_PRE_MASTER_MANDATORY_RECTANGLE_PRECHECK_MAX_ANCHORS = 32
+_PRE_MASTER_MANDATORY_RECTANGLE_PRECHECK_MAX_ANCHORS_ENV = (
+    "EXACT_PRE_MASTER_MANDATORY_RECTANGLE_PRECHECK_MAX_ANCHORS"
+)
+_PRE_MASTER_COORDINATE_VALIDATION_PRECHECK_MAX_ANCHORS = 0
+_PRE_MASTER_COORDINATE_VALIDATION_PRECHECK_MAX_ANCHORS_ENV = (
+    "EXACT_PRE_MASTER_COORDINATE_VALIDATION_PRECHECK_MAX_ANCHORS"
+)
+_PRE_MASTER_COORDINATE_VALIDATION_PRECHECK_SECONDS = 2.0
+_PRE_MASTER_COORDINATE_VALIDATION_PRECHECK_SECONDS_ENV = (
+    "EXACT_PRE_MASTER_COORDINATE_VALIDATION_PRECHECK_SECONDS"
+)
+EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_LINES_ENV = (
+    "EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_LINES"
+)
+EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_MAX_CHARS_ENV = (
+    "EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_MAX_CHARS"
+)
+
+
+def _normalize_solve_mode(
+    solve_mode: Optional[str] = None,
+    certification_mode: Optional[bool] = None,
+) -> str:
+    if certification_mode is not None:
+        return "certified_exact" if certification_mode else "exploratory"
+    if solve_mode is None:
+        return "certified_exact"
+    if solve_mode not in {"certified_exact", "exploratory"}:
+        raise ValueError(f"Unsupported solve mode: {solve_mode}")
+    return solve_mode
+
+
+def _pre_master_contract_int(value: Any) -> Optional[int]:
+    """Return an exact integer field value, rejecting bool/string drift."""
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return int(value)
+    return None
+
+
+def _pre_master_contract_nonempty_string(value: Any) -> Optional[str]:
+    if not isinstance(value, str):
+        return None
+    stripped = value.strip()
+    return stripped or None
+
+
+def _pre_master_contract_count(
+    payload: Mapping[str, Any],
+    field: str,
+) -> Optional[int]:
+    return _pre_master_contract_int(payload.get(str(field)))
+
+
+def _pre_master_contract_counts_match(
+    lhs: Mapping[str, Any],
+    rhs: Mapping[str, Any],
+    fields: Sequence[str],
+) -> bool:
+    for field in fields:
+        lhs_value = _pre_master_contract_count(lhs, field)
+        rhs_value = _pre_master_contract_count(rhs, field)
+        if lhs_value is None or rhs_value is None or lhs_value != rhs_value:
+            return False
+    return True
+
+
+def _pre_master_contract_all_anchors_screened_infeasible(
+    payload: Mapping[str, Any],
+) -> bool:
+    considered = _pre_master_contract_count(payload, "considered_anchor_count")
+    screened = _pre_master_contract_count(payload, "screened_infeasible_anchor_count")
+    passing = _pre_master_contract_count(payload, "screen_pass_anchor_count")
+    unsupported = _pre_master_contract_count(payload, "unsupported_anchor_count")
+    if (
+        considered is None
+        or screened is None
+        or passing is None
+        or unsupported is None
+    ):
+        return False
+    return (
+        int(considered) > 0
+        and int(screened) == int(considered)
+        and int(passing) == 0
+        and int(unsupported) == 0
+    )
+
+
+def _pre_master_contract_candidate_all_anchors_screened_infeasible(
+    master_candidate_precheck: Mapping[str, Any],
+) -> bool:
+    considered = _pre_master_contract_count(
+        master_candidate_precheck,
+        "considered_anchor_count",
+    )
+    screened = _pre_master_contract_count(
+        master_candidate_precheck,
+        "screened_infeasible_anchor_count",
+    )
+    passing = _pre_master_contract_count(
+        master_candidate_precheck,
+        "screen_pass_anchor_count",
+    )
+    if considered is None or screened is None or passing is None:
+        return False
+    return int(considered) > 0 and int(screened) == int(considered) and int(passing) == 0
+
+
+def _pre_master_contract_valid_boundary_port_elimination(
+    master_candidate_precheck: Mapping[str, Any],
+    proof_summary: Mapping[str, Any],
+) -> bool:
+    boundary_payload = proof_summary.get("master_boundary_port_feasibility")
+    if not isinstance(boundary_payload, Mapping):
+        return False
+    required_count = _pre_master_contract_count(boundary_payload, "required_count")
+    if master_candidate_precheck.get("supported") is not True:
+        return False
+    if required_count is None or int(required_count) <= 0:
+        return False
+    if boundary_payload.get("supported") is not True:
+        return False
+    if not _pre_master_contract_candidate_all_anchors_screened_infeasible(
+        master_candidate_precheck
+    ):
+        return False
+    if not _pre_master_contract_all_anchors_screened_infeasible(boundary_payload):
+        return False
+    if not _pre_master_contract_counts_match(
+        master_candidate_precheck,
+        boundary_payload,
+        (
+            "considered_anchor_count",
+            "screened_infeasible_anchor_count",
+            "screen_pass_anchor_count",
+        ),
+    ):
+        return False
+    return boundary_payload.get("first_infeasible_anchor_idx") is not None
+
+
+def _pre_master_contract_matching_mandatory_group(
+    *,
+    master_candidate_precheck: Mapping[str, Any],
+    mandatory_group_prechecks: Mapping[str, Any],
+) -> Optional[Mapping[str, Any]]:
+    triggered_group_id = _pre_master_contract_nonempty_string(
+        master_candidate_precheck.get("triggered_group_id")
+    )
+    triggered_facility_type = _pre_master_contract_nonempty_string(
+        master_candidate_precheck.get("triggered_group_facility_type")
+    )
+    triggered_operation_type = master_candidate_precheck.get(
+        "triggered_group_operation_type"
+    )
+    triggered_required_count = _pre_master_contract_count(
+        master_candidate_precheck,
+        "triggered_group_required_count",
+    )
+    if (
+        triggered_group_id is None
+        or triggered_facility_type is None
+        or triggered_required_count is None
+        or int(triggered_required_count) <= 0
+    ):
+        return None
+    groups = mandatory_group_prechecks.get("groups")
+    if not isinstance(groups, list):
+        return None
+    for entry in groups:
+        if not isinstance(entry, Mapping):
+            continue
+        if str(entry.get("group_id", "")) != triggered_group_id:
+            continue
+        if str(entry.get("facility_type", "")) != triggered_facility_type:
+            continue
+        if triggered_operation_type is not None and str(
+            entry.get("operation_type", "")
+        ) != str(triggered_operation_type):
+            continue
+        required_count = _pre_master_contract_count(entry, "required_count")
+        if required_count is None or int(required_count) != int(triggered_required_count):
+            continue
+        return entry
+    return None
+
+
+def _pre_master_contract_valid_mandatory_rectangle_elimination(
+    master_candidate_precheck: Mapping[str, Any],
+    proof_summary: Mapping[str, Any],
+) -> bool:
+    if master_candidate_precheck.get("supported") is not True:
+        return False
+    if not _pre_master_contract_candidate_all_anchors_screened_infeasible(
+        master_candidate_precheck
+    ):
+        return False
+    mandatory_group_prechecks = proof_summary.get("master_mandatory_group_prechecks")
+    if not isinstance(mandatory_group_prechecks, Mapping):
+        return False
+    if mandatory_group_prechecks.get("evaluated") is not True:
+        return False
+    if mandatory_group_prechecks.get("skipped_due_to_upstream_precheck") is True:
+        return False
+    group = _pre_master_contract_matching_mandatory_group(
+        master_candidate_precheck=master_candidate_precheck,
+        mandatory_group_prechecks=mandatory_group_prechecks,
+    )
+    if group is None:
+        return False
+    if group.get("supported") is not True:
+        return False
+    if bool(group.get("partial_due_to_time_budget", False)):
+        return False
+    if not _pre_master_contract_all_anchors_screened_infeasible(group):
+        return False
+    if not _pre_master_contract_counts_match(
+        master_candidate_precheck,
+        group,
+        (
+            "considered_anchor_count",
+            "screened_infeasible_anchor_count",
+            "screen_pass_anchor_count",
+        ),
+    ):
+        return False
+    return group.get("first_infeasible_anchor_idx") is not None
+
+
+def _pre_master_contract_valid_coordinate_validation_elimination(
+    master_candidate_precheck: Mapping[str, Any],
+    proof_summary: Mapping[str, Any],
+) -> bool:
+    coordinate_payload = proof_summary.get("coordinate_validation_precheck")
+    if not isinstance(coordinate_payload, Mapping):
+        return False
+    if master_candidate_precheck.get("supported") is not True:
+        return False
+    if coordinate_payload.get("evaluated") is not True:
+        return False
+    if coordinate_payload.get("triggered") is not True:
+        return False
+    if coordinate_payload.get("skipped_due_to_anchor_limit") is True:
+        return False
+    considered = _pre_master_contract_count(coordinate_payload, "considered_anchor_count")
+    evaluated = _pre_master_contract_count(coordinate_payload, "evaluated_anchor_count")
+    infeasible = _pre_master_contract_count(coordinate_payload, "infeasible_anchor_count")
+    accepted = _pre_master_contract_count(coordinate_payload, "accepted_anchor_count")
+    unknown = _pre_master_contract_count(coordinate_payload, "unknown_anchor_count")
+    skipped = _pre_master_contract_count(coordinate_payload, "skipped_anchor_count")
+    if (
+        considered is None
+        or evaluated is None
+        or infeasible is None
+        or accepted is None
+        or unknown is None
+        or skipped is None
+    ):
+        return False
+    if not (
+        int(considered) > 0
+        and int(evaluated) == int(considered)
+        and int(infeasible) == int(considered)
+        and int(accepted) == 0
+        and int(unknown) == 0
+        and int(skipped) == 0
+    ):
+        return False
+    if coordinate_payload.get("short_circuited_after_non_triggering_anchor") is True:
+        return False
+    rejected_anchors = coordinate_payload.get("rejected_anchors")
+    non_triggering_anchors = coordinate_payload.get("non_triggering_anchors")
+    if not isinstance(rejected_anchors, list) or not isinstance(
+        non_triggering_anchors,
+        list,
+    ):
+        return False
+    if non_triggering_anchors:
+        return False
+    if len(rejected_anchors) != int(considered):
+        return False
+    for entry in rejected_anchors:
+        if not isinstance(entry, Mapping):
+            return False
+        anchor_idx = _pre_master_contract_int(entry.get("anchor_idx"))
+        if anchor_idx is None or str(entry.get("status", "")) != "INFEASIBLE":
+            return False
+    status_counts = coordinate_payload.get("status_counts")
+    if not isinstance(status_counts, Mapping):
+        return False
+    infeasible_status_count = _pre_master_contract_int(status_counts.get("INFEASIBLE"))
+    if infeasible_status_count is None or int(infeasible_status_count) != int(considered):
+        return False
+    if not _pre_master_contract_counts_match(
+        master_candidate_precheck,
+        {
+            "considered_anchor_count": considered,
+            "screened_infeasible_anchor_count": infeasible,
+            "screen_pass_anchor_count": int(accepted) + int(unknown) + int(skipped),
+        },
+        (
+            "considered_anchor_count",
+            "screened_infeasible_anchor_count",
+            "screen_pass_anchor_count",
+        ),
+    ):
+        return False
+    return master_candidate_precheck.get("first_infeasible_anchor_idx") == rejected_anchors[
+        0
+    ].get("anchor_idx")
+
+
+def _pre_master_contract_valid_empty_pool_elimination(
+    master_candidate_precheck: Mapping[str, Any],
+    proof_summary: Mapping[str, Any],
+) -> bool:
+    if master_candidate_precheck.get("supported") is not False:
+        return False
+    for field in (
+        "considered_anchor_count",
+        "screened_infeasible_anchor_count",
+        "screen_pass_anchor_count",
+    ):
+        value = _pre_master_contract_count(master_candidate_precheck, field)
+        if value is None or int(value) != 0:
+            return False
+    triggered_group_id = _pre_master_contract_nonempty_string(
+        master_candidate_precheck.get("triggered_group_id")
+    )
+    triggered_facility_type = _pre_master_contract_nonempty_string(
+        master_candidate_precheck.get("triggered_group_facility_type")
+    )
+    triggered_operation_type = master_candidate_precheck.get(
+        "triggered_group_operation_type"
+    )
+    triggered_required_count = _pre_master_contract_count(
+        master_candidate_precheck,
+        "triggered_group_required_count",
+    )
+    if (
+        triggered_group_id is None
+        or triggered_facility_type is None
+        or triggered_required_count is None
+        or int(triggered_required_count) <= 0
+    ):
+        return False
+    diagnostics = proof_summary.get("master_mandatory_support_diagnostics")
+    if not isinstance(diagnostics, Mapping):
+        return False
+    empty_group_count = _pre_master_contract_count(
+        diagnostics,
+        "empty_candidate_pool_group_count",
+    )
+    if empty_group_count is None or int(empty_group_count) <= 0:
+        return False
+    groups = diagnostics.get("groups")
+    if not isinstance(groups, list):
+        return False
+    for entry in groups:
+        if not isinstance(entry, Mapping):
+            continue
+        if str(entry.get("unsupported_reason", "")) != "empty_candidate_pool":
+            continue
+        if str(entry.get("group_id", "")) != triggered_group_id:
+            continue
+        if str(entry.get("facility_type", "")) != triggered_facility_type:
+            continue
+        if triggered_operation_type is not None and str(
+            entry.get("operation_type", "")
+        ) != str(triggered_operation_type):
+            continue
+        required_count = _pre_master_contract_count(entry, "required_count")
+        pool_count = _pre_master_contract_count(entry, "candidate_pool_count")
+        if (
+            required_count is not None
+            and int(required_count) == int(triggered_required_count)
+            and pool_count is not None
+            and int(pool_count) == 0
+        ):
+            return True
+    return False
+
+
+def _pre_master_contract_valid_anchor119_runtime_elimination(
+    master_candidate_precheck: Mapping[str, Any],
+    proof_summary: Mapping[str, Any],
+) -> bool:
+    _ = proof_summary
+    if master_candidate_precheck.get("supported") is not True:
+        return False
+    if not _pre_master_contract_candidate_all_anchors_screened_infeasible(
+        master_candidate_precheck
+    ):
+        return False
+    considered = _pre_master_contract_count(
+        master_candidate_precheck,
+        "considered_anchor_count",
+    )
+    if considered != 1:
+        return False
+    first_anchor = _pre_master_contract_int(
+        master_candidate_precheck.get("first_infeasible_anchor_idx")
+    )
+    if first_anchor != int(PHASE3B_ANCHOR119_ANCHOR_IDX):
+        return False
+    advisory = master_candidate_precheck.get("anchor119_row_domain_guard_advisory")
+    if not isinstance(advisory, Mapping):
+        return False
+    runtime_decision = advisory.get("runtime_decision")
+    if not isinstance(runtime_decision, Mapping):
+        return False
+    return (
+        advisory.get("enabled") is True
+        and advisory.get("would_trigger") is True
+        and advisory.get("triggered") is True
+        and runtime_decision.get("apply_runtime_elimination") is True
+    )
+
+
+def is_valid_pre_master_precheck_elimination(precheck_outcome: Any) -> bool:
+    """Return whether a pre-master precheck result may skip the master solve.
+
+    This is the shared campaign/write and solver-entry contract: a truthy
+    ``triggered`` flag alone is not enough to convert a candidate into a strong
+    INFEASIBLE result.  Each certified pre-master reason also needs its
+    reason-specific proof payload to line up with the compact summary that will
+    be persisted into the exact-campaign frontier.
+    """
+    if not isinstance(precheck_outcome, Mapping):
+        return False
+    if precheck_outcome.get("triggered") is not True:
+        return False
+    if str(precheck_outcome.get("status", "")) != RUN_STATUS_INFEASIBLE:
+        return False
+    proof_summary = precheck_outcome.get("proof_summary")
+    if not isinstance(proof_summary, Mapping):
+        return False
+    if str(proof_summary.get("master_status", "")) != RUN_STATUS_INFEASIBLE:
+        return False
+    master_candidate_precheck = proof_summary.get("master_candidate_precheck")
+    if not isinstance(master_candidate_precheck, Mapping):
+        return False
+    if master_candidate_precheck.get("triggered") is not True:
+        return False
+    if master_candidate_precheck.get("master_solve_skipped") is not True:
+        return False
+    precheck_reason = _pre_master_contract_nonempty_string(
+        master_candidate_precheck.get("precheck_reason")
+    )
+    if precheck_reason is None:
+        return False
+    validators = {
+        "boundary_port_all_anchors_infeasible": (
+            _pre_master_contract_valid_boundary_port_elimination
+        ),
+        "mandatory_rect_group_all_anchors_infeasible": (
+            _pre_master_contract_valid_mandatory_rectangle_elimination
+        ),
+        "coordinate_validation_infeasible": (
+            _pre_master_contract_valid_coordinate_validation_elimination
+        ),
+        "mandatory_group_empty_candidate_pool": (
+            _pre_master_contract_valid_empty_pool_elimination
+        ),
+        "anchor119_row_domain_runtime_guard": (
+            _pre_master_contract_valid_anchor119_runtime_elimination
+        ),
+    }
+    validator = validators.get(precheck_reason)
+    if validator is None:
+        return False
+    return bool(validator(master_candidate_precheck, proof_summary))
+
+
+def _maybe_attach_anchor119_row_domain_guard_advisory(
+    master_candidate_precheck_payload: Dict[str, Any],
+    *,
+    project_root: Path,
+    ghost_w: int,
+    ghost_h: int,
+) -> None:
+    advisory = evaluate_phase3b_anchor119_guarded_precheck_advisory(
+        project_root=project_root,
+        ghost_w=int(ghost_w),
+        ghost_h=int(ghost_h),
+        anchor_idx=PHASE3B_ANCHOR119_ANCHOR_IDX,
+    )
+    if not bool(advisory.get("enabled", False)):
+        return
+    proof_summary = advisory.get("proof_summary")
+    if not isinstance(proof_summary, Mapping):
+        return
+    guard_payload = proof_summary.get("anchor119_mixed_lane_guarded_precheck")
+    if not isinstance(guard_payload, Mapping):
+        return
+    runtime_decision = build_phase3b_anchor119_guard_runtime_decision(
+        requested_state=guard_payload.get("requested_state"),
+        effective_state=guard_payload.get("effective_state"),
+        runtime_activation_allowed=bool(
+            guard_payload.get("runtime_activation_allowed", False)
+        ),
+        would_trigger=bool(advisory.get("would_trigger", False)),
+        triggered=bool(advisory.get("triggered", False)),
+        reason=advisory.get("reason"),
+        runtime_enablement_blockers=list(
+            guard_payload.get("runtime_enablement_blockers", [])
+        )
+        if isinstance(guard_payload.get("runtime_enablement_blockers"), list)
+        else [],
+    )
+    master_candidate_precheck_payload["anchor119_row_domain_guard_advisory"] = {
+        "enabled": True,
+        "would_trigger": bool(advisory.get("would_trigger", False)),
+        "triggered": bool(advisory.get("triggered", False)),
+        "reason": advisory.get("reason"),
+        "runtime_decision": runtime_decision,
+        **dict(guard_payload),
+    }
+    if bool(runtime_decision.get("apply_runtime_elimination", False)):
+        master_candidate_precheck_payload.update(
+            {
+                "triggered": True,
+                "precheck_reason": "anchor119_row_domain_runtime_guard",
+                "master_solve_skipped": True,
+                "supported": True,
+                "considered_anchor_count": 1,
+                "screened_infeasible_anchor_count": 1,
+                "screen_pass_anchor_count": 0,
+                "max_packable_min": None,
+                "max_packable_max": None,
+                "first_infeasible_anchor_idx": int(PHASE3B_ANCHOR119_ANCHOR_IDX),
+                "first_infeasible_anchor_max_packable": None,
+                "triggered_group_id": None,
+                "triggered_group_facility_type": None,
+                "triggered_group_operation_type": None,
+                "triggered_group_required_count": 0,
+            }
+        )
+
+
+def _maybe_attach_anchor119_row_domain_guard_advisory_to_proof_summary(
+    proof_summary: Dict[str, Any],
+    *,
+    project_root: Path,
+    ghost_w: int,
+    ghost_h: int,
+) -> None:
+    master_candidate_precheck = proof_summary.get("master_candidate_precheck")
+    if isinstance(master_candidate_precheck, Mapping):
+        master_candidate_precheck_payload = dict(master_candidate_precheck)
+    else:
+        master_candidate_precheck_payload = {
+            "triggered": False,
+            "precheck_reason": None,
+            "master_solve_skipped": False,
+        }
+    _maybe_attach_anchor119_row_domain_guard_advisory(
+        master_candidate_precheck_payload,
+        project_root=project_root,
+        ghost_w=ghost_w,
+        ghost_h=ghost_h,
+    )
+    if "anchor119_row_domain_guard_advisory" in master_candidate_precheck_payload:
+        proof_summary["master_candidate_precheck"] = master_candidate_precheck_payload
+
+
+def _copy_anchor119_row_domain_guard_advisory_from_proof_summary(
+    master_candidate_precheck_payload: Dict[str, Any],
+    *,
+    proof_summary: Mapping[str, Any],
+) -> bool:
+    source_precheck = proof_summary.get("master_candidate_precheck")
+    if not isinstance(source_precheck, Mapping):
+        return False
+    advisory = source_precheck.get("anchor119_row_domain_guard_advisory")
+    if not isinstance(advisory, Mapping):
+        return False
+    master_candidate_precheck_payload["anchor119_row_domain_guard_advisory"] = dict(advisory)
+    return True
+
+
+def _maybe_build_anchor119_row_domain_runtime_precheck_result(
+    *,
+    project_root: Path,
+    ghost_w: int,
+    ghost_h: int,
+    master_search_profile: str,
+    mandatory_support_diagnostics_summary: Mapping[str, Any],
+    default_boundary_port_precheck: Mapping[str, Any],
+    exact_session: "ExactSearchSession",
+) -> Optional[Dict[str, Any]]:
+    runtime_state = build_phase3b_anchor119_guard_runtime_state()
+    if not bool(runtime_state.get("runtime_requested", False)):
+        return None
+    proof_summary = _merge_reuse_metadata(
+        {
+            "mode": "certified_exact",
+            "benders_iterations": 0,
+            "master_status": "INFEASIBLE",
+            "diagnostic_flow_status": "NOT_RUN",
+            "enumerated_bindings": 0,
+            "routing_attempts": 0,
+            "used_greedy_hint": False,
+            "greedy_hint_instances": 0,
+            "master_hinted_literals": 0,
+            "master_search_profile": str(master_search_profile),
+            "master_boundary_port_feasibility": (
+                _compact_exact_candidate_boundary_port_feasibility(
+                    default_boundary_port_precheck
+                )
+            ),
+            "master_mandatory_group_prechecks": (
+                _default_exact_candidate_skipped_mandatory_group_prechecks(
+                    skipped_due_to_upstream_precheck=False
+                )
+            ),
+            "master_mandatory_support_diagnostics": dict(
+                mandatory_support_diagnostics_summary
+            ),
+            "master_candidate_precheck": {
+                "triggered": False,
+                "precheck_reason": None,
+                "master_solve_skipped": False,
+                "supported": True,
+                "considered_anchor_count": 0,
+                "screened_infeasible_anchor_count": 0,
+                "screen_pass_anchor_count": 0,
+                "max_packable_min": None,
+                "max_packable_max": None,
+                "first_infeasible_anchor_idx": None,
+                "first_infeasible_anchor_max_packable": None,
+                "triggered_group_id": None,
+                "triggered_group_facility_type": None,
+                "triggered_group_operation_type": None,
+                "triggered_group_required_count": 0,
+            },
+        },
+        used_exact_core_reuse=True,
+        core_build_seconds=float(exact_session.core_build_seconds),
+        overlay_build_seconds=0.0,
+        ghost_constraint_seconds=0.0,
+        cut_replay_seconds=0.0,
+    )
+    _maybe_attach_anchor119_row_domain_guard_advisory_to_proof_summary(
+        proof_summary,
+        project_root=project_root,
+        ghost_w=int(ghost_w),
+        ghost_h=int(ghost_h),
+    )
+    master_candidate_precheck = proof_summary.get("master_candidate_precheck", {})
+    if not isinstance(master_candidate_precheck, Mapping):
+        return None
+    advisory = master_candidate_precheck.get("anchor119_row_domain_guard_advisory")
+    if not isinstance(advisory, Mapping):
+        return None
+    runtime_decision = advisory.get("runtime_decision")
+    if not isinstance(runtime_decision, Mapping):
+        return None
+    if not bool(runtime_decision.get("apply_runtime_elimination", False)):
+        return None
+    return {
+        "triggered": True,
+        "status": RUN_STATUS_INFEASIBLE,
+        "proof_summary": proof_summary,
+        "boundary_port_precheck": dict(default_boundary_port_precheck),
+    }
+
+
+def _pre_master_mandatory_rectangle_precheck_max_anchors() -> int:
+    raw_value = os.environ.get(_PRE_MASTER_MANDATORY_RECTANGLE_PRECHECK_MAX_ANCHORS_ENV)
+    if raw_value is None or str(raw_value).strip() == "":
+        return int(_PRE_MASTER_MANDATORY_RECTANGLE_PRECHECK_MAX_ANCHORS)
+    try:
+        return max(0, int(str(raw_value).strip()))
+    except ValueError:
+        raise ValueError(
+            "Unsupported "
+            f"{_PRE_MASTER_MANDATORY_RECTANGLE_PRECHECK_MAX_ANCHORS_ENV}: "
+            f"{raw_value!r}; expected a non-negative integer."
+        ) from None
+
+
+def _pre_master_coordinate_validation_precheck_max_anchors() -> int:
+    raw_value = os.environ.get(_PRE_MASTER_COORDINATE_VALIDATION_PRECHECK_MAX_ANCHORS_ENV)
+    if raw_value is None or str(raw_value).strip() == "":
+        return int(_PRE_MASTER_COORDINATE_VALIDATION_PRECHECK_MAX_ANCHORS)
+    try:
+        return max(0, int(str(raw_value).strip()))
+    except ValueError:
+        raise ValueError(
+            "Unsupported "
+            f"{_PRE_MASTER_COORDINATE_VALIDATION_PRECHECK_MAX_ANCHORS_ENV}: "
+            f"{raw_value!r}; expected a non-negative integer."
+        ) from None
+
+
+def _pre_master_coordinate_validation_precheck_seconds() -> float:
+    raw_value = os.environ.get(_PRE_MASTER_COORDINATE_VALIDATION_PRECHECK_SECONDS_ENV)
+    if raw_value is None or str(raw_value).strip() == "":
+        return max(0.0, float(_PRE_MASTER_COORDINATE_VALIDATION_PRECHECK_SECONDS))
+    try:
+        return max(0.0, float(str(raw_value).strip()))
+    except ValueError:
+        raise ValueError(
+            "Unsupported "
+            f"{_PRE_MASTER_COORDINATE_VALIDATION_PRECHECK_SECONDS_ENV}: "
+            f"{raw_value!r}; expected a non-negative number."
+        ) from None
+
+
+def _warm_start_failed_anchor_sample_limit() -> int:
+    raw_value = os.environ.get(EXACT_WARM_START_FAILED_ANCHOR_SAMPLE_LIMIT_ENV)
+    if raw_value is None or str(raw_value).strip() == "":
+        return max(0, int(EXACT_WARM_START_FAILED_ANCHOR_SAMPLE_LIMIT))
+    try:
+        return max(0, int(str(raw_value).strip()))
+    except ValueError:
+        raise ValueError(
+            f"Unsupported {EXACT_WARM_START_FAILED_ANCHOR_SAMPLE_LIMIT_ENV}: "
+            f"{raw_value!r}; expected a non-negative integer."
+        ) from None
+
+
+def _master_cp_sat_log_heartbeat_line_limit() -> int:
+    raw_value = os.environ.get(EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_LINES_ENV)
+    if raw_value is None or str(raw_value).strip() == "":
+        return 0
+    try:
+        return min(500, max(0, int(str(raw_value).strip())))
+    except ValueError:
+        raise ValueError(
+            f"Unsupported {EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_LINES_ENV}: "
+            f"{raw_value!r}; expected a non-negative integer."
+        ) from None
+
+
+def _master_cp_sat_log_heartbeat_max_chars() -> int:
+    raw_value = os.environ.get(EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_MAX_CHARS_ENV)
+    if raw_value is None or str(raw_value).strip() == "":
+        return 1000
+    try:
+        return min(4000, max(80, int(str(raw_value).strip())))
+    except ValueError:
+        raise ValueError(
+            f"Unsupported {EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_MAX_CHARS_ENV}: "
+            f"{raw_value!r}; expected a positive integer."
+        ) from None
+
+
+EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV = "EXACT_MASTER_GHOST_ANCHOR_FILTER"
+EXACT_USE_POSE_BOOL_MASTER_ENV = "EXACT_USE_POSE_BOOL_MASTER"
+EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE_ENV = "EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE"
+EXACT_LAZY_POWER_COMPLETION_ENV = "EXACT_LAZY_POWER_COMPLETION"
+EXACT_POWER_PLACEMENT_SUBPROBLEM_ENV = "EXACT_POWER_PLACEMENT_SUBPROBLEM"
+EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST_ENV = (
+    "EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST"
+)
+EXACT_CUT_FRAMEWORK_ATTACH_ENV = "EXACT_CUT_FRAMEWORK_ATTACH"
+# M4-A active-framework-cut budget (M1 verdict hard prerequisite #2).
+# Counts every constraint the framework pushed into the CURRENT master via
+# step_8 (unified counter coordinate_framework_cut_count). Once reached,
+# _maybe_attach_framework_cuts stops emitting: CP-SAT constraints cannot be
+# removed once added, so "stop attaching" is the only sound eviction that
+# does not rebuild the master. Framework cuts are optional strengthening —
+# stopping only weakens pruning, never soundness. Conservative thousand-level
+# anchor per verdict.md (§3 前置 2); raising it needs a fresh before/after
+# production re-measurement, not just the synthetic-load extrapolation.
+# B5a: the typed single entry is now wired as the sole attach path, but the
+# attach env stays unsafe-map-disabled (certified-unsafe pre-B6), so this knob
+# only matters to direct/non-certified invocations and tests.
+EXACT_CUT_FRAMEWORK_ATTACH_BUDGET = 2000
+
+
+def _resolve_cut_framework_attach_budget() -> int:
+    raw_value = os.environ.get("EXACT_CUT_FRAMEWORK_ATTACH_BUDGET")
+    if raw_value is None or str(raw_value).strip() == "":
+        return EXACT_CUT_FRAMEWORK_ATTACH_BUDGET
+    try:
+        budget = int(str(raw_value).strip())
+        if budget <= 0:
+            raise ValueError
+    except ValueError:
+        raise ValueError(
+            "Unsupported EXACT_CUT_FRAMEWORK_ATTACH_BUDGET: "
+            f"{raw_value!r}; expected a positive integer."
+        ) from None
+    return budget
+
+
+_CERTIFIED_MASTER_DOMAIN_ENV_FALSE_VALUES = {"", "0", "false", "no", "off"}
+_CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES: Mapping[str, tuple[str, str]] = {
+    EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV: (
+        "ghost_anchor_filter_not_certified",
+        "ghost-anchor filter narrows the certified full ghost-anchor domain",
+    ),
+    EXACT_USE_POSE_BOOL_MASTER_ENV: (
+        "pose_bool_master_not_certified",
+        "pose-bool master does not construct the certified full ghost-anchor domain",
+    ),
+    EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE_ENV: (
+        "power_pole_slot_upper_bound_override_not_certified",
+        "power-pole slot upper-bound override tightens the certified master domain",
+    ),
+    EXACT_LAZY_POWER_COMPLETION_ENV: (
+        "lazy_power_completion_not_certified",
+        "lazy power completion removes certified master power-coverage constraints",
+    ),
+    EXACT_POWER_PLACEMENT_SUBPROBLEM_ENV: (
+        "power_placement_subproblem_not_certified",
+        "power placement subproblem changes certified master power-witness representation",
+    ),
+    EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST_ENV: (
+        "power_placement_forensic_bypass_not_certified",
+        "forensic power-placement bypass is not allowed in certified lifecycle runs",
+    ),
+    "EXACT_OUTER_SKIP_UNKNOWN": (
+        "outer_skip_unknown_not_certified",
+        "skipping UNKNOWN frontier candidates makes strict terminal certification unsound",
+    ),
+    EXACT_CUT_FRAMEWORK_ATTACH_ENV: (
+        "cut_framework_attach_not_certified",
+        "F1-F9 cut-framework master attach is not certified until the M4 "
+        "family ladder + helper-vs-master regressions land and the owner "
+        "promotes it (P1.3 M3-4 wiring; ladder gate)",
+    ),
+}
+# Owner decision 2026-07-10: after C1 became the certified default, the legacy
+# witness path is unreachable in certified runs.  Its seven witness-only env
+# locks therefore have no canonical certified values; they now fail closed as
+# unknown EXACT_* names.  Keep this constant and the guard loop below intact.
+_CERTIFIED_POWER_WITNESS_CANONICAL_ENV_DEFAULTS: Mapping[
+    str, tuple[str, str, str]
+] = {}
+
+
+_CERTIFIED_KNOWN_ENV_NAMES = frozenset(
+    {
+        "EXACT_B1_ABSTRACT_ROUTING_LAYER",
+        "EXACT_B1_ABSTRACT_ROUTING_MAX_SEPARATORS",
+        "EXACT_B1_ABSTRACT_ROUTING_SECONDS",
+        "EXACT_B1_BINDING_ALT_CAP",
+        "EXACT_B1_BYPASS_ROUTING_PRECHECK",
+        "EXACT_B1_D2_COMMODITY_FLOW",
+        "EXACT_B1_D2_FLOW_SECONDS",
+        "EXACT_B1_DELETION_CORE_CUT",
+        "EXACT_B1_ITER_ON_ROUTING_INFEASIBLE",
+        "EXACT_B1_LAZY_DEMAND_CUT",
+        "EXACT_B1_PATCH_ROUTING_CORE",
+        "EXACT_B1_PATCH_ROUTING_CORE_MAX_CELLS",
+        "EXACT_B1_PATCH_ROUTING_CORE_PER_PATCH_SECONDS",
+        "EXACT_B1_PATCH_ROUTING_CORE_QX_CAP",
+        "EXACT_B1_PATCH_ROUTING_CORE_SECONDS",
+        "EXACT_B1_PATCH_ROUTING_CORE_TOP_K",
+        "EXACT_B1_PORT_CLEARANCE_HARD",
+        "EXACT_B1_ROUTING_AWARE_BINDING",
+        "EXACT_B1_SEPARATOR_HULL",
+        "EXACT_B1_SEPARATOR_HULL_DYNAMIC",
+        "EXACT_B1_SEPARATOR_HULL_DYNAMIC_FALL_THROUGH",
+        "EXACT_B1_SEPARATOR_HULL_DYNAMIC_MAX_PER_ITER",
+        "EXACT_B1_SEPARATOR_HULL_INCLUDE_AXIS",
+        "EXACT_B1_SEPARATOR_HULL_INCLUDE_GHOST_MOAT",
+        "EXACT_B1_SEPARATOR_HULL_STATIC_LIMIT",
+        "EXACT_BINDING_CP_SAT_WORKERS",
+        "EXACT_BINDING_DUMP_STATE",
+        "EXACT_BINDING_DUMP_STATE_ENV",
+        "EXACT_BINDING_USE_OVERLOAD_SEPARATION",
+        "EXACT_BOUNDARY_PORT_PRECHECK_MAX_ANCHORS",
+        "EXACT_BOUNDARY_PORT_PRECHECK_MAX_ANCHORS_ENV",
+        "EXACT_COMMUNITY_BLUEPRINT_HINT_PATH",
+        "EXACT_COORDINATE_MASTER_SEARCH_PROFILE",
+        "EXACT_COORDINATE_MASTER_SEARCH_PROFILES",
+        "EXACT_CP_SAT_WORKERS",
+        "EXACT_CUT_FRAMEWORK_ATTACH",
+        "EXACT_CUT_FRAMEWORK_ATTACH_BUDGET",
+        "EXACT_D2_CP_SAT_WORKERS",
+        "EXACT_EPSILON_STAGE",
+        "EXACT_EPSILON_STAGE1_END_HOURS",
+        "EXACT_EPSILON_STAGE2_END_HOURS",
+        "EXACT_F3_GENERATOR_ENABLED",
+        "EXACT_F7_GENERATOR_ENABLED",
+        "EXACT_FAMILY_VALIDATOR_STRICT",
+        "EXACT_FRONTIER_PROBE_MAX_ANCHORS",
+        "EXACT_GHOST_AWARE_COORDINATE_VALIDATION_MAX_ANCHORS",
+        "EXACT_GHOST_AWARE_COORDINATE_VALIDATION_MAX_ANCHORS_ENV",
+        "EXACT_GHOST_AWARE_COORDINATE_VALIDATION_SECONDS",
+        "EXACT_GHOST_AWARE_COORDINATE_VALIDATION_SECONDS_ENV",
+        "EXACT_GHOST_AWARE_POSE_ORDER_VALIDATION_SECONDS",
+        "EXACT_GHOST_AWARE_POSE_ORDER_VALIDATION_SECONDS_ENV",
+        "EXACT_GHOST_CONDITIONED_FAMILY_BOUNDS_ENABLED",
+        "EXACT_GHOST_CONDITIONED_FAMILY_BOUND_FORMULATION",
+        "EXACT_GHOST_CONDITIONED_FAMILY_BOUND_FORMULATIONS",
+        "EXACT_GHOST_CONDITIONED_FAMILY_BOUND_FORMULATION_BIG_M",
+        "EXACT_GHOST_CONDITIONED_FAMILY_BOUND_FORMULATION_ENFORCED",
+        "EXACT_GHOST_CONDITIONED_FAMILY_BOUND_FORMULATION_ENV",
+        "EXACT_GHOST_OVERLAP_FORCED_DOMAIN_PRECHECK",
+        "EXACT_GHOST_OVERLAP_FORCED_DOMAIN_PRECHECK_ENV",
+        "EXACT_GHOST_SIGNATURE_BUCKET_MANDATORY_REGION_COUNTING",
+        "EXACT_GHOST_SIGNATURE_BUCKET_MANDATORY_REGION_COUNTING_ENV",
+        "EXACT_GHOST_SIGNATURE_BUCKET_MANDATORY_REGION_COUNTING_FALSE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_MANDATORY_REGION_COUNTING_TRUE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_MANDATORY_REGION_FALLBACK_INSTRUMENTATION",
+        "EXACT_GHOST_SIGNATURE_BUCKET_MANDATORY_REGION_FALLBACK_INSTRUMENTATION_ENV",
+        "EXACT_GHOST_SIGNATURE_BUCKET_MANDATORY_REGION_FALLBACK_INSTRUMENTATION_FALSE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_MANDATORY_REGION_FALLBACK_INSTRUMENTATION_TRUE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_MODEL_SHELL_INSTRUMENTATION",
+        "EXACT_GHOST_SIGNATURE_BUCKET_MODEL_SHELL_INSTRUMENTATION_ENV",
+        "EXACT_GHOST_SIGNATURE_BUCKET_MODEL_SHELL_INSTRUMENTATION_FALSE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_MODEL_SHELL_INSTRUMENTATION_TRUE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_PAYLOAD_FOOTPRINT_STABILITY_SUPPORT",
+        "EXACT_GHOST_SIGNATURE_BUCKET_PAYLOAD_FOOTPRINT_STABILITY_SUPPORT_ENV",
+        "EXACT_GHOST_SIGNATURE_BUCKET_PAYLOAD_FOOTPRINT_STABILITY_SUPPORT_FALSE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_PAYLOAD_FOOTPRINT_STABILITY_SUPPORT_TRUE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_PORT_PROFILE_CACHE_INSTRUMENTATION",
+        "EXACT_GHOST_SIGNATURE_BUCKET_PORT_PROFILE_CACHE_INSTRUMENTATION_ENV",
+        "EXACT_GHOST_SIGNATURE_BUCKET_PORT_PROFILE_CACHE_INSTRUMENTATION_FALSE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_PORT_PROFILE_CACHE_INSTRUMENTATION_TRUE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_POWERED_SUPPORT_COMPACT_ITEM_ACCUMULATION_OPTIMIZATION",
+        "EXACT_GHOST_SIGNATURE_BUCKET_POWERED_SUPPORT_COMPACT_ITEM_ACCUMULATION_OPTIMIZATION_ENV",
+        "EXACT_GHOST_SIGNATURE_BUCKET_POWERED_SUPPORT_COMPACT_ITEM_ACCUMULATION_OPTIMIZATION_FALSE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_POWERED_SUPPORT_COMPACT_ITEM_ACCUMULATION_OPTIMIZATION_TRUE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_POWERED_SUPPORT_COMPACT_ITEM_BATCHED_COUNTER_OPTIMIZATION",
+        "EXACT_GHOST_SIGNATURE_BUCKET_POWERED_SUPPORT_COMPACT_ITEM_BATCHED_COUNTER_OPTIMIZATION_ENV",
+        "EXACT_GHOST_SIGNATURE_BUCKET_POWERED_SUPPORT_COMPACT_ITEM_BATCHED_COUNTER_OPTIMIZATION_FALSE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_POWERED_SUPPORT_COMPACT_ITEM_BATCHED_COUNTER_OPTIMIZATION_TRUE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_POWERED_SUPPORT_COMPACT_ITEM_DETAIL_INSTRUMENTATION",
+        "EXACT_GHOST_SIGNATURE_BUCKET_POWERED_SUPPORT_COMPACT_ITEM_DETAIL_INSTRUMENTATION_ENV",
+        "EXACT_GHOST_SIGNATURE_BUCKET_POWERED_SUPPORT_COMPACT_ITEM_DETAIL_INSTRUMENTATION_FALSE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_POWERED_SUPPORT_COMPACT_ITEM_DETAIL_INSTRUMENTATION_TRUE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_POWERED_SUPPORT_COVERER_INSTRUMENTATION",
+        "EXACT_GHOST_SIGNATURE_BUCKET_POWERED_SUPPORT_COVERER_INSTRUMENTATION_ENV",
+        "EXACT_GHOST_SIGNATURE_BUCKET_POWERED_SUPPORT_COVERER_INSTRUMENTATION_FALSE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_POWERED_SUPPORT_COVERER_INSTRUMENTATION_TRUE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_RESIDUAL_OVERLAY_INSTRUMENTATION",
+        "EXACT_GHOST_SIGNATURE_BUCKET_RESIDUAL_OVERLAY_INSTRUMENTATION_ENV",
+        "EXACT_GHOST_SIGNATURE_BUCKET_RESIDUAL_OVERLAY_INSTRUMENTATION_FALSE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_RESIDUAL_OVERLAY_INSTRUMENTATION_TRUE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_TEMPLATE_FOOTPRINT_SUPPORT",
+        "EXACT_GHOST_SIGNATURE_BUCKET_TEMPLATE_FOOTPRINT_SUPPORT_ENV",
+        "EXACT_GHOST_SIGNATURE_BUCKET_TEMPLATE_FOOTPRINT_SUPPORT_FALSE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_TEMPLATE_FOOTPRINT_SUPPORT_GAP_INSTRUMENTATION",
+        "EXACT_GHOST_SIGNATURE_BUCKET_TEMPLATE_FOOTPRINT_SUPPORT_GAP_INSTRUMENTATION_ENV",
+        "EXACT_GHOST_SIGNATURE_BUCKET_TEMPLATE_FOOTPRINT_SUPPORT_GAP_INSTRUMENTATION_FALSE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_TEMPLATE_FOOTPRINT_SUPPORT_GAP_INSTRUMENTATION_TRUE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_TEMPLATE_FOOTPRINT_SUPPORT_TRUE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_TIGHTENING_INSTRUMENTATION",
+        "EXACT_GHOST_SIGNATURE_BUCKET_TIGHTENING_INSTRUMENTATION_ENV",
+        "EXACT_GHOST_SIGNATURE_BUCKET_TIGHTENING_INSTRUMENTATION_FALSE_VALUES",
+        "EXACT_GHOST_SIGNATURE_BUCKET_TIGHTENING_INSTRUMENTATION_TRUE_VALUES",
+        "EXACT_GHOST_VIA_POLE_SHAPE_INSTRUMENTATION",
+        "EXACT_GHOST_VIA_POLE_SHAPE_INSTRUMENTATION_ENV",
+        "EXACT_GHOST_VIA_POLE_SHAPE_INSTRUMENTATION_FALSE_VALUES",
+        "EXACT_GHOST_VIA_POLE_SHAPE_INSTRUMENTATION_TRUE_VALUES",
+        "EXACT_GHOST_Y_OVERLAP_FORCED_LABEL_PRECHECK",
+        "EXACT_GHOST_Y_OVERLAP_FORCED_LABEL_PRECHECK_ENV",
+        "EXACT_HASH_FILES",
+        "EXACT_INSTANCES_PATH",
+        "EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE",
+        "EXACT_LAZY_POWER_COMPLETION",
+        "EXACT_LAZY_POWER_COMPLETION_ENV",
+        "EXACT_LOCAL_CAPACITY_CP_SAT_MAX_SECONDS",
+        "EXACT_LOCAL_CAPACITY_CP_SAT_WORKERS",
+        "EXACT_MANDATORY_RECTANGLE_PRECHECK_MAX_ANCHORS",
+        "EXACT_MANDATORY_RECTANGLE_PRECHECK_MAX_ANCHORS_ENV",
+        "EXACT_MANDATORY_RECTANGLE_PRECHECK_TIME_BUDGET_SECONDS",
+        "EXACT_MANDATORY_RECTANGLE_PRECHECK_TIME_BUDGET_SECONDS_ENV",
+        "EXACT_MANDATORY_RECTANGLE_PRECHECK_WITNESS_MIN_SURVIVORS",
+        "EXACT_MASTER_CLAUSE_CLEANUP_PERIOD",
+        "EXACT_MASTER_CLAUSE_CLEANUP_PERIOD_ENV",
+        "EXACT_MASTER_CP_MODEL_PRESOLVE",
+        "EXACT_MASTER_CP_MODEL_PRESOLVE_ENV",
+        "EXACT_MASTER_CP_MODEL_PROBING_LEVEL",
+        "EXACT_MASTER_CP_MODEL_PROBING_LEVEL_ENV",
+        "EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_LINES",
+        "EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_LINES_ENV",
+        "EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_MAX_CHARS",
+        "EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_MAX_CHARS_ENV",
+        "EXACT_MASTER_CP_SAT_WORKERS",
+        "EXACT_MASTER_FILL_TIGHTENED_DOMAINS",
+        "EXACT_MASTER_FILL_TIGHTENED_DOMAINS_ENV",
+        "EXACT_MASTER_FRONT_CLEAR_LIFT",
+        "EXACT_MASTER_GHOST_ANCHOR_FILTER",
+        "EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV",
+        "EXACT_MASTER_HINT_CONFLICT_LIMIT",
+        "EXACT_MASTER_HINT_CONFLICT_LIMIT_ENV",
+        "EXACT_MASTER_HINT_PERSISTENCE",
+        "EXACT_MASTER_IGNORE_LP_SUBSOLVERS",
+        "EXACT_MASTER_IGNORE_LP_SUBSOLVERS_ENV",
+        "EXACT_MASTER_LINEARIZATION_LEVEL",
+        "EXACT_MASTER_LINEARIZATION_LEVEL_ENV",
+        "EXACT_MASTER_LINEAR_SPLIT_SIZE",
+        "EXACT_MASTER_LINEAR_SPLIT_SIZE_ENV",
+        "EXACT_MASTER_NO_OVERLAP_2D_AREA_ENERGETIC",
+        "EXACT_MASTER_NO_OVERLAP_2D_AREA_ENERGETIC_ENV",
+        "EXACT_MASTER_NO_OVERLAP_2D_BOOLEAN_RELATIONS_LIMIT",
+        "EXACT_MASTER_NO_OVERLAP_2D_BOOLEAN_RELATIONS_LIMIT_ENV",
+        "EXACT_MASTER_NO_OVERLAP_2D_TIMETABLING",
+        "EXACT_MASTER_NO_OVERLAP_2D_TIMETABLING_ENV",
+        "EXACT_MASTER_NO_OVERLAP_2D_TRY_EDGE",
+        "EXACT_MASTER_NO_OVERLAP_2D_TRY_EDGE_ENV",
+        "EXACT_MASTER_PRESOLVE_EXTRACT_INTEGER_ENFORCEMENT",
+        "EXACT_MASTER_PRESOLVE_EXTRACT_INTEGER_ENFORCEMENT_ENV",
+        "EXACT_MASTER_RANDOM_SEED",
+        "EXACT_MASTER_RANDOM_SEED_BASE",
+        "EXACT_MASTER_SEARCH_BRANCHING",
+        "EXACT_MASTER_SEARCH_BRANCHING_ENV",
+        "EXACT_MASTER_STRONG_DISJUNCTIVE_PROPAGATION_ENV",
+        "EXACT_MASTER_SYMMETRY_LEVEL",
+        "EXACT_MASTER_SYMMETRY_LEVEL_ENV",
+        "EXACT_MASTER_TABLE_COMPRESSION_LEVEL",
+        "EXACT_MASTER_TABLE_COMPRESSION_LEVEL_ENV",
+        "EXACT_MASTER_TEST_NONNEGATIVE_FLOAT",
+        "EXACT_MASTER_TEST_NONNEGATIVE_INT",
+        "EXACT_MASTER_TEST_OPTIONAL_NONNEGATIVE_INT",
+        "EXACT_MASTER_USE_STRONG_DISJUNCTIVE_PROPAGATION",
+        "EXACT_OUTER_SKIP_UNKNOWN",
+        "EXACT_OUTER_SKIP_UNKNOWN_ENV",
+        "EXACT_OUTER_SKIP_UNKNOWN_TRUE_VALUES",
+        "EXACT_PARALLEL_PROCESSES",
+        "EXACT_PATCH_ROUTING_CP_SAT_WORKERS",
+        "EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE",
+        "EXACT_POLE_SLOT_UPPER_BOUND_OVERRIDE_ENV",
+        "EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODINGS",
+        "EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_BOUNDS",
+        "EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_DELTA",
+        "EXACT_POWER_COVERAGE_SELECTED_INTERVAL_ENCODING_ENV",
+        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRIES",
+        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_ENV",
+        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_FINAL_TARGET",
+        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_SELECTED_BLOCK",
+        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_SELECTED_BLOCK_ACTIVE_GUARD",
+        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_SELECTED_BLOCK_ACTIVE_GUARD_GROUPED_XY",
+        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_GEOMETRY_SELECTED_BLOCK_ACTIVE_GUARD_JOINED_XY",
+        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_SIZE_ENV",
+        "EXACT_POWER_COVERAGE_WITNESS_BLOCK_TEMPLATES_ENV",
+        "EXACT_POWER_COVERAGE_WITNESS_ENCODINGS",
+        "EXACT_POWER_COVERAGE_WITNESS_ENCODING_BLOCK_ELEMENT",
+        "EXACT_POWER_COVERAGE_WITNESS_ENCODING_ELEMENT",
+        "EXACT_POWER_COVERAGE_WITNESS_ENCODING_ENV",
+        "EXACT_POWER_FAMILY_LOOKUP_ENCODINGS",
+        "EXACT_POWER_FAMILY_LOOKUP_ENCODING_ENV",
+        "EXACT_POWER_FAMILY_LOOKUP_ENCODING_LINEAR_SHELL_GUARDS",
+        "EXACT_POWER_FAMILY_LOOKUP_ENCODING_SHELL_PAIR_INDEX",
+        "EXACT_POWER_FAMILY_LOOKUP_ENCODING_TABLE",
+        "EXACT_POWER_PLACEMENT_SUBPROBLEM",
+        "EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST",
+        "EXACT_POWER_PLACEMENT_SUBPROBLEM_ALLOW_FORENSIC_TEST_ENV",
+        "EXACT_POWER_PLACEMENT_SUBPROBLEM_ENV",
+        "EXACT_POWER_POLE_SHELL_DISTANCE_ENCODINGS",
+        "EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ELEMENT",
+        "EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_ENV",
+        "EXACT_POWER_POLE_SHELL_DISTANCE_ENCODING_LINEAR_MINMAX",
+        "EXACT_POWER_SUBPROBLEM_SECONDS",
+        "EXACT_PRE_MASTER_ANCHOR119_MIXED_LANE_GUARD_ADVISORY",
+        "EXACT_PRE_MASTER_COORDINATE_VALIDATION_PRECHECK_MAX_ANCHORS",
+        "EXACT_PRE_MASTER_COORDINATE_VALIDATION_PRECHECK_SECONDS",
+        "EXACT_PRE_MASTER_MANDATORY_RECTANGLE_PRECHECK_MAX_ANCHORS",
+        "EXACT_PROCESS_PRIORITY",
+        "EXACT_REQUIRED_ARTIFACTS",
+        "EXACT_ROUTING_CP_SAT_WORKERS",
+        "EXACT_SAME_X_STRIP_FIXED_GHOST_CAPACITY_PRECHECK",
+        "EXACT_SAME_X_STRIP_FIXED_GHOST_CAPACITY_PRECHECK_ENV",
+        "EXACT_SIGNATURE_MONOTONIC_FORCED_LABEL_PRECHECK",
+        "EXACT_SIGNATURE_MONOTONIC_FORCED_LABEL_PRECHECK_ENV",
+        "EXACT_SMT_MT_OUTER_PRUNING",
+        "EXACT_SUBPROBLEM_MAX_MEMORY_MB",
+        "EXACT_SUBPROBLEM_PARAMS",
+        "EXACT_SUBPROBLEM_REPEAT_LOG_DIR",
+        "EXACT_SUBPROBLEM_REPEAT_PROBE",
+        "EXACT_USE_HIGHS_MASTER",
+        "EXACT_USE_PORT_ACTIVE",
+        "EXACT_USE_POSE_BOOL_MASTER",
+        "EXACT_USE_POSE_BOOL_MASTER_ENV",
+        "EXACT_WARM_START_FAILED_ANCHOR_SAMPLE_LIMIT",
+        "EXACT_WARM_START_FAILED_ANCHOR_SAMPLE_LIMIT_ENV",
+    }
+)
+
+_CERTIFIED_OPERATIONAL_ENV_ALLOWLIST = frozenset(
+    {
+        "EXACT_B1_ABSTRACT_ROUTING_SECONDS",
+        # 枚举轮数预算, 与本列表既有 *_SECONDS 时间预算证明语义同构: 命中只
+        # fail-closed 返回 UNKNOWN(ALT_CAP_REACHED), 永不当穷尽证明——该语义
+        # 由 PROJECT_LOCK F-BL-R3-01 直接背书并有双路径测试钉死(routing 完整
+        # 拒绝分支 + precheck safe-reject 分支)。2026-07-13 批C F-6 重分类。
+        "EXACT_B1_BINDING_ALT_CAP",
+        "EXACT_B1_D2_FLOW_SECONDS",
+        "EXACT_B1_PATCH_ROUTING_CORE_PER_PATCH_SECONDS",
+        "EXACT_B1_PATCH_ROUTING_CORE_SECONDS",
+        # RAB-SEP(routing-aware binding domain filter + EMPTY_DOMAIN 细粒度
+        # cut)。真 proof-semantics 面、非 operational 同构——收编依据是完整
+        # soundness 审查而非重分类: front-free 必要性命题 N 经 11 席对抗验证
+        # (V1-V5 攻击/复核 + codex 全文审查, 2026-07-16, 权威文书
+        # docs/research/rab_sep_promotion_20260716/01_front_free_necessity_
+        # soundness_review.md v2); filter 是 routing 谓词的合法松弛(V2 实测:
+        # routing-visible 端口集与 extract_port_specs 恰相等, 36M patterns
+        # 全枚举 0 违规)。EMPTY_DOMAIN cut 通道带结构 fail-closed 守卫
+        # (PROJECT_LOCK F-BL-R11-01: cert 必须覆盖 owner+全部 blocker, 归因
+        # 不完备/blocker literal 解析失败即整证不发; layout 依赖空域禁 thin
+        # fallback)+哨兵回归(test_rab_sep_soundness_sentinels.py)。allowlist
+        # 语义=may be present, 默认仍 OFF; 开启走 wrapper/drill 显式 env。
+        "EXACT_B1_ROUTING_AWARE_BINDING",
+        "EXACT_BINDING_CP_SAT_WORKERS",
+        "EXACT_BINDING_DUMP_STATE",
+        "EXACT_BOUNDARY_PORT_PRECHECK_MAX_ANCHORS",
+        "EXACT_COMMUNITY_BLUEPRINT_HINT_PATH",
+        "EXACT_COORDINATE_MASTER_SEARCH_PROFILE",
+        "EXACT_CP_SAT_WORKERS",
+        "EXACT_CUT_FRAMEWORK_ATTACH_BUDGET",
+        "EXACT_D2_CP_SAT_WORKERS",
+        "EXACT_FRONTIER_PROBE_MAX_ANCHORS",
+        "EX" "ACT_" "GATE_WORKER_PEAK_RSS_GIB",
+        "EXACT_GHOST_AWARE_COORDINATE_VALIDATION_MAX_ANCHORS",
+        "EXACT_GHOST_AWARE_COORDINATE_VALIDATION_SECONDS",
+        "EXACT_GHOST_AWARE_POSE_ORDER_VALIDATION_SECONDS",
+        "EXACT_LOCAL_CAPACITY_CP_SAT_MAX_SECONDS",
+        "EXACT_LOCAL_CAPACITY_CP_SAT_WORKERS",
+        "EXACT_MANDATORY_RECTANGLE_PRECHECK_MAX_ANCHORS",
+        "EXACT_MANDATORY_RECTANGLE_PRECHECK_TIME_BUDGET_SECONDS",
+        "EXACT_MASTER_CLAUSE_CLEANUP_PERIOD",
+        "EXACT_MASTER_CP_MODEL_PRESOLVE",
+        "EXACT_MASTER_CP_MODEL_PROBING_LEVEL",
+        "EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_LINES",
+        "EXACT_MASTER_CP_SAT_LOG_HEARTBEAT_MAX_CHARS",
+        "EXACT_MASTER_CP_SAT_WORKERS",
+        # front-clear 必要条件上收 master（2026-07-16 front-clear 上收批）:
+        # soundness=命题 N(11 席幸存)+计数等价定理(冻结 candidate 域按 eligible
+        # mandatory operation group 全池亲验),
+        # 编码=共享单向 free-cell 证书(独立 interval 集合, 双活跃 NoOverlap
+        # B∪F/B∪G, ghost 不作 blocker)+mode 条件 front 索引+AddElement 计数,
+        # demand 经 port_binding SSOT+certified generic_io snapshot 同源;
+        # 设计+四席对抗审查=docs/research/rab_sep_promotion_20260716/04 v2
+        # (§9 处置表)。严格值域: 非法值 fail-closed 抛错(不静默当 OFF)。
+        # allowlist 语义=may be present, 默认仍 OFF; 开启走 drill/A-B 显式 env。
+        "EXACT_MASTER_FRONT_CLEAR_LIFT",
+        "EXACT_MASTER_HINT_CONFLICT_LIMIT",
+        "EXACT_MASTER_HINT_PERSISTENCE",
+        "EXACT_MASTER_IGNORE_LP_SUBSOLVERS",
+        "EXACT_MASTER_LINEARIZATION_LEVEL",
+        "EXACT_MASTER_NO_OVERLAP_2D_AREA_ENERGETIC",
+        "EXACT_MASTER_NO_OVERLAP_2D_BOOLEAN_RELATIONS_LIMIT",
+        "EXACT_MASTER_NO_OVERLAP_2D_TIMETABLING",
+        "EXACT_MASTER_NO_OVERLAP_2D_TRY_EDGE",
+        "EXACT_MASTER_RANDOM_SEED",
+        "EXACT_MASTER_RANDOM_SEED_BASE",
+        "EXACT_MASTER_SEARCH_BRANCHING",
+        "EXACT_MASTER_SYMMETRY_LEVEL",
+        "EXACT_PARALLEL_PROCESSES",
+        "EXACT_PATCH_ROUTING_CP_SAT_WORKERS",
+        "EXACT_POWER_SUBPROBLEM_SECONDS",
+        "EXACT_PRE_MASTER_COORDINATE_VALIDATION_PRECHECK_MAX_ANCHORS",
+        "EXACT_PRE_MASTER_COORDINATE_VALIDATION_PRECHECK_SECONDS",
+        "EXACT_PRE_MASTER_MANDATORY_RECTANGLE_PRECHECK_MAX_ANCHORS",
+        "EXACT_PROCESS_PRIORITY",
+        "EXACT_ROUTING_CP_SAT_WORKERS",
+        "EXACT_SUBPROBLEM_MAX_MEMORY_MB",
+        "EXACT_SUBPROBLEM_PARAMS",
+        "EXACT_SUBPROBLEM_REPEAT_LOG_DIR",
+        "EXACT_SUBPROBLEM_REPEAT_PROBE",
+        "EXACT_WARM_START_FAILED_ANCHOR_SAMPLE_LIMIT",
+    }
+)
+
+_CERTIFIED_UNCLASSIFIED_ENV_BLOCKER_CODE = "unclassified_exact_env_not_certified"
+_CERTIFIED_PROOF_SEMANTICS_ENV_BLOCKER_CODE = "proof_semantics_exact_env_not_certified"
+
+# EXACT_SUBPROBLEM_PARAMS is a catch-all "key=val,key=val" injection hook
+# (experimental RSS-sweep tool per apply_subproblem_memory_cap's docstring): it
+# setattr's arbitrary solver.parameters.<key>.  The env NAME is operational, but
+# a proof-semantics key (gap limits, hint-fixing, search_branching, presolve /
+# restart toggles, solution / stop limits, or memory caps that abort a solve
+# early) can mint a false INFEASIBLE / UNKNOWN out of a certified sub-solve
+# (2026-07-14 adversarial review of cf76bed).  So certified validates both the
+# KEY and its VALUE, blessing ONLY keys that keep every sub-solve complete and
+# exact — they trade memory / time, never the feasibility region or termination
+# status — AND only values inside each key's CP-SAT semantic domain.  The value
+# bound is not cosmetic: e.g. a negative clause_cleanup_ratio drives the learned-
+# clause GC's kept=int(ratio*N) negative -> num_deleted=2N -> out-of-bounds clause
+# vector walk -> native SIGSEGV mid-campaign (same 2026-07-14 review).  A crash is
+# fail-closed for soundness, but this hook exists to survive operator misconfig,
+# so certified refuses at startup with a blocker instead of crashing hours in.
+# Any other key (proof-semantics or unknown) or any out-of-domain value fails
+# closed.  Fail-closed direction: over-restriction only refuses to run;
+# under-restriction admits a false proof or a mid-solve crash.
+# Bounds are the ortools 9.15.6755 accepted, completeness-preserving domains,
+# empirically verified against the pinned solver (defaults: linearization_level=1,
+# cp_model_probing_level=2, clause_cleanup_period=10000, clause_cleanup_ratio=0.5):
+#   * clause_cleanup_ratio is [0.0, 1.0] because that is the definitional ratio
+#     domain AND the crash boundary — outside it kept=int(ratio*N) leaves [0, N]
+#     and the learned-clause GC walks out of bounds (native SIGSEGV, above).
+#   * clause_cleanup_period must be >= 1 (a period); the int32 field rejects
+#     overflow downstream, so no upper bound is asserted here.
+#   * linearization_level / cp_model_probing_level are unbounded above: the solver
+#     accepts and internally clamps any non-negative level (0..5+ all return a
+#     valid OPTIMAL/exact status; only negatives are refused), and LP-linearization
+#     / presolve-probing strength changes work done, never the feasibility region
+#     or the exactness of the optimality proof.  A tighter enum cap here would
+#     wrongly reject library-accepted, soundness-neutral sweeps.
+# bool aliases (true/false) and fractional/sci-notation values for an int key are
+# refused: a numeric level/period/ratio needs a real numeric literal, and the
+# helper would no-op those against the typed protobuf field anyway.
+# Re-verify on any ortools upgrade (freeze-ritual).  "int"/"float" is the required
+# numeric kind; hi=None means unbounded above.
+_CERTIFIED_SUBPROBLEM_PARAMS_ENV = "EXACT_SUBPROBLEM_PARAMS"
+_CERTIFIED_SUBPROBLEM_PARAMS_SAFE_KEY_BOUNDS = {
+    "linearization_level": ("int", 0, None),
+    "cp_model_probing_level": ("int", 0, None),
+    "clause_cleanup_period": ("int", 1, None),
+    "clause_cleanup_ratio": ("float", 0.0, 1.0),
+}
+_CERTIFIED_SUBPROBLEM_PARAMS_SAFE_KEYS = frozenset(
+    _CERTIFIED_SUBPROBLEM_PARAMS_SAFE_KEY_BOUNDS
+)
+_CERTIFIED_SUBPROBLEM_PARAM_BLOCKER_CODE = "proof_semantics_subproblem_param_not_certified"
+
+
+def _iter_certified_subproblem_param_items(raw_value: object) -> Iterator[Tuple[str, str]]:
+    """Yield (key, value) pairs EXACT_SUBPROBLEM_PARAMS would apply.
+
+    Mirrors apply_subproblem_memory_cap's parsing exactly (comma-split, strip,
+    require '=' with a non-empty key AND non-empty value).  A pair yielded here
+    is one that helper would setattr onto solver.parameters, so the certified
+    guard checks exactly the entries that can actually take effect.
+    """
+
+    if raw_value is None:
+        return
+    text = str(raw_value).strip()
+    if not text:
+        return
+    for token in text.split(","):
+        token = token.strip()
+        if not token or "=" not in token:
+            continue
+        key, _, val = token.partition("=")
+        key = key.strip()
+        val = val.strip()
+        if not key or not val:
+            continue
+        yield key, val
+
+
+def _certified_subproblem_param_value_in_domain(key: str, raw_val: str) -> bool:
+    """True iff raw_val is inside key's certified CP-SAT semantic domain.
+
+    Conservative and fail-closed: a non-numeric / bool / NaN / Inf value, a
+    fractional value for an int-kind key, or a value outside [lo, hi] returns
+    False so the guard refuses it.  Only keys already known safe reach here.
+    """
+
+    bound = _CERTIFIED_SUBPROBLEM_PARAMS_SAFE_KEY_BOUNDS.get(key)
+    if bound is None:
+        return False
+    kind, lo, hi = bound
+    text = str(raw_val).strip()
+    if text.lower() in ("true", "false"):
+        return False
+    try:
+        num = float(text)
+    except ValueError:
+        return False
+    if num != num or num in (float("inf"), float("-inf")):  # NaN / Inf
+        return False
+    if kind == "int":
+        if "." in text or "e" in text.lower():
+            return False
+        if num != int(num):
+            return False
+    if lo is not None and num < lo:
+        return False
+    if hi is not None and num > hi:
+        return False
+    return True
+
+
+def _env_override_enabled_for_certified_master_domain(raw_value: object) -> bool:
+    if raw_value is None:
+        return False
+    return str(raw_value).strip().lower() not in _CERTIFIED_MASTER_DOMAIN_ENV_FALSE_VALUES
+
+
+def _certified_power_witness_env_is_noncanonical(
+    raw_value: object,
+    canonical_value: str,
+) -> bool:
+    if raw_value is None:
+        return False
+    raw_text = str(raw_value).strip()
+    if raw_text == "":
+        return False
+    return raw_text.lower() != str(canonical_value).strip().lower()
+
+
+def _collect_forbidden_certified_master_domain_env_overrides() -> List[Dict[str, Any]]:
+    """Return certified_exact env overrides that can change proof semantics.
+
+    V80 flips the guard from a blacklist to a closed allowlist.  Operational
+    knobs named in _CERTIFIED_OPERATIONAL_ENV_ALLOWLIST may be present.
+    Every other known EXACT_* knob is proof-semantics-affecting unless it is set
+    to a canonical false/default value, and every future/unclassified EXACT_*
+    environment name fails closed merely by being present.
+    """
+
+    blockers: List[Dict[str, Any]] = []
+    unsafe_env_names = set(_CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES.keys())
+    power_witness_env_names = set(_CERTIFIED_POWER_WITNESS_CANONICAL_ENV_DEFAULTS.keys())
+
+    for env_name in sorted(key for key in os.environ if str(key).startswith("EXACT_")):
+        raw_value = os.environ.get(env_name)
+        if env_name == _CERTIFIED_SUBPROBLEM_PARAMS_ENV:
+            # Operational by NAME, but the value is a key=val injection list; a
+            # non-complete-solve-preserving key, or an in-domain-unsafe value for a
+            # safe key, fails closed (see the constant's comment).  This case fully
+            # handles the env, so do not fall through to the operational-allowlist
+            # continue below.
+            for param_key, param_val in _iter_certified_subproblem_param_items(raw_value):
+                if param_key not in _CERTIFIED_SUBPROBLEM_PARAMS_SAFE_KEYS:
+                    blockers.append(
+                        {
+                            "code": _CERTIFIED_SUBPROBLEM_PARAM_BLOCKER_CODE,
+                            "env": env_name,
+                            "value": str(raw_value),
+                            "param_key": param_key,
+                            "detail": (
+                                "EXACT_SUBPROBLEM_PARAMS key is not on the certified "
+                                "complete-solve-preserving allowlist"
+                            ),
+                        }
+                    )
+                    continue
+                if not _certified_subproblem_param_value_in_domain(param_key, param_val):
+                    blockers.append(
+                        {
+                            "code": _CERTIFIED_SUBPROBLEM_PARAM_BLOCKER_CODE,
+                            "env": env_name,
+                            "value": str(raw_value),
+                            "param_key": param_key,
+                            "detail": (
+                                "EXACT_SUBPROBLEM_PARAMS value is outside the "
+                                "certified CP-SAT semantic domain for this key"
+                            ),
+                        }
+                    )
+            continue
+        if env_name in _CERTIFIED_OPERATIONAL_ENV_ALLOWLIST:
+            continue
+        if env_name in unsafe_env_names or env_name in power_witness_env_names:
+            continue
+        if env_name not in _CERTIFIED_KNOWN_ENV_NAMES:
+            blockers.append(
+                {
+                    "code": _CERTIFIED_UNCLASSIFIED_ENV_BLOCKER_CODE,
+                    "env": env_name,
+                    "value": str(raw_value),
+                    "detail": "unknown EXACT_* env is not on the certified_exact allowlist",
+                }
+            )
+            continue
+        if not _env_override_enabled_for_certified_master_domain(raw_value):
+            continue
+        blockers.append(
+            {
+                "code": _CERTIFIED_PROOF_SEMANTICS_ENV_BLOCKER_CODE,
+                "env": env_name,
+                "value": str(raw_value),
+                "detail": (
+                    "EXACT_* env is classified proof-semantics-affecting and has "
+                    "no certified canonical non-default override"
+                ),
+            }
+        )
+
+    for env_name, (code, detail) in sorted(_CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES.items()):
+        raw_value = os.environ.get(env_name)
+        if not _env_override_enabled_for_certified_master_domain(raw_value):
+            continue
+        blockers.append(
+            {
+                "code": code,
+                "env": env_name,
+                "value": str(raw_value),
+                "detail": detail,
+            }
+        )
+    for env_name, (canonical_value, code, detail) in sorted(
+        _CERTIFIED_POWER_WITNESS_CANONICAL_ENV_DEFAULTS.items()
+    ):
+        raw_value = os.environ.get(env_name)
+        if not _certified_power_witness_env_is_noncanonical(raw_value, canonical_value):
+            continue
+        blockers.append(
+            {
+                "code": code,
+                "env": env_name,
+                "value": str(raw_value),
+                "canonical_value": str(canonical_value),
+                "detail": detail,
+            }
+        )
+    return blockers
+
+
+def _front_clear_lift_scope_raw_empty_instances(
+    empty_binding_domain_instances: Sequence[Mapping[str, Any]],
+    routing_free_sink_commodities: Any,
+) -> List[str]:
+    """front-clear lift 验收遥测（doc 04 v2 §4.3）：raw 空域按 liftable scope 分桶。
+
+    纯诊断——绝不写进 conflict summary / proof 记录（golden semantic digest
+    钉死 proof 面；本 helper 只喂 controller 的逐迭代计数与 stdout 行）。
+    scope = supports_exact_pose_level_binding 且需求>0（demand 经 port_binding
+    SSOT）。raw 事件口径 ≠ accepted-cut counter（审查 F-05 假绿面）。
+    """
+    from src.models.port_binding import (
+        routing_visible_port_demands,
+        supports_exact_pose_level_binding,
+    )
+    from src.preprocess.operation_profiles import OPERATION_PORT_PROFILES
+
+    rfsc = frozenset(str(item) for item in (routing_free_sink_commodities or ()))
+    scoped: List[str] = []
+    for item in empty_binding_domain_instances:
+        operation_type = str(item.get("operation_type", ""))
+        if (
+            not operation_type
+            or operation_type not in OPERATION_PORT_PROFILES
+            or not supports_exact_pose_level_binding(operation_type)
+        ):
+            continue
+        req_in, vis_out = routing_visible_port_demands(operation_type, rfsc)
+        if req_in > 0 or vis_out > 0:
+            scoped.append(str(item.get("instance_id", "")))
+    return scoped
+
+
+def _rab_empty_domain_thin_fallback_forbidden(binding_model: Any, owner_id: str) -> bool:
+    """RAB filter-empty 空域的 thin fallback `{owner: pose}` 结构守卫。
+
+    thin fallback 是无条件全局 pose 禁，只对 pose 内在的空域（全部拒因=出界）
+    sound。filter 因 layout 拒过 pattern 时——存在 blocker 归因，或存在
+    「in-grid 被占却无归因」的拒因（归因完备不变量破坏）——空域依赖 layout，
+    全局 pose 禁会淘汰其它 layout 下真可行的 frontier（超杀）。此时禁用
+    thin fallback；追踪属性缺失同样判禁（fail-closed 方向）。这是
+    PROJECT_LOCK CUT-R8-H1 constant-support 义务在 EMPTY_DOMAIN 通道的落地
+    （2026-07-16 对抗审查：v1 的「blockers>=1 才禁」被 codex 反例证伪为不充分，
+    归因缺失场景 blockers 恰为空、guard 不触发）。被禁 owner 本轮无 cut；
+    全部 owner 被禁时该迭代按既有 cut_stall 路径 fail-closed 返回 UNKNOWN。
+    """
+    blockers_by_owner = getattr(binding_model, "routing_aware_blockers_by_owner", None)
+    unattributed_owners = getattr(
+        binding_model, "routing_aware_unattributed_owners", None
+    )
+    if blockers_by_owner is None or unattributed_owners is None:
+        return True
+    return bool(blockers_by_owner.get(owner_id)) or owner_id in unattributed_owners
+
+
+def _resolve_ghost_anchor_filter_from_env() -> Optional[FrozenSet[Tuple[int, int]]]:
+    """A 方案 PoC: env 注入 ghost anchor 白名单, 减 1131 anchor 同时 build 的 RAM.
+
+    Format: "x1,y1;x2,y2;...". 缺省/空 → 不 filter (保留旧 behavior).
+    Invalid format → ValueError fail-fast, 不进 production path.
+    """
+
+    raw = os.environ.get(EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV, "")
+    if not raw.strip() or raw.strip().lower() in _CERTIFIED_MASTER_DOMAIN_ENV_FALSE_VALUES:
+        return None
+    anchors: List[Tuple[int, int]] = []
+    for token in raw.split(";"):
+        token = token.strip()
+        if not token:
+            continue
+        parts = [p.strip() for p in token.split(",")]
+        if len(parts) != 2:
+            raise ValueError(
+                f"Unsupported {EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV}: "
+                f"{raw!r}; expected 'x,y' pairs separated by ';'."
+            )
+        try:
+            anchors.append((int(parts[0]), int(parts[1])))
+        except ValueError:
+            raise ValueError(
+                f"Unsupported {EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV}: "
+                f"{raw!r}; non-integer coordinate in token {token!r}."
+            ) from None
+    return frozenset(anchors)
+
+
+def _coordinate_validation_failure_sample_fields(entry: Mapping[str, Any]) -> Dict[str, Any]:
+    fields: Dict[str, Any] = {}
+    for key in (
+        "coordinate_validation_status",
+        "coordinate_validation_reason",
+        "coordinate_validation_solver_profile_id",
+    ):
+        if key in entry:
+            fields[key] = str(entry.get(key, ""))
+    for key in (
+        "coordinate_validation_forced_slot_field_count",
+        "coordinate_validation_forced_ghost_anchor",
+    ):
+        if key in entry:
+            fields[key] = entry.get(key)
+    for key in (
+        "capacity_conflict",
+        "same_x_strip_capacity_precheck",
+        "ghost_overlap_forced_domain_precheck",
+        "ghost_y_overlap_precheck",
+        "signature_monotonic_precheck",
+    ):
+        value = entry.get(key)
+        if isinstance(value, Mapping):
+            fields[key] = dict(value)
+    return fields
+
+
+def _normalize_solve_mode_values(raw_value: Any) -> Tuple[Set[str], Optional[str]]:
+    if raw_value is None:
+        return set(), "missing"
+    if isinstance(raw_value, str):
+        raw_items = [raw_value]
+    elif isinstance(raw_value, (list, tuple, set)):
+        raw_items = list(raw_value)
+    else:
+        return set(), f"malformed_type:{type(raw_value).__name__}"
+
+    normalized: Set[str] = set()
+    for raw_item in raw_items:
+        if not isinstance(raw_item, str):
+            return set(), f"malformed_member_type:{type(raw_item).__name__}"
+        token = str(raw_item).strip()
+        if not token:
+            continue
+        if token not in _CERTIFIED_SOLVE_MODES:
+            return set(), f"unknown_mode:{token}"
+        normalized.add(token)
+    if not normalized:
+        return set(), "missing"
+    return normalized, None
+
+
+def _normalize_instance_solve_modes(instance: Mapping[str, Any]) -> Tuple[Set[str], Optional[str]]:
+    has_solve_mode = "solve_mode" in instance
+    has_solve_modes = "solve_modes" in instance
+    if not has_solve_mode and not has_solve_modes:
+        return set(), "missing"
+
+    normalized_solve_mode: Optional[Set[str]] = None
+    normalized_solve_modes: Optional[Set[str]] = None
+    issues: List[str] = []
+
+    if has_solve_mode:
+        modes, issue = _normalize_solve_mode_values(instance.get("solve_mode"))
+        if issue is not None:
+            issues.append(f"solve_mode:{issue}")
+        else:
+            normalized_solve_mode = modes
+
+    if has_solve_modes:
+        modes, issue = _normalize_solve_mode_values(instance.get("solve_modes"))
+        if issue is not None:
+            issues.append(f"solve_modes:{issue}")
+        else:
+            normalized_solve_modes = modes
+
+    if issues:
+        return set(), ";".join(issues)
+    if normalized_solve_mode is not None and normalized_solve_modes is not None:
+        if normalized_solve_mode != normalized_solve_modes:
+            return set(), (
+                "conflicting_mode_metadata:"
+                f"solve_mode={sorted(normalized_solve_mode)};"
+                f"solve_modes={sorted(normalized_solve_modes)}"
+            )
+        return set(normalized_solve_mode), None
+    if normalized_solve_mode is not None:
+        return set(normalized_solve_mode), None
+    if normalized_solve_modes is not None:
+        return set(normalized_solve_modes), None
+    return set(), "missing"
+
+
+def _reset_last_run_metadata() -> None:
+    _publish_last_run_metadata({}, [], loaded_exact_safe_cut_count=0, generated_exact_safe_cut_count=0)
+
+
+def _publish_last_run_metadata(
+    proof_summary: Mapping[str, Any],
+    exact_safe_cuts: Sequence[BendersCut],
+    *,
+    loaded_exact_safe_cut_count: int = 0,
+    generated_exact_safe_cut_count: int = 0,
+    persisted_exact_safe_cut_replay_input_count: int = 0,
+    persisted_exact_safe_cut_replay_enabled: bool = False,
+) -> None:
+    normalized_proof_summary = dict(proof_summary)
+    run_benders_for_ghost_rect.last_run_metadata = {  # type: ignore[attr-defined]
+        "proof_summary": normalized_proof_summary,
+        "exact_safe_cuts": [cut.to_dict() for cut in exact_safe_cuts],
+        "loaded_exact_safe_cut_count": int(loaded_exact_safe_cut_count),
+        "generated_exact_safe_cut_count": int(generated_exact_safe_cut_count),
+        "persisted_exact_safe_cut_replay_input_count": int(
+            persisted_exact_safe_cut_replay_input_count
+        ),
+        "persisted_exact_safe_cut_replay_enabled": bool(
+            persisted_exact_safe_cut_replay_enabled
+        ),
+        "fine_grained_exact_safe_cut_count": int(
+            normalized_proof_summary.get("fine_grained_exact_safe_cut_count", 0)
+        ),
+        "binding_domain_empty_cut_count": int(
+            normalized_proof_summary.get("binding_domain_empty_cut_count", 0)
+        ),
+        "routing_front_blocked_cut_count": int(
+            normalized_proof_summary.get("routing_front_blocked_cut_count", 0)
+        ),
+        "routing_precheck_rejections": int(
+            normalized_proof_summary.get("routing_precheck_rejections", 0)
+        ),
+        "routing_precheck_statuses": list(
+            normalized_proof_summary.get("routing_precheck_statuses", [])
+        ),
+        "routing_domain_cells": int(
+            normalized_proof_summary.get("routing_domain_cells", 0)
+        ),
+        "routing_terminal_core_cells": int(
+            normalized_proof_summary.get("routing_terminal_core_cells", 0)
+        ),
+        "routing_state_space_vars": int(
+            normalized_proof_summary.get("routing_state_space_vars", 0)
+        ),
+        "routing_local_pattern_pruned_states": int(
+            normalized_proof_summary.get("routing_local_pattern_pruned_states", 0)
+        ),
+        "used_routing_core_reuse": bool(
+            normalized_proof_summary.get("used_routing_core_reuse", False)
+        ),
+        "routing_core_build_seconds": float(
+            normalized_proof_summary.get("routing_core_build_seconds", 0.0)
+        ),
+        "routing_overlay_build_seconds": float(
+            normalized_proof_summary.get("routing_overlay_build_seconds", 0.0)
+        ),
+        "binding_domain_cache_hits": int(
+            normalized_proof_summary.get("binding_domain_cache_hits", 0)
+        ),
+        "binding_domain_cache_misses": int(
+            normalized_proof_summary.get("binding_domain_cache_misses", 0)
+        ),
+        "binding_domain_reused_instances": list(
+            normalized_proof_summary.get("binding_domain_reused_instances", [])
+        ),
+        "master_search_profile": str(
+            normalized_proof_summary.get("master_search_profile", "default_automatic")
+        ),
+        "power_pole_family_order": list(
+            normalized_proof_summary.get("power_pole_family_order", [])
+        ),
+        "power_pole_family_count_literals": int(
+            normalized_proof_summary.get("power_pole_family_count_literals", 0)
+        ),
+        "residual_optional_family_guided": bool(
+            normalized_proof_summary.get("residual_optional_family_guided", False)
+        ),
+        "binding_search_profile": str(
+            normalized_proof_summary.get("binding_search_profile", "exact_binding_guided_branching_v1")
+        ),
+        "diagnostic_flow_status": str(
+            normalized_proof_summary.get("diagnostic_flow_status", "NOT_RUN")
+        ),
+        "master_status": normalized_proof_summary.get("master_status"),
+        "binding_status": normalized_proof_summary.get("binding_status"),
+        "routing_status": normalized_proof_summary.get("routing_status"),
+        "mode": normalized_proof_summary.get("mode"),
+        "used_exact_core_reuse": bool(normalized_proof_summary.get("used_exact_core_reuse", False)),
+        "core_build_seconds": float(normalized_proof_summary.get("core_build_seconds", 0.0)),
+        "overlay_build_seconds": float(normalized_proof_summary.get("overlay_build_seconds", 0.0)),
+        "ghost_constraint_seconds": float(
+            normalized_proof_summary.get("ghost_constraint_seconds", 0.0)
+        ),
+        "cut_replay_seconds": float(normalized_proof_summary.get("cut_replay_seconds", 0.0)),
+        "master_representation": str(
+            normalized_proof_summary.get("master_representation", "pose_bool_v1")
+        ),
+        "master_slot_counts": dict(
+            normalized_proof_summary.get("master_slot_counts", {})
+        ),
+        "master_mode_literals": int(
+            normalized_proof_summary.get("master_mode_literals", 0)
+        ),
+        "master_interval_count": int(
+            normalized_proof_summary.get("master_interval_count", 0)
+        ),
+        "master_pose_bool_literals": int(
+            normalized_proof_summary.get("master_pose_bool_literals", 0)
+        ),
+        "master_domain_encoding": str(
+            normalized_proof_summary.get("master_domain_encoding", "")
+        ),
+        "master_domain_table_rows": int(
+            normalized_proof_summary.get("master_domain_table_rows", 0)
+        ),
+        "master_mode_rect_domains": copy.deepcopy(
+            normalized_proof_summary.get("master_mode_rect_domains", {})
+        ),
+        "power_pole_shell_lookup_pairs": copy.deepcopy(
+            normalized_proof_summary.get("power_pole_shell_lookup_pairs", {})
+        ),
+        "power_coverage_representation": str(
+            normalized_proof_summary.get("power_coverage_representation", "")
+        ),
+        "power_coverage_encoding": str(
+            normalized_proof_summary.get("power_coverage_encoding", "")
+        ),
+        "power_coverage_powered_slots": int(
+            normalized_proof_summary.get("power_coverage_powered_slots", 0)
+        ),
+        "power_coverage_pole_slots": int(
+            normalized_proof_summary.get("power_coverage_pole_slots", 0)
+        ),
+        "power_coverage_cover_literals": int(
+            normalized_proof_summary.get("power_coverage_cover_literals", 0)
+        ),
+        "power_coverage_witness_indices": int(
+            normalized_proof_summary.get("power_coverage_witness_indices", 0)
+        ),
+        "power_coverage_element_constraints": int(
+            normalized_proof_summary.get("power_coverage_element_constraints", 0)
+        ),
+        "power_coverage_radius": int(
+            normalized_proof_summary.get("power_coverage_radius", 0)
+        ),
+        "power_capacity_shell_pairs": int(
+            normalized_proof_summary.get("power_capacity_shell_pairs", 0)
+        ),
+        "power_capacity_shell_pair_evaluations": int(
+            normalized_proof_summary.get("power_capacity_shell_pair_evaluations", 0)
+        ),
+        "power_capacity_signature_classes": int(
+            normalized_proof_summary.get("power_capacity_signature_classes", 0)
+        ),
+        "power_capacity_signature_class_evaluations": int(
+            normalized_proof_summary.get("power_capacity_signature_class_evaluations", 0)
+        ),
+        "power_capacity_compact_signature_classes": int(
+            normalized_proof_summary.get("power_capacity_compact_signature_classes", 0)
+        ),
+        "power_capacity_compact_signature_evaluations": int(
+            normalized_proof_summary.get(
+                "power_capacity_compact_signature_evaluations",
+                0,
+            )
+        ),
+        "power_capacity_compact_signature_cache_hits": int(
+            normalized_proof_summary.get(
+                "power_capacity_compact_signature_cache_hits",
+                0,
+            )
+        ),
+        "power_capacity_compact_signature_cache_misses": int(
+            normalized_proof_summary.get(
+                "power_capacity_compact_signature_cache_misses",
+                0,
+            )
+        ),
+        "power_capacity_rect_dp_evaluations": int(
+            normalized_proof_summary.get("power_capacity_rect_dp_evaluations", 0)
+        ),
+        "power_capacity_rect_dp_cache_hits": int(
+            normalized_proof_summary.get("power_capacity_rect_dp_cache_hits", 0)
+        ),
+        "power_capacity_rect_dp_cache_misses": int(
+            normalized_proof_summary.get("power_capacity_rect_dp_cache_misses", 0)
+        ),
+        "power_capacity_rect_dp_state_merges": int(
+            normalized_proof_summary.get("power_capacity_rect_dp_state_merges", 0)
+        ),
+        "power_capacity_rect_dp_peak_line_states": int(
+            normalized_proof_summary.get("power_capacity_rect_dp_peak_line_states", 0)
+        ),
+        "power_capacity_rect_dp_peak_pos_states": int(
+            normalized_proof_summary.get("power_capacity_rect_dp_peak_pos_states", 0)
+        ),
+        "power_capacity_rect_dp_compiled_signatures": int(
+            normalized_proof_summary.get("power_capacity_rect_dp_compiled_signatures", 0)
+        ),
+        "power_capacity_rect_dp_compiled_start_options": int(
+            normalized_proof_summary.get("power_capacity_rect_dp_compiled_start_options", 0)
+        ),
+        "power_capacity_rect_dp_deduped_start_options": int(
+            normalized_proof_summary.get("power_capacity_rect_dp_deduped_start_options", 0)
+        ),
+        "power_capacity_rect_dp_compiled_line_subsets": int(
+            normalized_proof_summary.get("power_capacity_rect_dp_compiled_line_subsets", 0)
+        ),
+        "power_capacity_rect_dp_peak_line_subset_options": int(
+            normalized_proof_summary.get("power_capacity_rect_dp_peak_line_subset_options", 0)
+        ),
+        "power_capacity_rect_dp_v3_fallbacks": int(
+            normalized_proof_summary.get("power_capacity_rect_dp_v3_fallbacks", 0)
+        ),
+        "power_capacity_compact_rect_cpsat_evaluations": int(
+            normalized_proof_summary.get("power_capacity_compact_rect_cpsat_evaluations", 0)
+        ),
+        "power_capacity_compact_rect_cpsat_cache_hits": int(
+            normalized_proof_summary.get("power_capacity_compact_rect_cpsat_cache_hits", 0)
+        ),
+        "power_capacity_compact_rect_cpsat_selected_cases": int(
+            normalized_proof_summary.get("power_capacity_compact_rect_cpsat_selected_cases", 0)
+        ),
+        "power_capacity_compact_rect_cpsat_rect_dp_fallbacks": int(
+            normalized_proof_summary.get("power_capacity_compact_rect_cpsat_rect_dp_fallbacks", 0)
+        ),
+        "power_capacity_normalized_rect_signature_count": int(
+            normalized_proof_summary.get("power_capacity_normalized_rect_signature_count", 0)
+        ),
+        "power_capacity_normalized_rect_cache_hits": int(
+            normalized_proof_summary.get("power_capacity_normalized_rect_cache_hits", 0)
+        ),
+        "power_capacity_normalized_rect_cache_misses": int(
+            normalized_proof_summary.get("power_capacity_normalized_rect_cache_misses", 0)
+        ),
+        "power_capacity_legacy_signature_materializations": int(
+            normalized_proof_summary.get("power_capacity_legacy_signature_materializations", 0)
+        ),
+        "power_capacity_supported_by_pole_materializations": int(
+            normalized_proof_summary.get("power_capacity_supported_by_pole_materializations", 0)
+        ),
+        "power_capacity_m6x4_mixed_cpsat_evaluations": int(
+            normalized_proof_summary.get("power_capacity_m6x4_mixed_cpsat_evaluations", 0)
+        ),
+        "power_capacity_m6x4_mixed_cpsat_cache_hits": int(
+            normalized_proof_summary.get("power_capacity_m6x4_mixed_cpsat_cache_hits", 0)
+        ),
+        "power_capacity_m6x4_mixed_cpsat_selected_cases": int(
+            normalized_proof_summary.get("power_capacity_m6x4_mixed_cpsat_selected_cases", 0)
+        ),
+        "power_capacity_m6x4_mixed_cpsat_v3_fallbacks": int(
+            normalized_proof_summary.get("power_capacity_m6x4_mixed_cpsat_v3_fallbacks", 0)
+        ),
+        "power_capacity_uniform_3x3_cpsat_evaluations": int(
+            normalized_proof_summary.get("power_capacity_uniform_3x3_cpsat_evaluations", 0)
+        ),
+        "power_capacity_uniform_3x3_cpsat_cache_hits": int(
+            normalized_proof_summary.get("power_capacity_uniform_3x3_cpsat_cache_hits", 0)
+        ),
+        "power_capacity_uniform_3x3_cpsat_selected_cases": int(
+            normalized_proof_summary.get("power_capacity_uniform_3x3_cpsat_selected_cases", 0)
+        ),
+        "power_capacity_uniform_3x3_cpsat_v3_fallbacks": int(
+            normalized_proof_summary.get("power_capacity_uniform_3x3_cpsat_v3_fallbacks", 0)
+        ),
+        "power_capacity_bitset_oracle_evaluations": int(
+            normalized_proof_summary.get("power_capacity_bitset_oracle_evaluations", 0)
+        ),
+        "power_capacity_bitset_fallbacks": int(
+            normalized_proof_summary.get("power_capacity_bitset_fallbacks", 0)
+        ),
+        "power_capacity_cpsat_fallbacks": int(
+            normalized_proof_summary.get("power_capacity_cpsat_fallbacks", 0)
+        ),
+        "power_capacity_oracle": str(
+            normalized_proof_summary.get("power_capacity_oracle", "")
+        ),
+        "power_capacity_raw_pole_evaluations": int(
+            normalized_proof_summary.get("power_capacity_raw_pole_evaluations", 0)
+        ),
+        "signature_bucket_cache_hits": int(
+            normalized_proof_summary.get("signature_bucket_cache_hits", 0)
+        ),
+        "signature_bucket_cache_misses": int(
+            normalized_proof_summary.get("signature_bucket_cache_misses", 0)
+        ),
+        "signature_bucket_distinct_keys": int(
+            normalized_proof_summary.get("signature_bucket_distinct_keys", 0)
+        ),
+        "geometry_cache_templates": int(
+            normalized_proof_summary.get("geometry_cache_templates", 0)
+        ),
+    }
+
+
+def compute_mandatory_area_lower_bound(
+    instances: Sequence[Mapping[str, Any]],
+    rules: Mapping[str, Any],
+) -> int:
+    """Compute the legacy template-area lower bound for mandatory exact instances."""
+
+    templates = dict(rules.get("facility_templates", {}))
+    total = 0
+    for instance in instances:
+        if not bool(instance.get("is_mandatory")):
+            continue
+        if str(instance.get("bound_type", "exact")) != "exact":
+            continue
+
+        facility_type = str(instance["facility_type"])
+        template = templates[facility_type]
+        dims = dict(template["dimensions"])
+        total += int(dims["w"]) * int(dims["h"])
+    return total
+
+
+def _template_area_for_facility_type(
+    rules: Mapping[str, Any],
+    facility_type: str,
+) -> int:
+    templates = dict(rules.get("facility_templates", {}))
+    template = dict(templates[str(facility_type)])
+    dims = dict(template["dimensions"])
+    return int(dims["w"]) * int(dims["h"])
+
+
+def _optional_grid_dimensions_from_rules(
+    rules: Mapping[str, Any],
+) -> Optional[Tuple[int, int]]:
+    globals_payload = rules.get("globals")
+    if not isinstance(globals_payload, Mapping):
+        return None
+    grid = globals_payload.get("grid")
+    if not isinstance(grid, Mapping):
+        return None
+    try:
+        raw_grid_w = grid.get("width")
+        raw_grid_h = grid.get("height")
+        if raw_grid_w is None or raw_grid_h is None:
+            return None
+        grid_w = int(raw_grid_w)
+        grid_h = int(raw_grid_h)
+    except Exception:
+        return None
+    if grid_w <= 0 or grid_h <= 0:
+        return None
+    return grid_w, grid_h
+
+
+def _pose_pool_min_occupied_cell_count(
+    facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
+    facility_type: str,
+    *,
+    grid_dimensions: Optional[Tuple[int, int]] = None,
+) -> int:
+    raw_pool = facility_pools.get(str(facility_type))
+    if (
+        isinstance(raw_pool, (str, bytes))
+        or not isinstance(raw_pool, Sequence)
+        or not raw_pool
+    ):
+        raise KeyError(f"candidate placement pool missing for {facility_type!r}")
+
+    best: Optional[int] = None
+    for pose_idx, raw_pose in enumerate(raw_pool):
+        if not isinstance(raw_pose, Mapping):
+            raise ValueError(
+                f"candidate_placements.{facility_type}[{pose_idx}] must be a JSON object"
+            )
+        raw_cells = raw_pose.get("occupied_cells")
+        if isinstance(raw_cells, (str, bytes)) or not isinstance(raw_cells, Sequence):
+            raise ValueError(
+                f"candidate_placements.{facility_type}[{pose_idx}].occupied_cells must be a JSON array"
+            )
+        cells: Set[Tuple[int, int]] = set()
+        for cell_idx, raw_cell in enumerate(raw_cells):
+            if (
+                isinstance(raw_cell, (str, bytes))
+                or not isinstance(raw_cell, Sequence)
+                or len(raw_cell) != 2
+            ):
+                raise ValueError(
+                    f"candidate_placements.{facility_type}[{pose_idx}].occupied_cells[{cell_idx}] must be [x,y]"
+                )
+            raw_x, raw_y = raw_cell[0], raw_cell[1]
+            if isinstance(raw_x, bool) or isinstance(raw_y, bool):
+                raise ValueError(
+                    f"candidate_placements.{facility_type}[{pose_idx}].occupied_cells[{cell_idx}] must contain strict ints"
+                )
+            try:
+                x = int(raw_x)
+                y = int(raw_y)
+            except Exception as exc:
+                raise ValueError(
+                    f"candidate_placements.{facility_type}[{pose_idx}].occupied_cells[{cell_idx}] must contain ints"
+                ) from exc
+            if grid_dimensions is not None:
+                grid_w, grid_h = grid_dimensions
+                if x < 0 or y < 0 or x >= int(grid_w) or y >= int(grid_h):
+                    raise ValueError(
+                        f"candidate_placements.{facility_type}[{pose_idx}].occupied_cells[{cell_idx}] out of grid"
+                    )
+            cells.add((x, y))
+        pose_area = len(cells)
+        if best is None or pose_area < best:
+            best = pose_area
+
+    if best is None:
+        raise KeyError(f"candidate placement pool missing for {facility_type!r}")
+    return int(best)
+
+
+def _facility_type_static_area_lower_bound(
+    *,
+    facility_type: str,
+    rules: Mapping[str, Any],
+    facility_pools: Optional[Mapping[str, Sequence[Mapping[str, Any]]]],
+    grid_dimensions: Optional[Tuple[int, int]] = None,
+) -> int:
+    if facility_pools is None:
+        return _template_area_for_facility_type(rules, facility_type)
+    return _pose_pool_min_occupied_cell_count(
+        facility_pools,
+        facility_type,
+        grid_dimensions=grid_dimensions,
+    )
+
+
+def compute_exact_static_area_lower_bound(
+    instances: Sequence[Mapping[str, Any]],
+    rules: Mapping[str, Any],
+    generic_io_requirements: Optional[Mapping[str, Any]] = None,
+    *,
+    generic_input_slots_by_operation: Optional[Mapping[str, int]] = None,
+    facility_pools: Optional[Mapping[str, Sequence[Mapping[str, Any]]]] = None,
+) -> int:
+    """Return a safe lower bound on cells occupied by forced exact facilities.
+
+    When candidate placement pools are available, the bound is based on the
+    minimum distinct ``occupied_cells`` count in the actual pose domain.  This is
+    the only safe source for the certified outer-domain area cap: template
+    dimensions can be stale or intentionally conservative, and over-counting
+    forced occupied area would make the outer search skip feasible larger empty
+    rectangles.
+    """
+
+    grid_dimensions = _optional_grid_dimensions_from_rules(rules)
+    total = 0
+    for instance in instances:
+        if not bool(instance.get("is_mandatory")):
+            continue
+        if str(instance.get("bound_type", "exact")) != "exact":
+            continue
+        total += _facility_type_static_area_lower_bound(
+            facility_type=str(instance["facility_type"]),
+            rules=rules,
+            facility_pools=facility_pools,
+            grid_dimensions=grid_dimensions,
+        )
+    optional_lower_bounds = infer_certified_optional_lower_bounds_for_instances(
+        instances,
+        rules,
+        generic_io_requirements,
+        generic_input_slots_by_operation=generic_input_slots_by_operation,
+    )
+    for facility_type, count in optional_lower_bounds.items():
+        total += int(count) * _facility_type_static_area_lower_bound(
+            facility_type=str(facility_type),
+            rules=rules,
+            facility_pools=facility_pools,
+            grid_dimensions=grid_dimensions,
+        )
+    return total
+
+
+def _has_non_strict_int_value(values: Mapping[str, Any]) -> bool:
+    return any(isinstance(value, bool) or not isinstance(value, int) for value in values.values())
+
+
+def collect_certification_blockers(
+    *,
+    instances: Optional[Sequence[Mapping[str, Any]]] = None,
+    solve_mode: str = "certified_exact",
+    loaded_cuts: Optional[Sequence[BendersCut]] = None,
+    current_hashes: Optional[Mapping[str, str]] = None,
+) -> List[Dict[str, Any]]:
+    """Collect exact-contract blockers without mutating the current solve flow."""
+
+    if solve_mode != "certified_exact":
+        return []
+
+    blockers: List[Dict[str, Any]] = []
+    for instance in instances or []:
+        instance_id = str(instance.get("instance_id", "<unknown>"))
+        bound_type = str(instance.get("bound_type", ""))
+        if bound_type == "provisional":
+            blockers.append(
+                {
+                    "code": "provisional_instance_forbidden",
+                    "instance_id": instance_id,
+                    "detail": "provisional instance cannot enter certified_exact",
+                }
+            )
+        if not bool(instance.get("is_mandatory", False)):
+            blockers.append(
+                {
+                    "code": "non_mandatory_instance_forbidden",
+                    "instance_id": instance_id,
+                    "detail": "non-mandatory instance cannot enter certified_exact",
+                }
+            )
+        instance_modes, mode_issue = _normalize_instance_solve_modes(instance)
+        if mode_issue is not None:
+            blockers.append(
+                {
+                    "code": "instance_mode_pollution",
+                    "instance_id": instance_id,
+                    "detail": (
+                        "instance solve-mode metadata is missing or ambiguous for certified_exact: "
+                        f"{mode_issue}"
+                    ),
+                }
+            )
+            continue
+        if "certified_exact" not in instance_modes:
+            blockers.append(
+                {
+                    "code": "instance_mode_pollution",
+                    "instance_id": instance_id,
+                    "detail": (
+                        "instance does not declare certified_exact support: "
+                        f"solve_modes={sorted(instance_modes)}"
+                    ),
+                }
+            )
+
+    normalized_hashes = (
+        {str(k): str(v) for k, v in current_hashes.items()}
+        if current_hashes is not None
+        else None
+    )
+    for cut in loaded_cuts or []:
+        if normalized_hashes is not None and dict(cut.artifact_hashes) != normalized_hashes:
+            blockers.append(
+                {
+                    "code": "cut_hash_mismatch",
+                    "detail": "loaded cut artifact hashes do not match current artifacts",
+                    "cut_type": cut.cut_type,
+                }
+            )
+        if cut.exact_safe is not True:
+            blockers.append(
+                {
+                    "code": "cut_not_exact_safe",
+                    "detail": "loaded cut is not marked exact_safe",
+                    "cut_type": cut.cut_type,
+                }
+            )
+        if cut.source_mode != "certified_exact":
+            blockers.append(
+                {
+                    "code": "cut_mode_pollution",
+                    "detail": f"loaded cut source_mode={cut.source_mode}",
+                    "cut_type": cut.cut_type,
+                }
+            )
+        if _has_non_strict_int_value(cut.conflict_set):
+            blockers.append(
+                {
+                    "code": "cut_conflict_set_malformed",
+                    "detail": "loaded cut conflict_set must contain strict integer pose indices",
+                    "cut_type": cut.cut_type,
+                }
+            )
+        if _has_non_strict_int_value(cut.condition_set):
+            blockers.append(
+                {
+                    "code": "cut_condition_set_malformed",
+                    "detail": "loaded cut condition_set must contain strict integer anchor indices",
+                    "cut_type": cut.cut_type,
+                }
+            )
+
+    return blockers
+
+
+def _resolve_condition_lits_from_condition_set(
+    master: Any,
+    condition_set: Mapping[str, Any],
+) -> Tuple[List[cp_model.IntVar], bool]:
+    """把 persisted `BendersCut.condition_set` 反解析回 master 上的 CP-SAT literals.
+
+    返回 (resolved_lits, ok). ok=False → caller 必须 skip cut, 不能退化成无条件.
+
+    支持的 key 类型:
+        `ghost_anchor::(x,y)` -> master.u_vars[rect_idx]; 校验 ghost_domains[rect_idx]
+        的 anchor 跟 key 里的 (x,y) 一致 (artifact-hash 已拦 ghost 序乱但二次校验
+        防止 hash 校验外的边缘场景).
+
+    未知 key 或不匹配 → ok=False. 这是 GPT v4 P0 #1 finding 的 fix:
+    persisted cut replay 不能丢 condition; certified mode 下不可解析必 fail-closed.
+    """
+    if not condition_set:
+        return [], True
+    u_vars = getattr(master, "u_vars", None) or {}
+    ghost_domains = getattr(master, "_ghost_domains", None) or []
+    resolved: List[cp_model.IntVar] = []
+    for key, raw_value in condition_set.items():
+        key_str = str(key)
+        if not key_str.startswith("ghost_anchor::"):
+            return [], False
+        if isinstance(raw_value, bool) or not isinstance(raw_value, int):
+            return [], False
+        rect_idx = int(raw_value)
+        parsed_anchor = _parse_ghost_anchor_condition_key(key_str)
+        if parsed_anchor is None:
+            return [], False
+        expected_x, expected_y = parsed_anchor
+        if rect_idx not in u_vars:
+            return [], False
+        if rect_idx < 0 or rect_idx >= len(ghost_domains):
+            return [], False
+        anchor = ghost_domains[rect_idx].get("anchor") or {}
+        try:
+            actual_x = int(anchor.get("x", -1))
+            actual_y = int(anchor.get("y", -1))
+        except Exception:
+            return [], False
+        if actual_x != expected_x or actual_y != expected_y:
+            return [], False
+        resolved.append(u_vars[rect_idx])
+    return resolved, True
+
+
+@dataclass
+class ExactSearchSession:
+    """Reusable exact-search session carrying one static master core per process."""
+
+    project_root: Path
+    solve_mode: str
+    instances: List[Dict[str, Any]]
+    facility_pools: Dict[str, List[Dict[str, Any]]]
+    rules: Dict[str, Any]
+    artifact_hashes: Dict[str, str]
+    master_search_profile: str
+    core: ExactMasterCore
+    core_build_seconds: float
+    # Session-owned cut-framework bundle cache (Stage-B spec §2.1 session
+    # ownership ruling): keyed by the artifact-hash attestation so one session
+    # serving many ghost rects freezes the static artifacts exactly once
+    # instead of once per attach round.  Staleness cannot slip through a cache
+    # bug silently: the per-round ValidatedStateSnapshot rebuild re-runs the
+    # α-1 content binding against this bundle and fails closed on any drift.
+    _cut_framework_bundle_cache: Dict[str, Any] = dataclass_field(
+        default_factory=dict, repr=False, compare=False
+    )
+
+    def cut_framework_bundle(
+        self,
+        *,
+        canonical_rules: Mapping[str, Any],
+        candidate_placements: Mapping[str, Any],
+        facility_templates: Mapping[str, Any],
+        instance_to_facility_type: Mapping[str, Any],
+        artifact_hashes: Mapping[str, str],
+    ) -> Any:
+        """Return the session-cached FrozenArtifactBundle, building it on first use.
+
+        The cache key is the full artifact-hash attestation (four frozen
+        artifacts + orbit-homogeneity digest); a key mismatch rebuilds rather
+        than reuses.  The import stays function-local to keep this certified
+        benders module free of a module-level src/cuts coupling.
+        """
+        # The key is the artifact-hash attestation, NOT a full content identity
+        # of the five inputs (facility_templates etc. are covered only as a
+        # deterministic function of the hashed artifacts).  This is safe because
+        # the key is not the soundness gate: every attach round re-runs the α-1
+        # content binding (state_snapshot._validate_static_source_binding) against
+        # the returned bundle and fails closed on any drift, so a stale/wrong
+        # bundle can never reach the master.  The key only decides reuse-vs-rebuild.
+        key = json.dumps(
+            {str(k): str(v) for k, v in artifact_hashes.items()},
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        cached = self._cut_framework_bundle_cache.get(key)
+        if cached is not None:
+            return cached
+        from src.cuts.frozen_artifacts import build_frozen_artifact_bundle
+
+        bundle = build_frozen_artifact_bundle(
+            canonical_rules=canonical_rules,
+            candidate_placements=candidate_placements,
+            facility_templates=facility_templates,
+            instance_to_facility_type=instance_to_facility_type,
+            artifact_hashes=artifact_hashes,
+        )
+        self._cut_framework_bundle_cache[key] = bundle
+        return bundle
+
+    @classmethod
+    def create(
+        cls,
+        project_root: Path,
+        *,
+        solve_mode: str = "certified_exact",
+        master_search_profile: str = DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
+    ) -> "ExactSearchSession":
+        if solve_mode != "certified_exact":
+            raise ValueError("ExactSearchSession only supports certified_exact")
+        unsafe_domain_env_blockers = _collect_forbidden_certified_master_domain_env_overrides()
+        if unsafe_domain_env_blockers:
+            blocker_summary = ", ".join(
+                f"{blocker.get('env')}={blocker.get('value')}:{blocker.get('code')}"
+                for blocker in unsafe_domain_env_blockers
+            )
+            raise RuntimeError(
+                "unsafe certified_exact master-domain/power-representation env before "
+                f"ExactSearchSession construction: {blocker_summary}"
+            )
+
+        # P1.2-FIX-5: snapshot the frozen artifacts once, then parse and build from
+        # those exact bytes so the recorded artifact_hashes provably attest the bytes
+        # the master core is built from -- there is no second disk read between hash
+        # and build for a swap/drift to slip through (closes the load->hash TOCTOU
+        # window).
+        artifact_hashes, artifact_texts = read_once_exact_artifact_snapshot(project_root)
+        instances, facility_pools, rules = load_project_data_from_texts(
+            instances_text=artifact_texts["mandatory_exact_instances"],
+            placements_text=artifact_texts["candidate_placements"],
+            rules_text=artifact_texts["canonical_rules"],
+            solve_mode=solve_mode,
+        )
+        from src.models.binding_subproblem import (
+            load_generic_input_slots_by_operation_from_text,
+            load_generic_io_requirements_from_text,
+        )
+
+        generic_io_requirements = load_generic_io_requirements_from_text(
+            text=artifact_texts["generic_io_requirements"],
+            project_root=project_root,
+            canonical_rules_payload=rules,
+        )
+        preprocess_plan_text = artifact_texts.get("preprocess_plan")
+        if preprocess_plan_text is None:
+            raise FileNotFoundError(
+                "Missing preprocess_plan artifact for generic-input binding "
+                "（缺少 preprocess_plan，无法绑定通用实体输入槽）"
+            )
+        generic_input_slots_by_operation = (
+            load_generic_input_slots_by_operation_from_text(
+                text=preprocess_plan_text
+            )
+        )
+        core_started = time.perf_counter()
+        core = MasterPlacementModel.build_exact_core(
+            instances,
+            facility_pools,
+            rules,
+            generic_io_requirements=generic_io_requirements,
+            generic_input_slots_by_operation=generic_input_slots_by_operation,
+            master_search_profile=master_search_profile,
+        )
+        return cls(
+            project_root=project_root,
+            solve_mode=solve_mode,
+            instances=instances,
+            facility_pools=facility_pools,
+            rules=rules,
+            artifact_hashes=artifact_hashes,
+            master_search_profile=str(
+                dict(core.build_stats.get("search_guidance", {})).get(
+                    "profile",
+                    master_search_profile,
+                )
+            ),
+            core=core,
+            core_build_seconds=time.perf_counter() - core_started,
+        )
+
+
+def create_exact_search_session(
+    project_root: Path,
+    *,
+    solve_mode: str = "certified_exact",
+    master_search_profile: str = DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
+) -> ExactSearchSession:
+    if solve_mode == "certified_exact":
+        # Centralized guard also covers EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV
+        # (ghost_anchor_filter_not_certified); keep this entrypoint's evidence
+        # boundary tied to the same map as the direct ExactSearchSession.create path.
+        unsafe_domain_env_blockers = _collect_forbidden_certified_master_domain_env_overrides()
+        if unsafe_domain_env_blockers:
+            blocker_summary = ", ".join(
+                f"{blocker.get('env')}={blocker.get('value')}:{blocker.get('code')}"
+                for blocker in unsafe_domain_env_blockers
+            )
+            raise RuntimeError(
+                "unsafe certified_exact master-domain/power-representation env before "
+                f"ExactSearchSession construction: {blocker_summary}"
+            )
+    try:
+        return ExactSearchSession.create(
+            project_root,
+            solve_mode=solve_mode,
+            master_search_profile=master_search_profile,
+        )
+    except TypeError as exc:
+        if "master_search_profile" not in str(exc):
+            raise
+        return ExactSearchSession.create(project_root, solve_mode=solve_mode)
+
+
+def _merge_reuse_metadata(
+    proof_summary: Mapping[str, Any],
+    *,
+    used_exact_core_reuse: bool,
+    core_build_seconds: float,
+    overlay_build_seconds: float,
+    ghost_constraint_seconds: float,
+    cut_replay_seconds: float,
+) -> Dict[str, Any]:
+    return {
+        **dict(proof_summary),
+        "used_exact_core_reuse": bool(used_exact_core_reuse),
+        "core_build_seconds": float(core_build_seconds),
+        "overlay_build_seconds": float(overlay_build_seconds),
+        "ghost_constraint_seconds": float(ghost_constraint_seconds),
+        "cut_replay_seconds": float(cut_replay_seconds),
+    }
+
+
+def _compact_exact_candidate_mandatory_support_diagnostics(
+    payload: Mapping[str, Any],
+) -> Dict[str, Any]:
+    return {
+        "unsupported_group_count": int(payload.get("unsupported_group_count", 0)),
+        "empty_candidate_pool_group_count": int(
+            payload.get("empty_candidate_pool_group_count", 0)
+        ),
+        "groups": [
+            {
+                "group_id": str(entry.get("group_id", "")),
+                "facility_type": str(entry.get("facility_type", "")),
+                "operation_type": str(entry.get("operation_type", "")),
+                "required_count": int(entry.get("required_count", 0)),
+                "candidate_pool_count": int(entry.get("candidate_pool_count", 0)),
+                "unsupported_reason": entry.get("unsupported_reason"),
+            }
+            for entry in list(payload.get("groups", []))
+        ],
+    }
+
+
+def _compact_exact_candidate_mandatory_group_prechecks(
+    payload: Mapping[str, Any],
+) -> Dict[str, Any]:
+    compact = {
+        "evaluated": bool(payload.get("evaluated", False)),
+        "skipped_due_to_upstream_precheck": bool(
+            payload.get("skipped_due_to_upstream_precheck", False)
+        ),
+        "upstream_anchor_filter_count": int(
+            payload.get("upstream_anchor_filter_count", 0)
+        ),
+        "supported_group_count": int(payload.get("supported_group_count", 0)),
+        "groups": [
+            {
+                "group_id": str(entry.get("group_id", "")),
+                "facility_type": str(entry.get("facility_type", "")),
+                "operation_type": str(entry.get("operation_type", "")),
+                "required_count": int(entry.get("required_count", 0)),
+                "oracle_class": entry.get("oracle_class"),
+                "oracle_mode": str(entry.get("oracle_mode", "unsupported")),
+                "supported": bool(entry.get("supported", False)),
+                "unsupported_reason": entry.get("unsupported_reason"),
+                "considered_anchor_count": int(
+                    entry.get("considered_anchor_count", 0)
+                ),
+                "screened_infeasible_anchor_count": int(
+                    entry.get("screened_infeasible_anchor_count", 0)
+                ),
+                "screen_pass_anchor_count": int(
+                    entry.get("screen_pass_anchor_count", 0)
+                ),
+                "unsupported_anchor_count": int(
+                    entry.get("unsupported_anchor_count", 0)
+                ),
+                "max_packable_min": entry.get("max_packable_min"),
+                "max_packable_max": entry.get("max_packable_max"),
+                "first_infeasible_anchor_idx": entry.get(
+                    "first_infeasible_anchor_idx"
+                ),
+                "first_infeasible_anchor_max_packable": entry.get(
+                    "first_infeasible_anchor_max_packable"
+                ),
+                **(
+                    {
+                        "partial_due_to_time_budget": bool(
+                            entry.get("partial_due_to_time_budget", False)
+                        )
+                    }
+                    if "partial_due_to_time_budget" in entry
+                    else {}
+                ),
+                **{
+                    str(key): entry.get(str(key))
+                    for key in (
+                        "witness_pass_anchor_count",
+                        "exact_capacity_eval_count",
+                        "max_packable_lower_bound_min",
+                        "max_packable_lower_bound_max",
+                    )
+                    if str(key) in entry
+                },
+            }
+            for entry in list(payload.get("groups", []))
+        ],
+    }
+    if "interrupted_due_to_time_budget" in payload:
+        compact["interrupted_due_to_time_budget"] = bool(
+            payload.get("interrupted_due_to_time_budget", False)
+        )
+        compact["time_budget_seconds"] = float(payload.get("time_budget_seconds", 0.0))
+        compact["elapsed_seconds"] = float(payload.get("elapsed_seconds", 0.0))
+    return compact
+
+
+def _compact_exact_candidate_boundary_port_feasibility(
+    payload: Mapping[str, Any],
+) -> Dict[str, Any]:
+    return {
+        "supported": bool(payload.get("supported", False)),
+        "required_count": int(payload.get("required_count", 0)),
+        "considered_anchor_count": int(payload.get("considered_anchor_count", 0)),
+        "screened_infeasible_anchor_count": int(
+            payload.get("screened_infeasible_anchor_count", 0)
+        ),
+        "screen_pass_anchor_count": int(payload.get("screen_pass_anchor_count", 0)),
+        "unsupported_anchor_count": int(
+            payload.get("unsupported_anchor_count", 0)
+        ),
+        "max_packable_min": payload.get("max_packable_min"),
+        "max_packable_max": payload.get("max_packable_max"),
+        "first_infeasible_anchor_idx": payload.get("first_infeasible_anchor_idx"),
+        "first_infeasible_anchor_max_packable": payload.get(
+            "first_infeasible_anchor_max_packable"
+        ),
+    }
+
+
+def _default_exact_candidate_skipped_mandatory_group_prechecks(
+    *,
+    skipped_due_to_upstream_precheck: bool,
+) -> Dict[str, Any]:
+    return {
+        "evaluated": False,
+        "skipped_due_to_upstream_precheck": bool(
+            skipped_due_to_upstream_precheck
+        ),
+        "upstream_anchor_filter_count": 0,
+        "supported_group_count": 0,
+        "groups": [],
+    }
+
+
+def _triggered_mandatory_rectangle_precheck_group(
+    mandatory_group_prechecks: Mapping[str, Any],
+) -> Optional[Dict[str, Any]]:
+    return next(
+        (
+            dict(entry)
+            for entry in list(mandatory_group_prechecks.get("groups", []))
+            if isinstance(entry, Mapping)
+            and bool(entry.get("supported", False))
+            # V81: a group interrupted by the precheck time budget only covers an
+            # anchor prefix; an exhausted prefix of infeasible anchors is not an
+            # all-anchors-infeasible proof for the candidate.
+            and not bool(entry.get("partial_due_to_time_budget", False))
+            and int(entry.get("considered_anchor_count", 0)) > 0
+            and int(entry.get("screen_pass_anchor_count", 0)) == 0
+            and int(entry.get("screened_infeasible_anchor_count", 0))
+            == int(entry.get("considered_anchor_count", 0))
+            and int(entry.get("unsupported_anchor_count", 0)) == 0
+        ),
+        None,
+    )
+
+
+def _mandatory_rectangle_precheck_proof_summary(
+    *,
+    master_search_profile: str,
+    boundary_port_precheck: Mapping[str, Any],
+    mandatory_group_precheck_summary: Mapping[str, Any],
+    mandatory_support_diagnostics_summary: Mapping[str, Any],
+    triggered_mandatory_group: Mapping[str, Any],
+    used_exact_core_reuse: bool,
+    core_build_seconds: float,
+    overlay_build_seconds: float,
+    ghost_constraint_seconds: float,
+    cut_replay_seconds: float,
+) -> Dict[str, Any]:
+    return _merge_reuse_metadata(
+        {
+            "mode": "certified_exact",
+            "benders_iterations": 0,
+            "master_status": "INFEASIBLE",
+            "diagnostic_flow_status": "NOT_RUN",
+            "enumerated_bindings": 0,
+            "routing_attempts": 0,
+            "used_greedy_hint": False,
+            "greedy_hint_instances": 0,
+            "master_hinted_literals": 0,
+            "master_search_profile": str(master_search_profile),
+            "master_boundary_port_feasibility": _compact_exact_candidate_boundary_port_feasibility(
+                boundary_port_precheck
+            ),
+            "master_mandatory_group_prechecks": dict(
+                mandatory_group_precheck_summary
+            ),
+            "master_mandatory_support_diagnostics": dict(
+                mandatory_support_diagnostics_summary
+            ),
+            "master_candidate_precheck": {
+                "triggered": True,
+                "precheck_reason": "mandatory_rect_group_all_anchors_infeasible",
+                "master_solve_skipped": True,
+                "supported": bool(triggered_mandatory_group.get("supported", False)),
+                "considered_anchor_count": int(
+                    triggered_mandatory_group.get("considered_anchor_count", 0)
+                ),
+                "screened_infeasible_anchor_count": int(
+                    triggered_mandatory_group.get(
+                        "screened_infeasible_anchor_count",
+                        0,
+                    )
+                ),
+                "screen_pass_anchor_count": int(
+                    triggered_mandatory_group.get("screen_pass_anchor_count", 0)
+                ),
+                "max_packable_min": triggered_mandatory_group.get(
+                    "max_packable_min"
+                ),
+                "max_packable_max": triggered_mandatory_group.get(
+                    "max_packable_max"
+                ),
+                "first_infeasible_anchor_idx": triggered_mandatory_group.get(
+                    "first_infeasible_anchor_idx"
+                ),
+                "first_infeasible_anchor_max_packable": triggered_mandatory_group.get(
+                    "first_infeasible_anchor_max_packable"
+                ),
+                "triggered_group_id": triggered_mandatory_group.get("group_id"),
+                "triggered_group_facility_type": triggered_mandatory_group.get(
+                    "facility_type"
+                ),
+                "triggered_group_operation_type": triggered_mandatory_group.get(
+                    "operation_type"
+                ),
+                "triggered_group_required_count": int(
+                    triggered_mandatory_group.get("required_count", 0)
+                ),
+            },
+        },
+        used_exact_core_reuse=used_exact_core_reuse,
+        core_build_seconds=core_build_seconds,
+        overlay_build_seconds=overlay_build_seconds,
+        ghost_constraint_seconds=ghost_constraint_seconds,
+        cut_replay_seconds=cut_replay_seconds,
+    )
+
+
+def _evaluate_coordinate_validation_forced_anchor_precheck(
+    model: MasterPlacementModel,
+    *,
+    anchor_indices: Sequence[int],
+    time_limit_seconds: float,
+    max_anchor_count: int,
+) -> Dict[str, Any]:
+    normalized_anchor_indices = tuple(int(idx) for idx in anchor_indices)
+    payload: Dict[str, Any] = {
+        "evaluated": False,
+        "triggered": False,
+        "skipped_due_to_anchor_limit": False,
+        "time_limit_seconds": float(time_limit_seconds),
+        "max_anchor_count": int(max_anchor_count),
+        "considered_anchor_count": int(len(normalized_anchor_indices)),
+        "evaluated_anchor_count": 0,
+        "infeasible_anchor_count": 0,
+        "accepted_anchor_count": 0,
+        "unknown_anchor_count": 0,
+        "skipped_anchor_count": 0,
+        "short_circuited_after_non_triggering_anchor": False,
+        "status_counts": {},
+        "rejected_anchors": [],
+        "non_triggering_anchors": [],
+    }
+    if int(max_anchor_count) <= 0 or float(time_limit_seconds) <= 0.0:
+        payload["skip_reason"] = "disabled"
+        return payload
+    if not normalized_anchor_indices:
+        payload["skip_reason"] = "empty_anchor_set"
+        return payload
+    if len(normalized_anchor_indices) > int(max_anchor_count):
+        payload["skipped_due_to_anchor_limit"] = True
+        payload["skip_reason"] = "anchor_limit_exceeded"
+        return payload
+
+    status_counts: Dict[str, int] = {}
+    rejected_anchors: List[Dict[str, Any]] = []
+    non_triggering_anchors: List[Dict[str, Any]] = []
+    for anchor_idx in normalized_anchor_indices:
+        validation = model._validate_coordinate_forced_hint(
+            solution_hint={},
+            ghost_anchor_hint_idx=int(anchor_idx),
+            time_limit_seconds=float(time_limit_seconds),
+            require_complete=False,
+        )
+        status = str(validation.get("status", ""))
+        status_counts[status] = int(status_counts.get(status, 0)) + 1
+        entry = {
+            "anchor_idx": int(anchor_idx),
+            "status": status,
+            "accepted": bool(validation.get("accepted", False)),
+            "reason": validation.get("reason"),
+            "forced_slot_field_count": int(
+                validation.get("forced_slot_field_count", 0)
+            ),
+            "forced_ghost_anchor": bool(
+                validation.get("forced_ghost_anchor", False)
+            ),
+            "wall_time": float(validation.get("wall_time", 0.0)),
+            "branches": int(validation.get("branches", 0)),
+            "conflicts": int(validation.get("conflicts", 0)),
+        }
+        if "attempted_solver" in validation:
+            entry["attempted_solver"] = bool(validation.get("attempted_solver", False))
+        if validation.get("capacity_conflict") is not None:
+            entry["capacity_conflict"] = dict(validation.get("capacity_conflict", {}))
+        payload["evaluated_anchor_count"] = int(
+            payload.get("evaluated_anchor_count", 0)
+        ) + 1
+        if status == "INFEASIBLE":
+            rejected_anchors.append(entry)
+            continue
+        non_triggering_anchors.append(entry)
+        payload["short_circuited_after_non_triggering_anchor"] = True
+        break
+
+    payload["evaluated"] = True
+    payload["status_counts"] = dict(sorted(status_counts.items()))
+    payload["rejected_anchors"] = rejected_anchors
+    payload["non_triggering_anchors"] = non_triggering_anchors
+    payload["infeasible_anchor_count"] = int(len(rejected_anchors))
+    payload["accepted_anchor_count"] = sum(
+        1 for entry in non_triggering_anchors if bool(entry.get("accepted", False))
+    )
+    payload["unknown_anchor_count"] = sum(
+        1 for entry in non_triggering_anchors if str(entry.get("status")) == "UNKNOWN"
+    )
+    payload["skipped_anchor_count"] = sum(
+        1 for entry in non_triggering_anchors if str(entry.get("status")) == "SKIPPED"
+    )
+    payload["triggered"] = bool(
+        normalized_anchor_indices
+        and len(rejected_anchors) == len(normalized_anchor_indices)
+    )
+    return payload
+
+
+def _compact_coordinate_validation_precheck(payload: Mapping[str, Any]) -> Dict[str, Any]:
+    return {
+        "evaluated": bool(payload.get("evaluated", False)),
+        "triggered": bool(payload.get("triggered", False)),
+        "skipped_due_to_anchor_limit": bool(
+            payload.get("skipped_due_to_anchor_limit", False)
+        ),
+        "skip_reason": payload.get("skip_reason"),
+        "time_limit_seconds": float(payload.get("time_limit_seconds", 0.0)),
+        "max_anchor_count": int(payload.get("max_anchor_count", 0)),
+        "considered_anchor_count": int(payload.get("considered_anchor_count", 0)),
+        "evaluated_anchor_count": int(payload.get("evaluated_anchor_count", 0)),
+        "infeasible_anchor_count": int(payload.get("infeasible_anchor_count", 0)),
+        "accepted_anchor_count": int(payload.get("accepted_anchor_count", 0)),
+        "unknown_anchor_count": int(payload.get("unknown_anchor_count", 0)),
+        "skipped_anchor_count": int(payload.get("skipped_anchor_count", 0)),
+        "short_circuited_after_non_triggering_anchor": bool(
+            payload.get("short_circuited_after_non_triggering_anchor", False)
+        ),
+        "status_counts": {
+            str(key): int(value)
+            for key, value in dict(payload.get("status_counts", {})).items()
+        },
+        "rejected_anchors": [
+            dict(entry)
+            for entry in list(payload.get("rejected_anchors", []))
+            if isinstance(entry, Mapping)
+        ],
+        "non_triggering_anchors": [
+            dict(entry)
+            for entry in list(payload.get("non_triggering_anchors", []))
+            if isinstance(entry, Mapping)
+        ],
+    }
+
+
+def _coordinate_validation_precheck_proof_summary(
+    *,
+    master_search_profile: str,
+    boundary_port_precheck: Mapping[str, Any],
+    mandatory_group_precheck_summary: Mapping[str, Any],
+    mandatory_support_diagnostics_summary: Mapping[str, Any],
+    coordinate_validation_precheck: Mapping[str, Any],
+    used_exact_core_reuse: bool,
+    core_build_seconds: float,
+    overlay_build_seconds: float,
+    ghost_constraint_seconds: float,
+    cut_replay_seconds: float,
+) -> Dict[str, Any]:
+    compact_coordinate = _compact_coordinate_validation_precheck(
+        coordinate_validation_precheck
+    )
+    return _merge_reuse_metadata(
+        {
+            "mode": "certified_exact",
+            "benders_iterations": 0,
+            "master_status": "INFEASIBLE",
+            "diagnostic_flow_status": "NOT_RUN",
+            "enumerated_bindings": 0,
+            "routing_attempts": 0,
+            "used_greedy_hint": False,
+            "greedy_hint_instances": 0,
+            "master_hinted_literals": 0,
+            "master_search_profile": str(master_search_profile),
+            "master_boundary_port_feasibility": _compact_exact_candidate_boundary_port_feasibility(
+                boundary_port_precheck
+            ),
+            "master_mandatory_group_prechecks": dict(
+                mandatory_group_precheck_summary
+            ),
+            "master_mandatory_support_diagnostics": dict(
+                mandatory_support_diagnostics_summary
+            ),
+            "coordinate_validation_precheck": compact_coordinate,
+            "master_candidate_precheck": {
+                "triggered": True,
+                "precheck_reason": "coordinate_validation_infeasible",
+                "master_solve_skipped": True,
+                "supported": True,
+                "considered_anchor_count": int(
+                    compact_coordinate.get("considered_anchor_count", 0)
+                ),
+                "screened_infeasible_anchor_count": int(
+                    compact_coordinate.get("infeasible_anchor_count", 0)
+                ),
+                "screen_pass_anchor_count": int(
+                    compact_coordinate.get("accepted_anchor_count", 0)
+                )
+                + int(compact_coordinate.get("unknown_anchor_count", 0))
+                + int(compact_coordinate.get("skipped_anchor_count", 0)),
+                "max_packable_min": None,
+                "max_packable_max": None,
+                "first_infeasible_anchor_idx": (
+                    compact_coordinate.get("rejected_anchors", [{}])[0].get("anchor_idx")
+                    if compact_coordinate.get("rejected_anchors")
+                    else None
+                ),
+                "first_infeasible_anchor_max_packable": None,
+                "triggered_group_id": None,
+                "triggered_group_facility_type": None,
+                "triggered_group_operation_type": None,
+                "triggered_group_required_count": 0,
+            },
+        },
+        used_exact_core_reuse=used_exact_core_reuse,
+        core_build_seconds=core_build_seconds,
+        overlay_build_seconds=overlay_build_seconds,
+        ghost_constraint_seconds=ghost_constraint_seconds,
+        cut_replay_seconds=cut_replay_seconds,
+    )
+
+
+def evaluate_exact_candidate_pre_master_precheck(
+    *,
+    ghost_w: int,
+    ghost_h: int,
+    exact_session: "ExactSearchSession",
+    master_search_profile: str,
+    include_mandatory_rectangle_precheck: bool = False,
+) -> Dict[str, Any]:
+    project_root = Path(getattr(exact_session, "project_root", PROJECT_ROOT)).resolve()
+    candidate_precheck_artifacts = dict(
+        getattr(exact_session.core, "candidate_precheck_artifacts", {})
+    )
+    mandatory_support_diagnostics = dict(
+        candidate_precheck_artifacts.get(
+            "mandatory_support_diagnostics",
+            exact_session.core.build_stats.get(
+                "exact_candidate_mandatory_support_diagnostics",
+                {},
+            ),
+        )
+    )
+    mandatory_support_diagnostics_summary = (
+        _compact_exact_candidate_mandatory_support_diagnostics(
+            mandatory_support_diagnostics
+        )
+    )
+    default_boundary_port_precheck = (
+        MasterPlacementModel._default_exact_candidate_boundary_port_feasibility_payload()
+    )
+    anchor119_runtime_precheck = (
+        _maybe_build_anchor119_row_domain_runtime_precheck_result(
+            project_root=project_root,
+            ghost_w=int(ghost_w),
+            ghost_h=int(ghost_h),
+            master_search_profile=master_search_profile,
+            mandatory_support_diagnostics_summary=mandatory_support_diagnostics_summary,
+            default_boundary_port_precheck=default_boundary_port_precheck,
+            exact_session=exact_session,
+        )
+    )
+    if anchor119_runtime_precheck is not None:
+        return anchor119_runtime_precheck
+    triggered_empty_pool_group = next(
+        (
+            dict(entry)
+            for entry in list(mandatory_support_diagnostics.get("groups", []))
+            if str(entry.get("unsupported_reason", "")) == "empty_candidate_pool"
+        ),
+        None,
+    )
+    if triggered_empty_pool_group is not None:
+        proof_summary = _merge_reuse_metadata(
+            {
+                "mode": "certified_exact",
+                "benders_iterations": 0,
+                "master_status": "INFEASIBLE",
+                "diagnostic_flow_status": "NOT_RUN",
+                "enumerated_bindings": 0,
+                "routing_attempts": 0,
+                "used_greedy_hint": False,
+                "greedy_hint_instances": 0,
+                "master_hinted_literals": 0,
+                "master_search_profile": str(master_search_profile),
+                "master_boundary_port_feasibility": (
+                    _compact_exact_candidate_boundary_port_feasibility(
+                        default_boundary_port_precheck
+                    )
+                ),
+                "master_mandatory_group_prechecks": (
+                    _default_exact_candidate_skipped_mandatory_group_prechecks(
+                        skipped_due_to_upstream_precheck=False
+                    )
+                ),
+                "master_mandatory_support_diagnostics": dict(
+                    mandatory_support_diagnostics_summary
+                ),
+                "master_candidate_precheck": {
+                    "triggered": True,
+                    "precheck_reason": "mandatory_group_empty_candidate_pool",
+                    "master_solve_skipped": True,
+                    "supported": False,
+                    "considered_anchor_count": 0,
+                    "screened_infeasible_anchor_count": 0,
+                    "screen_pass_anchor_count": 0,
+                    "max_packable_min": None,
+                    "max_packable_max": None,
+                    "first_infeasible_anchor_idx": None,
+                    "first_infeasible_anchor_max_packable": None,
+                    "triggered_group_id": triggered_empty_pool_group.get(
+                        "group_id"
+                    ),
+                    "triggered_group_facility_type": triggered_empty_pool_group.get(
+                        "facility_type"
+                    ),
+                    "triggered_group_operation_type": triggered_empty_pool_group.get(
+                        "operation_type"
+                    ),
+                    "triggered_group_required_count": int(
+                        triggered_empty_pool_group.get("required_count", 0)
+                    ),
+                },
+            },
+            used_exact_core_reuse=True,
+            core_build_seconds=float(exact_session.core_build_seconds),
+            overlay_build_seconds=0.0,
+            ghost_constraint_seconds=0.0,
+            cut_replay_seconds=0.0,
+        )
+        _maybe_attach_anchor119_row_domain_guard_advisory_to_proof_summary(
+            proof_summary,
+            project_root=project_root,
+            ghost_w=int(ghost_w),
+            ghost_h=int(ghost_h),
+        )
+        return {
+            "triggered": True,
+            "status": RUN_STATUS_INFEASIBLE,
+            "proof_summary": proof_summary,
+            "boundary_port_precheck": dict(default_boundary_port_precheck),
+        }
+
+    boundary_port_screen_spec = dict(
+        candidate_precheck_artifacts.get("boundary_port_screen_spec", {})
+    )
+    if boundary_port_screen_spec:
+        boundary_port_precheck = (
+            MasterPlacementModel.evaluate_boundary_port_feasibility_from_screen_spec(
+                rules=exact_session.core.rules,
+                ghost_rect=(int(ghost_w), int(ghost_h)),
+                screen_spec=boundary_port_screen_spec,
+            )
+        )
+    else:
+        boundary_port_precheck = dict(default_boundary_port_precheck)
+    boundary_precheck_triggered = (
+        bool(boundary_port_precheck.get("supported", False))
+        and int(boundary_port_precheck.get("considered_anchor_count", 0)) > 0
+        and int(boundary_port_precheck.get("screen_pass_anchor_count", 0)) == 0
+        and int(boundary_port_precheck.get("screened_infeasible_anchor_count", 0))
+        == int(boundary_port_precheck.get("considered_anchor_count", 0))
+        and int(boundary_port_precheck.get("unsupported_anchor_count", 0)) == 0
+    )
+    if boundary_precheck_triggered:
+        proof_summary = _merge_reuse_metadata(
+            {
+                "mode": "certified_exact",
+                "benders_iterations": 0,
+                "master_status": "INFEASIBLE",
+                "diagnostic_flow_status": "NOT_RUN",
+                "enumerated_bindings": 0,
+                "routing_attempts": 0,
+                "used_greedy_hint": False,
+                "greedy_hint_instances": 0,
+                "master_hinted_literals": 0,
+                "master_search_profile": str(master_search_profile),
+                "master_boundary_port_feasibility": (
+                    _compact_exact_candidate_boundary_port_feasibility(
+                        boundary_port_precheck
+                    )
+                ),
+                "master_mandatory_group_prechecks": (
+                    _default_exact_candidate_skipped_mandatory_group_prechecks(
+                        skipped_due_to_upstream_precheck=True
+                    )
+                ),
+                "master_mandatory_support_diagnostics": dict(
+                    mandatory_support_diagnostics_summary
+                ),
+                "master_candidate_precheck": {
+                    "triggered": True,
+                    "precheck_reason": "boundary_port_all_anchors_infeasible",
+                    "master_solve_skipped": True,
+                    "supported": bool(boundary_port_precheck.get("supported", False)),
+                    "considered_anchor_count": int(
+                        boundary_port_precheck.get("considered_anchor_count", 0)
+                    ),
+                    "screened_infeasible_anchor_count": int(
+                        boundary_port_precheck.get(
+                            "screened_infeasible_anchor_count",
+                            0,
+                        )
+                    ),
+                    "screen_pass_anchor_count": int(
+                        boundary_port_precheck.get("screen_pass_anchor_count", 0)
+                    ),
+                    "max_packable_min": boundary_port_precheck.get(
+                        "max_packable_min"
+                    ),
+                    "max_packable_max": boundary_port_precheck.get(
+                        "max_packable_max"
+                    ),
+                    "first_infeasible_anchor_idx": boundary_port_precheck.get(
+                        "first_infeasible_anchor_idx"
+                    ),
+                    "first_infeasible_anchor_max_packable": boundary_port_precheck.get(
+                        "first_infeasible_anchor_max_packable"
+                    ),
+                    "triggered_group_id": None,
+                    "triggered_group_facility_type": None,
+                    "triggered_group_operation_type": None,
+                    "triggered_group_required_count": 0,
+                },
+            },
+            used_exact_core_reuse=True,
+            core_build_seconds=float(exact_session.core_build_seconds),
+            overlay_build_seconds=0.0,
+            ghost_constraint_seconds=0.0,
+            cut_replay_seconds=0.0,
+        )
+        _maybe_attach_anchor119_row_domain_guard_advisory_to_proof_summary(
+            proof_summary,
+            project_root=project_root,
+            ghost_w=int(ghost_w),
+            ghost_h=int(ghost_h),
+        )
+        return {
+            "triggered": True,
+            "status": RUN_STATUS_INFEASIBLE,
+            "proof_summary": proof_summary,
+            "boundary_port_precheck": dict(boundary_port_precheck),
+        }
+
+    if bool(include_mandatory_rectangle_precheck):
+        boundary_pass_anchor_indices = tuple(
+            int(idx)
+            for idx in boundary_port_precheck.get("screen_pass_anchor_indices", ())
+        )
+        model: Optional[MasterPlacementModel] = None
+        overlay_build_seconds = 0.0
+        mandatory_group_prechecks: Optional[Dict[str, Any]] = None
+        mandatory_group_precheck_summary = (
+            _default_exact_candidate_skipped_mandatory_group_prechecks(
+                skipped_due_to_upstream_precheck=False
+            )
+        )
+        pre_master_mandatory_rectangle_anchor_cap = (
+            _pre_master_mandatory_rectangle_precheck_max_anchors()
+        )
+        if (
+            bool(boundary_port_precheck.get("supported", False))
+            and boundary_pass_anchor_indices
+            and len(boundary_pass_anchor_indices)
+            <= int(pre_master_mandatory_rectangle_anchor_cap)
+        ):
+            overlay_started = time.perf_counter()
+            model = MasterPlacementModel.from_exact_core(
+                exact_session.core,
+                ghost_rect=(int(ghost_w), int(ghost_h)),
+                master_search_profile=master_search_profile,
+                precomputed_boundary_port_feasibility=boundary_port_precheck,
+            )
+            overlay_build_seconds = time.perf_counter() - overlay_started
+            mandatory_group_prechecks = (
+                model.evaluate_exact_candidate_mandatory_rectangle_prechecks(
+                    anchor_indices=boundary_pass_anchor_indices
+                )
+            )
+            mandatory_group_precheck_summary = (
+                _compact_exact_candidate_mandatory_group_prechecks(
+                    mandatory_group_prechecks
+                )
+            )
+            triggered_mandatory_group = (
+                _triggered_mandatory_rectangle_precheck_group(
+                    mandatory_group_prechecks
+                )
+            )
+            if triggered_mandatory_group is not None:
+                proof_summary = _mandatory_rectangle_precheck_proof_summary(
+                    master_search_profile=master_search_profile,
+                    boundary_port_precheck=boundary_port_precheck,
+                    mandatory_group_precheck_summary=mandatory_group_precheck_summary,
+                    mandatory_support_diagnostics_summary=mandatory_support_diagnostics_summary,
+                    triggered_mandatory_group=triggered_mandatory_group,
+                    used_exact_core_reuse=True,
+                    core_build_seconds=float(exact_session.core_build_seconds),
+                    overlay_build_seconds=float(overlay_build_seconds),
+                    ghost_constraint_seconds=0.0,
+                    cut_replay_seconds=0.0,
+                )
+                _maybe_attach_anchor119_row_domain_guard_advisory_to_proof_summary(
+                    proof_summary,
+                    project_root=project_root,
+                    ghost_w=int(ghost_w),
+                    ghost_h=int(ghost_h),
+                )
+                return {
+                    "triggered": True,
+                    "status": RUN_STATUS_INFEASIBLE,
+                    "proof_summary": proof_summary,
+                    "boundary_port_precheck": dict(boundary_port_precheck),
+                    "mandatory_group_prechecks": dict(mandatory_group_prechecks),
+                }
+
+        coordinate_anchor_indices: Tuple[int, ...] = tuple()
+        if isinstance(mandatory_group_prechecks, Mapping) and bool(
+            mandatory_group_prechecks.get("evaluated", False)
+        ):
+            coordinate_anchor_indices = tuple(
+                int(idx)
+                for idx in mandatory_group_prechecks.get(
+                    "rebuild_anchor_indices",
+                    (),
+                )
+            )
+        if not coordinate_anchor_indices and boundary_pass_anchor_indices:
+            coordinate_anchor_indices = tuple(int(idx) for idx in boundary_pass_anchor_indices)
+        coordinate_anchor_cap = _pre_master_coordinate_validation_precheck_max_anchors()
+        coordinate_time_limit_seconds = _pre_master_coordinate_validation_precheck_seconds()
+        if (
+            not coordinate_anchor_indices
+            and not bool(boundary_port_precheck.get("supported", False))
+            and int(coordinate_anchor_cap) > 0
+            and float(coordinate_time_limit_seconds) > 0.0
+        ):
+            if model is None:
+                overlay_started = time.perf_counter()
+                model = MasterPlacementModel.from_exact_core(
+                    exact_session.core,
+                    ghost_rect=(int(ghost_w), int(ghost_h)),
+                    master_search_profile=master_search_profile,
+                    precomputed_boundary_port_feasibility=boundary_port_precheck,
+                )
+                overlay_build_seconds = time.perf_counter() - overlay_started
+            coordinate_anchor_indices = tuple(
+                range(len(list(getattr(model, "_ghost_domains", []))))
+            )
+        if (
+            coordinate_anchor_indices
+            and int(coordinate_anchor_cap) > 0
+            and float(coordinate_time_limit_seconds) > 0.0
+            and len(coordinate_anchor_indices) <= int(coordinate_anchor_cap)
+        ):
+            if model is None:
+                overlay_started = time.perf_counter()
+                model = MasterPlacementModel.from_exact_core(
+                    exact_session.core,
+                    ghost_rect=(int(ghost_w), int(ghost_h)),
+                    master_search_profile=master_search_profile,
+                    precomputed_boundary_port_feasibility=boundary_port_precheck,
+                )
+                overlay_build_seconds = time.perf_counter() - overlay_started
+            coordinate_validation_precheck = (
+                _evaluate_coordinate_validation_forced_anchor_precheck(
+                    model,
+                    anchor_indices=coordinate_anchor_indices,
+                    time_limit_seconds=coordinate_time_limit_seconds,
+                    max_anchor_count=coordinate_anchor_cap,
+                )
+            )
+            if bool(coordinate_validation_precheck.get("triggered", False)):
+                proof_summary = _coordinate_validation_precheck_proof_summary(
+                    master_search_profile=master_search_profile,
+                    boundary_port_precheck=boundary_port_precheck,
+                    mandatory_group_precheck_summary=mandatory_group_precheck_summary,
+                    mandatory_support_diagnostics_summary=mandatory_support_diagnostics_summary,
+                    coordinate_validation_precheck=coordinate_validation_precheck,
+                    used_exact_core_reuse=True,
+                    core_build_seconds=float(exact_session.core_build_seconds),
+                    overlay_build_seconds=float(overlay_build_seconds),
+                    ghost_constraint_seconds=0.0,
+                    cut_replay_seconds=0.0,
+                )
+                _maybe_attach_anchor119_row_domain_guard_advisory_to_proof_summary(
+                    proof_summary,
+                    project_root=project_root,
+                    ghost_w=int(ghost_w),
+                    ghost_h=int(ghost_h),
+                )
+                return {
+                    "triggered": True,
+                    "status": RUN_STATUS_INFEASIBLE,
+                    "proof_summary": proof_summary,
+                    "boundary_port_precheck": dict(boundary_port_precheck),
+                    "mandatory_group_prechecks": dict(mandatory_group_prechecks or {}),
+                    "coordinate_validation_precheck": dict(
+                        coordinate_validation_precheck
+                    ),
+                }
+
+    proof_summary = {}
+    _maybe_attach_anchor119_row_domain_guard_advisory_to_proof_summary(
+        proof_summary,
+        project_root=project_root,
+        ghost_w=int(ghost_w),
+        ghost_h=int(ghost_h),
+    )
+    return {
+        "triggered": False,
+        "status": None,
+        "proof_summary": proof_summary,
+        "boundary_port_precheck": dict(boundary_port_precheck),
+    }
+
+
+def normalize_certified_power_pole_dominance(
+    solution: Mapping[str, Mapping[str, Any]],
+    *,
+    facility_pools: Mapping[str, Sequence[Mapping[str, Any]]],
+    templates: Mapping[str, Mapping[str, Any]],
+    grid_w: int,
+    grid_h: int,
+    required_power_pole_count: int,
+) -> Tuple[Optional[Dict[str, Any]], Dict[str, Any]]:
+    """Prune dominance-redundant optional power poles, failing closed on drift."""
+
+    summary: Dict[str, Any] = {
+        "verdict": "power_pole_solution_invalid",
+        "pole_count_before": 0,
+        "pole_count_after": 0,
+        "pruned_pole_count": 0,
+        "prune_iterations": 0,
+        "powered_instance_count": 0,
+        "required_power_pole_count": 0,
+        "mandatory_pole_count": 0,
+    }
+
+    def _fail(reason: str) -> Tuple[None, Dict[str, Any]]:
+        summary["verdict"] = str(reason)
+        return None, summary
+
+    def _strict_cells(raw_cells: Any) -> Optional[Set[Tuple[int, int]]]:
+        if not isinstance(raw_cells, list):
+            return None
+        cells: Set[Tuple[int, int]] = set()
+        for raw_cell in raw_cells:
+            if (
+                isinstance(raw_cell, (str, bytes))
+                or not isinstance(raw_cell, Sequence)
+                or len(raw_cell) != 2
+            ):
+                return None
+            x, y = raw_cell
+            if (
+                isinstance(x, bool)
+                or not isinstance(x, int)
+                or isinstance(y, bool)
+                or not isinstance(y, int)
+            ):
+                return None
+            cells.add((int(x), int(y)))
+        return cells
+
+    if (
+        isinstance(grid_w, bool)
+        or not isinstance(grid_w, int)
+        or int(grid_w) <= 0
+        or isinstance(grid_h, bool)
+        or not isinstance(grid_h, int)
+        or int(grid_h) <= 0
+    ):
+        return _fail("power_pole_grid_invalid")
+    if (
+        isinstance(required_power_pole_count, bool)
+        or not isinstance(required_power_pole_count, int)
+        or int(required_power_pole_count) < 0
+    ):
+        return _fail("required_power_pole_count_invalid")
+    summary["required_power_pole_count"] = int(required_power_pole_count)
+    if not isinstance(solution, Mapping):
+        return _fail("power_pole_solution_invalid")
+
+    normalized: Dict[str, Any] = {}
+    pole_coverage: Dict[str, Set[Tuple[int, int]]] = {}
+    powered_occupied: Dict[str, Set[Tuple[int, int]]] = {}
+    candidate_poles: Set[str] = set()
+    mandatory_poles: Set[str] = set()
+    pose_optional_poles: Set[str] = set()
+
+    try:
+        for instance_id, raw_entry in solution.items():
+            if not isinstance(instance_id, str) or not isinstance(raw_entry, Mapping):
+                return _fail("power_pole_solution_invalid")
+            entry = dict(raw_entry)
+            normalized[instance_id] = entry
+            facility_type = entry.get("facility_type")
+            if not isinstance(facility_type, str) or not facility_type:
+                return _fail("power_pole_solution_invalid")
+
+            is_power_pole = facility_type == "power_pole"
+            template = templates.get(facility_type)
+            if not isinstance(template, Mapping):
+                if (
+                    not is_power_pole
+                    and instance_id == "ghost_pick"
+                    and facility_type == "ghost_rect"
+                ):
+                    continue
+                return _fail(
+                    "power_pole_pose_invalid"
+                    if is_power_pole
+                    else "power_pole_solution_invalid"
+                )
+            is_powered = (
+                not is_power_pole
+                and isinstance(template, Mapping)
+                and bool(template.get("needs_power", False))
+            )
+            if not is_power_pole and not is_powered:
+                continue
+
+            pose_idx = entry.get("pose_idx")
+            if (
+                isinstance(pose_idx, bool)
+                or not isinstance(pose_idx, int)
+                or int(pose_idx) < 0
+            ):
+                return _fail(
+                    "power_pole_pose_invalid"
+                    if is_power_pole
+                    else "powered_instance_pose_invalid"
+                )
+            pool = facility_pools.get(facility_type)
+            if (
+                isinstance(pool, (str, bytes))
+                or not isinstance(pool, Sequence)
+                or int(pose_idx) >= len(pool)
+            ):
+                return _fail(
+                    "power_pole_pose_invalid"
+                    if is_power_pole
+                    else "powered_instance_pose_invalid"
+                )
+            pose = pool[int(pose_idx)]
+            if not isinstance(pose, Mapping) or entry.get("pose_id") != pose.get(
+                "pose_id"
+            ):
+                return _fail(
+                    "power_pole_pose_invalid"
+                    if is_power_pole
+                    else "powered_instance_pose_invalid"
+                )
+
+            if is_power_pole:
+                coverage_cells = _strict_cells(pose.get("power_coverage_cells"))
+                if coverage_cells is None:
+                    return _fail("power_pole_pose_invalid")
+                pole_coverage[instance_id] = {
+                    (x, y)
+                    for x, y in coverage_cells
+                    if 0 <= x < int(grid_w) and 0 <= y < int(grid_h)
+                }
+                if entry.get("is_mandatory") is True or entry.get(
+                    "bound_type"
+                ) == "exact":
+                    mandatory_poles.add(instance_id)
+                elif (
+                    entry.get("is_mandatory") is not True
+                    and entry.get("bound_type") == "exact_pose_optional"
+                ):
+                    candidate_poles.add(instance_id)
+                if entry.get("bound_type") == "exact_pose_optional":
+                    pose_optional_poles.add(instance_id)
+            else:
+                occupied_cells = _strict_cells(pose.get("occupied_cells"))
+                if not occupied_cells:
+                    return _fail("powered_instance_pose_invalid")
+                powered_occupied[instance_id] = occupied_cells
+    except Exception:
+        return _fail("power_pole_solution_invalid")
+
+    summary.update(
+        {
+            "pole_count_before": len(pole_coverage),
+            "pole_count_after": len(pole_coverage),
+            "powered_instance_count": len(powered_occupied),
+            "mandatory_pole_count": len(mandatory_poles),
+        }
+    )
+    remaining_poles = set(pole_coverage)
+
+    def _coverers_by_powered_instance() -> Dict[str, Set[str]]:
+        return {
+            powered_instance_id: {
+                pole_instance_id
+                for pole_instance_id in remaining_poles
+                if pole_coverage[pole_instance_id].intersection(occupied_cells)
+            }
+            for powered_instance_id, occupied_cells in powered_occupied.items()
+        }
+
+    if int(required_power_pole_count) == 0:
+        while True:
+            coverers = _coverers_by_powered_instance()
+            removable_pole = next(
+                (
+                    pole_instance_id
+                    for pole_instance_id in sorted(
+                        candidate_poles.intersection(remaining_poles)
+                    )
+                    if not any(
+                        powered_coverers == {pole_instance_id}
+                        for powered_coverers in coverers.values()
+                    )
+                ),
+                None,
+            )
+            if removable_pole is None:
+                break
+            remaining_poles.remove(removable_pole)
+            normalized.pop(removable_pole, None)
+            summary["prune_iterations"] = int(summary["prune_iterations"]) + 1
+
+    coverers = _coverers_by_powered_instance()
+    summary["pole_count_after"] = len(remaining_poles)
+    summary["pruned_pole_count"] = (
+        int(summary["pole_count_before"]) - int(summary["pole_count_after"])
+    )
+
+    reverify_failed = False
+    if any(not powered_coverers for powered_coverers in coverers.values()):
+        reverify_failed = True
+    if len(remaining_poles) > len(powered_occupied):
+        reverify_failed = True
+    for pole_instance_id in remaining_poles:
+        covered_powered_instances = {
+            powered_instance_id
+            for powered_instance_id, powered_coverers in coverers.items()
+            if pole_instance_id in powered_coverers
+        }
+        if not covered_powered_instances or not any(
+            coverers[powered_instance_id] == {pole_instance_id}
+            for powered_instance_id in covered_powered_instances
+        ):
+            reverify_failed = True
+            break
+    if (
+        len(remaining_poles.intersection(pose_optional_poles))
+        < int(required_power_pole_count)
+    ):
+        reverify_failed = True
+
+    input_non_poles = {
+        instance_id: dict(entry)
+        for instance_id, entry in solution.items()
+        if entry.get("facility_type") != "power_pole"
+    }
+    output_non_poles = {
+        instance_id: dict(entry)
+        for instance_id, entry in normalized.items()
+        if entry.get("facility_type") != "power_pole"
+    }
+    if input_non_poles != output_non_poles:
+        reverify_failed = True
+
+    if reverify_failed:
+        if int(required_power_pole_count) > 0:
+            return _fail("required_power_pole_reverify_failed")
+        return _fail("power_pole_dominance_reverify_failed")
+
+    summary["verdict"] = (
+        "normalized" if int(summary["pruned_pole_count"]) > 0 else "noop"
+    )
+    return normalized, summary
+
+
+# 批E (spec 08 D-13): the four typed families the attach orchestration can
+# generate. Enablement is parameter-level (no EXACT_* env knob; default
+# all-on so production behaviour is unchanged); the enabled set is a
+# component of the epoch semantic digest and drives the RFC-003 §9.7
+# rollback drill.
+_CUT_FRAMEWORK_ALL_FAMILIES: FrozenSet[str] = frozenset(
+    {
+        "region_capacity",
+        "shape_packing_hall",
+        "power_hitting_set",
+        "pattern_nogood",
+    }
+)
+_CUT_FRAMEWORK_EPOCH_COUNTER = itertools.count()
+
+
+class LBBDController:
+    """Orchestrator connecting the master model to exploratory or exact subproblems."""
+
+    def __init__(
+        self,
+        master: MasterPlacementModel,
+        cut_manager: CutManager,
+        project_root: Path,
+        solve_mode: str,
+        *,
+        max_iterations: int = 30,
+        master_seconds: float = 600.0,
+        binding_seconds: float = 600.0,
+        routing_seconds: float = 600.0,
+        flow_seconds: float = 60.0,
+        artifact_hashes: Optional[Mapping[str, str]] = None,
+        loaded_exact_safe_cuts: Optional[Sequence[BendersCut]] = None,
+        heartbeat_callback: Optional[_CampaignHeartbeatCallback] = None,
+        disable_master_warm_start: bool = False,
+        session: Optional["ExactSearchSession"] = None,
+        enabled_cut_families: Optional[Sequence[str]] = None,
+        cut_ledger: Optional[Any] = None,
+    ):
+        self.master = master
+        self.cut_manager = cut_manager
+        self.project_root = project_root
+        self.solve_mode = solve_mode
+        self.max_iterations = max_iterations
+        self.master_seconds = master_seconds
+        self.binding_seconds = binding_seconds
+        self.routing_seconds = routing_seconds
+        self.flow_seconds = flow_seconds
+        self.artifact_hashes = (
+            {str(k): str(v) for k, v in artifact_hashes.items()}
+            if artifact_hashes is not None
+            else {}
+        )
+        self._heartbeat_callback = heartbeat_callback
+        # Stage-B §2.1 session ownership: when the owning ExactSearchSession is
+        # threaded through, the cut-framework bundle is fetched from its
+        # session-level cache instead of being rebuilt every attach round.
+        # None (exploratory / legacy harness callers) falls back to the
+        # per-round build path unchanged.
+        self._session = session
+        # 批E (spec 08 D-13): parameter-level family enablement — unknown
+        # names are a caller defect and fail closed at construction.
+        if enabled_cut_families is None:
+            self._enabled_cut_families: FrozenSet[str] = _CUT_FRAMEWORK_ALL_FAMILIES
+        else:
+            requested = frozenset(str(name) for name in enabled_cut_families)
+            unknown = requested - _CUT_FRAMEWORK_ALL_FAMILIES
+            if unknown:
+                raise ValueError(
+                    f"unknown cut families {sorted(unknown)}; "
+                    f"known: {sorted(_CUT_FRAMEWORK_ALL_FAMILIES)}"
+                )
+            self._enabled_cut_families = requested
+        # 批E (spec 08 D-2/D-3): per-master-build semantic-fingerprint dedup
+        # pool. Fingerprints are inserted ONLY after a successful step_8 (an
+        # "applied set"), so a step-7/step-8 refusal can never poison the pool
+        # into suppressing a later legitimate attach. One controller == one
+        # master build today (every build path precedes controller
+        # construction); the captured build id turns that invariant into a
+        # runtime guard instead of a silent assumption.
+        #
+        # Guard scope (review LOW): ``id(master)`` catches master OBJECT
+        # REPLACEMENT (reassignment), not a same-object in-place rebuild —
+        # id() would be unchanged there. That residual is FP-safe either way
+        # (a stale pool only over-suppresses = under-cut, never over-prune;
+        # both attack reviewers confirmed) and unreachable today (self.master
+        # is assigned exactly once). A monotonic master-side build token is
+        # the registered follow-up if in-place rebuild is ever introduced.
+        self._attached_semantic_fingerprints: Set[str] = set()
+        self._cut_framework_master_build_id = id(master)
+        # process-instance UUID (review): PID + in-process counter alone can
+        # recur across restarts; the uuid makes epoch_instance_id collision-
+        # free without coordination (matches the ledger writer_id form).
+        self._cut_framework_epoch_instance_id = (
+            f"epoch-{os.getpid()}-{uuid.uuid4().hex[:12]}-"
+            f"{next(_CUT_FRAMEWORK_EPOCH_COUNTER):06d}"
+        )
+        # 批E (spec 08 D-5): optional audit ledger writer (duck-typed
+        # ``src.cuts.ledger.CutLedgerWriter``; None == zero ledger writes and
+        # is the default on every certified/production path). NON-CONSUMPTION
+        # ISOLATION (D-1, owner-approved waiver): this handle is write-only —
+        # nothing is ever read back from the ledger into the attach path.
+        self._cut_ledger = cut_ledger
+        self.loaded_exact_safe_cuts: List[BendersCut] = list(loaded_exact_safe_cuts or [])
+        self.generated_exact_safe_cuts: List[BendersCut] = []
+        # P1 #7 main: 当前 wave 的 ε 阶段 (0.05 / 0.01 / 0.0 / None).
+        # 由 outer_search 在每次 wave 启动前调 set_epsilon_stage(value) 传入.
+        # 影响 _add_exact_persisted_nogood 构造 BendersCut 时的 epsilon_stage tag.
+        self.epsilon_stage: Optional[float] = None
+        self.last_proof_summary: Dict[str, Any] = {}
+        self._master_warm_start_disabled = bool(disable_master_warm_start)
+        self._greedy_hint: Dict[str, int] = {}
+        self._greedy_hint_instances = 0
+        self._used_greedy_hint = False
+        self._master_hinted_literals = 0
+        self._ghost_anchor_hint_applied = False
+        self._ghost_anchor_hint_idx: Optional[int] = None
+        self._ghost_anchor_hint_status = "not_used"
+        self._residual_optional_zero_hinting_enabled = True
+        self._residual_optional_zero_hints = 0
+        self._master_start_feasibility: Dict[str, Any] = {
+            "ghost_anchor_hint_applied": False,
+            "ghost_anchor_hint_idx": None,
+            "ghost_anchor_hint_status": "not_used",
+            "ghost_anchor_total_count": 0,
+            "ghost_anchor_compatible_count": 0,
+            "mandatory_hint_pose_count": 0,
+            "mandatory_hint_occupied_cell_count": 0,
+            "required_optional_positive_hints": 0,
+            "residual_optional_positive_hints": 0,
+            "residual_optional_zero_hints": 0,
+            "warm_start_strategy": "unsupported",
+            "ghost_aware_anchor_attempt_count": 0,
+            "ghost_aware_anchor_selected_idx": None,
+            "ghost_aware_complete_mandatory_hint": False,
+            "ghost_aware_hint_instances": 0,
+            "ghost_aware_pose_order_portfolio_attempted": False,
+            "ghost_aware_pose_order_portfolio_success": False,
+            "ghost_aware_pose_order_portfolio_selected_ordering": None,
+            "ghost_aware_pose_order_portfolio_attempt_count": 0,
+            "ghost_aware_pose_order_portfolio_failed_anchor_count": 0,
+            "ghost_aware_pose_order_portfolio_failure_reason_counts": {},
+            "ghost_aware_pose_order_portfolio_failure_samples": [],
+            "ghost_aware_pose_order_validation_attempt_count": 0,
+            "ghost_aware_pose_order_validation_rejected_count": 0,
+            "ghost_aware_pose_order_validation_last_status": None,
+            "ghost_aware_pose_order_validation_last_reason": None,
+        }
+        self._master_start_failure_attribution: Dict[str, Any] = {
+            "attempted_anchor_count": 0,
+            "failed_anchor_count": 0,
+            "failure_reason_counts": {},
+            "first_failed_anchor_idx": None,
+            "first_failed_group_id": None,
+            "first_failed_group_template": None,
+            "first_failed_group_required_count": 0,
+            "first_failed_group_candidate_count": 0,
+            "first_failed_group_surviving_after_blocked_count": 0,
+            "first_failed_group_surviving_at_failure_count": 0,
+            "first_failed_group_position": None,
+            "top_failed_groups": [],
+            "top_failed_group_failures": [],
+            "failed_anchor_samples": [],
+        }
+        self._master_start_local_repair: Dict[str, Any] = {
+            "local_repair_attempted": False,
+            "local_repair_success": False,
+            "local_repair_trigger_reason": None,
+            "local_repair_window_size": 0,
+            "local_repair_anchor_idx": None,
+            "local_repair_failed_group_id": None,
+            "local_repair_failed_group_template": None,
+            "local_repair_portfolio_attempt_count": 0,
+            "local_repair_selected_group_orderings": [],
+            "local_repair_attempt_count": 0,
+            "local_repair_success_count": 0,
+            "local_repair_intra_group_attempted_count": 0,
+            "local_repair_committed_attempted_count": 0,
+            "local_repair_window1_count": 0,
+            "local_repair_window2_count": 0,
+        }
+        self._master_boundary_port_feasibility: Dict[str, Any] = {
+            "supported": False,
+            "required_count": 0,
+            "considered_anchor_count": 0,
+            "screened_infeasible_anchor_count": 0,
+            "screen_pass_anchor_count": 0,
+            "unsupported_anchor_count": 0,
+            "max_packable_min": None,
+            "max_packable_max": None,
+            "first_infeasible_anchor_idx": None,
+            "first_infeasible_anchor_max_packable": None,
+        }
+        self._master_mandatory_group_prechecks: Dict[str, Any] = {
+            "evaluated": False,
+            "skipped_due_to_upstream_precheck": False,
+            "upstream_anchor_filter_count": 0,
+            "supported_group_count": 0,
+            "groups": [],
+        }
+        self._master_mandatory_support_diagnostics: Dict[str, Any] = {
+            "unsupported_group_count": 0,
+            "empty_candidate_pool_group_count": 0,
+            "groups": [],
+        }
+        self._master_candidate_precheck: Dict[str, Any] = {
+            "triggered": False,
+            "precheck_reason": None,
+            "master_solve_skipped": False,
+            "supported": False,
+            "considered_anchor_count": 0,
+            "screened_infeasible_anchor_count": 0,
+            "screen_pass_anchor_count": 0,
+            "max_packable_min": None,
+            "max_packable_max": None,
+            "first_infeasible_anchor_idx": None,
+            "first_infeasible_anchor_max_packable": None,
+            "triggered_group_id": None,
+            "triggered_group_facility_type": None,
+            "triggered_group_operation_type": None,
+            "triggered_group_required_count": 0,
+            "anchor119_row_domain_guard_advisory": {},
+        }
+        self._fine_grained_exact_safe_cut_count = 0
+        self._binding_domain_empty_cut_count = 0
+        # front-clear lift raw 验收遥测（doc 04 v2 §4.3）：binding 侧 raw 空域
+        # 事件的 lift-scope 分桶逐迭代序列。raw 口径 ≠ 上面两个 accepted-cut
+        # counter——lift ON 且到达 binding 时 scope 桶必须严格 0。
+        self._front_clear_raw_empty_by_iteration: List[Dict[str, int]] = []
+        self._routing_front_blocked_cut_count = 0
+        self._routing_precheck_rejections = 0
+        self._routing_precheck_statuses: List[str] = []
+        self._routing_domain_cells = 0
+        self._routing_terminal_core_cells = 0
+        self._routing_state_space_vars = 0
+        self._routing_local_pattern_pruned_states = 0
+        self._used_routing_core_reuse = False
+        self._routing_core_build_seconds = 0.0
+        self._routing_overlay_build_seconds = 0.0
+        self._binding_domain_cache_hits = 0
+        self._binding_domain_cache_misses = 0
+        self._binding_domain_reused_instances: List[str] = []
+
+        demands_path = self.project_root / "data" / "preprocessed" / "commodity_demands.json"
+        if demands_path.exists():
+            with demands_path.open("r", encoding="utf-8") as handle:
+                self.commodity_demands = json.load(handle)
+        else:
+            self.commodity_demands = {}
+
+    def set_epsilon_stage(self, value: Optional[float]) -> None:
+        """P1 #7 main: outer_search 每个 wave 调用, 影响新生成 cut 的 ε tag.
+
+        value: 0.05 / 0.01 / 0.0 三阶段, None 表示无 ε 标注 (legacy hard
+        nogood, 任何阶段都安全 reuse).
+        """
+        if value is None:
+            self.epsilon_stage = None
+        else:
+            self.epsilon_stage = float(value)
+
+    def _emit_heartbeat(
+        self,
+        *,
+        stage: str,
+        event: str,
+        iteration: Optional[int] = None,
+        extra: Optional[Mapping[str, Any]] = None,
+    ) -> None:
+        if self._heartbeat_callback is None:
+            return
+        payload: Dict[str, Any] = {
+            "stage": str(stage),
+            "event": str(event),
+            "benders_max_iter": int(self.max_iterations),
+            "master_seconds": float(self.master_seconds),
+            "binding_seconds": float(self.binding_seconds),
+            "routing_seconds": float(self.routing_seconds),
+            "flow_seconds": float(self.flow_seconds),
+        }
+        if iteration is not None:
+            payload["iteration"] = int(iteration)
+        if extra is not None:
+            payload.update(dict(extra))
+        try:
+            self._heartbeat_callback(payload)
+        except Exception:
+            return
+
+    def _normalize_certified_solution_power_poles(
+        self,
+        *,
+        solution: Mapping[str, Mapping[str, Any]],
+        iteration: int,
+    ) -> Tuple[Optional[Dict[str, Any]], Dict[str, Any]]:
+        raw_required_counts = getattr(
+            self.master,
+            "_exact_required_pose_optional_counts",
+            None,
+        )
+        required_source_missing = not isinstance(raw_required_counts, Mapping)
+        required_counts = (
+            raw_required_counts if isinstance(raw_required_counts, Mapping) else {}
+        )
+        required_power_pole_count = required_counts.get("power_pole", 0)
+        self._emit_heartbeat(
+            stage="power_pole_dominance_normalization",
+            event="start",
+            iteration=iteration,
+            extra={
+                "solution_instance_count": len(solution),
+                "required_power_pole_count": required_power_pole_count,
+                "required_source_missing": bool(required_source_missing),
+            },
+        )
+        normalized, summary = normalize_certified_power_pole_dominance(
+            solution,
+            facility_pools=self.master.facility_pools,
+            templates=self.master.templates,
+            grid_w=self.master.grid_w,
+            grid_h=self.master.grid_h,
+            required_power_pole_count=required_power_pole_count,
+        )
+        summary["required_source_missing"] = bool(required_source_missing)
+        self._emit_heartbeat(
+            stage="power_pole_dominance_normalization",
+            event="complete",
+            iteration=iteration,
+            extra=summary,
+        )
+        return normalized, summary
+
+    def _exact_warm_start_summary(self) -> Dict[str, Any]:
+        summary: Dict[str, Any] = {
+            "used_greedy_hint": bool(self._used_greedy_hint),
+            "greedy_hint_instances": int(self._greedy_hint_instances),
+            "master_hinted_literals": int(self._master_hinted_literals),
+            "master_warm_start": {
+                "used_greedy_hint": bool(self._used_greedy_hint),
+                "greedy_hint_instances": int(self._greedy_hint_instances),
+                "master_hinted_literals": int(self._master_hinted_literals),
+                "ghost_anchor_hint_applied": bool(self._ghost_anchor_hint_applied),
+                "ghost_anchor_hint_idx": None
+                if self._ghost_anchor_hint_idx is None
+                else int(self._ghost_anchor_hint_idx),
+                "ghost_anchor_hint_status": str(self._ghost_anchor_hint_status),
+                "residual_optional_zero_hinting_enabled": bool(
+                    self._residual_optional_zero_hinting_enabled
+                ),
+                "residual_optional_zero_hints": int(
+                    self._residual_optional_zero_hints
+                ),
+                "warm_start_strategy": str(
+                    self._master_start_feasibility.get(
+                        "warm_start_strategy",
+                        "unsupported",
+                    )
+                ),
+                "ghost_aware_anchor_attempt_count": int(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_anchor_attempt_count",
+                        0,
+                    )
+                ),
+                "ghost_aware_anchor_selected_idx": self._master_start_feasibility.get(
+                    "ghost_aware_anchor_selected_idx"
+                ),
+                "ghost_aware_complete_mandatory_hint": bool(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_complete_mandatory_hint",
+                        False,
+                    )
+                ),
+                "ghost_aware_hint_instances": int(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_hint_instances",
+                        0,
+                    )
+                ),
+                "ghost_aware_pose_order_portfolio_attempted": bool(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_pose_order_portfolio_attempted",
+                        False,
+                    )
+                ),
+                "ghost_aware_pose_order_portfolio_success": bool(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_pose_order_portfolio_success",
+                        False,
+                    )
+                ),
+                "ghost_aware_pose_order_portfolio_selected_ordering": self._master_start_feasibility.get(
+                    "ghost_aware_pose_order_portfolio_selected_ordering"
+                ),
+                "ghost_aware_pose_order_portfolio_attempt_count": int(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_pose_order_portfolio_attempt_count",
+                        0,
+                    )
+                ),
+                "ghost_aware_pose_order_portfolio_failed_anchor_count": int(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_pose_order_portfolio_failed_anchor_count",
+                        0,
+                    )
+                ),
+                "ghost_aware_pose_order_portfolio_failure_reason_counts": dict(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_pose_order_portfolio_failure_reason_counts",
+                        {},
+                    )
+                ),
+                "ghost_aware_pose_order_portfolio_failure_samples": [
+                    dict(entry)
+                    for entry in list(
+                        self._master_start_feasibility.get(
+                            "ghost_aware_pose_order_portfolio_failure_samples",
+                            [],
+                        )
+                    )
+                    if isinstance(entry, Mapping)
+                ],
+                "ghost_aware_pose_order_validation_attempt_count": int(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_pose_order_validation_attempt_count",
+                        0,
+                    )
+                ),
+                "ghost_aware_pose_order_validation_rejected_count": int(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_pose_order_validation_rejected_count",
+                        0,
+                    )
+                ),
+                "ghost_aware_pose_order_validation_last_status": self._master_start_feasibility.get(
+                    "ghost_aware_pose_order_validation_last_status"
+                ),
+                "ghost_aware_pose_order_validation_last_reason": self._master_start_feasibility.get(
+                    "ghost_aware_pose_order_validation_last_reason"
+                ),
+                "local_repair_attempted": bool(
+                    self._master_start_local_repair.get(
+                        "local_repair_attempted",
+                        False,
+                    )
+                ),
+                "local_repair_success": bool(
+                    self._master_start_local_repair.get(
+                        "local_repair_success",
+                        False,
+                    )
+                ),
+                "local_repair_trigger_reason": self._master_start_local_repair.get(
+                    "local_repair_trigger_reason"
+                ),
+                "local_repair_window_size": int(
+                    self._master_start_local_repair.get(
+                        "local_repair_window_size",
+                        0,
+                    )
+                ),
+                "local_repair_anchor_idx": self._master_start_local_repair.get(
+                    "local_repair_anchor_idx"
+                ),
+                "local_repair_failed_group_id": self._master_start_local_repair.get(
+                    "local_repair_failed_group_id"
+                ),
+                "local_repair_failed_group_template": self._master_start_local_repair.get(
+                    "local_repair_failed_group_template"
+                ),
+                "local_repair_portfolio_attempt_count": int(
+                    self._master_start_local_repair.get(
+                        "local_repair_portfolio_attempt_count",
+                        0,
+                    )
+                ),
+                "local_repair_selected_group_orderings": [
+                    str(token)
+                    for token in list(
+                        self._master_start_local_repair.get(
+                            "local_repair_selected_group_orderings",
+                            [],
+                        )
+                    )[:2]
+                ],
+            },
+            "master_start_feasibility": {
+                "ghost_anchor_hint_applied": bool(
+                    self._master_start_feasibility.get(
+                        "ghost_anchor_hint_applied",
+                        False,
+                    )
+                ),
+                "ghost_anchor_hint_idx": self._master_start_feasibility.get(
+                    "ghost_anchor_hint_idx"
+                ),
+                "ghost_anchor_hint_status": str(
+                    self._master_start_feasibility.get(
+                        "ghost_anchor_hint_status",
+                        "not_used",
+                    )
+                ),
+                "ghost_anchor_total_count": int(
+                    self._master_start_feasibility.get("ghost_anchor_total_count", 0)
+                ),
+                "ghost_anchor_compatible_count": int(
+                    self._master_start_feasibility.get(
+                        "ghost_anchor_compatible_count",
+                        0,
+                    )
+                ),
+                **(
+                    {"ghost_anchor_compatibility_skipped": True}
+                    if bool(
+                        self._master_start_feasibility.get(
+                            "ghost_anchor_compatibility_skipped",
+                            False,
+                        )
+                    )
+                    else {}
+                ),
+                "mandatory_hint_pose_count": int(
+                    self._master_start_feasibility.get(
+                        "mandatory_hint_pose_count",
+                        0,
+                    )
+                ),
+                "mandatory_hint_occupied_cell_count": int(
+                    self._master_start_feasibility.get(
+                        "mandatory_hint_occupied_cell_count",
+                        0,
+                    )
+                ),
+                "required_optional_positive_hints": int(
+                    self._master_start_feasibility.get(
+                        "required_optional_positive_hints",
+                        0,
+                    )
+                ),
+                "residual_optional_positive_hints": int(
+                    self._master_start_feasibility.get(
+                        "residual_optional_positive_hints",
+                        0,
+                    )
+                ),
+                "residual_optional_zero_hints": int(
+                    self._master_start_feasibility.get(
+                        "residual_optional_zero_hints",
+                        0,
+                    )
+                ),
+                "warm_start_strategy": str(
+                    self._master_start_feasibility.get(
+                        "warm_start_strategy",
+                        "unsupported",
+                    )
+                ),
+                "ghost_aware_anchor_attempt_count": int(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_anchor_attempt_count",
+                        0,
+                    )
+                ),
+                "ghost_aware_anchor_selected_idx": self._master_start_feasibility.get(
+                    "ghost_aware_anchor_selected_idx"
+                ),
+                "ghost_aware_complete_mandatory_hint": bool(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_complete_mandatory_hint",
+                        False,
+                    )
+                ),
+                "ghost_aware_hint_instances": int(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_hint_instances",
+                        0,
+                    )
+                ),
+                "ghost_aware_pose_order_portfolio_attempted": bool(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_pose_order_portfolio_attempted",
+                        False,
+                    )
+                ),
+                "ghost_aware_pose_order_portfolio_success": bool(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_pose_order_portfolio_success",
+                        False,
+                    )
+                ),
+                "ghost_aware_pose_order_portfolio_selected_ordering": self._master_start_feasibility.get(
+                    "ghost_aware_pose_order_portfolio_selected_ordering"
+                ),
+                "ghost_aware_pose_order_portfolio_attempt_count": int(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_pose_order_portfolio_attempt_count",
+                        0,
+                    )
+                ),
+                "ghost_aware_pose_order_portfolio_failed_anchor_count": int(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_pose_order_portfolio_failed_anchor_count",
+                        0,
+                    )
+                ),
+                "ghost_aware_pose_order_portfolio_failure_reason_counts": dict(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_pose_order_portfolio_failure_reason_counts",
+                        {},
+                    )
+                ),
+                "ghost_aware_pose_order_portfolio_failure_samples": [
+                    dict(entry)
+                    for entry in list(
+                        self._master_start_feasibility.get(
+                            "ghost_aware_pose_order_portfolio_failure_samples",
+                            [],
+                        )
+                    )
+                    if isinstance(entry, Mapping)
+                ],
+                "ghost_aware_pose_order_validation_attempt_count": int(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_pose_order_validation_attempt_count",
+                        0,
+                    )
+                ),
+                "ghost_aware_pose_order_validation_rejected_count": int(
+                    self._master_start_feasibility.get(
+                        "ghost_aware_pose_order_validation_rejected_count",
+                        0,
+                    )
+                ),
+                "ghost_aware_pose_order_validation_last_status": self._master_start_feasibility.get(
+                    "ghost_aware_pose_order_validation_last_status"
+                ),
+                "ghost_aware_pose_order_validation_last_reason": self._master_start_feasibility.get(
+                    "ghost_aware_pose_order_validation_last_reason"
+                ),
+                "local_repair_attempted": bool(
+                    self._master_start_local_repair.get(
+                        "local_repair_attempted",
+                        False,
+                    )
+                ),
+                "local_repair_success": bool(
+                    self._master_start_local_repair.get(
+                        "local_repair_success",
+                        False,
+                    )
+                ),
+                "local_repair_trigger_reason": self._master_start_local_repair.get(
+                    "local_repair_trigger_reason"
+                ),
+                "local_repair_window_size": int(
+                    self._master_start_local_repair.get(
+                        "local_repair_window_size",
+                        0,
+                    )
+                ),
+                "local_repair_anchor_idx": self._master_start_local_repair.get(
+                    "local_repair_anchor_idx"
+                ),
+                "local_repair_failed_group_id": self._master_start_local_repair.get(
+                    "local_repair_failed_group_id"
+                ),
+                "local_repair_failed_group_template": self._master_start_local_repair.get(
+                    "local_repair_failed_group_template"
+                ),
+                "local_repair_portfolio_attempt_count": int(
+                    self._master_start_local_repair.get(
+                        "local_repair_portfolio_attempt_count",
+                        0,
+                    )
+                ),
+                "local_repair_selected_group_orderings": [
+                    str(token)
+                    for token in list(
+                        self._master_start_local_repair.get(
+                            "local_repair_selected_group_orderings",
+                            [],
+                        )
+                    )[:2]
+                ],
+            },
+            "master_start_failure_attribution": {
+                "attempted_anchor_count": int(
+                    self._master_start_failure_attribution.get(
+                        "attempted_anchor_count",
+                        0,
+                    )
+                ),
+                "failed_anchor_count": int(
+                    self._master_start_failure_attribution.get(
+                        "failed_anchor_count",
+                        0,
+                    )
+                ),
+                "failure_reason_counts": {
+                    str(key): int(value)
+                    for key, value in dict(
+                        self._master_start_failure_attribution.get(
+                            "failure_reason_counts",
+                            {},
+                        )
+                    ).items()
+                    if int(value) > 0
+                },
+                "first_failed_anchor_idx": self._master_start_failure_attribution.get(
+                    "first_failed_anchor_idx"
+                ),
+                "first_failed_group_id": self._master_start_failure_attribution.get(
+                    "first_failed_group_id"
+                ),
+                "first_failed_group_template": self._master_start_failure_attribution.get(
+                    "first_failed_group_template"
+                ),
+                "first_failed_group_required_count": int(
+                    self._master_start_failure_attribution.get(
+                        "first_failed_group_required_count",
+                        0,
+                    )
+                ),
+                "first_failed_group_candidate_count": int(
+                    self._master_start_failure_attribution.get(
+                        "first_failed_group_candidate_count",
+                        0,
+                    )
+                ),
+                "first_failed_group_surviving_after_blocked_count": int(
+                    self._master_start_failure_attribution.get(
+                        "first_failed_group_surviving_after_blocked_count",
+                        0,
+                    )
+                ),
+                "first_failed_group_surviving_at_failure_count": int(
+                    self._master_start_failure_attribution.get(
+                        "first_failed_group_surviving_at_failure_count",
+                        0,
+                    )
+                ),
+                "first_failed_group_position": self._master_start_failure_attribution.get(
+                    "first_failed_group_position"
+                ),
+                "top_failed_groups": [
+                    {
+                        "group_id": str(entry.get("group_id", "")),
+                        "facility_type": str(entry.get("facility_type", "")),
+                        "count": int(entry.get("count", 0)),
+                    }
+                    for entry in list(
+                        self._master_start_failure_attribution.get(
+                            "top_failed_groups",
+                            [],
+                        )
+                    )[:5]
+                    if int(entry.get("count", 0)) > 0
+                ],
+                "top_failed_group_failures": [
+                    {
+                        "group_id": str(entry.get("group_id", "")),
+                        "facility_type": str(entry.get("facility_type", "")),
+                        "failure_reason": str(entry.get("failure_reason", "")),
+                        "count": int(entry.get("count", 0)),
+                    }
+                    for entry in list(
+                        self._master_start_failure_attribution.get(
+                            "top_failed_group_failures",
+                            [],
+                        )
+                    )[:8]
+                    if int(entry.get("count", 0)) > 0
+                ],
+                "failed_anchor_samples": [
+                    {
+                        "anchor_idx": int(entry.get("anchor_idx", 0)),
+                        "failure_reason": str(entry.get("failure_reason", "")),
+                        "first_failed_group_id": entry.get("first_failed_group_id"),
+                        "first_failed_group_template": entry.get(
+                            "first_failed_group_template"
+                        ),
+                        "first_failed_group_position": entry.get(
+                            "first_failed_group_position"
+                        ),
+                        "first_failed_group_required_count": int(
+                            entry.get("first_failed_group_required_count", 0)
+                        ),
+                        "first_failed_group_candidate_count": int(
+                            entry.get("first_failed_group_candidate_count", 0)
+                        ),
+                        "first_failed_group_surviving_after_blocked_count": int(
+                            entry.get(
+                                "first_failed_group_surviving_after_blocked_count",
+                                0,
+                            )
+                        ),
+                        "first_failed_group_surviving_at_failure_count": int(
+                            entry.get(
+                                "first_failed_group_surviving_at_failure_count",
+                                0,
+                            )
+                        ),
+                        "blocked_cell_count": int(entry.get("blocked_cell_count", 0)),
+                        "blocked_bbox": entry.get("blocked_bbox"),
+                        "local_repair_attempted": bool(
+                            entry.get("local_repair_attempted", False)
+                        ),
+                        "local_repair_success": bool(
+                            entry.get("local_repair_success", False)
+                        ),
+                        "local_repair_attempt_count": int(
+                            entry.get("local_repair_attempt_count", 0)
+                        ),
+                        **_coordinate_validation_failure_sample_fields(entry),
+                    }
+                    for entry in list(
+                        self._master_start_failure_attribution.get(
+                            "failed_anchor_samples",
+                            [],
+                        )
+                    )[:_warm_start_failed_anchor_sample_limit()]
+                    if isinstance(entry, Mapping)
+                ],
+            },
+            "master_start_local_repair": {
+                "local_repair_attempted": bool(
+                    self._master_start_local_repair.get(
+                        "local_repair_attempted",
+                        False,
+                    )
+                ),
+                "local_repair_success": bool(
+                    self._master_start_local_repair.get(
+                        "local_repair_success",
+                        False,
+                    )
+                ),
+                "local_repair_trigger_reason": self._master_start_local_repair.get(
+                    "local_repair_trigger_reason"
+                ),
+                "local_repair_window_size": int(
+                    self._master_start_local_repair.get(
+                        "local_repair_window_size",
+                        0,
+                    )
+                ),
+                "local_repair_anchor_idx": self._master_start_local_repair.get(
+                    "local_repair_anchor_idx"
+                ),
+                "local_repair_failed_group_id": self._master_start_local_repair.get(
+                    "local_repair_failed_group_id"
+                ),
+                "local_repair_failed_group_template": self._master_start_local_repair.get(
+                    "local_repair_failed_group_template"
+                ),
+                "local_repair_portfolio_attempt_count": int(
+                    self._master_start_local_repair.get(
+                        "local_repair_portfolio_attempt_count",
+                        0,
+                    )
+                ),
+                "local_repair_selected_group_orderings": [
+                    str(token)
+                    for token in list(
+                        self._master_start_local_repair.get(
+                            "local_repair_selected_group_orderings",
+                            [],
+                        )
+                    )[:2]
+                ],
+                "local_repair_attempt_count": int(
+                    self._master_start_local_repair.get(
+                        "local_repair_attempt_count",
+                        0,
+                    )
+                ),
+                "local_repair_success_count": int(
+                    self._master_start_local_repair.get(
+                        "local_repair_success_count",
+                        0,
+                    )
+                ),
+                "local_repair_intra_group_attempted_count": int(
+                    self._master_start_local_repair.get(
+                        "local_repair_intra_group_attempted_count",
+                        0,
+                    )
+                ),
+                "local_repair_committed_attempted_count": int(
+                    self._master_start_local_repair.get(
+                        "local_repair_committed_attempted_count",
+                        0,
+                    )
+                ),
+                "local_repair_window1_count": int(
+                    self._master_start_local_repair.get(
+                        "local_repair_window1_count",
+                        0,
+                    )
+                ),
+                "local_repair_window2_count": int(
+                    self._master_start_local_repair.get(
+                        "local_repair_window2_count",
+                        0,
+                    )
+                ),
+            },
+            "master_boundary_port_feasibility": {
+                "supported": bool(
+                    self._master_boundary_port_feasibility.get("supported", False)
+                ),
+                "required_count": int(
+                    self._master_boundary_port_feasibility.get("required_count", 0)
+                ),
+                "considered_anchor_count": int(
+                    self._master_boundary_port_feasibility.get(
+                        "considered_anchor_count",
+                        0,
+                    )
+                ),
+                "screened_infeasible_anchor_count": int(
+                    self._master_boundary_port_feasibility.get(
+                        "screened_infeasible_anchor_count",
+                        0,
+                    )
+                ),
+                "screen_pass_anchor_count": int(
+                    self._master_boundary_port_feasibility.get(
+                        "screen_pass_anchor_count",
+                        0,
+                    )
+                ),
+                "unsupported_anchor_count": int(
+                    self._master_boundary_port_feasibility.get(
+                        "unsupported_anchor_count",
+                        0,
+                    )
+                ),
+                "max_packable_min": self._master_boundary_port_feasibility.get(
+                    "max_packable_min"
+                ),
+                "max_packable_max": self._master_boundary_port_feasibility.get(
+                    "max_packable_max"
+                ),
+                "first_infeasible_anchor_idx": self._master_boundary_port_feasibility.get(
+                    "first_infeasible_anchor_idx"
+                ),
+                "first_infeasible_anchor_max_packable": self._master_boundary_port_feasibility.get(
+                    "first_infeasible_anchor_max_packable"
+                ),
+            },
+            "master_mandatory_group_prechecks": {
+                "evaluated": bool(
+                    self._master_mandatory_group_prechecks.get("evaluated", False)
+                ),
+                "skipped_due_to_upstream_precheck": bool(
+                    self._master_mandatory_group_prechecks.get(
+                        "skipped_due_to_upstream_precheck",
+                        False,
+                    )
+                ),
+                "upstream_anchor_filter_count": int(
+                    self._master_mandatory_group_prechecks.get(
+                        "upstream_anchor_filter_count",
+                        0,
+                    )
+                ),
+                "supported_group_count": int(
+                    self._master_mandatory_group_prechecks.get(
+                        "supported_group_count",
+                        0,
+                    )
+                ),
+                "groups": [
+                    {
+                        "group_id": str(entry.get("group_id", "")),
+                        "facility_type": str(entry.get("facility_type", "")),
+                        "operation_type": str(entry.get("operation_type", "")),
+                        "required_count": int(entry.get("required_count", 0)),
+                        "oracle_class": entry.get("oracle_class"),
+                        "oracle_mode": str(
+                            entry.get("oracle_mode", "unsupported")
+                        ),
+                        "supported": bool(entry.get("supported", False)),
+                        "unsupported_reason": entry.get("unsupported_reason"),
+                        "considered_anchor_count": int(
+                            entry.get("considered_anchor_count", 0)
+                        ),
+                        "screened_infeasible_anchor_count": int(
+                            entry.get("screened_infeasible_anchor_count", 0)
+                        ),
+                        "screen_pass_anchor_count": int(
+                            entry.get("screen_pass_anchor_count", 0)
+                        ),
+                        "unsupported_anchor_count": int(
+                            entry.get("unsupported_anchor_count", 0)
+                        ),
+                        "max_packable_min": entry.get("max_packable_min"),
+                        "max_packable_max": entry.get("max_packable_max"),
+                        "first_infeasible_anchor_idx": entry.get(
+                            "first_infeasible_anchor_idx"
+                        ),
+                        "first_infeasible_anchor_max_packable": entry.get(
+                            "first_infeasible_anchor_max_packable"
+                        ),
+                        **(
+                            {
+                                "partial_due_to_time_budget": bool(
+                                    entry.get("partial_due_to_time_budget", False)
+                                )
+                            }
+                            if "partial_due_to_time_budget" in entry
+                            else {}
+                        ),
+                        **{
+                            str(key): entry.get(str(key))
+                            for key in (
+                                "witness_pass_anchor_count",
+                                "exact_capacity_eval_count",
+                                "max_packable_lower_bound_min",
+                                "max_packable_lower_bound_max",
+                            )
+                            if str(key) in entry
+                        },
+                    }
+                    for entry in list(
+                        self._master_mandatory_group_prechecks.get("groups", [])
+                    )
+                ],
+                **(
+                    {
+                        "interrupted_due_to_time_budget": bool(
+                            self._master_mandatory_group_prechecks.get(
+                                "interrupted_due_to_time_budget",
+                                False,
+                            )
+                        ),
+                        "time_budget_seconds": float(
+                            self._master_mandatory_group_prechecks.get(
+                                "time_budget_seconds",
+                                0.0,
+                            )
+                        ),
+                        "elapsed_seconds": float(
+                            self._master_mandatory_group_prechecks.get(
+                                "elapsed_seconds",
+                                0.0,
+                            )
+                        ),
+                    }
+                    if "interrupted_due_to_time_budget"
+                    in self._master_mandatory_group_prechecks
+                    else {}
+                ),
+            },
+            "master_mandatory_support_diagnostics": {
+                "unsupported_group_count": int(
+                    self._master_mandatory_support_diagnostics.get(
+                        "unsupported_group_count",
+                        0,
+                    )
+                ),
+                "empty_candidate_pool_group_count": int(
+                    self._master_mandatory_support_diagnostics.get(
+                        "empty_candidate_pool_group_count",
+                        0,
+                    )
+                ),
+                "groups": [
+                    {
+                        "group_id": str(entry.get("group_id", "")),
+                        "facility_type": str(entry.get("facility_type", "")),
+                        "operation_type": str(entry.get("operation_type", "")),
+                        "required_count": int(entry.get("required_count", 0)),
+                        "candidate_pool_count": int(
+                            entry.get("candidate_pool_count", 0)
+                        ),
+                        "unsupported_reason": entry.get("unsupported_reason"),
+                    }
+                    for entry in list(
+                        self._master_mandatory_support_diagnostics.get("groups", [])
+                    )
+                ],
+            },
+            "master_candidate_precheck": {
+                "triggered": bool(
+                    self._master_candidate_precheck.get("triggered", False)
+                ),
+                "precheck_reason": self._master_candidate_precheck.get(
+                    "precheck_reason"
+                ),
+                "master_solve_skipped": bool(
+                    self._master_candidate_precheck.get(
+                        "master_solve_skipped",
+                        False,
+                    )
+                ),
+                "supported": bool(
+                    self._master_candidate_precheck.get("supported", False)
+                ),
+                "considered_anchor_count": int(
+                    self._master_candidate_precheck.get(
+                        "considered_anchor_count",
+                        0,
+                    )
+                ),
+                "screened_infeasible_anchor_count": int(
+                    self._master_candidate_precheck.get(
+                        "screened_infeasible_anchor_count",
+                        0,
+                    )
+                ),
+                "screen_pass_anchor_count": int(
+                    self._master_candidate_precheck.get(
+                        "screen_pass_anchor_count",
+                        0,
+                    )
+                ),
+                "max_packable_min": self._master_candidate_precheck.get(
+                    "max_packable_min"
+                ),
+                "max_packable_max": self._master_candidate_precheck.get(
+                    "max_packable_max"
+                ),
+                "first_infeasible_anchor_idx": self._master_candidate_precheck.get(
+                    "first_infeasible_anchor_idx"
+                ),
+                "first_infeasible_anchor_max_packable": self._master_candidate_precheck.get(
+                    "first_infeasible_anchor_max_packable"
+                ),
+                "triggered_group_id": self._master_candidate_precheck.get(
+                    "triggered_group_id"
+                ),
+                "triggered_group_facility_type": self._master_candidate_precheck.get(
+                    "triggered_group_facility_type"
+                ),
+                "triggered_group_operation_type": self._master_candidate_precheck.get(
+                    "triggered_group_operation_type"
+                ),
+                "triggered_group_required_count": int(
+                    self._master_candidate_precheck.get(
+                        "triggered_group_required_count",
+                        0,
+                    )
+                ),
+                **(
+                    {
+                        "anchor119_row_domain_guard_advisory": dict(
+                            self._master_candidate_precheck.get(
+                                "anchor119_row_domain_guard_advisory", {}
+                            )
+                        )
+                    }
+                    if isinstance(
+                        self._master_candidate_precheck.get(
+                            "anchor119_row_domain_guard_advisory"
+                        ),
+                        Mapping,
+                    )
+                    and bool(
+                        self._master_candidate_precheck.get(
+                            "anchor119_row_domain_guard_advisory"
+                        )
+                    )
+                    else {}
+                ),
+            },
+        }
+        if self._master_warm_start_disabled:
+            summary["master_warm_start_disabled"] = True
+            summary["master_warm_start"]["disabled"] = True
+        return summary
+
+    def _master_search_summary(self) -> Dict[str, Any]:
+        last_solve = dict(self.master.build_stats.get("last_solve", {}))
+        search_guidance = dict(self.master.build_stats.get("search_guidance", {}))
+        power_coverage = dict(self.master.build_stats.get("power_coverage", {}))
+        global_valid_inequalities = dict(
+            self.master.build_stats.get("global_valid_inequalities", {})
+        )
+        ghost_domain_tightening = dict(
+            global_valid_inequalities.get("ghost_aware_via_pole_feasibility", {})
+        )
+        signature_bucket_tightening = dict(
+            global_valid_inequalities.get("signature_bucket_capacity_bounds", {})
+        )
+        residual_signature_bucket_tightening = dict(
+            global_valid_inequalities.get("residual_signature_bucket_capacity_bounds", {})
+        )
+        coordinate_symmetry = dict(
+            self.master.build_stats.get("coordinate_symmetry", {})
+        )
+        domain_activation = dict(self.master.build_stats.get("domain_activation", {}))
+        exact_precompute_profile = dict(
+            self.master.build_stats.get("exact_precompute_profile", {})
+        )
+        master_last_solve: Dict[str, Any] = {
+            "status": str(last_solve.get("status", "")),
+            "wall_time": float(last_solve.get("wall_time", 0.0)),
+            "user_time": float(last_solve.get("user_time", 0.0)),
+            "deterministic_time": float(last_solve.get("deterministic_time", 0.0)),
+            "branches": int(last_solve.get("branches", 0)),
+            "conflicts": int(last_solve.get("conflicts", 0)),
+            "binary_propagations": int(last_solve.get("binary_propagations", 0)),
+            "integer_propagations": int(last_solve.get("integer_propagations", 0)),
+            "hinted_literals": int(last_solve.get("hinted_literals", 0)),
+            "known_feasible_hint": bool(last_solve.get("known_feasible_hint", False)),
+            "search_profile": str(last_solve.get("search_profile", "default_automatic")),
+            "search_branching": str(last_solve.get("search_branching", "")),
+        }
+        requested_search_branching = str(last_solve.get("requested_search_branching", "fixed"))
+        if requested_search_branching not in {"", "fixed"}:
+            master_last_solve["requested_search_branching"] = requested_search_branching
+        solver_parameters = last_solve.get("solver_parameters")
+        if isinstance(solver_parameters, Mapping):
+            master_last_solve["solver_parameters"] = dict(solver_parameters)
+        if (
+            str(master_last_solve.get("status")) == "UNKNOWN"
+            and int(master_last_solve.get("branches", 0)) == 0
+            and int(master_last_solve.get("conflicts", 0)) == 0
+        ):
+            response_stats = str(last_solve.get("response_stats", ""))
+            if response_stats:
+                master_last_solve["response_stats"] = response_stats[:4000]
+        return {
+            "master_search_profile": str(
+                last_solve.get(
+                    "search_profile",
+                    search_guidance.get("profile", "default_automatic"),
+                )
+            ),
+            "master_last_solve": master_last_solve,
+            "master_domain_tightening": {
+                "ghost_power_capacity_screen_enabled": bool(
+                    ghost_domain_tightening.get("enabled", False)
+                ),
+                "ghost_disabled_placements": int(
+                    ghost_domain_tightening.get("disabled_placements", 0)
+                ),
+                "ghost_surviving_placements": int(
+                    ghost_domain_tightening.get("surviving_placements", 0)
+                ),
+                "ghost_conditioned_family_upper_bound_constraints": int(
+                    ghost_domain_tightening.get(
+                        "conditioned_family_upper_bound_constraints",
+                        0,
+                    )
+                ),
+                "ghost_family_reduction_anchor_count": int(
+                    ghost_domain_tightening.get("family_reduction_anchor_count", 0)
+                ),
+            },
+            "master_signature_tightening": {
+                "mandatory_bucket_upper_bound_constraints": int(
+                    signature_bucket_tightening.get(
+                        "mandatory_bucket_upper_bound_constraints",
+                        0,
+                    )
+                ),
+                "required_optional_bucket_upper_bound_constraints": int(
+                    signature_bucket_tightening.get(
+                        "required_optional_bucket_upper_bound_constraints",
+                        0,
+                    )
+                ),
+                "ghost_conditioned_mandatory_bucket_constraints": int(
+                    signature_bucket_tightening.get(
+                        "ghost_conditioned_mandatory_bucket_constraints",
+                        0,
+                    )
+                ),
+                "ghost_conditioned_required_optional_bucket_constraints": int(
+                    signature_bucket_tightening.get(
+                        "ghost_conditioned_required_optional_bucket_constraints",
+                        0,
+                    )
+                ),
+                "ghost_signature_reduction_anchor_count": int(
+                    signature_bucket_tightening.get(
+                        "ghost_signature_reduction_anchor_count",
+                        0,
+                    )
+                ),
+            },
+            "master_residual_signature_tightening": {
+                "bucket_upper_bound_constraints": int(
+                    residual_signature_bucket_tightening.get(
+                        "bucket_upper_bound_constraints",
+                        0,
+                    )
+                ),
+                "ghost_conditioned_bucket_constraints": int(
+                    residual_signature_bucket_tightening.get(
+                        "ghost_conditioned_residual_bucket_constraints",
+                        0,
+                    )
+                ),
+                "ghost_signature_reduction_anchor_count": int(
+                    residual_signature_bucket_tightening.get(
+                        "ghost_residual_signature_reduction_anchor_count",
+                        0,
+                    )
+                ),
+            },
+            "master_coordinate_symmetry": {
+                "enabled": bool(coordinate_symmetry.get("enabled", False)),
+                "mandatory_signature_monotonic_constraints": int(
+                    coordinate_symmetry.get(
+                        "mandatory_signature_monotonic_constraints",
+                        0,
+                    )
+                ),
+                "required_optional_signature_monotonic_constraints": int(
+                    coordinate_symmetry.get(
+                        "required_optional_signature_monotonic_constraints",
+                        0,
+                    )
+                ),
+                "residual_optional_signature_monotonic_constraints": int(
+                    coordinate_symmetry.get(
+                        "residual_optional_signature_monotonic_constraints",
+                        0,
+                    )
+                ),
+            },
+            "master_domain_activation": {
+                "ghost_anchor_count": int(domain_activation.get("ghost_anchor_count", 0)),
+                "mandatory_slot_count": int(
+                    domain_activation.get("mandatory_slot_count", 0)
+                ),
+                "required_optional_slot_count": int(
+                    domain_activation.get("required_optional_slot_count", 0)
+                ),
+                "residual_optional_slot_count": int(
+                    domain_activation.get("residual_optional_slot_count", 0)
+                ),
+                "mandatory_pose_literal_count": int(
+                    domain_activation.get("mandatory_pose_literal_count", 0)
+                ),
+                "required_optional_pose_literal_count": int(
+                    domain_activation.get("required_optional_pose_literal_count", 0)
+                ),
+                "residual_optional_pose_literal_count": int(
+                    domain_activation.get("residual_optional_pose_literal_count", 0)
+                ),
+                "required_optional_active_slot_upper_bound_sum": int(
+                    domain_activation.get(
+                        "required_optional_active_slot_upper_bound_sum",
+                        0,
+                    )
+                ),
+                "residual_optional_active_slot_upper_bound_sum": int(
+                    domain_activation.get(
+                        "residual_optional_active_slot_upper_bound_sum",
+                        0,
+                    )
+                ),
+            },
+            "master_search_guidance_applied": bool(search_guidance.get("applied", False)),
+            "power_pole_family_order": list(
+                search_guidance.get("power_pole_family_order", [])
+            ),
+            "power_pole_family_count_literals": int(
+                search_guidance.get("power_pole_family_count_literals", 0)
+            ),
+            "residual_optional_family_guided": bool(
+                search_guidance.get("residual_optional_family_guided", False)
+            ),
+            "master_representation": str(
+                self.master.build_stats.get("master_representation", "pose_bool_v1")
+            ),
+            "master_slot_counts": copy.deepcopy(
+                self.master.build_stats.get("master_slot_counts", {})
+            ),
+            "master_mode_literals": int(
+                self.master.build_stats.get("master_mode_literals", 0)
+            ),
+            "master_interval_count": int(
+                self.master.build_stats.get("master_interval_count", 0)
+            ),
+            "master_pose_bool_literals": int(
+                self.master.build_stats.get("master_pose_bool_literals", 0)
+            ),
+            "master_domain_encoding": str(
+                self.master.build_stats.get("master_domain_encoding", "")
+            ),
+            "master_domain_table_rows": int(
+                self.master.build_stats.get("master_domain_table_rows", 0)
+            ),
+            "master_mode_rect_domains": copy.deepcopy(
+                self.master.build_stats.get("master_mode_rect_domains", {})
+            ),
+            "power_pole_shell_lookup_pairs": copy.deepcopy(
+                self.master.build_stats.get("power_pole_shell_lookup_pairs", {})
+            ),
+            "power_coverage_representation": str(
+                power_coverage.get("representation", "")
+            ),
+            "power_coverage_encoding": str(power_coverage.get("encoding", "")),
+            "power_coverage_powered_slots": int(
+                power_coverage.get("powered_slots", 0)
+            ),
+            "power_coverage_pole_slots": int(power_coverage.get("pole_slots", 0)),
+            "power_coverage_cover_literals": int(
+                power_coverage.get("cover_literals", 0)
+            ),
+            "power_coverage_witness_indices": int(
+                power_coverage.get("witness_indices", 0)
+            ),
+            "power_coverage_element_constraints": int(
+                power_coverage.get("element_constraints", 0)
+            ),
+            "power_coverage_radius": int(power_coverage.get("radius", 0)),
+            "power_capacity_shell_pairs": int(
+                exact_precompute_profile.get("power_capacity_shell_pairs", 0)
+            ),
+            "power_capacity_shell_pair_evaluations": int(
+                exact_precompute_profile.get("power_capacity_shell_pair_evaluations", 0)
+            ),
+            "power_capacity_signature_classes": int(
+                exact_precompute_profile.get("power_capacity_signature_classes", 0)
+            ),
+            "power_capacity_signature_class_evaluations": int(
+                exact_precompute_profile.get("power_capacity_signature_class_evaluations", 0)
+            ),
+            "power_capacity_compact_signature_classes": int(
+                exact_precompute_profile.get("power_capacity_compact_signature_classes", 0)
+            ),
+            "power_capacity_compact_signature_evaluations": int(
+                exact_precompute_profile.get(
+                    "power_capacity_compact_signature_evaluations",
+                    0,
+                )
+            ),
+            "power_capacity_compact_signature_cache_hits": int(
+                exact_precompute_profile.get(
+                    "power_capacity_compact_signature_cache_hits",
+                    0,
+                )
+            ),
+            "power_capacity_compact_signature_cache_misses": int(
+                exact_precompute_profile.get(
+                    "power_capacity_compact_signature_cache_misses",
+                    0,
+                )
+            ),
+            "power_capacity_rect_dp_evaluations": int(
+                exact_precompute_profile.get("power_capacity_rect_dp_evaluations", 0)
+            ),
+            "power_capacity_rect_dp_cache_hits": int(
+                exact_precompute_profile.get("power_capacity_rect_dp_cache_hits", 0)
+            ),
+            "power_capacity_rect_dp_cache_misses": int(
+                exact_precompute_profile.get("power_capacity_rect_dp_cache_misses", 0)
+            ),
+            "power_capacity_rect_dp_state_merges": int(
+                exact_precompute_profile.get("power_capacity_rect_dp_state_merges", 0)
+            ),
+            "power_capacity_rect_dp_peak_line_states": int(
+                exact_precompute_profile.get("power_capacity_rect_dp_peak_line_states", 0)
+            ),
+            "power_capacity_rect_dp_peak_pos_states": int(
+                exact_precompute_profile.get("power_capacity_rect_dp_peak_pos_states", 0)
+            ),
+            "power_capacity_rect_dp_compiled_signatures": int(
+                exact_precompute_profile.get("power_capacity_rect_dp_compiled_signatures", 0)
+            ),
+            "power_capacity_rect_dp_compiled_start_options": int(
+                exact_precompute_profile.get("power_capacity_rect_dp_compiled_start_options", 0)
+            ),
+            "power_capacity_rect_dp_deduped_start_options": int(
+                exact_precompute_profile.get("power_capacity_rect_dp_deduped_start_options", 0)
+            ),
+            "power_capacity_rect_dp_compiled_line_subsets": int(
+                exact_precompute_profile.get("power_capacity_rect_dp_compiled_line_subsets", 0)
+            ),
+            "power_capacity_rect_dp_peak_line_subset_options": int(
+                exact_precompute_profile.get("power_capacity_rect_dp_peak_line_subset_options", 0)
+            ),
+            "power_capacity_rect_dp_v3_fallbacks": int(
+                exact_precompute_profile.get("power_capacity_rect_dp_v3_fallbacks", 0)
+            ),
+            "power_capacity_compact_rect_cpsat_evaluations": int(
+                exact_precompute_profile.get("power_capacity_compact_rect_cpsat_evaluations", 0)
+            ),
+            "power_capacity_compact_rect_cpsat_cache_hits": int(
+                exact_precompute_profile.get("power_capacity_compact_rect_cpsat_cache_hits", 0)
+            ),
+            "power_capacity_compact_rect_cpsat_selected_cases": int(
+                exact_precompute_profile.get("power_capacity_compact_rect_cpsat_selected_cases", 0)
+            ),
+            "power_capacity_compact_rect_cpsat_rect_dp_fallbacks": int(
+                exact_precompute_profile.get("power_capacity_compact_rect_cpsat_rect_dp_fallbacks", 0)
+            ),
+            "power_capacity_normalized_rect_signature_count": int(
+                exact_precompute_profile.get("power_capacity_normalized_rect_signature_count", 0)
+            ),
+            "power_capacity_normalized_rect_cache_hits": int(
+                exact_precompute_profile.get("power_capacity_normalized_rect_cache_hits", 0)
+            ),
+            "power_capacity_normalized_rect_cache_misses": int(
+                exact_precompute_profile.get("power_capacity_normalized_rect_cache_misses", 0)
+            ),
+            "power_capacity_legacy_signature_materializations": int(
+                exact_precompute_profile.get("power_capacity_legacy_signature_materializations", 0)
+            ),
+            "power_capacity_supported_by_pole_materializations": int(
+                exact_precompute_profile.get("power_capacity_supported_by_pole_materializations", 0)
+            ),
+            "power_capacity_m6x4_mixed_cpsat_evaluations": int(
+                exact_precompute_profile.get("power_capacity_m6x4_mixed_cpsat_evaluations", 0)
+            ),
+            "power_capacity_m6x4_mixed_cpsat_cache_hits": int(
+                exact_precompute_profile.get("power_capacity_m6x4_mixed_cpsat_cache_hits", 0)
+            ),
+            "power_capacity_m6x4_mixed_cpsat_selected_cases": int(
+                exact_precompute_profile.get("power_capacity_m6x4_mixed_cpsat_selected_cases", 0)
+            ),
+            "power_capacity_m6x4_mixed_cpsat_v3_fallbacks": int(
+                exact_precompute_profile.get("power_capacity_m6x4_mixed_cpsat_v3_fallbacks", 0)
+            ),
+            "power_capacity_uniform_3x3_cpsat_evaluations": int(
+                exact_precompute_profile.get("power_capacity_uniform_3x3_cpsat_evaluations", 0)
+            ),
+            "power_capacity_uniform_3x3_cpsat_cache_hits": int(
+                exact_precompute_profile.get("power_capacity_uniform_3x3_cpsat_cache_hits", 0)
+            ),
+            "power_capacity_uniform_3x3_cpsat_selected_cases": int(
+                exact_precompute_profile.get("power_capacity_uniform_3x3_cpsat_selected_cases", 0)
+            ),
+            "power_capacity_uniform_3x3_cpsat_v3_fallbacks": int(
+                exact_precompute_profile.get("power_capacity_uniform_3x3_cpsat_v3_fallbacks", 0)
+            ),
+            "power_capacity_bitset_oracle_evaluations": int(
+                exact_precompute_profile.get("power_capacity_bitset_oracle_evaluations", 0)
+            ),
+            "power_capacity_bitset_fallbacks": int(
+                exact_precompute_profile.get("power_capacity_bitset_fallbacks", 0)
+            ),
+            "power_capacity_cpsat_fallbacks": int(
+                exact_precompute_profile.get("power_capacity_cpsat_fallbacks", 0)
+            ),
+            "power_capacity_oracle": str(
+                exact_precompute_profile.get("power_capacity_oracle", "")
+            ),
+            "power_capacity_raw_pole_evaluations": int(
+                exact_precompute_profile.get("power_capacity_raw_pole_evaluations", 0)
+            ),
+            "signature_bucket_cache_hits": int(
+                exact_precompute_profile.get("signature_bucket_cache_hits", 0)
+            ),
+            "signature_bucket_cache_misses": int(
+                exact_precompute_profile.get("signature_bucket_cache_misses", 0)
+            ),
+            "signature_bucket_distinct_keys": int(
+                exact_precompute_profile.get("signature_bucket_distinct_keys", 0)
+            ),
+            "geometry_cache_templates": int(
+                exact_precompute_profile.get("geometry_cache_templates", 0)
+            ),
+        }
+
+    def _exact_cut_ladder_summary(self) -> Dict[str, Any]:
+        return {
+            "fine_grained_exact_safe_cut_count": int(self._fine_grained_exact_safe_cut_count),
+            "binding_domain_empty_cut_count": int(self._binding_domain_empty_cut_count),
+            "routing_front_blocked_cut_count": int(self._routing_front_blocked_cut_count),
+            "routing_precheck_rejections": int(self._routing_precheck_rejections),
+            "routing_precheck_statuses": list(self._routing_precheck_statuses),
+        }
+
+    def _routing_shrink_summary(self) -> Dict[str, Any]:
+        return {
+            "routing_domain_cells": int(self._routing_domain_cells),
+            "routing_terminal_core_cells": int(self._routing_terminal_core_cells),
+            "routing_state_space_vars": int(self._routing_state_space_vars),
+            "routing_local_pattern_pruned_states": int(
+                self._routing_local_pattern_pruned_states
+            ),
+        }
+
+    def _routing_reuse_summary(self) -> Dict[str, Any]:
+        return {
+            "used_routing_core_reuse": bool(self._used_routing_core_reuse),
+            "routing_core_build_seconds": float(self._routing_core_build_seconds),
+            "routing_overlay_build_seconds": float(self._routing_overlay_build_seconds),
+        }
+
+    def _binding_domain_cache_summary(self) -> Dict[str, Any]:
+        return {
+            "binding_domain_cache_hits": int(self._binding_domain_cache_hits),
+            "binding_domain_cache_misses": int(self._binding_domain_cache_misses),
+            "binding_domain_reused_instances": list(self._binding_domain_reused_instances),
+        }
+
+    def _subproblem_reuse_summary(self) -> Dict[str, Any]:
+        return {
+            **self._routing_reuse_summary(),
+            **self._binding_domain_cache_summary(),
+        }
+
+    def _update_routing_shrink_from_domain_stats(
+        self,
+        domain_stats: Optional[Mapping[str, Any]],
+    ) -> None:
+        stats = dict(domain_stats or {})
+        if "domain_cells" in stats:
+            self._routing_domain_cells = int(stats["domain_cells"])
+        if "terminal_core_cells" in stats:
+            self._routing_terminal_core_cells = int(stats["terminal_core_cells"])
+
+    def _update_routing_shrink_from_build_stats(
+        self,
+        build_stats: Optional[Mapping[str, Any]],
+    ) -> None:
+        state_space = dict((build_stats or {}).get("state_space", {}))
+        self._update_routing_shrink_from_domain_stats(state_space)
+        if "vars" in state_space:
+            self._routing_state_space_vars = int(state_space["vars"])
+        if "local_pattern_pruned_states" in state_space:
+            self._routing_local_pattern_pruned_states = int(
+                state_space["local_pattern_pruned_states"]
+            )
+
+    def _update_binding_cache_from_summary(
+        self,
+        binding_summary: Optional[Mapping[str, Any]],
+    ) -> None:
+        summary = dict(binding_summary or {})
+        self._binding_domain_cache_hits = int(summary.get("binding_domain_cache_hits", 0))
+        self._binding_domain_cache_misses = int(summary.get("binding_domain_cache_misses", 0))
+        self._binding_domain_reused_instances = [
+            str(instance_id)
+            for instance_id in list(summary.get("binding_domain_reused_instances", []))
+        ]
+
+    def _exact_cut_ladder_summary_with_deltas(
+        self,
+        *,
+        fine_grained_delta: int = 0,
+        binding_domain_empty_delta: int = 0,
+        routing_front_blocked_delta: int = 0,
+        routing_precheck_rejections_delta: int = 0,
+    ) -> Dict[str, Any]:
+        return {
+            "fine_grained_exact_safe_cut_count": int(
+                self._fine_grained_exact_safe_cut_count + fine_grained_delta
+            ),
+            "binding_domain_empty_cut_count": int(
+                self._binding_domain_empty_cut_count + binding_domain_empty_delta
+            ),
+            "routing_front_blocked_cut_count": int(
+                self._routing_front_blocked_cut_count + routing_front_blocked_delta
+            ),
+            "routing_precheck_rejections": int(
+                self._routing_precheck_rejections + routing_precheck_rejections_delta
+            ),
+            "routing_precheck_statuses": list(self._routing_precheck_statuses),
+        }
+
+    def run_with_status(self) -> Tuple[str, Optional[Dict[str, Any]]]:
+        if self.solve_mode == "certified_exact":
+            return self._run_certified_exact()
+        return self._run_exploratory()
+
+    def _run_exploratory(self) -> Tuple[str, Optional[Dict[str, Any]]]:
+        iteration = 0
+        while iteration < self.max_iterations:
+            print(f"\n--- [LBBD Loop] Iteration {iteration + 1}/{self.max_iterations} ---")
+            print("  > Solving Master Problem...")
+
+            master_status = self.master.solve(time_limit_seconds=self.master_seconds)
+            if master_status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+                pass
+            elif master_status == cp_model.INFEASIBLE:
+                print("  > Master problem is provably infeasible.")
+                self.last_proof_summary = {
+                    "mode": "exploratory",
+                    "benders_iterations": iteration + 1,
+                    "master_status": "INFEASIBLE",
+                }
+                return RUN_STATUS_INFEASIBLE, None
+            else:
+                print("  > Master problem returned UNKNOWN / timeout.")
+                self.last_proof_summary = {
+                    "mode": "exploratory",
+                    "benders_iterations": iteration + 1,
+                    "master_status": "UNKNOWN",
+                }
+                return RUN_STATUS_UNKNOWN, None
+
+            solution = self.master.extract_solution()
+            if not solution:
+                self.last_proof_summary = {
+                    "mode": "exploratory",
+                    "benders_iterations": iteration + 1,
+                    "master_status": "EMPTY_SOLUTION",
+                }
+                return RUN_STATUS_UNKNOWN, None
+
+            print("  > Master solved successfully. Validating with Flow Subproblem...")
+            flow_status, bottlenecks = self._run_flow_diagnostic(solution)
+            self.last_proof_summary = {
+                "mode": "exploratory",
+                "benders_iterations": iteration + 1,
+                "diagnostic_flow_status": flow_status,
+                "bottleneck_count": len(bottlenecks),
+            }
+
+            if flow_status == "FEASIBLE":
+                print("  > Flow Subproblem FEASIBLE! Layout is validated.")
+                return RUN_STATUS_CERTIFIED, solution
+
+            if flow_status == "TIMEOUT":
+                print("  > Flow Subproblem timed out.")
+                return RUN_STATUS_UNKNOWN, None
+
+            print("  > Flow Subproblem INFEASIBLE. Extracting Bottleneck Cuts...")
+            if not bottlenecks:
+                print("  > No bottlenecks could be extracted. Terminating.")
+                return RUN_STATUS_UNKNOWN, None
+
+            conflict_set: List[Dict[str, str]] = []
+            conflict_map_for_master: Dict[str, int] = {}
+            for instance_id in bottlenecks:
+                if instance_id not in solution:
+                    continue
+                pose_idx = int(solution[instance_id]["pose_idx"])
+                pose_id = str(solution[instance_id]["pose_id"])
+                conflict_set.append({"instance_id": instance_id, "pose_id": pose_id})
+                conflict_map_for_master[instance_id] = pose_idx
+
+            if not conflict_set:
+                return RUN_STATUS_UNKNOWN, None
+
+            is_new = self.cut_manager.add_cut(
+                conflict_set,
+                reason="macro_flow_bottleneck",
+                source="LBBD_Flow",
+            )
+            if not is_new:
+                print("  > Extracted cut already exists! Loop stalling.")
+                return RUN_STATUS_UNKNOWN, None
+
+            print(f"  > Added new cut covering {len(conflict_set)} instances. Retrying...")
+            self.master.add_benders_cut(conflict_map_for_master)
+            iteration += 1
+
+        print("--- [LBBD Loop] Max iterations reached ---")
+        self.last_proof_summary = {
+            "mode": "exploratory",
+            "benders_iterations": self.max_iterations,
+            "master_status": "MAX_ITERATIONS",
+        }
+        return RUN_STATUS_UNPROVEN, None
+
+    def _run_certified_exact(self) -> Tuple[str, Optional[Dict[str, Any]]]:
+        diagnostic_flow_status = "NOT_RUN"
+        self._emit_heartbeat(stage="master_warm_start", event="start")
+        warm_start = self.master.build_exact_candidate_warm_start()
+        self._greedy_hint = dict(warm_start.get("solution_hint", {}))
+        self._greedy_hint_instances = len(self._greedy_hint)
+        self._used_greedy_hint = False
+        self._community_hint_path = os.environ.get(
+            "EXACT_COMMUNITY_BLUEPRINT_HINT_PATH", ""
+        ).strip()
+        self._community_hint_overrides = 0
+        self._community_hint_additions = 0
+        if self._community_hint_path:
+            try:
+                community_hint_raw = json.loads(
+                    Path(self._community_hint_path).read_text()
+                )
+            except FileNotFoundError:
+                print(
+                    f"[community-hint] file not found: {self._community_hint_path} — skipping",
+                    flush=True,
+                )
+                community_hint_raw = {}
+            except json.JSONDecodeError as exc:
+                print(
+                    f"[community-hint] JSON parse failed: {self._community_hint_path}: {exc} — skipping",
+                    flush=True,
+                )
+                community_hint_raw = {}
+            for inst_id, pose_idx in dict(community_hint_raw or {}).items():
+                pose_idx_int = parse_strict_int_hint_value(pose_idx)
+                if pose_idx_int is None:
+                    continue
+                key = str(inst_id)
+                if key in self._greedy_hint:
+                    if self._greedy_hint[key] != pose_idx_int:
+                        self._community_hint_overrides += 1
+                else:
+                    self._community_hint_additions += 1
+                self._greedy_hint[key] = pose_idx_int
+            self._greedy_hint_instances = len(self._greedy_hint)
+            print(
+                f"[community-hint] loaded {self._community_hint_path}: "
+                f"+{self._community_hint_additions} additions, "
+                f"{self._community_hint_overrides} overrides, "
+                f"total hinted instances now {self._greedy_hint_instances}",
+                flush=True,
+            )
+        self._master_hinted_literals = 0
+        self._ghost_anchor_hint_applied = False
+        raw_ghost_anchor_hint_idx = warm_start.get("ghost_anchor_hint_idx")
+        self._ghost_anchor_hint_idx = parse_strict_int_hint_value(
+            raw_ghost_anchor_hint_idx
+        )
+        self._ghost_anchor_hint_status = str(
+            warm_start.get("ghost_anchor_hint_status", "not_used")
+        )
+        self._residual_optional_zero_hinting_enabled = bool(
+            warm_start.get("hint_inactive_residual_optionals", False)
+        )
+        self._residual_optional_zero_hints = int(
+            warm_start.get("residual_optional_zero_hints", 0)
+        )
+        self._master_start_feasibility = {
+            "ghost_anchor_hint_applied": False,
+            "ghost_anchor_hint_idx": self._ghost_anchor_hint_idx,
+            "ghost_anchor_hint_status": str(self._ghost_anchor_hint_status),
+            "ghost_anchor_total_count": int(
+                warm_start.get("ghost_anchor_total_count", 0)
+            ),
+            "ghost_anchor_compatible_count": int(
+                warm_start.get("ghost_anchor_compatible_count", 0)
+            ),
+            **(
+                {"ghost_anchor_compatibility_skipped": True}
+                if bool(warm_start.get("ghost_anchor_compatibility_skipped", False))
+                else {}
+            ),
+            "mandatory_hint_pose_count": int(
+                warm_start.get("mandatory_hint_pose_count", 0)
+            ),
+            "mandatory_hint_occupied_cell_count": int(
+                warm_start.get("mandatory_hint_occupied_cell_count", 0)
+            ),
+            "required_optional_positive_hints": int(
+                warm_start.get("required_optional_positive_hints", 0)
+            ),
+            "residual_optional_positive_hints": int(
+                warm_start.get("residual_optional_positive_hints", 0)
+            ),
+            "residual_optional_zero_hints": int(
+                warm_start.get("residual_optional_zero_hints", 0)
+            ),
+            "warm_start_strategy": str(
+                warm_start.get("warm_start_strategy", "unsupported")
+            ),
+            "ghost_aware_anchor_attempt_count": int(
+                warm_start.get("ghost_aware_anchor_attempt_count", 0)
+            ),
+            "ghost_aware_anchor_selected_idx": warm_start.get(
+                "ghost_aware_anchor_selected_idx"
+            ),
+            "ghost_aware_complete_mandatory_hint": bool(
+                warm_start.get("ghost_aware_complete_mandatory_hint", False)
+            ),
+            "ghost_aware_hint_instances": int(
+                warm_start.get("ghost_aware_hint_instances", 0)
+            ),
+            "ghost_aware_pose_order_portfolio_attempted": bool(
+                warm_start.get("ghost_aware_pose_order_portfolio_attempted", False)
+            ),
+            "ghost_aware_pose_order_portfolio_success": bool(
+                warm_start.get("ghost_aware_pose_order_portfolio_success", False)
+            ),
+            "ghost_aware_pose_order_portfolio_selected_ordering": warm_start.get(
+                "ghost_aware_pose_order_portfolio_selected_ordering"
+            ),
+            "ghost_aware_pose_order_portfolio_attempt_count": int(
+                warm_start.get("ghost_aware_pose_order_portfolio_attempt_count", 0)
+            ),
+            "ghost_aware_pose_order_portfolio_failed_anchor_count": int(
+                warm_start.get(
+                    "ghost_aware_pose_order_portfolio_failed_anchor_count",
+                    0,
+                )
+            ),
+            "ghost_aware_pose_order_portfolio_failure_reason_counts": dict(
+                warm_start.get(
+                    "ghost_aware_pose_order_portfolio_failure_reason_counts",
+                    {},
+                )
+            ),
+            "ghost_aware_pose_order_portfolio_failure_samples": [
+                dict(entry)
+                for entry in list(
+                    warm_start.get(
+                        "ghost_aware_pose_order_portfolio_failure_samples",
+                        [],
+                    )
+                )
+                if isinstance(entry, Mapping)
+            ],
+            "ghost_aware_pose_order_validation_attempt_count": int(
+                warm_start.get(
+                    "ghost_aware_pose_order_validation_attempt_count",
+                    0,
+                )
+            ),
+            "ghost_aware_pose_order_validation_rejected_count": int(
+                warm_start.get(
+                    "ghost_aware_pose_order_validation_rejected_count",
+                    0,
+                )
+            ),
+            "ghost_aware_pose_order_validation_last_status": warm_start.get(
+                "ghost_aware_pose_order_validation_last_status"
+            ),
+            "ghost_aware_pose_order_validation_last_reason": warm_start.get(
+                "ghost_aware_pose_order_validation_last_reason"
+            ),
+        }
+        self._master_start_local_repair = {
+            "local_repair_attempted": bool(
+                warm_start.get("local_repair_attempted", False)
+            ),
+            "local_repair_success": bool(warm_start.get("local_repair_success", False)),
+            "local_repair_trigger_reason": warm_start.get(
+                "local_repair_trigger_reason"
+            ),
+            "local_repair_window_size": int(
+                warm_start.get("local_repair_window_size", 0)
+            ),
+            "local_repair_anchor_idx": warm_start.get("local_repair_anchor_idx"),
+            "local_repair_failed_group_id": warm_start.get(
+                "local_repair_failed_group_id"
+            ),
+            "local_repair_failed_group_template": warm_start.get(
+                "local_repair_failed_group_template"
+            ),
+            "local_repair_portfolio_attempt_count": int(
+                warm_start.get("local_repair_portfolio_attempt_count", 0)
+            ),
+            "local_repair_selected_group_orderings": [
+                str(token)
+                for token in list(
+                    warm_start.get("local_repair_selected_group_orderings", [])
+                )[:2]
+            ],
+            "local_repair_attempt_count": int(
+                warm_start.get("local_repair_attempt_count", 0)
+            ),
+            "local_repair_success_count": int(
+                warm_start.get("local_repair_success_count", 0)
+            ),
+            "local_repair_intra_group_attempted_count": int(
+                warm_start.get("local_repair_intra_group_attempted_count", 0)
+            ),
+            "local_repair_committed_attempted_count": int(
+                warm_start.get("local_repair_committed_attempted_count", 0)
+            ),
+            "local_repair_window1_count": int(
+                warm_start.get("local_repair_window1_count", 0)
+            ),
+            "local_repair_window2_count": int(
+                warm_start.get("local_repair_window2_count", 0)
+            ),
+        }
+        self._master_boundary_port_feasibility = dict(
+            self.master.build_stats.get(
+                "exact_candidate_warm_start_boundary_port_feasibility",
+                {},
+            )
+        )
+        self._master_mandatory_support_diagnostics = dict(
+            self.master.build_stats.get(
+                "exact_candidate_mandatory_support_diagnostics",
+                {},
+            )
+        )
+        self._master_mandatory_group_prechecks = dict(
+            self.master.build_stats.get(
+                "exact_candidate_warm_start_mandatory_group_prechecks",
+                {},
+            )
+        )
+        self._master_start_failure_attribution = dict(
+            self.master.build_stats.get(
+                "exact_candidate_warm_start_failure_attribution",
+                {},
+            )
+        )
+        for iteration in range(1, self.max_iterations + 1):
+            print(f"\n--- [LBBD Exact Loop] Iteration {iteration}/{self.max_iterations} ---")
+            print("  > Solving Master Problem...")
+            self._emit_heartbeat(
+                stage="master_solve",
+                event="start",
+                iteration=iteration,
+                extra={
+                    "master_search_profile": str(
+                        getattr(self.master, "master_search_profile", "unknown")
+                    )
+                },
+            )
+
+            solve_hint: Optional[Mapping[str, int]] = None
+            solve_ghost_anchor_hint_idx: Optional[int] = None
+            solve_hint_inactive_residual_optionals = True
+            if iteration == 1 and not self._master_warm_start_disabled:
+                solve_hint = self._greedy_hint or None
+                solve_ghost_anchor_hint_idx = self._ghost_anchor_hint_idx
+                solve_hint_inactive_residual_optionals = bool(
+                    self._residual_optional_zero_hinting_enabled
+                )
+                if self._greedy_hint:
+                    self._used_greedy_hint = True
+
+            master_log_limit = (
+                _master_cp_sat_log_heartbeat_line_limit()
+                if self._heartbeat_callback is not None
+                else 0
+            )
+            master_log_max_chars = _master_cp_sat_log_heartbeat_max_chars()
+            master_log_count = 0
+
+            def _emit_master_solve_log(line: str) -> None:
+                nonlocal master_log_count
+                if master_log_limit <= 0 or master_log_count >= master_log_limit:
+                    return
+                text = str(line).strip()
+                if not text:
+                    return
+                master_log_count += 1
+                self._emit_heartbeat(
+                    stage="master_solve_log",
+                    event="line",
+                    iteration=iteration,
+                    extra={
+                        "line_index": int(master_log_count),
+                        "line_limit": int(master_log_limit),
+                        "text": text[:master_log_max_chars],
+                        "truncated": len(text) > master_log_max_chars,
+                    },
+                )
+
+            master_status = self.master.solve(
+                time_limit_seconds=self.master_seconds,
+                solution_hint=solve_hint,
+                known_feasible_hint=False,
+                ghost_anchor_hint_idx=solve_ghost_anchor_hint_idx,
+                hint_inactive_residual_optionals=solve_hint_inactive_residual_optionals,
+                diagnostic_log_callback=_emit_master_solve_log
+                if master_log_limit > 0
+                else None,
+            )
+            if iteration == 1:
+                last_solve = dict(self.master.build_stats.get("last_solve", {}))
+                self._master_hinted_literals = int(last_solve.get("hinted_literals", 0))
+                self._ghost_anchor_hint_applied = bool(
+                    last_solve.get("ghost_anchor_hint_applied", False)
+                )
+                _ghost_anchor_hint_idx_value = last_solve.get("ghost_anchor_hint_idx")
+                parsed_ghost_anchor_hint_idx = parse_strict_int_hint_value(
+                    _ghost_anchor_hint_idx_value
+                )
+                if parsed_ghost_anchor_hint_idx is not None:
+                    self._ghost_anchor_hint_idx = parsed_ghost_anchor_hint_idx
+                self._residual_optional_zero_hinting_enabled = bool(
+                    last_solve.get(
+                        "residual_optional_zero_hinting_enabled",
+                        self._residual_optional_zero_hinting_enabled,
+                    )
+                )
+                self._residual_optional_zero_hints = int(
+                    last_solve.get("residual_optional_zero_hints", 0)
+                )
+                self._master_start_feasibility["ghost_anchor_hint_applied"] = bool(
+                    self._ghost_anchor_hint_applied
+                )
+                self._master_start_feasibility["ghost_anchor_hint_idx"] = (
+                    self._ghost_anchor_hint_idx
+                )
+                self._master_start_feasibility["ghost_anchor_hint_status"] = str(
+                    self._ghost_anchor_hint_status
+                )
+                self._master_start_feasibility["residual_optional_zero_hints"] = int(
+                    self._residual_optional_zero_hints
+                )
+            if master_status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+                pass
+            elif master_status == cp_model.INFEASIBLE:
+                self.last_proof_summary = {
+                    "mode": "certified_exact",
+                    "benders_iterations": iteration,
+                    "master_status": "INFEASIBLE",
+                    "diagnostic_flow_status": diagnostic_flow_status,
+                    "enumerated_bindings": 0,
+                    "routing_attempts": 0,
+                    "exact_safe_cut_count": len(self.loaded_exact_safe_cuts) + len(self.generated_exact_safe_cuts),
+                    **self._exact_warm_start_summary(),
+                    **self._master_search_summary(),
+                    **self._subproblem_reuse_summary(),
+                    **self._exact_cut_ladder_summary(),
+                }
+                return RUN_STATUS_INFEASIBLE, None
+            else:
+                self.last_proof_summary = {
+                    "mode": "certified_exact",
+                    "benders_iterations": iteration,
+                    "master_status": "UNKNOWN",
+                    "diagnostic_flow_status": diagnostic_flow_status,
+                    "enumerated_bindings": 0,
+                    "routing_attempts": 0,
+                    **self._exact_warm_start_summary(),
+                    **self._master_search_summary(),
+                    **self._subproblem_reuse_summary(),
+                    **self._exact_cut_ladder_summary(),
+                }
+                return RUN_STATUS_UNKNOWN, None
+
+            solution = self.master.extract_solution()
+            self._emit_heartbeat(
+                stage="master_solution_extract",
+                event="complete",
+                iteration=iteration,
+                extra={
+                    "master_status": "FEASIBLE",
+                    "solution_instance_count": len(solution) if solution else 0,
+                },
+            )
+            if not solution:
+                self.last_proof_summary = {
+                    "mode": "certified_exact",
+                    "benders_iterations": iteration,
+                    "master_status": "EMPTY_SOLUTION",
+                    "diagnostic_flow_status": diagnostic_flow_status,
+                    "enumerated_bindings": 0,
+                    "routing_attempts": 0,
+                    **self._exact_warm_start_summary(),
+                    **self._master_search_summary(),
+                    **self._subproblem_reuse_summary(),
+                    **self._exact_cut_ladder_summary(),
+                }
+                return RUN_STATUS_UNKNOWN, None
+
+            if os.environ.get(
+                "EXACT_POWER_PLACEMENT_SUBPROBLEM", ""
+            ).strip() not in {"", "0", "false", "False"}:
+                power_status, power_solution_or_cut = self._run_power_placement_subproblem(
+                    solution=solution, iteration=iteration,
+                )
+                if power_status == "FEASIBLE":
+                    solution = power_solution_or_cut
+                elif power_status == "INFEASIBLE_CUT_ADDED":
+                    iteration += 1
+                    continue
+                else:
+                    self.last_proof_summary = {
+                        "mode": "certified_exact",
+                        "benders_iterations": iteration,
+                        "master_status": "FEASIBLE",
+                        "stage": "power_placement_subproblem",
+                        "power_placement_status": str(power_status),
+                        "diagnostic_flow_status": diagnostic_flow_status,
+                        "enumerated_bindings": 0,
+                        "routing_attempts": 0,
+                        "master_follow_up": "fail_closed_unknown",
+                        **self._exact_warm_start_summary(),
+                        **self._master_search_summary(),
+                        **self._subproblem_reuse_summary(),
+                        **self._exact_cut_ladder_summary(),
+                    }
+                    return RUN_STATUS_UNKNOWN, None
+
+            self._emit_heartbeat(
+                stage="flow_diagnostic",
+                event="start",
+                iteration=iteration,
+            )
+            flow_status, _bottlenecks = self._run_flow_diagnostic(solution)
+            diagnostic_flow_status = flow_status
+
+            _generic_io_requirements = getattr(
+                self.master, "generic_io_requirements", None
+            ) or {}
+            from src.models.port_binding import (
+                routing_free_sink_commodities_from_generic_inputs,
+            )
+
+            _routing_output_exclusions = (
+                routing_free_sink_commodities_from_generic_inputs(
+                    dict(
+                        _generic_io_requirements.get(
+                            "required_generic_inputs", {}
+                        )
+                        or {}
+                    )
+                )
+            )
+
+            # SAC-Hull Phase 3: L2 abstract routing layer. master OPTIMAL 后,
+            # 跑 L2 (lightweight CP-SAT, decides ambiguous side under SAC capacity hull).
+            # L2 FEASIBLE → 进 binding/routing. L2 INFEASIBLE → 加 SAC cut + continue iter.
+            if os.environ.get("EXACT_B1_ABSTRACT_ROUTING_LAYER", "").strip().lower() in {"1", "true", "yes", "on"}:
+                from src.models.abstract_routing_layer import solve_abstract_routing
+                try:
+                    l2_seconds = float(os.environ.get("EXACT_B1_ABSTRACT_ROUTING_SECONDS", "5.0"))
+                except ValueError:
+                    l2_seconds = 5.0
+                try:
+                    l2_sep_limit = int(os.environ.get("EXACT_B1_ABSTRACT_ROUTING_MAX_SEPARATORS", "96"))
+                except ValueError:
+                    l2_sep_limit = 96
+                # 推 ghost anchor
+                ghost_anchor = None
+                ghost_size = None
+                if hasattr(self.master, "ghost_rect") and self.master.ghost_rect is not None:
+                    ghost_size = (int(self.master.ghost_rect[0]), int(self.master.ghost_rect[1]))
+                l2_result = solve_abstract_routing(
+                    placement_solution=solution,
+                    facility_pools=self.master.facility_pools,
+                    instances_by_id={str(i["instance_id"]): dict(i) for i in self.master.source_instances},
+                    grid_w=int(self.master.grid_w),
+                    grid_h=int(self.master.grid_h),
+                    ghost_anchor=ghost_anchor, ghost_size=ghost_size,
+                    time_limit_seconds=l2_seconds,
+                    separator_limit=l2_sep_limit,
+                    include_axis=True,
+                    include_ghost_moat=True,
+                    routing_free_sink_commodities=_routing_output_exclusions,
+                )
+                print(
+                    f"[l2-sac] iter {iteration}: status={l2_result.status} wall={l2_result.wall_seconds:.2f}s "
+                    f"stats={l2_result.stats}",
+                    flush=True,
+                )
+                if l2_result.status == "INFEASIBLE" and l2_result.violations:
+                    # 加 SAC cut for first violation
+                    delegate = getattr(self.master, "_coordinate_delegate", None)
+                    if delegate is not None and hasattr(delegate, "add_separator_capacity_cut"):
+                        cuts_added = 0
+                        try:
+                            max_per = int(os.environ.get("EXACT_B1_SEPARATOR_HULL_DYNAMIC_MAX_PER_ITER", "2"))
+                        except ValueError:
+                            max_per = 2
+                        for v in l2_result.violations[:max_per]:
+                            if delegate.add_separator_capacity_cut(v):
+                                cuts_added += 1
+                        print(
+                            f"[l2-sac] iter {iteration}: {len(l2_result.violations)} violations, "
+                            f"top slack={l2_result.violations[0].slack}, cuts_added={cuts_added}",
+                            flush=True,
+                        )
+                        if cuts_added > 0:
+                            self._fine_grained_exact_safe_cut_count += cuts_added
+                            continue
+                # L2 FEASIBLE or TIMEOUT: fall through to binding/routing
+
+            # SAC-Hull Phase 2: dynamic separator separation (fallback when L2 off).
+            elif os.environ.get("EXACT_B1_SEPARATOR_HULL_DYNAMIC", "").strip().lower() in {"1", "true", "yes", "on"}:
+                from src.search.separator_capacity_separator import analyze_layout_for_separator_violations
+                try:
+                    max_per_iter = int(os.environ.get("EXACT_B1_SEPARATOR_HULL_DYNAMIC_MAX_PER_ITER", "4"))
+                except ValueError:
+                    max_per_iter = 4
+                # 加 threshold: violations ≤ K 时 fall through 进 binding/routing 真 verifier
+                try:
+                    fall_through_threshold = int(os.environ.get(
+                        "EXACT_B1_SEPARATOR_HULL_DYNAMIC_FALL_THROUGH", "-1"
+                    ))
+                except ValueError:
+                    fall_through_threshold = -1
+                # 推 ghost anchor
+                ghost_anchor = None
+                ghost_size = None
+                if hasattr(self.master, "ghost_rect") and self.master.ghost_rect is not None:
+                    ghost_size = (int(self.master.ghost_rect[0]), int(self.master.ghost_rect[1]))
+                    forbid = getattr(self.master, "_forbidden_cells_cached", None)
+                    if forbid is None:
+                        # fallback: 推 from solution gap
+                        pass
+                violations = analyze_layout_for_separator_violations(
+                    placement_solution=solution,
+                    facility_pools=self.master.facility_pools,
+                    instances_by_id={str(i["instance_id"]): dict(i) for i in self.master.source_instances},
+                    grid_w=int(self.master.grid_w),
+                    grid_h=int(self.master.grid_h),
+                    ghost_anchor=ghost_anchor,
+                    ghost_size=ghost_size,
+                    include_axis=True,
+                    include_ghost_moat=False,
+                    routing_free_sink_commodities=_routing_output_exclusions,
+                )
+                delegate = getattr(self.master, "_coordinate_delegate", None)
+                if violations and delegate is not None and hasattr(delegate, "add_separator_capacity_cut"):
+                    # fall through 进 binding/routing 当 violations ≤ threshold
+                    if 0 <= fall_through_threshold and len(violations) <= fall_through_threshold:
+                        print(
+                            f"[sac-dynamic] iter {iteration}: {len(violations)} violations ≤ "
+                            f"threshold {fall_through_threshold}, fall through to binding/routing",
+                            flush=True,
+                        )
+                    else:
+                        cuts_added = 0
+                        for v in violations[:max_per_iter]:
+                            if delegate.add_separator_capacity_cut(v):
+                                cuts_added += 1
+                        print(
+                            f"[sac-dynamic] iter {iteration}: {len(violations)} violations, "
+                            f"top slack={violations[0].slack}, cuts_added={cuts_added}",
+                            flush=True,
+                        )
+                        if cuts_added > 0:
+                            self._fine_grained_exact_safe_cut_count += cuts_added
+                            continue
+                else:
+                    print(f"[sac-dynamic] iter {iteration}: 0 violations", flush=True)
+
+            self._emit_heartbeat(
+                stage="binding_build",
+                event="start",
+                iteration=iteration,
+                extra={"diagnostic_flow_status": str(diagnostic_flow_status)},
+            )
+            result_status, certified_solution = self._run_exact_binding_and_routing(
+                iteration=iteration,
+                solution=solution,
+                diagnostic_flow_status=diagnostic_flow_status,
+            )
+            if result_status == _EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE:
+                continue
+            if result_status == RUN_STATUS_CERTIFIED:
+                return RUN_STATUS_CERTIFIED, certified_solution
+            if result_status == RUN_STATUS_INFEASIBLE:
+                return RUN_STATUS_INFEASIBLE, None
+            if result_status == RUN_STATUS_UNKNOWN:
+                return RUN_STATUS_UNKNOWN, None
+
+        self.last_proof_summary = {
+            "mode": "certified_exact",
+            "benders_iterations": self.max_iterations,
+            "master_status": "MAX_ITERATIONS",
+            "diagnostic_flow_status": diagnostic_flow_status,
+            "enumerated_bindings": 0,
+            "routing_attempts": 0,
+            "master_follow_up": "fail_closed_unknown",
+            "exact_safe_cut_count": (
+                len(self.loaded_exact_safe_cuts) + len(self.generated_exact_safe_cuts)
+            ),
+            **self._exact_warm_start_summary(),
+            **self._master_search_summary(),
+            **self._subproblem_reuse_summary(),
+            **self._exact_cut_ladder_summary(),
+        }
+        return RUN_STATUS_UNKNOWN, None
+
+    def _selected_ghost_context(
+        self,
+    ) -> Optional[Tuple[int, Any, Mapping[str, Any], Set[Tuple[int, int]]]]:
+        """Recover the unique selected ghost anchor and its cells as one proof context.
+
+        Delegated power completion uses the ghost cells as fixed obstacles, while
+        the INFEASIBLE nogood is conditioned by the selected ghost literal.  Those
+        two pieces must be a single, geometrically self-consistent provenance
+        record.  Any ambiguity or malformed domain is fail-closed: the caller must
+        not solve a de-ghosted or cross-ghost power subproblem.
+        """
+        u_vars = getattr(self.master, "u_vars", None) or {}
+        ghost_domains = getattr(self.master, "_ghost_domains", None) or []
+        solver = getattr(self.master, "_solver", None)
+        if not u_vars or not ghost_domains or solver is None:
+            return None
+
+        selected: List[Tuple[int, Any]] = []
+        for raw_rect_idx, var in u_vars.items():
+            try:
+                rect_idx = int(raw_rect_idx)
+                if int(solver.Value(var)) == 1:
+                    selected.append((rect_idx, var))
+            except Exception:
+                return None
+        if len(selected) != 1:
+            return None
+
+        rect_idx, u_var = selected[0]
+        if rect_idx < 0 or rect_idx >= len(ghost_domains):
+            return None
+        domain = ghost_domains[rect_idx]
+        if not isinstance(domain, Mapping):
+            return None
+
+        anchor_raw = domain.get("anchor")
+        if not isinstance(anchor_raw, Mapping):
+            return None
+        anchor_x_raw = anchor_raw.get("x")
+        anchor_y_raw = anchor_raw.get("y")
+        if anchor_x_raw is None or anchor_y_raw is None:
+            return None
+        try:
+            anchor_x = int(anchor_x_raw)
+            anchor_y = int(anchor_y_raw)
+        except Exception:
+            return None
+
+        raw_cells = domain.get("cells") or []
+        try:
+            cells = {(int(c[0]), int(c[1])) for c in raw_cells}
+        except Exception:
+            return None
+        if not cells:
+            return None
+
+        ghost_rect = getattr(self.master, "ghost_rect", None)
+        if ghost_rect is not None:
+            try:
+                ghost_w = int(ghost_rect[0])
+                ghost_h = int(ghost_rect[1])
+            except Exception:
+                return None
+            if ghost_w <= 0 or ghost_h <= 0:
+                return None
+            expected_cells = {
+                (anchor_x + dx, anchor_y + dy)
+                for dx in range(ghost_w)
+                for dy in range(ghost_h)
+            }
+            if cells != expected_cells:
+                return None
+        else:
+            try:
+                min_x = min(x for x, _y in cells)
+                min_y = min(y for _x, y in cells)
+                if min_x != anchor_x or min_y != anchor_y:
+                    return None
+            except Exception:
+                return None
+
+        return rect_idx, u_var, {"x": anchor_x, "y": anchor_y}, cells
+
+    def _selected_ghost_cells(self) -> Set[Tuple[int, int]]:
+        context = self._selected_ghost_context()
+        if context is None:
+            return set()
+        return set(context[3])
+
+    def _ghost_cells_from_solution_marker(
+        self,
+        raw_pick: Any,
+        ghost_domains: Sequence[Any],
+    ) -> Optional[Set[Tuple[int, int]]]:
+        """Resolve the ghost cells named by ``solution["ghost_pick"]``.
+
+        Reads the domain record rather than recomputing anchor + w x h, so there
+        is no second geometry derivation to drift from the master's.  Any shape
+        the checks below do not fully account for is fail-closed (``None``).
+        """
+
+        if not isinstance(raw_pick, Mapping):
+            return None
+        if str(raw_pick.get("facility_type")) != "ghost_rect":
+            return None
+        try:
+            rect_idx = int(raw_pick["pose_idx"])
+        except (IndexError, KeyError, OverflowError, TypeError, ValueError):
+            return None
+        if rect_idx < 0 or rect_idx >= len(ghost_domains):
+            return None
+        domain = ghost_domains[rect_idx]
+        if not isinstance(domain, Mapping):
+            return None
+
+        domain_anchor = domain.get("anchor")
+        pick_anchor = raw_pick.get("anchor")
+        if not isinstance(domain_anchor, Mapping) or not isinstance(pick_anchor, Mapping):
+            return None
+        try:
+            anchor_x = int(domain_anchor["x"])
+            anchor_y = int(domain_anchor["y"])
+            if int(pick_anchor["x"]) != anchor_x or int(pick_anchor["y"]) != anchor_y:
+                return None
+            cells = {(int(c[0]), int(c[1])) for c in domain.get("cells") or []}
+        except (IndexError, KeyError, OverflowError, TypeError, ValueError):
+            return None
+        if not cells:
+            return None
+
+        ghost_rect = getattr(self.master, "ghost_rect", None)
+        if ghost_rect is not None:
+            try:
+                ghost_w = int(ghost_rect[0])
+                ghost_h = int(ghost_rect[1])
+            except (IndexError, KeyError, OverflowError, TypeError, ValueError):
+                return None
+            if ghost_w <= 0 or ghost_h <= 0:
+                return None
+            expected = {
+                (anchor_x + dx, anchor_y + dy)
+                for dx in range(ghost_w)
+                for dy in range(ghost_h)
+            }
+            if cells != expected:
+                return None
+        elif min(x for x, _y in cells) != anchor_x or min(
+            y for _x, y in cells
+        ) != anchor_y:
+            return None
+        return cells
+
+    def _strict_ghost_occupancy(
+        self,
+        solution: Mapping[str, Any],
+    ) -> Optional[Set[Tuple[int, int]]]:
+        """Return the ghost cells that strict emptiness adds to occupancy.
+
+        This is the only ghost source the certified routing domain reads.  It
+        resolves from the layout being routed rather than from the live solver:
+        ``extract_solution`` always stamps ``ghost_pick`` when the master has a
+        ghost domain, whereas the solver handle is dropped every time a cut is
+        applied, so the marker is the provenance that actually travels with the
+        layout.
+
+        A master with no ghost domain has no hole, so the answer is the empty
+        set.  Once a domain exists the marker must resolve: answering with an
+        empty set on a broken context would silently restore the pre-2026-08-05
+        loose semantics at exactly the moment the geometry is least trustworthy.
+        ``None`` is that fail-closed signal and the caller must raise UNKNOWN.
+        """
+
+        ghost_domains = list(getattr(self.master, "_ghost_domains", None) or [])
+        raw_pick = solution.get("ghost_pick") if isinstance(solution, Mapping) else None
+        if not ghost_domains:
+            if raw_pick is not None:
+                # A marker with no domain behind it is malformed input, not the
+                # absence of a hole.
+                return None
+            if getattr(self.master, "ghost_rect", None) is not None:
+                # Ghost is configured on the master yet no domain was built to
+                # answer with — a broken state, not a hole-free layout.
+                # Answering with an empty set here would silently restore the
+                # loose semantics exactly when the machinery is known missing.
+                return None
+            return set()
+
+        cells = self._ghost_cells_from_solution_marker(raw_pick, ghost_domains)
+        if cells is None:
+            return None
+        context = self._selected_ghost_context()
+        if context is not None:
+            if set(context[3]) != cells:
+                # The live literal and the routed layout disagree about the hole.
+                return None
+            return cells
+        if getattr(self.master, "_solver", None) is not None:
+            # The solver handle is still live yet the selected context did not
+            # resolve (ambiguous selection, malformed domain).  Trusting the
+            # marker alone would skip the only cross-check tying it to the live
+            # selection — fail closed instead.
+            return None
+        # Solver handle dropped (a cut was applied): the marker is the
+        # provenance that travels with the layout, and it already passed the
+        # full domain-record checks above.
+        return cells
+
+    def _selected_ghost_anchor(self) -> Optional[Tuple[int, Any, Mapping[str, Any]]]:
+        # 返回 (rect_idx, u_var, anchor_dict) 给 power infeasible cut 当 condition
+        # — 让 cut 只在当前 ghost anchor 下生效, 不过切 ghost B 下合法解.
+        context = self._selected_ghost_context()
+        if context is None:
+            return None
+        rect_idx, u_var, anchor, _cells = context
+        return rect_idx, u_var, anchor
+
+    def _solution_ghost_pick_matches_selected_context(
+        self,
+        solution: Mapping[str, Any],
+        *,
+        rect_idx: int,
+        anchor: Mapping[str, Any],
+    ) -> bool:
+        """Return True only when solution["ghost_pick"] matches the live u-var.
+
+        Delegated power witnesses carry the extracted master solution through to
+        the final certified payload.  The subproblem already avoids the cells
+        recovered from the selected ghost literal; if a forensic/future caller
+        provides a stale or malformed ghost_pick entry in ``solution``, the
+        injected pole could be legal for the live literal but overlap the empty
+        rectangle recorded in the returned witness.  Treat such mixed provenance
+        as unsafe and fail closed.  Missing ghost_pick is allowed here because
+        older unit fixtures build minimal solutions by hand; the live ghost
+        context itself is still mandatory for delegated power.
+        """
+        raw_pick = solution.get("ghost_pick")
+        if raw_pick is None:
+            return True
+        if not isinstance(raw_pick, Mapping):
+            return False
+        if str(raw_pick.get("facility_type")) != "ghost_rect":
+            return False
+
+        try:
+            pose_idx_raw = raw_pick.get("pose_idx")
+            if pose_idx_raw is None or int(pose_idx_raw) != int(rect_idx):
+                return False
+
+            pick_anchor = raw_pick.get("anchor")
+            if not isinstance(pick_anchor, Mapping):
+                return False
+            px = pick_anchor.get("x")
+            py = pick_anchor.get("y")
+            ax = anchor.get("x")
+            ay = anchor.get("y")
+            if px is None or py is None or ax is None or ay is None:
+                return False
+            return int(px) == int(ax) and int(py) == int(ay)
+        except Exception:
+            return False
+
+    def _run_power_placement_subproblem(
+        self,
+        *,
+        solution: Dict[str, Any],
+        iteration: int,
+    ) -> Tuple[str, Any]:
+        # Returns ("FEASIBLE", updated_solution) | ("INFEASIBLE_CUT_ADDED", None) | ("ABORT", None)
+        time_limit = float(os.environ.get("EXACT_POWER_SUBPROBLEM_SECONDS", "10") or "10")
+        powered_templates: Set[str] = getattr(self.master, "_powered_templates", set()) or set()
+        coverers = (
+            getattr(self.master, "_power_coverers_by_template_pose", {}) or {}
+        )
+        preexisting_power_poles = [
+            str(instance_id)
+            for instance_id, entry in solution.items()
+            if str((entry or {}).get("facility_type")) == "power_pole"
+        ]
+        if preexisting_power_poles:
+            # The delegated power subproblem treats power-pole poses as variables of
+            # its own.  Re-solving on top of an already materialized pole would
+            # require that pole to be carried as proof support for both FEASIBLE
+            # witnesses and INFEASIBLE cuts.  Until that mixed context is modeled,
+            # fail closed instead of injecting an overlapping synthetic pole.
+            self._emit_heartbeat(
+                stage="power_placement_subproblem",
+                event="abort_preexisting_power_pole_context",
+                iteration=iteration,
+                extra={"preexisting_power_pole_count": len(preexisting_power_poles)},
+            )
+            return "ABORT", None
+        ghost_context = self._selected_ghost_context()
+        if ghost_context is None:
+            # The delegated power witness is part of the same empty-rectangle proof
+            # context as the master solution.  If the selected ghost alternative
+            # cannot be recovered as one self-consistent provenance record, do not
+            # solve a de-ghosted or cross-ghost subproblem: a FEASIBLE witness could
+            # otherwise place poles inside the certified empty rect.
+            self._emit_heartbeat(
+                stage="power_placement_subproblem",
+                event="abort_missing_ghost_context",
+                iteration=iteration,
+            )
+            return "ABORT", None
+        rect_idx, u_var, anchor, ghost_cells = ghost_context
+        if not self._solution_ghost_pick_matches_selected_context(
+            solution, rect_idx=rect_idx, anchor=anchor
+        ):
+            # The solution payload is the final witness that gets returned after
+            # injection.  Its ghost_pick marker must describe the same selected
+            # ghost literal/cells that the delegated power subproblem avoided.
+            # Otherwise a stale marker could make an injected pole overlap the
+            # empty rectangle claimed by the certified witness.
+            self._emit_heartbeat(
+                stage="power_placement_subproblem",
+                event="abort_ghost_pick_context_mismatch",
+                iteration=iteration,
+                extra={
+                    "ghost_rect_idx": int(rect_idx),
+                    "ghost_anchor": {
+                        "x": int(anchor.get("x", 0)),
+                        "y": int(anchor.get("y", 0)),
+                    },
+                },
+            )
+            return "ABORT", None
+
+        sub = PowerPlacementSubproblem(
+            master_solution=solution,
+            facility_pools=self.master.facility_pools,
+            powered_templates=powered_templates,
+            power_coverers_by_template_pose=coverers,
+            ghost_cells=ghost_cells,
+        )
+        sub.build()
+        result = sub.solve(time_limit_seconds=time_limit)
+
+        self._emit_heartbeat(
+            stage="power_placement_subproblem",
+            event=result.status.lower(),
+            iteration=iteration,
+            extra=dict(result.stats),
+        )
+
+        if result.status == "FEASIBLE":
+            updated = inject_power_poles_into_solution(
+                solution,
+                selected_pose_indices=result.selected_pose_indices,
+                facility_pools=self.master.facility_pools,
+                solve_mode=self.solve_mode,
+            )
+            return "FEASIBLE", updated
+
+        if result.status == "INFEASIBLE":
+            # power infeasibility 跟当前 selected ghost anchor 强相关 — pole 不能
+            # 覆盖到 ghost cells, ghost A 挡住唯一可用 pole 时 infeasible 不代表
+            # ghost B 下同一组 pose 也 infeasible. cut 必须 ghost-conditioned,
+            # 否则 over-prune 跨 ghost alternatives.
+            #
+            # The subproblem filters candidate poles against *all* fixed master
+            # occupancy, not only powered consumers.  Therefore an exact-safe
+            # infeasible cut must keep the full non-pole facility support that
+            # participated in that fixed occupancy.  Projecting this proof down
+            # to powered instances alone can over-cut layouts where an unpowered
+            # blocker moves away while the powered tuple and ghost anchor remain
+            # unchanged.
+            conflict_set: Dict[str, int] = {}
+            for instance_id, entry in solution.items():
+                tpl = str(entry.get("facility_type"))
+                if tpl == "power_pole" or str(instance_id) == "ghost_pick":
+                    continue
+                try:
+                    conflict_set[str(instance_id)] = int(entry["pose_idx"])
+                except Exception:
+                    return "ABORT", None
+            if not conflict_set:
+                return "ABORT", None
+
+            anchor_x = int(anchor.get("x", 0))
+            anchor_y = int(anchor.get("y", 0))
+            condition_set = {f"ghost_anchor::({anchor_x},{anchor_y})": int(rect_idx)}
+
+            applied = self._add_exact_persisted_nogood(
+                conflict_set=conflict_set,
+                iteration=iteration,
+                cut_type="power_subproblem_infeasible_nogood",
+                proof_stage="power_placement_subproblem",
+                proof_summary={
+                    "mode": "certified_exact",
+                    "benders_iterations": iteration,
+                    "stage": "power_placement_subproblem",
+                    "status": "INFEASIBLE",
+                    "uncovered_instances": list(result.uncovered_instance_ids),
+                    "support_conflict_scope": "all_non_pole_selected_occupancy",
+                    **self._exact_warm_start_summary(),
+                },
+                metadata={
+                    "kind": "power_subproblem_ghost_conditioned_nogood",
+                    "ghost_rect_idx": int(rect_idx),
+                    "ghost_anchor": {"x": anchor_x, "y": anchor_y},
+                },
+                condition_set=condition_set,
+                condition_lits=(u_var,),
+            )
+            self._emit_heartbeat(
+                stage="power_placement_subproblem",
+                event="cut_added" if applied else "cut_skipped",
+                iteration=iteration,
+                extra={
+                    "conflict_size": len(conflict_set),
+                    "condition_size": 1,
+                    "ghost_rect_idx": int(rect_idx),
+                    "uncovered_instances": list(result.uncovered_instance_ids),
+                },
+            )
+            if not applied:
+                return "ABORT", None
+            return "INFEASIBLE_CUT_ADDED", None
+
+        # TIMEOUT — no exact-safe cut available; abort this iteration.
+        return "ABORT", None
+
+    def _run_flow_diagnostic(
+        self,
+        solution: Mapping[str, Mapping[str, Any]],
+    ) -> Tuple[str, Set[str]]:
+        occupied_cells: Set[Tuple[int, int]] = set()
+        port_dict: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+
+        for instance_id, solution_entry in solution.items():
+            # V88: the ghost_pick marker is the empty rectangle itself, not a
+            # facility; it has no pool pose, occupancy, or ports.
+            if str(instance_id) == "ghost_pick":
+                continue
+            pose_idx = int(solution_entry["pose_idx"])
+            facility_type = str(solution_entry["facility_type"])
+            pose = self.master.facility_pools[facility_type][pose_idx]
+
+            for cell in pose.get("occupied_cells", []):
+                occupied_cells.add((int(cell[0]), int(cell[1])))
+
+            for port in pose.get("input_port_cells", []):
+                payload = dict(port)
+                payload["instance_id"] = instance_id
+                payload["type"] = "in"
+                port_dict["dummy_commodity"].append(payload)
+
+            for port in pose.get("output_port_cells", []):
+                payload = dict(port)
+                payload["instance_id"] = instance_id
+                payload["type"] = "out"
+                port_dict["dummy_commodity"].append(payload)
+
+        flow_network = build_flow_network(occupied_cells, port_dict, self.commodity_demands)
+        flow_subproblem = FlowSubproblem(
+            flow_network,
+            self.commodity_demands,
+            solve_mode=self.solve_mode,
+        )
+        flow_status = flow_subproblem.build_and_solve(time_limit_ms=int(self.flow_seconds * 1000))
+        return flow_status, set(flow_subproblem.extract_bottleneck_instances())
+
+    def _binding_generic_requirements_kwargs(self) -> Dict[str, Any]:
+        if getattr(self, "solve_mode", None) != "certified_exact":
+            return {}
+        generic_io_requirements = getattr(self.master, "generic_io_requirements", None)
+        if not isinstance(generic_io_requirements, Mapping):
+            raise RuntimeError(
+                "certified binding requires the master generic_io_requirements snapshot"
+            )
+        required_generic_outputs = generic_io_requirements.get(
+            "required_generic_outputs", {}
+        )
+        required_generic_inputs = generic_io_requirements.get(
+            "required_generic_inputs", {}
+        )
+        if not isinstance(required_generic_outputs, Mapping) or not isinstance(
+            required_generic_inputs, Mapping
+        ):
+            raise RuntimeError(
+                "certified binding requires normalized master generic IO sections"
+            )
+        kwargs: Dict[str, Any] = {
+            "required_generic_outputs": dict(required_generic_outputs),
+            "required_generic_inputs": dict(required_generic_inputs),
+        }
+        if required_generic_inputs:
+            slot_map = getattr(
+                self.master,
+                "generic_input_slots_by_operation",
+                None,
+            )
+            if not isinstance(slot_map, Mapping):
+                raise RuntimeError(
+                    "certified binding requires the master "
+                    "generic_input_slots_by_operation snapshot"
+                )
+            normalized_slot_map: Dict[str, int] = {}
+            for operation_type, raw_slots in slot_map.items():
+                if isinstance(raw_slots, bool) or not isinstance(raw_slots, int):
+                    raise RuntimeError(
+                        "certified binding requires strict integer generic-input "
+                        f"capacity for operation {operation_type!r}"
+                    )
+                if raw_slots < 0:
+                    raise RuntimeError(
+                        "certified binding requires non-negative generic-input "
+                        f"capacity for operation {operation_type!r}"
+                    )
+                normalized_slot_map[str(operation_type)] = int(raw_slots)
+            kwargs["generic_input_slots_by_operation"] = normalized_slot_map
+        return kwargs
+
+    def _binding_canonical_rules_kwargs(self) -> Dict[str, Any]:
+        if getattr(self, "solve_mode", None) != "certified_exact":
+            return {}
+        canonical_rules = getattr(self.master, "rules", None)
+        if not isinstance(canonical_rules, Mapping):
+            raise RuntimeError(
+                "certified binding requires the master canonical_rules snapshot"
+            )
+        return {"canonical_rules_payload": canonical_rules}
+
+    def _binding_snapshot_kwargs(self) -> Dict[str, Any]:
+        kwargs = self._binding_generic_requirements_kwargs()
+        kwargs.update(self._binding_canonical_rules_kwargs())
+        return kwargs
+
+    def _run_exact_binding_and_routing(
+        self,
+        *,
+        iteration: int,
+        solution: Dict[str, Any],
+        diagnostic_flow_status: str,
+    ) -> Tuple[str, Optional[Dict[str, Any]]]:
+        # P1 #12 spike instrumentation: record placement → binding input for
+        # offline repeat-rate analysis. Env-gated, no-op when probe is off.
+        from src.runtime.subproblem_invocation_counter import record as _spike_record
+        _spike_record("binding", solution)
+
+        self._emit_heartbeat(
+            stage="binding_build",
+            event="start",
+            iteration=iteration,
+            extra={"diagnostic_flow_status": str(diagnostic_flow_status)},
+        )
+        # RAB-SEP Phase 1: env-gated routing-aware binding domain filter
+        _rab_sep_routing_context = None
+        if os.environ.get("EXACT_B1_ROUTING_AWARE_BINDING", "").strip().lower() in {"1", "true", "yes", "on"}:
+            from src.models.routing_binding_context import build_routing_binding_context
+            _rab_sep_routing_context = build_routing_binding_context(
+                solution,
+                self.master.facility_pools,
+                grid_w=int(self.master.grid_w),
+                grid_h=int(self.master.grid_h),
+            )
+        binding_model = PortBindingModel(
+            solution,
+            self.master.facility_pools,
+            self.master.source_instances,
+            project_root=self.project_root,
+            routing_context=_rab_sep_routing_context,
+            **LBBDController._binding_snapshot_kwargs(self),
+        )
+        binding_model.build()
+        self._used_routing_core_reuse = False
+        self._routing_core_build_seconds = 0.0
+        self._routing_overlay_build_seconds = 0.0
+        self._routing_domain_cells = 0
+        self._routing_terminal_core_cells = 0
+        self._routing_state_space_vars = 0
+        self._routing_local_pattern_pruned_states = 0
+        self._update_binding_cache_from_summary(binding_model.extract_conflict_summary())
+
+        enumerated_bindings = 0
+        routing_attempts = 0
+        strict_ghost_cells = self._strict_ghost_occupancy(solution)
+        if strict_ghost_cells is None:
+            self.last_proof_summary = {
+                "mode": "certified_exact",
+                "benders_iterations": iteration,
+                "master_status": "FEASIBLE",
+                "binding_status": str(getattr(binding_model, "status", "BUILT")),
+                "diagnostic_flow_status": diagnostic_flow_status,
+                "enumerated_bindings": enumerated_bindings,
+                "routing_attempts": routing_attempts,
+                "subproblem_status_contract_violation": (
+                    "strict_ghost_occupancy_unresolved"
+                ),
+                "master_follow_up": "fail_closed_unknown",
+                **self._exact_warm_start_summary(),
+                **self._subproblem_reuse_summary(),
+                **self._exact_cut_ladder_summary(),
+            }
+            return RUN_STATUS_UNKNOWN, None
+        occupied_cells = self._extract_occupied_cells(
+            solution,
+            ghost_cells=strict_ghost_cells,
+        )
+        occupied_owner_by_cell = self._extract_occupied_owner_by_cell(
+            solution,
+            ghost_cells=strict_ghost_cells,
+        )
+        routing_placement_core: Optional[RoutingPlacementCore] = None
+        empty_binding_domain_instances = list(
+            getattr(binding_model, "extract_empty_binding_domain_instances", lambda: [])()
+        )
+        _lift_stats = dict(
+            (getattr(self.master, "build_stats", {}) or {}).get(
+                "front_clear_lift", {}
+            )
+            or {}
+        )
+        if bool(_lift_stats.get("enabled", False)):
+            from src.models.port_binding import (
+                routing_free_sink_commodities_from_generic_inputs,
+            )
+
+            _raw_scope_instances = _front_clear_lift_scope_raw_empty_instances(
+                empty_binding_domain_instances,
+                routing_free_sink_commodities_from_generic_inputs(
+                    binding_model.required_generic_inputs
+                ),
+            )
+            self._front_clear_raw_empty_by_iteration.append(
+                {
+                    "raw_total": len(empty_binding_domain_instances),
+                    "raw_lift_scope": len(_raw_scope_instances),
+                }
+            )
+            print(
+                "[front-clear] raw empty_binding_domain "
+                f"total={len(empty_binding_domain_instances)} "
+                f"lift_scope={len(_raw_scope_instances)}",
+                flush=True,
+            )
+        if empty_binding_domain_instances:
+            cut_added = False
+            # RAB-SEP Phase 3: env on 时用 cert (owner_pose + blocker_poses)
+            # 替 thin instance-only nogood. cert core 含 blocker info, master 端
+            # 学到完整 conflict. 选 smallest cert (按 GPT plan: 不全加, 选最小).
+            _rab_sep_certs: List[Dict[str, Any]] = []
+            if _rab_sep_routing_context is not None and hasattr(
+                binding_model, "extract_routing_aware_certificates"
+            ):
+                _rab_sep_certs = binding_model.extract_routing_aware_certificates()
+                if _rab_sep_certs:
+                    core_sizes = [c["core_size"] for c in _rab_sep_certs]
+                    print(
+                        f"[rab-sep] {len(_rab_sep_certs)} certs, core size: "
+                        f"min={min(core_sizes)} median={sorted(core_sizes)[len(core_sizes)//2]} "
+                        f"p90={sorted(core_sizes)[int(len(core_sizes)*0.9)]} max={max(core_sizes)}",
+                        flush=True,
+                    )
+            for empty_domain in empty_binding_domain_instances:
+                # RAB-SEP Phase 3: prefer cert with blocker info
+                conflict_set: Dict[str, int] = {}
+                cut_type = "binding_pose_domain_empty_nogood"
+                if _rab_sep_certs:
+                    matching = next(
+                        (c for c in _rab_sep_certs
+                         if c["owner_instance_id"] == str(empty_domain["instance_id"])),
+                        None,
+                    )
+                    if matching and matching["core_size"] > 1:
+                        conflict_set = dict(matching["conflict_set"])
+                        cut_type = "rab_sep_clear_deficit_certificate"
+                if not conflict_set:
+                    # 结构守卫：layout 依赖的空域（有 blocker 归因或归因不完备）
+                    # 不得落全局 thin fallback——cert 缺席/不完整时 fail-closed
+                    # 跳过该 owner（见 _rab_empty_domain_thin_fallback_forbidden）
+                    if _rab_sep_routing_context is not None and (
+                        _rab_empty_domain_thin_fallback_forbidden(
+                            binding_model, str(empty_domain["instance_id"])
+                        )
+                    ):
+                        print(
+                            "[rab-sep] thin fallback forbidden for "
+                            f"{empty_domain['instance_id']} (layout-dependent "
+                            "empty domain without complete cert) — fail-closed skip",
+                            flush=True,
+                        )
+                        continue
+                    conflict_set = self._build_conflict_from_instance_ids(
+                        solution,
+                        [str(empty_domain["instance_id"])],
+                    )
+                if not conflict_set:
+                    continue
+                cut_summary = {
+                    "mode": "certified_exact",
+                    "benders_iterations": iteration,
+                    "master_status": "FEASIBLE",
+                    "binding_status": "EMPTY_DOMAIN",
+                    "diagnostic_flow_status": diagnostic_flow_status,
+                    "enumerated_bindings": enumerated_bindings,
+                    "routing_attempts": routing_attempts,
+                    "binding_summary": binding_model.extract_conflict_summary(),
+                    "empty_binding_domain_instance": dict(empty_domain),
+                    **self._exact_warm_start_summary(),
+                    **self._subproblem_reuse_summary(),
+                    **self._exact_cut_ladder_summary_with_deltas(
+                        fine_grained_delta=1,
+                        binding_domain_empty_delta=1,
+                    ),
+                }
+                was_added = self._add_exact_persisted_nogood(
+                    conflict_set=conflict_set,
+                    iteration=iteration,
+                    cut_type=cut_type,
+                    proof_stage="binding",
+                    proof_summary=cut_summary,
+                    metadata={"kind": "placement_local_nogood"},
+                )
+                if was_added:
+                    self._fine_grained_exact_safe_cut_count += 1
+                    self._binding_domain_empty_cut_count += 1
+                    cut_added = True
+
+            self.last_proof_summary = {
+                "mode": "certified_exact",
+                "benders_iterations": iteration,
+                "master_status": "FEASIBLE",
+                "binding_status": "EMPTY_DOMAIN",
+                "diagnostic_flow_status": diagnostic_flow_status,
+                "enumerated_bindings": enumerated_bindings,
+                "routing_attempts": routing_attempts,
+                "binding_summary": binding_model.extract_conflict_summary(),
+                "master_follow_up": (
+                    _EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE if cut_added else "cut_stall"
+                ),
+                **self._exact_warm_start_summary(),
+                **self._subproblem_reuse_summary(),
+                **self._exact_cut_ladder_summary(),
+            }
+            if cut_added:
+                return _EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE, None
+            return RUN_STATUS_UNKNOWN, None
+
+        self._emit_heartbeat(
+            stage="binding_solve",
+            event="start",
+            iteration=iteration,
+            extra={
+                "empty_binding_domain_count": len(empty_binding_domain_instances),
+            },
+        )
+        binding_status = binding_model.solve(time_limit_seconds=self.binding_seconds)
+        if binding_status == "TIMEOUT":
+            self.last_proof_summary = {
+                "mode": "certified_exact",
+                "benders_iterations": iteration,
+                "master_status": "FEASIBLE",
+                "binding_status": "TIMEOUT",
+                "diagnostic_flow_status": diagnostic_flow_status,
+                "enumerated_bindings": enumerated_bindings,
+                "routing_attempts": routing_attempts,
+                "binding_summary": binding_model.extract_conflict_summary(),
+                **self._exact_warm_start_summary(),
+                **self._subproblem_reuse_summary(),
+                **self._exact_cut_ladder_summary(),
+            }
+            return RUN_STATUS_UNKNOWN, None
+
+        if binding_status == "INFEASIBLE":
+            # P1 #9 hint 2 stage 3: caller fallback ladder. If the first-pass
+            # binding model had EXACT_BINDING_USE_OVERLOAD_SEPARATION on AND
+            # actually injected overload nogoods, the INFEASIBLE may be a
+            # spurious one caused by the heuristic high+low colocation
+            # forbidding (player consensus, not a hard SAT invariant). Retry
+            # once with the env forced off:
+            #   FEASIBLE  -> recover, swap models, continue normally
+            #   INFEASIBLE -> genuine infeasibility, fall through
+            #   TIMEOUT    -> env-off status unknown; can't certify INFEASIBLE,
+            #                 surface as TIMEOUT/UNKNOWN to keep the proof sound
+            if self._binding_used_overload_separation(binding_model):
+                retry_model, retry_status = (
+                    self._retry_binding_without_overload_separation(
+                        solution=solution,
+                        iteration=iteration,
+                        routing_context=_rab_sep_routing_context,
+                    )
+                )
+                if retry_status == "FEASIBLE":
+                    binding_model = retry_model
+                    binding_status = retry_status
+                    self._update_binding_cache_from_summary(
+                        binding_model.extract_conflict_summary()
+                    )
+                elif retry_status == "INFEASIBLE":
+                    binding_model = retry_model
+                    binding_status = retry_status
+                    self._update_binding_cache_from_summary(
+                        binding_model.extract_conflict_summary()
+                    )
+                elif retry_status == "TIMEOUT":
+                    self.last_proof_summary = {
+                        "mode": "certified_exact",
+                        "benders_iterations": iteration,
+                        "master_status": "FEASIBLE",
+                        "binding_status": "TIMEOUT",
+                        "diagnostic_flow_status": diagnostic_flow_status,
+                        "enumerated_bindings": enumerated_bindings,
+                        "routing_attempts": routing_attempts,
+                        "binding_summary": retry_model.extract_conflict_summary(),
+                        "overload_fallback_outcome": "TIMEOUT",
+                        **self._exact_warm_start_summary(),
+                        **self._subproblem_reuse_summary(),
+                        **self._exact_cut_ladder_summary(),
+                    }
+                    return RUN_STATUS_UNKNOWN, None
+                else:
+                    self._record_unexpected_binding_status(
+                        iteration=iteration,
+                        binding_status=retry_status,
+                        diagnostic_flow_status=diagnostic_flow_status,
+                        enumerated_bindings=enumerated_bindings,
+                        routing_attempts=routing_attempts,
+                        binding_model=retry_model,
+                        extra={"overload_fallback_outcome": str(retry_status)},
+                    )
+                    return RUN_STATUS_UNKNOWN, None
+
+        if binding_status == "INFEASIBLE":
+            proof_summary = {
+                "mode": "certified_exact",
+                "benders_iterations": iteration,
+                "master_status": "FEASIBLE",
+                "binding_status": "INFEASIBLE",
+                "diagnostic_flow_status": diagnostic_flow_status,
+                "enumerated_bindings": enumerated_bindings,
+                "routing_attempts": routing_attempts,
+                "binding_summary": binding_model.extract_conflict_summary(),
+                **self._exact_warm_start_summary(),
+                **self._subproblem_reuse_summary(),
+                **self._exact_cut_ladder_summary(),
+            }
+            # M3-4: framework cuts (F1 ladder) are optional strengthening on
+            # top of the whole-layout nogood, env-gated off by default and
+            # blocked in certified runs (see _cut_framework_attach_enabled).
+            proof_summary["cut_framework_attached"] = (
+                self._maybe_attach_framework_cuts(
+                    trigger="binding_infeasible",
+                    iteration=iteration,
+                    solution=solution,
+                )
+            )
+            cut_applied = self._add_exact_whole_layout_nogood(
+                solution=solution,
+                iteration=iteration,
+                cut_type="binding_infeasible_nogood",
+                proof_stage="binding",
+                binding_exhausted=True,
+                routing_exhausted=False,
+                proof_summary=proof_summary,
+            )
+            self.last_proof_summary = dict(proof_summary)
+            if not cut_applied:
+                # GPT v4 P0 #2: power witness incomplete, 不可 certify INFEASIBLE.
+                return RUN_STATUS_UNKNOWN, None
+            # A whole-layout nogood only disproves the current master layout.
+            # Certified exact must continue the LBBD loop so the master can either
+            # select another layout or prove the candidate infeasible after the cut.
+            return _EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE, None
+
+        if binding_status != "FEASIBLE":
+            self._record_unexpected_binding_status(
+                iteration=iteration,
+                binding_status=binding_status,
+                diagnostic_flow_status=diagnostic_flow_status,
+                enumerated_bindings=enumerated_bindings,
+                routing_attempts=routing_attempts,
+                binding_model=binding_model,
+            )
+            return RUN_STATUS_UNKNOWN, None
+
+        self._emit_heartbeat(
+            stage="routing_core_build",
+            event="start",
+            iteration=iteration,
+            extra={"binding_status": str(binding_status)},
+        )
+        routing_core_started = time.perf_counter()
+        routing_placement_core = RoutingPlacementCore.from_occupied_cells(
+            occupied_cells,
+            occupied_owner_by_cell=occupied_owner_by_cell,
+        )
+        self._used_routing_core_reuse = True
+        self._routing_core_build_seconds = time.perf_counter() - routing_core_started
+        binding_rejected_selections: List[Dict[str, Any]] = []
+
+        def _retry_current_binding_without_overload_separation() -> str:
+            nonlocal binding_model, binding_status
+            if not self._binding_used_overload_separation(binding_model):
+                # 未启用 overload separation: 不需 env-off fallback, 原 INFEASIBLE 即真,
+                # 返回当前 binding_status (调用点恒为 "INFEASIBLE") 让调用处走 exhaustion break。
+                return binding_status
+            retry_model, retry_status = self._retry_binding_without_overload_separation(
+                solution=solution,
+                iteration=iteration,
+                rejected_selections=binding_rejected_selections,
+                routing_context=_rab_sep_routing_context,
+            )
+            binding_model = retry_model
+            binding_status = retry_status
+            self._update_binding_cache_from_summary(binding_model.extract_conflict_summary())
+            return retry_status
+
+        while binding_status == "FEASIBLE":
+            selection = binding_model.extract_selection()
+            port_specs = binding_model.extract_port_specs()
+            enumerated_bindings += 1
+            self._emit_heartbeat(
+                stage="routing_precheck",
+                event="start",
+                iteration=iteration,
+                extra={
+                    "binding_status": str(binding_status),
+                    "enumerated_bindings": int(enumerated_bindings),
+                    "port_spec_count": len(port_specs),
+                },
+            )
+
+            routing_grid = None
+            if routing_placement_core is not None and hasattr(RoutingGrid, "from_placement_core"):
+                try:
+                    routing_grid = RoutingGrid.from_placement_core(routing_placement_core, port_specs)
+                except TypeError:
+                    routing_grid = None
+            if routing_grid is None:
+                try:
+                    routing_grid = RoutingGrid(
+                        occupied_cells,
+                        port_specs,
+                        occupied_owner_by_cell=occupied_owner_by_cell,
+                    )
+                except TypeError:
+                    routing_grid = RoutingGrid(occupied_cells, port_specs)
+
+            routing_domain_analysis = None
+            routing_precheck = None
+            routing_precheck_error: Optional[Dict[str, Any]] = None
+            if routing_placement_core is not None and hasattr(RoutingGrid, "from_placement_core"):
+                try:
+                    routing_precheck = run_exact_routing_precheck(
+                        placement_core=routing_placement_core,
+                        port_specs=port_specs,
+                        occupied_owner_by_cell=occupied_owner_by_cell,
+                    )
+                except TypeError:
+                    routing_precheck = None
+                except Exception as exc:
+                    routing_precheck_error = {
+                        "status": "ERROR",
+                        "error_type": type(exc).__name__,
+                        "error_message": str(exc),
+                    }
+            if (
+                routing_precheck is None
+                and routing_precheck_error is None
+                and hasattr(routing_grid, "free_cells")
+                and hasattr(routing_grid, "port_specs")
+            ):
+                try:
+                    routing_precheck = run_exact_routing_precheck(
+                        routing_grid,
+                        occupied_owner_by_cell=occupied_owner_by_cell,
+                    )
+                except TypeError:
+                    try:
+                        routing_precheck = run_exact_routing_precheck(routing_grid)
+                    except Exception as exc:
+                        routing_precheck_error = {
+                            "status": "ERROR",
+                            "error_type": type(exc).__name__,
+                            "error_message": str(exc),
+                        }
+                except Exception as exc:
+                    routing_precheck_error = {
+                        "status": "ERROR",
+                        "error_type": type(exc).__name__,
+                        "error_message": str(exc),
+                    }
+            if routing_precheck_error is not None:
+                routing_precheck = dict(routing_precheck_error)
+            if routing_precheck is None:
+                routing_precheck = {
+                    "status": "feasible",
+                    "binding_selection_safe_reject": False,
+                    "placement_level_conflict_set": [],
+                    "blocked_ports": [],
+                    "disconnected_commodities": [],
+                }
+            routing_domain_analysis = routing_precheck.get("_analysis")
+            routing_precheck_summary = {
+                str(key): value
+                for key, value in routing_precheck.items()
+                if str(key) != "_analysis"
+            }
+            self._update_routing_shrink_from_domain_stats(
+                routing_precheck_summary.get("domain_stats")
+            )
+            precheck_status = (
+                _EXACT_ROUTING_PRECHECK_MISSING_STATUS
+                if "status" not in routing_precheck_summary
+                else str(routing_precheck_summary["status"])
+            )
+            self._routing_precheck_statuses.append(precheck_status)
+            if precheck_status not in _EXACT_ROUTING_PRECHECK_VERIFIED_STATUSES:
+                self._record_unexpected_routing_precheck_status(
+                    iteration=iteration,
+                    precheck_status=precheck_status,
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_precheck=routing_precheck_summary,
+                )
+                return RUN_STATUS_UNKNOWN, None
+
+            routing_domain_analysis_status = None
+            if routing_domain_analysis is not None:
+                if not isinstance(routing_domain_analysis, Mapping):
+                    routing_domain_analysis_status = "NON_MAPPING_ANALYSIS"
+                elif "status" not in routing_domain_analysis:
+                    routing_domain_analysis_status = _EXACT_ROUTING_PRECHECK_MISSING_STATUS
+                else:
+                    routing_domain_analysis_status = str(routing_domain_analysis["status"])
+            if (
+                routing_domain_analysis_status is not None
+                and routing_domain_analysis_status != precheck_status
+            ):
+                self._record_unexpected_routing_precheck_status(
+                    iteration=iteration,
+                    precheck_status=precheck_status,
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_precheck=routing_precheck_summary,
+                    violation="routing_precheck_analysis_status_mismatch",
+                    extra={
+                        "routing_domain_analysis_status": routing_domain_analysis_status
+                    },
+                )
+                return RUN_STATUS_UNKNOWN, None
+            if (
+                routing_domain_analysis_status is None
+                and precheck_status in {"front_blocked", "relaxed_disconnected"}
+            ):
+                self._record_unexpected_routing_precheck_status(
+                    iteration=iteration,
+                    precheck_status=precheck_status,
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_precheck=routing_precheck_summary,
+                    violation="routing_precheck_missing_domain_analysis",
+                )
+                return RUN_STATUS_UNKNOWN, None
+
+            # B1 Phase 4 旧实验 bypass(需双 env 同开; certified 启动守卫各自
+            # 拦截: BYPASS→proof_semantics blocker, POSE_BOOL→pose_bool_master_
+            # not_certified)。史料订正(2026-07-16 soundness 审查 §3): 旧注所称
+            # "precheck 是 heuristic, routing CP-SAT 实际能绕路"是 B1 pose-bool
+            # 旧世界陈迹, 对当前模型为假——front 被占时 build() 对非 feasible
+            # 域状态直接 0==1 短路(routing_subproblem.py build), 无绕路通道。
+            # 本 bypass 只翻转局部 precheck_status, build 仍收原 front_blocked
+            # analysis, 短路后由 build-time 域守卫(F-BL-R8-03)fail-closed 返回
+            # UNKNOWN, 不进 solve。
+            if precheck_status == "front_blocked" and os.environ.get(
+                "EXACT_USE_POSE_BOOL_MASTER", ""
+            ).strip().lower() in {"1", "true", "yes", "on"} and os.environ.get(
+                "EXACT_B1_BYPASS_ROUTING_PRECHECK", ""
+            ).strip().lower() in {"1", "true", "yes", "on"}:
+                precheck_status = "feasible"  # 让 routing.solve 实际跑
+
+            precheck_binding_selection_safe_reject_value = (
+                routing_precheck_summary.get("binding_selection_safe_reject", False)
+            )
+            precheck_binding_selection_safe_reject = (
+                precheck_binding_selection_safe_reject_value is True
+            )
+            if (
+                precheck_status in {"front_blocked", "relaxed_disconnected"}
+                and isinstance(routing_domain_analysis, Mapping)
+            ):
+                routing_domain_analysis_safe_reject_value = (
+                    routing_domain_analysis.get("binding_selection_safe_reject", False)
+                )
+                if (
+                    routing_domain_analysis_safe_reject_value
+                    is not precheck_binding_selection_safe_reject_value
+                ):
+                    self._record_unexpected_routing_precheck_status(
+                        iteration=iteration,
+                        precheck_status=precheck_status,
+                        diagnostic_flow_status=diagnostic_flow_status,
+                        enumerated_bindings=enumerated_bindings,
+                        routing_attempts=routing_attempts,
+                        binding_model=binding_model,
+                        routing_precheck=routing_precheck_summary,
+                        violation="routing_precheck_analysis_safe_reject_mismatch",
+                        extra={
+                            "binding_selection_safe_reject": (
+                                precheck_binding_selection_safe_reject_value
+                            ),
+                            "routing_domain_analysis_binding_selection_safe_reject": (
+                                routing_domain_analysis_safe_reject_value
+                            ),
+                        },
+                    )
+                    return RUN_STATUS_UNKNOWN, None
+            if (
+                precheck_status in {"front_blocked", "relaxed_disconnected"}
+                and not precheck_binding_selection_safe_reject
+            ):
+                self._record_unexpected_routing_precheck_status(
+                    iteration=iteration,
+                    precheck_status=precheck_status,
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_precheck=routing_precheck_summary,
+                    violation="routing_precheck_reject_status_not_binding_selection_safe",
+                    extra={
+                        "binding_selection_safe_reject": (
+                            precheck_binding_selection_safe_reject_value
+                        )
+                    },
+                )
+                return RUN_STATUS_UNKNOWN, None
+
+            if precheck_status == "front_blocked" and isinstance(
+                routing_domain_analysis, Mapping
+            ):
+                summary_blocked_ports = routing_precheck_summary.get("blocked_ports")
+                analysis_blocked_ports = routing_domain_analysis.get("blocked_ports")
+                if (
+                    not _routing_precheck_blocked_ports_well_formed(summary_blocked_ports)
+                    or not _routing_precheck_blocked_ports_well_formed(analysis_blocked_ports)
+                    or summary_blocked_ports != analysis_blocked_ports
+                ):
+                    self._record_unexpected_routing_precheck_status(
+                        iteration=iteration,
+                        precheck_status=precheck_status,
+                        diagnostic_flow_status=diagnostic_flow_status,
+                        enumerated_bindings=enumerated_bindings,
+                        routing_attempts=routing_attempts,
+                        binding_model=binding_model,
+                        routing_precheck=routing_precheck_summary,
+                        violation="routing_precheck_analysis_blocked_ports_mismatch",
+                        extra={
+                            "routing_domain_analysis_blocked_ports": (
+                                analysis_blocked_ports
+                            ),
+                        },
+                    )
+                    return RUN_STATUS_UNKNOWN, None
+
+            if (
+                precheck_binding_selection_safe_reject
+                and precheck_status in {"front_blocked", "relaxed_disconnected"}
+                and self._binding_has_alternatives(binding_model)
+            ):
+                # B1 Phase 6 第 3 条的 cap 必须同样覆盖 precheck 拒绝路径: 该闸
+                # 原本只挡 routing 完整拒绝分支, 而 precheck safe-reject 走同一个
+                # enumerated_bindings 循环(实测可 ~1 轮/秒无限枚举)。语义与
+                # 完整拒绝分支处一致: cap 只证明预算耗尽, 不证明剩余
+                # alternatives 不可行, fail-closed 返回 UNKNOWN。
+                _b1_precheck_alt_cap_str = os.environ.get(
+                    "EXACT_B1_BINDING_ALT_CAP", ""
+                ).strip()
+                _b1_precheck_alt_cap = 0
+                try:
+                    _b1_precheck_alt_cap = (
+                        int(_b1_precheck_alt_cap_str) if _b1_precheck_alt_cap_str else 0
+                    )
+                except ValueError:
+                    _b1_precheck_alt_cap = 0
+                if _b1_precheck_alt_cap > 0 and enumerated_bindings >= _b1_precheck_alt_cap:
+                    self.last_proof_summary = {
+                        "mode": "certified_exact",
+                        "benders_iterations": iteration,
+                        "master_status": "FEASIBLE",
+                        "binding_status": "ALT_CAP_REACHED",
+                        "routing_status": f"PRECHECK_{precheck_status.upper()}",
+                        "diagnostic_flow_status": diagnostic_flow_status,
+                        "enumerated_bindings": enumerated_bindings,
+                        "routing_attempts": routing_attempts,
+                        "binding_alternative_cap": int(_b1_precheck_alt_cap),
+                        "binding_summary": binding_model.extract_conflict_summary(),
+                        "routing_precheck": dict(routing_precheck_summary),
+                        **self._exact_warm_start_summary(),
+                        **self._subproblem_reuse_summary(),
+                        **self._routing_shrink_summary(),
+                        **self._exact_cut_ladder_summary(),
+                    }
+                    return RUN_STATUS_UNKNOWN, None
+                self._routing_precheck_rejections += 1
+                binding_rejected_selections.append(copy.deepcopy(selection))
+                binding_model.add_nogood_cut(selection)
+                self._emit_heartbeat(
+                    stage="binding_resolve",
+                    event="start",
+                    iteration=iteration,
+                    extra={
+                        "previous_routing_precheck_status": str(precheck_status),
+                        "binding_selection_safe_reject": True,
+                        "enumerated_bindings": int(enumerated_bindings),
+                        "routing_attempts": int(routing_attempts),
+                    },
+                )
+                binding_status = binding_model.solve(time_limit_seconds=self.binding_seconds)
+                if binding_status == "TIMEOUT":
+                    self.last_proof_summary = {
+                        "mode": "certified_exact",
+                        "benders_iterations": iteration,
+                        "master_status": "FEASIBLE",
+                        "binding_status": "TIMEOUT",
+                        "routing_status": f"PRECHECK_{precheck_status.upper()}",
+                        "diagnostic_flow_status": diagnostic_flow_status,
+                        "enumerated_bindings": enumerated_bindings,
+                        "routing_attempts": routing_attempts,
+                        "binding_summary": binding_model.extract_conflict_summary(),
+                        "routing_precheck": dict(routing_precheck_summary),
+                        "binding_selection_safe_reject": True,
+                        "master_follow_up": "fail_closed_unknown",
+                        **self._exact_warm_start_summary(),
+                        **self._subproblem_reuse_summary(),
+                        **self._routing_shrink_summary(),
+                        **self._exact_cut_ladder_summary(),
+                    }
+                    return RUN_STATUS_UNKNOWN, None
+                if binding_status == "FEASIBLE":
+                    continue
+                if binding_status == "INFEASIBLE":
+                    retry_status = _retry_current_binding_without_overload_separation()
+                    if retry_status == "FEASIBLE":
+                        continue
+                    if retry_status == "TIMEOUT":
+                        self.last_proof_summary = {
+                            "mode": "certified_exact",
+                            "benders_iterations": iteration,
+                            "master_status": "FEASIBLE",
+                            "binding_status": "TIMEOUT",
+                            "routing_status": f"PRECHECK_{precheck_status.upper()}",
+                            "diagnostic_flow_status": diagnostic_flow_status,
+                            "enumerated_bindings": enumerated_bindings,
+                            "routing_attempts": routing_attempts,
+                            "binding_summary": binding_model.extract_conflict_summary(),
+                            "routing_precheck": dict(routing_precheck_summary),
+                            "binding_selection_safe_reject": True,
+                            "overload_fallback_outcome": "TIMEOUT",
+                            "master_follow_up": "fail_closed_unknown",
+                            **self._exact_warm_start_summary(),
+                            **self._subproblem_reuse_summary(),
+                            **self._routing_shrink_summary(),
+                            **self._exact_cut_ladder_summary(),
+                        }
+                        return RUN_STATUS_UNKNOWN, None
+                    if retry_status not in {None, "INFEASIBLE"}:
+                        self._record_unexpected_binding_status(
+                            iteration=iteration,
+                            binding_status=retry_status,
+                            diagnostic_flow_status=diagnostic_flow_status,
+                            enumerated_bindings=enumerated_bindings,
+                            routing_attempts=routing_attempts,
+                            binding_model=binding_model,
+                            routing_status=f"PRECHECK_{precheck_status.upper()}",
+                            routing_precheck=routing_precheck_summary,
+                            extra={
+                                "binding_selection_safe_reject": True,
+                                "overload_fallback_outcome": str(retry_status),
+                            },
+                        )
+                        return RUN_STATUS_UNKNOWN, None
+                    break
+                self._record_unexpected_binding_status(
+                    iteration=iteration,
+                    binding_status=binding_status,
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_status=f"PRECHECK_{precheck_status.upper()}",
+                    routing_precheck=routing_precheck_summary,
+                    extra={"binding_selection_safe_reject": True},
+                )
+                return RUN_STATUS_UNKNOWN, None
+
+            if precheck_status == "front_blocked":
+                self._routing_precheck_rejections += 1
+                cut_added = False
+                # B1 Phase 5: env on 时用 cell-level pattern cut (PoseBool delegate)
+                # 替代 instance-level placement_local_nogood.
+                _b1_use_cell_cut = os.environ.get(
+                    "EXACT_USE_POSE_BOOL_MASTER", ""
+                ).strip().lower() in {"1", "true", "yes", "on"} and hasattr(
+                    self.master._coordinate_delegate, "add_routing_port_blocking_cell_cut"
+                )
+                # PCR-CUT Phase 4: env-gated patch routing conflict separator.
+                # 优先于 deletion-core / lazy_demand / cell_cut — paradigm 是真 belt
+                # CP-SAT INFEASIBLE + signature-lifted master nogood, sound. fail-closed
+                # 自然回落到既有 cut paths. 不修改 cut_added 之外的现有 path.
+                _b1_use_patch_core = (
+                    os.environ.get("EXACT_B1_PATCH_ROUTING_CORE", "").strip().lower()
+                    in {"1", "true", "yes", "on"}
+                    and _b1_use_cell_cut
+                    and hasattr(
+                        self.master._coordinate_delegate, "add_patch_routing_core_cut"
+                    )
+                )
+                # Path 17 D2 Phase 1: env-gated commodity cell-flow separator.
+                # 优先于 PCR-CUT / deletion-core — Phase 0b 实测 7/7 anchor INFEASIBLE
+                # in 0.05-0.15s, paradigm 第一次 Phase 0 GO. fail-closed 回落既有 cut paths.
+                _b1_use_d2_flow = (
+                    os.environ.get("EXACT_B1_D2_COMMODITY_FLOW", "").strip().lower()
+                    in {"1", "true", "yes", "on"}
+                    and _b1_use_cell_cut
+                    and hasattr(
+                        self.master._coordinate_delegate, "add_benders_cut"
+                    )
+                )
+                _b1_d2_skip_other_cuts = False
+                if _b1_use_d2_flow and isinstance(solution, dict) and solution:
+                    try:
+                        from src.search.d2_separator import run_d2_separation
+
+                        d2_result = run_d2_separation(
+                            master_delegate=self.master._coordinate_delegate,
+                            placement_solution=solution,
+                            facility_pools=self.master.facility_pools,
+                            port_specs=port_specs,
+                            time_limit=float(
+                                os.environ.get("EXACT_B1_D2_FLOW_SECONDS", "30")
+                            ),
+                        )
+                        print(
+                            f"[d2-flow] iter {iteration}: cut_added={d2_result.cut_added} "
+                            f"status={d2_result.d2_status} wall={d2_result.d2_wall_s}s "
+                            f"core={d2_result.raw_core_size} vars={d2_result.d2_total_vars} "
+                            f"reason={d2_result.reason}",
+                            flush=True,
+                        )
+                        if d2_result.cut_added:
+                            cut_added = True
+                            _b1_d2_skip_other_cuts = True
+                            self._fine_grained_exact_safe_cut_count += 1
+                            self._routing_front_blocked_cut_count += 1
+                    except Exception as exc:
+                        print(
+                            f"[d2-flow] iter {iteration}: error {type(exc).__name__}: {exc}",
+                            flush=True,
+                        )
+                _b1_pcr_skip_other_cuts = False
+                if _b1_use_patch_core and isinstance(solution, dict) and solution:
+                    try:
+                        from src.search.patch_conflict_separator import (
+                            run_patch_conflict_separation,
+                        )
+
+                        anchor_str = os.environ.get(
+                            "EXACT_MASTER_GHOST_ANCHOR_FILTER", ""
+                        )
+                        if "," in anchor_str:
+                            parts = anchor_str.split(",")
+                            anchor = (int(parts[0]), int(parts[1]))
+                        else:
+                            anchor = (22, 28)
+                        ghost_cells = self._selected_ghost_cells()
+                        if ghost_cells:
+                            xs_ = [c[0] for c in ghost_cells]
+                            ys_ = [c[1] for c in ghost_cells]
+                            ghost_size = (max(xs_) - min(xs_) + 1, max(ys_) - min(ys_) + 1)
+                        else:
+                            ghost_size = (27, 15)
+
+                        sep_result = run_patch_conflict_separation(
+                            master_delegate=self.master._coordinate_delegate,
+                            placement_solution=solution,
+                            facility_pools=self.master.facility_pools,
+                            instances_by_id={
+                                str(i["instance_id"]): dict(i)
+                                for i in self.master.source_instances
+                            },
+                            port_specs=port_specs,
+                            ghost_anchor=anchor,
+                            ghost_size=ghost_size,
+                            top_k=int(
+                                os.environ.get("EXACT_B1_PATCH_ROUTING_CORE_TOP_K", "3")
+                            ),
+                            seconds_budget=float(
+                                os.environ.get("EXACT_B1_PATCH_ROUTING_CORE_SECONDS", "10")
+                            ),
+                            per_patch_solve_seconds=float(
+                                os.environ.get(
+                                    "EXACT_B1_PATCH_ROUTING_CORE_PER_PATCH_SECONDS", "5"
+                                )
+                            ),
+                            quickxplain_call_cap=int(
+                                os.environ.get(
+                                    "EXACT_B1_PATCH_ROUTING_CORE_QX_CAP", "32"
+                                )
+                            ),
+                            max_patch_cells=int(
+                                os.environ.get(
+                                    "EXACT_B1_PATCH_ROUTING_CORE_MAX_CELLS", "900"
+                                )
+                            ),
+                        )
+                        print(
+                            f"[pcr-cut] iter {iteration}: cut_added={sep_result.cut_added} "
+                            f"attempted={sep_result.cuts_attempted} accepted={sep_result.cuts_accepted} "
+                            f"rejected={sep_result.cuts_rejected} candidates={sep_result.candidates_evaluated} "
+                            f"reason={sep_result.reason} wall={sep_result.wall_s}s",
+                            flush=True,
+                        )
+                        if sep_result.cut_added:
+                            cut_added = True
+                            _b1_pcr_skip_other_cuts = True
+                            self._fine_grained_exact_safe_cut_count += 1
+                            self._routing_front_blocked_cut_count += 1
+                    except Exception as exc:
+                        print(
+                            f"[pcr-cut] iter {iteration}: error {type(exc).__name__}: {exc}",
+                            flush=True,
+                        )
+                # B1 Phase 6 路线 2: env on 时用 lazy per-pose demand cut 替代
+                # cell-level pattern cut. 形式更强 (per-pose sum >= demand) 数
+                # 量更少 (反馈 500 blocked_ports → ~50 unique pose). 期望收敛.
+                _b1_use_lazy_demand = os.environ.get(
+                    "EXACT_B1_LAZY_DEMAND_CUT", ""
+                ).strip().lower() in {"1", "true", "yes", "on"} and _b1_use_cell_cut and hasattr(
+                    self.master._coordinate_delegate, "add_routing_port_lazy_demand_cut"
+                )
+                # B1 Phase 6 第 2 条: deletion-core minimizer 缩 layout 到 minimal
+                # core, 加 instance-level placement_local_nogood. Tight cut 一次切大
+                # 空间, 比 Phase 5 cell_cut + lazy demand 都更 strict.
+                _b1_use_deletion_core = os.environ.get(
+                    "EXACT_B1_DELETION_CORE_CUT", ""
+                ).strip().lower() in {"1", "true", "yes", "on"} and _b1_use_cell_cut
+                # deletion-core 路径: 优先于 lazy_demand / cell_cut. 收 routing
+                # blocked_ports 的 conflict_set, run minimizer, 加 placement_local_nogood
+                # for minimal core.
+                if _b1_pcr_skip_other_cuts or _b1_d2_skip_other_cuts:
+                    _b1_use_deletion_core = False
+                if _b1_use_deletion_core:
+                    from src.search.routing_deletion_core_minimizer import (
+                        build_routing_visible_port_keys_by_instance,
+                        minimize_routing_front_blocked_core,
+                    )
+                    blocker_ids: Set[str] = set()
+                    for bp in routing_precheck_summary.get("blocked_ports", []):
+                        if _blocked_port_has_ghost_blocker(bp):
+                            continue
+                        for iid in bp.get("placement_level_conflict_set", []):
+                            blocker_ids.add(str(iid))
+                        primary = bp.get("instance_id")
+                        if primary:
+                            blocker_ids.add(str(primary))
+                    if isinstance(solution, dict) and solution:
+                        core_result = minimize_routing_front_blocked_core(
+                            full_solution=solution,
+                            facility_pools=self.session.facility_pools if hasattr(self, "session") else self.master.facility_pools,
+                            grid_w=int(self.master.grid_w),
+                            grid_h=int(self.master.grid_h),
+                            blocker_instance_ids=blocker_ids,
+                            routing_visible_port_keys_by_instance=(
+                                build_routing_visible_port_keys_by_instance(port_specs)
+                            ),
+                            max_oracle_calls=128,
+                            max_seconds=30.0,
+                        )
+                        # build conflict_set: instance_id → pose_idx
+                        conflict_set_dict: Dict[str, int] = dict(core_result.pose_idx_by_id)
+                        if conflict_set_dict:
+                            delegate = self.master._coordinate_delegate
+                            if delegate is not None:
+                                was_added = delegate.add_benders_cut(conflict_set_dict)
+                                if was_added:
+                                    self._fine_grained_exact_safe_cut_count += 1
+                                    self._routing_front_blocked_cut_count += 1
+                                    cut_added = True
+                        print(f"[deletion-core] full={core_result.full_layout_size} → core={len(core_result.instance_ids)} oracle_calls={core_result.oracle_calls} abort={core_result.abort_reason}", flush=True)
+                # lazy demand: dedup blocked_ports 到 instance_id (pose-level, side-agnostic)
+                _lazy_demand_targets: Set[str] = set()
+                _skip_per_port_loop = _b1_use_deletion_core or _b1_pcr_skip_other_cuts or _b1_d2_skip_other_cuts
+                for blocked_port in routing_precheck_summary.get("blocked_ports", []):
+                    if _skip_per_port_loop:
+                        break
+                    if _blocked_port_has_ghost_blocker(blocked_port):
+                        # Covers all three cut shapes below (lazy demand, cell
+                        # pattern, instance nogood) at one point.  Only the last
+                        # one would fail closed on its own.
+                        # Erratum 2026-08-06 (flagged by two independent external
+                        # reviews): this suppressor does NOT cover the D2 / PCR
+                        # emission sites, whose calls precede this loop.  Their
+                        # current safety comes from the certified closed env
+                        # allowlist blocking those paths structurally; enabling
+                        # either surface (promotion) first requires a direct
+                        # ghost-suppression guard or per-surface sentinel there.
+                        continue
+                    delegate = self.master._coordinate_delegate
+                    if _b1_use_lazy_demand and delegate is not None:
+                        # identify pose owner — instance_id is direct field in routing output
+                        primary_iid = blocked_port.get("instance_id")
+                        if primary_iid:
+                            _lazy_demand_targets.add(str(primary_iid))
+                        # 也 add conflict_set 里的 (e.g. front-blocker instance)
+                        for iid in blocked_port.get("placement_level_conflict_set", []):
+                            _lazy_demand_targets.add(str(iid))
+                        continue
+                    if _b1_use_cell_cut and delegate is not None:
+                        port_cell_raw = blocked_port.get("port_cell")
+                        front_cell_raw = blocked_port.get("front_cell")
+                        direction = blocked_port.get("dir")
+                        if not (port_cell_raw and front_cell_raw and direction):
+                            continue
+                        was_added = delegate.add_routing_port_blocking_cell_cut(
+                            port_cell=(int(port_cell_raw[0]), int(port_cell_raw[1])),
+                            direction=str(direction),
+                            front_cell=(int(front_cell_raw[0]), int(front_cell_raw[1])),
+                        )
+                        if was_added:
+                            self._fine_grained_exact_safe_cut_count += 1
+                            self._routing_front_blocked_cut_count += 1
+                            cut_added = True
+                        continue
+                    # Fallback: instance-level placement_local_nogood (跟 cell_cut /
+                    # lazy_demand 同 for-loop body, 当 neither env applies 时走).
+                    conflict_set = self._build_conflict_from_instance_ids(
+                        solution,
+                        list(blocked_port.get("placement_level_conflict_set", [])),
+                    )
+                    if not conflict_set:
+                        continue
+                    cut_summary = {
+                        "mode": "certified_exact",
+                        "benders_iterations": iteration,
+                        "master_status": "FEASIBLE",
+                        "binding_status": "FEASIBLE",
+                        "routing_status": "PRECHECK_FRONT_BLOCKED",
+                        "diagnostic_flow_status": diagnostic_flow_status,
+                        "enumerated_bindings": enumerated_bindings,
+                        "routing_attempts": routing_attempts,
+                        "binding_summary": binding_model.extract_conflict_summary(),
+                        "routing_precheck": dict(routing_precheck_summary),
+                        "blocked_port": dict(blocked_port),
+                        **self._exact_warm_start_summary(),
+                        **self._subproblem_reuse_summary(),
+                        **self._routing_shrink_summary(),
+                        **self._exact_cut_ladder_summary_with_deltas(
+                            fine_grained_delta=1,
+                            routing_front_blocked_delta=1,
+                        ),
+                    }
+                    was_added = self._add_exact_persisted_nogood(
+                        conflict_set=conflict_set,
+                        iteration=iteration,
+                        cut_type="routing_front_blocked_nogood",
+                        proof_stage="routing",
+                        proof_summary=cut_summary,
+                        metadata={"kind": "placement_local_nogood"},
+                    )
+                    if was_added:
+                        self._fine_grained_exact_safe_cut_count += 1
+                        self._routing_front_blocked_cut_count += 1
+                        cut_added = True
+
+                # lazy demand 端: for-loop 跑完后一次性处理所有 dedup target.
+                _lazy_delegate = self.master._coordinate_delegate if _b1_use_lazy_demand else None
+                if _lazy_delegate is not None and _lazy_demand_targets:
+                    for iid in _lazy_demand_targets:
+                        sol_entry = solution.get(iid) if isinstance(solution, dict) else None
+                        if not sol_entry:
+                            continue
+                        op_type = str(sol_entry.get("operation_type", ""))
+                        tpl_str = str(sol_entry.get("facility_type", ""))
+                        pose_idx_val = int(sol_entry.get("pose_idx", -1))
+                        if pose_idx_val < 0 or not op_type or not tpl_str:
+                            continue
+                        # lookup pose_var
+                        pose_var = None
+                        gid = _lazy_delegate._group_id_by_instance.get(str(iid))
+                        if gid is not None:
+                            pose_var = _lazy_delegate.x_vars.get((gid, pose_idx_val))
+                        elif tpl_str == "protocol_storage_box":
+                            pose_var = _lazy_delegate.ro_vars.get((tpl_str, pose_idx_val))
+                        elif str(iid).startswith("pose_optional::power_pole::"):
+                            pose_var = _lazy_delegate.pole_vars.get(pose_idx_val)
+                        if pose_var is None:
+                            continue
+                        was_added = _lazy_delegate.add_routing_port_lazy_demand_cut(
+                            pose_var=pose_var,
+                            op_type=op_type,
+                            tpl=tpl_str,
+                            pose_idx=pose_idx_val,
+                        )
+                        if was_added:
+                            self._fine_grained_exact_safe_cut_count += 1
+                            self._routing_front_blocked_cut_count += 1
+                            cut_added = True
+
+                self.last_proof_summary = {
+                    "mode": "certified_exact",
+                    "benders_iterations": iteration,
+                    "master_status": "FEASIBLE",
+                    "binding_status": "FEASIBLE",
+                    "routing_status": "PRECHECK_FRONT_BLOCKED",
+                    "diagnostic_flow_status": diagnostic_flow_status,
+                    "enumerated_bindings": enumerated_bindings,
+                    "routing_attempts": routing_attempts,
+                    "binding_summary": binding_model.extract_conflict_summary(),
+                    "routing_precheck": dict(routing_precheck_summary),
+                    "master_follow_up": (
+                        _EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE if cut_added else "cut_stall"
+                    ),
+                    **self._exact_warm_start_summary(),
+                    **self._subproblem_reuse_summary(),
+                    **self._routing_shrink_summary(),
+                    **self._exact_cut_ladder_summary(),
+                }
+                if cut_added:
+                    return _EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE, None
+                return RUN_STATUS_UNKNOWN, None
+
+            if precheck_status == "relaxed_disconnected":
+                self._routing_precheck_rejections += 1
+                if self._binding_has_alternatives(binding_model):
+                    binding_rejected_selections.append(copy.deepcopy(selection))
+                    binding_model.add_nogood_cut(selection)
+                    binding_status = binding_model.solve(time_limit_seconds=self.binding_seconds)
+                    if binding_status == "TIMEOUT":
+                        self.last_proof_summary = {
+                            "mode": "certified_exact",
+                            "benders_iterations": iteration,
+                            "master_status": "FEASIBLE",
+                            "binding_status": "TIMEOUT",
+                            "routing_status": "PRECHECK_RELAXED_DISCONNECTED",
+                            "diagnostic_flow_status": diagnostic_flow_status,
+                            "enumerated_bindings": enumerated_bindings,
+                            "routing_attempts": routing_attempts,
+                            "binding_summary": binding_model.extract_conflict_summary(),
+                            "routing_precheck": dict(routing_precheck_summary),
+                            **self._exact_warm_start_summary(),
+                            **self._subproblem_reuse_summary(),
+                            **self._routing_shrink_summary(),
+                            **self._exact_cut_ladder_summary(),
+                        }
+                        return RUN_STATUS_UNKNOWN, None
+                    if binding_status == "FEASIBLE":
+                        continue
+                    if binding_status == "INFEASIBLE":
+                        retry_status = _retry_current_binding_without_overload_separation()
+                        if retry_status == "FEASIBLE":
+                            continue
+                        if retry_status == "TIMEOUT":
+                            self.last_proof_summary = {
+                                "mode": "certified_exact",
+                                "benders_iterations": iteration,
+                                "master_status": "FEASIBLE",
+                                "binding_status": "TIMEOUT",
+                                "routing_status": "PRECHECK_RELAXED_DISCONNECTED",
+                                "diagnostic_flow_status": diagnostic_flow_status,
+                                "enumerated_bindings": enumerated_bindings,
+                                "routing_attempts": routing_attempts,
+                                "binding_summary": binding_model.extract_conflict_summary(),
+                                "routing_precheck": dict(routing_precheck_summary),
+                                "overload_fallback_outcome": "TIMEOUT",
+                                **self._exact_warm_start_summary(),
+                                **self._subproblem_reuse_summary(),
+                                **self._routing_shrink_summary(),
+                                **self._exact_cut_ladder_summary(),
+                            }
+                            return RUN_STATUS_UNKNOWN, None
+                        if retry_status not in {None, "INFEASIBLE"}:
+                            self._record_unexpected_binding_status(
+                                iteration=iteration,
+                                binding_status=retry_status,
+                                diagnostic_flow_status=diagnostic_flow_status,
+                                enumerated_bindings=enumerated_bindings,
+                                routing_attempts=routing_attempts,
+                                binding_model=binding_model,
+                                routing_status="PRECHECK_RELAXED_DISCONNECTED",
+                                routing_precheck=routing_precheck_summary,
+                                extra={"overload_fallback_outcome": str(retry_status)},
+                            )
+                            return RUN_STATUS_UNKNOWN, None
+                        break
+                    self._record_unexpected_binding_status(
+                        iteration=iteration,
+                        binding_status=binding_status,
+                        diagnostic_flow_status=diagnostic_flow_status,
+                        enumerated_bindings=enumerated_bindings,
+                        routing_attempts=routing_attempts,
+                        binding_model=binding_model,
+                        routing_status="PRECHECK_RELAXED_DISCONNECTED",
+                        routing_precheck=routing_precheck_summary,
+                    )
+                    return RUN_STATUS_UNKNOWN, None
+                break
+
+            commodities = sorted({str(port["commodity"]) for port in port_specs})
+            self._emit_heartbeat(
+                stage="routing_model_build",
+                event="start",
+                iteration=iteration,
+                extra={
+                    "binding_status": str(binding_status),
+                    "routing_precheck_status": str(precheck_status),
+                    "enumerated_bindings": int(enumerated_bindings),
+                    "commodity_count": len(commodities),
+                },
+            )
+            routing_overlay_started = time.perf_counter()
+            routing_model = None
+            if (
+                routing_placement_core is not None
+                and hasattr(RoutingGrid, "from_placement_core")
+                and hasattr(RoutingSubproblem, "from_placement_core")
+            ):
+                try:
+                    routing_model = RoutingSubproblem.from_placement_core(
+                        routing_placement_core,
+                        port_specs,
+                        commodities,
+                        domain_analysis=routing_domain_analysis,
+                    )
+                except TypeError:
+                    routing_model = None
+            if routing_model is None:
+                if routing_domain_analysis is None:
+                    routing_model = RoutingSubproblem(routing_grid, commodities)
+                else:
+                    try:
+                        routing_model = RoutingSubproblem(
+                            routing_grid,
+                            commodities,
+                            domain_analysis=routing_domain_analysis,
+                        )
+                    except TypeError:
+                        routing_model = RoutingSubproblem(routing_grid, commodities)
+            routing_model.build()
+            self._routing_overlay_build_seconds = time.perf_counter() - routing_overlay_started
+            self._update_routing_shrink_from_build_stats(routing_model.build_stats)
+            routing_attempts += 1
+            routing_build_stats = dict(routing_model.build_stats)
+            duplicate_terminal_front_keys = list(
+                routing_build_stats.get("duplicate_terminal_front_keys", [])
+                or []
+            )
+            if duplicate_terminal_front_keys:
+                self._record_unexpected_routing_build_domain_status(
+                    iteration=iteration,
+                    build_domain_status="DUPLICATE_TERMINAL_FRONT_KEYS",
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_summary=routing_model.build_stats,
+                    routing_precheck=routing_precheck_summary,
+                    violation="duplicate_terminal_front_keys_at_routing_build",
+                    extra={
+                        "duplicate_terminal_front_keys": duplicate_terminal_front_keys
+                    },
+                )
+                return RUN_STATUS_UNKNOWN, None
+
+            build_domain_analysis = routing_build_stats.get("domain_analysis")
+            build_domain_status = None
+            if isinstance(build_domain_analysis, Mapping):
+                build_domain_status = (
+                    _EXACT_ROUTING_PRECHECK_MISSING_STATUS
+                    if "status" not in build_domain_analysis
+                    else str(build_domain_analysis["status"])
+                )
+            if build_domain_status is not None and build_domain_status != "feasible":
+                self._record_unexpected_routing_build_domain_status(
+                    iteration=iteration,
+                    build_domain_status=build_domain_status,
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_summary=routing_model.build_stats,
+                    routing_precheck=routing_precheck_summary,
+                    violation="unexpected_routing_build_domain_status",
+                )
+                return RUN_STATUS_UNKNOWN, None
+
+            port_adherence_stats = routing_build_stats.get("port_adherence")
+            port_adherence_blocked_ports = 0
+            if (
+                isinstance(port_adherence_stats, Mapping)
+                and "blocked_ports" in port_adherence_stats
+            ):
+                raw_blocked_ports = port_adherence_stats.get("blocked_ports", 0)
+                if (
+                    isinstance(raw_blocked_ports, bool)
+                    or not isinstance(raw_blocked_ports, int)
+                    or raw_blocked_ports < 0
+                ):
+                    port_adherence_blocked_ports = 1
+                else:
+                    port_adherence_blocked_ports = raw_blocked_ports
+            if port_adherence_blocked_ports > 0:
+                self._record_unexpected_routing_build_domain_status(
+                    iteration=iteration,
+                    build_domain_status="PORT_ADHERENCE_BLOCKED_PORTS",
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_summary=routing_model.build_stats,
+                    routing_precheck=routing_precheck_summary,
+                    violation="routing_build_port_adherence_blocked_ports",
+                    extra={"port_adherence": dict(port_adherence_stats or {})},
+                )
+                return RUN_STATUS_UNKNOWN, None
+
+            self._emit_heartbeat(
+                stage="routing_solve",
+                event="start",
+                iteration=iteration,
+                extra={
+                    "binding_status": str(binding_status),
+                    "routing_precheck_status": str(precheck_status),
+                    "enumerated_bindings": int(enumerated_bindings),
+                    "routing_attempts": int(routing_attempts),
+                    "routing_state_space_vars": int(self._routing_state_space_vars),
+                    "routing_domain_cells": int(self._routing_domain_cells),
+                },
+            )
+            routing_status = routing_model.solve(time_limit=self.routing_seconds)
+
+            if routing_status == "FEASIBLE":
+                try:
+                    normalized, prune_summary = (
+                        self._normalize_certified_solution_power_poles(
+                            solution=solution,
+                            iteration=iteration,
+                        )
+                    )
+                except Exception as exc:
+                    normalized = None
+                    prune_summary = {
+                        "verdict": "power_pole_normalization_exception",
+                        "exception_type": type(exc).__name__,
+                    }
+                if normalized is None:
+                    self.last_proof_summary = {
+                        "mode": "certified_exact",
+                        "benders_iterations": iteration,
+                        "master_status": "FEASIBLE",
+                        "binding_status": "FEASIBLE",
+                        "routing_status": "FEASIBLE",
+                        "stage": "power_pole_dominance_normalization",
+                        "diagnostic_flow_status": diagnostic_flow_status,
+                        "enumerated_bindings": enumerated_bindings,
+                        "routing_attempts": routing_attempts,
+                        "binding_summary": binding_model.extract_conflict_summary(),
+                        "routing_summary": dict(routing_model.build_stats),
+                        "power_pole_dominance": prune_summary,
+                        "master_follow_up": "fail_closed_unknown",
+                        **self._exact_warm_start_summary(),
+                        **self._subproblem_reuse_summary(),
+                        **self._routing_shrink_summary(),
+                        **self._exact_cut_ladder_summary(),
+                    }
+                    return RUN_STATUS_UNKNOWN, None
+                self.last_proof_summary = {
+                    "mode": "certified_exact",
+                    "benders_iterations": iteration,
+                    "master_status": "FEASIBLE",
+                    "binding_status": "FEASIBLE",
+                    "routing_status": "FEASIBLE",
+                    "diagnostic_flow_status": diagnostic_flow_status,
+                    "enumerated_bindings": enumerated_bindings,
+                    "routing_attempts": routing_attempts,
+                    "binding_summary": binding_model.extract_conflict_summary(),
+                    "routing_summary": dict(routing_model.build_stats),
+                    "power_pole_dominance": prune_summary,
+                    **self._exact_warm_start_summary(),
+                    **self._subproblem_reuse_summary(),
+                    **self._routing_shrink_summary(),
+                    **self._exact_cut_ladder_summary(),
+                }
+                return RUN_STATUS_CERTIFIED, normalized
+
+            if routing_status == "TIMEOUT":
+                self.last_proof_summary = {
+                    "mode": "certified_exact",
+                    "benders_iterations": iteration,
+                    "master_status": "FEASIBLE",
+                    "binding_status": "FEASIBLE",
+                    "routing_status": "TIMEOUT",
+                    "diagnostic_flow_status": diagnostic_flow_status,
+                    "enumerated_bindings": enumerated_bindings,
+                    "routing_attempts": routing_attempts,
+                    "binding_summary": binding_model.extract_conflict_summary(),
+                    "routing_summary": dict(routing_model.build_stats),
+                    **self._exact_warm_start_summary(),
+                    **self._subproblem_reuse_summary(),
+                    **self._routing_shrink_summary(),
+                    **self._exact_cut_ladder_summary(),
+                }
+                return RUN_STATUS_UNKNOWN, None
+
+            if routing_status != "INFEASIBLE":
+                self.last_proof_summary = {
+                    "mode": "certified_exact",
+                    "benders_iterations": iteration,
+                    "master_status": "FEASIBLE",
+                    "binding_status": "FEASIBLE",
+                    "routing_status": str(routing_status),
+                    "diagnostic_flow_status": diagnostic_flow_status,
+                    "enumerated_bindings": enumerated_bindings,
+                    "routing_attempts": routing_attempts,
+                    "subproblem_status_contract_violation": "unexpected_routing_status",
+                    "binding_summary": binding_model.extract_conflict_summary(),
+                    "routing_summary": dict(routing_model.build_stats),
+                    **self._exact_warm_start_summary(),
+                    **self._subproblem_reuse_summary(),
+                    **self._routing_shrink_summary(),
+                    **self._exact_cut_ladder_summary(),
+                }
+                return RUN_STATUS_UNKNOWN, None
+
+            # B1 Phase 6 第 3 条: env on 时 cap binding alt loop iterations,
+            # 防 Phase 4 那种 42 min 卡死. 但 cap 只证明 search budget
+            # 耗尽, 不证明剩余 binding alternatives 不可行；必须 fail-closed.
+            _b1_binding_alt_cap_str = os.environ.get(
+                "EXACT_B1_BINDING_ALT_CAP", ""
+            ).strip()
+            _b1_binding_alt_cap = 0
+            try:
+                _b1_binding_alt_cap = int(_b1_binding_alt_cap_str) if _b1_binding_alt_cap_str else 0
+            except ValueError:
+                _b1_binding_alt_cap = 0
+            _exceeded_cap = _b1_binding_alt_cap > 0 and enumerated_bindings >= _b1_binding_alt_cap
+            has_binding_alternatives = self._binding_has_alternatives(binding_model)
+            if _exceeded_cap and has_binding_alternatives:
+                self.last_proof_summary = {
+                    "mode": "certified_exact",
+                    "benders_iterations": iteration,
+                    "master_status": "FEASIBLE",
+                    "binding_status": "ALT_CAP_REACHED",
+                    "routing_status": "INFEASIBLE",
+                    "diagnostic_flow_status": diagnostic_flow_status,
+                    "enumerated_bindings": enumerated_bindings,
+                    "routing_attempts": routing_attempts,
+                    "binding_alternative_cap": int(_b1_binding_alt_cap),
+                    "binding_summary": binding_model.extract_conflict_summary(),
+                    "routing_summary": dict(routing_model.build_stats),
+                    **self._exact_warm_start_summary(),
+                    **self._subproblem_reuse_summary(),
+                    **self._routing_shrink_summary(),
+                    **self._exact_cut_ladder_summary(),
+                }
+                return RUN_STATUS_UNKNOWN, None
+            if has_binding_alternatives:
+                binding_rejected_selections.append(copy.deepcopy(selection))
+                binding_model.add_nogood_cut(selection)
+                self._emit_heartbeat(
+                    stage="binding_resolve",
+                    event="start",
+                    iteration=iteration,
+                    extra={
+                        "previous_routing_status": str(routing_status),
+                        "enumerated_bindings": int(enumerated_bindings),
+                        "routing_attempts": int(routing_attempts),
+                    },
+                )
+                binding_status = binding_model.solve(time_limit_seconds=self.binding_seconds)
+                if binding_status == "TIMEOUT":
+                    self.last_proof_summary = {
+                        "mode": "certified_exact",
+                        "benders_iterations": iteration,
+                        "master_status": "FEASIBLE",
+                        "binding_status": "TIMEOUT",
+                        "routing_status": "INFEASIBLE",
+                        "diagnostic_flow_status": diagnostic_flow_status,
+                        "enumerated_bindings": enumerated_bindings,
+                        "routing_attempts": routing_attempts,
+                        "binding_summary": binding_model.extract_conflict_summary(),
+                        "routing_summary": dict(routing_model.build_stats),
+                        **self._exact_warm_start_summary(),
+                        **self._subproblem_reuse_summary(),
+                        **self._routing_shrink_summary(),
+                        **self._exact_cut_ladder_summary(),
+                    }
+                    return RUN_STATUS_UNKNOWN, None
+                if binding_status == "FEASIBLE":
+                    continue
+                if binding_status == "INFEASIBLE":
+                    retry_status = _retry_current_binding_without_overload_separation()
+                    if retry_status == "FEASIBLE":
+                        continue
+                    if retry_status == "TIMEOUT":
+                        self.last_proof_summary = {
+                            "mode": "certified_exact",
+                            "benders_iterations": iteration,
+                            "master_status": "FEASIBLE",
+                            "binding_status": "TIMEOUT",
+                            "routing_status": "INFEASIBLE",
+                            "diagnostic_flow_status": diagnostic_flow_status,
+                            "enumerated_bindings": enumerated_bindings,
+                            "routing_attempts": routing_attempts,
+                            "binding_summary": binding_model.extract_conflict_summary(),
+                            "routing_summary": dict(routing_model.build_stats),
+                            "overload_fallback_outcome": "TIMEOUT",
+                            **self._exact_warm_start_summary(),
+                            **self._subproblem_reuse_summary(),
+                            **self._routing_shrink_summary(),
+                            **self._exact_cut_ladder_summary(),
+                        }
+                        return RUN_STATUS_UNKNOWN, None
+                    if retry_status not in {None, "INFEASIBLE"}:
+                        self._record_unexpected_binding_status(
+                            iteration=iteration,
+                            binding_status=retry_status,
+                            diagnostic_flow_status=diagnostic_flow_status,
+                            enumerated_bindings=enumerated_bindings,
+                            routing_attempts=routing_attempts,
+                            binding_model=binding_model,
+                            routing_status="INFEASIBLE",
+                            routing_summary=routing_model.build_stats,
+                            extra={"overload_fallback_outcome": str(retry_status)},
+                        )
+                        return RUN_STATUS_UNKNOWN, None
+                    break
+                self._record_unexpected_binding_status(
+                    iteration=iteration,
+                    binding_status=binding_status,
+                    diagnostic_flow_status=diagnostic_flow_status,
+                    enumerated_bindings=enumerated_bindings,
+                    routing_attempts=routing_attempts,
+                    binding_model=binding_model,
+                    routing_status="INFEASIBLE",
+                    routing_summary=routing_model.build_stats,
+                )
+                return RUN_STATUS_UNKNOWN, None
+
+            break
+
+        proof_summary = {
+            "mode": "certified_exact",
+            "benders_iterations": iteration,
+            "master_status": "FEASIBLE",
+            "binding_status": "EXHAUSTED",
+            "routing_status": "ALL_INFEASIBLE",
+            "diagnostic_flow_status": diagnostic_flow_status,
+            "enumerated_bindings": enumerated_bindings,
+            "routing_attempts": routing_attempts,
+            "binding_summary": binding_model.extract_conflict_summary(),
+            **self._exact_warm_start_summary(),
+            **self._subproblem_reuse_summary(),
+            **self._routing_shrink_summary(),
+            **self._exact_cut_ladder_summary(),
+        }
+        # M3-4: see the binding-INFEASIBLE branch note.
+        proof_summary["cut_framework_attached"] = self._maybe_attach_framework_cuts(
+            trigger="routing_exhausted", iteration=iteration, solution=solution
+        )
+        cut_applied = self._add_exact_whole_layout_nogood(
+            solution=solution,
+            iteration=iteration,
+            cut_type="routing_exhausted_nogood",
+            proof_stage="routing",
+            binding_exhausted=True,
+            routing_exhausted=True,
+            proof_summary=proof_summary,
+        )
+        self.last_proof_summary = dict(proof_summary)
+        if not cut_applied:
+            # GPT v4 P0 #2: power witness incomplete, 不可 certify INFEASIBLE.
+            return RUN_STATUS_UNKNOWN, None
+        # A routing-exhausted whole-layout nogood is also local to the current
+        # placement layout.  Do not let an env-default turn that local cut into a
+        # candidate-wide INFEASIBLE certificate.
+        return _EXACT_INTERNAL_STATUS_MASTER_CUT_ADDED_CONTINUE, None
+
+    def _binding_used_overload_separation(self, binding_model: PortBindingModel) -> bool:
+        summary = binding_model.extract_conflict_summary()
+        return (
+            summary.get("overload_separation_enabled") is True
+            and int(summary.get("overload_nogoods_added", 0)) > 0
+        )
+
+    def _retry_binding_without_overload_separation(
+        self,
+        *,
+        solution: Dict[str, Any],
+        iteration: int,
+        rejected_selections: Optional[Sequence[Mapping[str, Any]]] = None,
+        routing_context: Optional[Any] = None,
+    ) -> Tuple[PortBindingModel, str]:
+        """P1 #9 hint 2 stage 3: caller fallback ladder.
+
+        Re-construct the binding model with EXACT_BINDING_USE_OVERLOAD_SEPARATION
+        forced off and re-solve once. Caller invokes this only after the
+        first-pass solve, or a later re-solve after binding nogoods, returned
+        INFEASIBLE while overload separation was active and had injected
+        nogoods. Env value is restored before return regardless of outcome.
+
+        When retrying after binding alternatives have already been rejected by
+        routing, replay those exact rejected selections.  Otherwise the env-off
+        retry can resurrect a binding that this layout already proved unusable,
+        which would make the fallback a search rewind rather than a sound
+        exhaustion check.
+
+        Returns (retry_model, retry_status). retry_status is one of
+        "FEASIBLE" | "INFEASIBLE" | "TIMEOUT".
+        """
+        env_key = "EXACT_BINDING_USE_OVERLOAD_SEPARATION"
+        saved = os.environ.get(env_key)
+        self._emit_heartbeat(
+            stage="binding_overload_fallback",
+            event="start",
+            iteration=iteration,
+        )
+        try:
+            os.environ[env_key] = ""
+            retry_model = PortBindingModel(
+                solution,
+                self.master.facility_pools,
+                self.master.source_instances,
+                project_root=self.project_root,
+                routing_context=routing_context,
+                **LBBDController._binding_snapshot_kwargs(self),
+            )
+            retry_model.build()
+            for rejected_selection in rejected_selections or ():
+                retry_model.add_nogood_cut(rejected_selection)
+            retry_status = retry_model.solve(time_limit_seconds=self.binding_seconds)
+        finally:
+            if saved is None:
+                os.environ.pop(env_key, None)
+            else:
+                os.environ[env_key] = saved
+        self._emit_heartbeat(
+            stage="binding_overload_fallback",
+            event="end",
+            iteration=iteration,
+            extra={"retry_status": str(retry_status)},
+        )
+        return retry_model, retry_status
+
+    def _extract_occupied_owner_by_cell(
+        self,
+        solution: Mapping[str, Mapping[str, Any]],
+        *,
+        ghost_cells: Iterable[Tuple[int, int]],
+    ) -> Dict[Tuple[int, int], str]:
+        owner_by_cell: Dict[Tuple[int, int], str] = {}
+        for instance_id, solution_entry in solution.items():
+            # ghost_pick carries the rect index, not a facility pose; the hole's
+            # own cells come in below under the reserved owner id.
+            if str(instance_id) == "ghost_pick":
+                continue
+            pose_idx = int(solution_entry["pose_idx"])
+            facility_type = str(solution_entry["facility_type"])
+            pose = self.master.facility_pools[facility_type][pose_idx]
+            for cell in pose.get("occupied_cells", []):
+                owner_by_cell[(int(cell[0]), int(cell[1]))] = str(instance_id)
+        for cell in ghost_cells:
+            # A body inside the hole would breach master geometry; keep the
+            # facility attribution in that case rather than papering over it.
+            owner_by_cell.setdefault(
+                (int(cell[0]), int(cell[1])), GHOST_RESERVED_OWNER_ID
+            )
+        return owner_by_cell
+
+    def _extract_occupied_cells(
+        self,
+        solution: Mapping[str, Mapping[str, Any]],
+        *,
+        ghost_cells: Iterable[Tuple[int, int]],
+    ) -> Set[Tuple[int, int]]:
+        occupied_cells: Set[Tuple[int, int]] = set()
+        for instance_id, solution_entry in solution.items():
+            # ghost_pick carries the rect index, not a facility pose.
+            if str(instance_id) == "ghost_pick":
+                continue
+            pose_idx = int(solution_entry["pose_idx"])
+            facility_type = str(solution_entry["facility_type"])
+            pose = self.master.facility_pools[facility_type][pose_idx]
+            for cell in pose.get("occupied_cells", []):
+                occupied_cells.add((int(cell[0]), int(cell[1])))
+        # Strict emptiness (owner adjudication 2026-08-05): belts and bridges
+        # read the same obstacle set as bodies do, so the hole goes in here.
+        occupied_cells.update((int(cell[0]), int(cell[1])) for cell in ghost_cells)
+        return occupied_cells
+
+    def _binding_has_alternatives(self, binding_model: PortBindingModel) -> bool:
+        return bool(
+            binding_model.binding_vars
+            or binding_model.generic_input_vars
+            or binding_model.generic_output_vars
+        )
+
+    def _record_unexpected_binding_status(
+        self,
+        *,
+        iteration: int,
+        binding_status: Any,
+        diagnostic_flow_status: str,
+        enumerated_bindings: int,
+        routing_attempts: int,
+        binding_model: PortBindingModel,
+        routing_status: Optional[str] = None,
+        routing_summary: Optional[Mapping[str, Any]] = None,
+        routing_precheck: Optional[Mapping[str, Any]] = None,
+        extra: Optional[Mapping[str, Any]] = None,
+    ) -> None:
+        """Record a fail-closed proof summary for binding status contract breaches."""
+
+        proof_summary: Dict[str, Any] = {
+            "mode": "certified_exact",
+            "benders_iterations": iteration,
+            "master_status": "FEASIBLE",
+            "binding_status": str(binding_status),
+            "diagnostic_flow_status": diagnostic_flow_status,
+            "enumerated_bindings": enumerated_bindings,
+            "routing_attempts": routing_attempts,
+            "subproblem_status_contract_violation": "unexpected_binding_status",
+            "binding_summary": binding_model.extract_conflict_summary(),
+            "master_follow_up": "fail_closed_unknown",
+            **self._exact_warm_start_summary(),
+            **self._subproblem_reuse_summary(),
+            **self._routing_shrink_summary(),
+            **self._exact_cut_ladder_summary(),
+        }
+        if routing_status is not None:
+            proof_summary["routing_status"] = str(routing_status)
+        if routing_summary is not None:
+            proof_summary["routing_summary"] = dict(routing_summary)
+        if routing_precheck is not None:
+            proof_summary["routing_precheck"] = dict(routing_precheck)
+        if extra is not None:
+            proof_summary.update(dict(extra))
+        self.last_proof_summary = proof_summary
+
+    def _record_unexpected_routing_precheck_status(
+        self,
+        *,
+        iteration: int,
+        precheck_status: Any,
+        diagnostic_flow_status: str,
+        enumerated_bindings: int,
+        routing_attempts: int,
+        binding_model: PortBindingModel,
+        routing_precheck: Mapping[str, Any],
+        violation: str = "unexpected_routing_precheck_status",
+        extra: Optional[Mapping[str, Any]] = None,
+    ) -> None:
+        """Record a fail-closed proof summary for routing-precheck contract breaches."""
+
+        precheck_status_text = str(precheck_status)
+        proof_summary: Dict[str, Any] = {
+            "mode": "certified_exact",
+            "benders_iterations": iteration,
+            "master_status": "FEASIBLE",
+            "binding_status": "FEASIBLE",
+            "routing_status": (
+                f"PRECHECK_{precheck_status_text.upper()}"
+                if precheck_status_text
+                else "PRECHECK_UNKNOWN"
+            ),
+            "diagnostic_flow_status": diagnostic_flow_status,
+            "enumerated_bindings": enumerated_bindings,
+            "routing_attempts": routing_attempts,
+            "binding_summary": binding_model.extract_conflict_summary(),
+            "routing_precheck": dict(routing_precheck),
+            "subproblem_status_contract_violation": str(violation),
+            "master_follow_up": "fail_closed_unknown",
+            **self._exact_warm_start_summary(),
+            **self._subproblem_reuse_summary(),
+            **self._routing_shrink_summary(),
+            **self._exact_cut_ladder_summary(),
+        }
+        if extra is not None:
+            proof_summary.update(dict(extra))
+        self.last_proof_summary = proof_summary
+
+    def _record_unexpected_routing_build_domain_status(
+        self,
+        *,
+        iteration: int,
+        build_domain_status: Any,
+        diagnostic_flow_status: str,
+        enumerated_bindings: int,
+        routing_attempts: int,
+        binding_model: PortBindingModel,
+        routing_summary: Mapping[str, Any],
+        routing_precheck: Mapping[str, Any],
+        violation: str,
+        extra: Optional[Mapping[str, Any]] = None,
+    ) -> None:
+        """Record a fail-closed proof summary when routing build inserted a non-proof contradiction."""
+
+        build_status_text = str(build_domain_status)
+        proof_summary: Dict[str, Any] = {
+            "mode": "certified_exact",
+            "benders_iterations": iteration,
+            "master_status": "FEASIBLE",
+            "binding_status": "FEASIBLE",
+            "routing_status": (
+                f"BUILD_DOMAIN_{build_status_text.upper()}"
+                if build_status_text
+                else "BUILD_DOMAIN_UNKNOWN"
+            ),
+            "diagnostic_flow_status": diagnostic_flow_status,
+            "enumerated_bindings": enumerated_bindings,
+            "routing_attempts": routing_attempts,
+            "binding_summary": binding_model.extract_conflict_summary(),
+            "routing_summary": dict(routing_summary),
+            "routing_precheck": dict(routing_precheck),
+            "subproblem_status_contract_violation": str(violation),
+            "master_follow_up": "fail_closed_unknown",
+            **self._exact_warm_start_summary(),
+            **self._subproblem_reuse_summary(),
+            **self._routing_shrink_summary(),
+            **self._exact_cut_ladder_summary(),
+        }
+        if extra is not None:
+            proof_summary.update(dict(extra))
+        self.last_proof_summary = proof_summary
+
+    def _build_whole_layout_conflict(
+        self,
+        solution: Mapping[str, Mapping[str, Any]],
+    ) -> Dict[str, int]:
+        return {
+            str(instance_id): int(solution_entry["pose_idx"])
+            for instance_id, solution_entry in solution.items()
+            # V88: ghost_pick carries the ghost rect index, not a facility
+            # pose; it must never enter a conflict/nogood literal set.
+            if str(instance_id) != "ghost_pick"
+        }
+
+    def _build_conflict_from_instance_ids(
+        self,
+        solution: Mapping[str, Mapping[str, Any]],
+        instance_ids: Sequence[str],
+    ) -> Dict[str, int]:
+        conflict_set: Dict[str, int] = {}
+        for raw_instance_id in instance_ids:
+            if not isinstance(raw_instance_id, str):
+                return {}
+            instance_id = raw_instance_id.strip()
+            if not instance_id:
+                return {}
+            if instance_id in _GHOST_NON_FACILITY_CONFLICT_IDS:
+                # The hole has no pose literal.  Dropping the whole cut is the
+                # conservative answer: a missing cut costs iterations, whereas a
+                # ghost-derived cut applied to every anchor costs the optimum.
+                return {}
+            if instance_id in conflict_set:
+                continue
+            solution_entry = solution.get(instance_id)
+            if not isinstance(solution_entry, Mapping):
+                return {}
+            try:
+                pose_idx = int(solution_entry["pose_idx"])
+            except (KeyError, TypeError, ValueError):
+                return {}
+            conflict_set[instance_id] = pose_idx
+        return conflict_set
+
+    def _add_exact_persisted_nogood(
+        self,
+        *,
+        conflict_set: Mapping[str, int],
+        iteration: int,
+        cut_type: str,
+        proof_stage: str,
+        proof_summary: Mapping[str, Any],
+        metadata: Optional[Mapping[str, Any]] = None,
+        binding_exhausted: bool = False,
+        routing_exhausted: bool = False,
+        condition_set: Optional[Mapping[str, Any]] = None,
+        condition_lits: Sequence[Any] = (),
+    ) -> bool:
+        cut = BendersCut(
+            schema_version=3 if condition_set else 2,
+            cut_type=cut_type,
+            conflict_set={str(k): int(v) for k, v in conflict_set.items()},
+            iteration=iteration,
+            metadata=dict(metadata or {}),
+            source_mode="certified_exact",
+            exact_safe=True,
+            artifact_hashes=dict(self.artifact_hashes),
+            proof_stage=proof_stage,
+            binding_exhausted=binding_exhausted,
+            routing_exhausted=routing_exhausted,
+            proof_summary=dict(proof_summary),
+            created_at=now_iso(),
+            epsilon_stage=self.epsilon_stage,
+            condition_set={str(k): v for k, v in (condition_set or {}).items()},
+        )
+        try:
+            cut = BendersCut.from_dict(cut.to_dict())
+        except Exception:
+            return False
+        if self.cut_manager.has_structured_cut(cut):
+            return False
+        applied = self.master.add_benders_cut(
+            conflict_set,
+            condition_lits=tuple(condition_lits),
+        )
+        if not applied:
+            return False
+        if not self.cut_manager.register_structured_cut(cut):
+            return False
+        self.generated_exact_safe_cuts.append(cut)
+        return True
+
+    def _cut_framework_attach_enabled(self) -> bool:
+        # M3-4 (P1.3) / B5a: master attach of framework cuts, now wired through
+        # the typed single entry (validate_and_compile_cut → resolver → typed
+        # step_8).  Wiring the single entry is NOT promotion: the same env stays
+        # registered in _CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES, so a
+        # certified/production run with it enabled fail-closes long before this
+        # method can matter — the typed attach below is reachable only from
+        # direct (non-certified) invocations and unit tests until the owner
+        # promotes the framework (B6, still certified-unsafe pre-B6).
+        raw = os.environ.get(EXACT_CUT_FRAMEWORK_ATTACH_ENV, "")
+        return raw.strip().lower() not in _CERTIFIED_MASTER_DOMAIN_ENV_FALSE_VALUES
+
+    def _build_cut_framework_state(
+        self,
+        *,
+        solution: Optional[Mapping[str, Mapping[str, Any]]] = None,
+    ) -> Optional[Any]:
+        """Assemble the cut-framework BState from master-side materials.
+
+        All fields derive from the master/session; ``exterior_blocks`` is the
+        empty set because no exterior-blocking input exists in this production
+        state (a cut-framework-only concept) — an over-estimated region
+        capacity only weakens F1 cuts, never over-prunes. Returns None
+        fail-open (no cuts attached) when any material is missing.
+        """
+        # Lazy import: this method is the single sanctioned src/search →
+        # src/cuts seam (M3-4); module-level import would couple the certified
+        # loop to the framework for every run.
+        from src.cuts.lifecycle import BState, GroupState
+
+        master = self.master
+        mandatory_groups = getattr(master, "_mandatory_groups", None)
+        facility_pools = getattr(master, "facility_pools", None)
+        templates = getattr(master, "templates", None)
+        rules = getattr(master, "rules", None)
+        ghost_wh = getattr(master, "ghost_rect", None)
+        if (
+            not mandatory_groups
+            or not facility_pools
+            or not templates
+            or rules is None
+            or ghost_wh is None
+        ):
+            return None
+        context = self._selected_ghost_context()
+        if context is None:
+            return None
+        _rect_idx, _u_var, anchor_raw, ghost_cells = context
+        if not isinstance(anchor_raw, Mapping):
+            return None
+        anchor_x_raw = anchor_raw.get("x")
+        anchor_y_raw = anchor_raw.get("y")
+        if anchor_x_raw is None or anchor_y_raw is None:
+            return None
+        try:
+            anchor_x = int(anchor_x_raw)
+            anchor_y = int(anchor_y_raw)
+            ghost_w = int(ghost_wh[0])
+            ghost_h = int(ghost_wh[1])
+        except (TypeError, ValueError):
+            return None
+
+        # M4-A: incumbent selected poses per group (from the master solution
+        # that the subproblem just refuted). Literal-family cuts (F7) are
+        # evaluated in step_7 as a multiset test against selected_poses — the
+        # M3-4 empty list made every literal cut evaluate False. Deliberately
+        # NOT part of the scope/source digest (lifecycle keeps mutable
+        # incumbent state out of SOURCE_DIGEST_FIELD_NAMES), so injecting it
+        # does not narrow replay scope.
+        selected_by_group: Dict[str, List[str]] = {}
+        if solution is not None:
+            for raw_iid, pose_id in self._framework_target_poses(solution):
+                selected_by_group.setdefault(raw_iid, []).append(pose_id)
+
+        groups: Dict[str, Any] = {}
+        instance_to_facility_type: Dict[str, str] = {}
+        for group in mandatory_groups:
+            if not isinstance(group, Mapping):
+                return None
+            gid = str(group.get("group_id") or "")
+            facility_type = str(group.get("facility_type") or "")
+            try:
+                demand = int(group.get("count", 0))
+            except (TypeError, ValueError):
+                return None
+            pool = facility_pools.get(facility_type) or []
+            pose_domain = frozenset(
+                str(pose.get("pose_id"))
+                for pose in pool
+                if isinstance(pose, Mapping) and pose.get("pose_id")
+            )
+            if not gid or not facility_type or demand <= 0 or not pose_domain:
+                return None
+            groups[gid] = GroupState(
+                group_id=gid,
+                demand=demand,
+                pose_domain=pose_domain,
+                selected_poses=list(selected_by_group.get(gid, [])),
+            )
+            instance_to_facility_type[gid] = facility_type
+
+        # M4-D4 (P-HOM structural gate): the F5 presence translation is
+        # orbit-level, sound only while every mandatory group is homogeneous.
+        # A failed check refuses to build any framework state (fail-closed);
+        # the digest rides CutScope.artifact_hashes so step-6 quarantines
+        # stale cuts when the homogeneity surface drifts.
+        from src.search.orbit_homogeneity import (
+            ORBIT_HOMOGENEITY_DIGEST_KEY,
+            compute_orbit_homogeneity_digest,
+        )
+
+        homogeneity_digest = compute_orbit_homogeneity_digest(
+            getattr(master, "source_instances", None) or [], facility_pools
+        )
+        if homogeneity_digest is None:
+            return None
+        artifact_hashes = dict(self.artifact_hashes or {})
+        artifact_hashes[ORBIT_HOMOGENEITY_DIGEST_KEY] = homogeneity_digest
+
+        return BState(
+            groups=groups,
+            cell_owner={},
+            ghost_rect=(anchor_x, anchor_y, ghost_w, ghost_h),
+            ghost_cells=frozenset(ghost_cells),
+            exterior_blocks=frozenset(),
+            artifact_hashes=artifact_hashes,
+            available_oracle_versions=frozenset(
+                {
+                    "region_capacity_v1",
+                    "power_cover_v2_stencil",
+                    "shape_packing_hall_v1",
+                    "binding_empty_domain_v1",
+                }
+            ),
+            canonical_rules=rules,
+            instance_to_facility_type=instance_to_facility_type,
+            facility_templates=templates,
+            candidate_placements={"facility_pools": facility_pools},
+        )
+
+    def _framework_target_poses(
+        self, solution: Mapping[str, Mapping[str, Any]]
+    ) -> List[Tuple[str, str]]:
+        """Incumbent (group_id, pose_id) pairs for pose-targeted oracles (F7).
+
+        Resolves each solution entry's pose_idx back to the pose_id string via
+        the SAME facility_pools list the master indexed (shared object, shared
+        order). Malformed entries are skipped — target selection only steers
+        which poses the oracle EXAMINES; every emitted cut still passes the
+        full validator/scope/evaluate gauntlet, so skipping is lossless.
+        """
+        pools = getattr(self.master, "facility_pools", None) or {}
+        group_by_instance = getattr(self.master, "_group_id_by_instance", None) or {}
+        targets: List[Tuple[str, str]] = []
+        for raw_instance_id, entry in solution.items():
+            instance_id = str(raw_instance_id)
+            # V88: ghost_pick carries the ghost rect index, not a facility pose.
+            if instance_id == "ghost_pick":
+                continue
+            if not isinstance(entry, Mapping):
+                continue
+            # Solution keys are instance-level; BState groups (and the F7
+            # oracle's group lookup) are group-level — resolve via the same
+            # mapping _conflict_pose_entries uses.
+            group_id = group_by_instance.get(instance_id)
+            if group_id is None:
+                continue
+            template = str(entry.get("facility_type", ""))
+            try:
+                pose_idx = int(entry["pose_idx"])
+            except (KeyError, TypeError, ValueError):
+                continue
+            pool = pools.get(template)
+            if not isinstance(pool, list) or not (0 <= pose_idx < len(pool)):
+                continue
+            pose = pool[pose_idx]
+            if not isinstance(pose, Mapping):
+                continue
+            pose_id = str(pose.get("pose_id", ""))
+            if not pose_id:
+                continue
+            targets.append((str(group_id), pose_id))
+        return sorted(targets)
+
+    def _framework_full_assignment_literals(
+        self, solution: Mapping[str, Mapping[str, Any]]
+    ) -> Tuple[Any, ...]:
+        """Incumbent assignment as CutLiteral tuple for the F5 generator.
+
+        Slot indices are anonymous within a group; assign 0..k-1 per group in
+        sorted-instance order (the F5 canonical layer renumbers them anyway —
+        slot labels never participate in soundness)."""
+        from src.cuts.lifecycle import AnonymousSlotRef, CutLiteral
+
+        next_slot: Dict[str, int] = {}
+        literals: List[Any] = []
+        for group_id, pose_id in self._framework_target_poses(solution):
+            slot = next_slot.get(group_id, 0)
+            next_slot[group_id] = slot + 1
+            literals.append(
+                CutLiteral(
+                    slot_ref=AnonymousSlotRef(group_id=group_id, slot_index=slot),
+                    pose_id=pose_id,
+                )
+            )
+        return tuple(literals)
+
+    def _maybe_attach_framework_cuts(
+        self,
+        *,
+        trigger: str,
+        iteration: int,
+        solution: Optional[Mapping[str, Mapping[str, Any]]] = None,
+    ) -> int:
+        """Generate + validate/compile + attach framework cuts via the typed
+        single entry (RFC-001 §4.7; B5a orchestration cut-over).
+
+        Per cut the raw legacy gauntlet (integrity → family validator → step-6
+        → step-7 → raw step-8) is replaced by ONE ``validate_and_compile_cut``
+        call over a session-built ``ValidatedStateSnapshot`` and the production
+        ``FamilyCapabilityRegistry``, followed by an explicit three-way match:
+
+        - ``CompiledCut``  → step-7 attach-timing check → the sole resolver
+          (``_resolve_model_scope_binding``) → the typed ``step_8_apply_to_master``.
+        - ``ShadowValidated`` (F5) → counted in the independent common-mode-
+          untrusted ``shadow_validated`` bucket, never applied, never budgeted.
+        - ``CutRejection`` → counted under its ``stage`` in ``rejected``.
+
+        A cut failing the typed chain is skipped (framework cuts are optional
+        strengthening; skipping only reduces pruning).  The typed step_8 raises
+        on a master rejection: the master refusing a compiled cut is a wiring
+        defect, not a data condition, so it propagates.  The attach is still
+        certified-unsafe / default-off (the same env is unsafe-map-disabled); the
+        wiring below is reachable only from direct/non-certified invocations and
+        tests until the owner promotes the framework (B6).
+
+        M4-A additions: F7 power_hitting_set generation targeted at the
+        incumbent poses; ghost conditioning (ghost-bound cuts attach under the
+        selected ghost literal so an anchor switch retires them) — now recovered
+        by the resolver from the live master + frozen snapshot; and the
+        active-cut budget — at EXACT_CUT_FRAMEWORK_ATTACH_BUDGET attached
+        constraints the framework stops emitting (constraints cannot be
+        removed from CP-SAT, so stop-emitting is the only sound eviction
+        without a master rebuild).
+        """
+        if not self._cut_framework_attach_enabled():
+            return 0
+        if id(self.master) != self._cut_framework_master_build_id:
+            # 批E (spec 08 D-2 generation guard): the dedup pool is an
+            # "applied on THIS master build" set; an in-place master swap
+            # would leave it asserting constraints the new build never
+            # received. Unreachable today (one controller == one build);
+            # fail closed if a future refactor breaks that.
+            raise RuntimeError(
+                "cut-framework dedup pool is bound to the master build this "
+                "controller was constructed with; a master rebuild requires "
+                "a new controller"
+            )
+        attach_budget = _resolve_cut_framework_attach_budget()
+        # Function-local imports keep the certified benders module free of a
+        # module-level src/cuts typed-platform coupling; typed_platform lazily
+        # imports state_snapshot, so build_production_registry is imported here
+        # too (its own internal factory follows the same lazy precedent).
+        from src.cuts.frozen_artifacts import build_frozen_artifact_bundle
+        from src.cuts.lifecycle import (
+            _resolve_model_scope_binding,
+            step_7_evaluate_cut,
+            step_8_apply_to_master,
+        )
+        from src.cuts.oracles.power_cover_oracle import (
+            generate_power_hitting_set_cuts,
+        )
+        from src.cuts.oracles.region_capacity_oracle import (
+            generate_region_capacity_cuts,
+        )
+        from src.cuts.oracles.shape_packing_hall_oracle import (
+            compute_sot_region_demand_overrides,
+            generate_shape_packing_hall_cuts,
+        )
+        from src.cuts.state_snapshot import build_validated_state_snapshot
+        from src.cuts.typed_platform import (
+            CompiledCut,
+            CutRejection,
+            ShadowValidated,
+            build_production_registry,
+            cut_to_envelope_v1,
+            validate_and_compile_cut,
+        )
+
+        stats = getattr(self.master, "build_stats", None)
+        budget_used = 0
+        if isinstance(stats, dict):
+            budget_used = int(stats.get("coordinate_framework_cut_count", 0))
+        if budget_used >= attach_budget:
+            if isinstance(stats, dict):
+                stats["cut_framework_attach_last"] = {
+                    "trigger": trigger,
+                    "iteration": int(iteration),
+                    "generated": 0,
+                    "attached": 0,
+                    "budget_exhausted": True,
+                    "budget": attach_budget,
+                }
+            return 0
+
+        state = self._build_cut_framework_state(solution=solution)
+        if state is None:
+            return 0
+        # Bundle ownership is session-scoped (Stage-B spec §2.1): with a
+        # threaded session the deep-frozen bundle is built once per session and
+        # reused across attach rounds and ghost rects; without one (exploratory
+        # or legacy harness callers) it is built per round as before.  The
+        # snapshot stays per-round — its α-1 content binding re-validates the
+        # reused bundle against this round's state and fails closed on drift.
+        # A construction failure is a TCB fault and propagates (fail-closed) —
+        # it is never washed into a per-cut rejection.
+        if self._session is not None:
+            bundle = self._session.cut_framework_bundle(
+                canonical_rules=state.canonical_rules or {},
+                candidate_placements=state.candidate_placements,
+                facility_templates=state.facility_templates,
+                instance_to_facility_type=state.instance_to_facility_type,
+                artifact_hashes=state.artifact_hashes,
+            )
+        else:
+            bundle = build_frozen_artifact_bundle(
+                canonical_rules=state.canonical_rules or {},
+                candidate_placements=state.candidate_placements,
+                facility_templates=state.facility_templates,
+                instance_to_facility_type=state.instance_to_facility_type,
+                artifact_hashes=state.artifact_hashes,
+            )
+        snapshot = build_validated_state_snapshot(state, bundle)
+        registry = build_production_registry()
+
+        # 批E (spec 08 D-3): epoch semantic digest — cross-process comparable
+        # identity of "what world this master build attaches under": source +
+        # frozen artifact hashes + master schema version + the enabled family
+        # manifest + the ghost rect. Audit-only (non-consumption): dedup/pool
+        # bind to epoch_instance_id, never to this digest. master_schema_version
+        # has no first-class master attribute today, so the master class name
+        # stands in as a stable proxy (a real schema version is a registered
+        # follow-up; spec 08 §7).
+        epoch_semantic_digest = hashlib.sha256(
+            json.dumps(
+                {
+                    "source_digest": str(getattr(snapshot, "source_digest", "") or ""),
+                    "artifact_hashes": {
+                        str(k): str(v)
+                        for k, v in (state.artifact_hashes or {}).items()
+                    },
+                    "master_schema_version": str(
+                        getattr(self.master, "master_schema_version", None)
+                        or type(self.master).__name__
+                    ),
+                    "enabled_family_set": sorted(self._enabled_cut_families),
+                    "ghost_rect": list(getattr(self.master, "ghost_rect", None) or ()),
+                },
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+        ).hexdigest()
+        ledger = self._cut_ledger
+
+        def _ledger_event(event_type: str, fields: Dict[str, Any]) -> None:
+            # Audit-only write (spec 08 D-1 non-consumption isolation). A
+            # LedgerWriteError deliberately propagates: once the audit
+            # channel is broken this solve may not keep minting conclusions
+            # (spec 08 D-4 poison+abort).
+            if ledger is None:
+                return
+            fields.setdefault("trigger", trigger)
+            fields.setdefault("iteration", int(iteration))
+            fields.setdefault(
+                "epoch_instance_id", self._cut_framework_epoch_instance_id
+            )
+            fields.setdefault("epoch_semantic_digest", epoch_semantic_digest)
+            ledger.append(event_type, fields)
+
+        # 批E (spec 08 D-13): family generation gated by the enabled set
+        # (default all-on == the pre-批E hard-wired behaviour).
+        cuts: List[Any] = []
+        if "region_capacity" in self._enabled_cut_families:
+            cuts.extend(
+                generate_region_capacity_cuts(
+                    state, state.canonical_rules or {}, iter_index=iteration
+                )
+            )
+        if solution is not None and "power_hitting_set" in self._enabled_cut_families:
+            target_poses = self._framework_target_poses(solution)
+            if target_poses:
+                cuts.extend(
+                    generate_power_hitting_set_cuts(
+                        state, target_poses=target_poses, iter_index=iteration
+                    )
+                )
+        # F6 (M4-B): overrides are the source-of-truth pigeonhole bounds —
+        # pure state geometry, no incumbent counting needed.
+        if "shape_packing_hall" in self._enabled_cut_families:
+            f6_overrides = compute_sot_region_demand_overrides(state)
+            if f6_overrides:
+                cuts.extend(
+                    generate_shape_packing_hall_cuts(
+                        state,
+                        region_demand_overrides=f6_overrides,
+                        iter_index=iteration,
+                    )
+                )
+        # F5 (M4-D3): distil the refuted incumbent into a minimal forbidden
+        # pattern via the liftable binding adapter. The adapter only ever
+        # answers INFEASIBLE for verdicts derivable from frozen artifacts
+        # (empty binding domain) — demand-equality failures refuse to lift.
+        if solution is not None and "pattern_nogood" in self._enabled_cut_families:
+            from src.cuts.oracles.pattern_nogood_oracle import (
+                generate_pattern_nogood_cuts,
+                lookup_sub_problem_oracle,
+                register_sub_problem_oracle,
+            )
+            from src.search.f5_binding_empty_domain_adapter import (
+                ADAPTER_NAME,
+                build_binding_empty_domain_adapter,
+            )
+
+            adapter = lookup_sub_problem_oracle(ADAPTER_NAME)
+            if adapter is None:
+                adapter = build_binding_empty_domain_adapter(
+                    getattr(self.master, "_mandatory_groups", None) or []
+                )
+                register_sub_problem_oracle(adapter)
+            full_literals = self._framework_full_assignment_literals(solution)
+            if full_literals:
+                cuts.extend(
+                    generate_pattern_nogood_cuts(
+                        state,
+                        sub_problem_oracle=adapter,
+                        full_assignment_literals=full_literals,
+                        iter_index=iteration,
+                    )
+                )
+        attached = 0
+        attached_by_family: Dict[str, int] = {}
+        shadow_validated = 0
+        # Rejection telemetry keyed by the typed pipeline stage (CutRejection.
+        # stage) plus the pre-single-entry ``adapter`` stage (cut_to_envelope_v1
+        # TypeError/ValueError), the ``attach_timing`` step-7 skip and the 批E
+        # ``semantic_duplicate`` dedup skip.  Known stages are pre-seeded for
+        # stable telemetry; single-entry stages are registry/envelope/scope/
+        # proof/plan.
+        rejected: Dict[str, int] = {
+            "adapter": 0,
+            "registry": 0,
+            "envelope": 0,
+            "scope": 0,
+            "proof": 0,
+            "plan": 0,
+            "attach_timing": 0,
+            "semantic_duplicate": 0,
+        }
+        for cut in cuts:
+            _ledger_event(
+                "GENERATED",
+                {
+                    "cut_id": str(getattr(cut, "cut_id", "")),
+                    "family": str(getattr(cut, "family", "")),
+                },
+            )
+        for cut in cuts:
+            if budget_used + attached >= attach_budget:
+                break
+            # Adapter admission (schema-v1 integrity/quarantine/identity) — a
+            # TypeError/ValueError is a fail-closed rejection, never an attach.
+            try:
+                envelope = cut_to_envelope_v1(cut)
+            except (TypeError, ValueError):
+                rejected["adapter"] += 1
+                _ledger_event(
+                    "REJECTED",
+                    {
+                        "cut_id": str(getattr(cut, "cut_id", "")),
+                        "reason_code": "adapter",
+                    },
+                )
+                continue
+            result = validate_and_compile_cut(envelope, snapshot, registry)
+            if isinstance(result, CompiledCut):
+                fingerprint = str(result.plan.semantic_fingerprint)
+                if fingerprint in self._attached_semantic_fingerprints:
+                    # 批E (spec 08 D-2): strict-equality semantic dedup — an
+                    # equal fingerprint is the same lowered constraint (under
+                    # SHA-256 collision resistance), already physically in
+                    # this master build; re-lowering is pure waste (I-8).
+                    # Miss direction is under-cut only: never a soundness
+                    # risk, and the pool is applied-only so a step-7/step-8
+                    # refusal can never have seeded it.
+                    rejected["semantic_duplicate"] += 1
+                    _ledger_event(
+                        "REJECTED",
+                        {
+                            "cut_id": str(result.cut_id),
+                            "family": str(result.plan.family),
+                            "semantic_fingerprint": fingerprint,
+                            "reason_code": "semantic_duplicate",
+                        },
+                    )
+                    continue
+                # Step-7 attach-timing: only a compiled cut still attesting to
+                # this snapshot may be lowered (fail-closed skip otherwise).
+                if step_7_evaluate_cut(result, snapshot) is not True:
+                    rejected["attach_timing"] += 1
+                    _ledger_event(
+                        "REJECTED",
+                        {
+                            "cut_id": str(result.cut_id),
+                            "reason_code": "attach_timing",
+                        },
+                    )
+                    continue
+                try:
+                    binding = _resolve_model_scope_binding(
+                        result.plan.model_scope, snapshot, self.master
+                    )
+                    counter_before = 0
+                    if isinstance(stats, dict):
+                        counter_before = int(
+                            stats.get("coordinate_framework_cut_count", 0)
+                        )
+                    step_8_apply_to_master(
+                        result, self.master, scope_binding=binding
+                    )
+                except Exception:
+                    # spec 08 D-4: any apply-chain gate failure is fail-closed
+                    # — record the poison fact for the audit trail, then let
+                    # the original exception abort this solve (a master
+                    # refusing a compiled cut is a wiring defect, not data).
+                    try:
+                        _ledger_event(
+                            "POISONED",
+                            {
+                                "cut_id": str(result.cut_id),
+                                "family": str(result.plan.family),
+                                "reason_code": "apply_chain_failure",
+                            },
+                        )
+                    except Exception:
+                        # A ledger failure while recording the poison must not
+                        # mask the original apply-chain fault (review L2): both
+                        # fail closed, and the original exception carries the
+                        # root-cause diagnostic.
+                        pass
+                    raise
+                counter_after = counter_before
+                if isinstance(stats, dict):
+                    counter_after = int(
+                        stats.get("coordinate_framework_cut_count", 0)
+                    )
+                # Applied-only pool insert (spec 08 D-2): strictly after a
+                # successful step_8 so refusals never poison the pool. When the
+                # master counter is observable and did not advance, the lowering
+                # was a vacuous no-op (added no constraint) — do not remember its
+                # fingerprint as "applied" (review LOW; FP-safe either way, this
+                # only keeps the pool's semantics = "constraints truly added").
+                is_observed_noop = (
+                    isinstance(stats, dict) and counter_after == counter_before
+                )
+                if not is_observed_noop:
+                    self._attached_semantic_fingerprints.add(fingerprint)
+                attached += 1
+                family = str(result.plan.family)
+                attached_by_family[family] = attached_by_family.get(family, 0) + 1
+                _ledger_event(
+                    "APPLIED",
+                    {
+                        "cut_id": str(result.cut_id),
+                        "family": family,
+                        "semantic_fingerprint": fingerprint,
+                        "plan_digest": str(result.plan.digest),
+                        # Orchestration-layer receipt v1 (spec 08 D-12):
+                        # attests the apply call completed + the master budget
+                        # counter advanced + the resolved binding identity.
+                        # NOT a master-internal constraint attestation (that
+                        # upgrade is a registered follow-up).
+                        "receipt": {
+                            "rect_idx": binding.rect_idx,
+                            "ghost_rect_digest": binding.ghost_rect_digest,
+                            "snapshot_digest": binding.snapshot_digest,
+                            "master_domain_family": binding.master_domain_family,
+                            # JSON-stable condition-literal identity (codex
+                            # re-review LOW-3): solver var index + name, never
+                            # Python object identity.
+                            "condition_lits": [
+                                {
+                                    "index": int(getattr(lit, "Index")()),
+                                    "name": str(getattr(lit, "Name")()),
+                                }
+                                for lit in binding.condition_lits
+                                if hasattr(lit, "Index") and hasattr(lit, "Name")
+                            ],
+                            "count_delta": counter_after - counter_before,
+                            "apply_completed": True,
+                        },
+                    },
+                )
+            elif isinstance(result, ShadowValidated):
+                # F5 common-mode-untrusted shadow: validated but no compile
+                # authority — never lowered, never budgeted (RFC-001 §5.4).
+                shadow_validated += 1
+                _ledger_event(
+                    "SHADOW",
+                    {
+                        "cut_id": str(result.cut_id),
+                        "telemetry_tag": str(result.telemetry_tag),
+                    },
+                )
+            elif isinstance(result, CutRejection):
+                rejected[result.stage] = rejected.get(result.stage, 0) + 1
+                _ledger_event(
+                    "REJECTED",
+                    {
+                        "cut_id": str(result.cut_id),
+                        "reason_code": str(result.stage),
+                        "reason": str(result.reason),
+                    },
+                )
+            else:  # pragma: no cover - the single entry returns only the 3 arms
+                raise TypeError(
+                    f"validate_and_compile_cut returned unexpected {type(result).__name__}"
+                )
+        if isinstance(stats, dict):
+            # Typed three-way telemetry (RFC-001 §4.7/§6): per-family attach,
+            # the independent common-mode-untrusted shadow bucket, and rejection
+            # counts keyed by the typed pipeline stage (semantic_duplicate is
+            # the 批E dedup bucket, spec 08 D-10).
+            stats["cut_framework_attach_last"] = {
+                "trigger": trigger,
+                "iteration": int(iteration),
+                "generated": len(cuts),
+                "attached": attached,
+                "attached_by_family": dict(sorted(attached_by_family.items())),
+                "shadow_validated": shadow_validated,
+                "rejected": {k: int(v) for k, v in sorted(rejected.items())},
+                "enabled_families": sorted(self._enabled_cut_families),
+                "epoch_instance_id": self._cut_framework_epoch_instance_id,
+                "epoch_semantic_digest": epoch_semantic_digest,
+            }
+        return attached
+
+    def _add_exact_whole_layout_nogood(
+        self,
+        *,
+        solution: Mapping[str, Mapping[str, Any]],
+        iteration: int,
+        cut_type: str,
+        proof_stage: str,
+        binding_exhausted: bool,
+        routing_exhausted: bool,
+        proof_summary: Mapping[str, Any],
+    ) -> bool:
+        # GPT v4 P0 #2 stop-gap: EXACT_POWER_PLACEMENT_SUBPROBLEM=1 时 master 不带
+        # power_pole residual slots, 而 power subproblem feasible 后会把 synthetic
+        # power_pole entry 注入 solution. 这些 entry 进 whole-layout cut 后在
+        # ExactCoordinateMaster._conflict_pose_entries 里找不到 slot → 没 presence
+        # literal → cut 只约束上游 powered layout, 等价于 "layout + 任意 pole
+        # witness" 都禁掉. 这会过切真实存在的 pole alternatives.
+        # 当前修法: flag on 下 fail-closed 跳过 cut, 返回 False 让 caller 升 UNKNOWN.
+        # 彻底修需要 pole alternatives enumeration / witness-complete cut (~3-5d).
+        flag_on = os.environ.get(
+            "EXACT_POWER_PLACEMENT_SUBPROBLEM", ""
+        ).strip() not in {"", "0", "false", "False"}
+        has_synthetic_pole = any(
+            str(iid).startswith("pose_optional::power_pole::")
+            or str(entry.get("facility_type")) == "power_pole"
+            for iid, entry in solution.items()
+        )
+        if flag_on and has_synthetic_pole:
+            self._emit_heartbeat(
+                stage=proof_stage,
+                event="whole_layout_nogood_skipped_power_witness_incomplete",
+                iteration=iteration,
+                extra={
+                    "cut_type": cut_type,
+                    "solution_size": len(solution),
+                },
+            )
+            return False
+        conflict_set = self._build_whole_layout_conflict(solution)
+        try:
+            reverify_verdict = reverify_whole_layout_infeasibility(
+                solution=solution,
+                facility_pools=self.master.facility_pools,
+                instances=self.master.source_instances,
+                project_root=self.project_root,
+                proof_stage=proof_stage,
+                binding_exhausted=binding_exhausted,
+                routing_exhausted=routing_exhausted,
+                binding_kwargs=LBBDController._binding_snapshot_kwargs(self),
+                time_limit_seconds=self.binding_seconds,
+            )
+        except Exception as exc:  # noqa: BLE001
+            reverify_payload = {
+                "confirmed": False,
+                "status": "EXCEPTION",
+                "reason": "independent_infeasibility_reverify_uncaught_exception",
+                "exception_type": type(exc).__name__,
+                "message": str(exc),
+            }
+        else:
+            reverify_payload = reverify_verdict.to_dict()
+
+        proof_summary_for_cut = dict(proof_summary)
+        proof_summary_for_cut["independent_infeasibility_reverifier"] = dict(
+            reverify_payload
+        )
+        if isinstance(proof_summary, dict):
+            proof_summary["independent_infeasibility_reverifier"] = dict(
+                reverify_payload
+            )
+        if not bool(reverify_payload.get("confirmed", False)):
+            proof_summary_for_cut["master_follow_up"] = "fail_closed_unknown"
+            if isinstance(proof_summary, dict):
+                proof_summary["master_follow_up"] = "fail_closed_unknown"
+            reverify_status = str(reverify_payload.get("status", "UNKNOWN"))
+            self._emit_heartbeat(
+                stage=proof_stage,
+                event=(
+                    "whole_layout_nogood_independent_reverify_divergence"
+                    if reverify_status == REVERIFY_STATUS_DIVERGED_FEASIBLE
+                    else "whole_layout_nogood_independent_reverify_unknown"
+                ),
+                iteration=iteration,
+                extra={
+                    "cut_type": cut_type,
+                    "reverify_status": reverify_status,
+                    "reverify_reason": str(reverify_payload.get("reason", "")),
+                    "independent_status": reverify_payload.get("independent_status"),
+                },
+            )
+            return False
+        return self._add_exact_persisted_nogood(
+            conflict_set=conflict_set,
+            iteration=iteration,
+            cut_type=cut_type,
+            proof_stage=proof_stage,
+            proof_summary=proof_summary_for_cut,
+            metadata={"kind": "whole_layout_nogood"},
+            binding_exhausted=binding_exhausted,
+            routing_exhausted=routing_exhausted,
+        )
+
+
+def run_benders_for_ghost_rect(
+    *,
+    ghost_w: int,
+    ghost_h: int,
+    max_iterations: int = 30,
+    project_root: Optional[Path] = None,
+    solve_mode: Optional[str] = None,
+    certification_mode: Optional[bool] = None,
+    master_seconds: float = 600.0,
+    binding_seconds: float = 600.0,
+    routing_seconds: float = 600.0,
+    flow_seconds: float = 60.0,
+    campaign: Optional[Any] = None,
+    session: Optional[ExactSearchSession] = None,
+    preloaded_exact_safe_cuts: Optional[Sequence[Mapping[str, Any]]] = None,
+    master_search_profile: str = DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
+    disable_master_warm_start: bool = False,
+    heartbeat_callback: Optional[_CampaignHeartbeatCallback] = None,
+    epsilon_stage: Optional[float] = None,
+) -> Tuple[str, Optional[Dict[str, Any]]]:
+    """Run the current Benders loop for one ghost rectangle size."""
+
+    _reset_last_run_metadata()
+
+    solve_mode = _normalize_solve_mode(solve_mode, certification_mode)
+    project_root = project_root or PROJECT_ROOT
+    candidate_key = f"{int(ghost_w)}x{int(ghost_h)}"
+
+    def _emit_campaign_heartbeat(payload: Mapping[str, Any]) -> None:
+        heartbeat = {
+            "schema_version": 1,
+            "candidate_key": candidate_key,
+            "ghost_rect": {
+                "w": int(ghost_w),
+                "h": int(ghost_h),
+                "area": int(ghost_w) * int(ghost_h),
+            },
+            "updated_at": now_iso(),
+            **dict(payload),
+        }
+        if heartbeat_callback is not None:
+            try:
+                heartbeat_callback(heartbeat)
+            except Exception:
+                pass
+        if not isinstance(campaign, ExactCampaign):
+            return
+        campaign.update_candidate_running_proof_summary(
+            int(ghost_w),
+            int(ghost_h),
+            {"campaign_heartbeat": heartbeat},
+        )
+        campaign.save()
+
+    instances: List[Dict[str, Any]]
+    facility_pools: Dict[str, List[Dict[str, Any]]]
+    rules: Dict[str, Any]
+    artifact_hashes: Dict[str, str] = {}
+    used_exact_core_reuse = False
+    core_build_seconds = 0.0
+    overlay_build_seconds = 0.0
+    ghost_constraint_seconds = 0.0
+    cut_replay_seconds = 0.0
+    ghost_anchor_filter_override: Optional[FrozenSet[Tuple[int, int]]] = None
+    if solve_mode == "certified_exact":
+        # Centralized guard also covers EXACT_MASTER_GHOST_ANCHOR_FILTER_ENV
+        # (ghost_anchor_filter_not_certified); keep this entrypoint's evidence
+        # boundary tied to the same map as create_exact_search_session.
+        unsafe_domain_env_blockers = _collect_forbidden_certified_master_domain_env_overrides()
+        if unsafe_domain_env_blockers:
+            _emit_campaign_heartbeat(
+                {
+                    "stage": "master_domain_contract",
+                    "event": "blocked",
+                    "blocker_code": "unsafe_certified_exact_master_domain_env",
+                    "envs": [str(blocker["env"]) for blocker in unsafe_domain_env_blockers],
+                }
+            )
+            proof_summary = {
+                "mode": "certified_exact",
+                "master_status": "BLOCKED",
+                "diagnostic_flow_status": "NOT_RUN",
+                "enumerated_bindings": 0,
+                "routing_attempts": 0,
+                "used_greedy_hint": False,
+                "greedy_hint_instances": 0,
+                "master_hinted_literals": 0,
+                "blockers": unsafe_domain_env_blockers,
+            }
+            _publish_last_run_metadata(
+                proof_summary,
+                [],
+                loaded_exact_safe_cut_count=0,
+                generated_exact_safe_cut_count=0,
+            )
+            return RUN_STATUS_UNPROVEN, None
+
+        ghost_anchor_filter_override = _resolve_ghost_anchor_filter_from_env()
+
+    exact_session: Optional[ExactSearchSession] = None
+    if solve_mode == "certified_exact":
+        _emit_campaign_heartbeat(
+            {
+                "stage": "exact_session",
+                "event": "start",
+                "master_search_profile": str(master_search_profile),
+                "disable_master_warm_start": bool(disable_master_warm_start),
+            }
+        )
+        exact_session = session
+        if exact_session is None:
+            exact_session = create_exact_search_session(
+                project_root,
+                solve_mode=solve_mode,
+                master_search_profile=master_search_profile,
+            )
+        elif (
+            exact_session.project_root != project_root
+            or exact_session.solve_mode != solve_mode
+            or str(exact_session.master_search_profile) != str(master_search_profile)
+        ):
+            raise ValueError(
+                "ExactSearchSession does not match the requested project_root/solve_mode/master_search_profile"
+            )
+
+        instances = list(exact_session.instances)
+        facility_pools = dict(exact_session.facility_pools)
+        rules = dict(exact_session.rules)
+        artifact_hashes = dict(exact_session.artifact_hashes)
+        _emit_campaign_heartbeat(
+            {
+                "stage": "exact_session",
+                "event": "complete",
+                "master_search_profile": str(master_search_profile),
+                "disable_master_warm_start": bool(disable_master_warm_start),
+                "core_build_seconds": float(exact_session.core_build_seconds),
+            }
+        )
+        core_build_seconds = float(exact_session.core_build_seconds)
+        blockers = collect_certification_blockers(instances=instances, solve_mode=solve_mode)
+        if blockers:
+            _publish_last_run_metadata(
+                _merge_reuse_metadata(
+                    {
+                        "mode": "certified_exact",
+                        "master_status": "BLOCKED",
+                        "blockers": blockers,
+                        "enumerated_bindings": 0,
+                        "routing_attempts": 0,
+                        "diagnostic_flow_status": "NOT_RUN",
+                        "used_greedy_hint": False,
+                        "greedy_hint_instances": 0,
+                        "master_hinted_literals": 0,
+                    },
+                    used_exact_core_reuse=True,
+                    core_build_seconds=core_build_seconds,
+                    overlay_build_seconds=0.0,
+                    ghost_constraint_seconds=0.0,
+                    cut_replay_seconds=0.0,
+                ),
+                [],
+                loaded_exact_safe_cut_count=0,
+                generated_exact_safe_cut_count=0,
+            )
+            return RUN_STATUS_UNPROVEN, None
+    else:
+        instances, facility_pools, rules = load_project_data(project_root, solve_mode=solve_mode)
+
+    grid = dict(rules["globals"]["grid"])
+    grid_area = int(grid["width"]) * int(grid["height"])
+    static_area_lower_bound = compute_mandatory_area_lower_bound(instances, rules)
+    if solve_mode == "certified_exact" and exact_session is not None:
+        static_area_lower_bound = compute_exact_static_area_lower_bound(
+            instances,
+            rules,
+            exact_session.core.generic_io_requirements,
+            generic_input_slots_by_operation=(
+                exact_session.core.generic_input_slots_by_operation
+            ),
+            facility_pools=facility_pools,
+        )
+    if static_area_lower_bound + int(ghost_w) * int(ghost_h) > grid_area:
+        _publish_last_run_metadata(
+            _merge_reuse_metadata(
+                {
+                    "mode": solve_mode,
+                    "master_status": "AREA_PRECHECK_FAILED",
+                    "enumerated_bindings": 0,
+                    "routing_attempts": 0,
+                    "diagnostic_flow_status": "NOT_RUN",
+                    "used_greedy_hint": False,
+                    "greedy_hint_instances": 0,
+                    "master_hinted_literals": 0,
+                },
+                used_exact_core_reuse=bool(solve_mode == "certified_exact"),
+                core_build_seconds=core_build_seconds,
+                overlay_build_seconds=0.0,
+                ghost_constraint_seconds=0.0,
+                cut_replay_seconds=0.0,
+            ),
+            [],
+            loaded_exact_safe_cut_count=0,
+            generated_exact_safe_cut_count=0,
+        )
+        return RUN_STATUS_INFEASIBLE, None
+
+    loaded_exact_safe_cuts: List[BendersCut] = []
+
+    if solve_mode == "certified_exact":
+        if exact_session is None:
+            raise RuntimeError("Exact exact_session should have been initialized")
+        _emit_campaign_heartbeat(
+            {
+                "stage": "pre_master_precheck",
+                "event": "start",
+                "master_search_profile": str(master_search_profile),
+                "disable_master_warm_start": bool(disable_master_warm_start),
+            }
+        )
+        pre_master_precheck = evaluate_exact_candidate_pre_master_precheck(
+            ghost_w=int(ghost_w),
+            ghost_h=int(ghost_h),
+            exact_session=exact_session,
+            master_search_profile=str(master_search_profile),
+        )
+        if is_valid_pre_master_precheck_elimination(pre_master_precheck):
+            proof_summary = dict(pre_master_precheck.get("proof_summary", {}))
+            _publish_last_run_metadata(
+                proof_summary,
+                loaded_exact_safe_cuts,
+                loaded_exact_safe_cut_count=len(loaded_exact_safe_cuts),
+                generated_exact_safe_cut_count=0,
+            )
+            return RUN_STATUS_INFEASIBLE, None
+
+        boundary_port_precheck = (
+            MasterPlacementModel._default_exact_candidate_boundary_port_feasibility_payload()
+        )
+        if isinstance(pre_master_precheck, Mapping):
+            raw_boundary_port_precheck = pre_master_precheck.get(
+                "boundary_port_precheck"
+            )
+            if isinstance(raw_boundary_port_precheck, Mapping):
+                boundary_port_precheck = dict(raw_boundary_port_precheck)
+    cut_manager = CutManager(
+        checkpoint_dir=project_root / "data" / "checkpoints",
+        solve_mode=solve_mode,
+        current_hashes=artifact_hashes,
+    )
+    if solve_mode == "certified_exact":
+        if exact_session is None:
+            raise RuntimeError("Exact exact_session should have been initialized")
+        _emit_campaign_heartbeat(
+            {
+                "stage": "master_overlay_build",
+                "event": "start",
+                "master_search_profile": str(master_search_profile),
+                "disable_master_warm_start": bool(disable_master_warm_start),
+            }
+        )
+        overlay_started = time.perf_counter()
+        # B1 Phase 3: env on 时跳过 from_exact_core 的 proto-sharing (那是 coordinate-
+        # specific), 走 direct instantiation. PoseBool delegate build 23s, 不需要
+        # 跨 candidate 共享 proto.
+        _use_pose_bool = os.environ.get(
+            "EXACT_USE_POSE_BOOL_MASTER", ""
+        ).strip().lower() in {"1", "true", "yes", "on"}
+        if _use_pose_bool:
+            # B1 Phase 3 fix: build_exact_core 不传 exact_required_pose_optional_counts,
+            # 所以 session.core 那个 = empty dict. 走 PoseBool delegate 需要 inferred
+            # counts 才能正确 build protocol_storage_box ro_vars. 不修这条 binding 会
+            # 系统性 INFEASIBLE (master 不出 storage box).
+            from src.models.master_model import infer_exact_required_pose_optional_counts_for_instances
+            _inferred_counts = infer_exact_required_pose_optional_counts_for_instances(
+                exact_session.core.source_instances,
+                exact_session.core.rules,
+                exact_session.core.generic_io_requirements,
+                generic_input_slots_by_operation=(
+                    exact_session.core.generic_input_slots_by_operation
+                ),
+            )
+            master = MasterPlacementModel(
+                list(exact_session.core.source_instances),
+                cast("Mapping[str, List[Dict[str, Any]]]", facility_pools),
+                exact_session.core.rules,
+                ghost_rect=(int(ghost_w), int(ghost_h)),
+                skip_power_coverage=bool(exact_session.core.skip_power_coverage),
+                enable_symmetry_breaking=bool(exact_session.core.enable_symmetry_breaking),
+                generic_io_requirements=exact_session.core.generic_io_requirements,
+                generic_input_slots_by_operation=(
+                    exact_session.core.generic_input_slots_by_operation
+                ),
+                exact_required_pose_optional_counts=_inferred_counts,
+                solve_mode="certified_exact",
+                master_search_profile=master_search_profile,
+                ghost_anchor_filter=ghost_anchor_filter_override,
+            )
+            master.set_hint_persistence_context(project_root, candidate_key)
+            master.build()
+            overlay_build_seconds = time.perf_counter() - overlay_started
+            ghost_constraint_seconds = 0.0
+        else:
+            master = MasterPlacementModel.from_exact_core(
+                exact_session.core,
+                ghost_rect=(int(ghost_w), int(ghost_h)),
+                master_search_profile=master_search_profile,
+                precomputed_boundary_port_feasibility=boundary_port_precheck,
+                ghost_anchor_filter=ghost_anchor_filter_override,
+            )
+            # audit A H1 修复: from_exact_core 路径也需要 hint persistence context.
+            # 修前只 else 分支 (4823 line) 调, 168h 4 worker exact_core_reuse 主路径
+            # 漏配 → 即使 EXACT_MASTER_HINT_PERSISTENCE=1 也跑不到 load/save.
+            # 配合 H3 repair_hint=True 让跨 wave hint 修补真正生效.
+            master.set_hint_persistence_context(project_root, candidate_key)
+            reuse_stats = dict(master.build_stats.get("exact_core_reuse", {}))
+            overlay_build_seconds = float(
+                reuse_stats.get("overlay_build_seconds", time.perf_counter() - overlay_started)
+            )
+            ghost_constraint_seconds = float(
+                reuse_stats.get("ghost_constraint_seconds", 0.0)
+            )
+        used_exact_core_reuse = True
+        _emit_campaign_heartbeat(
+            {
+                "stage": "master_overlay_build",
+                "event": "complete",
+                "master_search_profile": str(master_search_profile),
+                "disable_master_warm_start": bool(disable_master_warm_start),
+                "overlay_build_seconds": float(overlay_build_seconds),
+                "ghost_constraint_seconds": float(ghost_constraint_seconds),
+            }
+        )
+    else:
+        master = MasterPlacementModel(
+            instances,
+            facility_pools,
+            rules,
+            ghost_rect=(int(ghost_w), int(ghost_h)),
+            solve_mode=solve_mode,
+            master_search_profile=master_search_profile,
+        )
+        # P1 #7 main #1+#2: 配 hint 跨 wave 持久化 context. master.build/solve
+        # 自动钩子 (受 EXACT_MASTER_HINT_PERSISTENCE env 开关控制, default off).
+        master.set_hint_persistence_context(project_root, candidate_key)
+        master.build()
+
+    if solve_mode == "certified_exact":
+        coordinate_delegate = getattr(master, "_coordinate_delegate", None)
+        if (
+            getattr(
+                coordinate_delegate,
+                "c1_power_pole_representation",
+                False,
+            )
+            is not True
+        ):
+            blocker_code = "power_witness_representation_not_certified"
+            blocker = {
+                "code": blocker_code,
+                "detail": (
+                    "certified_exact requires the C1 native power-pole "
+                    "representation"
+                ),
+            }
+            _emit_campaign_heartbeat(
+                {
+                    "stage": "master_representation_contract",
+                    "event": "blocked",
+                    "blocker_code": blocker_code,
+                }
+            )
+            proof_summary = _merge_reuse_metadata(
+                {
+                    "mode": "certified_exact",
+                    "benders_iterations": 0,
+                    "master_status": RUN_STATUS_UNKNOWN,
+                    "diagnostic_flow_status": "NOT_RUN",
+                    "enumerated_bindings": 0,
+                    "routing_attempts": 0,
+                    "stage": "master_representation_contract",
+                    "blocker_code": blocker_code,
+                    "blockers": [blocker],
+                },
+                used_exact_core_reuse=used_exact_core_reuse,
+                core_build_seconds=core_build_seconds,
+                overlay_build_seconds=overlay_build_seconds,
+                ghost_constraint_seconds=ghost_constraint_seconds,
+                cut_replay_seconds=0.0,
+            )
+            _publish_last_run_metadata(
+                proof_summary,
+                loaded_exact_safe_cuts,
+                loaded_exact_safe_cut_count=0,
+                generated_exact_safe_cut_count=0,
+            )
+            return RUN_STATUS_UNKNOWN, None
+
+    cut_replay_started = time.perf_counter()
+    raw_candidate_cuts: Sequence[Mapping[str, Any]] = []
+    cut_replay_condition_skipped = 0
+    persisted_cut_replay_input_count = 0
+    if solve_mode == "certified_exact":
+        if preloaded_exact_safe_cuts is not None:
+            persisted_cut_replay_input_count = len(list(preloaded_exact_safe_cuts))
+        elif isinstance(campaign, ExactCampaign):
+            persisted_cut_replay_input_count = len(
+                campaign.get_candidate_cuts(int(ghost_w), int(ghost_h))
+            )
+        # V82 fail-closed fix: persisted exact_safe_cuts are performance hints,
+        # not proof objects.  Replaying them after checkpoint/IPC boundaries lets
+        # a forged JSON cut prune a feasible master solution before any fresh
+        # binding/routing proof obligation is discharged.  Certified runs must
+        # regenerate exact-safe cuts in the current process instead.
+        raw_candidate_cuts = []
+    if solve_mode == "certified_exact":
+        for raw_cut in raw_candidate_cuts:
+            try:
+                cut = BendersCut.from_dict(raw_cut)
+            except Exception:
+                continue
+            blockers = collect_certification_blockers(
+                solve_mode=solve_mode,
+                loaded_cuts=[cut],
+                current_hashes=artifact_hashes,
+            )
+            if blockers:
+                continue
+            # GPT v4 P0 #1 fix: condition_set 必须 resolve 回 u_var 再传 master,
+            # 否则 conditioned cut replay 成 unconditional → 过切 ghost B 合法解.
+            # 不可解析 (未知 key / anchor 不匹配) → certified mode 下 fail-closed
+            # skip cut, 不退化为无条件.
+            resolved_lits, condition_ok = _resolve_condition_lits_from_condition_set(
+                master, cut.condition_set
+            )
+            if not condition_ok:
+                cut_replay_condition_skipped += 1
+                continue
+            if cut_manager.has_structured_cut(cut):
+                continue
+            applied = master.add_benders_cut(
+                {str(k): int(v) for k, v in cut.conflict_set.items()},
+                condition_lits=tuple(resolved_lits),
+            )
+            if not applied:
+                continue
+            if cut_manager.register_structured_cut(cut):
+                loaded_exact_safe_cuts.append(cut)
+    cut_replay_seconds = time.perf_counter() - cut_replay_started
+
+    if solve_mode == "certified_exact":
+        _emit_campaign_heartbeat(
+            {
+                "stage": "pre_master_diagnostics",
+                "event": "start",
+                "master_search_profile": str(master_search_profile),
+                "disable_master_warm_start": bool(disable_master_warm_start),
+            }
+        )
+        _emit_campaign_heartbeat(
+            {
+                "stage": "mandatory_support_diagnostics",
+                "event": "start",
+                "master_search_profile": str(master_search_profile),
+            }
+        )
+        mandatory_support_diagnostics = (
+            master.evaluate_exact_candidate_mandatory_support_diagnostics()
+        )
+        mandatory_support_diagnostics_summary = (
+            _compact_exact_candidate_mandatory_support_diagnostics(
+                mandatory_support_diagnostics
+            )
+        )
+        _emit_campaign_heartbeat(
+            {
+                "stage": "mandatory_support_diagnostics",
+                "event": "complete",
+                "unsupported_group_count": int(
+                    mandatory_support_diagnostics_summary.get(
+                        "unsupported_group_count",
+                        0,
+                    )
+                ),
+                "empty_candidate_pool_group_count": int(
+                    mandatory_support_diagnostics_summary.get(
+                        "empty_candidate_pool_group_count",
+                        0,
+                    )
+                ),
+                "group_count": len(
+                    list(mandatory_support_diagnostics_summary.get("groups", []))
+                ),
+            }
+        )
+        _emit_campaign_heartbeat(
+            {
+                "stage": "boundary_port_precheck",
+                "event": "start",
+                "master_search_profile": str(master_search_profile),
+            }
+        )
+        boundary_port_precheck = master.evaluate_exact_candidate_boundary_port_feasibility()
+        _emit_campaign_heartbeat(
+            {
+                "stage": "boundary_port_precheck",
+                "event": "complete",
+                "supported": bool(boundary_port_precheck.get("supported", False)),
+                "skipped_due_to_anchor_limit": bool(
+                    boundary_port_precheck.get("skipped_due_to_anchor_limit", False)
+                ),
+                "considered_anchor_count": int(
+                    boundary_port_precheck.get("considered_anchor_count", 0)
+                ),
+                "screen_pass_anchor_count": int(
+                    boundary_port_precheck.get("screen_pass_anchor_count", 0)
+                ),
+                "screened_infeasible_anchor_count": int(
+                    boundary_port_precheck.get("screened_infeasible_anchor_count", 0)
+                ),
+            }
+        )
+        boundary_pass_anchor_indices = tuple(
+            int(idx)
+            for idx in boundary_port_precheck.get("screen_pass_anchor_indices", ())
+        )
+        if bool(boundary_port_precheck.get("supported", False)) and boundary_pass_anchor_indices:
+            _emit_campaign_heartbeat(
+                {
+                    "stage": "mandatory_rectangle_precheck",
+                    "event": "start",
+                    "upstream_anchor_filter_count": int(
+                        len(boundary_pass_anchor_indices)
+                    ),
+                }
+            )
+            mandatory_group_prechecks = (
+                master.evaluate_exact_candidate_mandatory_rectangle_prechecks(
+                    anchor_indices=boundary_pass_anchor_indices
+                )
+            )
+        else:
+            mandatory_group_prechecks = {
+                "evaluated": False,
+                "skipped_due_to_upstream_precheck": False,
+                "upstream_anchor_filter_count": 0,
+                "supported_group_count": 0,
+                "groups": [],
+                "rebuild_anchor_indices": tuple(),
+            }
+        mandatory_group_precheck_summary = _compact_exact_candidate_mandatory_group_prechecks(
+            mandatory_group_prechecks
+        )
+        _emit_campaign_heartbeat(
+            {
+                "stage": "mandatory_rectangle_precheck",
+                "event": "complete",
+                "evaluated": bool(mandatory_group_precheck_summary.get("evaluated", False)),
+                "skipped_due_to_upstream_precheck": bool(
+                    mandatory_group_precheck_summary.get(
+                        "skipped_due_to_upstream_precheck",
+                        False,
+                    )
+                ),
+                "upstream_anchor_filter_count": int(
+                    mandatory_group_precheck_summary.get(
+                        "upstream_anchor_filter_count",
+                        0,
+                    )
+                ),
+                "supported_group_count": int(
+                    mandatory_group_precheck_summary.get(
+                        "supported_group_count",
+                        0,
+                    )
+                ),
+                "group_count": len(
+                    list(mandatory_group_precheck_summary.get("groups", []))
+                ),
+            }
+        )
+        # B1 Phase 3: env on 时 skip mandatory_rectangle_precheck trigger. 那个
+        # precheck 是 coordinate-only screen (假设 master 用 (x,y,mode) IntVar 形式
+        # 验 packing-within-rect feasibility). pose-bool master 自己的 cell
+        # exclusivity + power coverage 已经覆盖, 这里 precheck 误判 INFEASIBLE.
+        triggered_mandatory_group = next(
+            (
+                dict(entry)
+                for entry in list(mandatory_group_prechecks.get("groups", []))
+                if bool(entry.get("supported", False))
+                # V81: same partial-prefix exclusion as
+                # _triggered_mandatory_rectangle_precheck_group.
+                and not bool(entry.get("partial_due_to_time_budget", False))
+                and int(entry.get("considered_anchor_count", 0)) > 0
+                and int(entry.get("screen_pass_anchor_count", 0)) == 0
+                and int(entry.get("screened_infeasible_anchor_count", 0))
+                == int(entry.get("considered_anchor_count", 0))
+                and int(entry.get("unsupported_anchor_count", 0)) == 0
+            ),
+            None,
+        )
+        if triggered_mandatory_group is not None and not _use_pose_bool:
+            proof_summary = _merge_reuse_metadata(
+                {
+                    "mode": "certified_exact",
+                    "benders_iterations": 0,
+                    "master_status": "INFEASIBLE",
+                    "diagnostic_flow_status": "NOT_RUN",
+                    "enumerated_bindings": 0,
+                    "routing_attempts": 0,
+                    "used_greedy_hint": False,
+                    "greedy_hint_instances": 0,
+                    "master_hinted_literals": 0,
+                    "master_search_profile": str(master_search_profile),
+                    "master_boundary_port_feasibility": _compact_exact_candidate_boundary_port_feasibility(
+                        boundary_port_precheck
+                    ),
+                    "master_mandatory_group_prechecks": dict(
+                        mandatory_group_precheck_summary
+                    ),
+                    "master_mandatory_support_diagnostics": dict(
+                        mandatory_support_diagnostics_summary
+                    ),
+                    "master_candidate_precheck": {
+                        "triggered": True,
+                        "precheck_reason": "mandatory_rect_group_all_anchors_infeasible",
+                        "master_solve_skipped": True,
+                        "supported": bool(triggered_mandatory_group.get("supported", False)),
+                        "considered_anchor_count": int(
+                            triggered_mandatory_group.get("considered_anchor_count", 0)
+                        ),
+                        "screened_infeasible_anchor_count": int(
+                            triggered_mandatory_group.get(
+                                "screened_infeasible_anchor_count",
+                                0,
+                            )
+                        ),
+                        "screen_pass_anchor_count": int(
+                            triggered_mandatory_group.get("screen_pass_anchor_count", 0)
+                        ),
+                        "max_packable_min": triggered_mandatory_group.get(
+                            "max_packable_min"
+                        ),
+                        "max_packable_max": triggered_mandatory_group.get(
+                            "max_packable_max"
+                        ),
+                        "first_infeasible_anchor_idx": triggered_mandatory_group.get(
+                            "first_infeasible_anchor_idx"
+                        ),
+                        "first_infeasible_anchor_max_packable": triggered_mandatory_group.get(
+                            "first_infeasible_anchor_max_packable"
+                        ),
+                        "triggered_group_id": triggered_mandatory_group.get(
+                            "group_id"
+                        ),
+                        "triggered_group_facility_type": triggered_mandatory_group.get(
+                            "facility_type"
+                        ),
+                        "triggered_group_operation_type": triggered_mandatory_group.get(
+                            "operation_type"
+                        ),
+                        "triggered_group_required_count": int(
+                            triggered_mandatory_group.get("required_count", 0)
+                        ),
+                    },
+                },
+                used_exact_core_reuse=used_exact_core_reuse,
+                core_build_seconds=core_build_seconds,
+                overlay_build_seconds=overlay_build_seconds,
+                ghost_constraint_seconds=ghost_constraint_seconds,
+                cut_replay_seconds=cut_replay_seconds,
+            )
+            _publish_last_run_metadata(
+                proof_summary,
+                loaded_exact_safe_cuts,
+                loaded_exact_safe_cut_count=len(loaded_exact_safe_cuts),
+                generated_exact_safe_cut_count=0,
+            )
+            return RUN_STATUS_INFEASIBLE, None
+
+    controller = LBBDController(
+        master,
+        cut_manager,
+        project_root=project_root,
+        solve_mode=solve_mode,
+        max_iterations=max_iterations,
+        master_seconds=master_seconds,
+        binding_seconds=binding_seconds,
+        routing_seconds=routing_seconds,
+        flow_seconds=flow_seconds,
+        artifact_hashes=artifact_hashes,
+        loaded_exact_safe_cuts=loaded_exact_safe_cuts,
+        heartbeat_callback=_emit_campaign_heartbeat
+        if solve_mode == "certified_exact"
+        else None,
+        disable_master_warm_start=bool(disable_master_warm_start),
+        session=exact_session,
+    )
+    # P1 #7 main: 把 outer_search 算的 ε 阶段 (25h prep / 50h refine / 93h cert) tag 给
+    # controller, 影响新生成的 BendersCut.epsilon_stage 字段; 配合 P1
+    # #7b prep 的 cut_manager.cuts_for_stage 实现 ε 阶段跨 wave bucketing.
+    controller.set_epsilon_stage(epsilon_stage)
+    if solve_mode == "certified_exact":
+        pre_master_proof_summary: Dict[str, Any] = {}
+        if isinstance(pre_master_precheck, Mapping):
+            raw_pre_master_proof_summary = pre_master_precheck.get(
+                "proof_summary", {}
+            )
+            if isinstance(raw_pre_master_proof_summary, Mapping):
+                pre_master_proof_summary = dict(raw_pre_master_proof_summary)
+        reused_advisory = _copy_anchor119_row_domain_guard_advisory_from_proof_summary(
+            controller._master_candidate_precheck,
+            proof_summary=pre_master_proof_summary,
+        )
+        if not reused_advisory:
+            _maybe_attach_anchor119_row_domain_guard_advisory(
+                controller._master_candidate_precheck,
+                project_root=project_root,
+                ghost_w=int(ghost_w),
+                ghost_h=int(ghost_h),
+            )
+    status, solution = controller.run_with_status()
+    binding_summary = dict(controller.last_proof_summary.get("binding_summary", {}))
+    proof_summary = _merge_reuse_metadata(
+        {
+            **dict(controller.last_proof_summary),
+            **controller._master_search_summary(),
+            "binding_search_profile": str(
+                binding_summary.get(
+                    "search_profile",
+                    dict(binding_summary.get("search_guidance", {})).get(
+                        "profile",
+                        "exact_binding_guided_branching_v1",
+                    ),
+                )
+            ),
+            **controller._routing_shrink_summary(),
+        },
+        used_exact_core_reuse=used_exact_core_reuse,
+        core_build_seconds=core_build_seconds,
+        overlay_build_seconds=overlay_build_seconds,
+        ghost_constraint_seconds=ghost_constraint_seconds,
+        cut_replay_seconds=cut_replay_seconds,
+    )
+    _publish_last_run_metadata(
+        proof_summary,
+        [*loaded_exact_safe_cuts, *controller.generated_exact_safe_cuts],
+        loaded_exact_safe_cut_count=len(loaded_exact_safe_cuts),
+        generated_exact_safe_cut_count=len(controller.generated_exact_safe_cuts),
+        persisted_exact_safe_cut_replay_input_count=persisted_cut_replay_input_count,
+        persisted_exact_safe_cut_replay_enabled=False,
+    )
+    return status, solution
+
+
+run_benders_for_ghost_rect.last_run_metadata = {  # type: ignore[attr-defined]
+    "proof_summary": {},
+    "exact_safe_cuts": [],
+    "loaded_exact_safe_cut_count": 0,
+    "generated_exact_safe_cut_count": 0,
+    "fine_grained_exact_safe_cut_count": 0,
+    "binding_domain_empty_cut_count": 0,
+    "routing_front_blocked_cut_count": 0,
+    "routing_precheck_rejections": 0,
+    "routing_precheck_statuses": [],
+    "routing_domain_cells": 0,
+    "routing_terminal_core_cells": 0,
+    "routing_state_space_vars": 0,
+    "routing_local_pattern_pruned_states": 0,
+    "used_routing_core_reuse": False,
+    "routing_core_build_seconds": 0.0,
+    "routing_overlay_build_seconds": 0.0,
+    "binding_domain_cache_hits": 0,
+    "binding_domain_cache_misses": 0,
+    "binding_domain_reused_instances": [],
+    "master_search_profile": "default_automatic",
+    "power_pole_family_order": [],
+    "power_pole_family_count_literals": 0,
+    "residual_optional_family_guided": False,
+    "binding_search_profile": "exact_binding_guided_branching_v1",
+    "diagnostic_flow_status": "NOT_RUN",
+    "master_status": None,
+    "binding_status": None,
+    "routing_status": None,
+    "mode": None,
+    "used_exact_core_reuse": False,
+    "core_build_seconds": 0.0,
+    "overlay_build_seconds": 0.0,
+    "ghost_constraint_seconds": 0.0,
+    "cut_replay_seconds": 0.0,
+    "master_representation": "pose_bool_v1",
+    "master_slot_counts": {},
+    "master_mode_literals": 0,
+    "master_interval_count": 0,
+    "master_pose_bool_literals": 0,
+    "master_domain_encoding": "",
+    "master_domain_table_rows": 0,
+    "master_mode_rect_domains": {},
+    "power_pole_shell_lookup_pairs": {},
+    "power_coverage_representation": "",
+    "power_coverage_encoding": "",
+    "power_coverage_powered_slots": 0,
+    "power_coverage_pole_slots": 0,
+    "power_coverage_cover_literals": 0,
+    "power_coverage_witness_indices": 0,
+    "power_coverage_element_constraints": 0,
+    "power_coverage_radius": 0,
+    "power_capacity_shell_pairs": 0,
+    "power_capacity_shell_pair_evaluations": 0,
+    "power_capacity_signature_classes": 0,
+    "power_capacity_signature_class_evaluations": 0,
+    "power_capacity_raw_pole_evaluations": 0,
+    "signature_bucket_cache_hits": 0,
+    "signature_bucket_cache_misses": 0,
+    "signature_bucket_distinct_keys": 0,
+    "geometry_cache_templates": 0,
+}

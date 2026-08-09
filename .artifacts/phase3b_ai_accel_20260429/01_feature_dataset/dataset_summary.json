@@ -1,0 +1,34 @@
+{
+  "schema": "phase3b_ai_feature_dataset_summary_v0",
+  "generated_at": "2026-05-06T17:10:31Z",
+  "sample_schema": "phase3b_ai_candidate_run_sample_v0",
+  "sample_count": 3,
+  "profile_counts": {
+    "s3_baseline_campaign_backup": 3
+  },
+  "status_counts": {
+    "INFEASIBLE": 2,
+    "UNKNOWN": 1
+  },
+  "label_counts": {
+    "precheck_eliminated": 2,
+    "unknown_risk": 1,
+    "became_terminal_fast": 0,
+    "high_prune_gain": 2
+  },
+  "source_artifacts": {
+    "acceptance_summary": "D:\\claude pj\\zmd\\.artifacts\\phase3b_local_13900ks_tuning_20260430",
+    "baseline_scorecard": "D:\\claude pj\\zmd\\.artifacts\\phase3b_accel_tuning\\00_baseline\\baseline_scorecard.json"
+  },
+  "safety": {
+    "shadow_only": true,
+    "proof_source": false,
+    "scheduler_integration": false,
+    "candidate_universe_changed": false,
+    "model_trained": false,
+    "checkpoint_written": false,
+    "final_solution_written": false,
+    "release_viewer_frontdoor_promoted": false
+  },
+  "dataset_kind": "evidence_replay_shadow_dataset"
+}

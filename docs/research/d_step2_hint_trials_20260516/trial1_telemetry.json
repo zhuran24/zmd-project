@@ -1,0 +1,2363 @@
+{
+  "schema_version": 1,
+  "solve_mode": "certified_exact",
+  "campaign_state_path": "data/checkpoints/exact_campaign_state.json",
+  "created_at": "2026-05-15T22:23:52Z",
+  "updated_at": "2026-05-15T22:23:52Z",
+  "waves": [
+    {
+      "wave_index": 1,
+      "candidate_count": 1,
+      "completed": true,
+      "failure_reason": null,
+      "probe_round_active": false,
+      "probe_candidate_keys": [],
+      "probe_prune_gain_sum": 0,
+      "probe_prune_gain_max": 0,
+      "probe_resume_pending_count": 0,
+      "dispatched_candidate_keys": [],
+      "elapsed_seconds": null,
+      "peak_rss_bytes_external_total": null,
+      "peak_rss_bytes_internal_max_single_process": null,
+      "status_counts": {
+        "INFEASIBLE": 1
+      },
+      "outcome_counts": {
+        "master_infeasible": 1
+      },
+      "loaded_exact_safe_cut_count_sum": 0,
+      "generated_exact_safe_cut_count_sum": 0,
+      "candidate_results": [
+        {
+          "candidate_key": "70x19",
+          "dispatch_seq": 0,
+          "attempt_index": 1,
+          "wave_slot_index": 0,
+          "selection_reason": "prune_head",
+          "status": "INFEASIBLE",
+          "outcome_category": "master_infeasible",
+          "loaded_exact_safe_cut_count": 0,
+          "generated_exact_safe_cut_count": 0,
+          "probe_candidate": false,
+          "probe_prune_gain": 0,
+          "probe_resume_pending": false,
+          "frontier_probe_mode": "off",
+          "proof_status_summary": {
+            "mode": "certified_exact",
+            "benders_iterations": 0,
+            "master_status": "INFEASIBLE",
+            "diagnostic_flow_status": "NOT_RUN",
+            "frontier_selection_policy": "certification_prune_per_anchor_v1",
+            "selection_reason": "prune_head",
+            "frontier_candidate_metrics": {
+              "selection_score_num": 1185,
+              "selection_score_den": 52,
+              "certification_prune_gain": 1185,
+              "infeasible_prune_gain": 1,
+              "anchor_count": 52,
+              "frontier_size": 18
+            },
+            "precheck_lookahead": {
+              "enabled": true,
+              "slot_index": 0,
+              "limit": 8,
+              "is_selected_head": true
+            },
+            "master_boundary_port_feasibility": {
+              "supported": true,
+              "required_count": 46,
+              "considered_anchor_count": 52,
+              "screened_infeasible_anchor_count": 52,
+              "screen_pass_anchor_count": 0,
+              "unsupported_anchor_count": 0,
+              "max_packable_min": 16,
+              "max_packable_max": 39,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 17
+            },
+            "master_mandatory_group_prechecks": {
+              "evaluated": false,
+              "skipped_due_to_upstream_precheck": true,
+              "upstream_anchor_filter_count": 0,
+              "supported_group_count": 0,
+              "groups": []
+            },
+            "master_mandatory_support_diagnostics": {
+              "unsupported_group_count": 0,
+              "empty_candidate_pool_group_count": 0,
+              "groups": [
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_blue_iron::1",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_buckwheat::2",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_sandleaf::3",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_source::4",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_source",
+                  "required_count": 18,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::molding_bottle::5",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "molding_bottle",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::parts_maker::6",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "parts_maker",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_blue_iron::7",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_steel::8",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_steel",
+                  "required_count": 17,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_buckwheat::9",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_buckwheat",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_sandleaf::10",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_sandleaf",
+                  "required_count": 21,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_buckwheat::11",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_sandleaf::12",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::filling_capsule::13",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "filling_capsule",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_blue_iron::14",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_blue_iron",
+                  "required_count": 17,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_source::15",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_source",
+                  "required_count": 9,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_fine_buckwheat::16",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_fine_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::packaging_battery::17",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "packaging_battery",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::protocol_core::protocol_core::18",
+                  "facility_type": "protocol_core",
+                  "operation_type": "protocol_core",
+                  "required_count": 1,
+                  "candidate_pool_count": 7200,
+                  "unsupported_reason": null
+                }
+              ]
+            },
+            "master_candidate_precheck": {
+              "triggered": true,
+              "precheck_reason": "boundary_port_all_anchors_infeasible",
+              "master_solve_skipped": true,
+              "supported": true,
+              "considered_anchor_count": 52,
+              "screened_infeasible_anchor_count": 52,
+              "screen_pass_anchor_count": 0,
+              "max_packable_min": 16,
+              "max_packable_max": 39,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 17,
+              "triggered_group_id": null,
+              "triggered_group_facility_type": null,
+              "triggered_group_operation_type": null,
+              "triggered_group_required_count": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "wave_index": 2,
+      "candidate_count": 1,
+      "completed": true,
+      "failure_reason": null,
+      "probe_round_active": false,
+      "probe_candidate_keys": [],
+      "probe_prune_gain_sum": 0,
+      "probe_prune_gain_max": 0,
+      "probe_resume_pending_count": 0,
+      "dispatched_candidate_keys": [],
+      "elapsed_seconds": null,
+      "peak_rss_bytes_external_total": null,
+      "peak_rss_bytes_internal_max_single_process": null,
+      "status_counts": {
+        "INFEASIBLE": 1
+      },
+      "outcome_counts": {
+        "master_infeasible": 1
+      },
+      "loaded_exact_safe_cut_count_sum": 0,
+      "generated_exact_safe_cut_count_sum": 0,
+      "candidate_results": [
+        {
+          "candidate_key": "70x18",
+          "dispatch_seq": 0,
+          "attempt_index": 2,
+          "wave_slot_index": 0,
+          "selection_reason": "prune_head",
+          "status": "INFEASIBLE",
+          "outcome_category": "master_infeasible",
+          "loaded_exact_safe_cut_count": 0,
+          "generated_exact_safe_cut_count": 0,
+          "probe_candidate": false,
+          "probe_prune_gain": 0,
+          "probe_resume_pending": false,
+          "frontier_probe_mode": "off",
+          "proof_status_summary": {
+            "mode": "certified_exact",
+            "benders_iterations": 0,
+            "master_status": "INFEASIBLE",
+            "diagnostic_flow_status": "NOT_RUN",
+            "frontier_selection_policy": "certification_prune_per_anchor_v1",
+            "selection_reason": "prune_head",
+            "frontier_candidate_metrics": {
+              "selection_score_num": 1136,
+              "selection_score_den": 53,
+              "certification_prune_gain": 1136,
+              "infeasible_prune_gain": 1,
+              "anchor_count": 53,
+              "frontier_size": 19
+            },
+            "precheck_lookahead": {
+              "enabled": true,
+              "slot_index": 0,
+              "limit": 8,
+              "is_selected_head": true
+            },
+            "master_boundary_port_feasibility": {
+              "supported": true,
+              "required_count": 46,
+              "considered_anchor_count": 53,
+              "screened_infeasible_anchor_count": 53,
+              "screen_pass_anchor_count": 0,
+              "unsupported_anchor_count": 0,
+              "max_packable_min": 17,
+              "max_packable_max": 40,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 17
+            },
+            "master_mandatory_group_prechecks": {
+              "evaluated": false,
+              "skipped_due_to_upstream_precheck": true,
+              "upstream_anchor_filter_count": 0,
+              "supported_group_count": 0,
+              "groups": []
+            },
+            "master_mandatory_support_diagnostics": {
+              "unsupported_group_count": 0,
+              "empty_candidate_pool_group_count": 0,
+              "groups": [
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_blue_iron::1",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_buckwheat::2",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_sandleaf::3",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_source::4",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_source",
+                  "required_count": 18,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::molding_bottle::5",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "molding_bottle",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::parts_maker::6",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "parts_maker",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_blue_iron::7",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_steel::8",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_steel",
+                  "required_count": 17,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_buckwheat::9",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_buckwheat",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_sandleaf::10",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_sandleaf",
+                  "required_count": 21,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_buckwheat::11",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_sandleaf::12",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::filling_capsule::13",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "filling_capsule",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_blue_iron::14",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_blue_iron",
+                  "required_count": 17,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_source::15",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_source",
+                  "required_count": 9,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_fine_buckwheat::16",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_fine_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::packaging_battery::17",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "packaging_battery",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::protocol_core::protocol_core::18",
+                  "facility_type": "protocol_core",
+                  "operation_type": "protocol_core",
+                  "required_count": 1,
+                  "candidate_pool_count": 7200,
+                  "unsupported_reason": null
+                }
+              ]
+            },
+            "master_candidate_precheck": {
+              "triggered": true,
+              "precheck_reason": "boundary_port_all_anchors_infeasible",
+              "master_solve_skipped": true,
+              "supported": true,
+              "considered_anchor_count": 53,
+              "screened_infeasible_anchor_count": 53,
+              "screen_pass_anchor_count": 0,
+              "max_packable_min": 17,
+              "max_packable_max": 40,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 17,
+              "triggered_group_id": null,
+              "triggered_group_facility_type": null,
+              "triggered_group_operation_type": null,
+              "triggered_group_required_count": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "wave_index": 3,
+      "candidate_count": 1,
+      "completed": true,
+      "failure_reason": null,
+      "probe_round_active": false,
+      "probe_candidate_keys": [],
+      "probe_prune_gain_sum": 0,
+      "probe_prune_gain_max": 0,
+      "probe_resume_pending_count": 0,
+      "dispatched_candidate_keys": [],
+      "elapsed_seconds": null,
+      "peak_rss_bytes_external_total": null,
+      "peak_rss_bytes_internal_max_single_process": null,
+      "status_counts": {
+        "INFEASIBLE": 1
+      },
+      "outcome_counts": {
+        "master_infeasible": 1
+      },
+      "loaded_exact_safe_cut_count_sum": 0,
+      "generated_exact_safe_cut_count_sum": 0,
+      "candidate_results": [
+        {
+          "candidate_key": "70x17",
+          "dispatch_seq": 0,
+          "attempt_index": 3,
+          "wave_slot_index": 0,
+          "selection_reason": "prune_head",
+          "status": "INFEASIBLE",
+          "outcome_category": "master_infeasible",
+          "loaded_exact_safe_cut_count": 0,
+          "generated_exact_safe_cut_count": 0,
+          "probe_candidate": false,
+          "probe_prune_gain": 0,
+          "probe_resume_pending": false,
+          "frontier_probe_mode": "off",
+          "proof_status_summary": {
+            "mode": "certified_exact",
+            "benders_iterations": 0,
+            "master_status": "INFEASIBLE",
+            "diagnostic_flow_status": "NOT_RUN",
+            "frontier_selection_policy": "certification_prune_per_anchor_v1",
+            "selection_reason": "prune_head",
+            "frontier_candidate_metrics": {
+              "selection_score_num": 121,
+              "selection_score_den": 6,
+              "certification_prune_gain": 1089,
+              "infeasible_prune_gain": 1,
+              "anchor_count": 54,
+              "frontier_size": 19
+            },
+            "precheck_lookahead": {
+              "enabled": true,
+              "slot_index": 0,
+              "limit": 8,
+              "is_selected_head": true
+            },
+            "master_boundary_port_feasibility": {
+              "supported": true,
+              "required_count": 46,
+              "considered_anchor_count": 54,
+              "screened_infeasible_anchor_count": 54,
+              "screen_pass_anchor_count": 0,
+              "unsupported_anchor_count": 0,
+              "max_packable_min": 17,
+              "max_packable_max": 40,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 17
+            },
+            "master_mandatory_group_prechecks": {
+              "evaluated": false,
+              "skipped_due_to_upstream_precheck": true,
+              "upstream_anchor_filter_count": 0,
+              "supported_group_count": 0,
+              "groups": []
+            },
+            "master_mandatory_support_diagnostics": {
+              "unsupported_group_count": 0,
+              "empty_candidate_pool_group_count": 0,
+              "groups": [
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_blue_iron::1",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_buckwheat::2",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_sandleaf::3",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_source::4",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_source",
+                  "required_count": 18,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::molding_bottle::5",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "molding_bottle",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::parts_maker::6",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "parts_maker",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_blue_iron::7",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_steel::8",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_steel",
+                  "required_count": 17,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_buckwheat::9",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_buckwheat",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_sandleaf::10",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_sandleaf",
+                  "required_count": 21,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_buckwheat::11",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_sandleaf::12",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::filling_capsule::13",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "filling_capsule",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_blue_iron::14",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_blue_iron",
+                  "required_count": 17,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_source::15",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_source",
+                  "required_count": 9,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_fine_buckwheat::16",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_fine_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::packaging_battery::17",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "packaging_battery",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::protocol_core::protocol_core::18",
+                  "facility_type": "protocol_core",
+                  "operation_type": "protocol_core",
+                  "required_count": 1,
+                  "candidate_pool_count": 7200,
+                  "unsupported_reason": null
+                }
+              ]
+            },
+            "master_candidate_precheck": {
+              "triggered": true,
+              "precheck_reason": "boundary_port_all_anchors_infeasible",
+              "master_solve_skipped": true,
+              "supported": true,
+              "considered_anchor_count": 54,
+              "screened_infeasible_anchor_count": 54,
+              "screen_pass_anchor_count": 0,
+              "max_packable_min": 17,
+              "max_packable_max": 40,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 17,
+              "triggered_group_id": null,
+              "triggered_group_facility_type": null,
+              "triggered_group_operation_type": null,
+              "triggered_group_required_count": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "wave_index": 4,
+      "candidate_count": 1,
+      "completed": true,
+      "failure_reason": null,
+      "probe_round_active": false,
+      "probe_candidate_keys": [],
+      "probe_prune_gain_sum": 0,
+      "probe_prune_gain_max": 0,
+      "probe_resume_pending_count": 0,
+      "dispatched_candidate_keys": [],
+      "elapsed_seconds": null,
+      "peak_rss_bytes_external_total": null,
+      "peak_rss_bytes_internal_max_single_process": null,
+      "status_counts": {
+        "INFEASIBLE": 1
+      },
+      "outcome_counts": {
+        "master_infeasible": 1
+      },
+      "loaded_exact_safe_cut_count_sum": 0,
+      "generated_exact_safe_cut_count_sum": 0,
+      "candidate_results": [
+        {
+          "candidate_key": "70x16",
+          "dispatch_seq": 0,
+          "attempt_index": 4,
+          "wave_slot_index": 0,
+          "selection_reason": "prune_head",
+          "status": "INFEASIBLE",
+          "outcome_category": "master_infeasible",
+          "loaded_exact_safe_cut_count": 0,
+          "generated_exact_safe_cut_count": 0,
+          "probe_candidate": false,
+          "probe_prune_gain": 0,
+          "probe_resume_pending": false,
+          "frontier_probe_mode": "off",
+          "proof_status_summary": {
+            "mode": "certified_exact",
+            "benders_iterations": 0,
+            "master_status": "INFEASIBLE",
+            "diagnostic_flow_status": "NOT_RUN",
+            "frontier_selection_policy": "certification_prune_per_anchor_v1",
+            "selection_reason": "prune_head",
+            "frontier_candidate_metrics": {
+              "selection_score_num": 94,
+              "selection_score_den": 5,
+              "certification_prune_gain": 1034,
+              "infeasible_prune_gain": 1,
+              "anchor_count": 55,
+              "frontier_size": 19
+            },
+            "precheck_lookahead": {
+              "enabled": true,
+              "slot_index": 0,
+              "limit": 8,
+              "is_selected_head": true
+            },
+            "master_boundary_port_feasibility": {
+              "supported": true,
+              "required_count": 46,
+              "considered_anchor_count": 55,
+              "screened_infeasible_anchor_count": 55,
+              "screen_pass_anchor_count": 0,
+              "unsupported_anchor_count": 0,
+              "max_packable_min": 17,
+              "max_packable_max": 40,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 18
+            },
+            "master_mandatory_group_prechecks": {
+              "evaluated": false,
+              "skipped_due_to_upstream_precheck": true,
+              "upstream_anchor_filter_count": 0,
+              "supported_group_count": 0,
+              "groups": []
+            },
+            "master_mandatory_support_diagnostics": {
+              "unsupported_group_count": 0,
+              "empty_candidate_pool_group_count": 0,
+              "groups": [
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_blue_iron::1",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_buckwheat::2",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_sandleaf::3",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_source::4",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_source",
+                  "required_count": 18,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::molding_bottle::5",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "molding_bottle",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::parts_maker::6",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "parts_maker",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_blue_iron::7",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_steel::8",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_steel",
+                  "required_count": 17,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_buckwheat::9",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_buckwheat",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_sandleaf::10",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_sandleaf",
+                  "required_count": 21,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_buckwheat::11",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_sandleaf::12",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::filling_capsule::13",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "filling_capsule",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_blue_iron::14",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_blue_iron",
+                  "required_count": 17,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_source::15",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_source",
+                  "required_count": 9,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_fine_buckwheat::16",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_fine_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::packaging_battery::17",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "packaging_battery",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::protocol_core::protocol_core::18",
+                  "facility_type": "protocol_core",
+                  "operation_type": "protocol_core",
+                  "required_count": 1,
+                  "candidate_pool_count": 7200,
+                  "unsupported_reason": null
+                }
+              ]
+            },
+            "master_candidate_precheck": {
+              "triggered": true,
+              "precheck_reason": "boundary_port_all_anchors_infeasible",
+              "master_solve_skipped": true,
+              "supported": true,
+              "considered_anchor_count": 55,
+              "screened_infeasible_anchor_count": 55,
+              "screen_pass_anchor_count": 0,
+              "max_packable_min": 17,
+              "max_packable_max": 40,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 18,
+              "triggered_group_id": null,
+              "triggered_group_facility_type": null,
+              "triggered_group_operation_type": null,
+              "triggered_group_required_count": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "wave_index": 5,
+      "candidate_count": 1,
+      "completed": true,
+      "failure_reason": null,
+      "probe_round_active": false,
+      "probe_candidate_keys": [],
+      "probe_prune_gain_sum": 0,
+      "probe_prune_gain_max": 0,
+      "probe_resume_pending_count": 0,
+      "dispatched_candidate_keys": [],
+      "elapsed_seconds": null,
+      "peak_rss_bytes_external_total": null,
+      "peak_rss_bytes_internal_max_single_process": null,
+      "status_counts": {
+        "INFEASIBLE": 1
+      },
+      "outcome_counts": {
+        "master_infeasible": 1
+      },
+      "loaded_exact_safe_cut_count_sum": 0,
+      "generated_exact_safe_cut_count_sum": 0,
+      "candidate_results": [
+        {
+          "candidate_key": "70x15",
+          "dispatch_seq": 0,
+          "attempt_index": 5,
+          "wave_slot_index": 0,
+          "selection_reason": "prune_head",
+          "status": "INFEASIBLE",
+          "outcome_category": "master_infeasible",
+          "loaded_exact_safe_cut_count": 0,
+          "generated_exact_safe_cut_count": 0,
+          "probe_candidate": false,
+          "probe_prune_gain": 0,
+          "probe_resume_pending": false,
+          "frontier_probe_mode": "off",
+          "proof_status_summary": {
+            "mode": "certified_exact",
+            "benders_iterations": 0,
+            "master_status": "INFEASIBLE",
+            "diagnostic_flow_status": "NOT_RUN",
+            "frontier_selection_policy": "certification_prune_per_anchor_v1",
+            "selection_reason": "prune_head",
+            "frontier_candidate_metrics": {
+              "selection_score_num": 35,
+              "selection_score_den": 2,
+              "certification_prune_gain": 980,
+              "infeasible_prune_gain": 1,
+              "anchor_count": 56,
+              "frontier_size": 19
+            },
+            "precheck_lookahead": {
+              "enabled": true,
+              "slot_index": 0,
+              "limit": 8,
+              "is_selected_head": true
+            },
+            "master_boundary_port_feasibility": {
+              "supported": true,
+              "required_count": 46,
+              "considered_anchor_count": 56,
+              "screened_infeasible_anchor_count": 56,
+              "screen_pass_anchor_count": 0,
+              "unsupported_anchor_count": 0,
+              "max_packable_min": 18,
+              "max_packable_max": 41,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 18
+            },
+            "master_mandatory_group_prechecks": {
+              "evaluated": false,
+              "skipped_due_to_upstream_precheck": true,
+              "upstream_anchor_filter_count": 0,
+              "supported_group_count": 0,
+              "groups": []
+            },
+            "master_mandatory_support_diagnostics": {
+              "unsupported_group_count": 0,
+              "empty_candidate_pool_group_count": 0,
+              "groups": [
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_blue_iron::1",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_buckwheat::2",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_sandleaf::3",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_source::4",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_source",
+                  "required_count": 18,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::molding_bottle::5",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "molding_bottle",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::parts_maker::6",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "parts_maker",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_blue_iron::7",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_steel::8",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_steel",
+                  "required_count": 17,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_buckwheat::9",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_buckwheat",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_sandleaf::10",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_sandleaf",
+                  "required_count": 21,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_buckwheat::11",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_sandleaf::12",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::filling_capsule::13",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "filling_capsule",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_blue_iron::14",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_blue_iron",
+                  "required_count": 17,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_source::15",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_source",
+                  "required_count": 9,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_fine_buckwheat::16",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_fine_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::packaging_battery::17",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "packaging_battery",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::protocol_core::protocol_core::18",
+                  "facility_type": "protocol_core",
+                  "operation_type": "protocol_core",
+                  "required_count": 1,
+                  "candidate_pool_count": 7200,
+                  "unsupported_reason": null
+                }
+              ]
+            },
+            "master_candidate_precheck": {
+              "triggered": true,
+              "precheck_reason": "boundary_port_all_anchors_infeasible",
+              "master_solve_skipped": true,
+              "supported": true,
+              "considered_anchor_count": 56,
+              "screened_infeasible_anchor_count": 56,
+              "screen_pass_anchor_count": 0,
+              "max_packable_min": 18,
+              "max_packable_max": 41,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 18,
+              "triggered_group_id": null,
+              "triggered_group_facility_type": null,
+              "triggered_group_operation_type": null,
+              "triggered_group_required_count": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "wave_index": 6,
+      "candidate_count": 1,
+      "completed": true,
+      "failure_reason": null,
+      "probe_round_active": false,
+      "probe_candidate_keys": [],
+      "probe_prune_gain_sum": 0,
+      "probe_prune_gain_max": 0,
+      "probe_resume_pending_count": 0,
+      "dispatched_candidate_keys": [],
+      "elapsed_seconds": null,
+      "peak_rss_bytes_external_total": null,
+      "peak_rss_bytes_internal_max_single_process": null,
+      "status_counts": {
+        "INFEASIBLE": 1
+      },
+      "outcome_counts": {
+        "master_infeasible": 1
+      },
+      "loaded_exact_safe_cut_count_sum": 0,
+      "generated_exact_safe_cut_count_sum": 0,
+      "candidate_results": [
+        {
+          "candidate_key": "70x14",
+          "dispatch_seq": 0,
+          "attempt_index": 6,
+          "wave_slot_index": 0,
+          "selection_reason": "prune_head",
+          "status": "INFEASIBLE",
+          "outcome_category": "master_infeasible",
+          "loaded_exact_safe_cut_count": 0,
+          "generated_exact_safe_cut_count": 0,
+          "probe_candidate": false,
+          "probe_prune_gain": 0,
+          "probe_resume_pending": false,
+          "frontier_probe_mode": "off",
+          "proof_status_summary": {
+            "mode": "certified_exact",
+            "benders_iterations": 0,
+            "master_status": "INFEASIBLE",
+            "diagnostic_flow_status": "NOT_RUN",
+            "frontier_selection_policy": "certification_prune_per_anchor_v1",
+            "selection_reason": "prune_head",
+            "frontier_candidate_metrics": {
+              "selection_score_num": 925,
+              "selection_score_den": 57,
+              "certification_prune_gain": 925,
+              "infeasible_prune_gain": 1,
+              "anchor_count": 57,
+              "frontier_size": 19
+            },
+            "precheck_lookahead": {
+              "enabled": true,
+              "slot_index": 0,
+              "limit": 8,
+              "is_selected_head": true
+            },
+            "master_boundary_port_feasibility": {
+              "supported": true,
+              "required_count": 46,
+              "considered_anchor_count": 57,
+              "screened_infeasible_anchor_count": 57,
+              "screen_pass_anchor_count": 0,
+              "unsupported_anchor_count": 0,
+              "max_packable_min": 18,
+              "max_packable_max": 41,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 18
+            },
+            "master_mandatory_group_prechecks": {
+              "evaluated": false,
+              "skipped_due_to_upstream_precheck": true,
+              "upstream_anchor_filter_count": 0,
+              "supported_group_count": 0,
+              "groups": []
+            },
+            "master_mandatory_support_diagnostics": {
+              "unsupported_group_count": 0,
+              "empty_candidate_pool_group_count": 0,
+              "groups": [
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_blue_iron::1",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_buckwheat::2",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_sandleaf::3",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_source::4",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_source",
+                  "required_count": 18,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::molding_bottle::5",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "molding_bottle",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::parts_maker::6",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "parts_maker",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_blue_iron::7",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_steel::8",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_steel",
+                  "required_count": 17,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_buckwheat::9",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_buckwheat",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_sandleaf::10",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_sandleaf",
+                  "required_count": 21,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_buckwheat::11",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_sandleaf::12",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::filling_capsule::13",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "filling_capsule",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_blue_iron::14",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_blue_iron",
+                  "required_count": 17,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_source::15",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_source",
+                  "required_count": 9,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_fine_buckwheat::16",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_fine_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::packaging_battery::17",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "packaging_battery",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::protocol_core::protocol_core::18",
+                  "facility_type": "protocol_core",
+                  "operation_type": "protocol_core",
+                  "required_count": 1,
+                  "candidate_pool_count": 7200,
+                  "unsupported_reason": null
+                }
+              ]
+            },
+            "master_candidate_precheck": {
+              "triggered": true,
+              "precheck_reason": "boundary_port_all_anchors_infeasible",
+              "master_solve_skipped": true,
+              "supported": true,
+              "considered_anchor_count": 57,
+              "screened_infeasible_anchor_count": 57,
+              "screen_pass_anchor_count": 0,
+              "max_packable_min": 18,
+              "max_packable_max": 41,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 18,
+              "triggered_group_id": null,
+              "triggered_group_facility_type": null,
+              "triggered_group_operation_type": null,
+              "triggered_group_required_count": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "wave_index": 7,
+      "candidate_count": 1,
+      "completed": true,
+      "failure_reason": null,
+      "probe_round_active": false,
+      "probe_candidate_keys": [],
+      "probe_prune_gain_sum": 0,
+      "probe_prune_gain_max": 0,
+      "probe_resume_pending_count": 0,
+      "dispatched_candidate_keys": [],
+      "elapsed_seconds": null,
+      "peak_rss_bytes_external_total": null,
+      "peak_rss_bytes_internal_max_single_process": null,
+      "status_counts": {
+        "INFEASIBLE": 1
+      },
+      "outcome_counts": {
+        "master_infeasible": 1
+      },
+      "loaded_exact_safe_cut_count_sum": 0,
+      "generated_exact_safe_cut_count_sum": 0,
+      "candidate_results": [
+        {
+          "candidate_key": "70x13",
+          "dispatch_seq": 0,
+          "attempt_index": 7,
+          "wave_slot_index": 0,
+          "selection_reason": "prune_head",
+          "status": "INFEASIBLE",
+          "outcome_category": "master_infeasible",
+          "loaded_exact_safe_cut_count": 0,
+          "generated_exact_safe_cut_count": 0,
+          "probe_candidate": false,
+          "probe_prune_gain": 0,
+          "probe_resume_pending": false,
+          "frontier_probe_mode": "off",
+          "proof_status_summary": {
+            "mode": "certified_exact",
+            "benders_iterations": 0,
+            "master_status": "INFEASIBLE",
+            "diagnostic_flow_status": "NOT_RUN",
+            "frontier_selection_policy": "certification_prune_per_anchor_v1",
+            "selection_reason": "prune_head",
+            "frontier_candidate_metrics": {
+              "selection_score_num": 433,
+              "selection_score_den": 29,
+              "certification_prune_gain": 866,
+              "infeasible_prune_gain": 1,
+              "anchor_count": 58,
+              "frontier_size": 19
+            },
+            "precheck_lookahead": {
+              "enabled": true,
+              "slot_index": 0,
+              "limit": 8,
+              "is_selected_head": true
+            },
+            "master_boundary_port_feasibility": {
+              "supported": true,
+              "required_count": 46,
+              "considered_anchor_count": 58,
+              "screened_infeasible_anchor_count": 58,
+              "screen_pass_anchor_count": 0,
+              "unsupported_anchor_count": 0,
+              "max_packable_min": 18,
+              "max_packable_max": 41,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 19
+            },
+            "master_mandatory_group_prechecks": {
+              "evaluated": false,
+              "skipped_due_to_upstream_precheck": true,
+              "upstream_anchor_filter_count": 0,
+              "supported_group_count": 0,
+              "groups": []
+            },
+            "master_mandatory_support_diagnostics": {
+              "unsupported_group_count": 0,
+              "empty_candidate_pool_group_count": 0,
+              "groups": [
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_blue_iron::1",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_buckwheat::2",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_sandleaf::3",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_source::4",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_source",
+                  "required_count": 18,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::molding_bottle::5",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "molding_bottle",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::parts_maker::6",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "parts_maker",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_blue_iron::7",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_steel::8",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_steel",
+                  "required_count": 17,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_buckwheat::9",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_buckwheat",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_sandleaf::10",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_sandleaf",
+                  "required_count": 21,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_buckwheat::11",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_sandleaf::12",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::filling_capsule::13",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "filling_capsule",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_blue_iron::14",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_blue_iron",
+                  "required_count": 17,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_source::15",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_source",
+                  "required_count": 9,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_fine_buckwheat::16",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_fine_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::packaging_battery::17",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "packaging_battery",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::protocol_core::protocol_core::18",
+                  "facility_type": "protocol_core",
+                  "operation_type": "protocol_core",
+                  "required_count": 1,
+                  "candidate_pool_count": 7200,
+                  "unsupported_reason": null
+                }
+              ]
+            },
+            "master_candidate_precheck": {
+              "triggered": true,
+              "precheck_reason": "boundary_port_all_anchors_infeasible",
+              "master_solve_skipped": true,
+              "supported": true,
+              "considered_anchor_count": 58,
+              "screened_infeasible_anchor_count": 58,
+              "screen_pass_anchor_count": 0,
+              "max_packable_min": 18,
+              "max_packable_max": 41,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 19,
+              "triggered_group_id": null,
+              "triggered_group_facility_type": null,
+              "triggered_group_operation_type": null,
+              "triggered_group_required_count": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "wave_index": 8,
+      "candidate_count": 1,
+      "completed": true,
+      "failure_reason": null,
+      "probe_round_active": false,
+      "probe_candidate_keys": [],
+      "probe_prune_gain_sum": 0,
+      "probe_prune_gain_max": 0,
+      "probe_resume_pending_count": 0,
+      "dispatched_candidate_keys": [],
+      "elapsed_seconds": null,
+      "peak_rss_bytes_external_total": null,
+      "peak_rss_bytes_internal_max_single_process": null,
+      "status_counts": {
+        "INFEASIBLE": 1
+      },
+      "outcome_counts": {
+        "master_infeasible": 1
+      },
+      "loaded_exact_safe_cut_count_sum": 0,
+      "generated_exact_safe_cut_count_sum": 0,
+      "candidate_results": [
+        {
+          "candidate_key": "70x12",
+          "dispatch_seq": 0,
+          "attempt_index": 8,
+          "wave_slot_index": 0,
+          "selection_reason": "prune_head",
+          "status": "INFEASIBLE",
+          "outcome_category": "master_infeasible",
+          "loaded_exact_safe_cut_count": 0,
+          "generated_exact_safe_cut_count": 0,
+          "probe_candidate": false,
+          "probe_prune_gain": 0,
+          "probe_resume_pending": false,
+          "frontier_probe_mode": "off",
+          "proof_status_summary": {
+            "mode": "certified_exact",
+            "benders_iterations": 0,
+            "master_status": "INFEASIBLE",
+            "diagnostic_flow_status": "NOT_RUN",
+            "frontier_selection_policy": "certification_prune_per_anchor_v1",
+            "selection_reason": "prune_head",
+            "frontier_candidate_metrics": {
+              "selection_score_num": 804,
+              "selection_score_den": 59,
+              "certification_prune_gain": 804,
+              "infeasible_prune_gain": 1,
+              "anchor_count": 59,
+              "frontier_size": 19
+            },
+            "precheck_lookahead": {
+              "enabled": true,
+              "slot_index": 0,
+              "limit": 8,
+              "is_selected_head": true
+            },
+            "master_boundary_port_feasibility": {
+              "supported": true,
+              "required_count": 46,
+              "considered_anchor_count": 59,
+              "screened_infeasible_anchor_count": 59,
+              "screen_pass_anchor_count": 0,
+              "unsupported_anchor_count": 0,
+              "max_packable_min": 19,
+              "max_packable_max": 42,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 19
+            },
+            "master_mandatory_group_prechecks": {
+              "evaluated": false,
+              "skipped_due_to_upstream_precheck": true,
+              "upstream_anchor_filter_count": 0,
+              "supported_group_count": 0,
+              "groups": []
+            },
+            "master_mandatory_support_diagnostics": {
+              "unsupported_group_count": 0,
+              "empty_candidate_pool_group_count": 0,
+              "groups": [
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_blue_iron::1",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_buckwheat::2",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_sandleaf::3",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_source::4",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_source",
+                  "required_count": 18,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::molding_bottle::5",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "molding_bottle",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::parts_maker::6",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "parts_maker",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_blue_iron::7",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_steel::8",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_steel",
+                  "required_count": 17,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_buckwheat::9",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_buckwheat",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_sandleaf::10",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_sandleaf",
+                  "required_count": 21,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_buckwheat::11",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_sandleaf::12",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::filling_capsule::13",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "filling_capsule",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_blue_iron::14",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_blue_iron",
+                  "required_count": 17,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_source::15",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_source",
+                  "required_count": 9,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_fine_buckwheat::16",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_fine_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::packaging_battery::17",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "packaging_battery",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::protocol_core::protocol_core::18",
+                  "facility_type": "protocol_core",
+                  "operation_type": "protocol_core",
+                  "required_count": 1,
+                  "candidate_pool_count": 7200,
+                  "unsupported_reason": null
+                }
+              ]
+            },
+            "master_candidate_precheck": {
+              "triggered": true,
+              "precheck_reason": "boundary_port_all_anchors_infeasible",
+              "master_solve_skipped": true,
+              "supported": true,
+              "considered_anchor_count": 59,
+              "screened_infeasible_anchor_count": 59,
+              "screen_pass_anchor_count": 0,
+              "max_packable_min": 19,
+              "max_packable_max": 42,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 19,
+              "triggered_group_id": null,
+              "triggered_group_facility_type": null,
+              "triggered_group_operation_type": null,
+              "triggered_group_required_count": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "wave_index": 9,
+      "candidate_count": 1,
+      "completed": true,
+      "failure_reason": null,
+      "probe_round_active": false,
+      "probe_candidate_keys": [],
+      "probe_prune_gain_sum": 0,
+      "probe_prune_gain_max": 0,
+      "probe_resume_pending_count": 0,
+      "dispatched_candidate_keys": [],
+      "elapsed_seconds": null,
+      "peak_rss_bytes_external_total": null,
+      "peak_rss_bytes_internal_max_single_process": null,
+      "status_counts": {
+        "INFEASIBLE": 1
+      },
+      "outcome_counts": {
+        "master_infeasible": 1
+      },
+      "loaded_exact_safe_cut_count_sum": 0,
+      "generated_exact_safe_cut_count_sum": 0,
+      "candidate_results": [
+        {
+          "candidate_key": "70x11",
+          "dispatch_seq": 0,
+          "attempt_index": 9,
+          "wave_slot_index": 0,
+          "selection_reason": "prune_head",
+          "status": "INFEASIBLE",
+          "outcome_category": "master_infeasible",
+          "loaded_exact_safe_cut_count": 0,
+          "generated_exact_safe_cut_count": 0,
+          "probe_candidate": false,
+          "probe_prune_gain": 0,
+          "probe_resume_pending": false,
+          "frontier_probe_mode": "off",
+          "proof_status_summary": {
+            "mode": "certified_exact",
+            "benders_iterations": 0,
+            "master_status": "INFEASIBLE",
+            "diagnostic_flow_status": "NOT_RUN",
+            "frontier_selection_policy": "certification_prune_per_anchor_v1",
+            "selection_reason": "prune_head",
+            "frontier_candidate_metrics": {
+              "selection_score_num": 371,
+              "selection_score_den": 30,
+              "certification_prune_gain": 742,
+              "infeasible_prune_gain": 1,
+              "anchor_count": 60,
+              "frontier_size": 19
+            },
+            "precheck_lookahead": {
+              "enabled": true,
+              "slot_index": 0,
+              "limit": 8,
+              "is_selected_head": true
+            },
+            "master_boundary_port_feasibility": {
+              "supported": true,
+              "required_count": 46,
+              "considered_anchor_count": 60,
+              "screened_infeasible_anchor_count": 60,
+              "screen_pass_anchor_count": 0,
+              "unsupported_anchor_count": 0,
+              "max_packable_min": 19,
+              "max_packable_max": 42,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 19
+            },
+            "master_mandatory_group_prechecks": {
+              "evaluated": false,
+              "skipped_due_to_upstream_precheck": true,
+              "upstream_anchor_filter_count": 0,
+              "supported_group_count": 0,
+              "groups": []
+            },
+            "master_mandatory_support_diagnostics": {
+              "unsupported_group_count": 0,
+              "empty_candidate_pool_group_count": 0,
+              "groups": [
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_blue_iron::1",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_buckwheat::2",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_sandleaf::3",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::crusher_source::4",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "crusher_source",
+                  "required_count": 18,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::molding_bottle::5",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "molding_bottle",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::parts_maker::6",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "parts_maker",
+                  "required_count": 6,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_blue_iron::7",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_blue_iron",
+                  "required_count": 34,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_3x3::refinery_steel::8",
+                  "facility_type": "manufacturing_3x3",
+                  "operation_type": "refinery_steel",
+                  "required_count": 17,
+                  "candidate_pool_count": 17952,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_buckwheat::9",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_buckwheat",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::planter_sandleaf::10",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "planter_sandleaf",
+                  "required_count": 21,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_buckwheat::11",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_5x5::seed_collector_sandleaf::12",
+                  "facility_type": "manufacturing_5x5",
+                  "operation_type": "seed_collector_sandleaf",
+                  "required_count": 11,
+                  "candidate_pool_count": 16896,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::filling_capsule::13",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "filling_capsule",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_blue_iron::14",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_blue_iron",
+                  "required_count": 17,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_dense_source::15",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_dense_source",
+                  "required_count": 9,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::grinder_fine_buckwheat::16",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "grinder_fine_buckwheat",
+                  "required_count": 6,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::manufacturing_6x4::packaging_battery::17",
+                  "facility_type": "manufacturing_6x4",
+                  "operation_type": "packaging_battery",
+                  "required_count": 3,
+                  "candidate_pool_count": 16900,
+                  "unsupported_reason": null
+                },
+                {
+                  "group_id": "group::protocol_core::protocol_core::18",
+                  "facility_type": "protocol_core",
+                  "operation_type": "protocol_core",
+                  "required_count": 1,
+                  "candidate_pool_count": 7200,
+                  "unsupported_reason": null
+                }
+              ]
+            },
+            "master_candidate_precheck": {
+              "triggered": true,
+              "precheck_reason": "boundary_port_all_anchors_infeasible",
+              "master_solve_skipped": true,
+              "supported": true,
+              "considered_anchor_count": 60,
+              "screened_infeasible_anchor_count": 60,
+              "screen_pass_anchor_count": 0,
+              "max_packable_min": 19,
+              "max_packable_max": 42,
+              "first_infeasible_anchor_idx": 0,
+              "first_infeasible_anchor_max_packable": 19,
+              "triggered_group_id": null,
+              "triggered_group_facility_type": null,
+              "triggered_group_operation_type": null,
+              "triggered_group_required_count": 0
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "aggregate": {
+    "wave_count": 9,
+    "candidate_result_count": 9,
+    "solve_attempt_count": 0,
+    "precheck_elimination_count": 9,
+    "precheck_elimination_reason_counts": {
+      "boundary_port_all_anchors_infeasible": 9
+    },
+    "precheck_head_elimination_count": 9,
+    "precheck_lookahead_elimination_count": 0,
+    "precheck_lookahead_elimination_reason_counts": {},
+    "status_counts": {
+      "INFEASIBLE": 9
+    },
+    "outcome_counts": {
+      "master_infeasible": 9
+    },
+    "selection_reason_counts": {
+      "prune_head": 9
+    },
+    "probe_mode_counts": {
+      "off": 9
+    },
+    "probe_round_count": 0,
+    "probe_candidate_count": 0,
+    "probe_prune_gain_sum": 0,
+    "probe_prune_gain_max": 0,
+    "probe_resume_pending_count": 0,
+    "master_status_counts": {
+      "INFEASIBLE": 9
+    },
+    "master_search_profile_counts": {},
+    "master_branch_count_sum": 0,
+    "master_branch_count_max": 0,
+    "master_conflict_count_sum": 0,
+    "master_conflict_count_max": 0,
+    "master_deterministic_time_sum": 0.0,
+    "master_binary_propagations_sum": 0,
+    "master_integer_propagations_sum": 0,
+    "master_zero_branch_unknown_count": 0,
+    "master_conflictful_unknown_count": 0,
+    "ghost_anchor_hint_applied_count": 0,
+    "ghost_anchor_hint_none_compatible_count": 0,
+    "ghost_aware_start_applied_count": 0,
+    "ghost_aware_start_fallback_count": 0,
+    "ghost_aware_anchor_attempt_count_sum": 0,
+    "ghost_aware_pose_order_portfolio_attempted_count": 0,
+    "ghost_aware_pose_order_portfolio_success_count": 0,
+    "ghost_aware_pose_order_portfolio_attempt_count_sum": 0,
+    "ghost_aware_pose_order_portfolio_failed_anchor_count_sum": 0,
+    "ghost_aware_pose_order_portfolio_failure_reason_counts": {},
+    "ghost_aware_pose_order_portfolio_failure_sample_count": 0,
+    "ghost_aware_pose_order_portfolio_failure_samples": [],
+    "ghost_aware_pose_order_portfolio_selected_ordering_counts": {},
+    "ghost_aware_pose_order_validation_attempt_count_sum": 0,
+    "ghost_aware_pose_order_validation_rejected_count_sum": 0,
+    "ghost_aware_pose_order_validation_status_counts": {},
+    "ghost_aware_pose_order_validation_reason_counts": {},
+    "master_hinted_literals_sum": 0,
+    "greedy_hint_instances_sum": 0,
+    "residual_optional_zero_hints_sum": 0,
+    "ghost_anchor_compatible_count_sum": 0,
+    "ghost_anchor_compatible_zero_count": 0,
+    "required_optional_positive_hints_sum": 0,
+    "residual_optional_positive_hints_sum": 0,
+    "required_optional_active_slot_upper_bound_sum": 0,
+    "residual_optional_active_slot_upper_bound_sum": 0,
+    "master_start_incompatible_unknown_count": 0,
+    "master_start_compatible_zero_branch_unknown_count": 0,
+    "ghost_aware_failed_anchor_count_sum": 0,
+    "ghost_aware_blocked_cells_exhausted_count_sum": 0,
+    "ghost_aware_committed_cells_exhausted_count_sum": 0,
+    "ghost_aware_intra_group_greedy_exhausted_count_sum": 0,
+    "ghost_aware_top_failed_groups": [],
+    "ghost_aware_top_failed_group_failures": [],
+    "ghost_aware_local_repair_attempted_count": 0,
+    "ghost_aware_local_repair_success_count": 0,
+    "ghost_aware_local_repair_intra_group_attempted_count": 0,
+    "ghost_aware_local_repair_committed_attempted_count": 0,
+    "ghost_aware_local_repair_window1_count": 0,
+    "ghost_aware_local_repair_window2_count": 0,
+    "ghost_aware_local_repair_portfolio_attempt_count_sum": 0,
+    "boundary_port_screen_supported_candidate_count": 9,
+    "boundary_port_screened_infeasible_anchor_count_sum": 504,
+    "boundary_port_screen_pass_anchor_count_sum": 0,
+    "boundary_port_screen_unsupported_anchor_count_sum": 0,
+    "boundary_port_max_packable_min_global": 16,
+    "boundary_port_max_packable_max_global": 42,
+    "candidate_precheck_triggered_count": 9,
+    "candidate_precheck_boundary_port_all_anchors_infeasible_count": 9,
+    "candidate_precheck_empty_pool_count": 0,
+    "candidate_precheck_empty_pool_group_counts": [],
+    "candidate_precheck_master_solve_skipped_count": 9,
+    "mandatory_support_unsupported_group_count_sum": 0,
+    "mandatory_support_empty_candidate_pool_group_count_sum": 0,
+    "mandatory_support_unsupported_reason_counts": {},
+    "mandatory_group_precheck_evaluated_candidate_count": 0,
+    "mandatory_group_precheck_skipped_due_to_boundary_precheck_count": 9,
+    "mandatory_group_precheck_considered_anchor_count_sum": 0,
+    "mandatory_group_precheck_triggered_count": 0,
+    "mandatory_group_precheck_master_solve_skipped_count": 0,
+    "mandatory_group_precheck_supported_group_count_sum": 0,
+    "mandatory_group_precheck_supported_group_count_by_oracle_mode": {},
+    "mandatory_group_precheck_unsupported_group_count_sum": 0,
+    "mandatory_group_precheck_unsupported_reason_counts": {},
+    "mandatory_group_precheck_screened_infeasible_anchor_count_sum": 0,
+    "mandatory_group_precheck_screen_pass_anchor_count_sum": 0,
+    "mandatory_group_precheck_triggered_group_counts": [],
+    "failure_reason_counts": {},
+    "loaded_exact_safe_cut_count_sum": 0,
+    "generated_exact_safe_cut_count_sum": 0,
+    "ghost_disabled_placements_sum": 0,
+    "ghost_disabled_placements_max": 0,
+    "ghost_conditioned_family_upper_bound_constraints_sum": 0,
+    "ghost_conditioned_signature_bucket_constraints_sum": 0,
+    "ghost_signature_reduction_anchor_count_max": 0,
+    "ghost_conditioned_residual_signature_bucket_constraints_sum": 0,
+    "coordinate_symmetry_constraints_sum": 0,
+    "residual_coordinate_symmetry_constraints_sum": 0,
+    "peak_rss_bytes_external_total": 0,
+    "peak_rss_bytes_internal_max_single_process": 0
+  }
+}

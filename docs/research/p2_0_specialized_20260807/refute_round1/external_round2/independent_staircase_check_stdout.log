@@ -1,0 +1,25 @@
+manufacturing_port_slots=568
+all_endpoint_slots_including_52_sources_and_2_final_sinks=622
+blue_iron_block          P=34 Q=34 split_free=True  rates=1
+blue_iron_ore            P=34 Q=34 split_free=True  rates=1
+blue_iron_powder         P=34 Q=34 split_free=True  rates=1
+buckwheat                P=11 Q=12 split_free=False rates=1/2,1
+buckwheat_powder         P=11 Q=11 split_free=True  rates=1
+buckwheat_seed           P=11 Q=11 split_free=True  rates=1
+dense_blue_iron_powder   P=17 Q=17 split_free=True  rates=1
+dense_source_powder      P= 9 Q= 9 split_free=True  rates=1
+fine_buckwheat_powder    P= 6 Q= 6 split_free=True  rates=1/2,1
+qiaoyu_capsule           P= 3 Q= 1 split_free=True  rates=3/20,1/5,11/20
+sandleaf                 P=21 Q=22 split_free=False rates=1/2,1
+sandleaf_powder          P=32 Q=32 split_free=True  rates=1/2,1
+sandleaf_seed            P=21 Q=21 split_free=True  rates=1
+source_ore               P=18 Q=18 split_free=True  rates=1
+source_powder            P=18 Q=18 split_free=True  rates=1
+steel_block              P=17 Q=17 split_free=True  rates=1
+steel_bottle             P= 6 Q= 6 split_free=True  rates=1/2,1
+steel_part               P= 6 Q= 6 split_free=True  rates=1
+valley_battery           P= 3 Q= 1 split_free=True  rates=1/5,3/5
+split_free_count=17/19
+not_split_free=buckwheat,sandleaf
+qiaoyu_producer_rates=1/5,1/5,3/20 merged=11/20
+valley_producer_rates=1/5,1/5,1/5 merged=3/5

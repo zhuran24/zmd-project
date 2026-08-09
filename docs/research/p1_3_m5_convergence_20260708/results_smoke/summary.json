@@ -1,0 +1,66 @@
+[
+  {
+    "cell": "g40x40_off",
+    "exit": 0,
+    "subprocess_wall": 219.7,
+    "result": {
+      "ghost_rect": [
+        40,
+        40
+      ],
+      "attach": "off",
+      "master_seconds": 90.0,
+      "binding_seconds": 60.0,
+      "routing_seconds": 60.0,
+      "max_iterations": 3,
+      "workers": 1,
+      "session_build_seconds": 45.758,
+      "master_build_seconds": 75.849,
+      "status": "UNKNOWN",
+      "has_solution": false,
+      "lbbd_wall_seconds": 95.207,
+      "benders_iterations": 1,
+      "binding_status": null,
+      "routing_status": null,
+      "cut_framework_attached_last_trigger": null,
+      "coordinate_framework_cut_count": 0,
+      "cut_framework_attach_last": null,
+      "coordinate_pattern_nogood_last_cut": null,
+      "coordinate_baseline_packing_last_cut": null,
+      "coordinate_power_pose_exclusion_last_cut": null,
+      "coordinate_region_capacity_cut_count": 0
+    }
+  },
+  {
+    "cell": "g40x40_on",
+    "exit": 0,
+    "subprocess_wall": 217.0,
+    "result": {
+      "ghost_rect": [
+        40,
+        40
+      ],
+      "attach": "on",
+      "master_seconds": 90.0,
+      "binding_seconds": 60.0,
+      "routing_seconds": 60.0,
+      "max_iterations": 3,
+      "workers": 1,
+      "session_build_seconds": 44.931,
+      "master_build_seconds": 75.035,
+      "status": "UNKNOWN",
+      "has_solution": false,
+      "lbbd_wall_seconds": 94.159,
+      "benders_iterations": 1,
+      "binding_status": null,
+      "routing_status": null,
+      "cut_framework_attached_last_trigger": null,
+      "coordinate_framework_cut_count": 0,
+      "cut_framework_attach_last": null,
+      "coordinate_pattern_nogood_last_cut": null,
+      "coordinate_baseline_packing_last_cut": null,
+      "coordinate_power_pose_exclusion_last_cut": null,
+      "coordinate_region_capacity_cut_count": 0
+    }
+  }
+]

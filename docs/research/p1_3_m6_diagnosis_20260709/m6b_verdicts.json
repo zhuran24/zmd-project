@@ -1,0 +1,42 @@
+{
+ "A_skip_power": [
+  {
+   "anchor": 132,
+   "status": "OPTIMAL",
+   "accepted": true,
+   "reason": "accepted",
+   "wall": 4.9,
+   "branches": 7709,
+   "conflicts": 32
+  },
+  {
+   "anchor": 133,
+   "status": "OPTIMAL",
+   "accepted": true,
+   "reason": "accepted",
+   "wall": 5.3,
+   "branches": 7732,
+   "conflicts": 39
+  },
+  {
+   "anchor": 134,
+   "status": "OPTIMAL",
+   "accepted": true,
+   "reason": "accepted",
+   "wall": 2.6,
+   "branches": 7650,
+   "conflicts": 1
+  }
+ ],
+ "B_full_power_firepower": [
+  {
+   "anchor": 132,
+   "status": "INFEASIBLE",
+   "accepted": false,
+   "reason": "infeasible",
+   "wall": 94.5,
+   "branches": 1361845,
+   "conflicts": 1320
+  }
+ ]
+}

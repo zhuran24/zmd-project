@@ -1,0 +1,459 @@
+{
+ "ob": "OB5-支撑（slot 普查）",
+ "semantics_label": "P2.0 第七谓词语义；slot 模型 = 前提 3（slots=ceil(rate)，均分）",
+ "date": "2026-08-06",
+ "inputs": {
+  "canonical_rules": "rules/canonical_rules.json (frozen)",
+  "ob1_receipt": "ob1_flow_caliber_receipt.json（占空 / 流量）"
+ },
+ "totals": {
+  "manufacturing_slots_total": 574,
+  "manufacturing_slots_routed": 568,
+  "final_output_slots_excluded": 6,
+  "full_bandwidth_routed_slots": 401,
+  "external_saturated_slot_equivalents": {
+   "blue_iron_ore": 34,
+   "source_ore": 18
+  },
+  "external_saturated_total": 52,
+  "full_bandwidth_grand_total": 453,
+  "sub_unity_routed_slots": 167,
+  "sub_unity_residual_bins_items_per_tick": {
+   "1/12": 90,
+   "1/22": 77
+  }
+ },
+ "cross_check": "574/568/401/52 与 MEMO §2.1 引理 1 逐数字断言相符（本脚本独立从 canonical 重导）",
+ "usage_caveat": "本普查是均分 slot 模型（前提 3）的口径，仅用于 MEMO 引理 1 互证与诊断，不进面积上界。两个历史坑：①端口最小数不是 slots×机器数（亚满 op 可占空集中，最小值 = ceil(x_op·q)，v1 曾超算 5 个 state）；②基于口 front 计数的 state 下界（v2/v3 的 L≥308）整条已被 refute 席 splitter/merger 反例驳倒（见 refute_20260806/），现行上界只用容量计数 L≥305。",
+ "per_stream": [
+  {
+   "operation": "crusher_blue_iron",
+   "side": "input",
+   "commodity": "blue_iron_block",
+   "machines": 34,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "crusher_blue_iron",
+   "side": "output",
+   "commodity": "blue_iron_powder",
+   "machines": 34,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "crusher_buckwheat",
+   "side": "input",
+   "commodity": "buckwheat",
+   "machines": 6,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "11/12",
+   "full_bandwidth": false,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "crusher_buckwheat",
+   "side": "output",
+   "commodity": "buckwheat_powder",
+   "machines": 6,
+   "slots_per_machine": 2,
+   "rate_per_tick_per_machine": "2",
+   "r_slot_at_pinned_duty": "11/12",
+   "full_bandwidth": false,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "crusher_sandleaf",
+   "side": "input",
+   "commodity": "sandleaf",
+   "machines": 11,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "21/22",
+   "full_bandwidth": false,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "crusher_sandleaf",
+   "side": "output",
+   "commodity": "sandleaf_powder",
+   "machines": 11,
+   "slots_per_machine": 3,
+   "rate_per_tick_per_machine": "3",
+   "r_slot_at_pinned_duty": "21/22",
+   "full_bandwidth": false,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "crusher_source",
+   "side": "input",
+   "commodity": "source_ore",
+   "machines": 18,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "crusher_source",
+   "side": "output",
+   "commodity": "source_powder",
+   "machines": 18,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "filling_capsule",
+   "side": "input",
+   "commodity": "fine_buckwheat_powder",
+   "machines": 3,
+   "slots_per_machine": 2,
+   "rate_per_tick_per_machine": "2",
+   "r_slot_at_pinned_duty": "11/12",
+   "full_bandwidth": false,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "filling_capsule",
+   "side": "input",
+   "commodity": "steel_bottle",
+   "machines": 3,
+   "slots_per_machine": 2,
+   "rate_per_tick_per_machine": "2",
+   "r_slot_at_pinned_duty": "11/12",
+   "full_bandwidth": false,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "filling_capsule",
+   "side": "output",
+   "commodity": "qiaoyu_capsule",
+   "machines": 3,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1/5",
+   "r_slot_at_pinned_duty": "11/60",
+   "full_bandwidth": false,
+   "excluded_final_output": true
+  },
+  {
+   "operation": "grinder_dense_blue_iron",
+   "side": "input",
+   "commodity": "blue_iron_powder",
+   "machines": 17,
+   "slots_per_machine": 2,
+   "rate_per_tick_per_machine": "2",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "grinder_dense_blue_iron",
+   "side": "input",
+   "commodity": "sandleaf_powder",
+   "machines": 17,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "grinder_dense_blue_iron",
+   "side": "output",
+   "commodity": "dense_blue_iron_powder",
+   "machines": 17,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "grinder_dense_source",
+   "side": "input",
+   "commodity": "source_powder",
+   "machines": 9,
+   "slots_per_machine": 2,
+   "rate_per_tick_per_machine": "2",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "grinder_dense_source",
+   "side": "input",
+   "commodity": "sandleaf_powder",
+   "machines": 9,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "grinder_dense_source",
+   "side": "output",
+   "commodity": "dense_source_powder",
+   "machines": 9,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "grinder_fine_buckwheat",
+   "side": "input",
+   "commodity": "buckwheat_powder",
+   "machines": 6,
+   "slots_per_machine": 2,
+   "rate_per_tick_per_machine": "2",
+   "r_slot_at_pinned_duty": "11/12",
+   "full_bandwidth": false,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "grinder_fine_buckwheat",
+   "side": "input",
+   "commodity": "sandleaf_powder",
+   "machines": 6,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "11/12",
+   "full_bandwidth": false,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "grinder_fine_buckwheat",
+   "side": "output",
+   "commodity": "fine_buckwheat_powder",
+   "machines": 6,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "11/12",
+   "full_bandwidth": false,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "molding_bottle",
+   "side": "input",
+   "commodity": "steel_block",
+   "machines": 6,
+   "slots_per_machine": 2,
+   "rate_per_tick_per_machine": "2",
+   "r_slot_at_pinned_duty": "11/12",
+   "full_bandwidth": false,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "molding_bottle",
+   "side": "output",
+   "commodity": "steel_bottle",
+   "machines": 6,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "11/12",
+   "full_bandwidth": false,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "packaging_battery",
+   "side": "input",
+   "commodity": "dense_source_powder",
+   "machines": 3,
+   "slots_per_machine": 3,
+   "rate_per_tick_per_machine": "3",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "packaging_battery",
+   "side": "input",
+   "commodity": "steel_part",
+   "machines": 3,
+   "slots_per_machine": 2,
+   "rate_per_tick_per_machine": "2",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "packaging_battery",
+   "side": "output",
+   "commodity": "valley_battery",
+   "machines": 3,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1/5",
+   "r_slot_at_pinned_duty": "1/5",
+   "full_bandwidth": false,
+   "excluded_final_output": true
+  },
+  {
+   "operation": "parts_maker",
+   "side": "input",
+   "commodity": "steel_block",
+   "machines": 6,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "parts_maker",
+   "side": "output",
+   "commodity": "steel_part",
+   "machines": 6,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "planter_buckwheat",
+   "side": "input",
+   "commodity": "buckwheat_seed",
+   "machines": 11,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "planter_buckwheat",
+   "side": "output",
+   "commodity": "buckwheat",
+   "machines": 11,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "planter_sandleaf",
+   "side": "input",
+   "commodity": "sandleaf_seed",
+   "machines": 21,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "planter_sandleaf",
+   "side": "output",
+   "commodity": "sandleaf",
+   "machines": 21,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "refinery_blue_iron",
+   "side": "input",
+   "commodity": "blue_iron_ore",
+   "machines": 34,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "refinery_blue_iron",
+   "side": "output",
+   "commodity": "blue_iron_block",
+   "machines": 34,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "refinery_steel",
+   "side": "input",
+   "commodity": "dense_blue_iron_powder",
+   "machines": 17,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "refinery_steel",
+   "side": "output",
+   "commodity": "steel_block",
+   "machines": 17,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "1",
+   "full_bandwidth": true,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "seed_collector_buckwheat",
+   "side": "input",
+   "commodity": "buckwheat",
+   "machines": 6,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "11/12",
+   "full_bandwidth": false,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "seed_collector_buckwheat",
+   "side": "output",
+   "commodity": "buckwheat_seed",
+   "machines": 6,
+   "slots_per_machine": 2,
+   "rate_per_tick_per_machine": "2",
+   "r_slot_at_pinned_duty": "11/12",
+   "full_bandwidth": false,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "seed_collector_sandleaf",
+   "side": "input",
+   "commodity": "sandleaf",
+   "machines": 11,
+   "slots_per_machine": 1,
+   "rate_per_tick_per_machine": "1",
+   "r_slot_at_pinned_duty": "21/22",
+   "full_bandwidth": false,
+   "excluded_final_output": false
+  },
+  {
+   "operation": "seed_collector_sandleaf",
+   "side": "output",
+   "commodity": "sandleaf_seed",
+   "machines": 11,
+   "slots_per_machine": 2,
+   "rate_per_tick_per_machine": "2",
+   "r_slot_at_pinned_duty": "21/22",
+   "full_bandwidth": false,
+   "excluded_final_output": false
+  }
+ ]
+}

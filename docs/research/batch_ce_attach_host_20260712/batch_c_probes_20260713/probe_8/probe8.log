@@ -1,0 +1,4 @@
+14:30:45 probe8 solve pid=764339 (cap=1500)
+14:31:15 probe8 EXITED rc=1 cell=no wall=30s
+14:45:30 probe8 solve pid=823335 (cap=1500)
+15:13:30 probe8 EXITED rc=0 cell=yes wall=1680s

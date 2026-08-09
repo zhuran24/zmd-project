@@ -1,0 +1,14 @@
+{
+  "schema_version": "research_launch_postmortem.v1",
+  "status": "PROCESS_COMPLETED_BEFORE_FIRST_POLL",
+  "reported_pid": 51329,
+  "supersedes_interpretation_in": "launch_01_crash.json",
+  "evidence": {
+    "stage_checkpoint_present": true,
+    "attempt_01_present": true,
+    "attempt_02_present": true,
+    "summary_present": true
+  },
+  "exit_code": null,
+  "claim_boundary": "The first launcher exit code was not captured; immutable result artifacts, not the process disappearance, carry the two CP classifications."
+}

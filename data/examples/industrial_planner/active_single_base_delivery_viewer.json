@@ -1,0 +1,83 @@
+{
+  "metadata": {
+    "schema_version": "1.0.0",
+    "updated_at": "2026-04-17T03:57:20Z",
+    "source": "industrial_planner_single_base_delivery_viewer_pointer_v1"
+  },
+  "current_viewer": {
+    "release_id": "valley4_protocol_core_70x70_r20260416",
+    "base_id": "valley4_protocol_core",
+    "lot_size": 70,
+    "delivery_status": "ready_for_single_base_delivery",
+    "viewer_dir": "data/examples/industrial_planner/viewers/valley4_protocol_core_70x70_r20260416",
+    "index_html": "data/examples/industrial_planner/viewers/valley4_protocol_core_70x70_r20260416/index.html",
+    "viewer_manifest_json": "data/examples/industrial_planner/viewers/valley4_protocol_core_70x70_r20260416/release_viewer_manifest.json",
+    "optimal_blueprint": "data/examples/industrial_planner/viewers/valley4_protocol_core_70x70_r20260416/optimal_blueprint.json",
+    "candidate_placements": "data/examples/industrial_planner/viewers/valley4_protocol_core_70x70_r20260416/candidate_placements.json",
+    "final_solution": "data/examples/industrial_planner/viewers/valley4_protocol_core_70x70_r20260416/final_solution.json",
+    "viewer_report": "data/examples/industrial_planner/viewers/valley4_protocol_core_70x70_r20260416/viewer_report.json",
+    "selected_facility_type_count": 4,
+    "selected_pose_count": 273,
+    "payload_download_count": 24,
+    "metadata_download_count": 7,
+    "quick_download_count": 5,
+    "quick_downloads": [
+      {
+        "id": "industrial_planner_blueprint",
+        "label": "Blueprint",
+        "path": "data/examples/industrial_planner/viewers/valley4_protocol_core_70x70_r20260416/downloads/release/bundle/industrial_planner.blueprint.json",
+        "kind": "json",
+        "stage": "export",
+        "required_for_delivery": true,
+        "role": "Actual IndustrialPlanner delivery blueprint for import."
+      },
+      {
+        "id": "industrial_planner_compatibility_manifest",
+        "label": "Compatibility manifest",
+        "path": "data/examples/industrial_planner/viewers/valley4_protocol_core_70x70_r20260416/downloads/release/bundle/industrial_planner.compatibility_manifest.json",
+        "kind": "json",
+        "stage": "export",
+        "required_for_delivery": true,
+        "role": "Export-side compatibility manifest that explains target translation details and warnings."
+      },
+      {
+        "id": "validation_report_json",
+        "label": "Validation report",
+        "path": "data/examples/industrial_planner/viewers/valley4_protocol_core_70x70_r20260416/downloads/release/bundle/validation_report.json",
+        "kind": "json",
+        "stage": "validator",
+        "required_for_delivery": true,
+        "role": "Machine-readable offline import/layout validation report for the released blueprint."
+      },
+      {
+        "id": "throughput_report_json",
+        "label": "Throughput report",
+        "path": "data/examples/industrial_planner/viewers/valley4_protocol_core_70x70_r20260416/downloads/release/bundle/throughput_report.json",
+        "kind": "json",
+        "stage": "throughput",
+        "required_for_delivery": true,
+        "role": "Machine-readable static recipe/capacity audit sidecar for the released blueprint."
+      },
+      {
+        "id": "run_summary_json",
+        "label": "Run summary",
+        "path": "data/examples/industrial_planner/viewers/valley4_protocol_core_70x70_r20260416/downloads/release/run_summary.json",
+        "kind": "json",
+        "stage": "run_summary",
+        "required_for_delivery": true,
+        "role": "Machine-readable top-level summary for the source single-base end-to-end run."
+      }
+    ],
+    "exact_full_scale_certified": {
+      "status": "open",
+      "note": "The full-scale 70×70 exact `CERTIFIED` end-state is still an open item. This workflow validates the current single-base delivery bundle and checked-in support surfaces only; it does not claim that the full exact terminal proof artifact has already been checked in."
+    },
+    "scope_note": "Current release scope is intentionally limited to the active IndustrialPlanner contract `valley4_protocol_core` (70×70). Other bases and the outer-deployment path remain preserved as `future_scope` and are not widened by this release builder.",
+    "release_pointer_json": "data/examples/industrial_planner/active_single_base_delivery_release.json",
+    "release_pointer_markdown": "data/examples/industrial_planner/active_single_base_delivery_release.md"
+  },
+  "pointer_paths": {
+    "json": "data/examples/industrial_planner/active_single_base_delivery_viewer.json",
+    "markdown": "data/examples/industrial_planner/active_single_base_delivery_viewer.md"
+  }
+}

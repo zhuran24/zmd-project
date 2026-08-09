@@ -1,0 +1,23 @@
+{
+  "status": "unsupported_by_canonical_contract",
+  "base_id": "wuling_protocol_core",
+  "selected_base_placeable_size": 80,
+  "canonical_grid_size": 70,
+  "foundation_bus_edges": [],
+  "required_recipe_facility_count": 219,
+  "required_recipe_area_cells": 3325,
+  "required_boundary_output_slots": 52,
+  "required_boundary_input_slots": 2,
+  "selected_input_slots": [],
+  "selected_output_slots_by_edge": {},
+  "selected_output_edge_counts": {},
+  "validation_probe_count": 0,
+  "throughput_status": null,
+  "validator_import_compatible": null,
+  "validator_layout_healthy": null,
+  "notes": [
+    "this is an adapter-side fixture planner only; it does not widen the canonical blueprint schema"
+  ],
+  "warnings": [],
+  "error_message": "selected base 'wuling_protocol_core' uses placeableSize=80, but the canonical blueprint contract is capped at 70×70; the planner refuses to fake boundary ports away from the true lot edge"
+}

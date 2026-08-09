@@ -1,0 +1,25 @@
+From 96a7ad3e58fcf864739a5b14b16516a6d6d9c763 Mon Sep 17 00:00:00 2001
+From: Cut Framework Review <review@example.invalid>
+Date: Thu, 9 Jul 2026 22:47:15 +0000
+Subject: [PATCH 4/4] cuts: type canonical relabel slot counter
+
+---
+ src/cuts/helpers/bounded_core_minimizer.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/cuts/helpers/bounded_core_minimizer.py b/src/cuts/helpers/bounded_core_minimizer.py
+index 4aba010..766486d 100644
+--- a/src/cuts/helpers/bounded_core_minimizer.py
++++ b/src/cuts/helpers/bounded_core_minimizer.py
+@@ -163,7 +163,7 @@ def canonical_relabel(
+             "(audit signal — refusing to silently dedup)"
+         )
+     ordered = sorted(assignment, key=lambda lit: (lit[0], lit[2], lit[1]))
+-    next_slot: dict = {}
++    next_slot: dict[GroupId, int] = {}
+     relabelled = []
+     for group_id, _slot, pose_id in ordered:
+         slot = next_slot.get(group_id, 0)
+-- 
+2.47.3
+

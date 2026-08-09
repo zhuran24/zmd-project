@@ -1,0 +1,211 @@
+{
+  "bound_events": [
+    {
+      "bound_scaled": 132.0,
+      "raw_bound_scaled": null,
+      "source": "explicit",
+      "t": 0.0
+    }
+  ],
+  "bound_samples": [
+    {
+      "bound_scaled": 132.0,
+      "t": 0.0
+    },
+    {
+      "bound_scaled": 132.0,
+      "t": 1.0
+    },
+    {
+      "bound_scaled": 132.0,
+      "t": 2.0
+    },
+    {
+      "bound_scaled": 132.0,
+      "t": 5.0
+    },
+    {
+      "bound_scaled": 132.0,
+      "t": 10.0
+    },
+    {
+      "bound_scaled": 132.0,
+      "t": 15.0
+    }
+  ],
+  "bucket_weights_scaled": {
+    "M3_1i1o": 8,
+    "M3_1i2o+2i1o": 8,
+    "M3_1i3o+2i1o": 8,
+    "M5_1i1o": 23,
+    "M5_1i2o": 23,
+    "M6_3i1o": 22,
+    "M6_4i1o": 22,
+    "M6_5i1o": 22
+  },
+  "build_wall_seconds": 0.236188,
+  "cap_source": "explicit",
+  "certified_objective_bound": 132.0,
+  "certified_objective_bound_scaled": 132.0,
+  "dual": "D1_SCARCITY_PRICES",
+  "epsilon_bound": -3.0,
+  "epsilon_bound_scaled": -3.0,
+  "family": "CLEAN",
+  "final_validation": {
+    "actual_bucket_counts": {
+      "M3_1i3o+2i1o": 4,
+      "M5_1i2o": 2
+    },
+    "actual_ge_credited": true,
+    "actual_objective_scaled": 78,
+    "body_count": 6,
+    "credited_bucket_counts": {
+      "M3_1i1o": 4,
+      "M5_1i1o": 2
+    },
+    "credited_objective_scaled": 78,
+    "evaluator_ok": true,
+    "evaluator_violations": [],
+    "independent_audit_issues": [],
+    "independent_audit_ok": true,
+    "pole_count_after_minimization": 2,
+    "single_component": true
+  },
+  "hole": false,
+  "incumbent_events": [
+    {
+      "credited_bucket_counts": {
+        "M3_1i1o": 1
+      },
+      "objective_scaled": 8.0,
+      "t": 1.750428
+    },
+    {
+      "credited_bucket_counts": {
+        "M3_1i1o": 2
+      },
+      "objective_scaled": 16.0,
+      "t": 2.915375
+    },
+    {
+      "credited_bucket_counts": {
+        "M3_1i1o": 3
+      },
+      "objective_scaled": 24.0,
+      "t": 4.367178
+    },
+    {
+      "credited_bucket_counts": {
+        "M3_1i1o": 4
+      },
+      "objective_scaled": 32.0,
+      "t": 12.907219
+    },
+    {
+      "credited_bucket_counts": {
+        "M3_1i1o": 5
+      },
+      "objective_scaled": 40.0,
+      "t": 12.922306
+    },
+    {
+      "credited_bucket_counts": {
+        "M3_1i1o": 6
+      },
+      "objective_scaled": 48.0,
+      "t": 13.604101
+    },
+    {
+      "credited_bucket_counts": {
+        "M3_1i1o": 4,
+        "M5_1i1o": 1
+      },
+      "objective_scaled": 55.0,
+      "t": 15.05623
+    },
+    {
+      "credited_bucket_counts": {
+        "M3_1i1o": 5,
+        "M5_1i1o": 1
+      },
+      "objective_scaled": 63.0,
+      "t": 15.624411
+    },
+    {
+      "credited_bucket_counts": {
+        "M3_1i1o": 3,
+        "M5_1i1o": 2
+      },
+      "objective_scaled": 70.0,
+      "t": 17.153059
+    },
+    {
+      "credited_bucket_counts": {
+        "M3_1i1o": 4,
+        "M5_1i1o": 2
+      },
+      "objective_scaled": 78.0,
+      "t": 18.767823
+    }
+  ],
+  "lambda_scaled": 15,
+  "max_poles": null,
+  "model_signature_sha256": "2451428480a1ec59526cd7fc5e63c2610aa28cb2cf01c71f1a59c3a71a5acb40",
+  "model_size": {
+    "all_semantic_body_pose_literals": 2740,
+    "bucket_count_variables": 8,
+    "connectivity_literals": 196,
+    "constraints": 5426,
+    "directed_flow_variables": 728,
+    "hole_literals": 0,
+    "kept_body_pose_literals": 1004,
+    "kept_levels": {
+      "manufacturing_3x3": [
+        1
+      ],
+      "manufacturing_5x5": [
+        1
+      ],
+      "manufacturing_6x4": [
+        3
+      ]
+    },
+    "occupancy_literals": 196,
+    "pole_literals": 157,
+    "source_variables": 1,
+    "variables": 2290
+  },
+  "mu_scaled": {
+    "3I2": 7,
+    "3L": 1,
+    "3O2": 7,
+    "3O3": 6,
+    "5L": 2,
+    "5O2": 10,
+    "6I3": 2,
+    "6I4": 12,
+    "6I5": 12
+  },
+  "objective_cap_scaled": 132,
+  "objective_value": 78.0,
+  "objective_value_scaled": 78.0,
+  "pi_scaled": 135,
+  "raw_objective_bound": 132.0,
+  "raw_objective_bound_scaled": 132.0,
+  "relaxed": false,
+  "research_only": true,
+  "runtime": {
+    "bundle": "/mnt/data/w0_pricing_bound_exp_20260804/pricing_exp/11_runnable",
+    "ortools": "9.15.6755",
+    "python": "3.13.5"
+  },
+  "scale": 1,
+  "schema_version": 2,
+  "seconds_limit": 20.0,
+  "seed": 0,
+  "solve_wall_seconds": 20.012703,
+  "status": "FEASIBLE",
+  "strict": true,
+  "wall_seconds": 20.250932,
+  "workers": 4
+}

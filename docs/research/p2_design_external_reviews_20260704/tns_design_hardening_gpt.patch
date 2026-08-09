@@ -1,0 +1,274 @@
+--- a/docs/research/terminal_no_solution_evidence_contract_design_v1.md
++++ b/docs/research/terminal_no_solution_evidence_contract_design_v1.md
+@@ -1,97 +1,221 @@
+-# Terminal 全域无解证书合同设计稿 v1
++# Terminal 全域无解证书合同设计稿 v1（对抗评审加固版）
+ 
+ **Status:** HISTORICAL_OR_PLAN（研究层设计稿，不改生产代码/锁面）
+ **Authored:** 2026-07-04
+-**填的洞：** `src/search/outer_search.py:1982-1989`——候选域穷尽但无任何 certified 候选时，当前 terminal-frontier 证据 schema 只支持正向 CERTIFIED final result，系统只能 fail-closed 返回 `UNPROVEN`。「所有 admissible 候选均不可行」这一与 CERTIFIED 同等 proof-bearing 的终局结论（`exact_campaign.py:2548-2551` 自述）目前**说不出来**。若生产 campaign 的真实答案是"min_side≥6 无解"，这就是最终交付物的形状——本稿设计它的可重放证据合同。
++**Review patch:** 2026-07-04 TNS adversarial review hardening
++
++**填的洞：** `src/search/outer_search.py:1982-1989`——候选域穷尽但无任何 certified 候选时，当前 terminal-frontier 证据 schema 只支持正向 CERTIFIED final result，系统只能 fail-closed 返回 `UNPROVEN`。本稿设计「所有 authoritative admissible 候选均不可行」这一 proof-bearing 终局结论的证据合同。
++
++**发布原则：** terminal INFEASIBLE 与 terminal CERTIFIED 同属 proof-bearing 终局面；任何公开/交付级负向结论必须拥有同等级的 proposal、supervisor seal、resume 卫生、manifest 互斥与独立/异构复验门。没有这些门时，仍保持当前 `UNPROVEN` fail-closed 行为。
+ 
+ ---
+ 
+ ## 1. 事实基线（2026-07-04 只读调查核验）
+ 
+-已存在的地基（本设计全部复用，不新造）：
++已存在的地基（本设计复用，但不得越权解释）：
+ 
+-1. **候选级 INFEASIBLE 已是一等强状态**：`STRONG_CANDIDATE_STATUSES = {"CERTIFIED","INFEASIBLE"}`、`PROOF_BEARING_TERMINAL_STATUSES` 同（`exact_campaign.py:103-115`）；`VALID_FINAL_STATUSES` 已含 `INFEASIBLE`（116-124）。
+-2. **候选级 INFEASIBLE 已可 sink replay**：`candidate_proof` 的 `claimed_status` 支持 CERTIFIED/INFEASIBLE 双侧；INFEASIBLE 侧禁带 solution、`solution_digest=None`；隔离子解释器重跑 `run_benders_for_ghost_rect`，replay_status 必须等于 claimed_status（`candidate_proof_replay.py:35, 240-250, 515-560, 875-928`）。
+-3. **支配剪枝已存在且方向正确**：显式 INFEASIBLE(w,h) 剪掉一切 `w'≥w ∧ h'≥h` 的候选（同向、不转置，`certified_frontier.py:218-220`；运行态同构 `outer_search.py:702-704`）。
+-4. **resume 卫生已覆盖 INFEASIBLE**：checkpoint 载入的强状态一律降级 UNKNOWN、需 fresh replay（`PROJECT_LOCK.md:276-284`；`exact_campaign.py:2184-2243`）。
+-5. **INFEASIBLE 已被当受保护面**：`has_certified_export_surface` 把 terminal INFEASIBLE 视为 proof-bearing、无证据时不可 export（`test_v101_terminal_infeasible_surface_soundness.py:70-95`）。
++1. **候选级 INFEASIBLE 已是一等强状态**：`STRONG_CANDIDATE_STATUSES = {"CERTIFIED","INFEASIBLE"}`、`PROOF_BEARING_TERMINAL_STATUSES` 同；`VALID_FINAL_STATUSES` 已含 `INFEASIBLE`。
++2. **候选级 INFEASIBLE 已可 sink replay**：`candidate_proof` 的 `claimed_status` 支持 CERTIFIED/INFEASIBLE 双侧；INFEASIBLE 侧禁带 solution、`solution_digest=None`；隔离子解释器重跑 `run_benders_for_ghost_rect`，replay_status 必须等于 claimed_status。
++3. **支配剪枝已存在且方向是同向逐维、不转置**：显式 INFEASIBLE(w,h) 剪掉一切 `w'≥w ∧ h'≥h` 的候选；候选 key 是 oriented `"{w}x{h}"`，`(w,h)` 与 `(h,w)` 不等价。
++4. **resume 卫生已覆盖 checkpoint 载入的候选强状态**：checkpoint 载入的强状态一律需要 fresh replay；未被 supervisor 保护的 producer 证据不得直接成为 public surface。
++5. **INFEASIBLE 已被测试当成受保护面**：terminal INFEASIBLE 无证据不可 export；resume 不能接受无 replayable evidence 的 terminal INFEASIBLE。
+ 
+-缺失的（本稿设计对象）：无解侧的 terminal 证据 schema、seal/publish 路径（`supervisor_seal()` 写死只 mint CERTIFIED，`exact_campaign.py:3571-3579`；manifest/publisher 硬要求 solution/blueprint，`delivery_manifest.py:127-135, 550-587`；`certified_surface.py:758-853`）、以及 resume validation 的对应分支（当前 `final_result` 只许伴随 CERTIFIED/CANDIDATE_PROPOSED，2442-2459）。
++缺失的（本稿设计对象）：无解侧的 terminal 证据 schema、proposal/seal/publish 路径、resume validation 分支，以及无解侧对 false-INFEASIBLE 的独立/异构复验门。
+ 
+-## 2. 数学骨架：单调性引理与最小覆盖证书
++## 2. 数学骨架：单调性引理与 authoritative 覆盖证书
+ 
+ ### 2.1 引理（候选可行性的逐维反单调）
+ 
+-**命题**：若候选 `(w,h)` 不可行（不存在满足全部谓词、含 w×h ghost 空矩形的解），则任意 `(w',h')`，`w'≥w ∧ h'≥h`，也不可行。
+-
+-**证明**：反证。设 `(w',h')` 有可行解 `(R', π*)`，`R'` 为 w'×h' 空矩形。取 `R ⊆ R'` 为同锚点的 w×h 子矩形。则 `(R, π*)` 满足：谓词(1) `all_cells(π*) ∩ R ⊆ all_cells(π*) ∩ R' = ∅`；谓词(2)(3)(4)(6) 与 R 无关、由 π* 继承；谓词(5) routing 选择只须避开 ghost 区，避开 R' 者必避开 R ⊆ R'。故 `(w,h)` 可行，矛盾。∎
+-
+-（注意方向盘点：ghost 只出现在谓词(1)的"排空"侧与 routing 的"不可用格"侧，缩小 ghost 是**约束放松**——这是引理成立的全部理由。若未来任何谓词把 ghost 用作"必须存在/必须接触"型约束，引理即破，见 §6 义务 O-5。）
++**命题**：在下列承重前提同时成立时，若候选 `(w,h)` 不可行，则任意 `(w',h')`，`w'≥w ∧ h'≥h`，也不可行。
+ 
+-这正是既有 derived-prune（事实 3）的 soundness 依据——但它目前只作为进程内剪枝存在，没有被形式陈述或红测钉住。本稿把它升格为 TNS 证书的承重引理。
++**承重前提（必须被锁面/红测守护）：**
+ 
+-### 2.2 最小覆盖证书（关键坍缩）
++- ghost 在几何层只作为「排空/避障」约束，缩小 ghost 只能放松或不改变可行域。
++- binding、power、设施计数、固定谓词不以 ghost 面积/边界/接触关系作为正向需求。
++- routing 对 ghost 的使用必须是以下二者之一：完全独立于 ghost，或把 ghost 当 blocked/obstacle。两者都满足「缩小 ghost 不收紧」；不得把 ghost 写成必须穿过、必须相邻、必须供给或必须覆盖的正向资源。
++- 候选是 **oriented tuple**；`(w,h)` 不能 canonicalize 成 `(min,max)`，也不能用 `(h,w)` 替代。
++- 本合同只对被完整审计的 ghost 使用闭包有效。若新增任何 ghost-positive/unknown use site，schema 版本必须失效，TNS seal 必须 fail-closed。
++
++**证明**：反证。设 `(w',h')` 有可行解 `(R', π*)`，`R'` 为 w'×h' ghost 空矩形。取同锚点 w×h 子矩形 `R ⊆ R'`。排空/避障类 ghost 谓词在 `R` 上不比 `R'` 更强；与 ghost 无关的谓词由 `π*` 继承；oriented 尺寸保持同向。故 `(R, π*)` 是 `(w,h)` 可行解，矛盾。∎
++
++**锁面义务：** TNS 证据中必须记录 `ghost_use_inventory_digest`，该 digest 由受保护源文件中所有 ghost-use site 的机器化清单生成。清单中出现 positive/unknown use 时，验证器返回 `terminal_no_solution_ghost_use_inventory_not_monotone`。
++
++### 2.2 authoritative 全域覆盖证书
++
++TNS 的公开语义只能是：**authoritative full domain 全域无解**。不得把 sliced/toy/实验域上的「全覆盖」发布成生产全域无解。
++
++候选域由验证器重算，而不是信任 producer 字段：
++
++```text
++D_authoritative = generate_candidate_sizes(
++  max_w == grid.width,
++  max_h == grid.height,
++  min_side == min_side_admissibility,
++  area_upper_bound == recomputed_safe_area_upper_bound,
++  safe_area_upper_bound == recomputed_safe_area_upper_bound,
++  start_area is None,
++  max_aspect_ratio is None,
++  domain_authority == expected_domain_authority,
++  orientation == oriented_wxh_v1
++)
++```
+ 
+-候选域 `D = {(w,h) : min_side ≤ w ≤ max_w, min_side ≤ h ≤ max_h, 过滤器}`（oriented 枚举，`certified_frontier.py:58-99`；过滤器 = area_upper_bound / start_area / max_aspect_ratio，均只**删除**候选）。
++**拒绝条件（fail-closed）：**
+ 
+-**定义**：TNS 覆盖集 C ⊆ D = 一组 replay-verified INFEASIBLE 候选，使 D 中每个候选都逐维 ≥ C 中某元素。由引理，C 存在 ⇒ D 全不可行。
++- `candidate_domain_size == 0`。
++- `start_area` 非空，或 `max_aspect_ratio` 非空。
++- `min_side` 大于/不等于 authoritative `min_side_admissibility`。
++- `area_upper_bound` 缺失、不是 safe bound，或与重算 safe bound 不一致。
++- `domain_authority`、grid shape、canonical rules、candidate generator version 与当前锁面不一致。
++- 任意覆盖 key 不在重算域内，或 key/tuple/record ghost_rect 不一致。
+ 
+-**坍缩观察**：无过滤器时 D 的逐维最小元唯一——`(min_side, min_side)` = 生产项目的 `(6,6)`，它逐维 ≤ 一切候选。**故标准生产配置下，全域无解证书 = 单个候选 (6,6) 的 replay-verified INFEASIBLE + 域参数绑定**。过滤器只删候选、不产生新的下边界之外的最小元（被删候选无须覆盖），故 C = {(6,6)} 仍充分；一般形式（toy 项目、非常规域）取 D 的逐维最小元反链即可，验证器按一般形式实现。
++**覆盖定义：** TNS 覆盖集 `C ⊆ D_authoritative` 是一组 sink-projected、replay-verified、candidate-wide negative-reverified 的 INFEASIBLE oriented 候选，使 `D_authoritative` 中每个 `(w,h)` 都存在 `(cw,ch)∈C` 满足 `w≥cw ∧ h≥ch`。由 §2.1 引理，C 覆盖 ⇒ authoritative full domain 全不可行。
+ 
+-工程含义：TNS 的验证成本 = 重放一个候选的不可行证明（与 CERTIFIED 侧重放一个候选的成本同阶）；证书体积 O(1)~O(反链)。**不需要**逐 4225 个候选存证——`candidate_status_digest` 仍全量记录状态用于审计，但承重的只有覆盖集。
++标准生产配置下，若 authoritative 域的唯一逐维最小元是 `(6,6)`，则 C 通常退化为 `[(6,6)]`；但验证器不得硬编码 6x6，必须按重算域求最小覆盖并逐维验证。
+ 
+ ### 2.3 触发条件与互斥
+ 
+-TNS 只在既有终止分支的空档触发：`potential_domain` 空 ∧ `best_certified_candidate is None`（`outer_search.py:1906-1918` 的 else 支）。此时投影不变量保证域中每个候选要么显式 INFEASIBLE、要么被显式 INFEASIBLE 支配剪掉（无 CERTIFIED、无残留 UNKNOWN——否则 potential_domain 非空）。互斥性红测义务：验证器必须拒绝「TNS 证据存在 ∧ 任一候选 replay-verified CERTIFIED」的状态（矛盾态,fail-closed）。
++TNS 只在既有终止分支的空档触发：`potential_domain` 空 ∧ `best_certified_candidate is None`。此时 producer 可提出 `NO_SOLUTION_PROPOSED`，但公开 terminal `INFEASIBLE` 只能由 supervisor seal mint。
++
++互斥性硬规则：
+ 
+-**退化域警告**：D 本身为空（过滤器删光）时**不得**输出 TNS——空域的"全不可行"是空洞真，语义是配置错误。验证器把 `candidate_domain_size == 0` 判为 `terminal_no_solution_domain_empty` 拒绝。
++- 若重算域内存在任何 sink-replayed `CERTIFIED` record，TNS 验证器必须拒绝。
++- 若覆盖集中任意 key replay 后不是 `INFEASIBLE`，TNS 验证器必须拒绝。
++- 若存在 `(w,h)` 未被覆盖集逐维覆盖，TNS 验证器必须拒绝。
++- `UNKNOWN`、预算耗尽、缺记录、producer-local derived prune 均不能进入覆盖集。
+ 
+-## 3. 证据 schema（草案）
++## 3. 证据 schema（v1）
+ 
+ ```json
+ {
+   "schema_version": 1,
+   "source": "certified_terminal_no_solution_evidence_v1",
+-  "reason": "search_exhausted_all_candidates_infeasible",
+-  "candidate_generation": { "…": "与现有 terminal_frontier_evidence 同一闭合合同" },
++  "reason": "search_exhausted_all_authoritative_candidates_infeasible",
++  "domain_scope": "authoritative_full_domain_v1",
++  "candidate_generation": {
++    "generator": "generate_candidate_sizes_oriented_v1",
++    "grid_width": 70,
++    "grid_height": 70,
++    "min_side": 6,
++    "min_side_admissibility": 6,
++    "area_upper_bound": "<safe_area_upper_bound>",
++    "safe_area_upper_bound": "<recomputed_safe_area_upper_bound>",
++    "start_area": null,
++    "max_aspect_ratio": null,
++    "domain_authority": "<expected authority digest>",
++    "canonical_rules_digest": "<rules digest>"
++  },
+   "candidate_domain_size": 4225,
+-  "candidate_status_counts": { "INFEASIBLE": 1, "UNKNOWN": 4224 },
+-  "candidate_status_digest": "<与现有 _candidate_status_digest 同构>",
++  "candidate_status_counts": {
++    "INFEASIBLE": 1,
++    "UNKNOWN": 0,
++    "MISSING": 4224,
++    "CERTIFIED": 0
++  },
++  "candidate_status_digest": "<audit digest over projected records and MISSING entries>",
++  "sink_replay_projection_digest": "<digest of sink-projected strong records>",
+   "covering_infeasible_keys": ["6x6"],
+-  "monotone_dominance_rule": "dimwise_ge_v1"
++  "covering_candidate_proof_digests": {"6x6": "<candidate_proof digest>"},
++  "negative_reverification": {
++    "authority": "candidate_wide_no_solution_reverifier_v1",
++    "status": "CONFIRMED_INFEASIBLE",
++    "covering_keys": ["6x6"],
++    "profile_digest": "<heterogeneous negative verifier profile digest>"
++  },
++  "ghost_use_inventory_digest": "<monotone ghost-use inventory digest>",
++  "monotone_dominance_rule": "dimwise_ge_oriented_v1"
+ }
+ ```
+ 
+-要点：①`candidate_generation` 沿用现有闭合合同（unknown key fail-closed，`PROJECT_LOCK.md:311`）；②`covering_infeasible_keys` 每个 key 对应的 candidate record 必须持 `status="INFEASIBLE"` + 合法 `candidate_proof`（claimed_status=INFEASIBLE）且通过 sink replay；③`monotone_dominance_rule` 显式命名支配规则版本——引理是证书的一部分，规则漂移必须撞 schema；④被支配候选**不需要**任何状态（表中可为 UNKNOWN/缺失）——覆盖由验证器重算，不信 producer 的剪枝记录。
++**key 与 tuple 绑定：** key 必须严格匹配 `^[1-9][0-9]*x[1-9][0-9]*$`，不得有前导零；解析得到的 `(w,h)` 必须逐字段等于 record 中的 `ghost_rect.w/h` 与候选记录维度；不得排序、转置、canonicalize。
++
++**验证器流程（纯重算 + 独立重放）：**
+ 
+-**验证器**（镜像 `resolve_terminal_frontier_evidence_error` 的重算风格，`certified_frontier.py:456-514`）：从 params 重算 `generate_candidate_sizes` → 域非空 → 每个覆盖 key ∈ D 且 record 为 replay-verified INFEASIBLE → 全域逐维覆盖检查 → 无任何 CERTIFIED record → counts/digest 一致。全部纯重算 + 字典序检查，无 solver 依赖（除覆盖集的 INFEASIBLE replay 本身）。
++1. 读取 checkpoint 后，先对重算域内所有 present strong records 运行 sink projection/replay，得到 projected records；原始 producer 记录不得直接参与 TNS 判断。
++2. 用 §2.2 authoritative 参数重算候选域；拒绝 sliced/empty/mismatched domain。
++3. 校验 key grammar、tuple、record ghost_rect、candidate proof digest 与 projected record 一致。
++4. 覆盖集每项必须是 projected `INFEASIBLE`，且通过 `candidate_wide_no_solution_reverifier_v1`。
++5. 若任一 projected `CERTIFIED` 在重算域内，拒绝。
++6. 按 `dimwise_ge_oriented_v1` 对全域做覆盖检查。
++7. 重算 counts/digests。`MISSING` 是合法审计状态；非覆盖候选不要求存在 record。
+ 
+ ## 4. 三权分立接线（对称于 CERTIFIED 侧，不走捷径）
+ 
+-1. **producer**：新终止分支产出 `NO_SOLUTION_PROPOSED`（镜像 `CANDIDATE_PROPOSED`：final_status 新值 + `terminal_no_solution_evidence` + proposal marker；`final_result` 保持 None）。resume validation 加对应分支（`NO_SOLUTION_PROPOSED` 要求证据存在、禁 final_result、禁 solution 类字段）。
+-2. **supervisor seal**：`supervisor_seal()` 增加第二 reason 路径（当前写死 `TERMINAL_FULL_FRONTIER_CERTIFIED_REASON`，3571-3579）：L0 隔离子进程重放覆盖集 INFEASIBLE 证明 + 重算覆盖验证，通过才 mint terminal `INFEASIBLE`。**mint 对称性原则**：terminal INFEASIBLE 一旦可发布，其 mint 权与 CERTIFIED 同级——`save()` 反绕过守卫从"只挡三处 CERTIFIED"（`exact_campaign.py:2569-2584`；README:899-900 记录的既知不对称）扩展为同时挡「终局 INFEASIBLE + TNS 证据」的 unsupervised claim；无证据的普通 `mark_campaign_stopped(status="INFEASIBLE")`（进程失败语义）保持合法且不可发布（维持 test_v101 行为）。
+-3. **publisher**：无解面的公开产物 = manifest-only（无 solution/blueprint——`validate_delivery_artifacts_match_campaign` 与 stage 写盘需要平行的 no-solution 分支）；manifest 新增 `no_solution_evidence` 节替代 `best_certified_result`（互斥，二选一）。P1.2 OPEN-GATE 对无解面同样生效——owner 手动门不因结论是负向而豁免。
++### 4.1 Producer proposal
+ 
+-## 5. 信任模型的诚实声明（设计稿必须自己戳破的两点）
++新增 `NO_SOLUTION_PROPOSED`，语义只表示「producer 产出了可供 supervisor 复核的 TNS proposal」，不得作为 public surface。
+ 
+-1. **INFEASIBLE replay 是"同管线隔离重跑"，不是异构复验**：replay child 调的仍是 `run_benders_for_ghost_rect`（`candidate_proof_replay.py:907`）。它防的是记录篡改/字节漂移，不防"求解器系统性 false-INFEASIBLE"。这与 CERTIFIED 侧对称（CERTIFIED replay 也同管线），但方向不对称：false-CERTIFIED 还有 fixed-witness 独立几何复验兜底，false-INFEASIBLE 没有等价物——`08_phase_1_2_plan.md:17-24` 已把 false-INFEASIBLE 列为不低于 false-CERTIFIED 的 soundness 问题。**增强选项（P-TNS-H）**：对覆盖集（通常仅 (6,6)）额外跑 I1 风格异构 profile 复验 + master 编码忠实性定向审计；成本 O(覆盖集)，建议列为 seal 前置。这也与「CP-SAT 编码忠实性逐约束审计」待办直接勾连——TNS 把那项审计从"值得做"升格为"无解结论的直接依赖"。
+-2. **UNKNOWN 永不进入覆盖**：覆盖集只认 replay-verified INFEASIBLE；预算耗尽/UNKNOWN 仍走现有 `UNPROVEN` fail-closed 路径。TNS 不给"跑不完"提供任何新出口。
++`NO_SOLUTION_PROPOSED` checkpoint 必须满足：
+ 
+-## 6. 实施义务清单（P1.x 排期时展开）
++- `terminal_no_solution_evidence` 存在并通过本地结构校验。
++- `final_result is None`，不得包含 positive solution、ghost anchor、blueprint、best_certified_result。
++- proposal marker 与 checkpoint hash、campaign id、domain authority、candidate proof digests、negative reverification digests 绑定。
++- producer 写入前必须使用 projected records 构造证据，而不是直接使用 raw checkpoint records。
+ 
+-- O-1 引理红测：构造 (w,h) INFEASIBLE ∧ (w',h') 声称 CERTIFIED（w'≥w,h'≥h）的伪造状态 → 验证器必拒（互斥 + 单调一致性）。
+-- O-2 覆盖洞红测：覆盖集漏掉域最小元（伪造 covering_keys=[7x6] 而域含 6x6）→ 拒。
+-- O-3 退化域红测：params 过滤出空域 + TNS 证据 → 拒。
+-- O-4 schema 升版连锁：final_status 新值 / marker / seal / manifest / inspector / strong-status write allowlist（新的 INFEASIBLE 终局写点必须逐个登记）/ close-kernel obligations reseal。
+-- O-5 引理前提守护：任何给谓词引入"ghost 正向依赖"（存在性/接触性约束）的未来改动必须显式重审引理——在 PROJECT_LOCK 落一条 F-* 条款（TNS 落地批次内做）。
+-- O-6 与 P7 前瞻兼容：吞吐谓词（`p2_0_throughput_certification_paradigm_design_v1.md`）加入后引理仍成立（P7 约束与 ghost 尺寸的关系同为"缩小 ghost = 放松或不变"——routing 可用格变多，P7 的 selected graph 可行域不缩）；TNS 覆盖集的 INFEASIBLE replay 自动含 P7 gate，无需改证书结构。
++### 4.2 Resume hygiene
+ 
+-## 7. 开放问题
++resume 分支必须显式识别 `NO_SOLUTION_PROPOSED`：
+ 
+-1. `NO_SOLUTION_PROPOSED` 与 `CANDIDATE_PROPOSED` 是否合并为单一 proposal 状态 + 证据类型判别字段（schema 简洁性 vs 状态机显式性）——倾向分开（fail-closed 面更清晰），P1.x 定。
+-2. P-TNS-H（异构复验增强）是 seal 硬前置还是 owner 手动门审查项——涉及"无解结论的最终信任等级"，owner 拍板。
+-3. 无解面的公开产物形态（manifest-only 是否足够、要不要人类可读的 no-solution 报告）——交付需求问题，押后。
++- marker/hash/authority 全匹配时，保留 proposal payload 给 supervisor seal 复核，但不得把候选强状态当作已授权结论；supervisor 仍需 fresh replay + negative reverification。
++- marker 缺失、hash 不匹配、authority 漂移、schema 漂移、source drift 时，降级为 `UNPROVEN` 或继续 search，并清空 `terminal_no_solution_evidence`、proposal marker、proposal state、candidate_proof 权威引用。
++- 不得通过泛化的「保留所有 proof-bearing proposal」逻辑绕过现有强状态降级；每个 proposal type 必须有专门 validator。
+ 
+----
++### 4.3 Supervisor seal
++
++`supervisor_seal()` 增加第二条 transition：
++
++```text
++proposal_to_terminal_infeasible_v1:
++  pre: final_status == NO_SOLUTION_PROPOSED
++  replay: sink projection over in-domain strong records
++  negative_reverify: candidate_wide_no_solution_reverifier_v1 over covering set
++  validate: resolve_terminal_no_solution_evidence_error(...) is None
++  post: final_status == INFEASIBLE, final_result is None,
++        last_stop_reason == search_exhausted_all_authoritative_candidates_infeasible,
++        sealed_terminal_no_solution_evidence present
++```
++
++`save()` 和任何 direct writer guard 必须把「sealed terminal INFEASIBLE」列入受保护 public surface：未经 supervisor seal 的 terminal `INFEASIBLE + terminal_no_solution_evidence` 必须拒写。普通失败/预算意义上的 `INFEASIBLE` 停止状态不得被 manifest/publisher 当成 proof-bearing no-solution。
++
++### 4.4 Publisher / manifest-only surface
++
++无解面的公开产物是 manifest-only，但 manifest 必须显式携带可审计证据，而不是空 manifest：
++
++- `manifest.no_solution_evidence` 存在，且包含 evidence digest、campaign checkpoint hash、domain authority、covering keys、replay projection digest、negative reverification digest。
++- `manifest.best_certified_result`、`final_solution.json`、`optimal_blueprint.json`、positive placement artifacts 必须 absent/null。
++- 发布器必须事务性清除同目录旧 positive artifacts；若 terminal INFEASIBLE 发布目录中出现 stale solution/blueprint，manifest validation 必须拒绝。
++- inspector/export validator 必须实现 positive CERTIFIED 与 no-solution INFEASIBLE 的互斥双分支，而不是把 INFEASIBLE 套进 positive `final_result` 合同。
++
++## 5. 信任模型与 hard gate
++
++**同管线 replay 不足以单独 mint terminal no-solution。** candidate replay 子进程可防止记录篡改、字节漂移、producer 伪造，但它仍调用同一 `run_benders_for_ghost_rect` 管线。若该管线系统性 false-INFEASIBLE，replay 会稳定复现错误。false-INFEASIBLE 的严重度不低于 false-CERTIFIED，因此无解侧不得把独立/异构复验写成可选增强。
++
++**P-TNS-H 改为 seal 硬前置：** 每个覆盖候选必须通过 `candidate_wide_no_solution_reverifier_v1`。该 verifier 不能复用现有 whole-layout I1 的语义；现有 I1 只验证给定 layout/nogood 的局部 binding infeasibility，不能证明整个 `(w,h)` 候选没有任何 anchor/layout 解。新的 verifier 至少需要：
++
++- 独立重建候选级 ghost anchor/layout 搜索域，而不是检查单个已知 layout。
++- 使用异构 CP-SAT profile 或等价独立编码，输入仅为 canonical rules、domain authority 与 `(w,h)`。
++- 对 binding/routing/power 的 negative 结论给出完整 exhaustiveness 证据；只证明某一 binding/routing alternative 不可行不够。
++- 返回 `CONFIRMED_INFEASIBLE` 才允许 seal；返回 `UNKNOWN`、`DIVERGED`、`FEASIBLE_FOUND`、`PROFILE_UNSUPPORTED` 均 fail-closed 到 `UNPROVEN`。
++
++在该 verifier 未实现并红测前，TNS 只能停留在 research/design 面，生产分支继续返回 `UNPROVEN`。
++
++## 6. 实施义务清单（P1.x 排期时展开）
++
++- O-1 **互斥红测**：构造 covering INFEASIBLE 与同域 replayed CERTIFIED 并存，验证器拒绝。
++- O-2 **覆盖洞红测**：域含 `(6,6)`，覆盖集伪造为 `[(7,6)]` 或 `[(6,7)]`，验证器拒绝。
++- O-3 **sliced domain 红测**：`min_side=7`、`start_area`、`max_aspect_ratio`、非 safe `area_upper_bound` 任一出现时，TNS public evidence 拒绝。
++- O-4 **empty domain 红测**：过滤器删光候选时，不得发布 TNS。
++- O-5 **oriented transpose 红测**：`6x7` 不得覆盖 `7x6`；key canonicalize、前导零、tuple/key/ghost_rect 不一致均拒绝。
++- O-6 **resume 红测**：`NO_SOLUTION_PROPOSED` marker 缺失/hash 漂移/source drift 时被清空/降级；marker 正确时也只能交给 supervisor fresh replay，不得直接公开。
++- O-7 **sink replay 红测**：raw INFEASIBLE record 无合法 `candidate_proof`、claimed_status 不匹配、proof digest 漂移、replay 得到 UNKNOWN/CERTIFIED 时，TNS 拒绝。
++- O-8 **negative reverifier 红测**：candidate-wide reverifier 返回 UNKNOWN/FEASIBLE_FOUND/DIVERGED 时，supervisor 不得 seal。
++- O-9 **manifest 互斥红测**：terminal INFEASIBLE 目录含 `final_solution.json`、`optimal_blueprint.json` 或 stale best result 时，export/manifest validator 拒绝。
++- O-10 **ghost use inventory 红测**：新增任何 ghost-positive/unknown use site，`ghost_use_inventory_digest` 失配并拒绝 seal。
++- O-11 **parallel/coordinator 红测**：parallel worker 只能提交 raw candidate proof request；coordinator/sink projection 失败时不得被覆盖集引用。
++- O-12 **status transition 红测**：`NO_SOLUTION_PROPOSED → INFEASIBLE` 只能通过 `proposal_to_terminal_infeasible_v1`；direct checkpoint write、普通 `mark_campaign_stopped(status="INFEASIBLE")`、手写 manifest 均不可发布。
++
++## 7. 开放问题
+ 
+-*v1 完。与前两稿（吞吐范式、F5 轨道提升）同为 Fable-5 下线前"先想后做"批次；三稿互相引用处均已显式标注。*
++1. `NO_SOLUTION_PROPOSED` 与 `CANDIDATE_PROPOSED` 是否合并为单一 proposal 状态 + 证据类型判别字段。加固版倾向分开，因为负向 public surface 的 fail-closed 面更清晰。
++2. `candidate_wide_no_solution_reverifier_v1` 的最小可接受证明形态：异构 CP-SAT exhaustive proof、DRAT/unsat core、或独立枚举 + bounds 的组合。该项决定 TNS 能否从 research 进入 production。
++3. 无解面的公开产物是否需要人类可读 no-solution report。manifest-only 足以机器审计，但交付体验可能需要一页解释报告。

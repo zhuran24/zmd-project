@@ -1,0 +1,1415 @@
+{
+  "schema_version": "repository_code_assets_v1",
+  "authority": {
+    "role": "descriptive_governance_projection",
+    "higher_authorities": [
+      "PROJECT_LOCK.md",
+      "rules/canonical_rules.json",
+      "rules/preprocess_plan.json",
+      "data/external_artifacts.json",
+      "data/proof_obligations/",
+      "data/review_gates/"
+    ],
+    "cannot_grant": [
+      "certification",
+      "production_admission",
+      "owner_gate_approval",
+      "frozen_byte_reseal",
+      "checkpoint_compatibility"
+    ]
+  },
+  "measurement": {
+    "baseline": {
+      "measured_on": "2026-07-28",
+      "commit": "201c1988243951e16473af15f5d670ab11edf964",
+      "git_visible_count": 3249,
+      "code_asset_count": 2001,
+      "raw_bytes": 36483677,
+      "lf_count": 912444,
+      "class_counts": {
+        "active_implementation": 386,
+        "test": 646,
+        "common_infrastructure": 475,
+        "authoritative_input": 4,
+        "enforcement_control": 7,
+        "historical_evidence": 464,
+        "retirement_candidate": 19
+      }
+    },
+    "expected_current_class_counts": {
+      "active_implementation": 390,
+      "test": 670,
+      "common_infrastructure": 480,
+      "authoritative_input": 4,
+      "enforcement_control": 10,
+      "historical_evidence": 473,
+      "retirement_candidate": 19
+    },
+    "conditional_current_assets": [
+      {
+        "path": ".rgignore",
+        "primary_class": "enforcement_control"
+      }
+    ],
+    "certified_exact_source_baseline": {
+      "measured_on": "2026-08-06",
+      "commit": "a90e9bb2bf44257b5ed3407c12f8a61ce76d43ef",
+      "path_count": 804,
+      "path_tuple_sha256": "24fc86f0a9641e13f954e05b55414ac52f9c08f485dc4440cb3ca09d0f901540",
+      "source_digest": "d5a5dc51519b2b93678a340699b722578c8fd67fcddb883ec7d4d8e090cf10a3"
+    }
+  },
+  "code_selector": {
+    "extensions": [
+      ".bash",
+      ".cjs",
+      ".fzn",
+      ".html",
+      ".js",
+      ".lean",
+      ".mjs",
+      ".ps1",
+      ".psm1",
+      ".py",
+      ".pyi",
+      ".sh",
+      ".sql",
+      ".ts",
+      ".tsx",
+      ".zsh"
+    ],
+    "include_shebang": true,
+    "explicit_paths": [
+      ".gitattributes",
+      ".gitignore",
+      ".rgignore",
+      "cc_memory_vnext/.gitignore",
+      "certside/.gitignore",
+      "data/artifact_boundaries.json",
+      "data/external_artifacts.json",
+      "data/proof_obligations/p1_2_proof_obligations.json",
+      "data/proof_obligations/pr2_dependency_floor_manifest.json",
+      "data/proof_obligations/strong_status_write_allowlist.json",
+      "data/review_gates/phase_1_2_spike_close.json",
+      "data/review_gates/schemas/p1_2_clean_review_receipt.schema.json",
+      "formal/.gitignore",
+      "formal/lake-manifest.json",
+      "formal/lakefile.toml",
+      "formal/lean-toolchain",
+      "pytest.ini",
+      "requirements-dev.lock.txt",
+      "requirements.lock.txt",
+      "requirements.txt",
+      "ruff.toml",
+      "rules/canonical_rules.json",
+      "rules/canonical_rules.schema.json",
+      "rules/preprocess_plan.json",
+      "rules/preprocess_plan.schema.json",
+      "src/adapters/industrial_planner/base_registry.json",
+      "src/adapters/industrial_planner/device_type_registry.json",
+      "src/adapters/industrial_planner/item_registry.json"
+    ],
+    "explicit_globs": [
+      ".github/workflows/*.yml",
+      "data/repository_governance/*.json"
+    ]
+  },
+  "read_only_historical_evidence_roots": [
+    {
+      "path": ".artifacts/ab16_arms_20260802/",
+      "nature": "failed_campaign_history",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "AB16 r3-r6 campaign attempts, retained tool snapshots, failure receipts, and closeout evidence."
+    },
+    {
+      "path": ".artifacts/ab16_slimdown_20260801/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "AB16 governance and simplification execution logs, launch records, preflight receipts, and result history."
+    },
+    {
+      "path": ".artifacts/adapt_batch_gates/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "Batch-gate adaptation, full-gate, slow-lane, and interpreter comparison receipts."
+    },
+    {
+      "path": ".artifacts/band22_admission_sim_20260805/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "band22 准入口分拣仿真四变体、harness 归档与终判读证据。"
+    },
+    {
+      "path": ".artifacts/band22_faithful_sim_20260805/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "band22 忠实映射仿真运行与判据证据。"
+    },
+    {
+      "path": ".artifacts/band22_flow_account_20260805/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "band22 静态流量账探针结果与主线复算报告。"
+    },
+    {
+      "path": ".artifacts/band22_headless_sim_20260805/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "band22 无头仿真早期运行证据。"
+    },
+    {
+      "path": ".artifacts/band22_strict_hole_probe_20260805/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "严格空地孔位探针证据。"
+    },
+    {
+      "path": ".artifacts/band22_strict_redesign_pack_20260805/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "严格语义重设计咨询包装配材料。"
+    },
+    {
+      "path": ".artifacts/band22_strict_redesign_replies_20260805/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "GPT Pro 三份严格 (42,6) 见证回件解包与三席独立验伤全套证据。"
+    },
+    {
+      "path": ".artifacts/batch_c_leftovers_20260714/",
+      "nature": "failed_campaign_history",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "Retained Batch-C drill, crash, restart, and ledger-rescue campaign history."
+    },
+    {
+      "path": ".artifacts/cleanroom_r3_adversarial/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "Clean-room adversarial run prompt, execution log, and verdict evidence."
+    },
+    {
+      "path": ".artifacts/h20_row_power_oracle_20260803/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "H20 row-power oracle, independent checker, receipts, and bounded research result."
+    },
+    {
+      "path": ".artifacts/ip_adapter_v3_20260805/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "IndustrialPlanner v3 适配器实验证据。"
+    },
+    {
+      "path": ".artifacts/merge_codex_20260801/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "Retained merge preflight and gate execution evidence."
+    },
+    {
+      "path": ".artifacts/rab_drill_20260716/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "RAB drill control, resource, memory, and execution evidence."
+    },
+    {
+      "path": ".artifacts/w0_consult_packs_20260804/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "W0 咨询包装配与回件证据（08-04）。"
+    },
+    {
+      "path": ".artifacts/w0_fixrerun_20260804/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "W0 修复重跑与 M5 互核证据（08-04）。"
+    },
+    {
+      "path": ".artifacts/w0_front_aware_20260803/",
+      "nature": "research_evidence",
+      "content_treatment": "non_code_asset",
+      "mutation_expectation": "read_only_preserve_in_place",
+      "rationale": "W0 front-aware G1 opening brief, pattern catalog, master run roots, and preflight receipts. Line still active: append-only extension subpaths (g1_run/stage_c/ preflight logs, probe_20260803/, l2_consult_20260803/) keep accumulating until the line closes; existing bytes are immutable."
+    }
+  ],
+  "classification": {
+    "primary_classes": [
+      "active_implementation",
+      "test",
+      "common_infrastructure",
+      "authoritative_input",
+      "enforcement_control",
+      "historical_evidence",
+      "retirement_candidate"
+    ],
+    "rules": [
+      {
+        "id": "pose_bool_guarded_active_backend",
+        "match": {
+          "path": "src/models/pose_bool_exact_master.py"
+        },
+        "primary_class": "active_implementation",
+        "lifecycle": "active_env_gated",
+        "authority_role": "non_authorizing_geometry_master_backend",
+        "certified_admission": "blocked_pose_bool_master_not_certified",
+        "workflow_membership": [
+          "developer",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "normal_review_plus_soundness_obligations",
+        "rationale": "master_model imports PoseBoolExactMasterDelegate and EXACT_USE_POSE_BOOL_MASTER can enable it; public certification remains fail-closed."
+      },
+      {
+        "id": "repository_governance_control",
+        "match": {
+          "prefix": "data/repository_governance/"
+        },
+        "primary_class": "enforcement_control",
+        "lifecycle": "current",
+        "authority_role": "descriptive_governance_control",
+        "certified_admission": "non_authorizing",
+        "workflow_membership": [
+          "developer",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "reviewed_reproducible_change",
+        "rationale": "Schema and manifest define the reproducible governance projection but cannot grant production authority."
+      },
+      {
+        "id": "repository_search_projection",
+        "match": {
+          "path": ".rgignore"
+        },
+        "primary_class": "enforcement_control",
+        "lifecycle": "current_when_installed",
+        "authority_role": "developer_search_projection",
+        "certified_admission": "non_authorizing",
+        "workflow_membership": [
+          "developer",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "generated_from_governance_manifest",
+        "rationale": "The default search projection is a visible enforcement control and remains optional while G1 isolation is disabled."
+      },
+      {
+        "id": "governance_tests",
+        "match": {
+          "prefix": "devtools/tests/"
+        },
+        "primary_class": "test",
+        "lifecycle": "current",
+        "authority_role": "non_authorizing_regression",
+        "certified_admission": "not_applicable",
+        "workflow_membership": [
+          "developer",
+          "full"
+        ],
+        "mutation_policy": "normal_review",
+        "rationale": "Pure governance regression tests live outside the certified exact source discovery surface."
+      },
+      {
+        "id": "governance_tooling",
+        "match": {
+          "prefix": "devtools/"
+        },
+        "primary_class": "common_infrastructure",
+        "lifecycle": "current",
+        "authority_role": "non_authorizing_developer_tool",
+        "certified_admission": "not_applicable",
+        "workflow_membership": [
+          "developer",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "normal_review",
+        "rationale": "Developer-only governance tooling is deliberately outside root, src and scripts production source discovery."
+      },
+      {
+        "id": "industrial_planner_registry_infrastructure",
+        "match": {
+          "paths": [
+            "src/adapters/industrial_planner/base_registry.json",
+            "src/adapters/industrial_planner/device_type_registry.json",
+            "src/adapters/industrial_planner/item_registry.json"
+          ]
+        },
+        "primary_class": "common_infrastructure",
+        "lifecycle": "current",
+        "authority_role": "adapter_registry",
+        "certified_admission": "non_certifying_delivery_input",
+        "workflow_membership": [
+          "developer",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "adapter_review",
+        "rationale": "Delivery adapter registries are maintained data-backed infrastructure, not solver authority."
+      },
+      {
+        "id": "retirement_phase1_1_reviews",
+        "match": {
+          "glob": "scripts/build_phase1_1_gpt_pro_review_v[2-8].py"
+        },
+        "primary_class": "retirement_candidate",
+        "lifecycle": "superseded_review_builder",
+        "authority_role": "non_authoritative_review_convenience",
+        "certified_admission": "not_applicable",
+        "workflow_membership": [
+          "evidence",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "retain_pending_separate_retirement_decision",
+        "rationale": "Superseded generated-review builders are candidates only; G1/G2 neither deletes nor rewrites them."
+      },
+      {
+        "id": "retirement_phase1_2_entry_reviews",
+        "match": {
+          "paths": [
+            "scripts/build_phase1_2_entry_review_v9.py",
+            "scripts/build_phase1_2_entry_review_v10.py",
+            "scripts/build_phase1_2_entry_review_v11.py"
+          ]
+        },
+        "primary_class": "retirement_candidate",
+        "lifecycle": "superseded_review_builder",
+        "authority_role": "non_authoritative_review_convenience",
+        "certified_admission": "not_applicable",
+        "workflow_membership": [
+          "evidence",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "retain_pending_separate_retirement_decision",
+        "rationale": "Superseded generated-review builders are candidates only; G1/G2 neither deletes nor rewrites them."
+      },
+      {
+        "id": "retirement_phase1_2_spike_reviews",
+        "match": {
+          "paths": [
+            "scripts/build_phase1_2_spike_review_v14.py",
+            "scripts/build_phase1_2_spike_review_v15.py",
+            "scripts/build_phase1_2_spike_review_v16.py",
+            "scripts/build_phase1_2_spike_review_v17.py",
+            "scripts/build_phase1_2_spike_review_v18.py",
+            "scripts/build_phase1_2_spike_review_v19.py",
+            "scripts/build_phase1_2_spike_review_v20.py",
+            "scripts/build_phase1_2_spike_review_v21.py",
+            "scripts/build_phase1_2_spike_review_v22.py"
+          ]
+        },
+        "primary_class": "retirement_candidate",
+        "lifecycle": "superseded_review_builder",
+        "authority_role": "non_authoritative_review_convenience",
+        "certified_admission": "not_applicable",
+        "workflow_membership": [
+          "evidence",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "retain_pending_separate_retirement_decision",
+        "rationale": "Superseded generated-review builders are candidates only; G1/G2 neither deletes nor rewrites them."
+      },
+      {
+        "id": "certified_source_inputs",
+        "match": {
+          "prefix": "rules/"
+        },
+        "primary_class": "authoritative_input",
+        "lifecycle": "current_frozen",
+        "authority_role": "certified_source_of_truth_or_schema",
+        "certified_admission": "current_project_lock_input",
+        "workflow_membership": [
+          "developer",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "freeze_ritual_required",
+        "rationale": "Canonical rules and additive preprocess plan, with schemas, remain first-class current authority inputs."
+      },
+      {
+        "id": "proof_review_and_artifact_controls",
+        "match": {
+          "paths": [
+            "data/artifact_boundaries.json",
+            "data/external_artifacts.json",
+            "data/proof_obligations/p1_2_proof_obligations.json",
+            "data/proof_obligations/pr2_dependency_floor_manifest.json",
+            "data/proof_obligations/strong_status_write_allowlist.json",
+            "data/review_gates/phase_1_2_spike_close.json",
+            "data/review_gates/schemas/p1_2_clean_review_receipt.schema.json"
+          ]
+        },
+        "primary_class": "enforcement_control",
+        "lifecycle": "current_frozen_or_owner_controlled",
+        "authority_role": "artifact_proof_or_owner_gate_control",
+        "certified_admission": "current_control_plane",
+        "workflow_membership": [
+          "developer",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "project_lock_or_owner_process_required",
+        "rationale": "Artifact manifests, proof obligations, allowlists and review gates are active controls, never historical evidence."
+      },
+      {
+        "id": "w0_d6_evidence_test",
+        "match": {
+          "path": "src/tests/test_w0_d6_gate.py"
+        },
+        "primary_class": "test",
+        "lifecycle": "current_research_evidence",
+        "authority_role": "non_authorizing_local_d6_evidence_test",
+        "certified_admission": "not_applicable",
+        "workflow_membership": [
+          "evidence",
+          "full"
+        ],
+        "mutation_policy": "normal_review",
+        "rationale": "The W0 D6 gate evidence test exercises local research semantics without entering the developer default or granting a witness, cut, bound, or production authority."
+      },
+      {
+        "id": "w0_d6_replay_test",
+        "match": {
+          "path": "src/tests/test_w0_d6_replay.py"
+        },
+        "primary_class": "test",
+        "lifecycle": "current_research_replay",
+        "authority_role": "non_authorizing_local_d6_replay_test",
+        "certified_admission": "not_applicable",
+        "workflow_membership": [
+          "replay",
+          "full"
+        ],
+        "mutation_policy": "normal_review",
+        "rationale": "The W0 D6 independent replay test remains outside the developer default and can only confirm the exact local receipt it replays."
+      },
+      {
+        "id": "phase3b_replay_tests",
+        "match": {
+          "prefix": "src/tests/phase3b/"
+        },
+        "primary_class": "test",
+        "lifecycle": "historical_executable_replay",
+        "authority_role": "non_authorizing_replay_test",
+        "certified_admission": "not_applicable",
+        "workflow_membership": [
+          "replay",
+          "full"
+        ],
+        "mutation_policy": "retained_for_replay",
+        "rationale": "Phase3B tests remain executable through replay/full lanes but are not a daily developer dependency."
+      },
+      {
+        "id": "tests",
+        "match": {
+          "paths": [
+            "src/tests/",
+            "cc_memory/tests/",
+            "cc_memory_vnext/tests/"
+          ]
+        },
+        "primary_class": "test",
+        "lifecycle": "current",
+        "authority_role": "non_authorizing_regression",
+        "certified_admission": "not_applicable",
+        "workflow_membership": [
+          "developer",
+          "full"
+        ],
+        "mutation_policy": "normal_review",
+        "rationale": "Test assets validate behavior but cannot mint certification or owner authority."
+      },
+      {
+        "id": "artifact_history",
+        "match": {
+          "prefix": ".artifacts/"
+        },
+        "primary_class": "historical_evidence",
+        "lifecycle": "historical_timepoint_evidence",
+        "authority_role": "non_authoritative_evidence",
+        "certified_admission": "never_by_presence",
+        "workflow_membership": [
+          "evidence",
+          "replay",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "retained_no_bulk_rewrite",
+        "rationale": "Tracked historical artifacts remain visible to full/security gates and do not become current authority."
+      },
+      {
+        "id": "research_history",
+        "match": {
+          "prefix": "docs/research/"
+        },
+        "primary_class": "historical_evidence",
+        "lifecycle": "historical_timepoint_evidence",
+        "authority_role": "non_authoritative_evidence",
+        "certified_admission": "never_by_presence",
+        "workflow_membership": [
+          "evidence",
+          "replay",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "retained_no_bulk_rewrite",
+        "rationale": "Historical research code is retained for evidence/replay; current-spec Markdown exceptions are represented in asset roles."
+      },
+      {
+        "id": "historical_paths",
+        "match": {
+          "prefix": "paths/"
+        },
+        "primary_class": "historical_evidence",
+        "lifecycle": "historical_timepoint_evidence",
+        "authority_role": "non_authoritative_evidence",
+        "certified_admission": "never_by_presence",
+        "workflow_membership": [
+          "evidence",
+          "replay",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "retained_no_bulk_rewrite",
+        "rationale": "Path experiments are historical evidence, not the active implementation."
+      },
+      {
+        "id": "third_party_snapshots",
+        "match": {
+          "prefix": "third_party_snapshots/"
+        },
+        "primary_class": "historical_evidence",
+        "lifecycle": "pinned_third_party_snapshot",
+        "authority_role": "build_time_provenance_evidence",
+        "certified_admission": "not_project_authority",
+        "workflow_membership": [
+          "evidence",
+          "replay",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "snapshot_refresh_process_required",
+        "rationale": "Third-party snapshots preserve provenance and fixtures without becoming certified source of truth."
+      },
+      {
+        "id": "phase3b_historical_tooling",
+        "match": {
+          "prefix": "scripts/phase3b/"
+        },
+        "primary_class": "common_infrastructure",
+        "lifecycle": "historical_executable_snapshot",
+        "authority_role": "non_authoritative_replay_tool",
+        "certified_admission": "not_applicable",
+        "workflow_membership": [
+          "evidence",
+          "replay",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "retained_no_bulk_rewrite",
+        "rationale": "Historical Phase3B executable tooling remains reproducible through explicit lanes."
+      },
+      {
+        "id": "phase3b_replay_wrappers",
+        "match": {
+          "paths": [
+            "scripts/run_phase3b_checkpoint_free_evaluator.py",
+            "scripts/run_phase3b_checkpoint_free_overlay_timing_probe.py",
+            "scripts/run_phase3b_local_tuning_profile.py"
+          ]
+        },
+        "primary_class": "common_infrastructure",
+        "lifecycle": "historical_executable_replay",
+        "authority_role": "non_authoritative_replay_entrypoint",
+        "certified_admission": "not_applicable",
+        "workflow_membership": [
+          "evidence",
+          "replay",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "retained_no_bulk_rewrite",
+        "rationale": "These root wrappers execute the Phase3B snapshot tree and remain available only through explicit replay/full paths."
+      },
+      {
+        "id": "active_campaign_and_gate_scripts",
+        "match": {
+          "paths": [
+            "scripts/campaign_watchdog.sh",
+            "scripts/check_external_artifacts.py",
+            "scripts/check_p1_2_proof_obligations.py",
+            "scripts/check_phase_review_gate.py",
+            "scripts/check_strong_status_write_allowlist.py",
+            "scripts/inspect_exact_campaign_state.py",
+            "scripts/preflight_gate.py",
+            "scripts/production_readiness_gate.py",
+            "scripts/run_campaign_linux.sh",
+            "scripts/run_campaign_p2_workers1.sh",
+            "scripts/run_campaign_workers2.sh",
+            "scripts/run_supervisor_seal.py",
+            "scripts/stop_campaign.sh",
+            "scripts/temp_logger.sh"
+          ]
+        },
+        "primary_class": "active_implementation",
+        "lifecycle": "current_operational_entrypoint",
+        "authority_role": "runtime_or_enforcement_implementation",
+        "certified_admission": "subject_to_project_lock",
+        "workflow_membership": [
+          "developer",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "production_review",
+        "rationale": "Current runtime, supervisor, operator and mandatory gate entrypoints are named by current repository guidance or active workflows."
+      },
+      {
+        "id": "active_source",
+        "match": {
+          "prefix": "src/"
+        },
+        "primary_class": "active_implementation",
+        "lifecycle": "current",
+        "authority_role": "runtime_implementation",
+        "certified_admission": "subject_to_project_lock",
+        "workflow_membership": [
+          "developer",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "normal_or_proof_sensitive_review",
+        "rationale": "Non-test src assets are the active implementation, including guarded and certified-disabled components."
+      },
+      {
+        "id": "root_solver_entrypoint",
+        "match": {
+          "path": "main.py"
+        },
+        "primary_class": "active_implementation",
+        "lifecycle": "current",
+        "authority_role": "solver_entrypoint",
+        "certified_admission": "candidate_proposed_only",
+        "workflow_membership": [
+          "developer",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "production_review",
+        "rationale": "The root solver entrypoint is active and checkpoint-bound; it does not mint terminal CERTIFIED."
+      },
+      {
+        "id": "certside_active",
+        "match": {
+          "prefix": "certside/sidecar/"
+        },
+        "primary_class": "active_implementation",
+        "lifecycle": "current",
+        "authority_role": "certification_sidecar_implementation",
+        "certified_admission": "subject_to_project_lock",
+        "workflow_membership": [
+          "developer",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "proof_sensitive_review",
+        "rationale": "The certification sidecar is active implementation, while its root ignore control remains infrastructure."
+      }
+    ],
+    "fallback": {
+      "primary_class": "common_infrastructure",
+      "lifecycle": "current_or_retained_support",
+      "authority_role": "non_authorizing_support",
+      "certified_admission": "not_by_classification",
+      "workflow_membership": [
+        "developer",
+        "full",
+        "security"
+      ],
+      "mutation_policy": "normal_review",
+      "rationale": "Selected code assets not matched above are maintained support, build, audit or operator infrastructure."
+    }
+  },
+  "asset_role_rules": {
+    "rules": [
+      {
+        "id": "canonical_rules_authority",
+        "match": {
+          "path": "rules/canonical_rules.json"
+        },
+        "asset_role": "certified_source_of_truth",
+        "lifecycle": "current_frozen",
+        "authority_role": "canonical_rule_authority",
+        "mutation_policy": "freeze_ritual_required"
+      },
+      {
+        "id": "preprocess_plan_authority",
+        "match": {
+          "path": "rules/preprocess_plan.json"
+        },
+        "asset_role": "certified_source_of_truth",
+        "lifecycle": "current_frozen",
+        "authority_role": "additive_preprocess_authority",
+        "mutation_policy": "freeze_ritual_required"
+      },
+      {
+        "id": "preprocessed_authority_inputs",
+        "match": {
+          "paths": [
+            "data/preprocessed/generic_io_requirements.json",
+            "data/preprocessed/mandatory_exact_instances.json"
+          ]
+        },
+        "asset_role": "certified_source_of_truth",
+        "lifecycle": "current_frozen",
+        "authority_role": "preprocessed_runtime_authority_input",
+        "mutation_policy": "freeze_ritual_required"
+      },
+      {
+        "id": "other_preprocessed_inputs",
+        "match": {
+          "prefix": "data/preprocessed/"
+        },
+        "asset_role": "current_runtime_input",
+        "lifecycle": "current_generated_or_frozen",
+        "authority_role": "preprocessed_runtime_input",
+        "mutation_policy": "preprocess_and_hash_process_required"
+      },
+      {
+        "id": "external_candidate_pin",
+        "match": {
+          "path": "data/external_artifacts.json"
+        },
+        "asset_role": "external_authority_manifest",
+        "lifecycle": "current_frozen",
+        "authority_role": "candidate_placements_identity_pin",
+        "mutation_policy": "artifact_change_process_required"
+      },
+      {
+        "id": "proof_review_controls",
+        "match": {
+          "paths": [
+            "data/artifact_boundaries.json",
+            "data/proof_obligations/p1_2_proof_obligations.json",
+            "data/proof_obligations/pr2_dependency_floor_manifest.json",
+            "data/proof_obligations/strong_status_write_allowlist.json",
+            "data/review_gates/phase_1_2_spike_close.json",
+            "data/review_gates/schemas/p1_2_clean_review_receipt.schema.json"
+          ]
+        },
+        "asset_role": "current_enforcement_control",
+        "lifecycle": "current_frozen_or_owner_controlled",
+        "authority_role": "proof_review_or_artifact_boundary_control",
+        "mutation_policy": "project_lock_or_owner_process_required"
+      },
+      {
+        "id": "retired_f8_current_spec",
+        "match": {
+          "path": "docs/research/p3_b_design_v2_20260521/cut_family_specs/08_power_grid_reach.md"
+        },
+        "asset_role": "current_governing_specification",
+        "lifecycle": "retired_retained",
+        "authority_role": "current_cut_lifecycle_spec",
+        "mutation_policy": "spec_review_required"
+      },
+      {
+        "id": "current_cut_specs",
+        "match": {
+          "paths": [
+            "docs/research/p3_b_design_v2_20260521/cut_lifecycle_v2.md",
+            "docs/research/p3_b_design_v2_20260521/state_machine_v2.md",
+            "docs/research/p3_b_design_v2_20260521/cut_family_specs/01_region_capacity.md",
+            "docs/research/p3_b_design_v2_20260521/cut_family_specs/02_cutset.md",
+            "docs/research/p3_b_design_v2_20260521/cut_family_specs/03_port_exposure.md",
+            "docs/research/p3_b_design_v2_20260521/cut_family_specs/04_component_reach.md",
+            "docs/research/p3_b_design_v2_20260521/cut_family_specs/05_pattern_nogood.md",
+            "docs/research/p3_b_design_v2_20260521/cut_family_specs/06_shape_packing_hall.md",
+            "docs/research/p3_b_design_v2_20260521/cut_family_specs/07_power_hitting_set.md",
+            "docs/research/p3_b_design_v2_20260521/cut_family_specs/09_density_envelope.md"
+          ]
+        },
+        "asset_role": "current_governing_specification",
+        "lifecycle": "current",
+        "authority_role": "current_cut_lifecycle_spec",
+        "mutation_policy": "spec_review_required"
+      },
+      {
+        "id": "historical_research_role",
+        "match": {
+          "prefix": "docs/research/"
+        },
+        "asset_role": "historical_evidence",
+        "lifecycle": "historical_timepoint",
+        "authority_role": "non_authoritative_evidence",
+        "mutation_policy": "retained_no_bulk_rewrite"
+      }
+    ],
+    "fallback": {
+      "asset_role": "ordinary_repository_asset",
+      "lifecycle": "current_or_retained",
+      "authority_role": "none_from_governance_manifest",
+      "mutation_policy": "follow_owning_subsystem"
+    }
+  },
+  "logical_isolation": {
+    "search": {
+      "enabled": true,
+      "excluded_rules": [
+        ".artifacts/**",
+        "paths/**",
+        "third_party_snapshots/**",
+        "scripts/phase3b/**",
+        "scripts/run_phase3b_checkpoint_free_evaluator.py",
+        "scripts/run_phase3b_checkpoint_free_overlay_timing_probe.py",
+        "scripts/run_phase3b_local_tuning_profile.py",
+        "src/tests/phase3b/**",
+        "docs/research/**/*.py",
+        "docs/research/**/*.pyi",
+        "docs/research/**/*.sh",
+        "docs/research/**/*.bash",
+        "docs/research/**/*.zsh",
+        "docs/research/**/*.ps1",
+        "docs/research/**/*.psm1",
+        "docs/research/**/*.ts",
+        "docs/research/**/*.tsx",
+        "docs/research/**/*.js",
+        "docs/research/**/*.mjs",
+        "docs/research/**/*.cjs",
+        "docs/research/**/*.sql",
+        "docs/research/**/*.lean",
+        "docs/research/**/*.fzn",
+        "docs/research/**/*.html",
+        "docs/research/cleanroom_rederivation_20260718/14_r4_next_certificate_python_gpt_pro_verbatim.md",
+        "scripts/build_phase1_1_gpt_pro_review_v2.py",
+        "scripts/build_phase1_1_gpt_pro_review_v3.py",
+        "scripts/build_phase1_1_gpt_pro_review_v4.py",
+        "scripts/build_phase1_1_gpt_pro_review_v5.py",
+        "scripts/build_phase1_1_gpt_pro_review_v6.py",
+        "scripts/build_phase1_1_gpt_pro_review_v7.py",
+        "scripts/build_phase1_1_gpt_pro_review_v8.py",
+        "scripts/build_phase1_2_entry_review_v9.py",
+        "scripts/build_phase1_2_entry_review_v10.py",
+        "scripts/build_phase1_2_entry_review_v11.py",
+        "scripts/build_phase1_2_spike_review_v14.py",
+        "scripts/build_phase1_2_spike_review_v15.py",
+        "scripts/build_phase1_2_spike_review_v16.py",
+        "scripts/build_phase1_2_spike_review_v17.py",
+        "scripts/build_phase1_2_spike_review_v18.py",
+        "scripts/build_phase1_2_spike_review_v19.py",
+        "scripts/build_phase1_2_spike_review_v20.py",
+        "scripts/build_phase1_2_spike_review_v21.py",
+        "scripts/build_phase1_2_spike_review_v22.py"
+      ]
+    },
+    "lint": {
+      "enabled": true,
+      "excluded_rules": [
+        ".artifacts/**",
+        "paths/**",
+        "third_party_snapshots/**",
+        "scripts/phase3b/**",
+        "scripts/run_phase3b_checkpoint_free_evaluator.py",
+        "scripts/run_phase3b_checkpoint_free_overlay_timing_probe.py",
+        "scripts/run_phase3b_local_tuning_profile.py",
+        "src/tests/phase3b/**",
+        "docs/research/**",
+        "scripts/build_phase1_1_gpt_pro_review_v2.py",
+        "scripts/build_phase1_1_gpt_pro_review_v3.py",
+        "scripts/build_phase1_1_gpt_pro_review_v4.py",
+        "scripts/build_phase1_1_gpt_pro_review_v5.py",
+        "scripts/build_phase1_1_gpt_pro_review_v6.py",
+        "scripts/build_phase1_1_gpt_pro_review_v7.py",
+        "scripts/build_phase1_1_gpt_pro_review_v8.py",
+        "scripts/build_phase1_2_entry_review_v9.py",
+        "scripts/build_phase1_2_entry_review_v10.py",
+        "scripts/build_phase1_2_entry_review_v11.py",
+        "scripts/build_phase1_2_spike_review_v14.py",
+        "scripts/build_phase1_2_spike_review_v15.py",
+        "scripts/build_phase1_2_spike_review_v16.py",
+        "scripts/build_phase1_2_spike_review_v17.py",
+        "scripts/build_phase1_2_spike_review_v18.py",
+        "scripts/build_phase1_2_spike_review_v19.py",
+        "scripts/build_phase1_2_spike_review_v20.py",
+        "scripts/build_phase1_2_spike_review_v21.py",
+        "scripts/build_phase1_2_spike_review_v22.py"
+      ]
+    },
+    "pytest": {
+      "enabled": true,
+      "lane_rules": [
+        {
+          "glob": "src/tests/test_w0_d6_replay.py",
+          "lane": "replay"
+        },
+        {
+          "glob": "src/tests/test_w0_d6_gate.py",
+          "lane": "evidence"
+        },
+        {
+          "glob": "src/tests/cuts/test_replay.py",
+          "lane": "replay"
+        },
+        {
+          "glob": "src/tests/phase3b/**",
+          "lane": "replay"
+        },
+        {
+          "glob": "src/tests/test_b1_*.py",
+          "lane": "evidence"
+        },
+        {
+          "glob": "src/tests/test_noncert_cuts_*.py",
+          "lane": "evidence"
+        },
+        {
+          "glob": "src/tests/test_r1_upper_bound_pb_v1.py",
+          "lane": "evidence"
+        },
+        {
+          "glob": "src/tests/test_r3_upper_bound_pb_v1.py",
+          "lane": "evidence"
+        },
+        {
+          "glob": "src/tests/test_r4_*.py",
+          "lane": "evidence"
+        },
+        {
+          "glob": "src/tests/test_batch4_*.py",
+          "lane": "evidence"
+        },
+        {
+          "glob": "src/tests/test_batch_e_*.py",
+          "lane": "evidence"
+        },
+        {
+          "glob": "src/tests/test_rab_*.py",
+          "lane": "evidence"
+        },
+        {
+          "glob": "src/tests/**",
+          "lane": "developer"
+        }
+      ]
+    }
+  },
+  "capability_index": [
+    {
+      "capability": "strict_json",
+      "shared_authority": "src/io/strict_json.py::loads_strict_json",
+      "implementations": [
+        {
+          "path": "src/io/strict_json.py",
+          "symbol": "loads_strict_json",
+          "role": "preferred_active",
+          "consumers": [
+            "active runtime callers accepting the shared contract"
+          ],
+          "authority_source": "owning active I/O subsystem",
+          "lifecycle": "current"
+        },
+        {
+          "path": "src/search/exact_campaign.py",
+          "symbol": "_loads_strict_json_object",
+          "role": "context_bound",
+          "consumers": [
+            "checkpoint and exact campaign state"
+          ],
+          "authority_source": "checkpoint compatibility contract",
+          "lifecycle": "current"
+        }
+      ]
+    },
+    {
+      "capability": "stable_snapshot_read",
+      "shared_authority": "devtools/research_run_contract.py::read_stable_snapshot",
+      "implementations": [
+        {
+          "path": "devtools/research_run_contract.py",
+          "symbol": "read_stable_snapshot",
+          "role": "preferred_active",
+          "consumers": [
+            "isolated developer and research experiment intake"
+          ],
+          "authority_source": "G3 developer research run contract",
+          "lifecycle": "current"
+        },
+        {
+          "path": "src/search/exact_campaign.py",
+          "symbol": "read_once_exact_artifact_snapshot",
+          "role": "context_bound",
+          "consumers": [
+            "exact artifact hashing and checkpoint validation"
+          ],
+          "authority_source": "exact campaign snapshot contract",
+          "lifecycle": "current"
+        },
+        {
+          "path": "docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/run_smm4_formal_payload_v1.py",
+          "symbol": "snapshot_regular",
+          "role": "sealed_replay",
+          "consumers": [
+            "SMM4 immutable payload replay"
+          ],
+          "authority_source": "SMM4 frozen evidence bytes",
+          "lifecycle": "frozen"
+        }
+      ]
+    },
+    {
+      "capability": "retained_same_fd",
+      "shared_authority": null,
+      "implementations": [
+        {
+          "path": "docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/run_smm4_formal_payload_v1.py",
+          "symbol": "snapshot_regular",
+          "role": "sealed_replay",
+          "consumers": [
+            "SMM4 same-FD identity closure"
+          ],
+          "authority_source": "SMM4 frozen evidence bytes",
+          "lifecycle": "frozen"
+        }
+      ]
+    },
+    {
+      "capability": "exclusive_no_overwrite",
+      "shared_authority": "devtools/research_run_contract.py::ExclusiveRunRoot",
+      "implementations": [
+        {
+          "path": "devtools/research_run_contract.py",
+          "symbol": "ExclusiveRunRoot",
+          "role": "preferred_active",
+          "consumers": [
+            "isolated developer and research experiment outputs"
+          ],
+          "authority_source": "G3 developer research run contract",
+          "lifecycle": "current"
+        },
+        {
+          "path": "src/search/exact_campaign.py",
+          "symbol": "_checkpoint_write_lock",
+          "role": "context_bound",
+          "consumers": [
+            "campaign checkpoint serialization"
+          ],
+          "authority_source": "exact campaign lock contract",
+          "lifecycle": "current"
+        },
+        {
+          "path": "docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/run_smm4_formal_payload_v1.py",
+          "symbol": "write_once",
+          "role": "sealed_replay",
+          "consumers": [
+            "SMM4 immutable outputs"
+          ],
+          "authority_source": "SMM4 frozen evidence bytes",
+          "lifecycle": "frozen"
+        }
+      ]
+    },
+    {
+      "capability": "canonical_config_receipt",
+      "shared_authority": "devtools/research_run_contract.py::canonical_json_bytes",
+      "implementations": [
+        {
+          "path": "devtools/research_run_contract.py",
+          "symbol": "canonical_json_bytes",
+          "role": "preferred_active",
+          "consumers": [
+            "isolated developer and research experiment envelopes"
+          ],
+          "authority_source": "G3 developer research run contract",
+          "lifecycle": "current"
+        },
+        {
+          "path": "devtools/research_run_contract.py",
+          "symbol": "build_artifact_root_manifest",
+          "role": "context_bound",
+          "consumers": [
+            "pre-receipt isolated research artifact-root enumeration"
+          ],
+          "authority_source": "G3 developer research run contract",
+          "lifecycle": "current"
+        }
+      ]
+    },
+    {
+      "capability": "independent_replay",
+      "shared_authority": "devtools/research_run_contract.py::verify_artifact_root_closure",
+      "implementations": [
+        {
+          "path": "devtools/research_run_contract.py",
+          "symbol": "verify_artifact_root_closure",
+          "role": "preferred_active",
+          "consumers": [
+            "isolated developer and research experiment artifact-root closure replay"
+          ],
+          "authority_source": "G3 developer research run contract",
+          "lifecycle": "current"
+        },
+        {
+          "path": "devtools/research_run_contract.py",
+          "symbol": "replay_identity_graph",
+          "role": "context_bound",
+          "consumers": [
+            "isolated developer and research experiment named byte-identity replay"
+          ],
+          "authority_source": "G3 developer research run contract",
+          "lifecycle": "current"
+        },
+        {
+          "path": "devtools/research_run_contract.py",
+          "symbol": "run_isolated_replay",
+          "role": "context_bound",
+          "consumers": [
+            "isolated developer and research experiment subprocess replay"
+          ],
+          "authority_source": "G3 developer research run contract",
+          "lifecycle": "current"
+        },
+        {
+          "path": "devtools/research_run_contract.py",
+          "symbol": "require_isolated_python_process",
+          "role": "context_bound",
+          "consumers": [
+            "isolated developer and research experiment Python process validation"
+          ],
+          "authority_source": "G3 developer research run contract",
+          "lifecycle": "current"
+        }
+      ]
+    },
+    {
+      "capability": "resource_receipt",
+      "shared_authority": null,
+      "implementations": [
+        {
+          "path": "docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/verify_smm4_two_stage_v1.py",
+          "symbol": "_validate_resource_receipt",
+          "role": "required_independent",
+          "consumers": [
+            "SMM4 independent two-stage replay"
+          ],
+          "authority_source": "SMM4 frozen evidence graph",
+          "lifecycle": "frozen"
+        }
+      ]
+    },
+    {
+      "capability": "terminal_receipt",
+      "shared_authority": null,
+      "implementations": [
+        {
+          "path": "src/search/exact_campaign.py",
+          "symbol": "terminal_certified_final_result_violation_for_project",
+          "role": "context_bound",
+          "consumers": [
+            "certified campaign terminal validation"
+          ],
+          "authority_source": "PROJECT_LOCK terminal certification contract",
+          "lifecycle": "current"
+        }
+      ]
+    }
+  ],
+  "pytest_entrypoints": [
+    {
+      "id": "preflight_core",
+      "workflow": "full",
+      "argv_source": "scripts/preflight_gate.py core/staged; project_foundation.yml --ci; production_readiness_gate.py delegation",
+      "baseline_count": 1544,
+      "baseline_sha256": "3504a8a52e6eadd98f322d1973603e788ff51b79847b2cfb5c85fbf077cbf0ec",
+      "expected_count": 1544,
+      "expected_sha256": "3504a8a52e6eadd98f322d1973603e788ff51b79847b2cfb5c85fbf077cbf0ec"
+    },
+    {
+      "id": "preflight_full_non_slow",
+      "workflow": "full",
+      "argv_source": "scripts/preflight_gate.py --full",
+      "baseline_count": 6486,
+      "baseline_sha256": "2cf1cd008f379b8b9b3fb438d98bfcb1112c6416b296e0af76d97a034112634c",
+      "expected_count": 6368,
+      "expected_sha256": "6bf868e5c0ec8ee9fcfec770ee5d9a00a7ebb0a4f4107b022820ee523e22487f"
+    },
+    {
+      "id": "preflight_slow",
+      "workflow": "full",
+      "argv_source": "scripts/preflight_gate.py --slow-tests",
+      "baseline_count": 31,
+      "baseline_sha256": "9606959449cd99e6c4ca6c0c305e75f9d4fb4459a159bd2f7daf1e45e82ff6dd",
+      "expected_count": 31,
+      "expected_sha256": "9606959449cd99e6c4ca6c0c305e75f9d4fb4459a159bd2f7daf1e45e82ff6dd"
+    },
+    {
+      "id": "all_src_tests",
+      "workflow": "full",
+      "argv_source": "python -m pytest -m '' src/tests",
+      "baseline_count": 6517,
+      "baseline_sha256": "bad93d2a3c6e1ff368d31b0d9951eaf806563cf3879721c003db929902d047c1",
+      "expected_count": 6399,
+      "expected_sha256": "8a94631b41f5a1a2640f478fe109328a6303f24967f513d60a725e196c49b3a0"
+    },
+    {
+      "id": "auxiliary_memory_tests",
+      "workflow": "full",
+      "argv_source": "python -m pytest cc_memory/tests cc_memory_vnext/tests",
+      "baseline_count": 107,
+      "baseline_sha256": "32d6a873dc1aa2d2b559d8a9978b8dae13652f4f93457fc2385d53528a19f8d1",
+      "expected_count": 107,
+      "expected_sha256": "32d6a873dc1aa2d2b559d8a9978b8dae13652f4f93457fc2385d53528a19f8d1"
+    },
+    {
+      "id": "bare_pytest",
+      "workflow": "developer",
+      "argv_source": "python -m pytest",
+      "baseline_count": 6624,
+      "baseline_sha256": "6917fa03f27442fb0d42deb7e143dbd52cb943fd64b3b39551f6eb8509961f96",
+      "expected_count": 3547,
+      "expected_sha256": "534a549f234c3e517aa996ece0d6d354064ed0fa59622a436eab63962cf096f9"
+    },
+    {
+      "id": "industrial_planner_checked",
+      "workflow": "focused_full",
+      "argv_source": ".github/workflows/industrial_planner_checked_artifacts.yml",
+      "baseline_count": 30,
+      "baseline_sha256": "54a44dda12944ca1bf6b43a7840ef1f18c23b5e84bebc8923e814c8441a09a78",
+      "expected_count": 30,
+      "expected_sha256": "54a44dda12944ca1bf6b43a7840ef1f18c23b5e84bebc8923e814c8441a09a78"
+    },
+    {
+      "id": "repository_governance_tests",
+      "workflow": "focused_full",
+      "argv_source": ".github/workflows/project_foundation.yml repository-governance step",
+      "baseline_count": 0,
+      "baseline_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_count": 38,
+      "expected_sha256": "602844389a3864ecd81ceabebecb6a1cd6e1bfb603607491ab2a96ff202747c5"
+    },
+    {
+      "id": "industrial_planner_single_base",
+      "workflow": "focused_full",
+      "argv_source": ".github/workflows/industrial_planner_single_base_delivery_surfaces.yml",
+      "baseline_count": 28,
+      "baseline_sha256": "a7b37a6556fb0671e9b80e13d7ee77cfbd3f3a9baa2a004c3d0fd3122ad0b69b",
+      "expected_count": 28,
+      "expected_sha256": "a7b37a6556fb0671e9b80e13d7ee77cfbd3f3a9baa2a004c3d0fd3122ad0b69b"
+    },
+    {
+      "id": "review_snapshot_targeted",
+      "workflow": "focused_full",
+      "argv_source": "scripts/package_review_snapshot.py DEFAULT_TARGETED_TESTS",
+      "baseline_count": 668,
+      "baseline_sha256": "27007356da1379e008a9a51b49e99f8c824feaf7533571586aa2f5ae0130b158",
+      "expected_count": 668,
+      "expected_sha256": "27007356da1379e008a9a51b49e99f8c824feaf7533571586aa2f5ae0130b158"
+    },
+    {
+      "id": "cuts_collection_counter",
+      "workflow": "focused_full",
+      "argv_source": "scripts/gen_authoritative_numbers.py src/tests/cuts",
+      "baseline_count": 958,
+      "baseline_sha256": "1e462d510c837ff3f18252f187c8cfa9916964cd4ad595e671eec19f1eb8d244",
+      "expected_count": 958,
+      "expected_sha256": "1431c01e8a0aa94f04bb9071e6cb5d6fdd5415d917133f3758ab9ffdf904bb0d"
+    },
+    {
+      "id": "affected_selector_routing_example",
+      "workflow": "developer",
+      "argv_source": "scripts/select_tests_for_paths.py routing example",
+      "baseline_count": 28,
+      "baseline_sha256": "4d4ca90966dc585446846fe8395b9135450a89ea253482b772f8ae960e40efde",
+      "expected_count": 28,
+      "expected_sha256": "4d4ca90966dc585446846fe8395b9135450a89ea253482b772f8ae960e40efde"
+    },
+    {
+      "id": "bdesign_criterion_2",
+      "workflow": "focused_full",
+      "argv_source": "scripts/b_design_v2_exit_criteria.py criterion 2",
+      "baseline_count": 18,
+      "baseline_sha256": "4e22ac2a255d0703d063f85092d8019511b16f674274153bb44c0be49ff7391e",
+      "expected_count": 18,
+      "expected_sha256": "4e22ac2a255d0703d063f85092d8019511b16f674274153bb44c0be49ff7391e"
+    },
+    {
+      "id": "bdesign_criterion_3",
+      "workflow": "focused_full",
+      "argv_source": "scripts/b_design_v2_exit_criteria.py criterion 3",
+      "baseline_count": 28,
+      "baseline_sha256": "7a592b1eef5fd8f5c2dfb3c3d75a1c275a665f3ea983a886aafd8f7302144717",
+      "expected_count": 28,
+      "expected_sha256": "7a592b1eef5fd8f5c2dfb3c3d75a1c275a665f3ea983a886aafd8f7302144717"
+    },
+    {
+      "id": "bdesign_criterion_38",
+      "workflow": "focused_full",
+      "argv_source": "scripts/b_design_v2_exit_criteria.py criterion 38",
+      "baseline_count": 41,
+      "baseline_sha256": "a2cc1dd689664e8c593921c4642b332c5a8f91a205aab63a7f3813fbc53968ea",
+      "expected_count": 41,
+      "expected_sha256": "a2cc1dd689664e8c593921c4642b332c5a8f91a205aab63a7f3813fbc53968ea"
+    },
+    {
+      "id": "bdesign_criterion_4_replay",
+      "workflow": "replay",
+      "argv_source": "scripts/b_design_v2_exit_criteria.py criterion 4",
+      "baseline_count": 15,
+      "baseline_sha256": "ca9ec0006089fa2cb3a532e569cd4333ed792cc6e9a03be0ad09954023182be6",
+      "expected_count": 15,
+      "expected_sha256": "ca9ec0006089fa2cb3a532e569cd4333ed792cc6e9a03be0ad09954023182be6"
+    },
+    {
+      "id": "evidence_nonreplay_non_slow",
+      "workflow": "evidence",
+      "argv_source": "python -m pytest --repository-workflow=evidence -m 'not slow'",
+      "baseline_count": 0,
+      "baseline_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_count": 1258,
+      "expected_sha256": "fad45157ed9533e34cd33613e6b75de005c05d548902b929200c7ecbaa64f4df"
+    },
+    {
+      "id": "replay_non_slow",
+      "workflow": "replay",
+      "argv_source": "python -m pytest --repository-workflow=replay -m 'not slow'",
+      "baseline_count": 0,
+      "baseline_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected_count": 1563,
+      "expected_sha256": "bac7d8817a81e5637db4c69ad9cbfe1ea4f0c3db5cadd21e6134c1387a55f75f"
+    }
+  ],
+  "pytest_pending_recipes": [
+    {
+      "id": "bdesign_criterion_28",
+      "argv_source": "scripts/b_design_v2_exit_criteria.py criterion 28",
+      "target": "src/tests/cuts/test_family_power_grid_reach.py",
+      "status": "pending_missing_target",
+      "behavior": "do_not_start_pytest"
+    },
+    {
+      "id": "bdesign_criterion_9",
+      "argv_source": "scripts/b_design_v2_exit_criteria.py criterion 9",
+      "target": "src/tests/cuts/test_cut_store_rotation.py",
+      "status": "pending_missing_target",
+      "behavior": "do_not_start_pytest"
+    }
+  ]
+}

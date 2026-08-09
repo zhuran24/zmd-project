@@ -1,0 +1,194 @@
+== 0. inputs read from 06_problem_instance.json (no transcribed constants) ==
+  grid 70x70 = 4900 cells; objective {'body_cells_only': True, 'kind': 'max_lex_area_min_side', 'minimum_side': 6}
+  required instances by template: {'boundary_storage_port': 46, 'manufacturing_3x3': 132, 'manufacturing_5x5': 49, 'manufacturing_6x4': 38, 'protocol_core': 1}
+  demand {'3x3': 132, '5x5': 49, '6x4': 38}; body areas {'3x3': 9, '5x5': 25, '6x4': 24}
+  boundary ports 46, core 9x9, pole 2x2
+  power rule: at_least_one_body_cell_covered, stencil offsets {'x_max_offset': 6, 'x_min_offset': -5, 'y_max_offset': 6, 'y_min_offset': -5}
+
+== 1. band decomposition ==
+  band 1: y=2..6  height=5
+  band 2: y=8..10  height=3
+  band 3: y=12..15  height=4
+  band 4: y=17..19  height=3
+  band 5: y=21..25  height=5
+  band 6: y=27..29  height=3
+  band 7: y=31..34  height=4
+  band 8: y=36..38  height=3
+  band 9: y=40..44  height=5
+  band10: y=46..48  height=3
+  band11: y=50..53  height=4
+  band12: y=55..57  height=3
+  band13: y=59..62  height=4
+  band14: y=64..68  height=5
+  sum of band heights = 54; +15 corridors = 69 -> occupies y=1..69, y=0 left to bottom ports  [OK]
+
+== 2. is (6 x h3, 4 x h4, 4 x h5) the only composition? ==
+  ASSUMPTION: 14 bands + 15 single-cell corridors, 67 usable columns per band.
+  per-band capacity on 67 usable columns: h3 -> 22 x 3x3, h5 -> 13 x 5x5, h4 -> 11 x 6x4
+  solutions of  n3+n4+n5=14, 3n3+4n4+5n5=54, capacity>=demand : [(6, 4, 4)]
+  -> the MULTISET of band heights is unique; the ORDER of the bands is not
+     constrained by this argument.  [OK]
+
+== 3. core anchor rows y0 that do not intrude on any height-3 band ==
+  This is a NECESSARY condition only (6 x 22 = 132 = exact 3x3 demand, so every
+  height-3 band must stay full). It does not check ports, routing or power, and
+  it is recomputed from scratch for each band ORDER.
+  original order [5, 3, 4, 3, 5, 3, 4, 3, 5, 3, 4, 3, 4, 5]
+    height-3 band rows: [8, 9, 10, 17, 18, 19, 27, 28, 29, 36, 37, 38, 46, 47, 48, 55, 56, 57]
+    y0 candidates: [58, 59, 60, 61]
+  reversed order [5, 4, 3, 4, 3, 5, 3, 4, 3, 5, 3, 4, 3, 5]
+    y0 candidates: 0..4 (5 values)
+  grouped [3]*6+[4]*4+[5]*4 order [3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5]
+    y0 candidates: 25..61 (37 values)
+  -> {58,59,60,61} is a property of the ORIGINAL band order, not a global
+     invariant of the 14-band family.  [OK]
+
+== 4. height-3 bands: pole slots ==
+  22 machines x 3 columns = 66; usable columns = 67; free = 1 column(s) of width 1
+  a 2x2 pole needs width 2 -> 0 pole slots per height-3 band; 6 bands x 1 col x 3 rows = 18 cells are structurally dead  [OK]
+
+== 5. nominal body-zone margin (before core / hole / poles) ==
+  h3: 6*67*3 - 132*9  = 18
+  h5: 4*67*5 - 49*25  = 115
+  h4: 4*67*4 - 38*24  = 160
+  total = 293
+  NOTE: this baseline ALREADY excludes one riser column per band. Anything that
+        reuses a riser column must not be charged again.
+
+== 6. core anchor (60,60): what it eats ==
+  body x=60..68, y=60..68
+  core rows that are corridors: [63] -> 9 cells replace corridor
+  band13 (height 4, y=59..62): 3 of its rows covered, 27 body cells
+  band14 (height 5, y=64..68): 5 of its rows covered, 45 body cells
+  body-zone cells eaten = 72
+  band13 leftover under the core columns: y=59, x=60..68 = 9 cells, height 1 -> holds no 2x2 pole  [OK]
+
+== 7. hole H=[a,a+5]x[39,45] on band9: cost and 5x5 capacity ==
+  y=39 and y=45 are corridors c8/c9, so only y=40..44 is body zone.
+  Two riser models are computed separately; NEITHER is assumed silently.
+  Model A (proven, no new macro): band9's riser sits at the ring endpoint x=69,
+           because c8 runs west->east and c9 runs east->west, so the c8/c9 hand-off
+           column is the east end. The hole only overlaps it when a=64.
+  Model B (CONDITIONAL, needs an undesigned macro): the riser is relocated into H
+           for an arbitrary a while still serving both corridor ends and keeping a
+           single directed ring. No such per-cell macro is given in this pack.
+  a values whose H would contain a left-boundary-port BODY cell: [0]
+  -> a=0 is illegal; a=1 is legal because x=1 carries only the return BELT and the
+     objective is body_cells_only=True (belts may
+     cross the rectangle).  [OK]
+
+  --- Model A (riser at x=69) ---
+  legal a in 1..64: 64; band9 capacity 12: 28; only 11: 36
+  good a: [1, 2, 3, 7, 8, 12, 13, 17, 18, 22, 23, 27, 28, 32, 33, 37, 38, 42, 43, 47, 48, 52, 53, 57, 58, 62, 63, 64]
+  bad  a: [4, 5, 6, 9, 10, 11, 14, 15, 16, 19, 20, 21, 24, 25, 26, 29, 30, 31, 34, 35, 36, 39, 40, 41, 44, 45, 46, 49, 50, 51, 54, 55, 56, 59, 60, 61]
+  for 2<=a<=63 the good ones are exactly (a-2) mod 5 in [0, 1] (26 values);
+  a=1 and a=64 are additional good values that fall outside that residue rule.
+  a= 1: capacity 12, hole cost 25 cells, free runs [62] -> body-zone residual 196 - 4P, area-only ceiling floor(196/4) = 49
+  a=64: capacity 12, hole cost 25 cells, free runs [62] -> body-zone residual 196 - 4P, area-only ceiling floor(196/4) = 49
+  a= 2: capacity 12, hole cost 30 cells, free runs [61] -> residual 191 - 4P, area-only ceiling 47
+
+  --- Model B (riser inside H; CONDITIONAL on an undesigned macro) ---
+  The relocated riser must sit on a WORKING column inside H. x=1 is not a working
+  column (it carries the return trunk), so for a=1 the riser lands on x=2; for
+  a>=2 it can sit on the hole's own left column.
+  legal a in 1..64: 64; capacity 12: 40; only 11: 24
+  hole cost under model B: a=1 -> 20 cells; 2<=a<=64 -> [25] cells (one hole column is the riser column the 293 baseline already removed)
+  -> a=1 is CHEAPER, not equal: H meets the working area on x=2..6 only (5 columns)
+     and one of those 5 is the already-deducted riser, so the net cost is (5-1)*5 = 20;
+     residual 201 - 4P, area-only ceiling floor(201/4) = 50
+  -> the pack's earlier figure of 30 cells under this model DOUBLE-CHARGED the
+     riser column; the correct model-B cost is 25 (2<=a<=64) or 20 (a=1), and the
+     ceiling is 49 (resp. 50), not 47.
+  SCOPE NOTE: an earlier version of this script asserted the cost only over
+  2<=a<=63 and the prose read 'uniformly 25' -- that was an extrapolation over the
+  two endpoints. Both a=1 and a=64 are now asserted explicitly.
+
+== 8. 5x5 total capacity (core + hole in place) ==
+  band14 usable columns after the core: x=2..59 plus the isolated x=69 (59 columns)
+  slit parked on the ring endpoint x=69: capacity 11
+  slit on an inner column s=2..59: capacity = floor((s-2)/5) + floor((59-s)/5); enumerated all 58 positions -> 36 give 11, 22 give [10]
+  the bad positions are exactly s mod 5 in [0, 1] (e.g. s=5 -> 0+10 = 10); the good inner ones are s mod 5 in [2, 3, 4]
+  -> band14 capacity is an UPPER BOUND <= 11, attained only for slit x=69 or inner s mod 5 in {2,3,4}; it is NOT a slit-independent invariant.
+  band1 13, band5 13, band9 12 (good a only), band14 <= 11
+  total = 49; demand = 49 -> slack 0
+  -> ZERO slack. On a bad a the total is 48 < 49 and the skeleton dies; a bad slit
+     residue does the same (13+13+12+10 = 48 < 49), so the slit residue is a NECESSARY
+     condition on every variant of this skeleton.  [OK]
+  (An earlier version of this pack claimed floor(58/5) = floor(57/5) = 11 'either
+   way'. That is wrong: an inner slit splits the 58-column run in two, and both
+   halves floor down independently.)
+
+== 9. height-4 zones: 6x4 capacity and optimistic pole bound ==
+  per-band 6x4 capacity: [11, 11, 11, 9] (band13 limited to x=2..59 by the core) -> total 42, demand 38
+  enumerated ALL 35 LABELLED admissible splits of the 38 machines
+  merging only the 3 interchangeable full-width bands: 11 classes
+  (folding band13 in as well would give 9 -- that merge is ILLEGITIMATE,
+   band13 has a different usable width; '9 splits' was a counting bug)
+  free columns of height 4: [31]; optimistic pole counts: [28]
+  -> the height-4 zones give AT MOST 28 poles, for every one of the 35 splits. The
+     pack's earlier figure of 30 came from concatenating free columns ACROSS
+     isolated bands, which is not a legal move: each band's free width is odd
+     (67-6m), and an odd run of width w wastes one column.  [OK]
+  if the ring forces band13's riser onto a column <=59 (band13 usable 57): capacity [11, 11, 11, 9] (still 42 >= 38), 35 labelled splits / 11 classes, free [30], poles at most [26]
+
+== 10. height-5 zones: free width and optimistic pole bound ==
+  a height-5 free run of width w holds floor(w/2)*floor(5/2) poles
+  ASSUMPTION for band14: the slit is parked on the isolated x=69, leaving one run of
+  58 columns. On a good INNER slit the 57 remaining columns are split in two runs and
+  the free width is 2, not 3 -- the pole count there must be recomputed per position.
+  band1 2 free cols -> 2 poles; band5 2 -> 2; band14 3 -> 2
+  band9 (model A) poles by a: a=1 -> 2, a=64 -> 2, all other good a -> [0]
+
+== 11. optimistic pole bound vs the area-only ceiling ==
+  ASSUMPTIONS: height-3 bands and the 9 band13 leftover cells give 0; every band's
+  free columns are contiguous inside that band; no pole is blocked by a belt, a
+  front cell or the coverage requirement. This is an UPPER BOUND, not a capacity.
+  a= 1: 0 (h3) + 28 (h4) + 2+2+2 (band1/5/14) + 2 (band9) = 36 poles  |  area-only ceiling floor(196/4) = 49
+  a=64: 0 (h3) + 28 (h4) + 2+2+2 (band1/5/14) + 2 (band9) = 36 poles  |  area-only ceiling floor(196/4) = 49
+  a= 2: 0 (h3) + 28 (h4) + 2+2+2 (band1/5/14) + 0 (band9) = 34 poles  |  area-only ceiling floor(191/4) = 47
+  -> the binding constraint is GEOMETRIC (<=36, and <=34 for the 26 mid-range good
+     a values), not the area ceiling (47..49). The pack's earlier '真实杆位容量约 40'
+     is withdrawn: no witness placement of any pole count exists in this pack.
+  Separately: 219 powered machines must each have
+  a body cell inside some pole's {'x_max_offset': 6, 'x_min_offset': -5, 'y_max_offset': 6, 'y_min_offset': -5} stencil;
+  whether <=36 poles can cover them is a DIFFERENT question, not settled here.
+
+== 12. core port fronts at anchor (60,60), mode inputs_north_south ==
+  input  N front=(61,69) -> corridor c14 (y=69) [SOURCE corridor]
+  input  N front=(62,69) -> corridor c14 (y=69) [SOURCE corridor]
+  input  N front=(63,69) -> corridor c14 (y=69) [SOURCE corridor]
+  input  N front=(64,69) -> corridor c14 (y=69) [SOURCE corridor]
+  input  N front=(65,69) -> corridor c14 (y=69) [SOURCE corridor]
+  input  N front=(66,69) -> corridor c14 (y=69) [SOURCE corridor]
+  input  N front=(67,69) -> corridor c14 (y=69) [SOURCE corridor]
+  input  S front=(61,59) -> band13 body row (y=59)
+  input  S front=(62,59) -> band13 body row (y=59)
+  input  S front=(63,59) -> band13 body row (y=59)
+  input  S front=(64,59) -> band13 body row (y=59)
+  input  S front=(65,59) -> band13 body row (y=59)
+  input  S front=(66,59) -> band13 body row (y=59)
+  input  S front=(67,59) -> band13 body row (y=59)
+  output E front=(69,61) -> band13 body row (y=61)
+  output E front=(69,64) -> band14 body row (y=64)
+  output E front=(69,67) -> band14 body row (y=67)
+  output W front=(59,61) -> band13 body row (y=61)
+  output W front=(59,64) -> band14 body row (y=64)
+  output W front=(59,67) -> band14 body row (y=67)
+  -> all 6 output fronts land on x=59 or x=69 at y=61,64,67: in grid and outside the
+     core body. Whether they are free of OTHER bodies and whether a legal collector
+     can be compiled there is NOT checked here.
+  -> all 14 input fronts land on y=59 (a band13 body row, no corridor) or y=69 = c14,
+     which this construction declares SOURCE-only. The nearest sink corridor c13
+     (y=63) is covered by the core body on x=60..68.  [HOLE 3]
+
+== 13. board / demand closure ==
+  manufacturing body = 132*9 + 49*25 + 38*24 = 3325
+  + 46 boundary ports * 3 = 138
+  + core 9*9 = 81
+  = 3544 of 4900 cells (72.3%)
+  free for poles + belts + fronts + the 42-cell hole: 1356
+  sentinel cross-check: {'commodity_count': 19, 'generic_final_input_terminals': 2, 'generic_raw_output_terminals': 52, 'manufacturing_input_terminals': 310, 'manufacturing_instance_count': 219, 'manufacturing_output_terminals': 264, 'operation_group_count': 17, 'required_body_area': 3544, 'required_instance_count': 266, 'total_active_terminals': 628}
+
+ALL IMPLEMENTED ASSERTIONS PASSED
+(arithmetic only -- no placement/routing/power witness was built, no strict checker
+ was run, and nothing here is evidence of feasibility or optimality)

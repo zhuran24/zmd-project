@@ -1,0 +1,68 @@
+{
+ "ob": "OB2",
+ "semantics_label": "P2.0 第七谓词语义（布局无关机身预算；六谓词语义下同样成立——机身占地与吞吐无关）",
+ "date": "2026-08-06",
+ "inputs": {
+  "canonical_rules": "rules/canonical_rules.json (frozen) facility_templates.*.dimensions/needs_power",
+  "mandatory_instances": "data/preprocessed/mandatory_exact_instances.json (266) facility_type 普查"
+ },
+ "census_by_template": [
+  {
+   "template": "boundary_storage_port",
+   "count": 46,
+   "w": 1,
+   "h": 3,
+   "body_cells_each": 3,
+   "body_cells_subtotal": 138,
+   "needs_power": false
+  },
+  {
+   "template": "manufacturing_3x3",
+   "count": 132,
+   "w": 3,
+   "h": 3,
+   "body_cells_each": 9,
+   "body_cells_subtotal": 1188,
+   "needs_power": true
+  },
+  {
+   "template": "manufacturing_5x5",
+   "count": 49,
+   "w": 5,
+   "h": 5,
+   "body_cells_each": 25,
+   "body_cells_subtotal": 1225,
+   "needs_power": true
+  },
+  {
+   "template": "manufacturing_6x4",
+   "count": 38,
+   "w": 6,
+   "h": 4,
+   "body_cells_each": 24,
+   "body_cells_subtotal": 912,
+   "needs_power": true
+  },
+  {
+   "template": "protocol_core",
+   "count": 1,
+   "w": 9,
+   "h": 9,
+   "body_cells_each": 81,
+   "body_cells_subtotal": 81,
+   "needs_power": false
+  }
+ ],
+ "totals": {
+  "board_cells": 4900,
+  "mandatory_body_cells_total": 3544,
+  "powered_body_cells_total": 3325,
+  "board_minus_bodies": 1356,
+  "power_pole_body_cells_each": 4
+ },
+ "notes": [
+  "受电机身 = needs_power 模板（三种制造机）的机身之和；protocol_core 与 boundary_storage_port 不需电。",
+  "protocol_storage_box needs_power=true 但 mandatory 下界为 0（当前需求 2 已被 core 的 14 输入容量覆盖），不进本预算；若布局实际使用 box，其机身与受电需求只会进一步吃紧预算（保守方向）。",
+  "power_pole 不在 266 mandatory 之列，其数量 P 是布局变量；每根占 4 格进上界的 −4P 项。"
+ ]
+}

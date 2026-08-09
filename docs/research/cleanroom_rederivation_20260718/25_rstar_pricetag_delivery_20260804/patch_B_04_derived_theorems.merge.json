@@ -1,0 +1,394 @@
+{
+  "schema": "w0_rstar_derived_theorems_price_tag_patch_v1",
+  "target": "04_derived_theorems.json",
+  "merge_key": "theorems[].id",
+  "do_not_modify_existing_fields": true,
+  "authority": false,
+  "ledger_effect": "none",
+  "fragments": [
+    {
+      "id": "R-BODY-IN-REGION",
+      "source_class": "③求解器方便（兼有④沿用框架）",
+      "zero_slack_anchor": "无",
+      "baseline_hashes": [
+        "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
+        "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+      ],
+      "price_tag": {
+        "qualitative": [
+          "排除制造机身或供电杆本体跨越任一 14 倍数房缝的原规范合法位姿。【已证明】"
+        ],
+        "quantitative": [
+          "候选位姿口径：3×3 保留 13,920/17,952；5×5 保留 9,600/16,896；6×4 保留 9,540/16,900；杆保留 4,225/4,761。【已证明】",
+          "按 132/49/38 个制造实例加权，排除 1,169,408/3,839,768=30.46% 个实例-位姿关联；这不是全局布局数。【已证明】"
+        ],
+        "missing": "缺: 满足其余八条限制时，跨缝 body 几何的完整计数及其 master 可拼装计数，需要 domino/halo 完备枚举。"
+      },
+      "premise_set": {
+        "direct": [
+          "25 个 14×14 房间网格",
+          "冻结基线 H0"
+        ],
+        "hidden_or_auxiliary": [
+          "固定家具由 R-BOUNDARY-LAYOUT 固定并被排除在 decision body 作用域之外"
+        ]
+      },
+      "retreat_line": {
+        "minimum_change": "给每房增加最大 5 格 halo，跨缝 body 由 anchor 所在房拥有，catalog 发布邻房占格位图，master 加 seam cell exclusivity。",
+        "rungs": [
+          "L1：只允许跨一条缝，不允许同时跨纵横缝交点。",
+          "L2：允许影响至多四房的全部原规范 body pose。"
+        ],
+        "costs": [
+          "引入 seam 占格变量，破坏纯房间独立性。",
+          "所有制造机与杆 catalog 必须全量重生成；固定家具 mask 及既有局部连通论证需重审。"
+        ]
+      },
+      "decision_experiment": "D1-BODY-POSE-ENUM"
+    },
+    {
+      "id": "R-FRONT-IN-REGION",
+      "source_class": "③求解器方便",
+      "zero_slack_anchor": "无",
+      "baseline_hashes": [
+        "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
+        "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+      ],
+      "price_tag": {
+        "qualitative": [
+          "排除 body 同房而任一活动输入/输出 front 落入邻房的合法位姿。【已证明】"
+        ],
+        "quantitative": [
+          "在 R-BODY-IN-REGION 后的增量候选位姿口径：3×3 再删 1,920；5×5 再删 1,600；6×4 再删 1,440；实例加权删 386,560/2,670,360=14.48%。【已证明】",
+          "BODY+FRONT 合计删 1,555,968/3,839,768=40.52% 的制造实例-位姿关联；不是全局布局数。【已证明】"
+        ],
+        "missing": "缺: 邻房 occupancy/component 与跨缝 front 同时协商后的完整 pattern 数，需要双房配对枚举。"
+      },
+      "premise_set": {
+        "direct": [
+          "25 房间网格",
+          "R-BODY-IN-REGION",
+          "opposite_parallel_sides/long_sides 模板语义",
+          "九行类表中每类 r_in>0 且 r_out>0"
+        ],
+        "hidden_or_auxiliary": [
+          "T-PORT-SLOTS 与 T-FRONT-FREE"
+        ]
+      },
+      "retreat_line": {
+        "minimum_change": "catalog 发布逐边 active-front demand 与邻边 body-free/component 位图；master 对 40 条缝×14 格加 front≤neighbor_free 兼容约束。",
+        "rungs": [
+          "L1：只允许跨正交缝 front，body 仍同房。",
+          "L2：与 R-BODY-IN-REGION 一并松开，允许 body 和 front 共同跨缝。"
+        ],
+        "costs": [
+          "生成器仍可逐房运行，但 master 出现 seam coupling。",
+          "因现有生成器从未造跨缝 front，catalog 须全量重生成；R-PAT-CONN 的 anchor 归属需改写。"
+        ]
+      },
+      "decision_experiment": "D2-FRONT-SEAM-PAIR"
+    },
+    {
+      "id": "R-PORTAL-FIXED",
+      "source_class": "③求解器方便",
+      "zero_slack_anchor": "无",
+      "baseline_hashes": [
+        "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
+        "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+      ],
+      "price_tag": {
+        "qualitative": [
+          "排除占用固定桩坐标的几何，以及只在其他缝位置有通道的几何。【已证明】"
+        ],
+        "quantitative": [
+          "live 桩 180=16×8+7×6+4+6；内缝 160=40×2×2，板边 live 桩 20。【已证明】",
+          "在 BODY+FRONT+固定家具+全 66 front reserve 的单体候选域中，制造实例-位姿关联删 176,088/2,076,768=8.48%，杆锚点删 265/3,888=6.82%；不是 pattern 或布局数。【已证明】"
+        ],
+        "missing": "缺: 固定桩与可协商桩在同一完整 target 集上的 Pareto pattern 计数，需要 paired local CP-SAT。"
+      },
+      "premise_set": {
+        "direct": [
+          "25 房间网格",
+          "R-BOUNDARY-LAYOUT 以确定 fixed mask 与 live stubs"
+        ],
+        "benefit_only": [
+          "R-PAT-CONN，只有二者合取才推出零 C4 的板级连通组合论证"
+        ]
+      },
+      "retreat_line": {
+        "minimum_change": "先删除无邻居板边的 20 个 live 桩；随后让每条内缝从 14 个位置中协商两格。",
+        "rungs": [
+          "L1：删板边桩，仍固定 160 个内缝桩。",
+          "L2：每缝两个可移动桩，master 加 14 个 selector 与两侧 free/component linking。",
+          "L3：不固定数量或位置，发布逐边位图并用 crossing 变量协商。"
+        ],
+        "costs": [
+          "L1 会把 16 个 CLEAN archetype 拆成板边/内部若干类，但不引入 seam 变量。",
+          "L2/L3 引入 seam 变量，零 C4 论证失效，所有受影响 catalog 必须重生成。"
+        ]
+      },
+      "decision_experiment": "D3-PORTAL-FIXED-VS-MOVABLE"
+    },
+    {
+      "id": "R-PAT-CONN",
+      "source_class": "③求解器方便兼论证支撑",
+      "zero_slack_anchor": "无",
+      "baseline_hashes": [
+        "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
+        "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+      ],
+      "price_tag": {
+        "qualitative": [
+          "排除 live 桩、固定家具 required/reserved front、机器 active front 或 hole 分处多个自由分量的局部几何；原规范允许同商品多岛。【已证明】"
+        ],
+        "quantitative": [
+          "catalog 口径：855/2,593=32.97% 旧列不满足单分量；同批供给 3,113→2,749，损失 364/3,113=11.69%。【已证明】",
+          "L0 2 秒 paired control 中 loose feasible=0、loose infeasible=402、UNKNOWN=15，只能读作已测目标上的观测下界，不能证明免费。【已证明】"
+        ],
+        "missing": "缺: 对同一完备局部 target/Pareto 域的 strict 与 loose 成对枚举，以及两类列在 master 中的可拼装计数。"
+      },
+      "premise_set": {
+        "direct": [
+          "25 房间网格",
+          "R-PORTAL-FIXED",
+          "R-FRONT-IN-REGION",
+          "R-CORE-FRONT-RESERVE",
+          "R-HOLE-IN-REGION 的 hole anchor",
+          "R-BOUNDARY-LAYOUT"
+        ],
+        "transitive": [
+          "R-BODY-IN-REGION"
+        ],
+        "hidden_or_auxiliary": [
+          "O-FRONT-SIMULTANEITY 必须对任何可行几何逐次关闭"
+        ]
+      },
+      "retreat_line": {
+        "minimum_change": "保留 live 桩单分量，只把 active front/hole 的单分量成员要求改成“属于任一含桩分量”，并把 component id 发布给 G2。",
+        "rungs": [
+          "L1：桩保持互通，terminal/hole 可在其他含桩分量。",
+          "L2：恢复多源 loose 读法，允许桩本身分属多个分量。",
+          "L3：删除局部连通限制，完全交 G2。"
+        ],
+        "costs": [
+          "逐 pattern 连通推出板级连通的证明在 L1 起即需改写。",
+          "所有新增档位都要重生成 catalog；G2 或 master 必须处理 component 协商。"
+        ]
+      },
+      "decision_experiment": "D4-PAT-CONN-PAIRED"
+    },
+    {
+      "id": "R-POWER-LOCAL",
+      "source_class": "③求解器方便",
+      "zero_slack_anchor": "无",
+      "baseline_hashes": [
+        "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
+        "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+      ],
+      "price_tag": {
+        "qualitative": [
+          "排除至少一台机器只能由邻房或斜邻房杆覆盖，且不存在本房替代杆集的合法几何。【已证明】"
+        ],
+        "quantitative": [
+          "覆盖关系口径：在 R-BODY-IN-REGION 的杆锚点上，杆锚点-覆盖格关系 562,500 条，同房 396,900 条，跨房 165,600=29.44%；其中正交 151,200、斜邻 14,400。【已证明】",
+          "该关系删边不能等同于被杀布局，因为同一机器可能另有本房杆。【已证明】"
+        ],
+        "missing": "缺: 每个 otherwise-valid body geometry 的本地最小杆集与邻房替代杆集对照表，需要双房/四房 set-cover 枚举。"
+      },
+      "premise_set": {
+        "direct": [
+          "25 房间网格",
+          "R-BODY-IN-REGION 的机器与杆归房",
+          "12×12 power stencil"
+        ],
+        "negative_dependency": [
+          "不依赖 R-POLE-CAP；二者必须分开定价"
+        ]
+      },
+      "retreat_line": {
+        "minimum_change": "catalog 发布杆对邻房边带的 coverage bitmap，master 允许机器由正交邻房杆满足。",
+        "rungs": [
+          "L1：正交邻房供电，买回 151,200 条跨房覆盖关系。",
+          "L2：加入斜邻四角，另买回 14,400 条；在 BODY 同房前提下即恢复全部原规范跨房覆盖。"
+        ],
+        "costs": [
+          "引入 seam/角点 coverage linking；房间生成可独立，master 不再完全独立。",
+          "需要全量重生成或至少重评所有 pattern 的跨房 coverage signature。"
+        ]
+      },
+      "decision_experiment": "D5-POWER-DOMINO"
+    },
+    {
+      "id": "R-POLE-CAP",
+      "source_class": "③求解器方便",
+      "zero_slack_anchor": "无",
+      "baseline_hashes": [
+        "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
+        "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+      ],
+      "price_tag": {
+        "qualitative": [
+          "排除最小本地供电集需要至少 4 根杆的几何；选了 4 根但可删冗余的表示不应计入科学价签。【已证明】"
+        ],
+        "quantitative": [
+          "空 14×14 房最多可平铺 7×7=49 根互不重叠 2×2 杆，cap 把原始局部杆数层级 0..49 截为 0..3；这只是搜索域尺度，不是合法 pattern 数。【已证明】",
+          "3,392、67、146/134/118、366 均 conditional on 本 cap，不能反向用来给 cap 标价。【已证明】"
+        ],
+        "missing": "缺: otherwise-valid 局部 body 几何的 min_local_poles=0,1,2,3,4+ 分布，以及 cap3/cap4 的目标 Pareto 差。"
+      },
+      "premise_set": {
+        "direct": [
+          "25 房间网格",
+          "R-BODY-IN-REGION 的杆归房"
+        ],
+        "negative_dependency": [
+          "不由 R-POWER-LOCAL 推出"
+        ],
+        "hidden_or_auxiliary": [
+          "T-POLE-MINIMAL 用于剔除冗余杆表示"
+        ]
+      },
+      "retreat_line": {
+        "minimum_change": "把 generator、evaluator 与 packing ceiling 三处 RHS 同步从 3 改为 4。",
+        "rungs": [
+          "L1：cap=4，只买回 min_local_poles=4 的几何。",
+          "L2：删除硬 cap；固定 body 后精确最小化杆数，并用 lex objective 控制搜索。"
+        ],
+        "costs": [
+          "不引入 seam 变量，房间独立性保留。",
+          "packing ceiling 与全部 catalog 必须重跑；只改一处会造成语义分叉。"
+        ]
+      },
+      "decision_experiment": "D6-POLE-CAP-3-VS-4"
+    },
+    {
+      "id": "R-HOLE-IN-REGION",
+      "source_class": "④配方类比兼③局部化",
+      "zero_slack_anchor": "无",
+      "baseline_hashes": [
+        "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
+        "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+      ],
+      "price_tag": {
+        "qualitative": [
+          "排除所有非 6×7/7×6 的 admissible 空矩形、同形跨缝矩形，以及不在 portal component 的矩形。【已证明】",
+          "多孔布局的损失属于 master C3=恰1，不重复计入本条。【已证明】"
+        ],
+        "quantitative": [
+          "矩形见证位置口径：原规范 min_side≥6 有 4,601,025 个位置，本条名义词汇 3,600，保留 0.07824%，排除 4,597,425。【已证明】",
+          "同形全板 8,320，房内 3,600，缝税 4,720；其中仅跨一条缝 3,760，跨纵横两缝交点 960。【已证明】"
+        ],
+        "missing": "缺: 每个 otherwise-valid body/pole geometry 的全部空矩形表及 component membership；另需多孔布局计数才能给 C3 单独标价。"
+      },
+      "premise_set": {
+        "direct": [
+          "25 房间网格",
+          "portal component 定义"
+        ],
+        "hidden_or_auxiliary": [
+          "master C3=恰 1 个 distinguished hole；这是单独建模约定，不是本条或原规范"
+        ]
+      },
+      "retreat_line": {
+        "minimum_change": "HoleSpec 接受所有 6≤w,h≤14，并把每房候选从 144 扩到 2,025。",
+        "rungs": [
+          "L1：全部房内形状，共 50,625 个全板候选。",
+          "L2：同形可跨一条缝，再加 3,760；四房交点再加 960。",
+          "L3：全局 x0,x1,y0,y1 变量恢复全部 4,601,025 个位置。"
+        ],
+        "costs": [
+          "L1 保持房间独立，但 hole selector 约增 14 倍。",
+          "L2/L3 引入跨房空置与 component 协商；catalog schema、master C3 与 catalog 均需重做。"
+        ]
+      },
+      "decision_experiment": "D7-HOLE-VOCABULARY"
+    },
+    {
+      "id": "R-CORE-FRONT-RESERVE",
+      "source_class": "①算术被迫的 54 格 + ③求解器方便的 12 格",
+      "zero_slack_anchor": "generic output 52/52；generic input 2/14 余 12",
+      "baseline_hashes": [
+        "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
+        "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+      ],
+      "price_tag": {
+        "qualitative": [
+          "46 boundary output、6 core output 与任取 2 core input 的 front 必须 body-free；本条额外固定其余 12 个 core input front 也 body-free。【已证明】"
+        ],
+        "quantitative": [
+          "固定 front 口径：66=54+12，确定的额外 body-free 税为 12 格。【已证明】",
+          "保留 BODY+FRONT+PORTAL+现行固定布局时，精确 54-front 语义给 CORE 28 个杆锚点，全 66 reserve 只给 20 个，恢复 8 个；制造机位姿两边均为 0。【已证明】"
+        ],
+        "missing": "缺: 这 8 个杆锚点是否产生 min-pole≤3、连通且可拼装 pattern 的计数，需要 CORE 局部重生成。"
+      },
+      "premise_set": {
+        "direct": [
+          "R-BOUNDARY-LAYOUT 的坐标",
+          "generic IO demand 52 output/2 input",
+          "T-FRONT-FREE"
+        ],
+        "quantitative_scan": [
+          "R-BODY-IN-REGION",
+          "R-FRONT-IN-REGION",
+          "R-PORTAL-FIXED"
+        ]
+      },
+      "retreat_line": {
+        "minimum_change": "只固定 52 个 output front；为 14 个 core input front 加 available_i，并约束 sum(available_i)≥2 且 body_occ_i+available_i≤1。",
+        "rungs": [
+          "L1：G1 选择至少 2 个可用 input front，并把所选 anchor 纳入 R-PAT-CONN。",
+          "L2：G1 只发布 14 位 body-free/component bitmap，具体两格由 G3 绑定。"
+        ],
+        "costs": [
+          "不引入 seam 变量，主要影响 CORE 模型。",
+          "CORE catalog 必须重生成；R-PAT-CONN 的固定 anchor 集改为动态 selected set。"
+        ]
+      },
+      "decision_experiment": "D8-CORE-FRONT-MASK"
+    },
+    {
+      "id": "R-BOUNDARY-LAYOUT",
+      "source_class": "③求解器方便兼④沿用配方；边界近饱和部分受①锚定",
+      "zero_slack_anchor": "左下两边 138/139，余 1",
+      "baseline_hashes": [
+        "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
+        "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+      ],
+      "price_tag": {
+        "qualitative": [
+          "排除边界口的其他相位/角位铺法，以及 core 的其他位置和朝向。【已证明】"
+        ],
+        "quantitative": [
+          "无标签边界占格口径：单臂 23 个长度 3 区间有 C(24,23)=24 种，不占角 1、占角 23；两臂角互斥后有 47 种，现行留 1、排除 46。【已证明】",
+          "core 候选 7,688，现行留 1、排除 7,687；边界与 core 因碰撞不可直接相乘。【已证明】"
+        ],
+        "missing": "缺: 47 个边界铺法与 7,688 个 core pose 联合后的无碰撞固定家具布局计数，以及各布局下的完整 G1 catalog/Pareto 计数。"
+      },
+      "premise_set": {
+        "direct": [
+          "冻结基线 H0"
+        ],
+        "consumed_by": [
+          "R-PORTAL-FIXED",
+          "R-CORE-FRONT-RESERVE",
+          "R-PAT-CONN",
+          "region-class 划分",
+          "R-BODY-IN-REGION 的 fixed-furniture exemption"
+        ]
+      },
+      "retreat_line": {
+        "minimum_change": "先把 47 个边界铺法作为外循环 scenario，逐 scenario 固定 mask 后仍运行原局部管线。",
+        "rungs": [
+          "L1：枚举全部 47 个边界铺法，core 仍固定。",
+          "L2：core 只枚举房内 pose，共 25×6×6×2=1,800。",
+          "L3：恢复全部 7,688 core pose；core 可跨缝，fixed mask 成为全局决策。"
+        ],
+        "costs": [
+          "L1 不必加 seam 变量，但边界 region classes 与 catalog 需按 scenario 重建。",
+          "L2/L3 catalog 数量爆炸；L3 破坏固定 region mask 与多项组合论证。"
+        ]
+      },
+      "decision_experiment": "D9-BOUNDARY-LAYOUT-SCREEN"
+    }
+  ]
+}

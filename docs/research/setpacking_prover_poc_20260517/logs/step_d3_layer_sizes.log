@@ -1,0 +1,9 @@
+=== master layer sizes ===
+
+config                      wall (s)       vars    constraints
+skip_power_coverage              5.0      24824          69910
+full master                     14.2      57668         132515
+
+power_coverage 加了: +32844 vars, +62605 constraints
+  vars 比例: +132%
+  cons 比例: +90%

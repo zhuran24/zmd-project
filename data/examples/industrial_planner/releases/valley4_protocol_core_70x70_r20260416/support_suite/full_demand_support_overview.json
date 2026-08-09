@@ -1,0 +1,248 @@
+{
+  "summary": {
+    "total_base_count": 1,
+    "scope_mode": "default_contract_scope",
+    "audited_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "future_scope_base_count": 5,
+    "future_scope_base_ids": [
+      "valley4_infra_outpost",
+      "valley4_rebuilt_command",
+      "valley4_refugee_shelter",
+      "wuling_protocol_core",
+      "wuling_tianwangping_aid"
+    ],
+    "canonical_path_proven_equivalent_base_count": 1,
+    "canonical_path_proven_equivalent_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "best_available_proven_equivalent_base_count": 1,
+    "best_available_proven_equivalent_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "additional_bases_unlocked_by_outer_path_base_count": 0,
+    "additional_bases_unlocked_by_outer_path_base_ids": [],
+    "status_transition_base_count": 0,
+    "status_transition_base_ids": [],
+    "canonical_contract_ceiling_base_count": 0,
+    "best_available_canonical_contract_ceiling_base_count": 0,
+    "manufacturing_area_shortfall_base_count": 0,
+    "status_transition_counts": {},
+    "best_available_path_counts": {
+      "canonical_contract": 1
+    },
+    "unlocked_base_ids": [],
+    "future_scope_outer_path_base_count": 1
+  },
+  "scope": {
+    "scope_mode": "default_contract_scope",
+    "scope_statement": "The current certified IndustrialPlanner support contract is intentionally narrowed to `valley4_protocol_core` (70×70) only. Other known bases are preserved as `future_scope` for later work and are excluded from the active audit / CI gate.",
+    "active_contract_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "audited_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "known_base_count": 6,
+    "future_scope_base_count": 5,
+    "future_scope_base_ids": [
+      "valley4_infra_outpost",
+      "valley4_rebuilt_command",
+      "valley4_refugee_shelter",
+      "wuling_protocol_core",
+      "wuling_tianwangping_aid"
+    ],
+    "future_scope_base_groups": [
+      {
+        "group_id": "valley4_40x40_subbases",
+        "label": "valley4 40×40 sub-bases",
+        "base_ids": [
+          "valley4_infra_outpost",
+          "valley4_rebuilt_command",
+          "valley4_refugee_shelter"
+        ],
+        "count": 3,
+        "placeable_sizes": [
+          40
+        ],
+        "summary_note": "These three 40×40 valley4 sub-bases share the same current contract status, so the active reports collapse them into one preserved future-scope group."
+      },
+      {
+        "group_id": "wuling_50x50_aid_base",
+        "label": "wuling 50×50 aid base",
+        "base_ids": [
+          "wuling_tianwangping_aid"
+        ],
+        "count": 1,
+        "placeable_sizes": [
+          50
+        ],
+        "summary_note": "Smaller wuling aid base retained as future-scope only."
+      },
+      {
+        "group_id": "wuling_80x80_protocol_core",
+        "label": "wuling 80×80 protocol core",
+        "base_ids": [
+          "wuling_protocol_core"
+        ],
+        "count": 1,
+        "placeable_sizes": [
+          80
+        ],
+        "summary_note": "Larger wuling protocol-core outer-deployment work is frozen as future-scope."
+      }
+    ],
+    "future_scope_bases": [
+      {
+        "base_id": "valley4_infra_outpost",
+        "name": "基建前站",
+        "placeable_size": 40,
+        "tags": [
+          "四号谷地"
+        ],
+        "scope_status": "future_scope",
+        "reason": "40×40 valley4 sub-base reserved for a separate future plan."
+      },
+      {
+        "base_id": "valley4_rebuilt_command",
+        "name": "重建指挥部",
+        "placeable_size": 40,
+        "tags": [
+          "四号谷地"
+        ],
+        "scope_status": "future_scope",
+        "reason": "40×40 valley4 sub-base reserved for a separate future plan."
+      },
+      {
+        "base_id": "valley4_refugee_shelter",
+        "name": "难民暂居处",
+        "placeable_size": 40,
+        "tags": [
+          "四号谷地"
+        ],
+        "scope_status": "future_scope",
+        "reason": "40×40 valley4 sub-base reserved for a separate future plan."
+      },
+      {
+        "base_id": "wuling_protocol_core",
+        "name": "协议核心区",
+        "placeable_size": 80,
+        "tags": [
+          "武陵"
+        ],
+        "scope_status": "future_scope",
+        "reason": "80×80 wuling protocol-core base belongs to a different region/production system and stays future-scope."
+      },
+      {
+        "base_id": "wuling_tianwangping_aid",
+        "name": "天王坪援建点",
+        "placeable_size": 50,
+        "tags": [
+          "武陵"
+        ],
+        "scope_status": "future_scope",
+        "reason": "50×50 wuling aid base reserved for a separate future plan."
+      }
+    ]
+  },
+  "decision_signals": [
+    "The active checked-in support suite is intentionally narrowed to 1 audited base under the single 70×70 contract, while 5 preserved bases remain outside the active audit / CI surface.",
+    "The strict canonical matrix records 1 active `proven_equivalent` base, and the best available active checked-in path records 1.",
+    "No active checked-in status transitions remain after the out-of-scope outer deployment path is frozen as future_scope.",
+    "The companion deployment column is currently preserved as `future_scope` for 1 audited base, so the active checked-in best-path view stays canonical-only.",
+    "0 active audited bases remain blocked by manufacturing-area shortfall before boundary representation is even considered.",
+    "This umbrella workflow stays postprocess-only: it writes companion strict/deployment summaries together without widening canonical truth, campaign schema, or certified evidence."
+  ],
+  "component_report_filenames": {
+    "canonical_matrix_json": "full_demand_base_support_matrix.json",
+    "canonical_matrix_markdown": "full_demand_base_support_matrix.md",
+    "deployment_path_matrix_json": "full_demand_deployment_path_matrix.json",
+    "deployment_path_matrix_markdown": "full_demand_deployment_path_matrix.md"
+  },
+  "canonical_matrix_summary": {
+    "total_base_count": 1,
+    "audited_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "future_scope_base_count": 5,
+    "future_scope_base_ids": [
+      "valley4_infra_outpost",
+      "valley4_rebuilt_command",
+      "valley4_refugee_shelter",
+      "wuling_protocol_core",
+      "wuling_tianwangping_aid"
+    ],
+    "proven_equivalent_base_count": 1,
+    "proven_equivalent_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "infeasible_base_count": 0,
+    "infeasible_base_ids": [],
+    "unsupported_by_canonical_contract_base_count": 0,
+    "unsupported_by_canonical_contract_base_ids": [],
+    "smaller_than_canonical_contract_base_count": 0,
+    "equal_to_canonical_contract_base_count": 1,
+    "larger_than_canonical_contract_base_count": 0,
+    "blocking_classification_counts": {}
+  },
+  "deployment_path_matrix_summary": {
+    "total_base_count": 1,
+    "audited_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "future_scope_base_count": 5,
+    "future_scope_base_ids": [
+      "valley4_infra_outpost",
+      "valley4_rebuilt_command",
+      "valley4_refugee_shelter",
+      "wuling_protocol_core",
+      "wuling_tianwangping_aid"
+    ],
+    "canonical_path_proven_equivalent_base_count": 1,
+    "canonical_path_proven_equivalent_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "best_available_proven_equivalent_base_count": 1,
+    "best_available_proven_equivalent_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "additional_bases_unlocked_by_outer_path_base_count": 0,
+    "additional_bases_unlocked_by_outer_path_base_ids": [],
+    "best_available_canonical_contract_ceiling_base_count": 0,
+    "best_available_canonical_contract_ceiling_base_ids": [],
+    "outer_path_attempted_base_count": 0,
+    "outer_path_not_applicable_base_count": 1,
+    "future_scope_outer_path_base_count": 1,
+    "smaller_than_canonical_contract_base_count": 0,
+    "equal_to_canonical_contract_base_count": 1,
+    "larger_than_canonical_contract_base_count": 0,
+    "manufacturing_area_shortfall_base_count": 0,
+    "best_available_path_counts": {
+      "canonical_contract": 1
+    },
+    "best_available_blocking_classification_counts": {}
+  },
+  "entries": [
+    {
+      "base_id": "valley4_protocol_core",
+      "selected_base_placeable_size": 70,
+      "size_relation_to_canonical": "equal_to_canonical_contract",
+      "canonical_status": "proven_equivalent",
+      "canonical_blocking_classification": null,
+      "outer_path_applicable": false,
+      "outer_path_status": "future_scope",
+      "best_available_path_id": "canonical_contract",
+      "best_available_status": "proven_equivalent",
+      "best_available_blocking_classification": null,
+      "unlocked_by_outer_path": false,
+      "status_transition": "unchanged",
+      "canonical_validator_import_compatible": true,
+      "canonical_validator_layout_healthy": true,
+      "best_available_validator_import_compatible": true,
+      "best_available_validator_layout_healthy": true,
+      "canonical_throughput_status": "proven_equivalent",
+      "best_available_throughput_status": "proven_equivalent"
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+{
+ "ob": "OB1",
+ "semantics_label": "P2.0 第七谓词语义（吞吐守恒）；与在案六谓词 U=(1188,18) conditional 并存不互斥",
+ "date": "2026-08-06",
+ "inputs": {
+  "canonical_rules": "rules/canonical_rules.json (frozen)",
+  "mandatory_instances": "data/preprocessed/mandatory_exact_instances.json (266)",
+  "flow_account_cross_ref": ".artifacts/band22_flow_account_20260805/flow_account.json"
+ },
+ "chosen_caliber": {
+  "name": "F_route = 钉死 production_targets 精确平衡流量 − 无线终品交付流量",
+  "F_route_items_per_min": "9135",
+  "F_target_items_per_min": "18339/2",
+  "final_product_flows_excluded": {
+   "qiaoyu_capsule": "33/2",
+   "valley_battery": "18"
+  },
+  "why": "钉死目标是需求权威（前提 7）；扣无线终品使论证不依赖终品交付语义争议（保守方向，代价 = 单层格位下界少 1 格）；(a) 超目标、(b) 脱靶，见 rejected_calibers"
+ },
+ "rejected_calibers": {
+  "F_100_percent_duty": {
+   "value": "9246",
+   "reject_reason": "100% 占空要求 49 台机器超过钉死目标运转（duty 11/12 与 21/22 的两组），高估必要流量 0.83%；mandatory 台数本身是 ceil() 产物，满占空不是目标语义"
+  },
+  "F_balanced_fixed_point": {
+   "value": "290691/32",
+   "reject_reason": "min(prod,cons) 不动点产出 valley_battery 1071/64/min < 目标 18/min，是目标不可行状态，低估必要流量"
+  }
+ },
+ "pinned_target_solution": {
+  "machine_equivalents_x": {
+   "crusher_blue_iron": "34",
+   "crusher_buckwheat": "11/2",
+   "crusher_sandleaf": "21/2",
+   "crusher_source": "18",
+   "filling_capsule": "11/4",
+   "grinder_dense_blue_iron": "17",
+   "grinder_dense_source": "9",
+   "grinder_fine_buckwheat": "11/2",
+   "molding_bottle": "11/2",
+   "packaging_battery": "3",
+   "parts_maker": "6",
+   "planter_buckwheat": "11",
+   "planter_sandleaf": "21",
+   "refinery_blue_iron": "34",
+   "refinery_steel": "17",
+   "seed_collector_buckwheat": "11/2",
+   "seed_collector_sandleaf": "21/2"
+  },
+  "mandatory_count_n": {
+   "crusher_blue_iron": 34,
+   "crusher_buckwheat": 6,
+   "crusher_sandleaf": 11,
+   "crusher_source": 18,
+   "filling_capsule": 3,
+   "grinder_dense_blue_iron": 17,
+   "grinder_dense_source": 9,
+   "grinder_fine_buckwheat": 6,
+   "molding_bottle": 6,
+   "packaging_battery": 3,
+   "parts_maker": 6,
+   "planter_buckwheat": 11,
+   "planter_sandleaf": 21,
+   "refinery_blue_iron": 34,
+   "refinery_steel": 17,
+   "seed_collector_buckwheat": 6,
+   "seed_collector_sandleaf": 11
+  },
+  "duty_x_over_n": {
+   "crusher_blue_iron": "1",
+   "crusher_buckwheat": "11/12",
+   "crusher_sandleaf": "21/22",
+   "crusher_source": "1",
+   "filling_capsule": "11/12",
+   "grinder_dense_blue_iron": "1",
+   "grinder_dense_source": "1",
+   "grinder_fine_buckwheat": "11/12",
+   "molding_bottle": "11/12",
+   "packaging_battery": "1",
+   "parts_maker": "1",
+   "planter_buckwheat": "1",
+   "planter_sandleaf": "1",
+   "refinery_blue_iron": "1",
+   "refinery_steel": "1",
+   "seed_collector_buckwheat": "11/12",
+   "seed_collector_sandleaf": "21/22"
+  },
+  "duty_groups": {
+   "full_speed_machines": 170,
+   "duty_11_12_machines": 27,
+   "duty_21_22_machines": 22
+  },
+  "zero_residual_assertion": "内部商品 prod==cons 逐项断言通过（exact basis）",
+  "census_cross_check": "ceil(x_op) == mandatory 普查逐 op 相等（断言通过）"
+ },
+ "per_commodity_flow_at_pinned_target": {
+  "blue_iron_block": "1020",
+  "blue_iron_ore": "1020",
+  "blue_iron_powder": "1020",
+  "buckwheat": "330",
+  "buckwheat_powder": "330",
+  "buckwheat_seed": "330",
+  "dense_blue_iron_powder": "510",
+  "dense_source_powder": "270",
+  "fine_buckwheat_powder": "165",
+  "qiaoyu_capsule": "33/2",
+  "sandleaf": "630",
+  "sandleaf_powder": "945",
+  "sandleaf_seed": "630",
+  "source_ore": "540",
+  "source_powder": "540",
+  "steel_block": "510",
+  "steel_bottle": "165",
+  "steel_part": "180",
+  "valley_battery": "18"
+ },
+ "cross_check_flow_account": {
+  "flow_account_F_items_per_min": "9246",
+  "this_F_100": "9246",
+  "F_100_matches_flow_account": true,
+  "flow_account_F_balanced_display": "9084",
+  "this_F_balanced_exact": "290691/32",
+  "this_F_balanced_float": 9084.09375,
+  "F_balanced_matches_via_over_C": true,
+  "display_rounding_finding": "flow_account.json 的 '9084' 是 frac_str 4 位有效数字舍入；精确值 = 290691/32 = 9084.09375（经 F_balanced_over_C=302.803125 无损互证）。凡引用 9,084 处应知其为显示值。",
+  "note": "flow_account.json 走 IP faithful_mapping 配方；本脚本走 canonical 配方。两账相等 = 配方层互证（band22 faithful mapping 与 canonical 一致）。"
+ },
+ "derived_for_area_bound": {
+  "belt_capacity_items_per_min_per_cell_per_layer": "30",
+  "min_parallel_trunks_F_route": 305,
+  "route_cells_lb_single_layer_F_route": 305,
+  "route_cells_lb_double_layer_F_route": 153,
+  "route_cells_lb_single_layer_if_finals_included": 306,
+  "route_cells_lb_double_layer_if_finals_included": 153,
+  "caliber_cost_note": "扣无线终品使单层格位下界从 306 降到 305（差 1 格），双层不变（153）。这 1 格是口径保守性的全部代价。"
+ },
+ "facility_census_by_template": {
+  "boundary_storage_port": 46,
+  "manufacturing_3x3": 132,
+  "manufacturing_5x5": 49,
+  "manufacturing_6x4": 38,
+  "protocol_core": 1
+ }
+}

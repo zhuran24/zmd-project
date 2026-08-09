@@ -1,0 +1,101 @@
+=== 常数 ===
+tick=2s  belt_cap=1 件/tick = 30 件/分钟/格/层
+
+=== 表 A：逐商品聚合速率（钉死目标下的常数）===
+商品                      角色                        件/tick      件/分钟     最小车道
+blue_iron_block         internal                      34      1020       34
+blue_iron_ore           external_boundary             34      1020       34
+blue_iron_powder        internal                      34      1020       34
+buckwheat               internal                      11       330       11
+buckwheat_powder        internal                      11       330       11
+buckwheat_seed          internal                      11       330       11
+dense_blue_iron_powder  internal                      17       510       17
+dense_source_powder     internal                       9       270        9
+fine_buckwheat_powder   internal                    11/2       165        6
+qiaoyu_capsule          final_generic_input        11/20      33/2        1
+sandleaf                internal                      21       630       21
+sandleaf_powder         internal                    63/2       945       32
+sandleaf_seed           internal                      21       630       21
+source_ore              external_boundary             18       540       18
+source_powder           internal                      18       540       18
+steel_block             internal                      17       510       17
+steel_bottle            internal                    11/2       165        6
+steel_part              internal                       6       180        6
+valley_battery          final_generic_input          3/5        18        1
+
+F_target = 18339/2 件/分钟   F_route = 9135 件/分钟
+OB1 互证: F_route True / F_target True
+
+=== 表 B：逐端口车道分解（单机）===
+operation                 侧   商品                         台     占空     单机速率   槽/台      残道    总槽
+crusher_blue_iron         in  blue_iron_block           34      1        1     1       1    34
+crusher_blue_iron         out blue_iron_powder          34      1        1     1       1    34
+crusher_buckwheat         in  buckwheat                  6  11/12    11/12     1   11/12     6
+crusher_buckwheat         out buckwheat_powder           6  11/12     11/6     2     5/6    12
+crusher_sandleaf          in  sandleaf                  11  21/22    21/22     1   21/22    11
+crusher_sandleaf          out sandleaf_powder           11  21/22    63/22     3   19/22    33
+crusher_source            in  source_ore                18      1        1     1       1    18
+crusher_source            out source_powder             18      1        1     1       1    18
+filling_capsule           in  fine_buckwheat_powder      3  11/12     11/6     2     5/6     6
+filling_capsule           in  steel_bottle               3  11/12     11/6     2     5/6     6
+filling_capsule           out qiaoyu_capsule             3  11/12    11/60     1   11/60     3
+grinder_dense_blue_iron   in  blue_iron_powder          17      1        2     2       1    34
+grinder_dense_blue_iron   in  sandleaf_powder           17      1        1     1       1    17
+grinder_dense_blue_iron   out dense_blue_iron_powder    17      1        1     1       1    17
+grinder_dense_source      in  sandleaf_powder            9      1        1     1       1     9
+grinder_dense_source      in  source_powder              9      1        2     2       1    18
+grinder_dense_source      out dense_source_powder        9      1        1     1       1     9
+grinder_fine_buckwheat    in  buckwheat_powder           6  11/12     11/6     2     5/6    12
+grinder_fine_buckwheat    in  sandleaf_powder            6  11/12    11/12     1   11/12     6
+grinder_fine_buckwheat    out fine_buckwheat_powder      6  11/12    11/12     1   11/12     6
+molding_bottle            in  steel_block                6  11/12     11/6     2     5/6    12
+molding_bottle            out steel_bottle               6  11/12    11/12     1   11/12     6
+packaging_battery         in  dense_source_powder        3      1        3     3       1     9
+packaging_battery         in  steel_part                 3      1        2     2       1     6
+packaging_battery         out valley_battery             3      1      1/5     1     1/5     3
+parts_maker               in  steel_block                6      1        1     1       1     6
+parts_maker               out steel_part                 6      1        1     1       1     6
+planter_buckwheat         in  buckwheat_seed            11      1        1     1       1    11
+planter_buckwheat         out buckwheat                 11      1        1     1       1    11
+planter_sandleaf          in  sandleaf_seed             21      1        1     1       1    21
+planter_sandleaf          out sandleaf                  21      1        1     1       1    21
+refinery_blue_iron        in  blue_iron_ore             34      1        1     1       1    34
+refinery_blue_iron        out blue_iron_block           34      1        1     1       1    34
+refinery_steel            in  dense_blue_iron_powder    17      1        1     1       1    17
+refinery_steel            out steel_block               17      1        1     1       1    17
+seed_collector_buckwheat  in  buckwheat                  6  11/12    11/12     1   11/12     6
+seed_collector_buckwheat  out buckwheat_seed             6  11/12     11/6     2     5/6    12
+seed_collector_sandleaf   in  sandleaf                  11  21/22    21/22     1   21/22    11
+seed_collector_sandleaf   out sandleaf_seed             11  21/22    21/11     2   10/11    22
+端口槽合计 = 574
+
+=== 表 C：车道速率多重集 ===
+  速率  11/60  条数    3  商品 ['qiaoyu_capsule']
+  速率    1/5  条数    3  商品 ['valley_battery']
+  速率    5/6  条数   30  商品 ['buckwheat_powder', 'buckwheat_seed', 'fine_buckwheat_powder', 'steel_block', 'steel_bottle']
+  速率  19/22  条数   11  商品 ['sandleaf_powder']
+  速率  10/11  条数   11  商品 ['sandleaf_seed']
+  速率  11/12  条数   30  商品 ['buckwheat', 'fine_buckwheat_powder', 'sandleaf_powder', 'steel_bottle']
+  速率  21/22  条数   22  商品 ['sandleaf']
+  速率      1  条数  464  商品 ['blue_iron_block', 'blue_iron_ore', 'blue_iron_powder', 'buckwheat', 'buckwheat_powder', 'buckwheat_seed', 'dense_blue_iron_powder', 'dense_source_powder', 'fine_buckwheat_powder', 'sandleaf', 'sandleaf_powder', 'sandleaf_seed', 'source_ore', 'source_powder', 'steel_block', 'steel_bottle', 'steel_part']
+车道总数 = 574
+
+  两两共道合法（和 ≤ cap）的对：
+    11/60 + 11/60 = 11/30 ≤ 1   [仅终品=True]
+    11/60 + 1/5 = 23/60 ≤ 1   [仅终品=True]
+    1/5 + 1/5 = 2/5 ≤ 1   [仅终品=True]
+  涉及中间品的合法共道对 = 0 ⇒ 中间品逐道纯流强制 成立
+  终品全流合并 11/20 + 3/5 = 23/20  一格合法=False
+
+=== 表 D：全局最小车道数 ===
+  合计（全部 19 商品）= 308；扣终品 = 306
+  对照：逐端口槽数合计 = 574
+
+=== 表 E：行数量级 ===
+  格-层位 = 9800（70×70×2）
+  P1 纯度行上界 = 9800（系数全 1）
+  P2 终品容量行上界 = 9800，整数化公分母 = 20
+  P3 单商品流子问题 = 19 个
+  全部车道速率公分母 = 660
+
+receipt -> /home/zhuran24/zmd-pj/docs/research/p2_0_specialized_20260807/rate_table_receipt.json

@@ -1,0 +1,29 @@
+{
+  "metadata": {
+    "schema_version": "1.0.0",
+    "updated_at": "2026-04-17T03:57:20Z",
+    "source": "industrial_planner_single_base_delivery_viewer_index_v1"
+  },
+  "viewer_root": "data/examples/industrial_planner/viewers",
+  "current_release_id": "valley4_protocol_core_70x70_r20260416",
+  "viewer_count": 1,
+  "index_paths": {
+    "json": "data/examples/industrial_planner/viewers/viewer_index.json",
+    "markdown": "data/examples/industrial_planner/viewers/viewer_index.md"
+  },
+  "viewers": [
+    {
+      "release_id": "valley4_protocol_core_70x70_r20260416",
+      "base_id": "valley4_protocol_core",
+      "lot_size": 70,
+      "delivery_status": "ready_for_single_base_delivery",
+      "viewer_dir": "data/examples/industrial_planner/viewers/valley4_protocol_core_70x70_r20260416",
+      "index_html": "data/examples/industrial_planner/viewers/valley4_protocol_core_70x70_r20260416/index.html",
+      "viewer_manifest_json": "data/examples/industrial_planner/viewers/valley4_protocol_core_70x70_r20260416/release_viewer_manifest.json",
+      "generated_at": "2026-04-17T03:57:20Z",
+      "exact_full_scale_certified_status": "open",
+      "selected_facility_type_count": 4,
+      "selected_pose_count": 273
+    }
+  ]
+}

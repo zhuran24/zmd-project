@@ -1,0 +1,52 @@
+# Developer-search projection only. Git inventory, explicit-path replay, secret scans,
+# artifact-boundary checks, and full preflight do not use this file.
+
+# Historical source/executable trees.
+.artifacts/**
+paths/**
+third_party_snapshots/**
+scripts/phase3b/**
+scripts/run_phase3b_checkpoint_free_evaluator.py
+scripts/run_phase3b_checkpoint_free_overlay_timing_probe.py
+scripts/run_phase3b_local_tuning_profile.py
+src/tests/phase3b/**
+
+# Historical research prose remains searchable; only source/executable payloads are projected out.
+docs/research/**/*.py
+docs/research/**/*.pyi
+docs/research/**/*.sh
+docs/research/**/*.bash
+docs/research/**/*.zsh
+docs/research/**/*.ps1
+docs/research/**/*.psm1
+docs/research/**/*.ts
+docs/research/**/*.tsx
+docs/research/**/*.js
+docs/research/**/*.mjs
+docs/research/**/*.cjs
+docs/research/**/*.sql
+docs/research/**/*.lean
+docs/research/**/*.fzn
+docs/research/**/*.html
+docs/research/cleanroom_rederivation_20260718/14_r4_next_certificate_python_gpt_pro_verbatim.md
+
+# Explicit retirement candidates. They remain tracked and covered by all-repository gates.
+scripts/build_phase1_1_gpt_pro_review_v2.py
+scripts/build_phase1_1_gpt_pro_review_v3.py
+scripts/build_phase1_1_gpt_pro_review_v4.py
+scripts/build_phase1_1_gpt_pro_review_v5.py
+scripts/build_phase1_1_gpt_pro_review_v6.py
+scripts/build_phase1_1_gpt_pro_review_v7.py
+scripts/build_phase1_1_gpt_pro_review_v8.py
+scripts/build_phase1_2_entry_review_v9.py
+scripts/build_phase1_2_entry_review_v10.py
+scripts/build_phase1_2_entry_review_v11.py
+scripts/build_phase1_2_spike_review_v14.py
+scripts/build_phase1_2_spike_review_v15.py
+scripts/build_phase1_2_spike_review_v16.py
+scripts/build_phase1_2_spike_review_v17.py
+scripts/build_phase1_2_spike_review_v18.py
+scripts/build_phase1_2_spike_review_v19.py
+scripts/build_phase1_2_spike_review_v20.py
+scripts/build_phase1_2_spike_review_v21.py
+scripts/build_phase1_2_spike_review_v22.py

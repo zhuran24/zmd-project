@@ -1,0 +1,212 @@
+{
+  "metadata": {
+    "version": "0.1.0",
+    "generated_at": "2026-04-17T03:57:20Z",
+    "source_blueprint_version": "1.0.0"
+  },
+  "summary": {
+    "metadata": {
+      "version": "1.0.0",
+      "solve_time_seconds": 0.0,
+      "benders_iterations": 0,
+      "export_timestamp": "2026-03-30T12:00:00Z"
+    },
+    "layout": {
+      "facility_count": 273,
+      "occupied_cells": 3487,
+      "fill_ratio": 0.711633,
+      "ghost_rect": {
+        "w": 0,
+        "h": 0,
+        "anchor_x": 0,
+        "anchor_y": 0,
+        "score": 0.0
+      },
+      "facility_type_counts": [
+        {
+          "name": "manufacturing_3x3",
+          "count": 132
+        },
+        {
+          "name": "boundary_storage_port",
+          "count": 54
+        },
+        {
+          "name": "manufacturing_5x5",
+          "count": 49
+        },
+        {
+          "name": "manufacturing_6x4",
+          "count": 38
+        }
+      ],
+      "port_mode_counts": [
+        {
+          "name": "default",
+          "count": 273
+        }
+      ]
+    },
+    "ports": {
+      "total_active_ports": 530,
+      "input_ports": 259,
+      "output_ports": 271,
+      "commodities": [
+        {
+          "name": "blue_iron_block",
+          "count": 68
+        },
+        {
+          "name": "blue_iron_ore",
+          "count": 68
+        },
+        {
+          "name": "blue_iron_powder",
+          "count": 51
+        },
+        {
+          "name": "sandleaf",
+          "count": 43
+        },
+        {
+          "name": "sandleaf_powder",
+          "count": 43
+        },
+        {
+          "name": "source_ore",
+          "count": 36
+        },
+        {
+          "name": "dense_blue_iron_powder",
+          "count": 34
+        },
+        {
+          "name": "sandleaf_seed",
+          "count": 32
+        },
+        {
+          "name": "steel_block",
+          "count": 29
+        },
+        {
+          "name": "source_powder",
+          "count": 27
+        },
+        {
+          "name": "buckwheat",
+          "count": 23
+        },
+        {
+          "name": "buckwheat_seed",
+          "count": 17
+        },
+        {
+          "name": "buckwheat_powder",
+          "count": 12
+        },
+        {
+          "name": "dense_source_powder",
+          "count": 12
+        },
+        {
+          "name": "fine_buckwheat_powder",
+          "count": 9
+        },
+        {
+          "name": "steel_bottle",
+          "count": 9
+        },
+        {
+          "name": "steel_part",
+          "count": 9
+        },
+        {
+          "name": "qiaoyu_capsule",
+          "count": 4
+        },
+        {
+          "name": "valley_battery",
+          "count": 4
+        }
+      ]
+    },
+    "routing": {
+      "L0_ground": {
+        "cell_count": 0,
+        "components": [],
+        "commodities": []
+      },
+      "L1_elevated": {
+        "cell_count": 0,
+        "components": [],
+        "commodities": []
+      },
+      "total_cells": 0
+    },
+    "power": {
+      "coverage_cells": 0,
+      "pole_count": 0,
+      "needs_power_facilities": 219,
+      "covered_needs_power_facilities": 0
+    },
+    "debug": {
+      "source_blueprint_version": "1.0.0",
+      "resolved_pose_count": 273
+    }
+  },
+  "cards": [
+    {
+      "id": "layout",
+      "title": "Layout",
+      "primary": "273 facilities",
+      "secondary": "3487/4900 occupied · 71.2% fill"
+    },
+    {
+      "id": "ghost",
+      "title": "Ghost Rectangle",
+      "primary": "0×0 = 0",
+      "secondary": "anchor (0, 0)"
+    },
+    {
+      "id": "routing",
+      "title": "Routing",
+      "primary": "L0 0 cells · L1 0 cells",
+      "secondary": "total 0 routing cells"
+    },
+    {
+      "id": "ports",
+      "title": "Ports",
+      "primary": "530 active ports",
+      "secondary": "inputs 259 · outputs 271"
+    },
+    {
+      "id": "power",
+      "title": "Power",
+      "primary": "0 poles · 0 covered cells",
+      "secondary": "covered facilities 0/219"
+    }
+  ],
+  "warnings": [
+    "Some facilities marked as needing power are not covered by any selected power pole footprint.",
+    "Ghost rectangle score is zero; check whether the blueprint objective payload was populated."
+  ],
+  "viewer_defaults": {
+    "layers": {
+      "bodies": true,
+      "power": true,
+      "ghost": true,
+      "grid": true,
+      "routingGround": true,
+      "routingElevated": true,
+      "activePorts": true
+    },
+    "pan_zoom": {
+      "scale_mode": "fit_then_persist",
+      "persist_state": true
+    },
+    "cards": {
+      "expanded": true,
+      "warnings_expanded": true
+    }
+  }
+}

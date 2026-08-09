@@ -1,0 +1,36 @@
+{
+  "source_sha256": "295bfef9b2681193e3a9cc085c479a960f87de0131abfbdfacb676479bdb2aa5",
+  "manufacturing_counts": {
+    "3": 132,
+    "5": 49,
+    "6": 38
+  },
+  "manufacturing_body_cells": 3325,
+  "cycle_cells": 534,
+  "poles": 24,
+  "protected_rectangle": [
+    29,
+    28,
+    6,
+    7
+  ],
+  "minimum_tile_off_fixed_slack": 20,
+  "minimum_tile_attachment_window_cells": 2,
+  "checks": [
+    "grid",
+    "tile containment",
+    "template dimensions",
+    "manufacturing nonoverlap",
+    "fixed-body avoidance",
+    "cycle avoidance",
+    "protected-rectangle avoidance",
+    "pole-body avoidance",
+    "power coverage",
+    "global type counts",
+    "tile count ledger",
+    "two-cell attachment windows",
+    "minimum local slack",
+    "two eligible noncorner, non-boundary-source cycle attachment slots per manufacturing tile"
+  ],
+  "minimum_tile_eligible_noncorner_nonsource_attachment_slots": 2
+}

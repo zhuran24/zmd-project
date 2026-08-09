@@ -1,0 +1,235 @@
+{
+  "schema": "w0_g1_derived_theorems_v1",
+  "authority": {
+    "is_authoritative": false,
+    "carries_bound": false,
+    "ledger_effect": "none"
+  },
+  "line": "w0_front_aware_20260803",
+  "layers": [
+    "exact_semantics",
+    "necessary_projection",
+    "condition_required_cut",
+    "sufficient_restriction",
+    "heuristic"
+  ],
+  "layer_notes": {
+    "condition_required_cut": "Empty in G1 on purpose. This line is shadow-only and emits no learned cut to any master. The nogoods the generator adds inside a single target solve live and die inside that solve, are never exported and are never reused across antecedents, so the section 0b v2.3-3 antecedent discipline is not engaged. If a future stage does export a cut, it must be registered here with its antecedent.",
+    "necessary_projection": "This pole also admits equivalence transforms, not only the upper-bound relaxations section 0b v2.3-2 had in mind: T-ARCHETYPE-COLLAPSE is feasibility-equivalent and still filed here, because equivalence is stronger than necessity and therefore sound in this pole. Read the parenthetical on each entry before selecting by layer. T-CAPABILITY-BUCKET is not an equivalence -- see open_obligations O-FRONT-SIMULTANEITY."
+  },
+  "open_obligations": [
+    {
+      "id": "O-FRONT-SIMULTANEITY",
+      "statement": "Capability is computed per body. Nothing in the evaluator, the master, the expansion or the audit requires that all bodies of one pattern can take pairwise distinct active front cells at the same time, and 207 of the 258 CLEAN patterns in L0 union L1-dense have at least one free front cell shared by two or three bodies. The repository probably allows exactly this sharing -- src/models/routing_subproblem._duplicate_terminal_front_keys only blocks a repeated (front cell, terminal_dir, commodity, port_type) quadruple, and two bodies adjacent to one cell necessarily face it from opposite directions -- but that argument is not a proof. Since 2026-08-04 the G1 gate carries a per-run discharge check (run_g1.check_front_simultaneity) and clause six makes PASS unreachable while this obligation is open; the obligation stays registered because the check discharges one geometry at a time, which is not the same as proving the assumption away.",
+      "affects": ["T-CAPABILITY-BUCKET", "R-PAT-CONN"],
+      "effect_on_this_batch": "none: the model is more permissive than the real rule, so an INFEASIBLE under it is the stronger statement",
+      "must_close_before": "any G1 PASS",
+      "closure_options": [
+        "per run: exhibit a system of distinct representatives over the run's own geometry -- implemented as run_g1.check_front_simultaneity, wired into gate clause six (open_obligations_discharged), fail-closed",
+        "once and for all: prove the sharing-is-legal argument against the repository and register it as a theorem here",
+        "or make it structural: add a distinct-representatives check to g1_pattern_evaluator.evaluate_pattern so no pattern without a witness can enter a catalog"
+      ]
+    }
+  ],
+  "theorems": [
+    {
+      "id": "T-FRONT-IDENTITY",
+      "layer": "exact_semantics",
+      "statement": "A port's front cell is the first cell outside the body. The retired front = port + delta formula (second cell outside) is the 07-18 P0 incident and appears nowhere.",
+      "gates": ["G1", "G2", "G3"],
+      "code_anchor": "g1_pattern_evaluator.PORT_FRONT_IDENTITY",
+      "stage": "A",
+      "source": "owner ruling 2026-07-18; src/placement/placement_generator.get_port_front_cell"
+    },
+    {
+      "id": "T-PORT-SLOTS",
+      "layer": "exact_semantics",
+      "statement": "Per-side demand is r = sum over commodities of ceil(amount / ticks_per_cycle / belt_capacity_per_tick), derived on the spot from the frozen canonical rules and cross-checked against src.models.port_binding.routing_visible_port_demands.",
+      "gates": ["G1", "G3"],
+      "code_anchor": "g1_port_semantics.CLASS_TABLE",
+      "stage": "A",
+      "source": "src/preprocess/operation_profiles._rate_to_slots; corrects document 19 step 4's kind-count characterisation of repo semantics"
+    },
+    {
+      "id": "T-FRONT-FREE",
+      "layer": "exact_semantics",
+      "statement": "An active front must be in grid and covered by no facility body.",
+      "gates": ["G1", "G3"],
+      "code_anchor": "g1_pattern_evaluator.is_front_usable",
+      "stage": "A",
+      "source": "src/models/port_binding._enumerate_side_binding_patterns"
+    },
+    {
+      "id": "T-DEAD-BODY",
+      "layer": "necessary_projection",
+      "statement": "If no mode of a placed body offers r_in free front cells on one side and r_out on the opposite side, that body can serve class k under no routing plan, commodity binding or class assignment whatsoever.",
+      "gates": ["G1"],
+      "code_anchor": "g1_pattern_evaluator.dead_for_any_actual_class",
+      "stage": "A",
+      "source": "document 19's death sentence, recomputed; G1's hard indicator is that this count is zero"
+    },
+    {
+      "id": "T-CAPABILITY-BUCKET",
+      "layer": "necessary_projection",
+      "statement": "A body's servable class set is determined by cap = max over side pairs with both sides non-empty of max(n_X, n_Y). Bucketing is lossless with respect to that per-body quantity, so assigning classes to buckets is equivalent to assigning them to bodies -- but the quantity itself is computed per body with no cross-body simultaneity check, which makes the abstraction a relaxation of the real rule rather than an equivalence (open obligation O-FRONT-SIMULTANEITY). Eight buckets are reachable, not eleven, because a square's mode set is closed under swapping a pair's two sides.",
+      "gates": ["G1"],
+      "code_anchor": "g1_port_semantics.BUCKET_SERVABLE",
+      "stage": "A",
+      "source": "derived; corrects the blueprint's independent (o, i) parameterisation"
+    },
+    {
+      "id": "T-ARCHETYPE-COLLAPSE",
+      "layer": "necessary_projection",
+      "statement": "For regions sharing a catalog, the counting form (how many regions take pattern p) and the per-region boolean form are feasibility-equivalent.",
+      "gates": ["G1"],
+      "code_anchor": "g1_exact_cover_master.COLLAPSE_EQUIVALENCE",
+      "stage": "B",
+      "source": "blueprint section 5.1; stage B must supply the cross-check test"
+    },
+    {
+      "id": "T-EMPTY-PATTERN",
+      "layer": "exact_semantics",
+      "statement": "A region holding no body, no pole and no hole is a legal pattern of every region class. The stage A generator never emits it because every menu target asks for at least one body, so the master's catalog loader synthesises it and puts it through the ordinary evaluator before admitting it. Without it the CORE region -- which provably holds no manufacturing body -- would have nothing to take and the master would report INFEASIBLE for a bookkeeping reason.",
+      "gates": ["G1"],
+      "code_anchor": "g1_exact_cover_master.EMPTY_PATTERN",
+      "stage": "B",
+      "source": "this line; the CORE catalog is empty and complete, not truncated"
+    },
+    {
+      "id": "T-SUPPLY-CEILING",
+      "layer": "necessary_projection",
+      "statement": "Every region takes exactly one pattern, so for any bucket the board can hold at most the sum over region classes of (that class's richest pattern in that bucket) times its multiplicity. The same argument bounds the total body count and each template family. Each ceiling over-counts, because it picks every region class's best pattern independently; a ceiling below the census therefore proves the catalog cannot cover it, while a ceiling above the census excludes nothing.",
+      "gates": ["G1"],
+      "code_anchor": "g1_exact_cover_master.bucket_supply_ceiling",
+      "stage": "B",
+      "source": "blueprint section 11 item 4; solver-free, runs before the master"
+    },
+    {
+      "id": "T-POLE-MINIMAL",
+      "layer": "sufficient_restriction",
+      "statement": "An inclusion-minimal covering pole set satisfies the repository power-irredundancy predicate: every pole is some instance's sole coverer and those instances are pairwise distinct, hence poles <= powered instances.",
+      "gates": ["G1", "G3"],
+      "code_anchor": "g1_pattern_evaluator.minimize_poles",
+      "stage": "A",
+      "source": "proved against src/search/pr2_l0_artifact_core.py:1030-1041"
+    },
+    {
+      "id": "R-BODY-IN-REGION",
+      "layer": "sufficient_restriction",
+      "statement": "Every decision body lies wholly inside one 14x14 region.",
+      "gates": ["G1"],
+      "code_anchor": "g1_region_model.BODY_IN_REGION",
+      "stage": "A",
+      "source": "W0 framework manufacturing_containment, extended to poles"
+    },
+    {
+      "id": "R-FRONT-IN-REGION",
+      "layer": "sufficient_restriction",
+      "statement": "Every active front lies in the same region as its body, which removes all cross-region front coupling and every seam variable from the master.",
+      "gates": ["G1"],
+      "code_anchor": "g1_region_model.FRONT_IN_REGION",
+      "stage": "A",
+      "source": "this line"
+    },
+    {
+      "id": "R-PORTAL-FIXED",
+      "layer": "sufficient_restriction",
+      "statement": "Every region edge reserves two body-free portal stubs at fixed local coordinates; neighbouring stubs are 4-adjacent across each seam, so per-pattern connectivity composes into board-wide free-space connectivity with zero master constraints.",
+      "gates": ["G1", "G2"],
+      "code_anchor": "g1_region_model.PORTAL_STUBS",
+      "stage": "A",
+      "source": "this line"
+    },
+    {
+      "id": "R-PAT-CONN",
+      "layer": "sufficient_restriction",
+      "statement": "Every live portal stub, every reserved fixed-furniture front, every active front and every hole cell of one pattern lie in ONE 4-connected free component.",
+      "gates": ["G1", "G2"],
+      "code_anchor": "g1_pattern_evaluator.portal_component",
+      "stage": "A",
+      "source": "this line",
+      "note": "CONVERGED 2026-08-04 (fix-and-rerun batch). History: the 2026-08-04 review found the anchor returning the UNION of all stub-bearing components (multi-source BFS), so the shipped check in evaluate_pattern implemented a reading weaker than this statement (855/2593 shipped patterns had multiple stub-bearing components); strengthening only deletes columns, so the G1 INFEASIBLE results stand. The anchor now floods from a single canonical root (g1_pattern_evaluator.component_root) and the generator carries the same restriction as a single-source flow certificate inside its CP-SAT model, so no consumer can see the union reading any more. See CONSULT_VERDICT_20260804.md and 00_charter.md section 6."
+    },
+    {
+      "id": "R-POWER-LOCAL",
+      "layer": "sufficient_restriction",
+      "statement": "A region's own poles cover all of that region's machines; no machine relies on a neighbour's pole. Fixed furniture is exempt because the frozen rules mark boundary ports and the protocol core needs_power=false.",
+      "gates": ["G1"],
+      "code_anchor": "g1_pattern_evaluator.power_local_ok",
+      "stage": "A",
+      "source": "this line; needs_power read from rules/canonical_rules.json"
+    },
+    {
+      "id": "R-HOLE-IN-REGION",
+      "layer": "sufficient_restriction",
+      "statement": "The candidate empty rectangle is 6x7 or 7x6, does not straddle a seam, touches no facility body and lies inside the portal component so it doubles as corridor.",
+      "gates": ["G1"],
+      "code_anchor": "g1_pattern_schema.HoleSpec",
+      "stage": "A",
+      "source": "document 17 section 3"
+    },
+    {
+      "id": "R-CORE-FRONT-RESERVE",
+      "layer": "sufficient_restriction",
+      "statement": "All 66 fixed-furniture front cells (46 boundary + 20 core) stay body-free. Stronger than the true requirement, which only needs two generic inputs served on the core, and deliberately so: a constant mask is free for the master.",
+      "gates": ["G1"],
+      "code_anchor": "g1_region_model.RESERVED_FRONTS",
+      "stage": "A",
+      "source": "this line"
+    },
+    {
+      "id": "R-BOUNDARY-LAYOUT",
+      "layer": "sufficient_restriction",
+      "statement": "The 23+23 zero-gap boundary storage ports and the protocol core at (3,59) orientation 1 are inherited unchanged from the W0 framework and are not decisions.",
+      "gates": ["G1"],
+      "code_anchor": "g1_region_model.FIXED_FURNITURE",
+      "stage": "A",
+      "source": "15_w0_recon_artifacts/W0_power_cycle_domino_framework_v1.json"
+    },
+    {
+      "id": "T-SCC-UNIVERSAL",
+      "layer": "sufficient_restriction",
+      "statement": "A single directed strongly connected network carrying all 19 commodities on every lane satisfies predicate 5, because the rules allow mixed lanes and impose no capacity.",
+      "gates": ["G2"],
+      "code_anchor": null,
+      "stage": "G2",
+      "source": "document 17 section 4; registered here, implemented in the G2 batch"
+    },
+    {
+      "id": "H-TARGET-MENU",
+      "layer": "heuristic",
+      "statement": "Count vectors that fit the region's free budget, crossed with a cheapest/richest capability profile and the hole flag, ordered by distance from the region's proportional share of the 132/49/38 census so a budget cut leaves a reproducible centre-band prefix.",
+      "gates": ["G1"],
+      "code_anchor": "g1_pattern_generator.TARGET_MENU",
+      "stage": "A",
+      "source": "this line"
+    },
+    {
+      "id": "H-GEN-OBJECTIVE",
+      "layer": "heuristic",
+      "statement": "Minimise occupied cells. With body counts fixed by the target this minimises pole cells and maximises corridor. The blueprint's free-front proxy objective is superseded: the front requirement is a constraint now, which is where a cheap necessary condition belongs.",
+      "gates": ["G1"],
+      "code_anchor": "g1_pattern_generator.FRONT_PROXY_OBJECTIVE",
+      "stage": "A",
+      "source": "this line"
+    },
+    {
+      "id": "H-SPINE-LANE",
+      "layer": "heuristic",
+      "statement": "A row-6 / column-6 corridor preference, measured and then switched off (weight 0). Hard lane: the whole centre band turns infeasible. Soft lane weight 3: 51 valid signatures, best valid body area 118. Off: 82 signatures, best 134.",
+      "gates": ["G1"],
+      "code_anchor": "g1_pattern_generator.SPINE_LANE",
+      "stage": "A",
+      "source": "this line, A/B measured on CLEAN over 40 centre-band targets"
+    },
+    {
+      "id": "H-DERIVED-SUBSETS",
+      "layer": "heuristic",
+      "statement": "Strip dead bodies and drop one body at a time to derive smaller legal patterns for free; removing a body only frees cells, so survivors' capability can only rise and is recomputed anyway.",
+      "gates": ["G1"],
+      "code_anchor": "g1_pattern_generator.derive_subsets",
+      "stage": "A",
+      "source": "blueprint section 4.3"
+    }
+  ]
+}

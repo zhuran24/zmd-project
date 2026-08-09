@@ -1,0 +1,58 @@
+From 71118964fb68720ecc8e51ca3b76ee4fb789b2be Mon Sep 17 00:00:00 2001
+From: Cut Framework Review <review@example.invalid>
+Date: Thu, 9 Jul 2026 22:39:56 +0000
+Subject: [PATCH 3/4] cuts: require complete artifact scope snapshots
+
+---
+ src/cuts/lifecycle.py            | 11 +++++++----
+ src/tests/cuts/test_lifecycle.py | 15 +++++++++++++++
+ 2 files changed, 22 insertions(+), 4 deletions(-)
+
+diff --git a/src/cuts/lifecycle.py b/src/cuts/lifecycle.py
+index f860dc1..b369beb 100644
+--- a/src/cuts/lifecycle.py
++++ b/src/cuts/lifecycle.py
+@@ -968,10 +968,13 @@ def step_6_attach_scope_check(cut: Cut, state: BState) -> AttachDecision:
+         if cut.scope.blocked_cells_hash != compute_blocked_cells_hash(state):
+             return "QUARANTINE"
+ 
+-    # Step 4: artifact_hashes
+-    for fname, h in cut.scope.artifact_hashes.items():
+-        if state.artifact_hashes.get(fname) != h:
+-            return "QUARANTINE"
++    # Step 4: artifact_hashes.  Equality is intentional for schema v1: every
++    # production generator snapshots the complete authoritative artifact map.
++    # A subset check lets a Byzantine/tampered cut omit the exact dependency
++    # whose drift should invalidate it (for example the F5 orbit-homogeneity
++    # digest) and still attach.
++    if cut.scope.artifact_hashes != state.artifact_hashes:
++        return "QUARANTINE"
+ 
+     # Step 5: oracle version
+     if cut.scope.oracle_abstraction_version not in state.available_oracle_versions:
+diff --git a/src/tests/cuts/test_lifecycle.py b/src/tests/cuts/test_lifecycle.py
+index ee95b03..3728f2e 100644
+--- a/src/tests/cuts/test_lifecycle.py
++++ b/src/tests/cuts/test_lifecycle.py
+@@ -822,3 +822,18 @@ def test_cut_post_init_rejects_non_cut_scope_object():
+             scope={"ghost_rect_id": "not-a-cut-scope"},
+             cert=OracleCert(cert_kind="k", cert_payload=b"{}", cert_hash="h"),
+         )
++
++
++def test_scope_rejects_omitted_artifact_dependency() -> None:
++    """A cut cannot opt out of a replay dependency by deleting its hash key."""
++    from dataclasses import replace
++
++    state = make_state_with_crusher_on_left_baseline()
++    cut = step_1_generate_region_capacity_combinatorial(
++        state, "left_baseline", "boundary_storage_port", CANONICAL_RULES
++    )
++    assert cut is not None
++    assert cut.scope is not None
++    assert cut.scope.artifact_hashes == state.artifact_hashes
++    omitted = replace(cut, scope=replace(cut.scope, artifact_hashes={}))
++    assert step_6_attach_scope_check(omitted, state) == "QUARANTINE"
+-- 
+2.47.3
+

@@ -1,0 +1,8 @@
+ASSUMPTIONS: adjacent 4+4 core; one riser/slit per band; corridor rows reserved; poles wholly inside manufacturing bands
+LEMMA_CHECKED: M_w(f) <= K_w floor(f/2), w in {3,5,6}, f=2..68
+4_BAND_STATES: 10 Q4 [10] min_R4 13
+MODEL_A: endpoint/internal-good/internal-bad checked
+MODEL_B: a=1 good width63; other good width62; bad width62 checked
+EQUALITY_CASES: {'A_endpoint': 6, 'B_a1': 12, 'B_other_good': 6}
+EQUALITY_ESCAPE_REJECTED: two boundary q=0 positions are needed, but only one non-3 band has q=0 and no q=5 can support a boundary 3-band
+RESULT: every Model A and Model B hole position/residue is impossible under the stated scope

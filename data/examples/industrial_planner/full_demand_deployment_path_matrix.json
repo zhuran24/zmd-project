@@ -1,0 +1,240 @@
+{
+  "summary": {
+    "total_base_count": 1,
+    "audited_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "future_scope_base_count": 5,
+    "future_scope_base_ids": [
+      "valley4_infra_outpost",
+      "valley4_rebuilt_command",
+      "valley4_refugee_shelter",
+      "wuling_protocol_core",
+      "wuling_tianwangping_aid"
+    ],
+    "canonical_path_proven_equivalent_base_count": 1,
+    "canonical_path_proven_equivalent_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "best_available_proven_equivalent_base_count": 1,
+    "best_available_proven_equivalent_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "additional_bases_unlocked_by_outer_path_base_count": 0,
+    "additional_bases_unlocked_by_outer_path_base_ids": [],
+    "best_available_canonical_contract_ceiling_base_count": 0,
+    "best_available_canonical_contract_ceiling_base_ids": [],
+    "outer_path_attempted_base_count": 0,
+    "outer_path_not_applicable_base_count": 1,
+    "future_scope_outer_path_base_count": 1,
+    "smaller_than_canonical_contract_base_count": 0,
+    "equal_to_canonical_contract_base_count": 1,
+    "larger_than_canonical_contract_base_count": 0,
+    "manufacturing_area_shortfall_base_count": 0,
+    "best_available_path_counts": {
+      "canonical_contract": 1
+    },
+    "best_available_blocking_classification_counts": {}
+  },
+  "scope": {
+    "scope_mode": "default_contract_scope",
+    "scope_statement": "The current certified IndustrialPlanner support contract is intentionally narrowed to `valley4_protocol_core` (70×70) only. Other known bases are preserved as `future_scope` for later work and are excluded from the active audit / CI gate.",
+    "active_contract_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "audited_base_ids": [
+      "valley4_protocol_core"
+    ],
+    "known_base_count": 6,
+    "future_scope_base_count": 5,
+    "future_scope_base_ids": [
+      "valley4_infra_outpost",
+      "valley4_rebuilt_command",
+      "valley4_refugee_shelter",
+      "wuling_protocol_core",
+      "wuling_tianwangping_aid"
+    ],
+    "future_scope_base_groups": [
+      {
+        "group_id": "valley4_40x40_subbases",
+        "label": "valley4 40×40 sub-bases",
+        "base_ids": [
+          "valley4_infra_outpost",
+          "valley4_rebuilt_command",
+          "valley4_refugee_shelter"
+        ],
+        "count": 3,
+        "placeable_sizes": [
+          40
+        ],
+        "summary_note": "These three 40×40 valley4 sub-bases share the same current contract status, so the active reports collapse them into one preserved future-scope group."
+      },
+      {
+        "group_id": "wuling_50x50_aid_base",
+        "label": "wuling 50×50 aid base",
+        "base_ids": [
+          "wuling_tianwangping_aid"
+        ],
+        "count": 1,
+        "placeable_sizes": [
+          50
+        ],
+        "summary_note": "Smaller wuling aid base retained as future-scope only."
+      },
+      {
+        "group_id": "wuling_80x80_protocol_core",
+        "label": "wuling 80×80 protocol core",
+        "base_ids": [
+          "wuling_protocol_core"
+        ],
+        "count": 1,
+        "placeable_sizes": [
+          80
+        ],
+        "summary_note": "Larger wuling protocol-core outer-deployment work is frozen as future-scope."
+      }
+    ],
+    "future_scope_bases": [
+      {
+        "base_id": "valley4_infra_outpost",
+        "name": "基建前站",
+        "placeable_size": 40,
+        "tags": [
+          "四号谷地"
+        ],
+        "scope_status": "future_scope",
+        "reason": "40×40 valley4 sub-base reserved for a separate future plan."
+      },
+      {
+        "base_id": "valley4_rebuilt_command",
+        "name": "重建指挥部",
+        "placeable_size": 40,
+        "tags": [
+          "四号谷地"
+        ],
+        "scope_status": "future_scope",
+        "reason": "40×40 valley4 sub-base reserved for a separate future plan."
+      },
+      {
+        "base_id": "valley4_refugee_shelter",
+        "name": "难民暂居处",
+        "placeable_size": 40,
+        "tags": [
+          "四号谷地"
+        ],
+        "scope_status": "future_scope",
+        "reason": "40×40 valley4 sub-base reserved for a separate future plan."
+      },
+      {
+        "base_id": "wuling_protocol_core",
+        "name": "协议核心区",
+        "placeable_size": 80,
+        "tags": [
+          "武陵"
+        ],
+        "scope_status": "future_scope",
+        "reason": "80×80 wuling protocol-core base belongs to a different region/production system and stays future-scope."
+      },
+      {
+        "base_id": "wuling_tianwangping_aid",
+        "name": "天王坪援建点",
+        "placeable_size": 50,
+        "tags": [
+          "武陵"
+        ],
+        "scope_status": "future_scope",
+        "reason": "50×50 wuling aid base reserved for a separate future plan."
+      }
+    ]
+  },
+  "decision_signals": [
+    "1 audited base now reach `proven_equivalent` under active checked-in paths: 1 on the strict 70×70 canonical contract and 0 additional bases via evaluated outer deployment.",
+    "The companion outer-path column is currently preserved as `future_scope` for 1 audited base; active checked-in status therefore stays canonical-only.",
+    "0 audited bases remain blocked by manufacturing-area shortfall before boundary representation is even considered.",
+    "This deployment-path report stays postprocess-only: it preserves the companion outer-path column without widening canonical truth, campaign schema, or certified evidence."
+  ],
+  "entries": [
+    {
+      "base_id": "valley4_protocol_core",
+      "size_relation_to_canonical": "equal_to_canonical_contract",
+      "selected_base_placeable_size": 70,
+      "lot_area_cells": 4900,
+      "canonical_grid_size": 70,
+      "foundation_bus_edges": [
+        "left",
+        "top"
+      ],
+      "required_recipe_facility_count": 219,
+      "required_recipe_area_cells": 3325,
+      "manufacturing_area_headroom_cells": 1575,
+      "required_boundary_output_slots": 52,
+      "required_boundary_input_slots": 2,
+      "canonical_path": {
+        "base_id": "valley4_protocol_core",
+        "planner_status": "proven_equivalent",
+        "size_relation_to_canonical": "equal_to_canonical_contract",
+        "selected_base_placeable_size": 70,
+        "lot_area_cells": 4900,
+        "canonical_grid_size": 70,
+        "foundation_bus_edges": [
+          "left",
+          "top"
+        ],
+        "required_recipe_facility_count": 219,
+        "required_recipe_area_cells": 3325,
+        "manufacturing_area_headroom_cells": 1575,
+        "required_boundary_output_slots": 52,
+        "required_boundary_input_slots": 2,
+        "throughput_status": "proven_equivalent",
+        "validator_import_compatible": true,
+        "validator_layout_healthy": true,
+        "selected_input_slots": [
+          63,
+          66
+        ],
+        "selected_output_edge_counts": {
+          "top": 18,
+          "left": 20,
+          "bottom": 12,
+          "right": 2
+        },
+        "validation_probe_count": 78,
+        "blocking_classification": null,
+        "error_message": null,
+        "notes": [
+          "boundary slot selection is derived from the current generic I/O artifact plus exporter+validator feedback",
+          "the deterministic manufacturing row packing is still the checked-in 70x70 full-demand slice"
+        ],
+        "warnings": []
+      },
+      "outer_path": {
+        "applicable": false,
+        "path_status": "future_scope",
+        "applicability_reason": "outer_deployment_deactivated_from_active_contract",
+        "planning_status": null,
+        "probe_status": null,
+        "throughput_status": null,
+        "validator_import_compatible": null,
+        "validator_layout_healthy": null,
+        "blocking_classification": null,
+        "error_message": null,
+        "inner_island_origin": null,
+        "boundary_assignment_count": 0,
+        "connector_reservation_count": 0,
+        "witness_reservation_count": 0,
+        "export_mapping_count": 0,
+        "notes": [
+          "outer deployment is preserved as future_scope and excluded from the active single-base contract / CI gate"
+        ],
+        "warnings": []
+      },
+      "best_available_path_id": "canonical_contract",
+      "best_available_status": "proven_equivalent",
+      "best_available_throughput_status": "proven_equivalent",
+      "best_available_validator_import_compatible": true,
+      "best_available_validator_layout_healthy": true,
+      "best_available_blocking_classification": null,
+      "unlocked_by_outer_path": false
+    }
+  ]
+}

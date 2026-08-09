@@ -1,0 +1,20 @@
+blue_iron_block          产道 34 耗道 34  OPTIMAL      split_free=True
+blue_iron_ore            产道 34 耗道 34  OPTIMAL      split_free=True
+blue_iron_powder         产道 34 耗道 34  OPTIMAL      split_free=True
+buckwheat_powder         产道 12 耗道 12  OPTIMAL      split_free=True
+buckwheat_seed           产道 12 耗道 11  INFEASIBLE   split_free=False
+dense_blue_iron_powder   产道 17 耗道 17  OPTIMAL      split_free=True
+dense_source_powder      产道  9 耗道  9  OPTIMAL      split_free=True
+fine_buckwheat_powder    产道  6 耗道  6  OPTIMAL      split_free=True
+qiaoyu_capsule           产道  3 耗道  1  OPTIMAL      split_free=True
+sandleaf_powder          产道 33 耗道 32  INFEASIBLE   split_free=False
+sandleaf_seed            产道 22 耗道 21  INFEASIBLE   split_free=False
+source_ore               产道 18 耗道 18  OPTIMAL      split_free=True
+source_powder            产道 18 耗道 18  OPTIMAL      split_free=True
+steel_bottle             产道  6 耗道  6  OPTIMAL      split_free=True
+steel_part               产道  6 耗道  6  OPTIMAL      split_free=True
+valley_battery           产道  3 耗道  1  OPTIMAL      split_free=True
+
+必然分流的商品（6）: ['buckwheat', 'buckwheat_seed', 'sandleaf', 'sandleaf_powder', 'sandleaf_seed', 'steel_block']
+未判定: []
+receipt -> /home/zhuran24/zmd-pj/docs/research/p2_0_specialized_20260807/split_free_probe_receipt.json

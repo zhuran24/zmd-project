@@ -1,0 +1,57 @@
+{
+  "$schema": "./preprocess_plan.schema.json",
+  "metadata": {
+    "version": "0.2.0",
+    "description": "Additive preprocess overlay for cycle groups, utility operations, and optional future overrides after canonical rules consolidation."
+  },
+  "cycle_groups": {
+    "buckwheat_cycle": {
+      "recipes": [
+        "planter_buckwheat",
+        "seed_collector_buckwheat"
+      ],
+      "internal_commodities": [
+        "buckwheat",
+        "buckwheat_seed"
+      ],
+      "net_export_commodities": [
+        "buckwheat"
+      ]
+    },
+    "sandleaf_cycle": {
+      "recipes": [
+        "planter_sandleaf",
+        "seed_collector_sandleaf"
+      ],
+      "internal_commodities": [
+        "sandleaf",
+        "sandleaf_seed"
+      ],
+      "net_export_commodities": [
+        "sandleaf"
+      ]
+    }
+  },
+  "utility_operations": {
+    "protocol_core": {
+      "facility_type": "protocol_core",
+      "generic_input_slots": 14,
+      "generic_output_slots": 6
+    },
+    "boundary_io": {
+      "facility_type": "boundary_storage_port",
+      "generic_input_slots": 0,
+      "generic_output_slots": 1
+    },
+    "power_supply": {
+      "facility_type": "power_pole",
+      "generic_input_slots": 0,
+      "generic_output_slots": 0
+    },
+    "box_sink": {
+      "facility_type": "protocol_storage_box",
+      "generic_input_slots": 3,
+      "generic_output_slots": 0
+    }
+  }
+}

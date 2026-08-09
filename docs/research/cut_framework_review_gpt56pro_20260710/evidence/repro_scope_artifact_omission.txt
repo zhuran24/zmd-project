@@ -1,0 +1,1 @@
+{'state_artifacts': {'canonical_rules.json': 'h1'}, 'cut_artifacts': {}, 'decision': 'ATTACH'}

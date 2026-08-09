@@ -1,0 +1,118 @@
+{
+  "schema": "w0_rstar_pricetag_slack_rows_patch_v1",
+  "target": "03_slack_audit_table.md",
+  "operation": "append_unique_by_账",
+  "authority": false,
+  "ledger_effect": "none",
+  "unconditional_rows": [
+    {
+      "账": "generic output 固定口前格",
+      "容量": 52,
+      "容量式": "46 boundary outputs + 6 core outputs",
+      "需求": 52,
+      "需求式": "blue_iron_ore 34 + source_ore 18",
+      "余量": 0,
+      "余量比": "0%",
+      "标记": "零余量榫眼",
+      "口径": "解空间需求侧常数；不是 G1 catalog 读数",
+      "证据等级": "【已证明】算术（冻结 H0）",
+      "基线哈希": {
+        "canonical_rules_sha256": "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
+        "mandatory_instances_sha256": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+      }
+    },
+    {
+      "账": "generic input 核心口前格",
+      "容量": 14,
+      "容量式": "protocol_core max_inputs=14",
+      "需求": 2,
+      "需求式": "qiaoyu_capsule 1 + valley_battery 1",
+      "余量": 12,
+      "余量比": "85.7%",
+      "口径": "解空间需求侧常数；具体哪 2 格由绑定层决定",
+      "证据等级": "【已证明】算术（冻结 H0）",
+      "基线哈希": {
+        "canonical_rules_sha256": "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
+        "mandatory_instances_sha256": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+      }
+    }
+  ],
+  "g1_conditional_rows": [
+    {
+      "账": "精确 54 个直接所需 fixed fronts 后的粗机身容量",
+      "容量": 4627,
+      "容量式": "4900 - 219 固定家具 body - 54 直接所需 front",
+      "需求": 3325,
+      "余量": 1302,
+      "余量比": "28.1%",
+      "条件": "H0 + R-BOUNDARY-LAYOUT；只扣直接所需 54 front，不扣杆、孔、portal、连通税",
+      "口径": "G1 条件粗面积账；不是 packing witness",
+      "证据等级": "【已证明】集合面积算术",
+      "基线哈希": {
+        "canonical_rules_sha256": "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
+        "mandatory_instances_sha256": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+      }
+    },
+    {
+      "账": "全 66 fixed fronts reserve 后的粗机身容量",
+      "容量": 4615,
+      "容量式": "4900 - 219 固定家具 body - 66 reserved fronts",
+      "需求": 3325,
+      "余量": 1290,
+      "余量比": "28.0%",
+      "相对精确54语义变化": "容量 -12，余量 -12",
+      "条件": "H0 + R-BOUNDARY-LAYOUT + R-CORE-FRONT-RESERVE；不扣杆、孔、portal、连通税",
+      "口径": "G1 条件粗面积账；不是 packing witness",
+      "证据等级": "【已证明】集合面积算术",
+      "基线哈希": {
+        "canonical_rules_sha256": "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
+        "mandatory_instances_sha256": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+      }
+    },
+    {
+      "账": "现行 fixed body/front/live-portal mask 后的制造机身容量",
+      "容量": 4435,
+      "容量式": "4900 - 219 fixed bodies - 66 fixed fronts - 180 live portal stubs",
+      "需求": 3325,
+      "余量": 1110,
+      "余量比": "25.0%",
+      "条件": "H0 + R-BOUNDARY-LAYOUT + R-CORE-FRONT-RESERVE + R-PORTAL-FIXED；三类 mask 无重复，见 06_geometry_constants.md region-class usable 合计",
+      "口径": "G1 条件粗面积账；不含杆、孔、packing/连通几何，不能推出 witness",
+      "证据等级": "【已证明】规范化 mask 合计",
+      "基线哈希": {
+        "canonical_rules_sha256": "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
+        "mandatory_instances_sha256": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+      }
+    },
+    {
+      "账": "现行 mask + 无条件杆数下界的粗占格账",
+      "容量": 4435,
+      "需求": 3361,
+      "需求式": "3325 制造机身 + 9×4 杆 body（P≥9）",
+      "余量": 1074,
+      "余量比": "24.2%",
+      "条件": "上一行前提 + P≥9 光环证书；不使用 R-POLE-CAP",
+      "口径": "G1 条件粗面积必要账；不是 packing witness",
+      "证据等级": "【已证明】证书 + 算术",
+      "基线哈希": {
+        "canonical_rules_sha256": "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
+        "mandatory_instances_sha256": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+      }
+    },
+    {
+      "账": "现行 mask + P≥9 + 一孔净新增自由格的粗账",
+      "容量": 4435,
+      "需求下界": 3399,
+      "需求式": "3325 + 9×4 + (42 - maxK)，且 spine=false 时可行非 CORE 类 maxK≤4，故 ≥3325+36+38=3399",
+      "余量上界": 1036,
+      "余量比上界": "23.4%",
+      "条件": "上一行前提 + 至少一个 6×7/7×6 孔 + R-HOLE-IN-REGION + spine=false；孔可复用 forced-free cells，故只计净新增至少 38 格",
+      "口径": "G1 条件粗面积必要账；上界读数不是可行 witness",
+      "证据等级": "【已证明】动态 maxK 常量 + 算术",
+      "基线哈希": {
+        "canonical_rules_sha256": "5012845367e2a0e0b51938cc36a18f46fcdc8daccfa34639f96a05a67dc12a05",
+        "mandatory_instances_sha256": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+      }
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "ghost_rect": [
+    6,
+    7
+  ],
+  "attach": "on",
+  "recipe": {
+    "master_branching": "fixed",
+    "probing_level": 3,
+    "symmetry_level": 3,
+    "workers": 6,
+    "max_iterations": 30
+  },
+  "run_tag": "batch_c_probe_11_6x7",
+  "session_build_seconds": 33.472,
+  "master_build_seconds": 16.318,
+  "ledger_segment": "/tmp/ce_ledger_fbtu4ggo/batch_c_probe_11_6x7/segment_cachyos-zr24-pid944748-009fc9f5d9c6_00000.jsonl",
+  "status": "UNKNOWN",
+  "has_solution": false,
+  "lbbd_wall_seconds": 1605.717,
+  "proof_summary": {
+    "mode": "certified_exact",
+    "benders_iterations": 1,
+    "master_status": "FEASIBLE",
+    "binding_status": "ALT_CAP_REACHED",
+    "routing_status": "PRECHECK_FRONT_BLOCKED",
+    "diagnostic_flow_status": "INFEASIBLE",
+    "enumerated_bindings": 1500,
+    "routing_attempts": 0,
+    "binding_alternative_cap": 1500,
+    "used_greedy_hint": true,
+    "greedy_hint_instances": 266,
+    "master_hinted_literals": 798,
+    "used_routing_core_reuse": true,
+    "routing_core_build_seconds": 0.0027446349995443597,
+    "routing_overlay_build_seconds": 0.0,
+    "binding_domain_cache_hits": 228,
+    "binding_domain_cache_misses": 18,
+    "routing_domain_cells": 0,
+    "routing_terminal_core_cells": 0,
+    "routing_state_space_vars": 0,
+    "routing_local_pattern_pruned_states": 0,
+    "fine_grained_exact_safe_cut_count": 0,
+    "binding_domain_empty_cut_count": 0,
+    "routing_front_blocked_cut_count": 0,
+    "routing_precheck_rejections": 1499
+  },
+  "coordinate_framework_cut_count": 0,
+  "cut_framework_attach_last": null,
+  "ledger_read": {
+    "status": "complete",
+    "events": 2,
+    "applied": 0,
+    "semantic_duplicates": 0,
+    "tail_hash": "d5bc7b469dcfac482d1328449cfd14e807aec689ec9cc834cb37effcc7d5cb5d"
+  }
+}

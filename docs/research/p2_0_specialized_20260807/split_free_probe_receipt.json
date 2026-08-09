@@ -1,0 +1,225 @@
+{
+ "artifact": "p2_0_specialized_split_free_probe",
+ "date": "2026-08-07",
+ "question": "前件 (ii)『最小车道分配』能否在整条网络上兑现（无次最小速率段）",
+ "method": "逐商品 CP-SAT：产道整条指派给耗道（允许合流、禁止分流），车道速率自由但口内守恒、每道 ≤ cap；INFEASIBLE = 必然分流",
+ "belt_capacity_per_tick": "1",
+ "per_commodity": {
+  "blue_iron_block": {
+   "producer_ports": 34,
+   "consumer_ports": 34,
+   "producer_lanes": 34,
+   "consumer_lanes": 34,
+   "total_rate_per_tick": "34",
+   "scale_D": 1,
+   "cpsat_status": "OPTIMAL",
+   "split_free_exists": true,
+   "witness_min_lane_rate": "1"
+  },
+  "blue_iron_ore": {
+   "producer_ports": 34,
+   "consumer_ports": 34,
+   "producer_lanes": 34,
+   "consumer_lanes": 34,
+   "total_rate_per_tick": "34",
+   "scale_D": 1,
+   "cpsat_status": "OPTIMAL",
+   "split_free_exists": true,
+   "witness_min_lane_rate": "1"
+  },
+  "blue_iron_powder": {
+   "producer_ports": 34,
+   "consumer_ports": 17,
+   "producer_lanes": 34,
+   "consumer_lanes": 34,
+   "total_rate_per_tick": "34",
+   "scale_D": 1,
+   "cpsat_status": "OPTIMAL",
+   "split_free_exists": true,
+   "witness_min_lane_rate": "1"
+  },
+  "buckwheat": {
+   "producer_ports": 11,
+   "consumer_ports": 12,
+   "producer_lanes": 11,
+   "consumer_lanes": 12,
+   "total_rate_per_tick": "11",
+   "scale_D": 12,
+   "split_free_exists": false,
+   "reason": "产道数 < 耗道数 ⇒ 鸽巢：至少一条产道要喂多条耗道 = 必然分流"
+  },
+  "buckwheat_powder": {
+   "producer_ports": 6,
+   "consumer_ports": 6,
+   "producer_lanes": 12,
+   "consumer_lanes": 12,
+   "total_rate_per_tick": "11",
+   "scale_D": 6,
+   "cpsat_status": "OPTIMAL",
+   "split_free_exists": true,
+   "witness_min_lane_rate": "5/6"
+  },
+  "buckwheat_seed": {
+   "producer_ports": 6,
+   "consumer_ports": 11,
+   "producer_lanes": 12,
+   "consumer_lanes": 11,
+   "total_rate_per_tick": "11",
+   "scale_D": 6,
+   "cpsat_status": "INFEASIBLE",
+   "split_free_exists": false,
+   "reason": "CP-SAT 证明无解：任何最小车道分配下都必然出现分流"
+  },
+  "dense_blue_iron_powder": {
+   "producer_ports": 17,
+   "consumer_ports": 17,
+   "producer_lanes": 17,
+   "consumer_lanes": 17,
+   "total_rate_per_tick": "17",
+   "scale_D": 1,
+   "cpsat_status": "OPTIMAL",
+   "split_free_exists": true,
+   "witness_min_lane_rate": "1"
+  },
+  "dense_source_powder": {
+   "producer_ports": 9,
+   "consumer_ports": 3,
+   "producer_lanes": 9,
+   "consumer_lanes": 9,
+   "total_rate_per_tick": "9",
+   "scale_D": 1,
+   "cpsat_status": "OPTIMAL",
+   "split_free_exists": true,
+   "witness_min_lane_rate": "1"
+  },
+  "fine_buckwheat_powder": {
+   "producer_ports": 6,
+   "consumer_ports": 3,
+   "producer_lanes": 6,
+   "consumer_lanes": 6,
+   "total_rate_per_tick": "11/2",
+   "scale_D": 12,
+   "cpsat_status": "OPTIMAL",
+   "split_free_exists": true,
+   "witness_min_lane_rate": "11/12"
+  },
+  "qiaoyu_capsule": {
+   "producer_ports": 3,
+   "consumer_ports": 1,
+   "producer_lanes": 3,
+   "consumer_lanes": 1,
+   "total_rate_per_tick": "11/20",
+   "scale_D": 60,
+   "cpsat_status": "OPTIMAL",
+   "split_free_exists": true,
+   "witness_min_lane_rate": "11/60"
+  },
+  "sandleaf": {
+   "producer_ports": 21,
+   "consumer_ports": 22,
+   "producer_lanes": 21,
+   "consumer_lanes": 22,
+   "total_rate_per_tick": "21",
+   "scale_D": 22,
+   "split_free_exists": false,
+   "reason": "产道数 < 耗道数 ⇒ 鸽巢：至少一条产道要喂多条耗道 = 必然分流"
+  },
+  "sandleaf_powder": {
+   "producer_ports": 11,
+   "consumer_ports": 32,
+   "producer_lanes": 33,
+   "consumer_lanes": 32,
+   "total_rate_per_tick": "63/2",
+   "scale_D": 132,
+   "cpsat_status": "INFEASIBLE",
+   "split_free_exists": false,
+   "reason": "CP-SAT 证明无解：任何最小车道分配下都必然出现分流"
+  },
+  "sandleaf_seed": {
+   "producer_ports": 11,
+   "consumer_ports": 21,
+   "producer_lanes": 22,
+   "consumer_lanes": 21,
+   "total_rate_per_tick": "21",
+   "scale_D": 11,
+   "cpsat_status": "INFEASIBLE",
+   "split_free_exists": false,
+   "reason": "CP-SAT 证明无解：任何最小车道分配下都必然出现分流"
+  },
+  "source_ore": {
+   "producer_ports": 18,
+   "consumer_ports": 18,
+   "producer_lanes": 18,
+   "consumer_lanes": 18,
+   "total_rate_per_tick": "18",
+   "scale_D": 1,
+   "cpsat_status": "OPTIMAL",
+   "split_free_exists": true,
+   "witness_min_lane_rate": "1"
+  },
+  "source_powder": {
+   "producer_ports": 18,
+   "consumer_ports": 9,
+   "producer_lanes": 18,
+   "consumer_lanes": 18,
+   "total_rate_per_tick": "18",
+   "scale_D": 1,
+   "cpsat_status": "OPTIMAL",
+   "split_free_exists": true,
+   "witness_min_lane_rate": "1"
+  },
+  "steel_block": {
+   "producer_ports": 17,
+   "consumer_ports": 12,
+   "producer_lanes": 17,
+   "consumer_lanes": 18,
+   "total_rate_per_tick": "17",
+   "scale_D": 6,
+   "split_free_exists": false,
+   "reason": "产道数 < 耗道数 ⇒ 鸽巢：至少一条产道要喂多条耗道 = 必然分流"
+  },
+  "steel_bottle": {
+   "producer_ports": 6,
+   "consumer_ports": 3,
+   "producer_lanes": 6,
+   "consumer_lanes": 6,
+   "total_rate_per_tick": "11/2",
+   "scale_D": 12,
+   "cpsat_status": "OPTIMAL",
+   "split_free_exists": true,
+   "witness_min_lane_rate": "11/12"
+  },
+  "steel_part": {
+   "producer_ports": 6,
+   "consumer_ports": 3,
+   "producer_lanes": 6,
+   "consumer_lanes": 6,
+   "total_rate_per_tick": "6",
+   "scale_D": 1,
+   "cpsat_status": "OPTIMAL",
+   "split_free_exists": true,
+   "witness_min_lane_rate": "1"
+  },
+  "valley_battery": {
+   "producer_ports": 3,
+   "consumer_ports": 1,
+   "producer_lanes": 3,
+   "consumer_lanes": 1,
+   "total_rate_per_tick": "3/5",
+   "scale_D": 5,
+   "cpsat_status": "OPTIMAL",
+   "split_free_exists": true,
+   "witness_min_lane_rate": "1/5"
+  }
+ },
+ "commodities_forcing_split": [
+  "buckwheat",
+  "buckwheat_seed",
+  "sandleaf",
+  "sandleaf_powder",
+  "sandleaf_seed",
+  "steel_block"
+ ],
+ "undetermined": [],
+ "interpretation": "凡列入 commodities_forcing_split 的商品，在任何最小车道分配下都必然出现低于最小车道速率的细流段；canonical rate_lemma_scope 的纯流强制在这些细流段上不成立（细流 + 另一中间品的残道之和可以 ≤ 1）。⇒ 前件 (ii) 若只声明『车道条数最小』，不足以推出网络级纯流；要么把前件加强为『无次最小速率段』（但本探针显示该加强前件对这些商品不可满足，即前件族为空 = 该读法不可用），要么承认纯流强制只是**逐口局部**结论。"
+}

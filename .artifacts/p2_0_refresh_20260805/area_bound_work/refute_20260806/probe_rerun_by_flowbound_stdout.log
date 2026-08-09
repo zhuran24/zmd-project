@@ -1,0 +1,18 @@
+[Routing Model] build 0.0s
+[Routing Model] build 0.0s
+[Routing Model] build 0.0s
+=== front-state sharing refutation probe ===
+HEAD=eea45ae9b0d76bd66a11ba1316fce82f172639e9
+VERDICT=REFUTED
+canonical geometry:
+  planter_buckwheat: pose_idx=7793 pose_id=p_x30_y31_o0_m_LR bbox=[30, 31, 34, 35] target_port={'type': 'output', 'commodity': 'buckwheat', 'x': 35, 'y': 35, 'dir': 'E'}
+  crusher_buckwheat: pose_idx=8851 pose_id=p_x33_y36_o0_m_BT bbox=[33, 36, 35, 38] target_port={'type': 'input', 'commodity': 'buckwheat', 'x': 35, 'y': 35, 'dir': 'S'}
+  seed_collector_buckwheat: pose_idx=9086 pose_id=p_x35_y30_o0_m_TB bbox=[35, 30, 39, 34] target_port={'type': 'input', 'commodity': 'buckwheat', 'x': 35, 'y': 35, 'dir': 'N'}
+binding_status=FEASIBLE
+gadget=canonical_buckwheat_one_source_two_opposite_sinks status=FEASIBLE selected_states=1 type=splitter flow_in=['W'] flow_out=['N', 'S'] sources=1 sinks=2 connectivity_failures=0
+gadget=minimal_two_opposite_sources_one_sink status=FEASIBLE selected_states=1 type=merger flow_in=['E', 'W'] flow_out=['N'] sources=2 sinks=1 connectivity_failures=0
+gadget=dense_three_sources_one_sink status=FEASIBLE selected_states=1 type=merger flow_in=['S', 'E', 'W'] flow_out=['N'] sources=3 sinks=1 connectivity_failures=0
+buckwheat residual sink flows=['1/2', '1/2'] sum=1
+front bound: report=308 after explicit buckwheat+sandleaf splitters=306
+area fallback (holding other premises fixed): unconditional=1167 single_layer=1014
+receipt=/tmp/claude-1000/-home-zhuran24-zmd-pj/0e0796c6-a439-4e55-90af-d9b5b3e50a3d/scratchpad/refute_flowbound/front_lemma/front_state_sharing_receipt.json

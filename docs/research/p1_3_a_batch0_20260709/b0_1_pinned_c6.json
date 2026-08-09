@@ -1,0 +1,18 @@
+{
+ "mode": "pinned",
+ "encoding": "c6_pairwise_cover_v0_prototype",
+ "master_seconds": 300.0,
+ "workers": 1,
+ "core_build_seconds": 17.6,
+ "master_build_seconds": 19.7,
+ "power_coverage_encoding": "c6_pairwise_cover_v0_prototype",
+ "cover_literals": 582169,
+ "pinned": {
+  "status": "UNKNOWN",
+  "accepted": false,
+  "reason": "unknown",
+  "wall": 300.6,
+  "branches": 12115,
+  "conflicts": 1320
+ }
+}

@@ -1,0 +1,11 @@
+ortools
+pytest
+pytest-randomly
+pytest-xdist
+jsonschema
+pydantic>=2
+numpy
+matplotlib
+Pillow
+psutil
+PyYAML

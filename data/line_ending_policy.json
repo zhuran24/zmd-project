@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "description": "Small, safe LF policy for repo-native gates and hash-sensitive contracts. This intentionally avoids mass-renormalizing historical archive prose. 2026-08-09: .github/workflows/*.yml was dropped from required_lf_globs when .github/ was removed with the rest of the tooling surface — a required glob matching no files is itself an error, so the entry has to go back when CI is rebuilt.",
+  "required_lf_globs": [
+    ".gitattributes",
+    "data/external_artifacts.json",
+    "data/line_ending_policy.json",
+    "data/artifact_boundaries.json",
+    "rules/*.json",
+    "data/preprocessed/*.json",
+    "scripts/check_*.py",
+    "scripts/external_artifacts.py",
+    "scripts/install_hooks.py",
+    "scripts/preflight_gate.py",
+    "scripts/restore_external_artifacts.py",
+    "data/review_gates/*.json",
+    "docs/PHASE_1_2_CLOSE_GATE.md",
+    "data/proof_obligations/*.json",
+    "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md"
+  ],
+  "allowed_crlf_historical_globs": [
+    "BORROWED_COMPONENTS.md",
+    "CHANGELOG.md",
+    ".artifacts/**"
+  ]
+}

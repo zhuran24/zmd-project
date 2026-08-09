@@ -1,0 +1,431 @@
+{
+  "schema_version": 2,
+  "gate_id": "phase_1_2_spike_close",
+  "phase": "Phase 1.2 spike close",
+  "status": "closed_manual_owner_decision",
+  "updated_at": "2026-08-06",
+  "summary": "P1.2 re-closed on 2026-08-06 by explicit owner decision after the strict empty-rectangle semantics repair batch (f16a22c family), three external review rounds converging to two independent PASS_WITH_FINDINGS verdicts (F-03 terminal-chain closure confirmed by both), and the 2026-08-06 seal batch (a08ee02: ghost-helper fail-closed hardening, exception normalization, M11/M12 sentinels, LOCK I1 erratum, full reseal). The original 2026-07-07 close decision is preserved in informational_history. v99 remains the approved review anchor. Owner clean-review count remains outside the repo (owner ruled the streak restarts from zero under the new semantics).",
+  "current_review_anchor": "v99_p1_2_close_kernel_sealing",
+  "manual_review_standard": {
+    "required_consecutive_clean_full_reviews": 3,
+    "counting_authority": "owner_manual_count_outside_repo",
+    "repo_derives_clean_count_from_receipts": false,
+    "receipt_role": "informational_record_only",
+    "finding_classes_that_break_manual_clean_review": [
+      "unsound_cut",
+      "certified_false_negative",
+      "proof_obligation_bypass",
+      "fake_certified_claim",
+      "reachable_phase_gate_false_ready"
+    ],
+    "policy_note": "Review receipts and reports are informational. They are not machine authority for clean credit or P1.3 entry. Machine field names containing p1_3b are retained for compatibility; owner decision is the only entry authority."
+  },
+  "owner_manual_state": {
+    "p1_2_close_status": "closed",
+    "p1_3b_entry_allowed": true,
+    "counting_authority": "owner_manual_count_outside_repo",
+    "owner_clean_count_status": "maintained_outside_repo",
+    "repo_derives_clean_count_from_receipts": false,
+    "current_review_anchor": "v99_p1_2_close_kernel_sealing",
+    "note": "Owner re-closed P1.2 on 2026-08-06 after the strict-semantics repair line and seal batch; original 2026-07-07 close preserved in informational_history. The repo intentionally does not record or compute the clean-review count; the owner keeps it outside the repo (restarted from zero per owner ruling)."
+  },
+  "owner_manual_decision": {
+    "p1_3b_entry_allowed": true,
+    "counting_authority": "owner_manual_count_outside_repo",
+    "decision_id": "owner-p1-2-reclose-20260806",
+    "decided_by": "zhuran24",
+    "decided_at": "2026-08-06",
+    "decision_note": "Owner re-closes P1.2 after the empty-rectangle strict-semantics repair line: repair batch f16a22c + patches (five-surface sentinels, terminal E2E), three external review rounds (BLOCK -> PASS_WITH_FINDINGS + evidence-gap BLOCK -> dual PASS_WITH_FINDINGS with F-03 terminal-chain closure confirmed independently twice), and the 2026-08-06 seal batch a08ee02 with full reseal (dual structural checkers green, pin-chain tests 69/69, full gate PASSED, slow soundness lane green). Remaining external findings are confirmed unreachable on the certified path (PCR double-offset: promotion blocker; documented in round3_verdicts archive). Owner approval given in-session on 2026-08-06 (explicit go for re-close + seal batch); clean-review streak restarts from zero per owner ruling, maintained outside the repo as before.",
+    "acknowledges_repo_does_not_prove_clean_count": true,
+    "acknowledges_owner_verified_three_clean_reviews": true,
+    "supersedes_decision_id": "owner-p1-2-close-p1-3-open-20260707"
+  },
+  "next_phase_entry": {
+    "phase": "P1.3 production master integration (machine compatibility id: p1_3b)",
+    "allowed": true,
+    "authority": "owner_manual_decision_only",
+    "reason": "Opened by explicit owner_manual_decision on 2026-07-07 (owner declared P1.2 complete and P1.3 open). P1.3 entry is permission to begin P1.3 (production master/cut integration, step_8); it does not assert P1.3 work is done."
+  },
+  "informational_history": [
+    {
+      "package": "v28",
+      "classification": "algorithmic_soundness_reset",
+      "summary": "External review found real soundness issues; this remains historical evidence, not an automatic counter input. The two original review reports are not retained in the current worktree and are owner-maintained outside the repo.",
+      "evidence_paths": []
+    },
+    {
+      "package": "v31_postmortem_consolidation",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "Step 7 evaluator attachability was consolidated with Step 6 after V29-V31 sibling bypasses.",
+      "evidence_paths": [
+        "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md"
+      ]
+    },
+    {
+      "package": "v32_runtime_cache_source_digest_consolidation",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "Runtime-cache and source-digest findings remained algorithmic/proof-obligation risks.",
+      "evidence_paths": [
+        "docs/research/p1_2_v31_v46_finding_taxonomy.md"
+      ]
+    },
+    {
+      "package": "v46_review_protocol_redesign",
+      "classification": "review_protocol_redesign",
+      "summary": "V37-V46 findings showed that repo-derived receipt/report/Git authority was becoming its own attack surface.",
+      "evidence_paths": [
+        "docs/research/p1_2_v31_v46_finding_taxonomy.md"
+      ]
+    },
+    {
+      "package": "v47_to_v50_receipt_state_machine",
+      "classification": "review_protocol_state_machine_false_ready_hardening",
+      "summary": "V47-V50 closed strict-JSON receipt clean-counter state-machine false-ready paths, motivating removal of automatic repo-derived clean counting.",
+      "evidence_paths": [
+        "docs/research/p1_2_v50_manual_phase_gate_simplification.md"
+      ]
+    },
+    {
+      "package": "v50_manual_phase_gate_simplification",
+      "classification": "manual_gate_simplification",
+      "summary": "The repo no longer auto-counts clean reviews or auto-opens P1.3 from receipts. Owner manual decision is the only P1.3 entry authority.",
+      "evidence_paths": [
+        "docs/research/p1_2_v50_manual_phase_gate_simplification.md"
+      ]
+    },
+    {
+      "package": "v53_to_v56_certified_cut_replay",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V53-V56 found sibling findings in exact-safe BendersCut replay: strict evidence parsing, strict conflict/condition integer payloads, unresolved conflict member dilution, and aliasing conflict members that could strengthen a multi-member nogood into a one-literal ban.",
+      "evidence_paths": [
+        "docs/research/p1_2_v56_certified_cut_replay_consolidation.md"
+      ]
+    },
+    {
+      "package": "v56_certified_cut_replay_consolidation",
+      "classification": "proof_obligation_consolidation",
+      "summary": "Certified cut replay faithfulness is now an explicit P1.2 proof obligation. Future reviews should start from this anchor and look for remaining payload-coercion, missing-member, aliasing, condition-resolution, or apply/register atomicity bypasses.",
+      "evidence_paths": [
+        "docs/research/p1_2_v56_certified_cut_replay_consolidation.md"
+      ]
+    },
+    {
+      "package": "v57_to_v60_cut_replay_domain_contract",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V57-V60 were sibling findings in the same certified cut replay/domain faithfulness family: condition-required cuts, strict condition-key grammar and metadata consistency, current candidate-domain membership, and the actual full master-domain contract.",
+      "evidence_paths": [
+        "docs/research/p1_2_v58_condition_required_cut_anchor_validation.md",
+        "docs/research/p1_2_v59_condition_required_cut_domain_validation.md",
+        "docs/research/p1_2_v60_master_domain_contract.md"
+      ]
+    },
+    {
+      "package": "v60_master_domain_contract",
+      "classification": "proof_obligation_consolidation",
+      "summary": "Certified exact runs must persist and validate an explicit full unfiltered master-domain contract, or fail closed before master construction when experimental domain-slicing knobs are present.",
+      "evidence_paths": [
+        "docs/research/p1_2_v60_master_domain_contract.md"
+      ]
+    },
+    {
+      "package": "v61_master_domain_candidate_frontier_contract",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V61 found sibling certified lifecycle blockers after the V60 master-domain patch: pose-bool master and power-pole slot env overrides could change the actual constructed master domain, while EXACT_OUTER_SKIP_UNKNOWN could turn a candidate-subset or best-effort outer campaign into full-domain certified evidence. The gate remains manual/fail-closed, but future reviews should start from the V61 master-domain plus candidate-frontier contract.",
+      "evidence_paths": [
+        "docs/research/p1_2_v61_master_domain_candidate_frontier_contract.md"
+      ]
+    },
+    {
+      "package": "v62_frontier_terminal_evidence_and_outer_master_domain_guard",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V62 found sibling/order certified lifecycle blockers after V61: candidate-level incumbents could survive UNKNOWN/max-attempt partial-frontier stops as terminal certified evidence, outer_search precheck paths could construct sessions under unsafe master-domain env before the V61 guard, and best_effort resume exhaustion could write certified-looking artifacts before manifest fail-closed. Future reviews should start from the V62 terminal frontier evidence and outer master-domain guard contract.",
+      "evidence_paths": [
+        "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md"
+      ]
+    },
+    {
+      "package": "v63_terminal_evidence_export_boundary_review",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V63 found sibling certified lifecycle blockers after V62: EXACT_MASTER_GHOST_ANCHOR_FILTER was not included in the centralized pre-session unsafe master-domain env guard, and resume/import, manifest, inspector/report, and B5A wrapper export paths could still expose stale or contradictory CERTIFIED surfaces without terminal full-frontier evidence. Future reviews should start from the V63 terminal evidence export-boundary contract.",
+      "evidence_paths": [
+        "docs/research/p1_2_v63_terminal_evidence_export_boundary_review.md"
+      ]
+    },
+    {
+      "package": "v64_power_witness_representation_env_guard",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V64 found a sibling certified lifecycle blocker after V63: power-witness representation env knobs such as EXACT_LAZY_POWER_COMPLETION, EXACT_POWER_PLACEMENT_SUBPROBLEM, and its forensic bypass could change certified power evidence semantics before the centralized pre-session guard blocked them. Future reviews should start from the V64 power witness representation env guard contract.",
+      "evidence_paths": [
+        "docs/research/p1_2_v64_power_witness_representation_env_guard.md"
+      ]
+    },
+    {
+      "package": "v65_to_v66_certified_env_and_export_guards",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V65/V66 found sibling certified lifecycle blockers after V64: additional power-witness encoding env knobs could alter the certified witness representation, direct ExactSearchSession construction had to block unsafe env before project load, unsafe-env blocks had to clear stale resumed terminal state, and terminal full-frontier evidence had to be committed before final_solution export.",
+      "evidence_paths": [
+        "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md"
+      ]
+    },
+    {
+      "package": "v66_certified_lifecycle_evidence_consolidation",
+      "classification": "proof_obligation_consolidation",
+      "summary": "The oversized certified cut replay obligation is split into four lifecycle compartments: cut replay, master-domain/witness representation, frontier terminal evidence, and export surface. Future reviews should start from this anchor and classify findings against those compartments.",
+      "evidence_paths": [
+        "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md"
+      ]
+    },
+    {
+      "package": "v73_certified_surface_verifier_consolidation",
+      "classification": "proof_obligation_consolidation",
+      "summary": "V73 consolidated public CERTIFIED publication into src/search/certified_surface.py so the inspector, delivery manifest path, and B5A anchor wrapper consume one verifier verdict instead of local predicates.",
+      "evidence_paths": [
+        "docs/research/p1_2_v73_certified_surface_verifier_consolidation.md"
+      ]
+    },
+    {
+      "package": "v74_certified_surface_authority_hardening",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V74 hardened the central certified-surface verifier so disk artifacts, strict JSON, recomputed exact hashes, and regular-file boundaries are authoritative over caller-supplied memory payloads.",
+      "evidence_paths": [
+        "docs/research/p1_2_v74_certified_surface_authority_hardening.md"
+      ]
+    },
+    {
+      "package": "v75_terminal_frontier_evidence_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V75 found that terminal CERTIFIED could still rely on a stop-reason string plus best certified candidate. It now requires replayable candidate-generation evidence, a safe-area-bound authority, status digest, and empty recomputed frontier before terminal/public certified publication.",
+      "evidence_paths": [
+        "docs/research/p1_2_v75_terminal_frontier_evidence_sealing.md"
+      ]
+    },
+    {
+      "package": "v76_project_bound_terminal_evidence",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V76 confirmed the central certified-surface verifier remains the public CERTIFIED gate and tightened pre-publication helpers so terminal full-frontier evidence must replay against the current project grid and authoritative safe-area bound before best_certified_result or manifest payloads can be produced.",
+      "evidence_paths": [
+        "docs/research/p1_2_v76_project_bound_terminal_evidence.md"
+      ]
+    },
+    {
+      "package": "v77_delivery_manifest_writer_authority",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V77 found a sibling writer seam after the central verifier review: direct delivery-manifest export could serialize best_certified_result from an in-memory campaign while the referenced disk checkpoint contained different state. The writer now requires exact JSON-equivalence to the regular in-project checkpoint before forming a certified manifest payload.",
+      "evidence_paths": [
+        "docs/research/p1_2_v77_delivery_manifest_writer_authority.md"
+      ]
+    },
+    {
+      "package": "v78_certified_manifest_writer_canonical_surface",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V78 found the remaining writer-publication seam after V77: raw manifest writes and caller-selected output_path could create certified-looking manifests outside the canonical public surface. Certified payloads with best_certified_result now require the canonical regular in-project data/solutions/certified_delivery_manifest.json output path and the guarded export writer.",
+      "evidence_paths": [
+        "docs/research/p1_2_v78_certified_manifest_writer_canonical_surface.md"
+      ]
+    },
+    {
+      "package": "v79_terminal_domain_axis_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V79 found two unsealed candidate-domain slicing axes in the V75 terminal-evidence validator: an exhausted max_aspect_ratio-sliced domain and an above-admissibility min_side (>6) domain both validated as authoritative full-frontier CERTIFIED while the filtered candidates were never refuted. Both axes are now rejected. The delivery-manifest deep validation also no longer skips the blueprint reverse-lookup for non-instance-shaped terminal placement solutions; it fails closed.",
+      "evidence_paths": [
+        "docs/research/p1_2_v79_terminal_domain_axis_sealing.md"
+      ]
+    },
+    {
+      "package": "v80_deny_unknown_certified_surface",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V80 closes the V79 residual and flips two enumerative defenses to deny-unknown. Terminal frontier evidence now includes project-level min_side admissibility and rejects unknown candidate_generation keys, stale v1 schema, min-side mismatches, and sub-admissible terminal final_result publication. certified_exact env overrides are checked by an allowlist: production operational knobs remain admitted, known proof-semantics knobs must stay canonical false/default, and future unclassified EXACT_* names fail closed.",
+      "evidence_paths": [
+        "docs/research/p1_2_v80_deny_unknown_certified_surface.md"
+      ]
+    },
+    {
+      "package": "v81_partial_precheck_and_release_claim_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V81 external review (first round after the V80 deny-unknown flip) found one algorithmic/soundness finding and one publication finding: F-01 mandatory-rectangle precheck consumers ignored partial_due_to_time_budget, so an infeasible anchor prefix could prune a candidate as INFEASIBLE; F-02 the single-base release builder accepted a run summary self-claiming CERTIFIED. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md"
+      ]
+    },
+    {
+      "package": "v82_oriented_domain_and_cut_replay_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V82 external review found two soundness findings, both locally reproduced end-to-end: F-1 the candidate domain canonicalized by h<=w while master feasibility is orientation-sensitive, so terminal full-frontier evidence proved exhaustion over half the domain (wrong published optimum demonstrated on a 3x3 toy); F-2 checkpoint/preloaded exact_safe_cuts entered the master after structural validation only, so a forged cut could prune the only feasible pose. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v82_oriented_domain_and_cut_replay_sealing.md"
+      ]
+    },
+    {
+      "package": "v83_geometry_witness_nogood_scope_and_loader_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V83 external review found three soundness findings, all locally reproduced: F-01 forged checkpoint with self-consistent terminal evidence published a geometrically impossible empty rectangle; F-02 whole-layout nogoods were escalated to candidate INFEASIBLE on the default coordinate-master path; F-03 the certified mandatory-instance loader silently shrank the instance set on malformed records. A reviewer-patch defect (ghost_pick counted as occupancy, which would have rejected every genuine terminal result) was caught and corrected during local landing. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v83_geometry_witness_nogood_scope_and_loader_sealing.md"
+      ]
+    },
+    {
+      "package": "v84_layout_optimality_and_artifact_boundary_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V84 external review found three soundness findings, all locally reproduced: the V83 witness scan proved existence but not optimality of the claimed empty rectangle; exact artifact hashing followed symlinks outside the project; and unknown extra instances in the terminal placement solution could forge occupancy blockers. All sealed fail-closed; the optimality scan is scoped to non-empty mandatory sets during landing. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v84_layout_optimality_and_artifact_boundary_sealing.md"
+      ]
+    },
+    {
+      "package": "v85_required_optional_terminal_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V85 external review found one soundness finding, locally reproduced: the terminal validator enforced mandatory coverage but not the generic_io-inferred required pose-level optionals, so a forged terminal checkpoint omitting the required protocol_storage_box published a CERTIFIED rectangle that is geometrically impossible once the box is placed. Sealed fail-closed. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v85_required_optional_terminal_sealing.md"
+      ]
+    },
+    {
+      "package": "v86_power_witness_terminal_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V86 external review found one soundness finding, locally reproduced with a master-level contradiction probe: the terminal validator never replayed power coverage, so a layout with a needs_power mandatory facility and no selected pole published as CERTIFIED while the certified master solved the same layout INFEASIBLE. Sealed fail-closed. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v86_power_witness_terminal_sealing.md"
+      ]
+    },
+    {
+      "package": "v87_anchor_and_pole_irredundancy_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V87 external review found two soundness findings, both locally reproduced: authorized-but-unforced power poles were counted as occupancy (letting a forged checkpoint flood cells and publish a smaller optimum), and final_result.ghost_rect anchor coordinates were never replayed (letting a blueprint publish a CERTIFIED rectangle on top of facilities). Sealed fail-closed. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v87_anchor_and_pole_irredundancy_sealing.md"
+      ]
+    },
+    {
+      "package": "v88_ghost_anchor_required_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V88 external review found one soundness finding, locally reproduced: omitting ghost_rect.anchor_x/y bypassed the V87 anchor replay and published anchor=-1,-1 blueprints as CERTIFIED. The anchor is now protocol-required end to end. The reviewer patch broke the real-solver path (five downstream consumers treated the new ghost_pick marker as a facility); corrected during landing. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v88_ghost_anchor_required_sealing.md"
+      ]
+    },
+    {
+      "package": "v89_ghost_pick_terminal_binding_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V89 external review found one soundness finding, locally reproduced in both directions: the candidate record's ghost_pick provenance was never replayed, so forged checkpoints with a missing or tampered marker still published CERTIFIED. The binding is now fail-closed. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v89_ghost_pick_terminal_binding_sealing.md"
+      ]
+    },
+    {
+      "package": "v90_final_result_field_allowlist_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V90 external review found one soundness finding, locally reproduced: arbitrary top-level final_result fields were projected into the public blueprint without any binding (forged belt routes published as CERTIFIED). The final_result shape is now a closed allowlist. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v90_final_result_field_allowlist_sealing.md"
+      ]
+    },
+    {
+      "package": "v91_nested_public_field_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V91 external review found one soundness finding, locally reproduced: the allowlisted final_result fields accepted forged nested keys (ghost_rect proof_status, search_stats proof_status) and contradictory mandatory metadata while the surface stayed publishable. Nested shapes are now closed. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v91_nested_public_field_sealing.md"
+      ]
+    },
+    {
+      "package": "v92_release_status_allowlist_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V92 external review found one soundness finding on the public release surface, locally reproduced: an embedded certified token (CERTIFIED_BY_FAKE_RELEASE_SUMMARY) bypassed the literal-match guard and polluted release/pointer/Markdown surfaces. The status is now allowlisted. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v92_release_status_allowlist_sealing.md"
+      ]
+    },
+    {
+      "package": "v93_note_and_solution_entry_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V93 external review found two soundness findings, both locally reproduced: the exact-status note projected forged certified prose under status open, and forged placement-entry fields (plus a skipped public ghost_pick) could land in final_solution.json before later comparisons fired. Both fail closed now. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v93_note_and_solution_entry_sealing.md"
+      ]
+    },
+    {
+      "package": "v94_protocol_storage_surplus_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V94 external review found one soundness finding, locally reproduced: surplus protocol storage boxes acted as occupancy blockers (removing them flipped the validator to layout_has_better_empty_rect). Excess boxes now fail closed. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v94_protocol_storage_surplus_sealing.md"
+      ]
+    },
+    {
+      "package": "v95_optional_metadata_and_stop_reason_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V95 external review found two soundness findings, both locally reproduced: forged operation_type metadata on optional entries and a forged note on last_stop_reason reached public artifacts while the surface stayed publishable. Both shapes are now closed. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v95_optional_metadata_and_stop_reason_sealing.md"
+      ]
+    },
+    {
+      "package": "v96_symlink_ancestor_boundary_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V96 external review found one soundness finding, locally reproduced: replacing data/preprocessed or data/solutions with a symlink served out-of-project artifacts under canonical names while the surface stayed publishable. All path components are now validated. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v96_symlink_ancestor_boundary_sealing.md"
+      ]
+    },
+    {
+      "package": "v97_canonical_checkpoint_authority_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V97 external review found one soundness finding, locally confirmed (the shipped regression fails on the unpatched tree, passes on the patched tree): a non-canonical shadow checkpoint published as CERTIFIED, and the inspector pre-resolved the campaign path so the V96 ancestry check missed a symlink alias. Authority is now pinned to the canonical checkpoint. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v97_canonical_checkpoint_authority_sealing.md"
+      ]
+    },
+    {
+      "package": "v98_b5a_symlink_authority_sealing",
+      "classification": "algorithmic_proof_obligation_reset",
+      "summary": "V98 external review found one soundness finding, discrimination confirmed (regression fails unpatched, passes patched): the B5A wrapper resolved the campaign path before the central verifier, so a symlink alias reported b5a_certified_surface_publishable=True. The wrapper no longer pre-resolves. Owner clean-streak count resets to 0.",
+      "evidence_paths": [
+        "docs/research/p1_2_v98_b5a_symlink_authority_sealing.md"
+      ]
+    },
+    {
+      "package": "v99_p1_2_close_kernel_sealing",
+      "classification": "technical_close_kernel_sealing",
+      "summary": "V99 seals the P1.2 close kernel: proof-bearing sink inventory, source_sha256 drift detection, guard-token checks, and explicit TCB/non-claim boundary. Owner clean-streak count remains outside the repo and P1.3 remains blocked.",
+      "evidence_paths": [
+        "docs/research/p1_2_v99_close_kernel_sealing.md",
+        "data/proof_obligations/p1_2_proof_obligations.json",
+        "scripts/check_p1_2_proof_obligations.py",
+        "src/tests/test_p1_2_proof_obligations.py"
+      ]
+    },
+    {
+      "package": "strict_empty_semantics_repair_and_seal_batch_20260806",
+      "classification": "owner_reclose_after_semantics_change_and_reseal",
+      "summary": "2026-08-05 owner semantics adjudication (empty rectangle = nothing at all inside) changed the certified predicate (variant A on predicate 5), triggering the repair batch and reopening the close claim via source_sha256 drift. Three external review rounds converged to dual PASS_WITH_FINDINGS (F-03 closure confirmed twice, independently). The 2026-08-06 seal batch (a08ee02) closed the review-named hardening items and completed the reseal chain. Owner re-closed with the streak restarted from zero (count maintained outside the repo).",
+      "evidence_paths": [
+        ".artifacts/ghost_strict_fix_20260805/round3_verdicts_20260806/",
+        ".artifacts/ghost_strict_fix_20260805/mutation_manifests_20260806/",
+        ".artifacts/preflight_full_sealbatch_20260806.log",
+        ".artifacts/preflight_slow_sealbatch_20260806.log"
+      ]
+    }
+  ],
+  "required_doc_markers": [
+    {
+      "path": "docs/PHASE_1_2_CLOSE_GATE.md",
+      "contains": "owner manual decision"
+    },
+    {
+      "path": "README.md",
+      "contains": "owner-maintained outside the repo"
+    }
+  ],
+  "source_boundaries": [
+    {
+      "name": "candidate_placements",
+      "path": "data/preprocessed/candidate_placements.json",
+      "policy": "hash_bound_artifact_present_here_may_be_external_in_lightweight_distribution"
+    }
+  ],
+  "receipt_policy": {
+    "role": "informational_record_only",
+    "can_open_p1_3b": false,
+    "note": "Receipts remain useful for human audit trails, but this gate does not parse them to compute clean-review credit or to open P1.3."
+  }
+}

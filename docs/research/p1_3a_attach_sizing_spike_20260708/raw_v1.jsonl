@@ -1,0 +1,16 @@
+{"event": "loaded", "instances": 266, "rss_mb": 514.3}
+{"event": "core_built", "seconds": 39.015, "rss_mb": 2445.6}
+{"event": "clone", "scenario": "whole_narrow", "seconds": 34.4, "rss_mb": 4295.7}
+{"event": "solve", "scenario": "whole_narrow", "label": "baseline_0cut", "cuts_total": 0, "status_int": 0, "solve_wall_seconds": 62.796, "status": "UNKNOWN", "branches": 0, "conflicts": 0, "solver_wall": 60.064, "rss_mb": 4409.0}
+{"event": "add_batch", "scenario": "whole_narrow", "batch": 100, "added_ok": 0, "added_fail": 100, "cuts_total": 0, "add_wall_seconds": 0.017, "ms_per_cut": 0.165, "rss_mb": 4409.0}
+{"event": "solve", "scenario": "whole_narrow", "label": "after_0", "cuts_total": 0, "status_int": 0, "solve_wall_seconds": 70.345, "status": "UNKNOWN", "branches": 0, "conflicts": 0, "solver_wall": 67.067, "rss_mb": 4501.5}
+{"event": "add_batch", "scenario": "whole_narrow", "batch": 900, "added_ok": 0, "added_fail": 900, "cuts_total": 0, "add_wall_seconds": 0.15, "ms_per_cut": 0.166, "rss_mb": 4501.5}
+{"event": "solve", "scenario": "whole_narrow", "label": "after_0", "cuts_total": 0, "status_int": 0, "solve_wall_seconds": 72.077, "status": "UNKNOWN", "branches": 0, "conflicts": 0, "solver_wall": 68.548, "rss_mb": 4502.5}
+{"event": "add_batch", "scenario": "whole_narrow", "batch": 9000, "added_ok": 1, "added_fail": 8999, "cuts_total": 1, "add_wall_seconds": 3.898, "ms_per_cut": 0.433, "rss_mb": 4503.5}
+{"event": "solve", "scenario": "whole_narrow", "label": "after_1", "cuts_total": 1, "status_int": 0, "solve_wall_seconds": 75.706, "status": "UNKNOWN", "branches": 0, "conflicts": 0, "solver_wall": 71.789, "rss_mb": 4652.5}
+{"event": "scenario_done", "scenario": "whole_narrow", "rss_mb": 4652.5}
+{"event": "clone", "scenario": "pattern_narrow", "seconds": 37.123, "rss_mb": 2916.3}
+{"event": "add_batch", "scenario": "pattern_narrow", "batch": 1000, "added_ok": 986, "added_fail": 14, "cuts_total": 986, "add_wall_seconds": 78.174, "ms_per_cut": 78.174, "rss_mb": 3581.8}
+{"event": "solve", "scenario": "pattern_narrow", "label": "after_986", "cuts_total": 986, "status_int": 0, "solve_wall_seconds": 261.719, "status": "UNKNOWN", "branches": 0, "conflicts": 0, "solver_wall": 252.9, "rss_mb": 3950.1}
+{"event": "add_batch", "scenario": "pattern_narrow", "batch": 9000, "added_ok": 8962, "added_fail": 38, "cuts_total": 9948, "add_wall_seconds": 1150.603, "ms_per_cut": 127.845, "rss_mb": 9836.5}
+{"event": "solve", "scenario": "pattern_narrow", "label": "after_9948", "cuts_total": 9948, "status_int": 0, "solve_wall_seconds": 395.684, "status": "UNKNOWN", "branches": 0, "conflicts": 0, "solver_wall": 114.027, "rss_mb": 11834.7}

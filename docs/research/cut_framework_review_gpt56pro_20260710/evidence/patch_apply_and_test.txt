@@ -1,0 +1,21 @@
+Applying clean patch series to a byte-for-byte full project copy:
+CHECK 0001-cuts-seal-integrity-at-irreversible-attach-boundary.patch
+CHECK 0002-cuts-preserve-ghost-width-and-height-in-BState.patch
+CHECK 0003-cuts-require-complete-artifact-scope-snapshots.patch
+CHECK 0004-cuts-type-canonical-relabel-slot-counter.patch
+
+Regression suite:
+........................................................................ [ 15%]
+........................................................................ [ 31%]
+........................................................................ [ 47%]
+........................................................................ [ 63%]
+........................................................................ [ 79%]
+........................................................................ [ 95%]
+....................                                                     [100%]
+452 passed in 5.22s
+
+Ruff:
+All checks passed!
+
+Mypy (strict, explicit package bases):
+Success: no issues found in 33 source files

@@ -1,0 +1,219 @@
+{
+  "schema_version": 1,
+  "units": "integer objective units; divide every *_scaled field by scale",
+  "duals": [
+    {
+      "name": "D0_AREA",
+      "scale": 1,
+      "description": "Uniform zero class prices; reproduces the pure body-area objective.",
+      "mu_scaled": {
+        "3L": 0,
+        "3O2": 0,
+        "3O3": 0,
+        "3I2": 0,
+        "5L": 0,
+        "5O2": 0,
+        "6I3": 0,
+        "6I4": 0,
+        "6I5": 0
+      },
+      "lambda_scaled": 0,
+      "pi_scaled": {
+        "CLEAN": 146,
+        "LEFT_J1": 134,
+        "LEFT_J2": 134,
+        "LEFT_J3": 134,
+        "BOTTOM_I1": 134,
+        "BOTTOM_I2": 134,
+        "BOTTOM_I3": 134,
+        "BOTTOM_I4": 134,
+        "CORNER": 118,
+        "CORE": 0
+      },
+      "analytic_branch_cap_scaled": {
+        "CLEAN": {
+          "nohole": 146,
+          "hole": 144
+        },
+        "LEFT_J1": {
+          "nohole": 134,
+          "hole": 129
+        },
+        "LEFT_J2": {
+          "nohole": 134,
+          "hole": 129
+        },
+        "LEFT_J3": {
+          "nohole": 134,
+          "hole": 130
+        },
+        "BOTTOM_I1": {
+          "nohole": 134,
+          "hole": 129
+        },
+        "BOTTOM_I2": {
+          "nohole": 134,
+          "hole": 129
+        },
+        "BOTTOM_I3": {
+          "nohole": 134,
+          "hole": 130
+        },
+        "BOTTOM_I4": {
+          "nohole": 134,
+          "hole": 129
+        },
+        "CORNER": {
+          "nohole": 118,
+          "hole": 116
+        },
+        "CORE": {
+          "nohole": 0,
+          "hole": null
+        }
+      }
+    },
+    {
+      "name": "D1_SCARCITY_PRICES",
+      "scale": 1,
+      "description": "Higher prices on the small-demand classes; tests chain masking in the bucket transport layer.",
+      "mu_scaled": {
+        "3L": 1,
+        "3O2": 7,
+        "3O3": 6,
+        "3I2": 7,
+        "5L": 2,
+        "5O2": 10,
+        "6I3": 2,
+        "6I4": 12,
+        "6I5": 12
+      },
+      "lambda_scaled": 15,
+      "pi_scaled": {
+        "CLEAN": 135,
+        "LEFT_J1": 124,
+        "LEFT_J2": 124,
+        "LEFT_J3": 124,
+        "BOTTOM_I1": 124,
+        "BOTTOM_I2": 124,
+        "BOTTOM_I3": 124,
+        "BOTTOM_I4": 124,
+        "CORNER": 109,
+        "CORE": 0
+      },
+      "analytic_branch_cap_scaled": {
+        "CLEAN": {
+          "nohole": 134,
+          "hole": 117
+        },
+        "LEFT_J1": {
+          "nohole": 123,
+          "hole": 103
+        },
+        "LEFT_J2": {
+          "nohole": 123,
+          "hole": 103
+        },
+        "LEFT_J3": {
+          "nohole": 123,
+          "hole": 104
+        },
+        "BOTTOM_I1": {
+          "nohole": 123,
+          "hole": 103
+        },
+        "BOTTOM_I2": {
+          "nohole": 123,
+          "hole": 103
+        },
+        "BOTTOM_I3": {
+          "nohole": 123,
+          "hole": 104
+        },
+        "BOTTOM_I4": {
+          "nohole": 123,
+          "hole": 103
+        },
+        "CORNER": {
+          "nohole": 108,
+          "hole": 91
+        },
+        "CORE": {
+          "nohole": 0,
+          "hole": null
+        }
+      }
+    },
+    {
+      "name": "D2_SLACK_EDGE_SELECTIVE",
+      "scale": 1,
+      "description": "Extreme selective objective: low levels are nonpositive, top levels are positive, and a hole is rewarded.",
+      "mu_scaled": {
+        "3L": 12,
+        "3O2": 12,
+        "3O3": 0,
+        "3I2": 12,
+        "5L": 30,
+        "5O2": 0,
+        "6I3": 30,
+        "6I4": 30,
+        "6I5": 0
+      },
+      "lambda_scaled": -20,
+      "pi_scaled": {
+        "CLEAN": 164,
+        "LEFT_J1": 149,
+        "LEFT_J2": 149,
+        "LEFT_J3": 150,
+        "BOTTOM_I1": 149,
+        "BOTTOM_I2": 149,
+        "BOTTOM_I3": 150,
+        "BOTTOM_I4": 149,
+        "CORNER": 136,
+        "CORE": 0
+      },
+      "analytic_branch_cap_scaled": {
+        "CLEAN": {
+          "nohole": 146,
+          "hole": 164
+        },
+        "LEFT_J1": {
+          "nohole": 134,
+          "hole": 149
+        },
+        "LEFT_J2": {
+          "nohole": 134,
+          "hole": 149
+        },
+        "LEFT_J3": {
+          "nohole": 134,
+          "hole": 150
+        },
+        "BOTTOM_I1": {
+          "nohole": 134,
+          "hole": 149
+        },
+        "BOTTOM_I2": {
+          "nohole": 134,
+          "hole": 149
+        },
+        "BOTTOM_I3": {
+          "nohole": 134,
+          "hole": 150
+        },
+        "BOTTOM_I4": {
+          "nohole": 134,
+          "hole": 149
+        },
+        "CORNER": {
+          "nohole": 118,
+          "hole": 136
+        },
+        "CORE": {
+          "nohole": 0,
+          "hole": null
+        }
+      }
+    }
+  ]
+}

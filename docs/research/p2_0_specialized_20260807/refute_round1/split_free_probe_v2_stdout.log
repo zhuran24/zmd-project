@@ -1,0 +1,145 @@
+==============================================================================
+Part A  占空自由度盘点
+==============================================================================
+  crusher_blue_iron          x=    34  n= 34  钉死(全满速)
+  crusher_buckwheat          x=  11/2  n=  6  自由
+  crusher_sandleaf           x=  21/2  n= 11  自由
+  crusher_source             x=    18  n= 18  钉死(全满速)
+  filling_capsule            x=  11/4  n=  3  自由
+  grinder_dense_blue_iron    x=    17  n= 17  钉死(全满速)
+  grinder_dense_source       x=     9  n=  9  钉死(全满速)
+  grinder_fine_buckwheat     x=  11/2  n=  6  自由
+  molding_bottle             x=  11/2  n=  6  自由
+  packaging_battery          x=     3  n=  3  钉死(全满速)
+  parts_maker                x=     6  n=  6  钉死(全满速)
+  planter_buckwheat          x=    11  n= 11  钉死(全满速)
+  planter_sandleaf           x=    21  n= 21  钉死(全满速)
+  refinery_blue_iron         x=    34  n= 34  钉死(全满速)
+  refinery_steel             x=    17  n= 17  钉死(全满速)
+  seed_collector_buckwheat   x=  11/2  n=  6  自由
+  seed_collector_sandleaf    x=  21/2  n= 11  自由
+
+  有台间分摊自由度的 operation：7/17
+  闲置（duty=0）：n_op = ceil(x_op) ⇒ 任何 operation 都不允许闲置任何一台（少一台就达不到产量）。owner 说的『允许闲置』在本实例里合法但无空间。
+
+==============================================================================
+Part B  车道计数定理（对任意占空分配成立，不依赖求解器）
+==============================================================================
+  commodity                  产道min   产道max   耗道min   耗道max  结论
+  blue_iron_block               34      34      34      34  计数不排除
+  blue_iron_ore                 34      34      34      34  计数不排除
+  blue_iron_powder              34      34      34      34  计数不排除
+  buckwheat                     11      11      12      12  必然分流(鸽巢)
+  buckwheat_powder              11      12      11      12  计数不排除
+  buckwheat_seed                11      12      11      11  计数不排除
+  dense_blue_iron_powder        17      17      17      17  计数不排除
+  dense_source_powder            9       9       9       9  计数不排除
+  fine_buckwheat_powder          6       6       6       6  计数不排除
+  qiaoyu_capsule                 3       3       1       1  计数不排除
+  sandleaf                      21      21      22      22  必然分流(鸽巢)
+  sandleaf_powder               32      33      32      32  计数不排除
+  sandleaf_seed                 21      22      21      21  计数不排除
+  source_ore                    18      18      18      18  计数不排除
+  source_powder                 18      18      18      18  计数不排除
+  steel_block                   17      17      17      18  计数不排除
+  steel_bottle                   6       6       6       6  计数不排除
+  steel_part                     6       6       6       6  计数不排除
+  valley_battery                 3       3       1       1  计数不排除
+
+  对任意占空必然分流：['buckwheat', 'sandleaf']
+
+==============================================================================
+Part C  显式全局见证（阶梯式占空，整网一份，链式一致）
+==============================================================================
+  crusher_buckwheat          duty = [1, 1, 1, 1, 1, 1/2]
+  crusher_sandleaf           duty = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1/2]
+  filling_capsule            duty = [1, 1, 3/4]
+  grinder_fine_buckwheat     duty = [1, 1, 1, 1, 1, 1/2]
+  molding_bottle             duty = [1, 1, 1, 1, 1, 1/2]
+  seed_collector_buckwheat   duty = [1, 1, 1, 1, 1, 1/2]
+  seed_collector_sandleaf    duty = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1/2]
+
+  commodity                   产道    耗道  split_free  复核
+  blue_iron_block             34    34  True        ok
+  blue_iron_ore               34    34  True        ok
+  blue_iron_powder            34    34  True        ok
+  buckwheat                   11    12  False       no assignment
+  buckwheat_powder            11    11  True        ok
+  buckwheat_seed              11    11  True        ok
+  dense_blue_iron_powder      17    17  True        ok
+  dense_source_powder          9     9  True        ok
+  fine_buckwheat_powder        6     6  True        ok
+  qiaoyu_capsule               3     1  True        ok
+  sandleaf                    21    22  False       no assignment
+  sandleaf_powder             32    32  True        ok
+  sandleaf_seed               21    21  True        ok
+  source_ore                  18    18  True        ok
+  source_powder               18    18  True        ok
+  steel_block                 17    17  True        ok
+  steel_bottle                 6     6  True        ok
+  steel_part                   6     6  True        ok
+  valley_battery               3     1  True        ok
+
+  见证下 split-free 成立：17/19
+  仍分流：['buckwheat', 'sandleaf']
+  ⇒ Part B 的下界与 Part C 的见证吻合：17 是同时 split-free 的商品数上确界。
+
+==============================================================================
+Part D  CP-SAT 自由占空复判（格点 1/660），对 v1 判死的 6 种
+==============================================================================
+  buckwheat               INFEASIBLE    split_free=False
+  buckwheat_seed          OPTIMAL       split_free=True
+  sandleaf                INFEASIBLE    split_free=False
+  sandleaf_powder         OPTIMAL       split_free=True
+  sandleaf_seed           OPTIMAL       split_free=True
+  steel_block             OPTIMAL       split_free=True
+
+==============================================================================
+Part E  canonical rate_lemma_scope 在自由占空下的重算
+==============================================================================
+  均摊占空（canonical 现行算法）
+    中间品残道集合   : ['5/6', '19/22', '10/11', '11/12', '21/22', '1']
+    最小残道         : 5/6
+    两两之和 ≤1 反例 : 0 对
+  阶梯占空（本批见证，同样满足前件 (i)(ii)）
+    中间品残道集合   : ['1/2', '1']
+    最小残道         : 1/2
+    两两之和 ≤1 反例 : 40 对
+      crusher_buckwheat#5 [in] buckwheat = 1/2   +   crusher_sandleaf#10 [in] sandleaf = 1/2
+      crusher_buckwheat#5 [in] buckwheat = 1/2   +   crusher_sandleaf#10 [out] sandleaf_powder = 1/2
+      crusher_buckwheat#5 [in] buckwheat = 1/2   +   filling_capsule#2 [in] fine_buckwheat_powder = 1/2
+
+==============================================================================
+Part F  逐 operation 最大化最小残道（均摊是不是最优约定？）
+==============================================================================
+  crusher_buckwheat          max-min残道=     5/6  最优占空=['11/12', '11/12', '11/12', '11/12', '11/12', '11/12']
+  crusher_sandleaf           max-min残道=   19/22  最优占空=['21/22', '21/22', '21/22', '21/22', '21/22', '21/22', '21/22', '21/22', '21/22', '21/22', '21/22']
+  filling_capsule            max-min残道=     5/6  最优占空=['11/12', '11/12', '11/12']
+  grinder_fine_buckwheat     max-min残道=     5/6  最优占空=['11/12', '11/12', '11/12', '11/12', '11/12', '11/12']
+  molding_bottle             max-min残道=     5/6  最优占空=['11/12', '11/12', '11/12', '11/12', '11/12', '11/12']
+  seed_collector_buckwheat   max-min残道=     5/6  最优占空=['11/12', '11/12', '11/12', '11/12', '11/12', '11/12']
+  seed_collector_sandleaf    max-min残道=   10/11  最优占空=['21/22', '21/22', '21/22', '21/22', '21/22', '21/22', '21/22', '21/22', '21/22', '21/22', '21/22']
+
+  全局 max-min 中间品残道 = 5/6（每 op 的最优点都落在均摊上 ⇒ 均摊确实是残道最优约定，但它只是**一个**合法约定，不是前件 (i)(ii) 蕴含的）
+
+==============================================================================
+Part G  必然分流商品的细流段厚度 + 混流窗口重算
+==============================================================================
+  buckwheat   uniform_duty      max-min细流段=   1/3  分流点数=13  (OPTIMAL)
+  buckwheat   staircase_duty    max-min细流段=   1/2  分流点数=1  (OPTIMAL)
+  buckwheat   free_duty         max-min细流段=   1/2  分流点数=7  (OPTIMAL)
+  sandleaf    uniform_duty      max-min细流段=  7/22  分流点数=23  (FEASIBLE)
+  sandleaf    staircase_duty    max-min细流段=   1/2  分流点数=1  (OPTIMAL)
+  sandleaf    free_duty         max-min细流段=   1/2  分流点数=1  (OPTIMAL)
+  上界论证（不依赖求解器）：产道速率恰 1，被迫劈成 a+b ≤ 1 ⇒ min(a,b) ≤ 1/2。
+
+  均摊占空   ：全网最细段 = 7/22，不同中间品混流窗口 15 对
+  阶梯占空   ：全网最细段 = 1/2，不同中间品混流窗口 10 对
+  两种分配都有窗口 ⇒ 网络级纯流强制在**任何**合法占空分配下都不成立：
+    buckwheat 必然分流 ⇒ 存在段 ≤ 1/2；sandleaf 独立同理 ⇒ 存在段 ≤ 1/2；
+    二者是不同中间品，和 ≤ 1 ⇒ 速率合法的共道窗口恒存在。
+
+==============================================================================
+v1 判死 6 种 → 自由占空下翻案 ['buckwheat_seed', 'sandleaf_powder', 'sandleaf_seed', 'steel_block']
+             → 仍必然分流 ['buckwheat', 'sandleaf']（纯计数论证，不依赖求解器）
+receipt -> /home/zhuran24/zmd-pj/docs/research/p2_0_specialized_20260807/refute_round1/split_free_probe_v2_receipt.json

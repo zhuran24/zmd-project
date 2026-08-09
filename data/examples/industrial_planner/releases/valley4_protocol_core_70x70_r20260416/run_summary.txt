@@ -1,0 +1,1 @@
+IndustrialPlanner single-base e2e run succeeded for valley4_protocol_core with delivery status `ready_for_single_base_delivery`; summary: .artifacts/industrial_planner_single_base_e2e/run_summary.md

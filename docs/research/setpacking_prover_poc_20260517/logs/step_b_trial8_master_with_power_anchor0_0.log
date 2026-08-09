@@ -1,0 +1,15 @@
+=== minimum + (power=True) PoC ===
+candidate 27x15 anchor (0,0)
+skip_power_coverage=False, time=120.0s
+EXACT_MASTER_GHOST_ANCHOR_FILTER=0,0
+[load] project data ...
+[load] 0.5s
+[build] master exact core (skip_power=False) ...
+[build] 75.4s
+[finalize] m.build() ...
+[finalize] 0.0s
+[solve] m.solve(time_limit=120.0) ...
+
+=== verdict ===
+status: INFEASIBLE
+elapsed: 0.0s

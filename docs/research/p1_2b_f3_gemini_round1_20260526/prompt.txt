@@ -1,0 +1,218 @@
+# F3 port_exposure generator — 数学等价性 + spec↔code cross-check
+
+## 项目背景 (self-contained)
+
+终末地 (Arknights: Endfield) 70×70 grid 工业规划器 certified-exact 最大空矩
+形求解器. 目标 max_lex(area, min_side), 含 266 mandatory facility. Paradigm:
+outer candidate enumeration 拆 max_lex + 内层 LBBD (master CP-SAT → binding
+→ routing → flow). Cut framework v3.2 含 9 family 用 sound deduction. F1-F9
+已 Phase 1.2 全 land + Gemini cross-check GO; F3 generator 之前是 Phase 1.1
+stub `return []`, GPT pro v15 三审 catch G10 fixture coverage 缺口, user
+2026-05-26 决策 F3 single special-case phase 实施 (不 fold 进任何 phase 主体).
+本 commit `c768806` 是 F3 generator Stage 1 实施.
+
+## F3 spec frozen (v1.0)
+
+详 `docs/research/p3_b_design_v2_20260521/cut_family_specs/03_port_exposure.md`.
+
+### §1 数学定义
+facility port: facility 边界上 cell, 有 direction (N/S/E/W). port 必须接
+free_cell (front cell) 跟该方向一致. F3 cut:
+```
+∃ facility A pose pA, port p_k @ cell c_k direction d_k,
+  front cell c_k + dir(d_k) ∈ cell_owner OR ∉ free_cells
+  ⇒ INFEASIBLE (port blocked)
+```
+literal-based: cut.literals = (facility A slot=pA) + 占 front cell 的 facility
+B slots (类似 F7 cell_owner causation split).
+
+### §2 Soundness
+port-front cell 必须 belt-usable. cell_owner 占 front → 不能放 belt → port
+不通 → INFEASIBLE. scope: cell_owner change 影响 front, 必须 multi-literal
+carry blocking (F7 finding #1 pattern).
+
+### §3 Cert schema (frozen)
+```
+PortExposureCert:
+  facility_group: GroupId
+  facility_pose_id: PoseId
+  port_cell: Tuple[int, int]
+  port_direction: Literal["N", "S", "E", "W"]
+  front_cell: Tuple[int, int]   # = port_cell + offset
+  blocking_facility: Tuple[GroupId, int, PoseId]  # (group, slot, pose_id)
+  active_port_witness_b64: str   # cand C boundary_constraints LP 结果
+```
+
+### §4 Cut object 构造 (spec 字面)
+```
+cut.literals = (
+  CutLiteral(slot_ref=AnonymousSlotRef(facility_group, 0), pose_id=facility_pose_id),
+  CutLiteral(slot_ref=AnonymousSlotRef(blocking_group, blocking_slot), pose_id=blocking_pose_id),
+)
+```
+注: **A 的 slot_index=0 (anonymous), B 的 slot_index=blocking_slot (actual)** — 不对称.
+
+### §5 Generator outline (spec 字面)
+spec 写: for each placed in **master_solution.placed_facility_poses**, 算
+ports, 算 front_cell, 若 front_cell in state.cell_owner → emit. 用
+`compute_port_active_set` + `encode_port_witness` 复用 cand C
+`boundary_constraints.py` per-(cell, dir) net flow equality.
+
+### §6 ghost-occluded front
+不发 cut — master ghost_rect 已限制 OPTIMAL 不选此 pose.
+
+### §7 Validator (frozen, Phase 1.1 已 land)
+```
+1. 验 port_cell ∈ canonical_rules ports for (facility_group, pose_id)
+2. 验 front_cell = port_cell + dir_offset(direction)
+3. 验 state.cell_owner[front_cell] == (blocking_group, blocking_slot)
+4. 验 active_port_witness_b64 (verify_port_witness)  ← spec 写要校验
+```
+
+### §8 Watcher
+spec 列 by_cell_watcher (port_cell + front_cell) + by_group + by_pose.
+
+### §9 Open Q
+1. Active port subset (binding 端决定): v1.0 假设 all ports active.
+2. ghost-occluded front 不发 cut: Phase 1 验 trigger 路径.
+
+## 现 implementation (commit c768806)
+
+详 `src/cuts/oracles/port_exposure_oracle.py` (277 行, +221 vs stub) +
+`src/tests/cuts/test_family_port_exposure_generator.py` (新 411 行, 15 test).
+
+### Key implementation choices (跟 spec 偏离的)
+
+1. **target 派生**: spec 说 `master_solution.placed_facility_poses`, code 走
+   `state.cell_owner.values()` derive (gid, slot) + `gstate.selected_poses[slot]`
+   取 pose_id. 也支持 `target_poses` explicit override.
+   Rationale (sub-agent commit msg): "Phase 1.5+ wiring will derive from
+   master_solution directly; Phase 1.2 cell_owner is the source of truth".
+
+2. **active_port_witness_b64 = None**: spec §3 类型 `str` (b64). spec §7 第 4
+   步要 verify. Code 写 None + 注释 "validator src/cuts/families/port_exposure.py
+   v1.0 当前不校验此字段; Phase 1.5+ 完整 cand C boundary_constraints LP wrap.
+   跟 F2 cutset witness_blob_b64=None Phase 1.5+ defer 同 pattern".
+   即: validator code 跟 spec §7 不一致 (spec 说要 verify, code 没), code 选
+   fit code 而不是 fit spec.
+
+3. **Literal asymmetry**: spec §4 字面 (slot=0 + slot=blocking_slot), code 严
+   格按 spec 字面实施:
+   ```python
+   CutLiteral(slot_ref=AnonymousSlotRef(group_id=facility_group, slot_index=0),
+              pose_id=facility_pose_id),
+   CutLiteral(slot_ref=AnonymousSlotRef(group_id=blocking_group,
+                                          slot_index=blocking_slot),
+              pose_id=blocking_pose_id),
+   ```
+   注 sub-agent commit: `del facility_slot # Phase 1.2 slot anonymity
+   (state_machine_v2 §5)` — facility A 真实 slot 信息 (从 cell_owner derive 的)
+   被 explicit 丢弃, 用 0.
+
+4. **Dedup signature includes port_dir**: rare 2 direction 共享 front_cell 时
+   保留 distinct. spec 没说.
+
+5. **Ports source**: code 用 `pose_ports(state, group, pose_id)` 从
+   `state.candidate_placements` 拿, **不是** `canonical_rules`. spec §5 写
+   `canonical_rules_facility_ports`. 是否等价?
+
+6. **fail-closed**:
+   - env disabled → []
+   - state.candidate_placements / instance_to_facility_type None → []
+   - target_poses None and cell_owner derive 空 → []
+   - ports lookup miss → skip facility (silent)
+   - blocking_gstate None / slot out of range → skip (silent)
+
+7. **mandatory facility not in cell_owner**: 70×70 grid 上 266 mandatory
+   facility instance. 若 master OPTIMAL 后某 mandatory 还没 placed (cell_owner
+   还没 fill 它), generator 不会检查它的 port blocking. 是 silent miss.
+
+### env gate
+`EXACT_F3_GENERATOR_ENABLED=1` 才发 (跟 F6/F7/F8 同 default-disabled pattern).
+
+### Test verify
+- 15 new test 全 pass
+- pytest src/tests/cuts/: 413 (398 baseline + 15 new)
+- mypy --strict 35 src 0 errors
+- ruff clean
+- preflight 8/8 PASS
+- generator ↔ validator 接合 test: emit cut → run validator → kind="ok"
+
+## Cross-check 重点 (push back if 有问题)
+
+1. **Soundness (spec §2)**: code 严守 port-front blocked ⇒ INFEASIBLE 数学?
+   有没有路径 emit 出 spurious cut (true feasible state 被误剪)?
+   - cell_owner 占 front 是否真等价于 "belt 无法走" (有没有 cell_owner 占 + belt
+     仍 OK 的 edge case)?
+   - free_cells ∉ + ghost ∈ + exterior_block ∈ + 出 grid 4 种 skip 是否
+     covered all "non-blocking" cases?
+
+2. **Literal asymmetry (§4 vs §1)**: spec §1 写 "facility A pose pA" + "facility
+   B slots (类似 F7 cell_owner causation split)". spec §4 第一个 literal
+   slot_index=0 + 第二个 slot_index=blocking_slot. 这个不对称是 spec 故意 (A
+   完全 anonymous slot 因为 "any slot of A 选 pA 都触发 cut") 还是 spec drift
+   (应该两个都 blocking_slot 类似)?
+   - **关键**: cut "facility A pose pA + blocking B slot=blocking_slot pose=blocking_pose_id"
+     在 state-machine multiset 包含怎么 evaluate? state 同时含 (A.0=pA) 跟
+     (B.blocking_slot=blocking_pose_id) → violate. 但实际 state.cell_owner
+     的 A 是真 slot (e.g. A.5=pA), code 把 cut literal 写 (A.0=pA, B.5=pB) —
+     evaluate_cut_literal_based 看 A.0 是不是真 selected pA? 还是看 anonymous?
+     state_machine_v2 §5 slot anonymity 怎么定义? 实际 cut 触发逻辑是?
+
+3. **Target derivation from cell_owner vs spec master_solution**: code 走
+   cell_owner derive. cell_owner 是 facility 实际 placed cell → (group, slot)
+   反向 lookup. **mandatory facility 还没 placed (or master OPTIMAL 后还在
+   pending) 时 not in cell_owner — generator silently miss them**. spec §5
+   写 master_solution.placed_facility_poses (理论上含全 placed, 不只 cell_owner
+   fill 的). 这个 trade-off 是否 sound? 会不会 introduces false NOT-CUT
+   (应 cut 没 cut) → master 接受不应 OPTIMAL 的解 → 整 LBBD outer loop 错?
+
+4. **active_port_witness_b64=None vs spec §7 第 4 步**: spec 说 validator 要
+   verify, code (validator + generator) 都不 verify. defer Phase 1.5+ OK?
+   会不会 generator emit cut with witness=None, validator passes kind=ok,
+   但实际 cut 数学 unsound (port 其实是 active 不该这么 cut)?
+   - 比较 F2 cutset witness_blob_b64=None defer pattern, F2 是否有同等
+     soundness 风险? F2 spec 也有 LP dual witness 但 defer.
+
+5. **Ports source**: code 用 candidate_placements per-pose port (input + output)
+   list, spec 写 canonical_rules_facility_ports(group, pose_id). 这两个数据
+   是否等价? candidate_placements 已经 baked 每 pose 的 port list, canonical_rules
+   是 facility 模板的 port. 等价应该 OK 但 verify.
+
+6. **Mandatory facility miss**: 见 #3.
+
+7. **fail-closed silent skip**: ports lookup miss / blocking_gstate None /
+   slot out of range → skip. 这些是 sound (不发不 over-restrict) 但**generator
+   completeness** 风险 — A3 oracle real-emit 时若有 mandatory facility ports
+   missing, fixture 会 silently 少 emit. F3 special-case phase 目标是凑 ≥45
+   cert / 9 family / 0 unsound, silent miss 可能让 A3 重跑后还是 < 45.
+
+8. **Dedup signature**: includes port_dir. rare 同 front_cell 2 dir case 是否
+   真存在 (geometry 上 N/S/E/W 4 dir 不会同 front_cell 除非 grid edge corner)?
+   若真存在, 两 distinct cut emit 是 sound (不同 port 不同 cert), 但 multiset
+   evaluate 时会不会 over-cut?
+
+## 不可达性论证要求 (prompt armor)
+
+若 finding 暗示某选择 "做不到 / 必须 X / 不能 defer", 必须给形式化证明:
+- complexity reduction (problem X ≤_p problem Y)
+- proof system lower bound
+- resource inequality (memory / variable count / time)
+- 引文献 (paper / theorem 名 + 年份)
+不接受 "I believe / intuitively / 通常这样" 等 vague claim.
+
+## 27 lever 死路 inventory (欢迎挑战, 仅供 context — 不强制 cite)
+
+L1-L27 详 `docs/项目说明/03_paradigm_death_baseline.md`. 跟 F3 implementation
+直接 orthogonal (F3 是 cut family 不是 paradigm investigation). 但若 F3
+触发了某 dead lever 同种数学错估, push back. 这些不是禁止讨论, 是 prior verdict
+data.
+
+## 任务
+
+按 cross-check 重点 1-8 验 + 给 finding (severity + 反例 + 建议 fix + 是否
+defer). 重点是数学 soundness (#1/#2/#3/#4 是 sound vs spec drift) > generator
+completeness (#3/#6/#7 是 missed cut) > implementation hygiene (#5/#8).
+
+不需要打包成 zip 返, simple text response. 末尾给 1-2 句 overall verdict
+(PASS / NEED_FIX / NOT_SURE).

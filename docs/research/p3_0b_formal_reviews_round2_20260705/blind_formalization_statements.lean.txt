@@ -1,0 +1,477 @@
+import Mathlib
+
+set_option autoImplicit false
+set_option maxHeartbeats 0
+
+/-!
+# ZMD blind formalization statements
+
+This file is intentionally abstract: package materials say the reusable mathematics is
+finite-set / graph / counting structure, while JSON, SHA, 70x70 decoding, and SoT replay
+are engineering bindings.  Those bindings are exposed here as explicit predicates or
+premises rather than hidden inside theorem names.
+-/
+
+namespace ZMD
+
+universe u v w
+
+/-- Pairwise disjointness for a finite family of occupied cell sets. -/
+def PairwiseDisjoint {ι α : Type u} (F : ι → Finset α) : Prop :=
+  ∀ ⦃i j : ι⦄, i ≠ j → Disjoint (F i) (F j)
+
+/-- Boolean value of the project objective `max_lex(area, min_side)`, written as a pair. -/
+abbrev LexValue := Nat × Nat
+
+/-- `a` is lexicographically no better than `b`: area first, then min_side. -/
+def LexLe (a b : LexValue) : Prop :=
+  a.1 < b.1 ∨ (a.1 = b.1 ∧ a.2 ≤ b.2)
+
+/-- Strict lex improvement: area first, then min_side. -/
+def LexLt (a b : LexValue) : Prop :=
+  a.1 < b.1 ∨ (a.1 = b.1 ∧ a.2 < b.2)
+
+/-- `x` is a lexicographic maximum of the feasible set. -/
+def IsLexMax {Cand : Type u} (Feasible : Cand → Prop) (value : Cand → LexValue)
+    (x : Cand) : Prop :=
+  Feasible x ∧ ∀ y : Cand, Feasible y → LexLe (value y) (value x)
+
+/-- The search set after frontier pruning with a certified witness kept as incumbent. -/
+def FrontierKept {Cand : Type u} (Feasible : Cand → Prop) (value : Cand → LexValue)
+    (witness cand : Cand) : Prop :=
+  Feasible cand ∧ (cand = witness ∨ LexLt (value witness) (value cand))
+
+/-! ## Current family cores requested by CONTEXT.md: F9, F1, F7, F4, F6, F2. -/
+
+/-- TARGET 01, F9 bound: owned cells in a window are bounded by the non-blocked window cells. -/
+theorem F9_density_bound {Cell : Type u} [DecidableEq Cell]
+    (W blocked ownedInWindow : Finset Cell)
+    (hWellFormed : ownedInWindow ⊆ W \ blocked) :
+    ownedInWindow.card ≤ (W \ blocked).card := by
+  sorry
+
+/-- TARGET 02, F9 fire: witness area strictly above the safe upper bound cannot be well formed. -/
+theorem F9_density_fire {Cell : Type u} [DecidableEq Cell]
+    (W blocked ownedInWindow : Finset Cell)
+    (hOverflow : (W \ blocked).card < ownedInWindow.card) :
+    ¬ ownedInWindow ⊆ W \ blocked := by
+  sorry
+
+/-- TARGET 03, F1 bound: mandatory region demand is bounded by non-blocked region capacity. -/
+theorem F1_region_capacity_bound {Cell Group : Type u}
+    [DecidableEq Cell] [Fintype Group]
+    (R blocked : Finset Cell)
+    (demand cellsPerPose : Group → Nat)
+    (occupied : Group → Finset Cell)
+    (hSub : ∀ g : Group, occupied g ⊆ R \ blocked)
+    (hCard : ∀ g : Group, (occupied g).card = demand g * cellsPerPose g)
+    (hDisjoint : PairwiseDisjoint occupied) :
+    (∑ g : Group, demand g * cellsPerPose g) ≤ (R \ blocked).card := by
+  sorry
+
+/-- TARGET 04, F1 fire: demand above region capacity forbids a legal disjoint placement. -/
+theorem F1_region_capacity_fire {Cell Group : Type u}
+    [DecidableEq Cell] [Fintype Group]
+    (R blocked : Finset Cell)
+    (demand cellsPerPose : Group → Nat)
+    (hOverflow : (R \ blocked).card < ∑ g : Group, demand g * cellsPerPose g) :
+    ¬ ∃ occupied : Group → Finset Cell,
+      (∀ g : Group, occupied g ⊆ R \ blocked) ∧
+      (∀ g : Group, (occupied g).card = demand g * cellsPerPose g) ∧
+      PairwiseDisjoint occupied := by
+  sorry
+
+/-- TARGET 05, F7 bound: under the ghost-only monotone scope, future cover anchors stay empty. -/
+theorem F7_power_hitting_set_bound {Cell Anchor : Type u}
+    [DecidableEq Cell] [DecidableEq Anchor]
+    (CoverSet : Finset Cell → Finset Anchor)
+    (ghostOnlyFree futureFree : Finset Cell)
+    (hMono : ∀ ⦃A B : Finset Cell⦄, A ⊆ B → CoverSet A ⊆ CoverSet B)
+    (hFutureSub : futureFree ⊆ ghostOnlyFree)
+    (hGhostEmpty : CoverSet ghostOnlyFree = ∅) :
+    (CoverSet futureFree).card ≤ 0 := by
+  sorry
+
+/-- TARGET 06, F7 fire: a powered pose needing a pole is infeasible when both checked cover sets are empty. -/
+theorem F7_power_hitting_set_fire {Cell Anchor Placement : Type u}
+    [DecidableEq Cell] [DecidableEq Anchor]
+    (CoverSet : Finset Cell → Finset Anchor)
+    (fullFree ghostOnlyFree futureFree : Finset Cell)
+    (LegalPoweredPlacement : Placement → Prop)
+    (hMono : ∀ ⦃A B : Finset Cell⦄, A ⊆ B → CoverSet A ⊆ CoverSet B)
+    (hFutureSub : futureFree ⊆ ghostOnlyFree)
+    (hFullEmpty : CoverSet fullFree = ∅)
+    (hGhostEmpty : CoverSet ghostOnlyFree = ∅)
+    (hNeedsAnchor : ∀ p : Placement, LegalPoweredPlacement p → ∃ a : Anchor, a ∈ CoverSet futureFree) :
+    ¬ ∃ p : Placement, LegalPoweredPlacement p := by
+  sorry
+
+/-- TARGET 07, F4 bound: if BFS/reachability says disconnected, there are no legal path witnesses. -/
+theorem F4_component_reach_bound {Cell Path : Type u} [DecidableEq Path]
+    (Reach : Cell → Cell → Prop)
+    (LegalBeltPath : Path → Cell → Cell → Prop)
+    (src sink : Cell)
+    (pathWitnesses : Finset Path)
+    (hPathImpliesReach : ∀ p : Path, LegalBeltPath p src sink → Reach src sink)
+    (hNoReach : ¬ Reach src sink)
+    (hAllWitnessesLegal : ∀ p ∈ pathWitnesses, LegalBeltPath p src sink) :
+    pathWitnesses.card ≤ 0 := by
+  sorry
+
+/-- TARGET 08, F4 fire: source and sink in different free-cell components forbid the commodity route. -/
+theorem F4_component_reach_fire {Cell Path : Type u}
+    (Reach : Cell → Cell → Prop)
+    (LegalBeltPath : Path → Cell → Cell → Prop)
+    (src sink : Cell)
+    (hPathImpliesReach : ∀ p : Path, LegalBeltPath p src sink → Reach src sink)
+    (hNoReach : ¬ Reach src sink) :
+    ¬ ∃ p : Path, LegalBeltPath p src sink := by
+  sorry
+
+/-- One-dimensional interval capacity for the current F6 single-shape baseline version. -/
+def intervalCapacity (L : Nat) (lengths : Finset Nat) : Nat :=
+  ∑ len in lengths, len / L
+
+/-- TARGET 09, F6 bound: legal `1×L` placements in split baseline intervals cannot exceed the floor-sum. -/
+theorem F6_shape_packing_interval_bound
+    (CanPackRigidSegments : Nat → Finset Nat → Nat → Prop)
+    (L : Nat) (lengths : Finset Nat) (placedCount : Nat)
+    (hPositiveLength : 0 < L)
+    (hLegalPack : CanPackRigidSegments L lengths placedCount) :
+    placedCount ≤ intervalCapacity L lengths := by
+  sorry
+
+/-- TARGET 10, F6 fire: the source-of-truth lower bound exceeds the recomputed interval capacity. -/
+theorem F6_shape_packing_hall_fire
+    (L D dRegion CRegion COther : Nat)
+    (regionLengths otherLengths : Finset Nat)
+    (hPositiveLength : 0 < L)
+    (hCRegion : CRegion = intervalCapacity L regionLengths)
+    (hCOther : COther = intervalCapacity L otherLengths)
+    (hRegionDemandLower : dRegion ≤ D - COther)
+    (hGap : CRegion < dRegion) :
+    ¬ ∃ nRegion nOther : Nat,
+      nRegion ≤ CRegion ∧ nOther ≤ COther ∧ D ≤ nRegion + nOther := by
+  sorry
+
+/-- TARGET 11, F2 bound: edge-disjoint routes crossing a closed A/B cut inject into cut edges. -/
+theorem F2_cutset_bound {Route Edge : Type u}
+    [DecidableEq Route] [DecidableEq Edge]
+    (routes : Finset Route) (cutEdges : Finset Edge)
+    (crossEdge : Route → Edge)
+    (hCrossMem : ∀ r ∈ routes, crossEdge r ∈ cutEdges)
+    (hCrossInj : Set.InjOn crossEdge {r : Route | r ∈ routes}) :
+    routes.card ≤ cutEdges.card := by
+  sorry
+
+/-- TARGET 12, F2 fire: total unit demand above the cut size forbids edge-capacity-one routing. -/
+theorem F2_cutset_fire {Route Edge : Type u}
+    [DecidableEq Route] [DecidableEq Edge]
+    (demand : Nat) (cutEdges : Finset Edge)
+    (hOverflow : cutEdges.card < demand) :
+    ¬ ∃ routes : Finset Route,
+      routes.card = demand ∧
+      ∃ crossEdge : Route → Edge,
+        (∀ r ∈ routes, crossEdge r ∈ cutEdges) ∧
+        Set.InjOn crossEdge {r : Route | r ∈ routes} := by
+  sorry
+
+/-! ## F3 port exposure. -/
+
+/-- TARGET 13, F3 blocked-port: with all-ports-active and the declared direction primitive, a blocked front cell is infeasible. -/
+theorem F3_blocked_port_infeasible {Cell Port Layout : Type u} [DecidableEq Cell]
+    (Legal : Layout → Prop)
+    (ActivePort : Layout → Port → Prop)
+    (FrontCell : Port → Cell)
+    (FreeCells : Layout → Finset Cell)
+    (DirectionPrimitiveMatchesProjectNS : Prop)
+    (layout : Layout) (port : Port)
+    (hDirection : DirectionPrimitiveMatchesProjectNS)
+    (hActive : ActivePort layout port)
+    (hPortFrontMustBeFree : ∀ l p, Legal l → ActivePort l p → FrontCell p ∈ FreeCells l)
+    (hBlocked : FrontCell port ∉ FreeCells layout) :
+    ¬ Legal layout := by
+  sorry
+
+/-- Two-literal F3 nogood violation: both the target pose and the blocker pose are selected. -/
+def ViolatesTwoLiteralNoGood {Layout Group Pose : Type u}
+    (SelectedCount : Layout → Group → Pose → Nat)
+    (targetGroup blockerGroup : Group) (targetPose blockerPose : Pose)
+    (layout : Layout) : Prop :=
+  0 < SelectedCount layout targetGroup targetPose ∧
+  0 < SelectedCount layout blockerGroup blockerPose
+
+/-- TARGET 14, F3 two-literal nogood: the literal cut is sound for every state containing both literals. -/
+theorem F3_two_literal_nogood_sound {Layout Group Pose : Type u}
+    (Legal : Layout → Prop)
+    (SelectedCount : Layout → Group → Pose → Nat)
+    (targetGroup blockerGroup : Group) (targetPose blockerPose : Pose)
+    (hBlockedPairUnsat : ∀ l : Layout,
+      0 < SelectedCount l targetGroup targetPose →
+      0 < SelectedCount l blockerGroup blockerPose →
+      ¬ Legal l) :
+    ∀ l : Layout,
+      ViolatesTwoLiteralNoGood SelectedCount targetGroup blockerGroup targetPose blockerPose l →
+      ¬ Legal l := by
+  sorry
+
+/-! ## F5 orbit/order composition from the design excerpt. -/
+
+/-- Same orbit under an abstract symmetry action. -/
+def SameOrbit {Sym X : Type u} (act : Sym → X → X) (x y : X) : Prop :=
+  ∃ g : Sym, act g x = y
+
+/-- TARGET 15, F5 composite safety: order keeps a representative and invariant cuts delete whole orbits. -/
+theorem F5_orbit_cut_order_composite_safe {Sym X : Type u} [Group Sym]
+    (act : Sym → X → X)
+    (Legal OrderKept CutDeleted : X → Prop)
+    (hOrderKeepsRep : ∀ x : X, Legal x →
+      ∃ y : X, SameOrbit act x y ∧ Legal y ∧ OrderKept y)
+    (hCutInvariantOnOrbits : ∀ x y : X, SameOrbit act x y → (CutDeleted x ↔ CutDeleted y)) :
+    ∀ x : X, Legal x → ¬ CutDeleted x →
+      ∃ y : X, SameOrbit act x y ∧ Legal y ∧ OrderKept y ∧ ¬ CutDeleted y := by
+  sorry
+
+/-- A two-point orbit used to state the non-invariant-cut trap as a concrete counterexample. -/
+inductive TwoPoint
+  | rep
+  | other
+  deriving DecidableEq, Fintype
+
+open TwoPoint
+
+def twoPointOrbit (_x _y : TwoPoint) : Prop := True
+
+def twoPointOrderKept : TwoPoint → Prop
+  | TwoPoint.rep => True
+  | TwoPoint.other => False
+
+def twoPointCutDeleted : TwoPoint → Prop
+  | TwoPoint.rep => True
+  | TwoPoint.other => False
+
+def twoPointLegal (_x : TwoPoint) : Prop := True
+
+/-- TARGET 16, F5 trap: a non-G-invariant cut plus order can delete every survivor of a legal orbit. -/
+theorem F5_non_invariant_cut_order_counterexample :
+    (∀ x : TwoPoint, twoPointLegal x → ∃ y : TwoPoint, twoPointOrbit x y ∧ twoPointOrderKept y) ∧
+    (∃ x : TwoPoint, twoPointLegal x ∧ ¬ twoPointCutDeleted x) ∧
+    (¬ ∀ x y : TwoPoint, twoPointOrbit x y → (twoPointCutDeleted x ↔ twoPointCutDeleted y)) ∧
+    (∀ x : TwoPoint, twoPointLegal x → ¬ (twoPointOrderKept x ∧ ¬ twoPointCutDeleted x)) := by
+  sorry
+
+/-! ## Frontier pruning for `max_lex(area, min_side)`. -/
+
+/-- TARGET 17, frontier pruning: keeping the certified witness preserves the lex optimum after skipping no-better candidates. -/
+theorem frontier_pruning_preserves_lex_optimum {Cand : Type u}
+    (Feasible : Cand → Prop) (value : Cand → LexValue)
+    (witness best : Cand)
+    (hWitness : Feasible witness)
+    (hBest : IsLexMax Feasible value best) :
+    ∃ best' : Cand,
+      IsLexMax (FrontierKept Feasible value witness) value best' ∧
+      value best' = value best := by
+  sorry
+
+/-! ## TP7-S static layer and selected-solution nogood boundary. -/
+
+/-- TP7-S T1: per-commodity conservation at non-terminal nodes. -/
+def TP7_T1 {Node Edge Commodity : Type u} [DecidableEq Edge]
+    (InEdges OutEdges : Node → Finset Edge)
+    (NonTerminal : Node → Commodity → Prop)
+    (φ : Edge → Commodity → ℚ) : Prop :=
+  ∀ n k, NonTerminal n k →
+    (∑ e in InEdges n, φ e k) = (∑ e in OutEdges n, φ e k)
+
+/-- TP7-S T2: selected physical states obey aggregate belt capacity. -/
+def TP7_T2 {PhysState Edge Commodity : Type u}
+    (SelectedPhysical : PhysState → Prop)
+    (Through : (Edge → Commodity → ℚ) → PhysState → ℚ)
+    (beltCapacityPerTick : ℚ)
+    (φ : Edge → Commodity → ℚ) : Prop :=
+  ∀ s, SelectedPhysical s → Through φ s ≤ beltCapacityPerTick
+
+/-- TP7-S T3: port bounds, route-visible terminal equality, and zero-throughput rejection cases. -/
+def TP7_T3 {Port Edge Commodity : Type u}
+    (RouteVisible KnownPort UniquePort IncidentSelectedState : Port → Prop)
+    (PortMax : Port → ℚ)
+    (TerminalArcFlow : (Edge → Commodity → ℚ) → Port → ℚ)
+    (φ : Edge → Commodity → ℚ) (r : Port → ℚ) : Prop :=
+  ∀ p, 0 ≤ r p ∧ r p ≤ PortMax p ∧
+    (RouteVisible p → r p = TerminalArcFlow φ p) ∧
+    ((¬ KnownPort p ∨ ¬ UniquePort p ∨ ¬ IncidentSelectedState p) → r p = 0)
+
+/-- TP7-S T4: machine input/output coupling through utilization. -/
+def TP7_T4 {Machine Commodity Port : Type u} [DecidableEq Port]
+    (InPorts OutPorts : Machine → Commodity → Finset Port)
+    (InputQty OutputQty : Machine → Commodity → ℚ)
+    (Tpc : Machine → ℚ)
+    (r : Port → ℚ) (u : Machine → ℚ) : Prop :=
+  ∀ i k, 0 < Tpc i ∧
+    (∑ p in InPorts i k, r p) = u i * InputQty i k / Tpc i ∧
+    (∑ p in OutPorts i k, r p) = u i * OutputQty i k / Tpc i
+
+/-- TP7-S T5: production target rates are exact equalities. -/
+def TP7_T5 {Target Port : Type u} [DecidableEq Port]
+    (TargetOutputPorts : Target → Finset Port)
+    (TargetRate : Target → ℚ)
+    (r : Port → ℚ) : Prop :=
+  ∀ t, (∑ p in TargetOutputPorts t, r p) = TargetRate t
+
+/-- TP7-S T6: routing-free sink balance and external-boundary-only injection. -/
+def TP7_T6 {Commodity Port : Type u} [DecidableEq Port]
+    (RoutingFreeSink : Commodity → Prop)
+    (ProductionPorts VirtualSinkSlots : Commodity → Finset Port)
+    (ExternalInjectionPort SourceKindExternalBoundary : Port → Prop)
+    (r : Port → ℚ) : Prop :=
+  (∀ k, RoutingFreeSink k →
+    (∑ p in ProductionPorts k, r p) = (∑ p in VirtualSinkSlots k, r p)) ∧
+  (∀ p, ExternalInjectionPort p → SourceKindExternalBoundary p)
+
+/-- TARGET 18, TP7-S T1 necessity: a discrete periodic run averages to flow conservation. -/
+theorem TP7_T1_periodic_average_necessary {Run Node Edge Commodity : Type u}
+    [DecidableEq Edge]
+    (InEdges OutEdges : Node → Finset Edge)
+    (NonTerminal : Node → Commodity → Prop)
+    (DiscreteRun : Run → Prop)
+    (AverageWitness : Run → (Edge → Commodity → ℚ) → Prop)
+    (hSemantics : ∀ run φ, DiscreteRun run → AverageWitness run φ →
+      TP7_T1 InEdges OutEdges NonTerminal φ)
+    {run : Run} {φ : Edge → Commodity → ℚ}
+    (hRun : DiscreteRun run) (hAvg : AverageWitness run φ) :
+    TP7_T1 InEdges OutEdges NonTerminal φ := by
+  sorry
+
+/-- TARGET 19, TP7-S T2 necessity: average through selected physical states respects capacity. -/
+theorem TP7_T2_periodic_average_necessary {Run PhysState Edge Commodity : Type u}
+    (SelectedPhysical : PhysState → Prop)
+    (Through : (Edge → Commodity → ℚ) → PhysState → ℚ)
+    (beltCapacityPerTick : ℚ)
+    (DiscreteRun : Run → Prop)
+    (AverageWitness : Run → (Edge → Commodity → ℚ) → Prop)
+    (hSemantics : ∀ run φ, DiscreteRun run → AverageWitness run φ →
+      TP7_T2 SelectedPhysical Through beltCapacityPerTick φ)
+    {run : Run} {φ : Edge → Commodity → ℚ}
+    (hRun : DiscreteRun run) (hAvg : AverageWitness run φ) :
+    TP7_T2 SelectedPhysical Through beltCapacityPerTick φ := by
+  sorry
+
+/-- TARGET 20, TP7-S T3 necessity: average route-visible ports obey bounds and terminal-arc equality. -/
+theorem TP7_T3_periodic_average_necessary {Run Port Edge Commodity : Type u}
+    (RouteVisible KnownPort UniquePort IncidentSelectedState : Port → Prop)
+    (PortMax : Port → ℚ)
+    (TerminalArcFlow : (Edge → Commodity → ℚ) → Port → ℚ)
+    (DiscreteRun : Run → Prop)
+    (AverageWitness : Run → (Edge → Commodity → ℚ) → (Port → ℚ) → Prop)
+    (hSemantics : ∀ run φ r, DiscreteRun run → AverageWitness run φ r →
+      TP7_T3 RouteVisible KnownPort UniquePort IncidentSelectedState PortMax TerminalArcFlow φ r)
+    {run : Run} {φ : Edge → Commodity → ℚ} {r : Port → ℚ}
+    (hRun : DiscreteRun run) (hAvg : AverageWitness run φ r) :
+    TP7_T3 RouteVisible KnownPort UniquePort IncidentSelectedState PortMax TerminalArcFlow φ r := by
+  sorry
+
+/-- TARGET 21, TP7-S T4 necessity: average machine rates satisfy utilization coupling. -/
+theorem TP7_T4_periodic_average_necessary {Run Machine Commodity Port : Type u}
+    [DecidableEq Port]
+    (InPorts OutPorts : Machine → Commodity → Finset Port)
+    (InputQty OutputQty : Machine → Commodity → ℚ)
+    (Tpc : Machine → ℚ)
+    (DiscreteRun : Run → Prop)
+    (AverageWitness : Run → (Port → ℚ) → (Machine → ℚ) → Prop)
+    (hSemantics : ∀ run r u, DiscreteRun run → AverageWitness run r u →
+      TP7_T4 InPorts OutPorts InputQty OutputQty Tpc r u)
+    {run : Run} {r : Port → ℚ} {u : Machine → ℚ}
+    (hRun : DiscreteRun run) (hAvg : AverageWitness run r u) :
+    TP7_T4 InPorts OutPorts InputQty OutputQty Tpc r u := by
+  sorry
+
+/-- TARGET 22, TP7-S T5 necessity: average production targets meet exact target-rate equalities. -/
+theorem TP7_T5_periodic_average_necessary {Run Target Port : Type u}
+    [DecidableEq Port]
+    (TargetOutputPorts : Target → Finset Port)
+    (TargetRate : Target → ℚ)
+    (DiscreteRun : Run → Prop)
+    (AverageWitness : Run → (Port → ℚ) → Prop)
+    (hSemantics : ∀ run r, DiscreteRun run → AverageWitness run r →
+      TP7_T5 TargetOutputPorts TargetRate r)
+    {run : Run} {r : Port → ℚ}
+    (hRun : DiscreteRun run) (hAvg : AverageWitness run r) :
+    TP7_T5 TargetOutputPorts TargetRate r := by
+  sorry
+
+/-- TARGET 23, TP7-S T6 necessity: average routing-free sinks balance and injections are external-boundary only. -/
+theorem TP7_T6_periodic_average_necessary {Run Commodity Port : Type u}
+    [DecidableEq Port]
+    (RoutingFreeSink : Commodity → Prop)
+    (ProductionPorts VirtualSinkSlots : Commodity → Finset Port)
+    (ExternalInjectionPort SourceKindExternalBoundary : Port → Prop)
+    (DiscreteRun : Run → Prop)
+    (AverageWitness : Run → (Port → ℚ) → Prop)
+    (hSemantics : ∀ run r, DiscreteRun run → AverageWitness run r →
+      TP7_T6 RoutingFreeSink ProductionPorts VirtualSinkSlots ExternalInjectionPort SourceKindExternalBoundary r)
+    {run : Run} {r : Port → ℚ}
+    (hRun : DiscreteRun run) (hAvg : AverageWitness run r) :
+    TP7_T6 RoutingFreeSink ProductionPorts VirtualSinkSlots ExternalInjectionPort SourceKindExternalBoundary r := by
+  sorry
+
+/-- Full 0/1 equality-key nogood constraint: at least one bit differs from the recorded assignment. -/
+def FullEqKeyConstraint {Var : Type u} [Fintype Var]
+    (key cand : Var → Bool) : Prop :=
+  1 ≤ ∑ v : Var, if cand v = key v then (0 : Nat) else 1
+
+/-- The assignments excluded by the full equality-key nogood. -/
+def FullEqKeyExcluded {Var : Type u} [Fintype Var]
+    (key cand : Var → Bool) : Prop :=
+  ¬ FullEqKeyConstraint key cand
+
+/-- Selected-only nogood: only the variables set to 1 in the recorded solution appear. -/
+def SelectedOnlyConstraint {Var : Type u} [Fintype Var]
+    (key cand : Var → Bool) : Prop :=
+  1 ≤ ∑ v : Var, if key v = true then (if cand v = true then (0 : Nat) else 1) else 0
+
+/-- The assignments excluded by selected-only nogood. -/
+def SelectedOnlyKeyExcluded {Var : Type u} [Fintype Var]
+    (key cand : Var → Bool) : Prop :=
+  ¬ SelectedOnlyConstraint key cand
+
+/-- TARGET 24, TP7 equality key: the complete 0/1 equality nogood excludes exactly the recorded assignment. -/
+theorem TP7_full_eq_key_excluded_iff {Var : Type u} [Fintype Var]
+    (key cand : Var → Bool) :
+    FullEqKeyExcluded key cand ↔ cand = key := by
+  sorry
+
+/-- TARGET 25, TP7 equality-key soundness: if the recorded graph is TP7-S infeasible, all feasible candidates satisfy the full key nogood. -/
+theorem TP7_full_eq_key_sound {Var : Type u} [Fintype Var]
+    (TP7SFeasible : (Var → Bool) → Prop)
+    (key : Var → Bool)
+    (hKeyInfeasible : ¬ TP7SFeasible key) :
+    ∀ cand : Var → Bool, TP7SFeasible cand → FullEqKeyConstraint key cand := by
+  sorry
+
+/-- Toy variables from the design note: one half-capacity route and an added parallel route. -/
+inductive ToyRouteVar
+  | halfRoute
+  | parallelRoute
+  deriving DecidableEq, Fintype
+
+def toyEqKey : ToyRouteVar → Bool
+  | ToyRouteVar.halfRoute => true
+  | ToyRouteVar.parallelRoute => false
+
+def toySuperAssignment : ToyRouteVar → Bool
+  | ToyRouteVar.halfRoute => true
+  | ToyRouteVar.parallelRoute => true
+
+/-- Toy TP7-S feasibility: the base half-route alone is infeasible; adding the parallel route is feasible. -/
+def toyTP7SFeasible (a : ToyRouteVar → Bool) : Prop :=
+  a ToyRouteVar.parallelRoute = true
+
+/-- TARGET 26, TP7 selected-only overcut: selected-only nogood wrongly excludes a feasible strict super-assignment. -/
+theorem TP7_selected_only_nogood_overcuts_toy :
+    toyTP7SFeasible toySuperAssignment ∧
+    ¬ toyTP7SFeasible toyEqKey ∧
+    SelectedOnlyKeyExcluded toyEqKey toySuperAssignment ∧
+    ¬ FullEqKeyExcluded toyEqKey toySuperAssignment := by
+  sorry
+
+end ZMD

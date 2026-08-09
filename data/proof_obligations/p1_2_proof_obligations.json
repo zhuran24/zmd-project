@@ -1,0 +1,2085 @@
+{
+  "schema_version": 1,
+  "gate_id": "p1_2_proof_obligation_consolidation",
+  "status": "active_fail_closed_contract",
+  "updated_at": "2026-07-03",
+  "review_anchor": "v99_p1_2_close_kernel_sealing",
+  "semantic_projection_sha256": "01417c60a776c460ad2123af6f5f558e86cb33259a6a38e704048c6059fec262",
+  "summary": "P1.2 remains fail-closed. Proof-bearing CERTIFIED / INFEASIBLE candidate states are untrusted claims until each certified sink independently replays a data-only, candidate/project/source/artifact-bound request in a fresh isolated certified_exact interpreter whose Python bytecode is forced to compile from source covered by certified_exact_source_tree. The close kernel seals that replay authority path and rejects missing, drifted, bypassed, or unreplayable strong-status evidence.",
+  "phase_gate_required_anchor": "v99_p1_2_close_kernel_sealing",
+  "step_7_contract": {
+    "decision_function": "step_7_evaluation_attach_decision",
+    "canonical_transition_function": "step_6_attach_scope_check",
+    "boolean_guard_function": "evaluator_scope_matches_current_state",
+    "guard_obligations": [
+      "source_digest",
+      "ghost_or_exterior_scope",
+      "artifact_hashes",
+      "oracle_abstraction_version",
+      "active_assumptions"
+    ],
+    "policy": "Every Step 7 evaluator must fail closed unless the side-effect-free Step 6 attach decision is ATTACH. HOLD and QUARANTINE are both non-pruning states in the hot path."
+  },
+  "source_digest_contract": {
+    "schema_version": 2,
+    "fields": [
+      "canonical_rules",
+      "candidate_placements",
+      "mandatory_exact_instances",
+      "facility_templates",
+      "generic_io_requirements",
+      "commodity_routes",
+      "groups_static"
+    ],
+    "runtime_cache_policy": "Only explicitly declared runtime cache keys may be ignored by the source digest. Schema-valid authoritative keys that begin with '__' remain proof-carrying source facts. Validators that build runtime caches must rebuild or invalidate them from the canonical source payload.",
+    "runtime_cache_keys_by_path": {
+      "candidate_placements": [
+        "__pose_id_cache__",
+        "__pose_id_cache_digest__"
+      ]
+    }
+  },
+  "obligations": [
+    {
+      "id": "PO-STEP7-ATTACH-MIRROR",
+      "title": "Step 7 hot-path evaluation mirrors Step 6 attachability",
+      "v_findings": [
+        "v30_candidate",
+        "v31_candidate",
+        "v31_postmortem_consolidation"
+      ],
+      "required_tests": [
+        "test_step_7_fails_closed_on_source_digest_drift_before_replay_quarantine",
+        "test_step_7_fails_closed_when_oracle_version_unavailable_before_replay_hold",
+        "test_step_7_fails_closed_when_active_assumption_no_longer_holds_before_replay_hold",
+        "test_evaluate_literal_multiset_fails_closed_on_source_digest_drift"
+      ],
+      "evidence_paths": [
+        "docs/research/p1_2_v30_candidate_review_reset.md",
+        "docs/research/p1_2_v31_candidate_review_reset.md",
+        "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md"
+      ]
+    },
+    {
+      "id": "PO-SOURCE-DIGEST-COVERAGE",
+      "title": "Validator/generator source facts are covered by one source-digest contract",
+      "v_findings": [
+        "v31_candidate",
+        "v84_layout_optimality_and_artifact_boundary_sealing",
+        "v96_symlink_ancestor_boundary_sealing"
+      ],
+      "required_tests": [
+        "test_source_digest_is_content_hash_and_ignores_runtime_pose_cache",
+        "test_source_digest_tracks_group_static_fields_but_not_selected_poses",
+        "test_source_digest_tracks_authoritative_leading_dunder_keys_except_declared_runtime_caches",
+        "test_step_7_fails_closed_on_schema_valid_leading_dunder_source_drift",
+        "test_v84_exact_artifact_hashes_reject_symlinked_project_authority",
+        "test_v96_exact_artifact_hashes_reject_symlinked_parent_project_authority"
+      ],
+      "evidence_paths": [
+        "docs/research/p1_2_v31_candidate_review_reset.md",
+        "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md",
+        "docs/research/p1_2_v84_layout_optimality_and_artifact_boundary_sealing.md",
+        "docs/research/p1_2_v96_symlink_ancestor_boundary_sealing.md"
+      ]
+    },
+    {
+      "id": "PO-RUNTIME-CACHE-NON-AUTHORITY",
+      "title": "Runtime caches cannot become hidden proof sources",
+      "v_findings": [
+        "v31_candidate"
+      ],
+      "required_tests": [
+        "test_validate_port_exposure_rebuilds_pose_cache_after_facility_pool_replaced",
+        "test_find_pose_cache_tracks_schema_valid_leading_dunder_facility_pool_replacement",
+        "test_validate_port_exposure_ignores_forged_runtime_pose_cache_with_matching_digest",
+        "test_find_pose_return_value_is_not_authoritative_mutation_channel",
+        "test_port_exposure_generator_ignores_mutated_find_pose_return",
+        "test_port_exposure_generator_ignores_orphaned_same_digest_pose_cache"
+      ],
+      "evidence_paths": [
+        "docs/research/p1_2_v31_candidate_review_reset.md",
+        "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md"
+      ]
+    },
+    {
+      "id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+      "title": "Exact-safe BendersCut replay is strictly typed, all-or-nothing, and faithfully encoded by the master",
+      "v_findings": [
+        "v53_candidate",
+        "v54_candidate",
+        "v55_candidate",
+        "v56_candidate",
+        "v56_certified_cut_replay_consolidation",
+        "v57_candidate",
+        "v58_candidate",
+        "v59_candidate",
+        "v82_oriented_domain_and_cut_replay_sealing",
+        "v83_geometry_witness_nogood_scope_and_loader_sealing"
+      ],
+      "required_tests": [
+        "test_benders_cut_from_dict_rejects_string_exact_safe_flag",
+        "test_collect_certification_blockers_rejects_non_bool_exact_safe_object",
+        "test_benders_cut_from_dict_rejects_string_conflict_pose_index",
+        "test_benders_cut_from_dict_rejects_bool_conflict_pose_index",
+        "test_benders_cut_from_dict_rejects_bool_condition_anchor_index",
+        "test_benders_cut_from_dict_rejects_condition_required_power_cut_without_condition_set",
+        "test_benders_cut_to_dict_rejects_condition_required_power_cut_without_condition_set",
+        "test_benders_cut_from_dict_rejects_condition_required_power_cut_with_unknown_condition_key",
+        "test_benders_cut_from_dict_rejects_condition_required_power_cut_metadata_mismatch",
+        "test_benders_cut_from_dict_rejects_condition_required_power_cut_rect_idx_mismatch",
+        "test_benders_cut_from_dict_rejects_noncanonical_ghost_anchor_condition_keys",
+        "test_collect_certification_blockers_rejects_bool_conflict_pose_index",
+        "test_exact_campaign_resume_rejects_malformed_exact_safe_cut",
+        "test_exact_campaign_resume_rejects_bool_conflict_pose_index",
+        "test_exact_campaign_resume_rejects_condition_required_power_cut_without_condition_set",
+        "test_exact_campaign_resume_rejects_condition_required_power_cut_with_unknown_condition_key",
+        "test_exact_campaign_resume_rejects_condition_required_power_cut_metadata_mismatch",
+        "test_exact_campaign_resume_rejects_condition_required_power_cut_rect_idx_not_resolver_supported",
+        "test_exact_campaign_resume_accepts_condition_required_power_cut_with_resolver_supported_anchor",
+        "test_exact_campaign_resume_rejects_condition_required_power_cut_anchor_outside_domain",
+        "test_cut_manager_load_rejects_duplicate_exact_safe_key",
+        "test_exact_campaign_resume_rejects_duplicate_json_key",
+        "test_exact_campaign_resume_rejects_json_nan_constant",
+        "test_cut_manager_load_rejects_json_nan_constant",
+        "test_persisted_cut_replay_fails_closed_on_unresolved_conflict_member",
+        "test_whole_layout_cut_dilution_fails_closed_when_synthetic_pole_loses_literal",
+        "test_whole_layout_nogood_propagates_master_rejection_for_unresolved_member",
+        "test_routing_front_blocked_c1_optional_conflict_emits_exact_safe_cut",
+        "test_coordinate_replay_alias_collision_fails_closed_instead_of_one_literal_ban",
+        "test_pose_bool_replay_alias_collision_fails_closed",
+        "test_legacy_benders_cut_alias_collision_fails_closed",
+        "test_resolver_fails_closed_on_malformed_ghost_anchor_key",
+        "test_certified_solver_ignores_persisted_exact_safe_cuts_until_revalidated",
+        "test_resume_does_not_replay_persisted_exact_safe_cuts_into_master",
+        "test_v83_binding_whole_layout_nogood_continues_lbbd"
+      ],
+      "evidence_paths": [
+        "docs/research/p1_2_v56_certified_cut_replay_consolidation.md",
+        "docs/research/p1_2_v58_condition_required_cut_anchor_validation.md",
+        "docs/research/p1_2_v59_condition_required_cut_domain_validation.md",
+        "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md",
+        "docs/research/p1_2_v82_oriented_domain_and_cut_replay_sealing.md",
+        "docs/research/p1_2_v83_geometry_witness_nogood_scope_and_loader_sealing.md"
+      ]
+    },
+    {
+      "id": "PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS",
+      "title": "The certified master domain and power-witness representation match the full-domain contract before session construction",
+      "v_findings": [
+        "v60_candidate",
+        "v60_master_domain_contract",
+        "v61_candidate",
+        "v62_candidate",
+        "v63_candidate",
+        "v64_candidate",
+        "v65_candidate",
+        "v66_candidate",
+        "v66_certified_lifecycle_evidence_consolidation",
+        "v80_deny_unknown_certified_surface",
+        "v81_partial_precheck_and_release_claim_sealing",
+        "v83_geometry_witness_nogood_scope_and_loader_sealing"
+      ],
+      "required_tests": [
+        "test_exact_campaign_state_persists_full_master_domain_contract",
+        "test_exact_campaign_resume_rejects_filtered_master_domain_contract",
+        "test_certified_exact_blocks_ghost_anchor_filter_env_before_candidate_terminal_status",
+        "test_certified_exact_blocks_pose_bool_master_env_before_session",
+        "test_certified_exact_blocks_power_pole_slot_override_before_session",
+        "test_certified_exact_blocks_power_representation_env_before_session",
+        "test_create_exact_search_session_blocks_power_representation_env_before_session",
+        "test_v64_outer_search_blocks_power_representation_env_before_session",
+        "test_v62_outer_search_blocks_unsafe_master_domain_env_before_session",
+        "test_v63_outer_search_blocks_ghost_anchor_filter_env_before_session",
+        "test_v65_outer_search_blocks_power_witness_encoding_env_before_session",
+        "test_v65_direct_exact_search_session_create_blocks_power_witness_env_before_project_load",
+        "test_v80_certified_exact_env_guard_blocks_unclassified_exact_knob",
+        "test_v80_certified_exact_env_guard_blocks_known_proof_knob",
+        "test_v80_certified_exact_env_guard_allows_production_wrapper_operational_envs",
+        "test_v81_mandatory_rectangle_partial_time_budget_group_is_not_infeasible",
+        "test_v81_mandatory_rectangle_complete_group_still_triggers_infeasible",
+        "test_v83_certified_loader_rejects_non_mandatory_record_in_mandatory_exact_artifact",
+        "test_batch1d_certified_env_guard_treats_legacy_witness_envs_as_unknown"
+      ],
+      "evidence_paths": [
+        "docs/research/p1_2_v60_master_domain_contract.md",
+        "docs/research/p1_2_v61_master_domain_candidate_frontier_contract.md",
+        "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
+        "docs/research/p1_2_v63_terminal_evidence_export_boundary_review.md",
+        "docs/research/p1_2_v64_power_witness_representation_env_guard.md",
+        "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md",
+        "docs/research/p1_2_v80_deny_unknown_certified_surface.md",
+        "docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md",
+        "docs/research/p1_2_v83_geometry_witness_nogood_scope_and_loader_sealing.md"
+      ]
+    },
+    {
+      "id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+      "title": "Certified terminal status requires strict full-frontier exhaustion evidence, not a candidate-level incumbent or best-effort stop",
+      "v_findings": [
+        "v61_candidate",
+        "v62_candidate",
+        "v63_candidate",
+        "v65_candidate",
+        "v66_candidate",
+        "v66_certified_lifecycle_evidence_consolidation",
+        "v75_candidate",
+        "v75_terminal_frontier_evidence_sealing",
+        "v76_project_bound_terminal_evidence",
+        "v79_terminal_domain_axis_sealing",
+        "v80_deny_unknown_certified_surface",
+        "v82_oriented_domain_and_cut_replay_sealing"
+      ],
+      "required_tests": [
+        "test_exact_campaign_resume_rejects_float_state_schema_version",
+        "test_exact_campaign_resume_rejects_float_proof_summary_schema_version",
+        "test_exact_campaign_resume_rejects_bool_generated_cut_count",
+        "test_exact_campaign_resume_rejects_best_effort_final_result",
+        "test_exact_campaign_resume_rejects_missing_declare_mode",
+        "test_certified_outer_search_blocks_skip_unknown_env_before_fake_certified",
+        "test_v62_partial_frontier_unknown_does_not_export_incumbent_as_certified",
+        "test_exact_campaign_resume_rejects_certified_final_result_without_terminal_frontier_evidence",
+        "test_v68_resume_rejects_certified_candidate_without_solution",
+        "test_v69_resume_inspector_and_b5a_reject_terminal_final_result_not_best_candidate",
+        "test_v75_resume_rejects_terminal_certified_without_replayable_frontier_evidence",
+        "test_v75_resume_rejects_terminal_evidence_with_unexhausted_frontier",
+        "test_v75_resume_rejects_terminal_evidence_from_start_area_slice",
+        "test_v76_best_certified_result_rejects_frontier_evidence_not_bound_to_project_domain",
+        "test_v79_resume_rejects_terminal_evidence_from_aspect_ratio_slice",
+        "test_v79_resume_rejects_terminal_evidence_from_min_side_slice",
+        "test_v80_resume_rejects_terminal_evidence_unknown_candidate_generation_key",
+        "test_v80_resume_rejects_terminal_evidence_min_side_admissibility_mismatch",
+        "test_v80_resume_rejects_v1_terminal_frontier_evidence_schema",
+        "test_v80_resume_rejects_terminal_final_result_below_project_admissibility",
+        "test_full_frontier_candidate_domain_keeps_oriented_dimensions",
+        "test_v82_terminal_frontier_dominance_keeps_smaller_pending_candidate_canary",
+        "test_v82_terminal_frontier_certified_prune_keeps_one_wider_pending_candidate_canary",
+        "test_v82_terminal_frontier_shape_frontier_keeps_transposed_equal_area_canary",
+        "test_save_rejects_dict_subclass_that_mutates_after_guard"
+      ],
+      "evidence_paths": [
+        "docs/research/p1_2_v61_master_domain_candidate_frontier_contract.md",
+        "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
+        "docs/research/p1_2_v63_terminal_evidence_export_boundary_review.md",
+        "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md",
+        "src/search/certified_frontier.py",
+        "src/tests/certified_frontier_helpers.py",
+        "docs/research/p1_2_v75_terminal_frontier_evidence_sealing.md",
+        "docs/research/p1_2_v76_project_bound_terminal_evidence.md",
+        "docs/research/p1_2_v79_terminal_domain_axis_sealing.md",
+        "docs/research/p1_2_v80_deny_unknown_certified_surface.md",
+        "docs/research/p1_2_v82_oriented_domain_and_cut_replay_sealing.md"
+      ]
+    },
+    {
+      "id": "PO-CERTIFIED-EXPORT-SURFACE",
+      "title": "Certified export surfaces only expose artifacts after terminal full-frontier evidence is committed",
+      "v_findings": [
+        "v62_candidate",
+        "v63_candidate",
+        "v65_candidate",
+        "v66_candidate",
+        "v66_certified_lifecycle_evidence_consolidation",
+        "v73_certified_surface_verifier",
+        "v73_certified_surface_verifier_consolidation",
+        "v74_certified_surface_authority_hardening",
+        "v75_candidate",
+        "v75_terminal_frontier_evidence_sealing",
+        "v76_project_bound_terminal_evidence",
+        "v77_delivery_manifest_writer_authority",
+        "v78_certified_manifest_writer_canonical_surface",
+        "v79_terminal_domain_axis_sealing",
+        "v80_deny_unknown_certified_surface",
+        "v81_partial_precheck_and_release_claim_sealing",
+        "v83_geometry_witness_nogood_scope_and_loader_sealing",
+        "v84_layout_optimality_and_artifact_boundary_sealing",
+        "v85_required_optional_terminal_sealing",
+        "v86_power_witness_terminal_sealing",
+        "v87_anchor_and_pole_irredundancy_sealing",
+        "v88_ghost_anchor_required_sealing",
+        "v89_ghost_pick_terminal_binding_sealing",
+        "v90_final_result_field_allowlist_sealing",
+        "v91_nested_public_field_sealing",
+        "v92_release_status_allowlist_sealing",
+        "v93_note_and_solution_entry_sealing",
+        "v94_protocol_storage_surplus_sealing",
+        "v95_optional_metadata_and_stop_reason_sealing",
+        "v96_symlink_ancestor_boundary_sealing",
+        "v97_canonical_checkpoint_authority_sealing",
+        "v98_b5a_symlink_authority_sealing"
+      ],
+      "required_tests": [
+        "test_delivery_manifest_rejects_best_effort_final_result",
+        "test_v62_best_effort_exhaustion_blocks_before_final_solution_export",
+        "test_delivery_manifest_rejects_certified_status_without_terminal_frontier_evidence",
+        "test_delivery_manifest_rejects_stale_certified_final_result_without_terminal_frontier_evidence",
+        "test_inspector_hides_stale_final_result_without_terminal_frontier_evidence",
+        "test_inspector_hides_stale_delivery_manifest_best_result_without_terminal_evidence",
+        "test_b5a_anchor_sprint_does_not_promote_stale_certified_final_result",
+        "test_v65_unsafe_env_block_clears_resumed_terminal_final_result",
+        "test_v65_terminal_result_is_committed_before_final_solution_export",
+        "test_v66_unsafe_env_block_clears_stale_certified_delivery_artifacts",
+        "test_v66_terminal_export_failure_clears_terminal_state_and_artifacts",
+        "test_v68_terminal_commit_failure_clears_stale_certified_delivery_artifacts",
+        "test_v68_inspector_requires_current_campaign_evidence_for_terminal_manifest",
+        "test_v68_delivery_manifest_rejects_best_result_before_delivery_artifacts",
+        "test_v69_delivery_manifest_rejects_stale_final_solution_artifact",
+        "test_v69_delivery_manifest_rejects_stale_optimal_blueprint_artifact",
+        "test_v69_inspector_rejects_manifest_best_result_that_only_partially_matches_campaign",
+        "test_v71_delivery_manifest_rejects_stale_exact_artifact_hash_before_best_result",
+        "test_v71_delivery_manifest_rejects_tampered_blueprint_active_ports",
+        "test_v71_inspector_and_b5a_reject_manifest_with_stale_artifact_table",
+        "test_v72_delivery_manifest_rejects_blueprint_with_extra_raw_fields",
+        "test_v72_manifest_currentness_rejects_extra_metadata_fields",
+        "test_v72_delivery_manifest_rejects_blueprint_missing_terminal_routing_solution",
+        "test_v72_blocked_campaign_cleanup_runs_even_when_checkpoint_save_fails",
+        "test_v73_inspector_uses_certified_surface_verifier_for_public_certified",
+        "test_v73_b5a_uses_certified_surface_verifier_for_anchor_publication",
+        "test_v73_certified_surface_verdict_is_single_gate_for_inspector_and_b5a",
+        "test_v73_certified_surface_rejects_non_regular_manifest_path",
+        "test_v74_certified_surface_rejects_memory_manifest_when_disk_manifest_stale",
+        "test_v74_certified_surface_rejects_memory_campaign_when_disk_checkpoint_differs",
+        "test_v74_certified_surface_recomputes_exact_hashes_even_when_caller_claims_resume_ok",
+        "test_v74_inspector_rejects_duplicate_key_delivery_manifest",
+        "test_v74_delivery_manifest_rejects_duplicate_key_final_solution_artifact",
+        "test_v77_delivery_manifest_export_rejects_memory_campaign_when_disk_checkpoint_differs",
+        "test_v77_delivery_manifest_export_rejects_symlink_campaign_checkpoint_for_best_result",
+        "test_v78_delivery_manifest_export_rejects_certified_best_result_to_noncanonical_output_path",
+        "test_v78_write_certified_delivery_manifest_rejects_direct_best_result_payload",
+        "test_v78_delivery_manifest_export_rejects_symlink_canonical_output_for_best_result",
+        "test_v79_delivery_manifest_rejects_non_instance_placement_solution",
+        "test_aspect_ratio_sliced_search_cannot_claim_terminal_certified",
+        "test_v80_resume_rejects_terminal_final_result_below_project_admissibility",
+        "test_v81_release_rejects_self_claimed_certified_run_summary",
+        "test_v81_release_rejects_lowercase_certified_claim",
+        "test_v81_release_accepts_open_exact_certified_status",
+        "test_v83_publishable_surface_rejects_certified_result_without_empty_rect_witness",
+        "test_v84_terminal_project_validation_rejects_layout_with_better_empty_rectangle",
+        "test_v84_terminal_project_validation_rejects_unknown_extra_blocker_instance",
+        "test_v85_terminal_project_validation_rejects_missing_required_pose_optional",
+        "test_terminal_project_validator_rejects_powered_facility_without_selected_power_coverer",
+        "test_terminal_project_validator_accepts_selected_power_coverer",
+        "test_terminal_project_validator_rejects_occupied_claimed_ghost_anchor",
+        "test_terminal_project_validator_rejects_unforced_power_pole_blocker",
+        "test_terminal_project_validator_requires_ghost_anchor",
+        "test_certified_blueprint_builder_rejects_missing_ghost_anchor",
+        "test_outer_search_certified_result_carries_ghost_anchor",
+        "test_terminal_solution_match_ignores_candidate_record_ghost_marker",
+        "test_terminal_project_validator_rejects_missing_candidate_ghost_pick",
+        "test_terminal_project_validator_rejects_mismatched_candidate_ghost_pick_anchor",
+        "test_terminal_project_validator_accepts_bound_candidate_ghost_pick_anchor",
+        "test_v91_rejects_nested_ghost_rect_fake_certified_claim",
+        "test_v91_rejects_search_stats_fake_certified_claim",
+        "test_v91_rejects_contradictory_mandatory_solution_metadata",
+        "test_v91_rejects_mandatory_operation_type_metadata_mismatch",
+        "test_v92_release_rejects_embedded_certified_claim",
+        "test_v92_release_rejects_non_allowlisted_exact_status",
+        "test_v93_release_rejects_forged_exact_note_with_open_status",
+        "test_v93_rejects_solution_entry_fake_certified_claim",
+        "test_v93_rejects_public_final_result_ghost_pick_marker",
+        "test_v95_rejects_contradictory_pose_optional_public_metadata",
+        "test_v95_rejects_terminal_public_last_stop_reason_extra_claim_field",
+        "test_v96_certified_surface_rejects_manifest_under_symlinked_solutions_parent",
+        "test_v97_delivery_manifest_rejects_certified_shadow_campaign_checkpoint",
+        "test_v97_certified_surface_rejects_certified_shadow_campaign_checkpoint",
+        "test_v97_certified_surface_rejects_symlink_campaign_path_to_canonical_checkpoint",
+        "test_v97_inspector_preserves_symlink_campaign_path_until_surface_verifier",
+        "test_v98_b5a_preserves_symlink_campaign_path_until_surface_verifier",
+        "test_p1_2_publish_open_gate_blocks_open_statuses",
+        "test_p1_2_publish_open_gate_missing_file_fails_closed",
+        "test_p1_2_publish_open_gate_rejects_malformed_gate_files",
+        "test_p1_2_publish_open_gate_closed_manual_decision_allows_publishable_surface",
+        "test_p1_2_publish_open_gate_rejects_contradictory_closed_gate",
+        "test_p1_2_publish_open_gate_inherited_public_surfaces_fail_closed",
+        "test_resolve_p1_2_publish_open_gate_fail_closed_branches",
+        "test_serve_viewer_rejects_forged_canonical_outputs_and_removes_stale_viewer_copies",
+        "test_clear_certified_delivery_surface_artifacts_attempts_all_after_unlink_failure",
+        "test_serve_viewer_partial_generation_commit_clears_all_public_outputs",
+        "test_serve_viewer_requires_current_candidate_placements_and_clears_stale_copy",
+        "test_publish_viewer_report_clears_stale_output_when_build_fails",
+        "test_write_viewer_report_rejects_canonical_public_path",
+        "test_main_visualization_clears_stale_png_when_surface_not_publishable",
+        "test_main_visualization_renderer_failure_clears_all_png_outputs",
+        "test_write_industrial_planner_bundle_partial_commit_clears_all_outputs",
+        "test_clear_industrial_planner_export_bundle_attempts_all_files_after_failure",
+        "test_render_blueprint_export_wrapper_rejects_repo_canonical_export_dir",
+        "test_industrial_export_frontdoor_gate_block_clears_stale_bundle",
+        "test_industrial_export_frontdoor_refresh_failure_clears_written_bundle",
+        "test_report_builder_rejects_forged_canonical_outputs_without_publishable_surface",
+        "test_delivery_manifest_rejects_chameleon_mapping_that_skips_disk_authority",
+        "test_generic_blueprint_writer_rejects_canonical_certified_path",
+        "test_unchecked_certified_surface_writer_is_not_module_importable",
+        "test_p1_2_checker_rejects_raw_canonical_writer_bypass",
+        "test_p1_2_checker_rejects_publisher_rollback_removal",
+        "test_p1_2_checker_rejects_publisher_canonical_write_before_bundle_commit",
+        "test_p1_2_checker_rejects_publisher_bundle_commit_removal",
+        "test_p1_2_checker_rejects_publisher_staged_commit_removal",
+        "test_p1_2_checker_rejects_manifest_mapping_snapshot_removal",
+        "test_p1_2_checker_rejects_manifest_snapshot_token_comment_decoy",
+        "test_p1_2_checker_rejects_staged_manifest_artifact_binding_removal"
+      ],
+      "evidence_paths": [
+        "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
+        "docs/research/p1_2_v63_terminal_evidence_export_boundary_review.md",
+        "docs/research/p1_2_v64_power_witness_representation_env_guard.md",
+        "docs/research/p1_2_v66_stale_delivery_artifact_guard.md",
+        "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md",
+        "docs/research/p1_2_v73_certified_surface_verifier_consolidation.md",
+        "docs/research/p1_2_v74_certified_surface_authority_hardening.md",
+        "docs/research/p1_2_v75_terminal_frontier_evidence_sealing.md",
+        "docs/research/p1_2_v76_project_bound_terminal_evidence.md",
+        "docs/research/p1_2_v77_delivery_manifest_writer_authority.md",
+        "docs/research/p1_2_v78_certified_manifest_writer_canonical_surface.md",
+        "docs/research/p1_2_v79_terminal_domain_axis_sealing.md",
+        "docs/research/p1_2_v80_deny_unknown_certified_surface.md",
+        "docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md",
+        "docs/research/p1_2_v83_geometry_witness_nogood_scope_and_loader_sealing.md",
+        "docs/research/p1_2_v84_layout_optimality_and_artifact_boundary_sealing.md",
+        "docs/research/p1_2_v85_required_optional_terminal_sealing.md",
+        "docs/research/p1_2_v86_power_witness_terminal_sealing.md",
+        "docs/research/p1_2_v87_anchor_and_pole_irredundancy_sealing.md",
+        "docs/research/p1_2_v88_ghost_anchor_required_sealing.md",
+        "docs/research/p1_2_v89_ghost_pick_terminal_binding_sealing.md",
+        "docs/research/p1_2_v90_final_result_field_allowlist_sealing.md",
+        "docs/research/p1_2_v91_nested_public_field_sealing.md",
+        "docs/research/p1_2_v92_release_status_allowlist_sealing.md",
+        "docs/research/p1_2_v93_note_and_solution_entry_sealing.md",
+        "docs/research/p1_2_v94_protocol_storage_surplus_sealing.md",
+        "docs/research/p1_2_v95_optional_metadata_and_stop_reason_sealing.md",
+        "docs/research/p1_2_v96_symlink_ancestor_boundary_sealing.md",
+        "docs/research/p1_2_v97_canonical_checkpoint_authority_sealing.md",
+        "docs/research/p1_2_v98_b5a_symlink_authority_sealing.md"
+      ],
+      "policy": "Persisted exact-safe cuts cannot be replayed as partial or stronger constraints. Strict payload parsing, canonical condition-key parsing, condition/metadata self-consistency, candidate-domain resolver support, explicit full unfiltered master-domain state, condition resolution, member resolution, literal de-aliasing, strict declare_mode terminal evidence, candidate-frontier completeness, terminal search_exhausted_all_candidates evidence, pre-session unsafe master-domain/power-representation env guards, and apply-before-register atomicity are all part of the certified replay boundary. Resume/import, inspector/report, wrapper, and manifest export boundaries must all reuse the terminal full-frontier certified evidence predicate and fail closed on missing, stale, malformed, or contradictory CERTIFIED evidence. Blocker paths that reset certified evidence must also purge stale delivery artifacts and refresh the manifest so stale filesystem surfaces cannot outlive the current fail-closed state. Terminal-state-first export must roll back certified state and purge partial artifacts if final artifact or manifest export fails. Manifest/artifact currentness must compare the raw final artifacts against the canonical projection, not a normalized subset; metadata.export_timestamp is the only ignored manifest metadata field, and terminal routing payloads must either project to optimal_blueprint.routing_network or fail closed. Blocker cleanup must run even when checkpoint rewrite fails, so a stale manifest/artifact set cannot be left as the only readable certified surface. Public certified read surfaces must consume the centralized certified_surface_verifier_v1 verdict, which binds campaign terminal evidence, exact artifact hashes, final_solution, optimal_blueprint, and the delivery manifest into one publishable gate and rejects non-regular manifest paths. V73 centralizes public CERTIFIED publication through src/search/certified_surface.py, so inspector and B5A consume one publishable verdict instead of local sibling predicates. V74 tightens the central verifier authority boundary: public certified surfaces must load the campaign checkpoint and delivery manifest from regular on-disk JSON files, reject duplicate keys and non-finite JSON constants in certified artifacts, compare caller-supplied payloads against disk before using them, and recompute exact artifact hashes even when a caller claims resume compatibility. V77 adds the same disk-authority rule to the direct delivery-manifest writer: best_certified_result is emitted only when the in-memory campaign_state is JSON-equivalent to the regular in-project campaign checkpoint selected by campaign_path. V78 closes the remaining manifest writer publication seam: best_certified_result may only be persisted by the canonical export writer to the regular in-project data/solutions/certified_delivery_manifest.json surface; raw direct writers and side output paths are not certified publication authority. PR1 hardens false-CERTIFIED publication: canonical final_solution/optimal_blueprint/manifest writes are reachable only through publish_verified_certified_delivery_surface, generic blueprint/manifest writers reject publishable canonical payloads, and manifest builders snapshot caller Mapping payloads before disk-authority rebind and best_result construction."
+    },
+    {
+      "id": "PO-PHASE-GATE-PROVENANCE",
+      "title": "Manual phase gate remains fail-closed and does not derive clean count from receipts",
+      "v_findings": [
+        "v31_candidate",
+        "v35_candidate",
+        "v36_candidate",
+        "v37_candidate",
+        "v38_candidate",
+        "v41_candidate",
+        "v44_candidate",
+        "v45_candidate",
+        "v46_candidate",
+        "v46_review_protocol_redesign",
+        "v47_candidate",
+        "v48_candidate",
+        "v49_candidate",
+        "v50_candidate",
+        "v50_manual_phase_gate_simplification",
+        "v80_deny_unknown_certified_surface"
+      ],
+      "required_tests": [
+        "test_phase_review_gate_manifest_is_consistent",
+        "test_require_ready_fails_while_manual_gate_blocked",
+        "test_manual_gate_rejects_auto_counter_fields",
+        "test_manual_gate_rejects_next_phase_allowed_without_owner_decision",
+        "test_manual_gate_rejects_closed_status_without_owner_decision",
+        "test_manual_gate_requires_step_8_fail_closed_when_blocked",
+        "test_manual_gate_accepts_owner_decision_authority_fixture",
+        "test_manual_gate_receipts_are_informational_only",
+        "test_p1_2_fix_3_phase_gate_requires_fixed_witness_verifier_present",
+        "test_p1_2_fix_3_phase_gate_witness_bound_close_condition_stays_blocked",
+        "test_p1_2_fix_3_publish_binding_detects_unwired_verifier",
+        "test_p1_2_fix_3_provenance_requires_check_gate_fixed_witness_binding",
+        "test_fix_3_phase_checker_rejects_two_empty_function_verifier_stub",
+        "test_fix_3_phase_checker_rejects_fake_capsule_projection",
+        "test_fix_3_publish_wiring_rejects_required_symbol_shadowing",
+        "test_fix_3_publish_wiring_rejects_dead_branch_capsule_call",
+        "test_fix_3_current_phase_gate_stays_blocked"
+      ],
+      "evidence_paths": [
+        "docs/research/p1_2_v31_candidate_review_reset.md",
+        "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md",
+        "docs/research/p1_2_v37_phase_gate_provenance_hardening.md",
+        "docs/research/p1_2_v38_phase_gate_package_identity.md",
+        "docs/research/p1_2_v44_phase_gate_source_authority_and_metadata_reset.md",
+        "docs/research/p1_2_v45_phase_gate_markup_and_git_authority_reset.md",
+        "docs/research/p1_2_v46_phase_gate_git_authority_and_metadata_reset.md",
+        "docs/research/p1_2_v31_v46_finding_taxonomy.md",
+        "docs/research/p1_2_v50_manual_phase_gate_simplification.md",
+        "docs/research/p1_2_v80_deny_unknown_certified_surface.md"
+      ],
+      "policy": "The repo no longer proves or counts clean reviews. P1.3B opens only by owner_manual_decision; receipts are informational records. P1.2-FIX-3 binds the gate's witness-bound close condition to the FIX-1 fixed-witness verifier wired into the publish path."
+    },
+    {
+      "id": "PO-P1-2-CLOSE-KERNEL-SEALING",
+      "title": "Close-kernel seals proof-bearing sink inventory and treats the gate as an attack surface",
+      "v_findings": [
+        "v99_p1_2_close_kernel_sealing"
+      ],
+      "required_tests": [
+        "test_p1_2_close_kernel_rejects_unregistered_certified_sink",
+        "test_p1_2_close_kernel_rejects_guard_token_removal",
+        "test_p1_2_close_kernel_rejects_registered_sink_hash_drift",
+        "test_p1_2_close_kernel_manifest_is_strict_json",
+        "test_p1_2_close_kernel_self_binding_rejects_removed_close_kernel_call",
+        "test_p1_2_close_kernel_self_binding_rejects_dead_branch_calls",
+        "test_p1_2_round11_close_kernel_def_time_and_class_body_hardening",
+        "test_p1_2_round11_close_kernel_import_dependency_shape_rejects_import_time_mutation",
+        "test_p1_2_round12_close_kernel_import_closure_follows_match_case_import",
+        "test_p1_2_round12_close_kernel_import_closure_follows_helper_body_import",
+        "test_p1_2_round12_close_kernel_rejects_dynamic_import_alias",
+        "test_p1_2_round12_close_kernel_rejects_namespace_mutator_target",
+        "test_p1_2_round13_current_scope_binding_walker_rejects_walrus_and_delete_smuggling",
+        "test_p1_2_round13_close_kernel_rejects_import_and_builtin_shadow",
+        "test_p1_2_round13_close_kernel_rejects_decorator_drift",
+        "test_p1_2_round13_checker_error_collector_integrity",
+        "test_p1_2_round13_self_binding_requires_new_gates_and_self_call",
+        "test_p1_2_round13_manifest_semantic_projection_rejects_resealed_gutting",
+        "test_p1_2_round13_source_text_includes_parenthesized_decorator_start",
+        "test_p1_2_round14_close_kernel_rejects_lambda_default_walrus_hidden_bindings",
+        "test_p1_2_round14_close_kernel_rejects_runtime_member_hooks_and_writes",
+        "test_p1_2_round14_function_shadow_guard_rejects_walrus_and_match_capture",
+        "test_p1_2_round14_strong_status_allowlist_bytes_are_pinned",
+        "test_p1_2_round14_checker_errors_whitelist_rejects_alias_reflection_and_mutation",
+        "test_p1_2_round14_checker_self_integrity_preflight_is_fail_fast",
+        "test_p1_2_round14_checker_failure_gate_rejects_exit_and_none_returns",
+        "test_p1_2_round14_checker_required_callee_floor_rejects_rebind_and_shrink",
+        "test_p1_2_round14_runtime_anchor_rejects_manifest_semantic_projection_mismatch",
+        "test_p1_2_round14_close_kernel_accepts_class_builtin_member_without_def_time_use",
+        "test_p1_2_round14_checker_accepts_errors_iadd_required_call",
+        "test_p1_2_round15_manifest_projection_rejects_top_level_key_drift",
+        "test_p1_2_round15_close_kernel_rejects_runtime_reflection_primitive_writes",
+        "test_p1_2_round15_close_kernel_rejects_ctypes_native_member_write",
+        "test_p1_2_round15_close_kernel_allows_known_safe_runtime_member_forms",
+        "test_p1_2_round15_witness_shadow_rejects_comprehension_and_namespace_writes",
+        "test_p1_2_round15_witness_shadow_rejects_statement_and_type_binding_forms",
+        "test_p1_2_round15_checker_required_callees_are_runtime_bound_before_subprocess",
+        "test_p1_2_round15_checker_top_level_closed_world_rejects_dynamic_namespace_rebind",
+        "test_p1_2_round15_checker_rejects_errors_match_capture_and_other_rebinds",
+        "test_p1_2_round15_checker_rejects_unapproved_accumulator_callee_and_frame_escape",
+        "test_p1_2_round15_checker_rejects_side_effectful_errors_append_args",
+        "test_p1_2_round15_checker_rejects_floor_tuple_walrus_rebind",
+        "test_p1_2_round15_try_star_and_literal_accumulator_concern_canaries",
+        "test_p1_2_round18_checker_rejects_class_body_import_time_main_rebind",
+        "test_p1_2_round18_checker_rejects_checkerror_shadowing_handler",
+        "test_p1_2_round18_checker_rejects_process_exit_aliases_before_error_gate",
+        "test_p1_2_round18_checker_rejects_accumulator_alias_frame_escape",
+        "test_locked_close_kernel_rejects_import_time_class_body_main_rebind",
+        "test_p1_2_round20_parent_anchor_rejects_decorated_parent_gate_function",
+        "test_p1_2_round20_parent_anchor_rejects_top_level_dynamic_namespace_write",
+        "test_p1_2_round20_parent_anchor_rejects_critical_name_attribute_monkeypatch",
+        "test_p1_2_round20_parent_anchor_rejects_critical_name_rebind",
+        "test_p1_2_round20_witness_binding_rejects_while_body_rebind",
+        "test_p1_2_round20_witness_binding_rejects_wildcard_import",
+        "test_p1_2_round20_benders_contract_rejects_class_attribute_method_rebind",
+        "test_p1_2_round20_benders_contract_rejects_instance_lookup_hook",
+        "test_p1_2_round20_witness_carrier_rejects_function_code_swap",
+        "test_p1_2_round20_checker_closed_world_rejects_vararg_annotation_primitive",
+        "test_p1_2_round20_parent_binding_walker_mirrors_checker",
+        "test_locked_close_kernel_rejects_main_rebind_hidden_in_argument_annotation",
+        "test_p1_2_close_kernel_source_floor_covers_import_time_closure",
+        "test_p1_2_close_kernel_rejects_import_time_dependency_drift",
+        "test_p1_2_close_kernel_rejects_dependency_floor_generator_drift",
+        "test_p1_2_close_kernel_rejects_dependency_floor_manifest_drift",
+        "test_p1_2_checker_accepts_pr2_supervisor_ast_pins_current_sources",
+        "test_p1_2_checker_rejects_pr2_5_ast_pin_bypass_variants",
+        "test_p1_2_checker_rejects_pr2_5_round8_close_kernel_bypasses",
+        "test_p1_2_checker_rejects_pr2_5_round9_gate_helper_hollows",
+        "test_p1_2_empty_rect_leaf_math_oracle",
+        "test_p1_2_child_path_confinement_leaf_canary",
+        "test_p1_2_close_kernel_strict_json_leaf_canaries",
+        "test_p1_2_round10_close_kernel_full_pin_enforcement",
+        "test_l0_supervisor_seal_mints_strict_declare_mode_from_best_effort_proposal",
+        "test_l0_postwrite_state_violation_rejects_non_strict_declare_mode",
+        "test_exact_campaign_supervisor_transition_promotes_declare_mode_to_strict",
+        "test_true_verifier_child_precheck_receives_strict_certified_scratch_state",
+        "test_l0_canonical_dependency_floor_manifest_missing_fails_closed",
+        "test_l0_canonical_dependency_floor_manifest_drift_fails_closed",
+        "test_l0_canonical_dependency_floor_manifest_current_bytes_are_pinned",
+        "test_locked_close_kernel_ignores_parent_sitecustomize_bypass",
+        "test_locked_close_kernel_identityless_process_modes_do_not_bypass_subprocess",
+        "test_p1_2_close_kernel_strong_status_gate_ignores_parent_sitecustomize",
+        "test_p1_2_close_kernel_source_floor_pins_runtime_guard_and_l0_floor_loader",
+        "test_fix_3_unknown_review_anchor_fails_closed",
+        "test_fix_3_coordinated_anchor_and_source_hash_reseal_is_rejected",
+        "test_fix_3_v99_static_floor_runs_without_any_v99_anchor",
+        "test_fix_3_capsule_name_guard_dead_branch_manifest_reseal_is_rejected",
+        "test_p1_2_close_kernel_rejects_v99_manifest_scan_root_shrink",
+        "test_p1_2_close_kernel_rejects_v99_manifest_sink_floor_shrink",
+        "test_p1_2_close_kernel_rejects_v99_source_sha_manifest_reseal_without_checker_floor",
+        "test_p1_2_close_kernel_rejects_v99_manifest_token_floor_shrink",
+        "test_p1_2_close_kernel_rejects_v99_manifest_required_sink_exclusion",
+        "test_p1_2_close_kernel_rejects_v99_manifest_critical_gate_floor_shrink",
+        "test_p1_2_proof_obligation_review_anchor_matches_phase_anchor",
+        "test_p1_2_checker_detects_multiline_public_certified_return",
+        "test_package_review_snapshot_default_targeted_tests_exist",
+        "test_package_review_snapshot_excludes_agent_memory_and_review_packets",
+        "test_package_review_snapshot_binds_commit_tree_and_dirty_state",
+        "test_package_review_snapshot_records_renamed_dirty_paths",
+        "test_package_review_snapshot_embedded_manifest_records_verification_receipt",
+        "test_package_review_snapshot_skip_tests_marker_is_embedded",
+        "test_package_review_snapshot_selftest_disables_pytest_plugin_autoload"
+      ],
+      "evidence_paths": [
+        "docs/research/p1_2_v99_close_kernel_sealing.md",
+        "data/proof_obligations/p1_2_proof_obligations.json",
+        "data/proof_obligations/pr2_dependency_floor_manifest.json",
+        "scripts/check_p1_2_proof_obligations.py",
+        "scripts/generate_pr2_dependency_floor_manifest.py",
+        "src/tests/test_p1_2_proof_obligations.py",
+        "src/tests/test_p1_2_close_kernel_runtime_guard.py",
+        "src/tests/test_pr2_l0_micro_verifier_core.py"
+      ],
+      "policy": "All current proof-bearing strong-status source surfaces in the close-kernel scan roots are sealed by path, source_sha256, proof obligation, and guard tokens; the PR2 L0 dependency floor manifest and its generator are separately provenance-pinned by dependency_floor_provenance and the V99 source-hash floor; new, unregistered, or drifted CERTIFIED / proof-bearing INFEASIBLE sinks fail closed until reviewed."
+    },
+    {
+      "id": "PO-CANDIDATE-SINK-REPLAY-AUTHORITY",
+      "title": "Proof-bearing candidate status authority is established only by independent sink-side certified_exact replay",
+      "v_findings": [
+        "same_process_closure_cell_mutation_residual_20260619",
+        "p1_2_sink_side_replay_authority_20260619"
+      ],
+      "required_tests": [
+        "test_p1_2_mutating_verified_writer_closure_cell_cannot_publish_false_certified",
+        "test_p1_2_forged_proof_bearing_infeasible_cannot_prune_better_feasible_candidate",
+        "test_p1_2_forged_certified_cannot_enter_terminal_manifest_or_public_surface",
+        "test_p1_2_module_rebinding_monkeypatch_and_test_helper_do_not_grant_authority",
+        "test_p1_2_strong_status_without_sink_replayable_proof_fails_closed",
+        "test_p1_2_legitimate_certified_exact_path_survives_all_sink_replays",
+        "test_p1_2_checker_rejects_candidate_replay_isolation_removal",
+        "test_p1_2_checker_rejects_frontier_sink_replay_bypass",
+        "test_save_rejects_caller_memory_terminal_certified_checkpoint",
+        "test_resume_false_invalidates_old_proposal_marker",
+        "test_supervisor_seal_rejects_marker_campaign_instance_id_mismatch",
+        "test_supervisor_seal_rechecks_marker_before_mint_and_preserves_concurrent_proposal",
+        "test_checkpoint_write_lock_fails_closed_when_already_held"
+      ],
+      "evidence_paths": [
+        "src/search/candidate_proof_replay.py",
+        "src/search/certified_frontier.py",
+        "src/search/exact_campaign.py",
+        "src/search/outer_search.py",
+        "src/io/delivery_manifest.py",
+        "src/search/certified_surface.py",
+        "src/tests/test_p1_2_sink_replay_authority.py",
+        "src/tests/test_p1_2_proof_obligations.py",
+        "scripts/check_p1_2_proof_obligations.py"
+      ],
+      "policy": "Candidate records and candidate_proof payloads are untrusted data. A strong status may prune certified frontier state or enter terminal, manifest, or public evidence only after a fresh python -I child recomputes current artifact/source bindings and replays that candidate through certified_exact. Missing, malformed, mismatched, failed, or non-strong replay results are demoted to UNPROVEN or rejected. No writer identity, caller, closure cell, module binding, mutable registry, freshness stamp, or test helper grants proof authority."
+    },
+    {
+      "id": "PO-ISOLATED-EXEC-BYTECODE-BINDING",
+      "title": "Certified isolated replay executes bytecode compiled from source covered by the certified source digest",
+      "v_findings": [
+        "p1_2_pyc_exec_digest_round_3"
+      ],
+      "required_tests": [
+        "test_candidate_replay_isolated_subprocess_uses_fresh_pycache_prefix",
+        "test_fixed_witness_capsule_isolated_subprocess_uses_fresh_pycache_prefix",
+        "test_isolated_replay_ignores_repo_pycache_bytecode_injection",
+        "test_p1_2_checker_rejects_isolated_exec_bytecode_binding_removal"
+      ],
+      "evidence_paths": [
+        "src/search/candidate_proof_replay.py",
+        "src/search/terminal_fixed_witness_capsule.py",
+        "src/tests/test_p1_2_isolated_exec_bytecode_binding.py",
+        "scripts/check_p1_2_proof_obligations.py",
+        "PROJECT_LOCK.md"
+      ],
+      "policy": "Every certified authority subprocess that runs sink replay or the fixed-witness capsule must launch the current sys.executable as python -I -B -X pycache_prefix=<fresh per-run tempfile> before the bootstrap. -I ignores PYTHON* environment variables, so PYTHONPYCACHEPREFIX is not an authority mechanism. The fresh empty prefix redirects bytecode lookup away from repository __pycache__ files and -B prevents writing new bytecode, forcing execution from .py source covered by compute_certified_exact_source_digest. The remaining named TCB is the Python interpreter, standard library, and native extension modules such as OR-Tools .pyd/.so files; this obligation does not claim to hash those lower layers."
+    },
+    {
+      "id": "PO-TERMINAL-FIXED-WITNESS-VERIFIER",
+      "title": "Public certified evidence rechecks the exact stored terminal witness (R*, pi*) by rerunning binding and routing",
+      "v_findings": [
+        "p1_2_witness_split_block_2026_06_21",
+        "p1_2_fix_1_fixed_witness_terminal_verifier",
+        "p1_2_fix_3_phase_gate_fixed_witness_binding"
+      ],
+      "required_tests": [
+        "test_fixed_witness_rejects_binding_routing_witness_split",
+        "test_fixed_witness_rejects_non_r_star_ghost_origin",
+        "test_fixed_witness_timeout_unknown_demotes_unproven",
+        "test_fixed_witness_binding_infeasible_demotes_unproven_not_infeasible",
+        "test_fixed_witness_rejects_consistent_tamper_after_precheck_accepts",
+        "test_fixed_witness_round_trip_rejects_post_write_tampered_witness_bytes",
+        "test_fixed_witness_projection_copy_failure_demotes_unproven",
+        "test_fixed_witness_does_not_mutate_record_solution_or_solution_digest",
+        "test_fixed_witness_accepts_valid_r_star_pi_star",
+        "test_fixed_witness_rejects_connector_cell_occupied_by_other_body",
+        "test_fixed_witness_rejects_forged_publishable_verdict_on_unchanged_bad_witness",
+        "test_fixed_witness_capsule_projection_rejects_publishable_non_feasible_statuses",
+        "test_child_publishable_capsule_verdict_requires_feasible_statuses",
+        "test_fixed_witness_verify_time_reruns_and_ignores_stored_verdict",
+        "test_build_then_verify_uses_fresh_projection_without_status_digest_mismatch",
+        "test_fixed_witness_unproven_durable_record_keeps_solution_bytes"
+      ],
+      "evidence_paths": [
+        "src/search/terminal_fixed_witness_verifier.py",
+        "src/search/certified_frontier.py",
+        "src/search/exact_campaign.py",
+        "src/tests/test_p1_2_fixed_witness_terminal_verifier.py",
+        "src/tests/test_p1_2_fix_3_phase_gate_fixed_witness_binding.py",
+        "scripts/check_p1_2_proof_obligations.py",
+        "scripts/check_phase_review_gate.py"
+      ],
+      "policy": "The public certified surface projects every terminal witness (R*, pi*) through terminal_fixed_witness_verifier, which reruns binding and routing on the exact stored solution bytes. Non-FEASIBLE binding/routing (INFEASIBLE, TIMEOUT, or any exception) demotes the public projection to UNPROVEN and never to proof-bearing INFEASIBLE. The verifier is verify-not-rewrite (durable witness and candidate_proof digest are never replaced). P1.2-FIX-3 makes this verifier's presence and publish-path wiring a precondition of the phase gate's witness-bound close condition, so the gate cannot be closed while the verifier is removed or unwired."
+    },
+    {
+      "id": "PO-EXACT-ARTIFACT-ATOMIC-SNAPSHOT",
+      "title": "The certified session attests the solved bytes: frozen artifacts are snapshotted once and built from the hashed bytes",
+      "v_findings": [
+        "p1_2_toctou_block_2026_06_21",
+        "p1_2_fix_5_atomic_snapshot"
+      ],
+      "required_tests": [
+        "test_fix5_snapshot_hash_attests_returned_text_bytes",
+        "test_fix5_snapshot_hashes_match_compute_exact_artifact_hashes",
+        "test_fix5_text_loaders_are_faithful_to_path_loaders",
+        "test_fix5_read_once_regular_file_bytes_rejects_non_regular",
+        "test_fix5_create_uses_atomic_snapshot_not_second_read"
+      ],
+      "evidence_paths": [
+        "src/search/benders_loop.py",
+        "src/search/exact_campaign.py",
+        "src/models/master_model.py",
+        "src/models/binding_subproblem.py",
+        "src/tests/test_p1_2_fix_5_toctou_atomic_snapshot.py",
+        "scripts/check_p1_2_proof_obligations.py",
+        "docs/项目说明/soundness_gap_roadmap.md"
+      ],
+      "policy": "ExactSearchSession.create reads each frozen exact artifact's bytes exactly once, records the hash of those bytes, and parses/builds the master core from the same bytes. There is no second independent disk read between the recorded hash and the build, so a swap/drift of any frozen artifact between load and hash cannot produce a session whose artifact_hashes fail to attest the solved bytes (closes the load->hash TOCTOU window). The checker fails closed if create stops snapshotting atomically or recomputes hashes from a second disk read."
+    },
+    {
+      "id": "PO-INDEPENDENT-INFEASIBILITY-REVERIFY",
+      "title": "Whole-layout INFEASIBLE nogoods require independent fail-closed re-verification before minting",
+      "v_findings": [
+        "p1_2_i1_whole_layout_nogood_reverify_gap",
+        "p1_2_fix_4_phase_1_independent_infeasibility_reverify"
+      ],
+      "required_tests": [
+        "test_independent_infeasibility_reverify_confirms_binding_infeasible_allows_cut",
+        "test_independent_infeasibility_reverify_divergent_feasible_blocks_cut_unknown",
+        "test_independent_infeasibility_reverify_timeout_blocks_cut_unknown",
+        "test_independent_infeasibility_reverify_exception_blocks_cut_unknown",
+        "test_independent_infeasibility_reverify_routing_exhaustion_without_binding_confirmation_unknown",
+        "test_p1_2_checker_rejects_whole_layout_reverify_gate_removal",
+        "test_p1_2_checker_rejects_inflight_cache_read_in_infeasibility_reverifier",
+        "test_p1_2_checker_rejects_env_reader_in_infeasibility_reverifier"
+      ],
+      "evidence_paths": [
+        "src/search/independent_infeasibility_reverifier.py",
+        "src/search/benders_loop.py",
+        "src/tests/test_p1_2_independent_infeasibility_reverifier.py",
+        "scripts/check_p1_2_proof_obligations.py",
+        "docs/项目说明/soundness_gap_roadmap.md"
+      ],
+      "policy": "Before _add_exact_whole_layout_nogood may mint a proof-bearing whole-layout cut, the certified path must call independent_infeasibility_reverifier. Binding-INFEASIBLE is confirmed only by a freshly constructed binding feasibility model solved by an independent heterogeneous CP-SAT solver. Independent FEASIBLE, TIMEOUT, exception, malformed input, or unsupported routing-exhaustion proof returns fail-closed UNKNOWN and emits no cut. Phase 1 intentionally treats routing ALL-INFEASIBLE conservatively: without a full independent exhaustion proof, the cut is skipped even when the original routing exhaustion may be legitimate."
+    },
+    {
+      "id": "PO-CERTIFIED-POWER-POLE-DOMINANCE-NORMALIZATION",
+      "title": "Every certified_exact CERTIFIED solution passes power-pole dominance normalization at the unique routing-FEASIBLE production point with terminal-equivalent reverification; any exception or reverify failure fails closed to UNKNOWN and never mints CERTIFIED",
+      "v_findings": [],
+      "required_tests": [
+        "test_t1_redundant_power_pole_is_pruned_and_non_poles_are_unchanged",
+        "test_t2_minimal_covering_set_is_a_noop",
+        "test_t3_pruning_iterates_to_a_deterministic_fixed_point",
+        "test_t4_all_optional_poles_are_pruned_when_nothing_needs_power",
+        "test_t5_mandatory_poles_are_never_pruned_but_affect_reverification",
+        "test_t6_positive_required_count_skips_pruning_and_reverifies",
+        "test_t7_required_layout_with_unforced_pole_fails_closed",
+        "test_t8_malformed_pose_data_always_fails_closed",
+        "test_t9_normalization_is_byte_deterministic",
+        "test_t10_c1_certified_endpoint_returns_normalized_power_poles",
+        "test_t11_legacy_witness_certified_endpoint_is_rejected_fail_closed",
+        "test_t12_reverification_matches_terminal_r1_r3_semantics",
+        "test_t13_normalization_failure_turns_feasible_routing_into_unknown",
+        "test_t14_s3_certified_path_prunes_redundant_pole_without_mutating_input"
+      ],
+      "evidence_paths": [
+        "src/search/benders_loop.py",
+        "src/search/exact_campaign.py",
+        "src/tests/test_power_pole_dominance_normalization.py",
+        "docs/research/p1_3_batch1_design_20260710/02_batch1c_spec.md"
+      ]
+    }
+  ],
+  "certified_cut_replay_contract": {
+    "title": "Exact-safe BendersCut replay must be strictly parsed and faithfully encoded by every certified master backend",
+    "backend_scope": [
+      "src/models/cut_manager.py",
+      "src/search/exact_campaign.py",
+      "src/search/benders_loop.py",
+      "src/search/candidate_proof_replay.py",
+      "src/search/outer_search.py",
+      "src/io/delivery_manifest.py",
+      "src/models/master_model.py",
+      "src/models/exact_coordinate_master.py",
+      "src/models/pose_bool_exact_master.py"
+    ],
+    "replay_entrypoints": [
+      "src/search/exact_campaign.py::_validate_candidate_record",
+      "src/search/benders_loop.py::run_benders_for_ghost_rect",
+      "src/search/benders_loop.py::LBBDController._add_exact_persisted_nogood",
+      "src/search/candidate_proof_replay.py::_replay_one_proof",
+      "src/models/cut_manager.py::BendersCut.from_dict",
+      "src/models/cut_manager.py::CutManager.load",
+      "src/models/exact_coordinate_master.py::CoordinateExactMasterDelegate.add_benders_cut",
+      "src/models/pose_bool_exact_master.py::PoseBoolExactMasterDelegate.add_benders_cut",
+      "src/models/master_model.py::MasterPlacementModel.add_benders_cut",
+      "src/search/outer_search.py::run_outer_search",
+      "src/io/delivery_manifest.py::build_certified_delivery_manifest"
+    ],
+    "obligations": [
+      "Exact-safe certified cut JSON must be strict JSON with no duplicate keys, NaN, Infinity, or truthy string coercion.",
+      "source_mode=certified_exact cuts must use strict bool exact_safe fields and strict integer conflict_set / condition_set payloads; bool is not an int for proof payloads.",
+      "Campaign resume and pre-master replay must reject malformed exact_safe cuts before inheriting certification state.",
+      "Every conflict member must resolve to a concrete master literal; unresolved members fail closed instead of being dropped.",
+      "Distinct conflict members must map one-to-one to distinct backend literals; alias collisions fail closed instead of deduping into a stronger cut.",
+      "Exact-safe cuts are registered, persisted, or counted only after the master backend accepts the whole cut.",
+      "Every non-empty certified condition_set must use a resolver-supported condition key grammar; unsupported keys fail closed before resume or replay.",
+      "Condition-required power-subproblem cuts must bind ghost_anchor condition keys to matching metadata.ghost_anchor and metadata.ghost_rect_idx values.",
+      "Condition-required ghost_anchor keys must be canonical non-negative decimal coordinates with no whitespace, signs, leading zero ambiguity, underscores, extra fields, or overflow-shaped values.",
+      "Campaign resume must validate every non-empty condition_set against the current candidate ghost domain, including the canonical rect-index enumeration used by master replay.",
+      "Certified campaign terminal evidence must require strict declare_mode; best_effort or candidate-subset campaigns must not export full-domain certified results.",
+      "Certified outer search must not skip UNKNOWN frontier candidates unless a separate partition/coverage proof exists and is machine-gated.",
+      "Certified delivery manifests must reject non-strict final_result inheritance rather than presenting best-effort state as certified delivery evidence.",
+      "Candidate-level CERTIFIED evidence is an incumbent only; final_result, final_solution, delivery manifests, and best_certified_result require a strict terminal stop with status CERTIFIED and reason search_exhausted_all_candidates.",
+      "Every certified ExactSearchSession construction path, including outer_search precheck and coordinator paths, must fail closed on master-domain-changing env/debug overrides before session construction.",
+      "Non-strict or best_effort resume states must fail closed before writing final_solution, final_result, or any other certified-looking terminal artifact.",
+      "Fail-closed certified outer blockers must remove stale final_solution and optimal_blueprint artifacts and refresh the certified delivery manifest before returning UNPROVEN.",
+      "Terminal certified state committed before export must be rolled back to UNPROVEN and partial artifacts purged if final_solution, optimal_blueprint, or manifest export fails.",
+      "Direct certified delivery manifest writes must verify that best_certified_result comes from the regular in-project disk checkpoint, not a caller-only memory campaign, and must publish it only through the canonical regular in-project certified_delivery_manifest.json surface.",
+      "Proof-bearing candidate outcomes are untrusted until sink-side isolated replay recomputes current source/artifact bindings and reproduces the claimed strong status."
+    ],
+    "policy": "Certified cut replay is an all-or-nothing faithful-encoding boundary. Any partial, aliased, coerced, condition-unresolved, metadata-inconsistent, candidate-domain-inconsistent, non-strict declare_mode, candidate-subset, non-terminal incumbent, unsafe pre-session master-domain override, or post-hoc registered cut/result is not replay-safe and must not prune or certify search. Memory-only manifest authority is not a certified export source. Canonical manifest output, not an arbitrary output_path or low-level writer call, is the only certified delivery-manifest publication surface. Candidate writer identity and current-process freshness are non-authoritative; frontier and publication sinks require independent isolated replay."
+  },
+  "close_kernel_contract": {
+    "schema_version": 1,
+    "review_anchor": "v99_p1_2_close_kernel_sealing",
+    "policy": "Small structural close kernel, not a theorem prover. It seals both the inventory of proof-bearing strong-status sinks and the sink-side isolated replay boundary that supplies their authority; source hashes alone are not treated as proof that replay remains mandatory.",
+    "trusted_computing_base": [
+      "Python runtime executing scripts/check_p1_2_proof_obligations.py and certified sinks",
+      "fresh isolated Python interpreter launched with -I -B -X pycache_prefix=<fresh empty dir> for candidate replay and terminal fixed-witness capsule execution",
+      "on-disk production source tree bound by certified_exact_source_tree",
+      "canonical project artifacts bound by compute_exact_artifact_hashes",
+      "certified_exact solver and project-bound terminal witness validators",
+      "deploy-pending PR2 L0 dependency floor placeholder bytes pinned by close_kernel_contract.dependency_floor_provenance",
+      "scripts/generate_pr2_dependency_floor_manifest.py source pinned by the close-kernel V99 source-hash floor",
+      "Python standard library and native extension modules such as OR-Tools .pyd/.so files",
+      "OS subprocess, pipe, nonce, timeout, and exit-status semantics",
+      "filesystem path, regular-file, and source-byte semantics",
+      "pytest/CI exit status and human review of this P1.2 boundary"
+    ],
+    "not_claimed": [
+      "all software bugs are impossible",
+      "runtime mutation of the sink verifier or operating-system TCB is harmless",
+      "Python interpreter, standard library, or native extension bytecode/machine-code mutation is covered by source_digest",
+      "the PR2 L0 dependency floor manifest is portable across Python installations without regeneration and review",
+      "future P1.3B production master integration is safe",
+      "owner clean-review counting or P1.3B opening is automated here",
+      "performance, UX, or future production integration is addressed by this patch"
+    ],
+    "attack_categories": [
+      "direct_writer_bypass",
+      "status_synonym_or_free_text_claim",
+      "stale_checkpoint_or_manifest_authority",
+      "path_symlink_or_shadow_authority",
+      "malformed_json_or_weak_typing",
+      "unsafe_env_or_config_semantics",
+      "parallel_resume_or_crash_partial_authority",
+      "gate_or_obligation_mutation",
+      "same_process_function_or_closure_authority",
+      "producer_monkeypatch_or_module_rebinding",
+      "missing_or_unreplayable_candidate_proof",
+      "sink_replay_bypass_or_binding_drift",
+      "repo_pyc_bytecode_injection"
+    ],
+    "proof_bearing_tokens": [
+      "CERTIFIED",
+      "INFEASIBLE",
+      "RUN_STATUS_CERTIFIED",
+      "RUN_STATUS_INFEASIBLE",
+      "terminal_frontier_evidence",
+      "best_certified_result",
+      "certified_surface",
+      "proof_source",
+      "certified_delivery_manifest.json",
+      "final_solution.json",
+      "optimal_blueprint.json",
+      "proof-bearing",
+      "proof_bearing",
+      "candidate_proof",
+      "candidate_sink_replay",
+      "certified_exact_isolated_solver_replay_v1"
+    ],
+    "scan_roots": [
+      "src",
+      "scripts/check_p1_2_proof_obligations.py",
+      "scripts/build_industrial_planner_single_base_delivery_release.py",
+      "scripts/check_strong_status_write_allowlist.py"
+    ],
+    "excluded_subpaths": [
+      "src/tests",
+      "src/search/phase3b",
+      "src/ai_accel",
+      "src/runtime",
+      "src/preprocess",
+      ".artifacts",
+      ".pytest_tmp",
+      "cc_memory"
+    ],
+    "critical_gate_files": [
+      "data/proof_obligations/p1_2_proof_obligations.json",
+      "data/proof_obligations/pr2_dependency_floor_manifest.json",
+      "data/proof_obligations/strong_status_write_allowlist.json",
+      "scripts/build_industrial_planner_single_base_delivery_release.py",
+      "scripts/check_p1_2_proof_obligations.py",
+      "scripts/check_strong_status_write_allowlist.py",
+      "scripts/generate_pr2_dependency_floor_manifest.py",
+      "src/io/delivery_manifest.py",
+      "src/render/industrial_planner_exact_status.py",
+      "src/search/benders_loop.py",
+      "src/search/candidate_proof_replay.py",
+      "src/search/certified_artifact_contract.py",
+      "src/search/certified_frontier.py",
+      "src/search/certified_surface.py",
+      "src/search/exact_campaign.py",
+      "src/search/exact_parallel_scheduler.py",
+      "src/search/outer_search.py",
+      "src/search/pr2_l0_artifact_core.py",
+      "src/search/pr2_l0_frontier_core.py",
+      "src/search/pr2_l0_micro_verifier_core.py",
+      "src/search/pr2_l0_replay_core.py",
+      "src/search/pr2_l0_true_verifier_child.py",
+      "src/search/terminal_fixed_witness_capsule.py"
+    ],
+    "dependency_floor_provenance": {
+      "schema_version": 1,
+      "manifest_path": "data/proof_obligations/pr2_dependency_floor_manifest.json",
+      "manifest_sha256": "a0fe4bdc520cf8aa4b142eb23cf5dc1933c061d973df0be9f3fe1cca1adc2a74",
+      "manifest_size": 567602,
+      "manifest_authority": "pr2_l0_dependency_floor_manifest_v1",
+      "generator_path": "scripts/generate_pr2_dependency_floor_manifest.py",
+      "generator_sha256": "9efbc3f2f32a56e6b9746604346efd7b6e1ef394fdd3ac9fa6fa7ece3ad33d8c",
+      "loader_constant": "DEPENDENCY_FLOOR_MANIFEST_REL",
+      "mutation_policy": "dependency_floor_drift_reopens_p1_2_close_claim",
+      "manifest_floor_root": "PYTHON_SYSCONFIG_PURELIB",
+      "manifest_provenance_status": "deploy_pending_placeholder_regenerate_on_production_cachyos_py313"
+    },
+    "sink_files": [
+      {
+        "path": "scripts/build_industrial_planner_single_base_delivery_release.py",
+        "classification": "p1_2_public_surface",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED",
+          "certified_surface",
+          "final_solution.json",
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "normalize_non_authoritative_exact_status",
+          "normalize_non_authoritative_exact_note",
+          "may not claim"
+        ],
+        "source_sha256": "6cd8480f4b3c97b55b4867460a651b980aac42c9c678e7d60f75cecac879da92",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "scripts/check_p1_2_proof_obligations.py",
+        "classification": "p1_2_close_kernel",
+        "obligation_id": "PO-P1-2-CLOSE-KERNEL-SEALING",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "terminal_frontier_evidence",
+          "best_certified_result",
+          "certified_surface",
+          "final_solution.json",
+          "proof-bearing",
+          "proof_bearing"
+        ],
+        "required_guard_tokens": [
+          "close_kernel_contract",
+          "_check_candidate_sink_replay_contract",
+          "CANDIDATE_PROOF_REPLAY_PATH",
+          "_check_close_kernel_contract",
+          "_check_dependency_floor_provenance_contract",
+          "PR2_DEPENDENCY_FLOOR_MANIFEST_REL",
+          "PR2_DEPENDENCY_FLOOR_GENERATOR_REL",
+          "STRONG_STATUS_WRITE_ALLOWLIST_REL",
+          "_check_strong_status_write_allowlist_bytes",
+          "_PR2_CHECKER_MAIN_REQUIRED_CALLS_FLOOR",
+          "_check_main_self_integrity_preflight_shape",
+          "source_sha256_drift_reopens_p1_2_close_claim",
+          "_check_certified_publication_boundary_contract",
+          "PR2_L0_MICRO_VERIFIER_PATH",
+          "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
+        ],
+        "source_sha256": "8c80708625727b1b567a4bfcf062d72820d1a965442b50dad9e4e08ff7c73bb4",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/certified_artifact_contract.py",
+        "classification": "p1_2_close_kernel",
+        "obligation_id": "PO-P1-2-CLOSE-KERNEL-SEALING",
+        "terms": [
+          "locked_p1_2_close_kernel_violation",
+          "LOCKED_P1_2_CLOSE_KERNEL_SEMANTIC_PROJECTION_SHA256"
+        ],
+        "required_guard_tokens": [
+          "validate_locked_p1_2_close_kernel",
+          "locked_p1_2_close_kernel_violation",
+          "_locked_close_kernel_checker_ast_anchor_violation",
+          "LOCKED_P1_2_CHECKER_PROTECTED_CALLEES"
+        ],
+        "source_sha256": "06ed35fce3f77fa94662c49a03186db824f57b9bf33ed8872893465f5352b315",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "scripts/check_strong_status_write_allowlist.py",
+        "classification": "p1_2_close_kernel",
+        "obligation_id": "PO-P1-2-CLOSE-KERNEL-SEALING",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "source_sha256",
+          "strong-status write allowlist"
+        ],
+        "required_guard_tokens": [
+          "source_sha256",
+          "_pin_failures",
+          "_unregistered_failures",
+          "_scan(root)",
+          "strong-status write allowlist check passed"
+        ],
+        "source_sha256": "4964fcdea6f987d424013e25cc34355c1bc3371d2e2c8d9e68f96fa84cd1a9ff",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/adapters/industrial_planner/export_blueprint.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "optimal_blueprint.json"
+        ],
+        "source_sha256": "01afafc85b4e7f27c0bf8c0293845785b45bc71ad332da483936b753a7d9eb5e",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/adapters/industrial_planner/mapping_registry.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "optimal_blueprint.json"
+        ],
+        "source_sha256": "ca5f0bcffc40cd9d40d92d8407752d9236b79a19a43ee25fc35c8092e3f0772e",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/cuts/cert_schema.py",
+        "classification": "out_of_scope_future_phase3b",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "source_sha256": "e5b46431ac2b4e81cb884dcad3c9564f797b938b9d6b3bb7022c87aa35b4226b",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim",
+        "terms": [
+          "proof-bearing",
+          "cert_payload",
+          "cert_kind"
+        ],
+        "required_guard_tokens": [
+          "loads_strict_json",
+          "CERT_PAYLOAD_CERT_KIND_BY_FAMILY",
+          "CERT_PAYLOAD_ALLOWED_FIELDS",
+          "CERT_PAYLOAD_REQUIRED_FIELDS",
+          "unknown field",
+          "missing required field"
+        ]
+      },
+      {
+        "path": "src/cuts/families/pattern_nogood.py",
+        "classification": "out_of_scope_future_phase3b",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "30b0dea92503d2b8c015b3e06e47d893af93a19b9569963658d56acb28e15e41",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/cuts/helpers/bounded_core_minimizer.py",
+        "classification": "out_of_scope_future_phase3b",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "d5999fb05366df2266b1810ac3b02a3d8515da6f779fe4ec42b84c528abaabfa",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/cuts/lifecycle.py",
+        "classification": "out_of_scope_future_phase3b",
+        "obligation_id": "PO-STEP7-ATTACH-MIRROR",
+        "terms": [
+          "proof-bearing"
+        ],
+        "required_guard_tokens": [
+          "proof-bearing"
+        ],
+        "source_sha256": "9b944572c3bc787317a2e9bfaaf4e3ce472ba8fd953269772b24535bbef1ac1a",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/f5_binding_empty_domain_adapter.py",
+        "classification": "out_of_scope_future_phase3b",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE",
+          "supports_exact_pose_level_binding",
+          "_ROUTING_AWARE_BINDING_ENV"
+        ],
+        "source_sha256": "76d072161b85f8ce5e87682769434291b5c7ccdb005623dc8a3265fb4c48b6df",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/cuts/oracles/pattern_nogood_oracle.py",
+        "classification": "out_of_scope_future_phase3b",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "16a570d7b5df8a69f8d7dfdbb5736e47ed790227b2b1ffd5ad83f90e00578fca",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/cuts/oracles/power_cover_oracle.py",
+        "classification": "out_of_scope_future_phase3b",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "4fa58a4508f5c7d5674d5e0da2f1e5ef8c304a61fc5605f130eecdc95dacf2e5",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/cuts/oracles/region_capacity_oracle.py",
+        "classification": "out_of_scope_future_phase3b",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "c3bcb690d068fd9551e93b7b4e3e7e6ebb0b6382c06053844cf66f519a547381",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/cuts/oracles/shape_packing_hall_oracle.py",
+        "classification": "out_of_scope_future_phase3b",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "5cca906742209d22d38afa6fb1e56fc979f8db591b7929348c7c62fa3ca0a3e7",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/cuts/typed_platform.py",
+        "classification": "out_of_scope_future_phase3b",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "cce881457c63647dbba58750e1c4884351a31987057ac72b9cd0aeecaf44b45b",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/cuts/verifiers/binding_empty_domain_verifier.py",
+        "classification": "out_of_scope_future_phase3b",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "cbb2adcec7c9dd9813911b3501525dc6742f05288e4ba4d896f7db8635a1e693",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/io/delivery_manifest.py",
+        "classification": "p1_2_public_surface",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED",
+          "best_certified_result",
+          "certified_surface",
+          "certified_delivery_manifest.json",
+          "final_solution.json"
+        ],
+        "required_guard_tokens": [
+          "terminal_certified_final_result_violation_for_project",
+          "has_valid_terminal_full_frontier_certified_evidence_for_project",
+          "campaign_path=resolved_campaign_path",
+          "validate_certified_delivery_manifest_matches_campaign",
+          "write_certified_delivery_manifest"
+        ],
+        "source_sha256": "2585ec5d8008a4f74dcca2a7c98bea08fd261e59a943100ae411f7b267ef13de",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/io/output_schema.py",
+        "classification": "p1_2_public_surface",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "optimal_blueprint.json"
+        ],
+        "source_sha256": "110e41cfd9315f00a26918d085b84c67d76f7890c7db3a05901f7c6d9e597d16",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/io/serializer.py",
+        "classification": "p1_2_public_surface",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "UNKNOWN",
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "UNKNOWN",
+          "optimal_blueprint.json"
+        ],
+        "source_sha256": "ae41d33bbd9fa7f43f0e6eaec003752f4c7b928afffb924691ad6dce6a9ef52a",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/abstract_routing_layer.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "2e58b99dc54ca9a6dc917fe9c0515516eda8e54cfb9d7bdbf572291c0b21f520",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/binding_subproblem.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "1c89f6ee2cb958568c7365289a0b3d6e69a32f3162d4c925f02695705efc7ee9",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/cpsat_minimum_model.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "92d9e9eed88dbf6672db12766a8a1422c660e8314480b9fa599ce4b0e71b7104",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/cut_manager.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "RUN_STATUS_CERTIFIED",
+          "RUN_STATUS_INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED",
+          "INFEASIBLE"
+        ],
+        "source_sha256": "50b46f98cd2ca1947b807262a78a2460f822b6755d94c0845749d2c02c416a01",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/d2_commodity_flow_core.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "b77f39bd7ca067f3c422552f763aec73d7c87501947dba7e87f22f33efdf3230",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/exact_coordinate_master.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "565062a0b438fc613634d53a5ae256addceb4b05010f42a7a3eea2c6bbbed45c",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/flow_subproblem.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "948c4fee4495264c339c335b353de1925a9c7b5f9ebc12e1088ac2d0a7c3d06a",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/highs_candidate_evaluator.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED",
+          "INFEASIBLE"
+        ],
+        "source_sha256": "1709e1536a49f11ed057ab6dc1e904d9acac8d25c910c4299789b5309986f419",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/highs_master_model.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "ab366573359ec1db835c6c78e03f9ecd7387abc3ea5bb0aaa31cebaed64f191a",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/master_model.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "761890e0c799c3c0f6f19832d7b7031e93c9898d7a6a10188afc8ed59cb5daf7",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/patch_routing_core.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "8e7f147c4779716dc721ef7add1d17b92be75efd29d8089de424389534affd2d",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/power_placement_subproblem.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "88573b3ebdf26a334d740d718d4f90a5216745936291ef6b87b877f99594a597",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/routing_subproblem.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "7554b0f24176b86104095ee47b8ec8ed5dfc4098c3df2f661231b0cf2f0ae718",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/models/scip_master_model.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-MASTER-DOMAIN-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "d3590b07088e4e67c5b714aca78e39acddd0da8b59a7b96a68ae7b4b270f2bea",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/blueprint_exporter.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "optimal_blueprint.json",
+          "canonical"
+        ],
+        "required_guard_tokens": [
+          "write_blueprint_payload",
+          "optimal_blueprint.json",
+          "verified certified publisher"
+        ],
+        "source_sha256": "8ee3b21bc137493fc930b08bd5ea368e23bcd1090ddf51a56bb7264d4d31a61f",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/industrial_planner_exact_status.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED",
+          "certified_surface"
+        ],
+        "required_guard_tokens": [
+          "normalize_non_authoritative_exact_status",
+          "_RESERVED_CERTIFIED_TOKEN",
+          "normalize_non_authoritative_exact_note"
+        ],
+        "source_sha256": "22875159909302a5d5dde77bd832539be1b01a10e40606d8d459996714c56183",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/industrial_planner_single_base_delivery_entrypoints.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED"
+        ],
+        "source_sha256": "e80cc8d6c4badadad9c23a2c6c8c645e653425b2b0002879baadb29c3dd6759c",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/industrial_planner_single_base_delivery_frontdoor.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED"
+        ],
+        "source_sha256": "5e530baaa4e49e149755c96452521daa93ece7a3c29b6e05545fcd5819530fdb",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/industrial_planner_single_base_delivery_landing.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED"
+        ],
+        "source_sha256": "085212ba166c2211a12a590c12d07a6a8cf6f38429d49a4d97b79633296b8da9",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/industrial_planner_single_base_delivery_surface_alignment.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED"
+        ],
+        "source_sha256": "f3bc8bec1160f97c25c39c170077a14ffd4ffcafbb3150dab9c61235dc3dd97c",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/industrial_planner_single_base_delivery_surface_health.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED"
+        ],
+        "source_sha256": "788fd78ad6fcf6d9d4b8e8d4a9f57a4323295c4341730874ccb7af98736eeddf",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/industrial_planner_single_base_delivery_viewer.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "final_solution.json",
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "final_solution.json",
+          "optimal_blueprint.json"
+        ],
+        "source_sha256": "439cd60a64436c13e15e6cc16ecda2c1884e38a34e194999820a7c77437bc9be",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/report_builder.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "optimal_blueprint_payload"
+        ],
+        "required_guard_tokens": [
+          "optimal_blueprint_payload"
+        ],
+        "source_sha256": "860ff758d6c64ac0029f2e22ad087c6b520d37d40e0264a8b464302a36c7cff6",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/render/serve.py",
+        "classification": "non_authoritative_projection",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "final_solution.json",
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "final_solution.json",
+          "optimal_blueprint.json"
+        ],
+        "source_sha256": "45a03f847c80595ef72b3e859eeccf01169ed16e87faebd7b75be4c788ff7262",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/benders_loop.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "RUN_STATUS_CERTIFIED",
+          "RUN_STATUS_INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "partial_due_to_time_budget",
+          "_CERTIFIED_UNCLASSIFIED_ENV_BLOCKER_CODE",
+          "_CERTIFIED_PROOF_SEMANTICS_ENV_BLOCKER_CODE",
+          "_CERTIFIED_SUBPROBLEM_PARAM_BLOCKER_CODE"
+        ],
+        "source_sha256": "34e198fc475ea2c7ea74ec05371fe59f8749a1e228ae68147577bd719be96a4e",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/campaign_telemetry.py",
+        "classification": "diagnostic_or_telemetry_non_authority",
+        "obligation_id": "PO-P1-2-CLOSE-KERNEL-SEALING",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "RUN_STATUS_CERTIFIED",
+          "RUN_STATUS_INFEASIBLE",
+          "proof_source"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED",
+          "INFEASIBLE"
+        ],
+        "source_sha256": "b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/campaign_triage.py",
+        "classification": "diagnostic_or_telemetry_non_authority",
+        "obligation_id": "PO-P1-2-CLOSE-KERNEL-SEALING",
+        "terms": [
+          "INFEASIBLE",
+          "RUN_STATUS_INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE",
+          "RUN_STATUS_INFEASIBLE"
+        ],
+        "source_sha256": "0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/candidate_proof_replay.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CANDIDATE-SINK-REPLAY-AUTHORITY",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "candidate_proof",
+          "candidate_sink_replay",
+          "proof-bearing"
+        ],
+        "required_guard_tokens": [
+          "CANDIDATE_PROOF_AUTHORITY",
+          "build_candidate_replay_proof",
+          "verify_candidate_records_at_sink",
+          "project_candidate_records_for_sink",
+          "_invoke_isolated_replay",
+          "isolated_replay_main",
+          "candidate_sink_replay_status_mismatch"
+        ],
+        "source_sha256": "0a6dd3089cda9e0229cac482737b000b724f51acac51085e345f533c1238547b",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/certified_frontier.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "RUN_STATUS_CERTIFIED",
+          "RUN_STATUS_INFEASIBLE",
+          "terminal_frontier_evidence"
+        ],
+        "required_guard_tokens": [
+          "project_candidate_records_for_sink",
+          "compute_sink_verified_terminal_frontier_projection",
+          "build_sink_verified_terminal_frontier_evidence",
+          "require_record_solution_match=False",
+          "require_record_solution_match=True",
+          "terminal_frontier_evidence_violation"
+        ],
+        "source_sha256": "b823ba698b66850e626ad474eb83511a98c128401972f0ea44dc30c2c3947aa0",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/certified_surface.py",
+        "classification": "p1_2_public_surface",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED",
+          "best_certified_result",
+          "certified_surface",
+          "certified_delivery_manifest.json",
+          "final_solution.json",
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "evaluate_certified_delivery_surface",
+          "has_valid_terminal_full_frontier_certified_evidence_for_project",
+          "resolve_p1_2_publish_open_gate",
+          "campaign_path=resolved_campaign_path",
+          "publish_verified_certified_delivery_surface",
+          "_load_verified_surface_snapshot"
+        ],
+        "source_sha256": "9e76bed7a8a426466c3f5df97c512084295f08e99cb0c6baf12c43309c4d0354",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/d2_separator.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "0263f50142b72833f87653e34a60e9a7f2c5495b90b86ef368dc25f2e0d2327e",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/exact_campaign.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "terminal_frontier_evidence",
+          "best_certified_result",
+          "certified_surface",
+          "final_solution.json",
+          "optimal_blueprint.json",
+          "proof-bearing"
+        ],
+        "required_guard_tokens": [
+          "run_l0_supervisor_seal",
+          "L0SupervisorSealRequest",
+          "PR2_L0_SEALED",
+          "terminal_candidate_sink_replay_failed",
+          "candidate_records_override=replayed_records",
+          "CANDIDATE_PROOF_FIELD",
+          "candidate_proof is a replay request",
+          "_mark_candidate_result_from_verified_producer",
+          "self.mark_candidate_result",
+          "validate_exact_campaign_resume_state"
+        ],
+        "source_sha256": "d893e59a9f1bd573208a39905bdb7d677046f97367543958cc201a90b21d1a04",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/exact_campaign_inspector.py",
+        "classification": "p1_2_public_surface",
+        "obligation_id": "PO-CERTIFIED-EXPORT-SURFACE",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "best_certified_result",
+          "certified_surface",
+          "final_solution.json",
+          "optimal_blueprint.json"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED",
+          "INFEASIBLE"
+        ],
+        "source_sha256": "ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/exact_parallel_scheduler.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "worker"
+        ],
+        "source_sha256": "e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/heuristic_feasible_finder.py",
+        "classification": "exploratory_or_heuristic_non_authority",
+        "obligation_id": "PO-P1-2-CLOSE-KERNEL-SEALING",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "CERTIFIED",
+          "INFEASIBLE"
+        ],
+        "source_sha256": "0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/independent_infeasibility_reverifier.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-INDEPENDENT-INFEASIBILITY-REVERIFY",
+        "terms": [
+          "INFEASIBLE",
+          "CONFIRMED_INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "reverify_whole_layout_infeasibility",
+          "REVERIFY_STATUS_CONFIRMED_INFEASIBLE",
+          "REVERIFY_STATUS_DIVERGED_FEASIBLE",
+          "routing_exhaustion_phase1_conservative_unknown",
+          "_solve_with_independent_cp_sat",
+          "PORTFOLIO_SEARCH"
+        ],
+        "source_sha256": "a71cc162bad123a5d68070dfa7eb4c127d2cd47ddc7781640b8e368d2bab63f9",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/outer_search.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "RUN_STATUS_CERTIFIED",
+          "RUN_STATUS_INFEASIBLE",
+          "terminal_frontier_evidence",
+          "best_certified_result",
+          "certified_surface"
+        ],
+        "required_guard_tokens": [
+          "compute_sink_verified_terminal_frontier_projection",
+          "build_candidate_replay_proof",
+          "sink_replay_violations",
+          "terminal candidate sink replay failed",
+          "_parallel_wave_result_identity_failure",
+          "_parallel_wave_failure_discards_results",
+          "_mark_candidate_result_from_verified_producer"
+        ],
+        "source_sha256": "f7082617304e8c733ac669f9e8ba5b5fe98e980db4ea4966bb3390a04af681e1",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/patch_conflict_separator.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "42368fc82b79b6fe5f31186ba197accecd73d425dce2ae5fad3316f6388e64e5",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/pr2_l0_artifact_core.py",
+        "classification": "p1_2_certified_path",
+        "source_sha256": "4db9e77b03e8176fbec399c3bafc78239597d960a252174afab8d0af649a33c7",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "terminal_frontier_evidence",
+          "certified_exact_source_tree",
+          "final_result"
+        ],
+        "required_guard_tokens": [
+          "compute_exact_artifact_hashes",
+          "compute_certified_exact_source_digest",
+          "terminal_certified_final_result_project_precheck_violation",
+          "terminal_certified_final_result_violation",
+          "has_valid_terminal_full_frontier_certified_evidence"
+        ],
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/pr2_l0_fixed_witness_core.py",
+        "classification": "p1_2_certified_path",
+        "source_sha256": "265963175a1c8facda251fa0bc1e39781c800bcbaff7084c2bb8a382566ee17c",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "UNPROVEN",
+          "terminal_fixed_witness",
+          "PortBindingModel",
+          "RoutingSubproblem"
+        ],
+        "required_guard_tokens": [
+          "verify_terminal_fixed_witness",
+          "_project_terminal_fixed_witness_records_from_capsule",
+          "record[\"status\"] = _PROJECTED_UNPROVEN",
+          "record.pop(\"solution\", None)",
+          "loads_strict_json",
+          "PortBindingModel",
+          "RoutingSubproblem",
+          "terminal_fixed_witness_binding_routing_v1"
+        ],
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/pr2_l0_frontier_core.py",
+        "classification": "p1_2_certified_path",
+        "source_sha256": "b658d418908b686061281dde24b9c1b89333c1659faa736cf082dcd7bbdb109b",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "terminal_frontier_evidence",
+          "TERMINAL_FRONTIER_EVIDENCE_SOURCE"
+        ],
+        "required_guard_tokens": [
+          "build_terminal_frontier_evidence",
+          "terminal_frontier_evidence_violation",
+          "compute_terminal_frontier_projection",
+          "normalize_terminal_frontier_domain_contract",
+          "TERMINAL_FRONTIER_DOMAIN_AUTHORITY",
+          "TERMINAL_FRONTIER_OBJECTIVE"
+        ],
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/pr2_l0_micro_verifier_core.py",
+        "classification": "p1_2_certified_path",
+        "source_sha256": "df37936427ac6d2ffb0f4163963cc1adf9f28daa4b7dc11947a0a5f78546edbb",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "terminal_frontier_evidence",
+          "candidate_proof",
+          "proof-bearing"
+        ],
+        "required_guard_tokens": [
+          "_load_canonical_dependency_floor_manifest",
+          "_load_dependency_floor_manifest",
+          "DEPENDENCY_FLOOR_ROOT_SENTINEL",
+          "DEPENDENCY_FLOOR_MANIFEST_SIZE_BYTES",
+          "DEPENDENCY_FLOOR_MANIFEST_SHA256",
+          "_strong_status_keys",
+          "_strong_proof_binding_violation",
+          "TRUE_VERIFIER_MODULE",
+          "_domain_response_violation",
+          "_checkpoint_write_lock_l0",
+          "_atomic_replace_bytes",
+          "_postwrite_state_violation",
+          "proposal_authority_b64",
+          "third_party_native"
+        ],
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/pr2_l0_replay_core.py",
+        "classification": "p1_2_certified_path",
+        "source_sha256": "f41d06064aa09ac92f24086076b7948f638e6ebba10385232236a061d7f50df2",
+        "obligation_id": "PO-CANDIDATE-SINK-REPLAY-AUTHORITY",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "candidate_proof",
+          "candidate_sink_replay",
+          "certified_exact_isolated_solver_replay_v1"
+        ],
+        "required_guard_tokens": [
+          "CANDIDATE_PROOF_AUTHORITY",
+          "certified_exact_isolated_solver_replay_v1",
+          "candidate_proof_shape_violation",
+          "_replay_response_violation",
+          "_replay_one_proof",
+          "_materialize_replay_snapshot",
+          "_invoke_isolated_replay",
+          "_execute_isolated_replay_request",
+          "\"-I\"",
+          "compute_exact_artifact_hashes",
+          "run_benders_for_ghost_rect",
+          "candidate_sink_replay_response_artifact_binding_mismatch"
+        ],
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/pr2_l0_true_verifier_child.py",
+        "classification": "p1_2_certified_path",
+        "source_sha256": "a62927ea934d135af820c4880f96c729caaf0c1c9f3e7cd97502f2e8708362cf",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "INFEASIBLE",
+          "terminal_frontier_evidence",
+          "candidate_proof",
+          "proof-bearing"
+        ],
+        "required_guard_tokens": [
+          "_project_candidate_records_direct",
+          "_invoke_isolated_replay",
+          "_run_fixed_witness_direct",
+          "build_terminal_frontier_evidence",
+          "terminal candidate sink replay failed",
+          "sink_replay_violations",
+          "NAMED-TCB",
+          "third_party_native",
+          "windows_write_isolation_residual"
+        ],
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/smt_mt_outer_pruning.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-CUT-REPLAY-FAITHFULNESS",
+        "terms": [
+          "INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "INFEASIBLE"
+        ],
+        "source_sha256": "004ce7151b8fc4dc7caf2cc32352b9090f2227f9de8fa2c7e55d9b04cbf4bf91",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/terminal_fixed_witness_capsule.py",
+        "classification": "p1_2_public_surface",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "UNPROVEN",
+          "terminal_fixed_witness",
+          "publishable",
+          "nonce"
+        ],
+        "required_guard_tokens": [
+          "build_terminal_fixed_witness_projection_at_sink",
+          "_invoke_isolated_capsule",
+          "_capsule_response_violation",
+          "_execute_isolated_capsule_request",
+          "nonce"
+        ],
+        "source_sha256": "017b22c4f2001f31491501c2758df845cfdcde28d3ede3ac68ed6fc033ddff84",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/terminal_fixed_witness_verifier.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
+        "terms": [
+          "CERTIFIED",
+          "UNPROVEN",
+          "terminal_fixed_witness",
+          "PortBindingModel",
+          "RoutingSubproblem"
+        ],
+        "required_guard_tokens": [
+          "from src.search.pr2_l0_fixed_witness_core import (",
+          "verify_terminal_fixed_witness",
+          "project_terminal_fixed_witness_records_for_sink",
+          "_project_terminal_fixed_witness_records_from_capsule",
+          "_apply_terminal_fixed_witness_audit_fields",
+          "terminal_fixed_witness_capsule_required",
+          "loads_strict_json"
+        ],
+        "source_sha256": "6822795d3d2480750d91d3558b3749ce7d84db5f9a843a1d5463e306ed285d3d",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      }
+    ]
+  }
+}

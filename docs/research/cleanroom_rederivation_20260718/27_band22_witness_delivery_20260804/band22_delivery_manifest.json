@@ -1,0 +1,25 @@
+{
+  "delivery_date": "2026-08-04",
+  "scope": "Design consultation only; official strict checker CLI/schema was not supplied or run.",
+  "files": {
+    "band22_three_holes_repair_report.md": {
+      "sha256": "481c2404f5b1b335e30f9822184e31b7cdacc9ca1f277f40bd57087a499f2d9e",
+      "description": "Chinese coordinate-level repair report covering all requirements in 00_ASK.md."
+    },
+    "band22_repaired_design_witness_not_checker_schema.json": {
+      "sha256": "c8e47b4482475f02e3bcae36d96d153366055003ffb5a469c00c8b5a9dd28245",
+      "description": "Self-describing custom witness, not the official checker serialization schema."
+    }
+  },
+  "independent_reload_validation": {
+    "errors": 0,
+    "mandatory_facilities": 266,
+    "auxiliary_power_poles": 25,
+    "facility_body_cells_including_poles": 3644,
+    "route_components": 1143,
+    "active_ports": 628,
+    "powered_manufacturing_machines": "219/219",
+    "routing_commodities": "19/19",
+    "official_checker_ran": false
+  }
+}

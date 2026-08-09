@@ -1,0 +1,16 @@
+{
+  "schema_version": "c5_priority_query_stage.v1",
+  "status": "SERIAL_QUERY_CAMPAIGN_STARTING",
+  "recorded_at_utc": "2026-07-20T08:07:08Z",
+  "classification": "research_recovery_stage_status_no_router",
+  "geometry": {
+    "moved_x": 66,
+    "uniform_y_shift": 0,
+    "pole_count": 35
+  },
+  "seconds_per_query": 180.0,
+  "workers": 8,
+  "driver_sha256": "a241b6da5b5b96eb0f0c0a31ddcb0650247bba69f2cc8e06e28517680d95bfe7",
+  "replay_sha256": "a05b0ac8d639fadc8760ae2eb3f199c7b1c601d37daa74101988c9f5c4de0120",
+  "global_local_cp_slot_checked_free": true
+}

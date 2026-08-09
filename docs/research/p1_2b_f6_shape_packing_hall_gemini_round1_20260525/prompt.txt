@@ -1,0 +1,1612 @@
+你是 Hall's marriage theorem / combinatorial cut / bin-packing / soundness 形式化方法 审查员。Endfield 工业规划求解器 Phase 1.2 P1.2B-F6 (shape_packing_hall) **Round 1** cross-check (commit `6adc5fd`).
+
+# 任务背景
+
+70x70 grid certified-exact LBBD 求解器, F6 是 9 个 cut family 之一: Hall 反例
+拦 "ghost+exterior 切的 baseline 装不下 region_demand 个 rigid pose" →
+INFEASIBLE cut. F2 反例: left baseline length 10, ghost+exterior 切 [4, 5],
+pose_length=3, region_demand=3 → ⌊4/3⌋+⌊5/3⌋=2 < 3 → INFEASIBLE.
+
+之前 land 的 F1-F4/F5/F9 都 GO. F6 是 first geometric-with-region_demand
+family, 实现复用 baseline_partition.py helper (Phase 1.0 P1.4 已 land).
+
+# Design merger 来源 — 5 parallel opus subagent slant
+
+主对话从 5 个不同 slant 子代理收集 design 合并:
+1. correctness-paranoid: 10 phase validator + 5 hidden weak case + 4 维 replay
+2. throughput: by_cell watcher 不该用 (v1.1 cell_owner-independent), 3 层 cache
+3. adversarial: 20+ attack matrix + 4 patches (含 partition_offsets recompute)
+4. integration: F6 plug 在 benders_loop.py:~4341 + 3 path (a/b/c) for master attach
+5. minimum viable: 8 phase + helper 复用 + 9 test
+
+最终 land:
+- Cert schema 含 `region_demand` (per region, Phase 1.5+ 真接 master.solution),
+  `group_demand` (carry source-of-truth audit), `exterior_blocks_digest`
+- 11-phase validator (合 5 agent 顶 + 4 patch)
+- Strict `<` Hall witness (equality 不 cut)
+- pose_length >= 2 (拒 退化 F1 case)
+- partition_offsets 严等 recompute (不当 debug-only — adversarial agent patch)
+- watcher: by_group + by_region + by_ghost auto (no by_cell)
+
+# Round 1 任务 (v4 加严协议 — 不接受 GO ritual)
+
+1. **Spec-data gap focus** — 真数据 inline 在下方. 实施 src 接合真数据时哪步
+   crash / FN (该发 cut 不发) / FP (发不该发的 cut)?
+2. **Hall theorem soundness**: spec §2a single-shape proof 是否 cover 所有
+   corner? rigid 1×L pose 占 L 连续 cells 假设有 hidden weak case?
+3. **Fail-closed semantics**: 11 phase 是否真覆盖 20 个 attack 路径? schema_err
+   vs unsound 三分是否正确?
+4. **Cross-state-of-truth**: canonical_rules / state.groups / source_digest /
+   facility_templates 4 层 cross-check 哪里漏?
+5. **region_demand 选 Phase 1.5+ 推迟决策**: 现 generator default
+   `region_demand = min(group.demand, region_total_length // pose_length)`.
+   合理 fallback 还是埋雷?
+
+## Armor 规则
+
+- 不接受 "looks fine / 完美 / very solid / ship-ready" 等 vague hyperbole
+- GO verdict 必先列 3 种最可能死法 + disprove (cite file:line)
+- critical claim 必 cite file:line 或 spec §X 或 literature
+- 找不到 critical 也必列 3 个 high-risk hypothesis disproved (file:line 引用)
+
+## 关键 finding我自己已经预察到 (verify + push more)
+
+Gap A: spec §5b detect_shape_hall_infeasibility line 274
+`demand = state.groups[contributing_group].remaining_count` 跟 §5a.bis
+"demand 用 group.demand (source-of-truth)" 不一致. 实施已选 group.demand
++ region_demand 分离 schema, 跟 spec drift. 是吗?
+
+Gap B: boundary_storage_port group.demand=46 全 group, 不是 per-region 23.
+实施 generator 用 `min(group.demand, region_total_length // pose_length)` =
+min(46, 23) = 23 作 default region_demand. 这是 sound 的 fallback (region 装满
+上界 = 23 个 pose) 还是 over-trigger (永远发 cut)?
+
+Round 1 任务: verify Gap A/B + push 找 round 1 第 3/4/... new finding.
+
+## Format (严格不要 think-out-loud)
+
+```
+## Round 1 Verdict
+GO | GO_WITH_MINOR | CONCERN | NOT_GO
+
+## Verify Gap A/B
+- Gap A (spec §5b drift): CONFIRMED / PARTIAL / REJECTED — 详释
+- Gap B (region_demand default): CONFIRMED / PARTIAL / REJECTED — 详释 + 推荐
+
+## Round 1 New findings (≥3, 任何 severity)
+
+### Finding 1: [SEVERITY] file:line — title
+≤ 200 字 (问题陈述 + reproduce + fix 建议)
+
+### Finding 2: ...
+### Finding 3: ...
+
+## Sanity (如果 GO, 至少 3 disproved hypothesis 含 file:line)
+
+## 建议 Round 2 重点 / Phase 1.5+ defer
+```
+
+# F6 spec (cut_family_specs/06_shape_packing_hall.md v1.1)
+
+# Cut Family 6 — shape_packing_hall (完整 spec, v3 新 family)
+
+> **Status**: Day 16c v1.1 (2026-05-21) — Gemini round 14 cross-check 修
+> **Cross-refs**: `../cut_lifecycle_v2.md` v3 §3 §4 §5 §6 + `../red_fixtures/F2_shape_packing_hall.md` + `../cross_check/gemini_round_14_cut_families.md`
+> **Mode**: geometric (_FAMILY_MODE_MAP)
+> **Family_version**: v1.1 (geometric partition 只依赖 ghost + exterior, 不依赖 cell_owner)
+> **来源**: Gemini round 12 v14 review 反例 B
+
+## Changelog
+
+- **v1.0** (Day 16a, commit 30b0a2d): 初版 12 段 spec
+- **v1.1** (Day 16c, 本 commit): 修 Gemini round 14 finding #2 **致命 replay bug** —
+  `compute_baseline_partition_lens` v1.0 包 `cell_owner.keys()` 使 partition
+  state-dependent, 深层学的 cut 回浅层 cell_owner 空 → recompute lens 跟 cert
+  不一致 → Validator 永久 Quarantine, Family 6 cut 跨层活不下来. v1.1 partition
+  **只**依赖 ghost + exterior_blocks (static), cell_owner 不入 partition. 若需
+  cell_owner 碎片化路径走 Family 5 pattern_nogood (literal-based) 而非 geometric.
+
+## 1. 数学定义
+
+### 1a. Cut 形式
+
+设 `R` 是 region (e.g. left baseline), `R` 被 ghost `G` 切成 maximal-free
+intervals `I_1, I_2, ..., I_k`. 每个 interval `I_j` 有 length `len(I_j)`.
+Mandatory pose 是 rigid shape `1 × L` (L = pose_length), 必须连续占 L 个 cells.
+
+定义 `max_packable(I_j, L) = ⌊len(I_j) / L⌋` — 此 interval 最多放 pose 数.
+
+Hall infeasibility:
+
+```
+sum_{j=1..k} max_packable(I_j, L) < demand    (4) Hall witness
+                                  ⇒  INFEASIBLE
+```
+
+Cut 触发 (4): 当各 interval 能容纳的 pose 数之和 < demand → INFEASIBLE.
+跟 Family 1 region_capacity 区别: region_capacity 看 cell 总数, shape_hall
+看 **interval 切片能否各装下 pose** (rigid shape constraint).
+
+### 1b. F2 反例 (Gemini 反例 B)
+
+- left baseline length 10, ghost 占 (x=0, y=4) 单格切两段
+- 段 A length 4, 段 B length 5, 总 9 cells
+- pose_length L = 3, demand = 3
+- region_capacity 看 `cells_in_region = 9 ≥ demand × L = 9` → **pass**
+- shape_packing_hall 看 `⌊4/3⌋ + ⌊5/3⌋ = 1 + 1 = 2 < 3` → **INFEASIBLE** ✅
+
+### 1c. Generalization (mixed pose lengths)
+
+Boundary_storage_port 是 1×3 rigid, 但其他 facility (crusher 3×3 / refinery
+5×5 / etc) shape 不一. Hall condition 推广到多 shape:
+
+```
+Let demand vector d = (d_L1, d_L2, ...) by pose shape length.
+Let interval i provide (i_L1, i_L2, ...) = (⌊len(I_i)/L1⌋, ⌊len(I_i)/L2⌋, ...).
+Feasible iff there exists nonneg integer assignment x_{i,L}:
+    sum_L L * x_{i,L} ≤ len(I_i)   ∀i (cell constraint)
+    sum_i x_{i,L} ≥ d_L            ∀L (demand)
+```
+
+这是 **bin packing with multiple item sizes** 问题. NP-hard in general
+(reduction from PARTITION). 但 boundary_storage_port + crusher_etc 都是
+fixed L → small constant # shapes → polynomial special case.
+
+**Phase 0 spec scope**: single shape (L = 3 boundary port). Multi-shape
+Phase 1 + Family 6 v1.1.
+
+### 1d. 跟 LP relaxation 关系
+
+Single-shape Hall ≡ LP relaxation `min Σ x_{i,j}` s.t. `Σ_j x_{i,j} ≤
+max_packable(I_i, L); Σ_i x_{i,j} = 1 ∀ j ∈ {1..demand}` is INFEASIBLE
+when (4) holds. Farkas dual ray gives Hall witness.
+
+Multi-shape LP relaxation 仍 sound but **不 tight** (LP gap → 实际
+infeasible 但 LP feasible). Phase 1 + 用 ILP exact.
+
+## 2. Soundness proof
+
+### 2a. Single-shape (现实施 scope)
+
+**引理 (interval packing upper bound)**: 在 length `L` cells 的 interval
+`I` 上, rigid `1 × L` pose 数上界是 `⌊len(I) / L⌋`.
+
+**证明**: pose 占 L 连续 cells. K 个 pose 占 K * L cells. 不重叠条件 → K * L
+≤ len(I) → K ≤ ⌊len(I) / L⌋. ∎
+
+**主定理**: (4) 蕴含 INFEASIBLE.
+
+**证明**: 总 placed pose 数 ≤ Σ_j max_packable(I_j, L) (每 interval 独立).
+若 Σ < demand → 必少放 → INFEASIBLE. ∎
+
+### 2b. Multi-shape (Phase 1 待证)
+
+Hall's marriage theorem: bipartite graph `(intervals, demand slots)` with
+edge `(i, j)` iff demand `j` 的 shape `L_j` fits in interval `i`. 完美 matching
+存在 iff for all subset `S ⊆ demand slots`, `|N(S)| ≥ |S|` (Hall condition).
+
+Multi-shape capacity: 每 interval 能 host 多 pose, 上是 `weighted` Hall:
+`Σ_{i ∈ N(S)} max_packable(I_i, L_j) ≥ |S|` ∀ subset S. 这是 polynomial
+verifiable iff demand 全 same shape — 否则 PARTITION-reducible.
+
+Phase 1 多 shape exact 走 ILP feasibility check on small partition (≤ 20 intervals).
+
+### 2c. Scope 限定
+
+`max_packable` 依赖:
+- ghost_rect (影响 partition_lens)
+- canonical_rules pose shape (L) — source-of-truth
+- mandatory_exact_instances demand — source-of-truth
+
+→ scope carry: ghost_rect_id (非 GHOST_AGNOSTIC, ghost 关键) + source_digest
++ active_assumption `boundary_pose_shape=<L>x<W>_rigid` + `boundary_region=<kind>`.
+
+## 3. Cert payload schema
+
+```python
+@dataclass(frozen=True)
+class ShapePackingHallCert:
+    """Cert for Family 6 shape_packing_hall cut.
+
+    cert.cert_kind = "hall_interval_witness"
+    """
+    region_kind: Literal["left_baseline", "bottom_baseline"]  # Phase 0: only baseline
+    region_total_length: int                # e.g. 70 for left baseline
+
+    # ghost-induced partition (computed in scope of ghost)
+    partition_lens: Tuple[int, ...]         # e.g. (4, 5) for F2 反例
+    partition_offsets: Tuple[int, ...]      # 每段 start cell in region (debug)
+
+    pose_length: int                         # L = 3 for boundary_storage_port
+    pose_shape_canonical: str                # e.g. "1x3_rigid"
+
+    max_packable: Tuple[int, ...]            # per interval: ⌊len/L⌋
+    total_packable: int                      # sum(max_packable)
+    demand: int                              # demand_R for this shape
+    gap: int                                 # demand - total_packable (> 0)
+
+    # 单 shape only (Phase 0); multi-shape Phase 1 加 demand_by_shape: Dict[L, int]
+    contributing_group: GroupId              # 单 group (boundary_storage_port)
+
+    # LP dual / Farkas witness (optional, Phase 1)
+    lp_dual_ray_b64: Optional[str] = None
+    lp_dual_objective: Optional[float] = None
+```
+
+cert_payload bytes = `canonical_bytes(ShapePackingHallCert.asdict())`.
+cert_hash = sha256(cert_payload).
+
+## 4. Cut object 构造
+
+按 `cut_lifecycle_v2 v3 §3` Cut schema, shape_packing_hall 是 **geometric**:
+
+```python
+def construct_shape_hall_cut(state: BState, witness: ShapePackingHallCert) -> Cut:
+    return Cut(
+        cut_id=uuid4().hex,
+        family="shape_packing_hall",
+        literals=None,                              # geometric
+        geometric_payload=canonical_bytes(witness.asdict()),
+        scope=CutScope(
+            ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),  # 非 AGNOSTIC
+            blocked_cells_hash=compute_blocked_cells_hash(state),
+            source_digest=compute_source_digest(state).canonical_hash(),
+            artifact_hashes={
+                "canonical_rules.json": sha256_file("rules/canonical_rules.json"),
+                "candidate_placements.json": sha256_file("data/preprocessed/candidate_placements.json"),
+                "mandatory_exact_instances.json": sha256_file("data/preprocessed/mandatory_exact_instances.json"),
+            },
+            oracle_abstraction_version="shape_hall_v1",
+            active_assumptions=(
+                Assumption(
+                    key="boundary_pose_shape",
+                    value=witness.pose_shape_canonical,
+                ),
+                Assumption(
+                    key="boundary_region",
+                    value=witness.region_kind,
+                ),
+            ),
+        ),
+        cert=OracleCert(
+            cert_kind="hall_interval_witness",
+            cert_payload=canonical_bytes(witness.asdict()),
+            cert_hash=sha256(...).hexdigest(),
+        ),
+        family_version="v1.0",
+        validator_version="v1.0",
+        payload_schema_version=1,
+        oracle_name="shape_hall_v1",
+        oracle_cert_hash=...,
+    )
+```
+
+## 5. Generator algorithm
+
+### 5a. Partition lens 计算 helper
+
+```python
+def compute_baseline_partition_lens(
+    region_kind: Literal["left_baseline", "bottom_baseline"],
+    state: BState,
+) -> Tuple[List[int], List[int]]:
+    """v1.1 改 — 只依赖 ghost + exterior_blocks (static), **不**依赖 cell_owner.
+
+    Why: Gemini round 14 finding #2 — v1.0 包 cell_owner 后 partition 是 state-
+    dependent, 深层学的 cut 回浅层因 cell_owner 不同 recompute lens 全变 → Validator
+    永久 Quarantine. v1.1 partition 只 carry static structural 信息, cell_owner
+    碎片化场景走 Family 5 pattern_nogood (literal-based).
+
+    Returns (partition_lens, partition_offsets):
+        e.g. left baseline length 70, ghost 占 (0, 30) 单格 →
+             partition_lens=[30, 39], partition_offsets=[0, 31]
+    """
+    region_cells = compute_region_cells(region_kind)   # ordered along baseline
+    blocked = set()
+    # ghost cells
+    if state.ghost_rect is not None:
+        blocked.update(state.ghost_cells)
+    # exterior_blocks (static map blocks 来自 canonical_rules / mandatory_exact_instances)
+    blocked.update(state.exterior_blocks)
+    # !!! 不再 update cell_owner.keys() —— v1.1 critical fix !!!
+    # cell_owner 碎片化的场景走 Family 5 pattern_nogood 不走 Family 6
+
+    # Scan baseline, split on blocked cells
+    partition_lens, partition_offsets = [], []
+    current_len, current_offset = 0, 0
+    for idx, cell in enumerate(region_cells):
+        if cell in blocked:
+            if current_len > 0:
+                partition_lens.append(current_len)
+                partition_offsets.append(current_offset)
+            current_len = 0
+            current_offset = idx + 1
+        else:
+            if current_len == 0:
+                current_offset = idx
+            current_len += 1
+    if current_len > 0:
+        partition_lens.append(current_len)
+        partition_offsets.append(current_offset)
+    return partition_lens, partition_offsets
+```
+
+### 5a.bis Demand 计算 — v1.1 改
+
+partition 改 static 后, `demand = state.groups[contributing_group].remaining_count`
+也变成 state-dependent → cut 跨层 validator 重算 `state.groups[gid].remaining_count`
+跟 cert 不一致仍 quarantine.
+
+v1.1 改: demand 用 **group.demand** (initial 总 demand) 而不是 remaining_count, +
+cert.contributing_groups 标 `(group_id, total_demand_at_gen)`. Validator 比 cert
+跟 canonical_rules group demand. group demand 是 source-of-truth, 不会 state-dep.
+
+```python
+# v1.1: demand 用 group.demand (source-of-truth) 不是 remaining_count (state-dep)
+demand = state.groups[contributing_group].demand   # ← 改
+```
+
+### 5b. Hall infeasibility detect
+
+```python
+def detect_shape_hall_infeasibility(
+    state: BState,
+    region_kind: Literal["left_baseline", "bottom_baseline"],
+    contributing_group: GroupId,
+) -> Optional[ShapePackingHallCert]:
+    """对 single region + single contributing group 检 Hall infeasibility.
+
+    Phase 0: single shape (boundary_storage_port 1×3 rigid).
+    Phase 1: multi-shape generalize (ILP feasibility on partition).
+    """
+    pose_length = canonical_rules[contributing_group]["pose_shape"]["length"]  # = 3
+    demand = state.groups[contributing_group].remaining_count * 1  # 单 pose / instance
+
+    partition_lens, partition_offsets = compute_baseline_partition_lens(region_kind, state)
+    max_packable = [length // pose_length for length in partition_lens]
+    total_packable = sum(max_packable)
+
+    if total_packable >= demand:
+        return None  # feasible, no cut
+
+    return ShapePackingHallCert(
+        region_kind=region_kind,
+        region_total_length=len(compute_region_cells(region_kind)),
+        partition_lens=tuple(partition_lens),
+        partition_offsets=tuple(partition_offsets),
+        pose_length=pose_length,
+        pose_shape_canonical=f"{pose_length}x{1}_rigid",
+        max_packable=tuple(max_packable),
+        total_packable=total_packable,
+        demand=demand,
+        gap=demand - total_packable,
+        contributing_group=contributing_group,
+    )
+```
+
+### 5c. Generator 入口 (Phase 1 oracle)
+
+```python
+class ShapeHallOracle:
+    name = "shape_hall_v1"
+
+    def generate(self, state: BState) -> List[Cut]:
+        """For each baseline region + each boundary group, check Hall."""
+        cuts = []
+        for region_kind in ["left_baseline", "bottom_baseline"]:
+            for gid in self._boundary_groups():
+                witness = detect_shape_hall_infeasibility(state, region_kind, gid)
+                if witness is not None:
+                    cuts.append(construct_shape_hall_cut(state, witness))
+        return cuts
+```
+
+### 5d. Minimize / Normalize (Step 2)
+
+shape_hall cert 的 minimal core 是 `partition_lens` 子集 — 选最少 partition
+使 sum `max_packable` 仍 < demand. 但 partition 是 ghost-induced 固有结构, 不
+可选 subset (cut 必须 carry 全 partition 让 replay 验). → minimize 是 no-op
+(partition 已是 minimal).
+
+Multi-shape phase 1 走 QuickXplain on contributing_groups subset.
+
+## 6. evaluate_geometric (hot path)
+
+```python
+def evaluate_geometric_shape_hall(cut: Cut, state: BState) -> bool:
+    """shape_packing_hall hot path. v3 §5 family-dispatch.
+
+    重算当前 state 内 partition + total_packable, 验是否仍 < cert.demand.
+    若 ghost change → partition 变 → cap 可能变.
+    """
+    cert_dict = json.loads(canonical_bytes_decode(cut.geometric_payload))
+    region_kind = cert_dict["region_kind"]
+    pose_length = cert_dict["pose_length"]
+    demand = cert_dict["demand"]
+
+    # 重算当前 partition
+    current_lens, _ = compute_baseline_partition_lens(region_kind, state)
+    current_total_packable = sum(length // pose_length for length in current_lens)
+
+    return current_total_packable < demand
+```
+
+跟 Family 1 evaluate_geometric 区别: Family 1 cert 在 scope 内 always violate
+(cap_R/demand_R 都 fixed); shape_hall cert 需要重算 partition (ghost 间接
+影响). 所以 evaluate_geometric 不 trivial.
+
+## 7. Validator (Step 5) — 独立重算
+
+```python
+class ShapeHallValidator(CutValidator):
+    family = "shape_packing_hall"
+    validator_version = "v1.0"
+
+    def validate(self, cut: Cut, state: BState) -> ValidationResult:
+        start = time.monotonic()
+        try:
+            cert_dict = json.loads(canonical_bytes_decode(cut.geometric_payload))
+            region_kind = cert_dict["region_kind"]
+            pose_length = cert_dict["pose_length"]
+            cert_demand = cert_dict["demand"]
+            cert_partition_lens = cert_dict["partition_lens"]
+            cert_total_packable = cert_dict["total_packable"]
+
+            # 1. 重算 partition (验 ghost + cell_owner 一致性)
+            recomputed_lens, _ = compute_baseline_partition_lens(region_kind, state)
+            if tuple(recomputed_lens) != tuple(cert_partition_lens):
+                # ghost 或 cell_owner 已变 → cert 不在 cur scope sound
+                return ValidationResult(
+                    kind="unsound", elapsed_seconds=time.monotonic() - start,
+                    detail=f"partition_lens mismatch: cert={cert_partition_lens}, recomputed={recomputed_lens}",
+                )
+
+            # 2. 重算 max_packable + total_packable
+            recomputed_max_packable = [length // pose_length for length in recomputed_lens]
+            recomputed_total = sum(recomputed_max_packable)
+            if recomputed_total != cert_total_packable:
+                return ValidationResult(
+                    kind="unsound", elapsed_seconds=time.monotonic() - start,
+                    detail=f"total_packable mismatch: cert={cert_total_packable}, recomputed={recomputed_total}",
+                )
+
+            # 3. 验 Hall witness (4): total_packable < demand
+            if recomputed_total >= cert_demand:
+                return ValidationResult(
+                    kind="unsound", elapsed_seconds=time.monotonic() - start,
+                    detail=f"witness fail: total_packable={recomputed_total} ≥ demand={cert_demand}",
+                )
+
+            # 4. v1.1 改 — demand 用 group.demand (source-of-truth) 比对, 不用 remaining_count
+            #
+            # Why: v1.0 用 remaining_count → state-dep, 跨层 quarantine. v1.1 用
+            # group.demand (canonical_rules source-of-truth), state-independent
+            # → 跨层 cut 仍 sound.
+            gid = cert_dict["contributing_group"]
+            if state.groups[gid].demand != cert_demand:
+                # group demand 改 → source-of-truth rotated → quarantine
+                return ValidationResult(
+                    kind="unsound", elapsed_seconds=time.monotonic() - start,
+                    detail=f"demand mismatch: cert={cert_demand}, group.demand={state.groups[gid].demand} (source-of-truth rotated)",
+                )
+
+            return ValidationResult(kind="ok", elapsed_seconds=time.monotonic() - start)
+        except Exception as e:
+            return ValidationResult(
+                kind="schema_err", elapsed_seconds=time.monotonic() - start,
+                detail=str(e),
+            )
+
+    def evaluate_geometric(self, cut: Cut, state: BState) -> bool:
+        return evaluate_geometric_shape_hall(cut, state)
+```
+
+### 7b. multi-shape generalize (Phase 1)
+
+Phase 1 multi-shape: validator 跑 ILP `feasibility(partition, demands_by_shape)`
+in 1s budget. Phase 0 单 shape 走 closed-form ⌊·/L⌋.
+
+## 8. Replay (Step 9)
+
+按 cut_lifecycle_v2 v3 §4 replay 算法 + Family 6 特殊:
+
+1. Step 1 source_digest: 比 canonical_rules / candidate_placements /
+   mandatory_exact_instances. 不 match → quarantine.
+2. Step 2 ghost match: **必 match** 当前 ghost_rect_id (ghost 是 partition_lens
+   决定因素). 不 match → HOLD.
+3. Step 3 artifact: 同 step 1.
+4. Step 4 oracle version: `shape_hall_v1`.
+5. Step 5 active_assumptions:
+   - `boundary_pose_shape=1x3_rigid` 验 (canonical_rules pose shape 没改)
+   - `boundary_region=left_baseline` 验 (verifier 跟 region_kind 比对)
+6. 通过 5 步 → validator.validate (Step 5) → ATTACH 或 unsound→quarantine.
+
+### Watcher index 添加 (Step 8)
+
+```python
+def add_watchers_shape_hall(store: CutStore, cut: Cut) -> None:
+    cert = decode_shape_hall_cert(cut.geometric_payload)
+
+    # by_cell_watcher: region 内所有 cells (任一 cell_owner change 触发 re-eval)
+    for cell in iter_region_cells(cert.region_kind):
+        store.by_cell_watcher[cell].add(cut.cut_id)
+
+    # by_region_watcher
+    region_id = f"{cert.region_kind}:shape_hall"
+    store.by_region_watcher[region_id].add(cut.cut_id)
+
+    # by_group_watcher: contributing_group
+    store.by_group_watcher[cert.contributing_group].add(cut.cut_id)
+
+    # NOTE: ghost_rect change 需 by_ghost_watcher (新 watcher kind)
+    # 当前 §7 5 维 watcher 不含 ghost; Phase 1 加 6 维 or 走全 store replay.
+```
+
+### 6 维 watcher (Phase 1 加, Day 17 schema)
+
+Day 17 改 cut_lifecycle §7 watcher index 加 `by_ghost_watcher: Dict[GhostRectId, Set[CutId]]`,
+shape_hall + ghost_complement region_capacity 入此 watcher. Ghost_rect change
+→ invalidate 整个 watcher group.
+
+## 9. 跟 F2 fixture 对齐 验
+
+F2 fixture: length 10 baseline 切 [4,5], demand 3, L=3 → infeasible.
+
+```python
+F2_shape_hall_cut = Cut(
+    cut_id="F2-shape-hall-001",
+    family="shape_packing_hall",
+    literals=None,
+    geometric_payload=canonical_bytes({
+        "region_kind": "left_baseline",
+        "region_total_length": 70,                # full prod scale
+        "partition_lens": (4, 5),                  # F2 simplified
+        "partition_offsets": (0, 5),
+        "pose_length": 3,
+        "pose_shape_canonical": "1x3_rigid",
+        "max_packable": (1, 1),
+        "total_packable": 2,
+        "demand": 3,
+        "gap": 1,
+        "contributing_group": "boundary_storage_port",
+    }),
+    scope=CutScope(
+        ghost_rect_id="<G canonical hash>",        # F2 ghost rect (0, 4, 1, 1)
+        ...
+        active_assumptions=(
+            Assumption("boundary_pose_shape", "1x3_rigid"),
+            Assumption("boundary_region", "left_baseline"),
+        ),
+    ),
+    cert=OracleCert(
+        cert_kind="hall_interval_witness",
+        cert_payload=canonical_bytes({...}),
+        cert_hash=...,
+    ),
+    family_version="v1.0",
+    validator_version="v1.0",
+    ...
+)
+```
+
+`evaluate_geometric_shape_hall(F2_cut, state_with_ghost_G)`:
+- recomputed_lens = (4, 5)
+- recomputed_total_packable = 1 + 1 = 2
+- 2 < demand 3 → return True ✅
+
+F2 fixture 5 个 [SCHEMA_GAP] / [NEEDS_NEW_FAMILY] 解:
+- `CutFamily` enum `shape_packing_hall`: ✅ v3 加
+- `cert_kind` "hall_interval_witness": ✅ 本 spec 定义
+- literals 非空约束: ✅ v3 解 (geometric_payload)
+- Validator §6 加 Family: ✅ 本 spec §7
+- `evaluate_cut` family-dispatch: ✅ v3 §5 + 本 spec §6
+
+F1-F4 cross-family 不冲突 ✅.
+
+## 10. Open questions
+
+1. **Multi-shape Hall generalize**: 真 production 不止 boundary_storage_port,
+   其他 facility (crusher / refinery / etc) 共享 baseline. Phase 1 generalize
+   时需要 multi-shape ILP feasibility. v1.1 family.
+2. **Interior region shape_hall**: 当前 spec 只 left/bottom baseline. 70x70
+   interior region (interior_rect) 也可能 shape_hall infeasible (e.g. 5×5
+   region 装 5 个 3×3 crusher). Day 17 / Phase 1 extend.
+3. **Partition_offsets soundness**: cert carry offsets 是 debug-only, replay
+   不验. 但若 offsets 改 (ghost shape 变但 lens 不变) → cert 仍 sound? 是 —
+   max_packable 不依赖 absolute offset, 只依赖 lens. offsets 可任意 reorder.
+4. **Hall cut 跟 region_capacity cut 重复**: 部分 case 两 family 都 trigger
+   (e.g. cap < demand AND interval scheduling 也 < demand). cut store dedupe
+   政策: 同 scope 同 contributing_group 优先保 shape_hall (更精细). Phase 1.
+5. **Multi-region Hall**: left + bottom baseline 一起被 ghost 切, sum
+   max_packable 都看. 当前 spec 单 region. Multi-region union 在 Phase 1.
+
+## 11. Implementation pre-decision
+
+- `ShapeHallValidator` 实现: `src/cuts/families/shape_packing_hall.py` (Phase 1)
+- `ShapeHallOracle.generate`: `src/cuts/generators/shape_hall_generator.py` (Phase 1)
+- `compute_baseline_partition_lens` helper: `src/cuts/helpers/baseline_partition.py` (Phase 1)
+- 复用: 暂无 src 复用 (新 helper 是 ground-up).
+- 测试 fixture 位置: `src/tests/cuts/test_family_6_shape_packing_hall.py` (Phase 1)
+- Watcher 加 6 维 by_ghost: Day 17 cut_lifecycle_v2 update.
+
+## 12. Phase 0 Day 16a 验收 status
+
+- ✅ 数学定义 (Hall infeasibility 形式 + F2 反例验证 + multi-shape generalize 提及)
+- ✅ Soundness proof (single shape 完整, multi-shape Phase 1 defer)
+- ✅ Cert payload schema (ShapePackingHallCert dataclass)
+- ✅ Cut object 构造 (geometric mode, ghost-bound scope)
+- ✅ Generator (compute_baseline_partition_lens helper + detect 入口)
+- ✅ evaluate_geometric (重算 partition + total_packable < demand)
+- ✅ Validator 独立重算 + 4 步检验
+- ✅ Replay 5 步 + watcher index (6 维加 by_ghost Day 17 schema)
+- ✅ 跟 F2 fixture 对齐验证, 5 [SCHEMA_GAP] 全解
+- ⚠️ 5 open question (multi-shape / interior region / partition_offsets /
+  duplicate cut / multi-region) → Phase 1 / Day 17 接
+- ⏸ 实施在 Phase 1
+
+Day 16a close. 下一步 Day 16b Family 7 power_hitting_set (literal mode,
+L16 lazy power 复用).
+
+
+# DOC_PATHS: 真数据 schema inline (v4 协议硬要求)
+## rules/canonical_rules.json — boundary_storage_port template
+```json
+{
+  "dimensions": {
+    "w": 1,
+    "h": 3
+  },
+  "rotatable": true,
+  "needs_power": false,
+  "is_solid_z": true,
+  "port_rule": "inward_facing",
+  "placement_rule": "left_or_bottom_boundary"
+}
+```
+
+## data/preprocessed/mandatory_exact_instances.json — group counts
+Total 266 instance entries. boundary_storage_port = 46.
+
+Top 5 by count:
+- manufacturing_3x3: 132
+- manufacturing_5x5: 49
+- boundary_storage_port: 46
+- manufacturing_6x4: 38
+- protocol_core: 1
+
+## BState fields F6 generator + validator reads
+- `state.ghost_rect: Optional[Tuple[int, int, int, int]]` — (x, y, h, w)
+- `state.ghost_cells: FrozenSet[Cell]` — set of (x, y) cells covered by ghost
+- `state.exterior_blocks: FrozenSet[Cell]` — static map blocks
+- `state.groups[gid]: GroupState (group_id, demand, pose_domain, selected_poses)`
+- `state.instance_to_facility_type: Optional[Dict[GroupId, str]]`
+- `state.facility_templates: Optional[Dict[str, Dict]]` — alias canonical_rules.facility_templates
+
+## baseline cell convention (src/cuts/helpers/baseline_partition.py:28-38)
+- left_baseline: `[(x, 0) for x in range(70)]` — 70 cells in column y=0
+- bottom_baseline: `[(0, y) for y in range(70)]` — 70 cells in row x=0
+- partition: scan along ordered cells, split on cells in ghost_cells ∪ exterior_blocks (NOT cell_owner per v1.1)
+
+# F6 src (full content inline)
+
+### FILE: src/cuts/helpers/baseline_partition.py
+```python
+"""Family 6 shape_packing_hall partition lens helper.
+
+Computes ghost+exterior-induced partition of a baseline region into maximal
+contiguous unblocked segments. Per cut_family_specs/06_shape_packing_hall.md
+v1.1 §5a — partition 必须只依赖 ``ghost_cells ∪ exterior_blocks`` (static),
+**不**依赖 ``cell_owner``. 否则 cut 跨层活不下来 (Gemini round 14 finding #2).
+
+Phase 1.0 P1.4 scope:
+- ``compute_baseline_partition_lens(region_kind, state)`` → (lens, offsets)
+- ``compute_region_cells(region_kind, grid_size=70)`` → ordered list of cells
+
+P1.5+ family validator (src/cuts/families/shape_packing_hall.py) 用此 helper
++ cert.partition_lens 比对.
+
+Refs:
+- docs/research/p3_b_design_v2_20260521/cut_family_specs/06_shape_packing_hall.md v1.1
+"""
+from __future__ import annotations
+
+from typing import List, Literal, Tuple
+
+from src.cuts.lifecycle import BState, Cell
+
+
+RegionKind = Literal["left_baseline", "bottom_baseline"]
+
+
+def compute_region_cells(region_kind: RegionKind, grid_size: int = 70) -> List[Cell]:
+    """Returns ordered list of cells along the baseline.
+
+    left_baseline: column y=0, rows x=0..grid_size-1
+    bottom_baseline: row x=0, cols y=0..grid_size-1
+    """
+    if region_kind == "left_baseline":
+        return [(x, 0) for x in range(grid_size)]
+    if region_kind == "bottom_baseline":
+        return [(0, y) for y in range(grid_size)]
+    raise ValueError(f"unsupported region_kind={region_kind!r}")
+
+
+def compute_baseline_partition_lens(
+    region_kind: RegionKind,
+    state: BState,
+    grid_size: int = 70,
+) -> Tuple[List[int], List[int]]:
+    """v1.1: partition 仅依赖 ghost_cells ∪ exterior_blocks (static).
+
+    Returns (partition_lens, partition_offsets):
+        e.g. left baseline length 70, ghost 占 (0, 30) 单格 →
+             ([30, 39], [0, 31])
+        (segment 0: cells 0..29 len 30, segment 1: cells 31..69 len 39)
+
+    See cut_family_specs/06 §5a for the contract.
+    """
+    region_cells = compute_region_cells(region_kind, grid_size)
+
+    # blocked = ghost ∪ exterior (static — 不含 cell_owner per Gemini r14 fix)
+    blocked = set(state.ghost_cells) | set(state.exterior_blocks)
+
+    partition_lens: List[int] = []
+    partition_offsets: List[int] = []
+    current_len = 0
+    current_offset = 0
+
+    for idx, cell in enumerate(region_cells):
+        if cell in blocked:
+            if current_len > 0:
+                partition_lens.append(current_len)
+                partition_offsets.append(current_offset)
+            current_len = 0
+            current_offset = idx + 1
+        else:
+            if current_len == 0:
+                current_offset = idx
+            current_len += 1
+
+    if current_len > 0:
+        partition_lens.append(current_len)
+        partition_offsets.append(current_offset)
+
+    return partition_lens, partition_offsets
+
+```
+
+### FILE: src/cuts/families/shape_packing_hall.py
+```python
+"""Family 6 shape_packing_hall — Hall infeasibility validator + evaluator (P1.2B-F6).
+
+PROJECT_LOCK §3A locked invariants:
+- **Single-shape Phase 1.2**: only ``boundary_storage_port`` 1×3 rigid pose along
+  baseline. Multi-shape Hall (PARTITION-reducible NP-hard) deferred Phase 1.5+.
+- **Ghost-bound**: ``cut.scope.ghost_rect_id == GHOST_AGNOSTIC`` rejected; the
+  partition recompute depends on ghost cells, so F6 cert cannot survive a
+  ghost change.
+- **Cell-owner independence (v1.1)**: partition_lens is recomputed from
+  ``ghost_cells ∪ exterior_blocks`` only, NEVER ``cell_owner.keys()``.
+  Per spec §5a Gemini round 14 critical fix — including ``cell_owner`` made
+  partition state-dependent and cross-layer cuts permanently quarantined.
+- **Strict inequality**: ``total_packable < region_demand``; equality does not
+  cut.
+- **Pose_length >= 2**: F6 with ``pose_length == 1`` degenerates into
+  F1 region_capacity (each cell holds one pose); reject as schema_err to
+  keep F6 non-trivial.
+
+Cert payload schema (canonical JSON, sorted keys, no Optionals):
+    cert_kind: "hall_interval_witness"
+    region_kind: "left_baseline" | "bottom_baseline"  (closed-set)
+    region_total_length: int  (== 70, audit-anchor)
+    partition_lens: list[int]  (each >= 1, validator recomputes)
+    partition_offsets: list[int]  (validator recomputes, strict equal — NOT
+        debug-only per spec §10 q3 patch; mutating offsets without recompute
+        is a real attack vector)
+    pose_length: int  (>= 2)
+    pose_shape_canonical: str  (regex ``^\\d+x\\d+_rigid$``)
+    max_packable: list[int]  (len == len(partition_lens),
+        max_packable[i] == partition_lens[i] // pose_length)
+    total_packable: int  (== sum(max_packable))
+    contributing_group: non-empty str  (∈ state.groups)
+    region_demand: int  (>= 1, <= group_demand,
+        <= ⌊region_total_length / pose_length⌋ — per-region demand
+        Phase 1.5+ comes from master.solution placement count;
+        Phase 1.2 generator uses region capacity upper bound)
+    group_demand: int  (>= 1, source-of-truth audit anchor — must equal
+        state.groups[contributing_group].demand at validate time)
+    ghost_rect_repr: list[int]  (4 strict int, byte-equal state.ghost_rect)
+    exterior_blocks_digest: str  (sha256 hex of sorted exterior_blocks
+        canonical bytes; mirrors compute_exterior_blocks_hash)
+
+Evaluator dispatches via ``lifecycle.step_7_evaluate_cut``.
+
+Refs:
+- docs/项目说明/08_phase_1_2_plan.md §P1.2B-F6
+- docs/项目说明/12_go_criteria.md §8.1.x acceptance D
+- docs/research/p3_b_design_v2_20260521/cut_family_specs/06_shape_packing_hall.md v1.1
+"""
+from __future__ import annotations
+
+import json
+import re
+import time
+from typing import Any, Dict, List, Literal, Optional, Tuple, cast
+
+from src.cuts.helpers.baseline_partition import (
+    RegionKind,
+    compute_baseline_partition_lens,
+)
+from src.cuts.lifecycle import (
+    GHOST_AGNOSTIC,
+    BState,
+    Cut,
+    ValidationResult,
+    compute_exterior_blocks_hash,
+)
+
+
+ValidationKind = Literal["ok", "unsound", "timeout", "schema_err"]
+
+
+_VALID_REGION_KINDS: frozenset[str] = frozenset({"left_baseline", "bottom_baseline"})
+_POSE_SHAPE_CANONICAL_PATTERN: re.Pattern[str] = re.compile(r"^\d+x\d+_rigid$")
+_GRID_SIZE: int = 70
+
+
+def _vr(kind: ValidationKind, t0: float, detail: str = "") -> ValidationResult:
+    return ValidationResult(kind=kind, elapsed_seconds=time.monotonic() - t0, detail=detail or None)
+
+
+def _is_strict_int(value: object) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def _is_non_empty_str(value: object) -> bool:
+    return isinstance(value, str) and value != ""
+
+
+def _parse_cert_payload(cert_payload: bytes) -> Dict[str, Any]:
+    if not isinstance(cert_payload, bytes):
+        raise ValueError("cert_payload must be bytes")
+    try:
+        loaded = json.loads(cert_payload)
+    except Exception as e:
+        raise ValueError(f"cert_payload JSON decode failed: {e}") from e
+    if not isinstance(loaded, dict):
+        raise ValueError(f"cert_payload must decode to dict, got {type(loaded).__name__}")
+    return cast(Dict[str, Any], loaded)
+
+
+def _parse_int_list(value: object, field_name: str) -> List[int]:
+    if not isinstance(value, list):
+        raise ValueError(f"{field_name} must be list, got {type(value).__name__}")
+    out: List[int] = []
+    for idx, item in enumerate(value):
+        if not _is_strict_int(item):
+            raise ValueError(f"{field_name}[{idx}] must be strict int, got {item!r}")
+        out.append(cast(int, item))
+    return out
+
+
+def _validate_cert_kind(cert_dict: Dict[str, Any], t0: float) -> Optional[ValidationResult]:
+    kind = cert_dict.get("cert_kind")
+    if kind != "hall_interval_witness":
+        return _vr("schema_err", t0, f"cert_kind must be 'hall_interval_witness', got {kind!r}")
+    return None
+
+
+def _validate_closed_enums(cert_dict: Dict[str, Any], t0: float) -> Optional[ValidationResult]:
+    region_kind = cert_dict.get("region_kind")
+    if region_kind not in _VALID_REGION_KINDS:
+        return _vr(
+            "schema_err",
+            t0,
+            f"region_kind must be in {sorted(_VALID_REGION_KINDS)}, got {region_kind!r}",
+        )
+    pose_shape = cert_dict.get("pose_shape_canonical")
+    if not _is_non_empty_str(pose_shape) or not _POSE_SHAPE_CANONICAL_PATTERN.match(
+        cast(str, pose_shape)
+    ):
+        return _vr(
+            "schema_err",
+            t0,
+            f"pose_shape_canonical must match r'^\\d+x\\d+_rigid$', got {pose_shape!r}",
+        )
+    return None
+
+
+def _validate_scalars(cert_dict: Dict[str, Any], t0: float) -> Optional[ValidationResult]:
+    for field, lo in (
+        ("region_total_length", _GRID_SIZE),
+        ("pose_length", 2),
+        ("total_packable", 0),
+        ("region_demand", 1),
+        ("group_demand", 1),
+    ):
+        v = cert_dict.get(field)
+        if not _is_strict_int(v):
+            return _vr("schema_err", t0, f"{field} must be strict int, got {v!r}")
+        if field == "region_total_length":
+            if cast(int, v) != _GRID_SIZE:
+                return _vr(
+                    "schema_err",
+                    t0,
+                    f"region_total_length must equal {_GRID_SIZE} (grid bound), got {v}",
+                )
+        elif cast(int, v) < lo:
+            return _vr("schema_err", t0, f"{field} must be >= {lo}, got {v}")
+    # pose_shape_canonical "1x3_rigid" — first dim must == pose_length OR
+    # the smaller dim must equal 1 (1×L rigid along baseline).
+    pose_length = cast(int, cert_dict["pose_length"])
+    pose_shape = cast(str, cert_dict["pose_shape_canonical"])
+    m = _POSE_SHAPE_CANONICAL_PATTERN.match(pose_shape)
+    if m is None:  # belt-and-suspenders (already checked in _validate_closed_enums)
+        return _vr("schema_err", t0, f"pose_shape_canonical regex parse failed for {pose_shape!r}")
+    parts = pose_shape[: -len("_rigid")].split("x")
+    if len(parts) != 2:
+        return _vr("schema_err", t0, f"pose_shape_canonical parse failed for {pose_shape!r}")
+    try:
+        a, b = int(parts[0]), int(parts[1])
+    except ValueError:
+        return _vr("schema_err", t0, f"pose_shape_canonical dim parse failed for {pose_shape!r}")
+    if min(a, b) != 1:
+        return _vr(
+            "schema_err",
+            t0,
+            f"pose_shape_canonical must be 1×L rigid (Phase 1.2 single-shape), got {pose_shape!r}",
+        )
+    if max(a, b) != pose_length:
+        return _vr(
+            "schema_err",
+            t0,
+            f"pose_length {pose_length} != pose_shape_canonical max dim {max(a, b)}",
+        )
+    return None
+
+
+def _validate_partition_internal_consistency(
+    cert_dict: Dict[str, Any], t0: float
+) -> Tuple[Optional[ValidationResult], Optional[Tuple[List[int], List[int], List[int]]]]:
+    try:
+        lens = _parse_int_list(cert_dict.get("partition_lens"), "partition_lens")
+        offsets = _parse_int_list(cert_dict.get("partition_offsets"), "partition_offsets")
+        max_packable = _parse_int_list(cert_dict.get("max_packable"), "max_packable")
+    except ValueError as e:
+        return _vr("schema_err", t0, str(e)), None
+    if not (len(lens) == len(offsets) == len(max_packable)):
+        return (
+            _vr(
+                "schema_err",
+                t0,
+                f"partition_lens / partition_offsets / max_packable len mismatch: "
+                f"{len(lens)} / {len(offsets)} / {len(max_packable)}",
+            ),
+            None,
+        )
+    pose_length = cast(int, cert_dict["pose_length"])
+    total_packable = cast(int, cert_dict["total_packable"])
+    # Each segment: len >= 1, offset >= 0, offset + len <= 70 (within grid),
+    # offsets strictly increasing, non-overlap (off_i + len_i <= off_{i+1}),
+    # max_packable[i] == lens[i] // pose_length (strict).
+    prev_end = -1
+    for i, (L, off, mp) in enumerate(zip(lens, offsets, max_packable)):
+        if L < 1:
+            return _vr("schema_err", t0, f"partition_lens[{i}] must be >= 1, got {L}"), None
+        if off < 0:
+            return _vr("schema_err", t0, f"partition_offsets[{i}] must be >= 0, got {off}"), None
+        if off + L > _GRID_SIZE:
+            return (
+                _vr(
+                    "schema_err",
+                    t0,
+                    f"segment {i} extends past grid: offset={off} + len={L} > {_GRID_SIZE}",
+                ),
+                None,
+            )
+        if off <= prev_end:
+            return (
+                _vr(
+                    "schema_err",
+                    t0,
+                    f"partition_offsets[{i}]={off} overlaps prev_end={prev_end}",
+                ),
+                None,
+            )
+        if mp != L // pose_length:
+            return (
+                _vr(
+                    "schema_err",
+                    t0,
+                    f"max_packable[{i}]={mp} != partition_lens[{i}]={L} // pose_length={pose_length}",
+                ),
+                None,
+            )
+        prev_end = off + L - 1
+    if sum(max_packable) != total_packable:
+        return (
+            _vr(
+                "schema_err",
+                t0,
+                f"total_packable {total_packable} != sum(max_packable) {sum(max_packable)}",
+            ),
+            None,
+        )
+    return None, (lens, offsets, max_packable)
+
+
+def _validate_hall_witness_strict(cert_dict: Dict[str, Any], t0: float) -> Optional[ValidationResult]:
+    total_packable = cast(int, cert_dict["total_packable"])
+    region_demand = cast(int, cert_dict["region_demand"])
+    if total_packable >= region_demand:
+        return _vr(
+            "unsound",
+            t0,
+            f"Hall witness fails: total_packable {total_packable} >= region_demand {region_demand} "
+            f"(strict < required)",
+        )
+    return None
+
+
+def _validate_group_source_of_truth(
+    cert_dict: Dict[str, Any], state: BState, t0: float
+) -> Optional[ValidationResult]:
+    gid = cert_dict.get("contributing_group")
+    if not _is_non_empty_str(gid):
+        return _vr(
+            "schema_err",
+            t0,
+            f"contributing_group must be non-empty str, got {gid!r}",
+        )
+    if cast(str, gid) not in state.groups:
+        return _vr(
+            "unsound",
+            t0,
+            f"contributing_group {gid!r} not in state.groups (registry rotated or fake gid)",
+        )
+    group_demand = cast(int, cert_dict["group_demand"])
+    actual_demand = state.groups[cast(str, gid)].demand
+    if actual_demand != group_demand:
+        return _vr(
+            "unsound",
+            t0,
+            f"group_demand mismatch: cert={group_demand}, state.groups[{gid!r}].demand={actual_demand} "
+            f"(source-of-truth rotated)",
+        )
+    region_demand = cast(int, cert_dict["region_demand"])
+    if region_demand > group_demand:
+        return _vr(
+            "schema_err",
+            t0,
+            f"region_demand {region_demand} > group_demand {group_demand} (per-region must be <= total)",
+        )
+    pose_length = cast(int, cert_dict["pose_length"])
+    region_cap = _GRID_SIZE // pose_length
+    if region_demand > region_cap:
+        return _vr(
+            "schema_err",
+            t0,
+            f"region_demand {region_demand} > region capacity {region_cap} (= 70 / pose_length); "
+            f"per-region demand cannot exceed region physical upper bound",
+        )
+    return None
+
+
+def _validate_facility_template_match(
+    cert_dict: Dict[str, Any], state: BState, t0: float
+) -> Optional[ValidationResult]:
+    """Cross-check pose_length × pose_shape against canonical_rules facility template.
+
+    Adversary plants pose_length=8 but canonical_rules dimensions show 1×3 →
+    caught here. Without instance_to_facility_type / facility_templates the
+    check is best-effort (skip when unwired during Phase 1.2 fixture tests).
+    """
+    gid = cast(str, cert_dict["contributing_group"])
+    pose_length = cast(int, cert_dict["pose_length"])
+    facility_type: Optional[str] = None
+    if state.instance_to_facility_type is not None:
+        facility_type = state.instance_to_facility_type.get(gid)
+    if facility_type is None or state.facility_templates is None:
+        # Phase 1.2 fixture-only state may lack wiring; defer cross-check
+        # rather than over-reject. Adversary cannot bypass other phases.
+        return None
+    tpl = state.facility_templates.get(facility_type)
+    if not isinstance(tpl, dict):
+        return None
+    dims = tpl.get("dimensions")
+    if not isinstance(dims, dict):
+        return None
+    w_raw = dims.get("w")
+    h_raw = dims.get("h")
+    if not _is_strict_int(w_raw) or not _is_strict_int(h_raw):
+        return None
+    w_dim = cast(int, w_raw)
+    h_dim = cast(int, h_raw)
+    if min(w_dim, h_dim) != 1:
+        return _vr(
+            "unsound",
+            t0,
+            f"contributing_group {gid!r} facility_type {facility_type!r} dimensions "
+            f"({w_dim}x{h_dim}) is not 1×L rigid; F6 Phase 1.2 only supports single-shape",
+        )
+    if max(w_dim, h_dim) != pose_length:
+        return _vr(
+            "unsound",
+            t0,
+            f"pose_length {pose_length} does not match canonical_rules "
+            f"facility_templates[{facility_type!r}].dimensions max dim {max(w_dim, h_dim)}",
+        )
+    return None
+
+
+def _validate_ghost_scope_binding(
+    cut: Cut, cert_dict: Dict[str, Any], state: BState, t0: float
+) -> Optional[ValidationResult]:
+    if cut.scope is None:
+        return _vr("schema_err", t0, "cut.scope must be non-None for F6")
+    if cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
+        return _vr(
+            "unsound",
+            t0,
+            "F6 shape_packing_hall does not allow GHOST_AGNOSTIC scope "
+            "(partition_lens depends on ghost_cells)",
+        )
+    if state.ghost_rect is None:
+        return _vr(
+            "unsound",
+            t0,
+            "F6 requires state.ghost_rect non-None to validate ghost binding",
+        )
+    cert_ghost = cert_dict.get("ghost_rect_repr")
+    if not isinstance(cert_ghost, list) or len(cert_ghost) != 4:
+        return _vr(
+            "schema_err",
+            t0,
+            f"ghost_rect_repr must be 4-element list, got {cert_ghost!r}",
+        )
+    for idx, value in enumerate(cert_ghost):
+        if not _is_strict_int(value):
+            return _vr(
+                "schema_err",
+                t0,
+                f"ghost_rect_repr[{idx}] must be strict int, got {value!r}",
+            )
+    if tuple(cast(List[int], cert_ghost)) != tuple(state.ghost_rect):
+        return _vr(
+            "unsound",
+            t0,
+            f"ghost_rect_repr drift: cert={tuple(cert_ghost)}, state={tuple(state.ghost_rect)}",
+        )
+    cert_exterior = cert_dict.get("exterior_blocks_digest")
+    if not _is_non_empty_str(cert_exterior):
+        return _vr(
+            "schema_err",
+            t0,
+            f"exterior_blocks_digest must be non-empty str, got {cert_exterior!r}",
+        )
+    actual_digest = compute_exterior_blocks_hash(state)
+    if cast(str, cert_exterior) != actual_digest:
+        return _vr(
+            "unsound",
+            t0,
+            f"exterior_blocks_digest drift: cert={cert_exterior!r}, state={actual_digest!r}",
+        )
+    return None
+
+
+def _validate_partition_recompute(
+    cert_dict: Dict[str, Any],
+    parsed: Tuple[List[int], List[int], List[int]],
+    state: BState,
+    t0: float,
+) -> Optional[ValidationResult]:
+    cert_lens, cert_offsets, _cert_max = parsed
+    region_kind = cast(RegionKind, cert_dict["region_kind"])
+    recomputed_lens, recomputed_offsets = compute_baseline_partition_lens(region_kind, state)
+    if recomputed_lens != cert_lens:
+        return _vr(
+            "unsound",
+            t0,
+            f"partition_lens drift: cert={cert_lens}, recomputed={recomputed_lens} "
+            f"(ghost ∪ exterior changed since gen)",
+        )
+    if recomputed_offsets != cert_offsets:
+        return _vr(
+            "unsound",
+            t0,
+            f"partition_offsets drift: cert={cert_offsets}, recomputed={recomputed_offsets}",
+        )
+    pose_length = cast(int, cert_dict["pose_length"])
+    region_demand = cast(int, cert_dict["region_demand"])
+    recomputed_max = [L // pose_length for L in recomputed_lens]
+    recomputed_total = sum(recomputed_max)
+    if recomputed_total != cast(int, cert_dict["total_packable"]):
+        return _vr(
+            "unsound",
+            t0,
+            f"total_packable drift on recompute: cert={cert_dict['total_packable']}, "
+            f"recomputed={recomputed_total}",
+        )
+    if recomputed_total >= region_demand:
+        return _vr(
+            "unsound",
+            t0,
+            f"Hall witness fails on recompute: total_packable={recomputed_total} >= "
+            f"region_demand={region_demand}",
+        )
+    return None
+
+
+def validate_shape_packing_hall(
+    cut: Cut,
+    state: BState,
+    canonical_rules: Dict[str, Any],
+) -> ValidationResult:
+    """11-phase F6 validator. Trust boundary: cert is untrusted; recompute partition.
+
+    Phases (fail-closed, first error returns):
+    1. cert + payload non-None + JSON parse
+    2. cert_kind == "hall_interval_witness"
+    3. literals is None (geometric mode) + closed-set enums
+    4. Strict-int scalars + range
+    5. Partition internal consistency (lens/offsets/max_packable triple)
+    6. Hall witness strict (cert-internal total_packable < region_demand)
+    7. Group source-of-truth (contributing_group ∈ state.groups,
+       group_demand == state.groups[gid].demand, region_demand bounds)
+    8. Facility template match (pose_length × dimensions via
+       instance_to_facility_type → facility_templates)
+    9. Ghost scope binding (non-AGNOSTIC + ghost_rect_repr byte-equal +
+       exterior_blocks_digest byte-equal)
+    10. Partition recompute byte-equal (lens + offsets)
+    11. Recomputed max_packable / total_packable / Hall strict
+    """
+    t0 = time.monotonic()
+    del canonical_rules  # state.canonical_rules carried inside state
+
+    if cut.cert is None or cut.geometric_payload is None:
+        return _vr("schema_err", t0, "F6 requires non-None cert + geometric_payload")
+    if cut.literals is not None:
+        return _vr(
+            "schema_err",
+            t0,
+            "F6 is geometric mode; cut.literals must be None (got non-None)",
+        )
+
+    try:
+        cert_dict = _parse_cert_payload(cut.cert.cert_payload)
+    except ValueError as e:
+        return _vr("schema_err", t0, str(e))
+
+    for error in (
+        _validate_cert_kind(cert_dict, t0),
+        _validate_closed_enums(cert_dict, t0),
+        _validate_scalars(cert_dict, t0),
+    ):
+        if error is not None:
+            return error
+
+    consistency_err, parsed = _validate_partition_internal_consistency(cert_dict, t0)
+    if consistency_err is not None:
+        return consistency_err
+    if parsed is None:
+        return _vr("schema_err", t0, "partition parse returned None unexpectedly")
+
+    for error in (
+        _validate_hall_witness_strict(cert_dict, t0),
+        _validate_group_source_of_truth(cert_dict, state, t0),
+        _validate_facility_template_match(cert_dict, state, t0),
+        _validate_ghost_scope_binding(cut, cert_dict, state, t0),
+        _validate_partition_recompute(cert_dict, parsed, state, t0),
+    ):
+        if error is not None:
+            return error
+
+    return _vr("ok", t0)
+
+
+def evaluate_geometric_shape_packing_hall(cut: Cut, state: BState) -> bool:
+    """Hot-path evaluator. True iff Hall witness still holds in current state.
+
+    Strict ``<``: equality does NOT cut (PROJECT_LOCK invariant).
+
+    Fail-safe: malformed payload / state.ghost_rect missing → False (no cut).
+    """
+    if cut.geometric_payload is None:
+        return False
+    try:
+        cert_dict = json.loads(cut.geometric_payload)
+        if not isinstance(cert_dict, dict):
+            return False
+        if cert_dict.get("cert_kind") != "hall_interval_witness":
+            return False
+        region_kind_raw = cert_dict.get("region_kind")
+        if region_kind_raw not in _VALID_REGION_KINDS:
+            return False
+        pose_length = cert_dict.get("pose_length")
+        region_demand = cert_dict.get("region_demand")
+        if not _is_strict_int(pose_length) or not _is_strict_int(region_demand):
+            return False
+        if cast(int, pose_length) < 2 or cast(int, region_demand) < 1:
+            return False
+        recomputed_lens, _ = compute_baseline_partition_lens(
+            cast(RegionKind, region_kind_raw), state
+        )
+        recomputed_total = sum(L // cast(int, pose_length) for L in recomputed_lens)
+        return recomputed_total < cast(int, region_demand)
+    except Exception:  # noqa: BLE001 — fail-safe
+        return False
+
+
+def watcher_keys_shape_packing_hall(cut: Cut) -> Dict[str, List[Any]]:
+    """Return watcher keys for CutStore.add_cut.
+
+    F6 walls on by_group (contributing_group) + by_region (region kind).
+    by_ghost_watcher is auto-added by store from cut.scope.ghost_rect_id.
+
+    No cell_keys: F6 partition is independent of cell_owner (v1.1 invariant).
+    Listing 70 baseline cells in by_cell_watcher would cause every boundary
+    pose placement to trigger 70 cut re-evaluations, with 99% returning
+    unchanged (cell_owner change does not affect partition). Per Gemini
+    round 14 finding #2 + throughput design rationale.
+    """
+    if cut.geometric_payload is None:
+        return {"group_keys": [], "region_keys": []}
+    try:
+        cert_dict = _parse_cert_payload(cut.geometric_payload)
+        gid = cert_dict.get("contributing_group")
+        region_kind = cert_dict.get("region_kind")
+        if not _is_non_empty_str(gid) or region_kind not in _VALID_REGION_KINDS:
+            return {"group_keys": [], "region_keys": []}
+        region_id = f"shape_packing_hall:{region_kind}"
+        return {
+            "group_keys": [cast(str, gid)],
+            "region_keys": [region_id],
+        }
+    except Exception:  # noqa: BLE001 — fail-safe
+        return {"group_keys": [], "region_keys": []}
+
+```
+
+### FILE: src/cuts/oracles/shape_packing_hall_oracle.py
+```python
+"""F6 shape_packing_hall generator (Phase 1.2 P1.2B-F6).
+
+Generator scans each baseline region (left + bottom) × each boundary group,
+recomputes ghost+exterior-induced partition_lens, and emits an INFEASIBLE
+witness when ``sum(⌊len(I_j) / L⌋) < region_demand``.
+
+Phase 1.2 region_demand contract (Phase 1.5+ wiring decision deferred):
+- Phase 1.2 default: ``region_demand = min(group.demand,
+  region_total_length // pose_length)`` — the per-region physical upper
+  bound. F6 cut triggers when ghost+exterior partition cannot fit even
+  this maximum count of poses. This matches mandatory_rect_precheck
+  semantics: if the region cannot host the worst-case demand a master
+  might allocate, candidate is INFEASIBLE regardless of master plan.
+- Phase 1.5+ wiring: ``region_demand`` will come from
+  ``master_solution`` (per-region boundary_storage_port count). Generator
+  signature accepts an optional ``region_demand_override`` for the
+  Phase 1.5+ injection.
+
+Fail-closed contract:
+- state.ghost_rect is None → [] (F6 ghost-bound)
+- state.groups missing the requested boundary group → [] for that group
+- pose_length < 2 → [] (would degenerate into F1)
+- recomputed total_packable >= region_demand → [] for that region/group
+
+Refs:
+- docs/项目说明/08_phase_1_2_plan.md §P1.2B-F6
+- docs/项目说明/12_go_criteria.md §8.1.x acceptance D
+- docs/research/p3_b_design_v2_20260521/cut_family_specs/06_shape_packing_hall.md v1.1
+"""
+from __future__ import annotations
+
+import hashlib
+from typing import Any, Dict, List, Optional, Tuple, cast
+
+from src.cuts.helpers.baseline_partition import (
+    RegionKind,
+    compute_baseline_partition_lens,
+)
+from src.cuts.lifecycle import (
+    BState,
+    Cut,
+    CutScope,
+    GroupId,
+    OracleCert,
+    canonical_bytes_for_cert,
+    compute_blocked_cells_hash,
+    compute_exterior_blocks_hash,
+    compute_ghost_rect_id,
+    compute_source_digest,
+)
+
+
+ORACLE_NAME: str = "shape_packing_hall_v1"
+FAMILY_VERSION: str = "v1.0"
+VALIDATOR_VERSION: str = "v1.0"
+CERT_KIND: str = "hall_interval_witness"
+_GRID_SIZE: int = 70
+
+_DEFAULT_REGION_KINDS: Tuple[RegionKind, ...] = ("left_baseline", "bottom_baseline")
+
+
+def _facility_template_length(state: BState, group_id: GroupId) -> Optional[int]:
+    """Look up ``boundary_storage_port``-style pose length from canonical_rules.
+
+    Returns the max dimension if the facility is 1×L rigid; None otherwise.
+    """
+    if state.instance_to_facility_type is None or state.facility_templates is None:
+        return None
+    facility_type = state.instance_to_facility_type.get(group_id)
+    if facility_type is None:
+        return None
+    tpl = state.facility_templates.get(facility_type)
+    if not isinstance(tpl, dict):
+        return None
+    dims = tpl.get("dimensions")
+    if not isinstance(dims, dict):
+        return None
+    w_raw = dims.get("w")
+    h_raw = dims.get("h")
+    if not (isinstance(w_raw, int) and not isinstance(w_raw, bool)):
+        return None
+    if not (isinstance(h_raw, int) and not isinstance(h_raw, bool)):
+        return None
+    if min(w_raw, h_raw) != 1:
+        return None  # not a 1×L rigid pose; F6 Phase 1.2 single-shape only
+    return max(w_raw, h_raw)
+
+
+def generate_shape_packing_hall_cuts(
+    state: BState,
+    *,
+    boundary_groups: Optional[List[GroupId]] = None,
+    region_kinds: Tuple[RegionKind, ...] = _DEFAULT_REGION_KINDS,
+    region_demand_overrides: Optional[Dict[Tuple[GroupId, RegionKind], int]] = None,
+    iter_index: int = -1,
+) -> List[Cut]:
+    """Scan each (boundary_group, region_kind) for Hall infeasibility.
+
+    Args:
+        state: BState with ghost_rect, ghost_cells, exterior_blocks, groups,
+            (optionally) instance_to_facility_type + facility_templates.
+        boundary_groups: list of group_id to scan. Default: auto-detect from
+            state.facility_templates entries with ``placement_rule ==
+            "left_or_bottom_boundary"``. Phase 1.2 fixture tests pass
+            explicit lists; Phase 1.5+ wiring auto-detects.
+        region_kinds: regions to scan. Default (left, bottom).
+        region_demand_overrides: Phase 1.5+ master_solution per-region count.
+            Phase 1.2 default uses ``min(group.demand, region capacity)``.
+        iter_index: outer-loop iteration for cut_id provenance.
+    """
+    if state.ghost_rect is None:
+        return []
+
+    if boundary_groups is None:
+        boundary_groups = _auto_detect_boundary_groups(state)
+
+    cuts: List[Cut] = []
+    for group_id in boundary_groups:
+        if group_id not in state.groups:
+            continue
+        pose_length = _facility_template_length(state, group_id)
+        if pose_length is None or pose_length < 2:
+            continue
+        group_demand = state.groups[group_id].demand
+        if group_demand < 1:
+            continue
+        region_cap = _GRID_SIZE // pose_length
+        for region_kind in region_kinds:
+            override_key = (group_id, region_kind)
+            if region_demand_overrides is not None and override_key in region_demand_overrides:
+                region_demand = region_demand_overrides[override_key]
+            else:
+                region_demand = min(group_demand, region_cap)
+            if region_demand < 1:
+                continue
+            cut = _try_build_cut(
+                state=state,
+                region_kind=region_kind,
+                group_id=group_id,
+                pose_length=pose_length,
+                group_demand=group_demand,
+                region_demand=region_demand,
+                iter_index=iter_index,
+            )
+            if cut is not None:
+                cuts.append(cut)
+    return cuts
+
+
+def _auto_detect_boundary_groups(state: BState) -> List[GroupId]:
+    if state.instance_to_facility_type is None or state.facility_templates is None:
+        return []
+    out: List[GroupId] = []
+    for group_id, facility_type in state.instance_to_facility_type.items():
+        tpl = state.facility_templates.get(facility_type)
+        if not isinstance(tpl, dict):
+            continue
+        if tpl.get("placement_rule") != "left_or_bottom_boundary":
+            continue
+        out.append(group_id)
+    return sorted(out)
+
+
+def _try_build_cut(
+    *,
+    state: BState,
+    region_kind: RegionKind,
+    group_id: GroupId,
+    pose_length: int,
+    group_demand: int,
+    region_demand: int,
+    iter_index: int,
+) -> Optional[Cut]:
+    lens, offsets = compute_baseline_partition_lens(region_kind, state)
+    max_packable = [L // pose_length for L in lens]
+    total_packable = sum(max_packable)
+    if total_packable >= region_demand:
+        return None  # feasible, no cut
+
+    ghost_rect_repr = list(cast(Tuple[int, int, int, int], state.ghost_rect))
+    exterior_digest = compute_exterior_blocks_hash(state)
+
+    cert_payload_dict: Dict[str, Any] = {
+        "cert_kind": CERT_KIND,
+        "region_kind": region_kind,
+        "region_total_length": _GRID_SIZE,
+        "partition_lens": list(lens),
+        "partition_offsets": list(offsets),
+        "pose_length": pose_length,
+        "pose_shape_canonical": f"1x{pose_length}_rigid",
+        "max_packable": list(max_packable),
+        "total_packable": total_packable,
+        "contributing_group": group_id,
+        "region_demand": region_demand,
+        "group_demand": group_demand,
+        "ghost_rect_repr": ghost_rect_repr,
+        "exterior_blocks_digest": exterior_digest,
+    }
+    cert_payload_bytes = canonical_bytes_for_cert(cert_payload_dict)
+    cert_hash = hashlib.sha256(cert_payload_bytes).hexdigest()
+
+    source_digest = state.source_digest or compute_source_digest(state)
+
+    scope = CutScope(
+        ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),
+        blocked_cells_hash=compute_blocked_cells_hash(state),
+        exterior_blocks_hash=exterior_digest,
+        source_digest=source_digest,
+        oracle_abstraction_version=ORACLE_NAME,
+        artifact_hashes=dict(state.artifact_hashes),
+    )
+
+    cut = Cut(
+        cut_id=f"f6_{iter_index}_{cert_hash[:12]}",
+        family="shape_packing_hall",
+        literals=None,
+        geometric_payload=cert_payload_bytes,
+        scope=scope,
+        cert=OracleCert(
+            cert_kind=CERT_KIND,
+            cert_payload=cert_payload_bytes,
+            cert_hash=cert_hash,
+        ),
+        family_version=FAMILY_VERSION,
+        validator_version=VALIDATOR_VERSION,
+        oracle_name=ORACLE_NAME,
+        oracle_cert_hash=cert_hash,
+        minimization_audit={
+            "size_before": len(lens),
+            "size_after": len(lens),
+            "calls": 0,
+        },
+        iter_index=iter_index,
+    )
+    return cut
+
+```
+
+
+
+# 完. 严格 format, 不 think-out-loud.

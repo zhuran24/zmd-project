@@ -1,0 +1,21 @@
+[
+  {
+    "id": "smelt_iron",
+    "name": "Smelt Iron",
+    "facilityId": "manufacturing_3x3",
+    "duration": 3,
+    "inputs": [
+      {
+        "itemId": "raw_ore",
+        "amount": 2
+      }
+    ],
+    "outputs": [
+      {
+        "itemId": "iron_plate",
+        "amount": 1
+      }
+    ],
+    "powerConsumption": 120
+  }
+]

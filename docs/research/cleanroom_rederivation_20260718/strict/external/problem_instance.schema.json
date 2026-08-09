@@ -1,0 +1,521 @@
+{
+  "$defs": {
+    "coordinate": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "type": "integer"
+        },
+        "y": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://example.invalid/factory-layout-optimality-benchmark-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "benchmark_id": {
+      "const": "factory_layout_optimality_benchmark_v1"
+    },
+    "commodities": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "coordinate_system": {
+      "additionalProperties": false,
+      "properties": {
+        "directions": {
+          "const": [
+            "N",
+            "E",
+            "S",
+            "W"
+          ]
+        },
+        "indexing": {
+          "const": "zero_based"
+        },
+        "origin": {
+          "const": "southwest"
+        },
+        "x_positive": {
+          "const": "east"
+        },
+        "y_positive": {
+          "const": "north"
+        }
+      },
+      "required": [
+        "origin",
+        "indexing",
+        "x_positive",
+        "y_positive",
+        "directions"
+      ],
+      "type": "object"
+    },
+    "facility_templates": {
+      "additionalProperties": {
+        "additionalProperties": false,
+        "properties": {
+          "modes": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "body": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "height": {
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "width": {
+                      "minimum": 1,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "width",
+                    "height"
+                  ],
+                  "type": "object"
+                },
+                "id": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "ports": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "body_cell": {
+                        "$ref": "#/$defs/coordinate"
+                      },
+                      "direction": {
+                        "enum": [
+                          "N",
+                          "E",
+                          "S",
+                          "W"
+                        ]
+                      },
+                      "id": {
+                        "minLength": 1,
+                        "type": "string"
+                      },
+                      "kind": {
+                        "enum": [
+                          "input",
+                          "output"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "kind",
+                      "body_cell",
+                      "direction"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "id",
+                "body",
+                "ports"
+              ],
+              "type": "object"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "placement_rule": {
+            "enum": [
+              "any_body_in_grid",
+              "matching_map_boundary"
+            ]
+          },
+          "requires_power": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "requires_power",
+          "placement_rule",
+          "modes"
+        ],
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "generic_requirements": {
+      "additionalProperties": false,
+      "properties": {
+        "final_input_providers": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "final_inputs": {
+          "additionalProperties": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "propertyNames": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "raw_output_providers": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "raw_outputs": {
+          "additionalProperties": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "propertyNames": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "raw_outputs",
+        "final_inputs",
+        "raw_output_providers",
+        "final_input_providers"
+      ],
+      "type": "object"
+    },
+    "grid": {
+      "additionalProperties": false,
+      "properties": {
+        "height": {
+          "const": 70
+        },
+        "width": {
+          "const": 70
+        }
+      },
+      "required": [
+        "width",
+        "height"
+      ],
+      "type": "object"
+    },
+    "objective": {
+      "additionalProperties": false,
+      "properties": {
+        "body_cells_only": {
+          "const": true
+        },
+        "kind": {
+          "const": "max_lex_area_min_side"
+        },
+        "minimum_side": {
+          "const": 6
+        }
+      },
+      "required": [
+        "kind",
+        "minimum_side",
+        "body_cells_only"
+      ],
+      "type": "object"
+    },
+    "operation_groups": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "count": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "instance_ids": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "port_needs": {
+            "additionalProperties": false,
+            "properties": {
+              "inputs": {
+                "additionalProperties": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "propertyNames": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              "outputs": {
+                "additionalProperties": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "propertyNames": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "type": "object"
+              }
+            },
+            "required": [
+              "inputs",
+              "outputs"
+            ],
+            "type": "object"
+          },
+          "template": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "template",
+          "count",
+          "port_needs",
+          "instance_ids"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "power": {
+      "additionalProperties": false,
+      "properties": {
+        "coverage_from_pole_anchor": {
+          "additionalProperties": false,
+          "properties": {
+            "x_max_offset": {
+              "const": 6
+            },
+            "x_min_offset": {
+              "const": -5
+            },
+            "y_max_offset": {
+              "const": 6
+            },
+            "y_min_offset": {
+              "const": -5
+            }
+          },
+          "required": [
+            "x_min_offset",
+            "x_max_offset",
+            "y_min_offset",
+            "y_max_offset"
+          ],
+          "type": "object"
+        },
+        "pole_template": {
+          "const": "power_pole"
+        },
+        "required_rule": {
+          "const": "at_least_one_body_cell_covered"
+        }
+      },
+      "required": [
+        "pole_template",
+        "coverage_from_pole_anchor",
+        "required_rule"
+      ],
+      "type": "object"
+    },
+    "repeatable_auxiliaries": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "required_instances": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "operation": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "template": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "template",
+          "operation"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "routing": {
+      "additionalProperties": false,
+      "properties": {
+        "compatible_terminals_share_component": {
+          "const": true
+        },
+        "component_cells_must_avoid_bodies": {
+          "const": true
+        },
+        "component_kinds": {
+          "const": [
+            "straight",
+            "turn",
+            "cross",
+            "splitter",
+            "merger"
+          ]
+        },
+        "connectivity": {
+          "const": "each_active_output_reaches_an_active_input_and_each_active_input_is_reached_per_commodity"
+        },
+        "crossing": {
+          "const": "two_perpendicular_straight_channels_without_transfer"
+        },
+        "multi_commodity_sharing": {
+          "const": true
+        },
+        "terminal_input_requires_component_output": {
+          "const": "opposite_terminal_direction"
+        },
+        "terminal_output_requires_component_input": {
+          "const": "opposite_terminal_direction"
+        },
+        "throughput_in_scope": {
+          "const": false
+        }
+      },
+      "required": [
+        "component_kinds",
+        "component_cells_must_avoid_bodies",
+        "multi_commodity_sharing",
+        "terminal_output_requires_component_input",
+        "terminal_input_requires_component_output",
+        "compatible_terminals_share_component",
+        "crossing",
+        "connectivity",
+        "throughput_in_scope"
+      ],
+      "type": "object"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "sentinels": {
+      "additionalProperties": false,
+      "properties": {
+        "commodity_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "generic_final_input_terminals": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "generic_raw_output_terminals": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "manufacturing_input_terminals": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "manufacturing_instance_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "manufacturing_output_terminals": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "operation_group_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "required_body_area": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "required_instance_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "total_active_terminals": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "commodity_count",
+        "operation_group_count",
+        "manufacturing_instance_count",
+        "required_instance_count",
+        "required_body_area",
+        "manufacturing_input_terminals",
+        "manufacturing_output_terminals",
+        "generic_raw_output_terminals",
+        "generic_final_input_terminals",
+        "total_active_terminals"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "benchmark_id",
+    "coordinate_system",
+    "grid",
+    "objective",
+    "commodities",
+    "facility_templates",
+    "operation_groups",
+    "required_instances",
+    "generic_requirements",
+    "repeatable_auxiliaries",
+    "routing",
+    "power",
+    "sentinels"
+  ],
+  "title": "Factory Layout Optimality Benchmark Instance",
+  "type": "object"
+}

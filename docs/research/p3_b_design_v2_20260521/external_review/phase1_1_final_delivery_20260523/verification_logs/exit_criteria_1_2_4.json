@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "description": "boundary 语义冻结 + 源码文档一致",
+    "check_kind": "automated",
+    "pass_condition": "placement_rule==left_or_bottom_boundary + candidate count 134",
+    "artifact": "rules/canonical_rules.json + data/preprocessed/candidate_placements.json",
+    "status": "PASS",
+    "detail": "canonical_rules.boundary_storage_port.placement_rule == 'left_or_bottom_boundary' ✓ / candidate_placements boundary pose count == 134 ✓",
+    "error": null
+  },
+  {
+    "id": 2,
+    "description": "q-front overload synthetic test 被 port-resource cut 剪 (不靠 full no-good)",
+    "check_kind": "ramp_data",
+    "pass_condition": "pytest test_family_port_exposure.py 全 PASS",
+    "artifact": "src/tests/cuts/test_family_port_exposure.py",
+    "status": "PASS",
+    "detail": "\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m                                                          [100%]\u001b[0m\n\u001b[32m\u001b[32m\u001b[1m15 passed\u001b[0m\u001b[32m in 0.13s\u001b[0m\u001b[0m",
+    "error": null
+  },
+  {
+    "id": 4,
+    "description": "replay suite 27+ ghost anchors 无 false positive",
+    "check_kind": "ramp_data",
+    "pass_condition": "pytest test_replay.py 全 PASS",
+    "artifact": "src/tests/cuts/test_replay.py",
+    "status": "PASS",
+    "detail": "\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m                                                              [100%]\u001b[0m\n\u001b[32m\u001b[32m\u001b[1m11 passed\u001b[0m\u001b[32m in 0.16s\u001b[0m\u001b[0m",
+    "error": null
+  }
+]

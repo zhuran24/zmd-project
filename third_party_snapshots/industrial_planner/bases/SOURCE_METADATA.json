@@ -1,0 +1,18 @@
+{
+  "source": "hsyhhssyy/IndustrialPlanner",
+  "source_branch": "v2",
+  "source_commit": "c494c5ae3563eb6d9529918afcd776660e140d98",
+  "source_commit_note": "branch v2 HEAD at refresh time via scripts/refresh_industrial_planner_bases.py",
+  "observed_at": "2026-05-07",
+  "source_license": "MIT",
+  "vendored_paths": {
+    "bases": "bases.json"
+  },
+  "upstream_paths": {
+    "registry": "src/domain/registry.ts"
+  },
+  "observed_counts": {
+    "bases": 7
+  },
+  "extraction_method": "regex_field_subset"
+}

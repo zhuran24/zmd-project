@@ -1,0 +1,619 @@
+from __future__ import annotations
+
+import json
+import sys
+from dataclasses import dataclass
+from fnmatch import fnmatchcase
+from importlib.util import find_spec
+from pathlib import Path
+
+import pytest
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+_REPOSITORY_WORKFLOWS = ("auto", "developer", "evidence", "replay", "focused-full", "full")
+_REPOSITORY_TEST_LANES = frozenset({"developer", "evidence", "replay"})
+_REPOSITORY_ASSET_MANIFEST = PROJECT_ROOT / "data" / "repository_governance" / "code_assets.json"
+
+
+@dataclass(frozen=True)
+class _RepositoryPytestState:
+    enabled: bool
+    lane_rules: tuple[tuple[str, str], ...]
+    workflow: str
+    selector_compat: bool
+
+
+def pytest_addoption(parser: pytest.Parser) -> None:
+    group = parser.getgroup("repository governance")
+    group.addoption(
+        "--repository-workflow",
+        action="store",
+        choices=_REPOSITORY_WORKFLOWS,
+        default="auto",
+        help=(
+            "Select the repository test surface. auto preserves explicit focused/full commands, "
+            "uses developer isolation for a bare whole-tree run, and recognizes the affected-test selector."
+        ),
+    )
+
+
+def _load_repository_pytest_isolation() -> tuple[bool, tuple[tuple[str, str], ...]]:
+    if not _REPOSITORY_ASSET_MANIFEST.exists():
+        raise pytest.UsageError(
+            f"repository pytest isolation manifest is missing: {_REPOSITORY_ASSET_MANIFEST}"
+        )
+
+    try:
+        payload = json.loads(_REPOSITORY_ASSET_MANIFEST.read_text(encoding="utf-8"))
+        pytest_policy = payload["logical_isolation"]["pytest"]
+        enabled = pytest_policy["enabled"]
+        raw_rules = pytest_policy["lane_rules"]
+    except (OSError, UnicodeError, json.JSONDecodeError, KeyError, TypeError) as exc:
+        raise pytest.UsageError(
+            f"invalid repository pytest isolation manifest {_REPOSITORY_ASSET_MANIFEST}: {exc}"
+        ) from exc
+
+    if not isinstance(enabled, bool):
+        raise pytest.UsageError("repository pytest isolation 'enabled' must be a boolean")
+    if not isinstance(raw_rules, list) or not raw_rules:
+        raise pytest.UsageError("repository pytest isolation 'lane_rules' must be a non-empty array")
+
+    rules: list[tuple[str, str]] = []
+    seen_globs: set[str] = set()
+    for index, raw_rule in enumerate(raw_rules):
+        if not isinstance(raw_rule, dict):
+            raise pytest.UsageError(f"repository pytest lane rule {index} must be an object")
+        glob = raw_rule.get("glob")
+        lane = raw_rule.get("lane")
+        if not isinstance(glob, str) or not glob.startswith("src/tests/") or not glob:
+            raise pytest.UsageError(
+                f"repository pytest lane rule {index} has an invalid repo-relative glob"
+            )
+        if lane not in _REPOSITORY_TEST_LANES:
+            raise pytest.UsageError(f"repository pytest lane rule {index} has invalid lane {lane!r}")
+        if glob in seen_globs:
+            raise pytest.UsageError(f"repository pytest lane glob is duplicated: {glob}")
+        seen_globs.add(glob)
+        rules.append((glob, lane))
+
+    if rules[-1] != ("src/tests/**", "developer"):
+        raise pytest.UsageError(
+            "repository pytest lane rules must end with a src/tests/** developer catch-all"
+        )
+    return enabled, tuple(rules)
+
+
+def _repo_relative_path(path: Path | str) -> str | None:
+    candidate = Path(str(path))
+    if not candidate.is_absolute():
+        candidate = PROJECT_ROOT / candidate
+    try:
+        return candidate.relative_to(PROJECT_ROOT).as_posix()
+    except ValueError:
+        return None
+
+
+def _lane_for_repo_path(repo_path: str, lane_rules: tuple[tuple[str, str], ...]) -> str:
+    # First match wins. Specific evidence/replay rules therefore precede the
+    # terminal developer catch-all in the manifest.
+    for glob, lane in lane_rules:
+        if fnmatchcase(repo_path, glob):
+            return lane
+    raise pytest.UsageError(f"repository pytest path has no lane classification: {repo_path}")
+
+
+def _subtree_lane(repo_path: str, lane_rules: tuple[tuple[str, str], ...]) -> str | None:
+    """Return a lane only when a rule owns this complete directory subtree."""
+
+    for glob, lane in lane_rules:
+        if not glob.endswith("/**"):
+            continue
+        prefix = glob[:-3]
+        if repo_path == prefix:
+            return lane
+    return None
+
+
+def _has_explicit_markexpr(config: pytest.Config) -> bool:
+    args = config.invocation_params.args
+    return any(arg == "-m" or (arg.startswith("-m") and len(arg) > 2) for arg in args)
+
+
+def _is_selector_basetemp(config: pytest.Config) -> bool:
+    basetemp = config.getoption("basetemp")
+    if basetemp is None:
+        return False
+    relative = _repo_relative_path(Path(str(basetemp)))
+    return relative == ".pytest_tmp/selected"
+
+
+def _is_whole_src_tests_target(config: pytest.Config) -> bool:
+    if not config.args:
+        return True
+    if len(config.args) != 1:
+        return False
+    target = config.args[0]
+    if "::" in target:
+        return False
+    relative = _repo_relative_path(target)
+    return relative is not None and relative.rstrip("/") == "src/tests"
+
+
+def _resolve_repository_workflow(config: pytest.Config, enabled: bool) -> tuple[str, bool]:
+    requested = config.getoption("repository_workflow")
+    selector_compat = _is_selector_basetemp(config)
+    if not enabled:
+        return "full", False
+    if requested != "auto":
+        return requested, selector_compat
+    if selector_compat:
+        return "developer", True
+    if _is_whole_src_tests_target(config):
+        if _has_explicit_markexpr(config):
+            return "full", False
+        return "developer", False
+    return "focused-full", False
+
+
+def _validate_explicit_lane_targets(
+    config: pytest.Config,
+    state: _RepositoryPytestState,
+) -> None:
+    if state.workflow not in _REPOSITORY_TEST_LANES or _is_whole_src_tests_target(config):
+        return
+
+    wrong_lane: list[str] = []
+    for target in config.args:
+        path_part = target.partition("::")[0]
+        repo_path = _repo_relative_path(path_part)
+        if repo_path is None or not repo_path.startswith("src/tests/"):
+            continue
+        candidate = PROJECT_ROOT / repo_path
+        if candidate.is_dir():
+            lane = _subtree_lane(repo_path.rstrip("/"), state.lane_rules)
+            if lane is None:
+                continue
+        else:
+            lane = _lane_for_repo_path(repo_path, state.lane_rules)
+        if lane != state.workflow:
+            wrong_lane.append(f"{target} ({lane})")
+    if wrong_lane:
+        rendered = ", ".join(wrong_lane)
+        raise pytest.UsageError(
+            f"repository {state.workflow} workflow refuses explicit targets from another lane: {rendered}"
+        )
+
+
+def pytest_configure(config: pytest.Config) -> None:
+    enabled, lane_rules = _load_repository_pytest_isolation()
+    workflow, selector_compat = _resolve_repository_workflow(config, enabled)
+    state = _RepositoryPytestState(
+        enabled=enabled,
+        lane_rules=lane_rules,
+        workflow=workflow,
+        selector_compat=selector_compat,
+    )
+    setattr(config, "_repository_pytest_state", state)
+    _validate_explicit_lane_targets(config, state)
+    if (
+        enabled
+        and config.getoption("repository_workflow") == "focused-full"
+        and (config.option.markexpr or config.option.keyword)
+    ):
+        raise pytest.UsageError(
+            "focused-full forbids -m/-k selection because every targeted nodeid must execute"
+        )
+
+    # The developer default remains fast without putting a global -m expression
+    # in pytest.ini. An explicit -m supplied by a maintainer remains authoritative.
+    if enabled and workflow == "developer" and not _has_explicit_markexpr(config):
+        config.option.markexpr = "not slow"
+
+
+def _repository_pytest_state(config: pytest.Config) -> _RepositoryPytestState:
+    state = getattr(config, "_repository_pytest_state", None)
+    if not isinstance(state, _RepositoryPytestState):
+        raise pytest.UsageError("repository pytest workflow was not configured")
+    return state
+
+
+def pytest_ignore_collect(collection_path: Path, config: pytest.Config) -> bool | None:
+    state = _repository_pytest_state(config)
+    if not state.enabled or state.workflow in {"focused-full", "full"}:
+        return None
+
+    repo_path = _repo_relative_path(collection_path)
+    if repo_path is None or not repo_path.startswith("src/tests/"):
+        return None
+
+    if collection_path.is_dir():
+        # Only skip a directory when a specific rule owns the whole subtree.
+        # Shared ancestors stay traversable so evidence/replay leaf rules can
+        # still be discovered without importing unrelated test modules.
+        subtree_lane = _subtree_lane(repo_path, state.lane_rules)
+        if subtree_lane is None or subtree_lane == "developer":
+            return None
+        return subtree_lane != state.workflow
+
+    lane = _lane_for_repo_path(repo_path, state.lane_rules)
+    return lane != state.workflow
+
+
+# ---------------------------------------------------------------------------
+# Skip-if-fixture-missing hook (Phase 3C baseline-failure cleanup, 2026-05-08)
+#
+# Several legacy test groups inherited from the Codex-era migration depend on
+# .artifacts/ build outputs or temporary modules that aren't checked into the
+# repository. Rather than failing CI on every fresh clone, we skip them when
+# the fixture they need is missing — they remain runnable when the developer
+# explicitly produces the fixture (running the corresponding build script).
+#
+# Each entry maps a substring matched against the test file's path or a test
+# nodeid prefix to a callable that returns a "missing fixture" string when the
+# fixture isn't available, or None when the test should run normally.
+# ---------------------------------------------------------------------------
+
+
+def _missing_industrial_planner_single_base_e2e() -> str | None:
+    target = PROJECT_ROOT / ".artifacts" / "industrial_planner_single_base_e2e"
+    if not target.exists():
+        return f"fixture missing: {target} (run scripts/run_industrial_planner_single_base_e2e.py)"
+    return None
+
+
+def _missing_phase3b_signature_bucket_review() -> str | None:
+    target = (
+        PROJECT_ROOT
+        / ".artifacts"
+        / "phase3b_local_13900ks_tuning_20260430"
+        / "126_signature_bucket_powered_support_coverer_probe_review"
+        / "signature_bucket_powered_support_coverer_probe_review.json"
+    )
+    if not target.exists():
+        return f"fixture missing: {target.relative_to(PROJECT_ROOT)} (Codex-era artifact)"
+    return None
+
+
+def _missing_temp_scripts_benchmark_parallelism() -> str | None:
+    try:
+        spec = find_spec("temp_scripts.benchmark_parallelism")
+    except ModuleNotFoundError:
+        spec = None
+    if spec is None:
+        return "module temp_scripts.benchmark_parallelism not present (Codex-era helper, never migrated)"
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Track B provenance-gate guards (2026-07-25 merge)
+#
+# The R3/R4/B1 PB and external-brain-handoff research tests are one-shot
+# provenance verifiers born on Codex worktree HEAD 398f8725 with a full
+# .artifacts/ tree present. Their harness scripts pin EXPECTED_GIT_HEAD and
+# some tests replay bytes out of .artifacts/ directories that are not checked
+# into git (station rule: research artifacts stay out of git). On the merged
+# main tree HEAD moves to a merge commit and the artifacts are absent, so those
+# specific gate/replay tests can never pass here. They remain runnable from the
+# originating worktree (pinned HEAD + artifacts). Every self-contained sibling
+# in the same files (tmp-only re-encoders, monkeypatched fixtures) still runs.
+# ---------------------------------------------------------------------------
+
+_TRACK_B_PINNED_HEAD = "398f8725c770f3c36408adebe9448a890ed886fe"
+
+
+def _head_drifted_from_track_b_pin() -> str | None:
+    import subprocess
+
+    try:
+        head = subprocess.run(
+            ["git", "-C", str(PROJECT_ROOT), "rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return None  # no git / not a checkout: let the test surface its own error
+    if head != _TRACK_B_PINNED_HEAD:
+        return (
+            f"Track B provenance gate pinned to HEAD {_TRACK_B_PINNED_HEAD[:8]}; "
+            f"current HEAD {head[:8]} (runnable from the originating worktree)"
+        )
+    return None
+
+
+# witness W2b run-supervisor launcher tests were born on baseline HEAD ea407fa;
+# the supervisor derives the run_dir name from and identity-checks the live HEAD,
+# so on any other HEAD they hit GIT_HEAD_DRIFT / run_dir-name mismatch by design.
+_WITNESS_PINNED_HEAD_SHORT = "ea407fa"
+
+
+def _head_drifted_from_witness_pin() -> str | None:
+    import subprocess
+
+    try:
+        head = subprocess.run(
+            ["git", "-C", str(PROJECT_ROOT), "rev-parse", "--short", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return None  # no git / not a checkout: let the test surface its own error
+    if not head.startswith(_WITNESS_PINNED_HEAD_SHORT):
+        return (
+            f"witness W2b launcher supervisor pins run identity to HEAD "
+            f"{_WITNESS_PINNED_HEAD_SHORT}; current HEAD {head} "
+            f"(runnable from the originating worktree)"
+        )
+    return None
+
+
+def _missing_noncert_cuts_ab_trust_artifacts() -> str | None:
+    target = PROJECT_ROOT / ".artifacts" / "noncert_cuts_ab_trust_20260723"
+    if not target.exists():
+        return f"fixture missing: {target.relative_to(PROJECT_ROOT)} (noncert-cuts A/B trust artifact, not in git)"
+    return None
+
+
+# Track B provenance gates: exact `module.py::test_name` suffixes (parametrized
+# variants share the base name, so the [param] suffix is stripped before match).
+# Each maps to the guard that explains why it cannot run on the merged tree.
+_TRACK_B_NODEID_GUARDS: dict[str, "callable[[], str | None]"] = {
+    # HEAD-drift: R3/B1 encoder+gate harness pins EXPECTED_GIT_HEAD 398f8725.
+    "test_r3_upper_bound_pb_v1.py::test_encoder_and_gate_close_the_exact_opb": _head_drifted_from_track_b_pin,
+    "test_r3_upper_bound_pb_v1.py::test_gate_rejects_bool_as_integer_variable_id": _head_drifted_from_track_b_pin,
+    "test_r3_upper_bound_pb_v1.py::test_gate_rejects_resealed_constraint_tamper": _head_drifted_from_track_b_pin,
+    "test_r3_upper_bound_pb_v1.py::test_translation_outputs_refuse_overwrite": _head_drifted_from_track_b_pin,
+    "test_b1_r4_1188_22_pb_v1.py::test_a004_replay_rejects_a003_and_byte_or_field_tamper": _head_drifted_from_track_b_pin,
+    "test_b1_r4_1188_22_pb_v1.py::test_authoritative_verified_receipt_and_reader_documents": _head_drifted_from_track_b_pin,
+    "test_b1_r4_1188_22_pb_v1.py::test_build_authority_is_required_and_semantically_replayed": _head_drifted_from_track_b_pin,
+    "test_b1_r4_1188_22_pb_v1.py::test_encoder_gate_and_opb_exact_closure": _head_drifted_from_track_b_pin,
+    "test_b1_r4_1188_22_pb_v1.py::test_gate_rejects_json_bool_integer_type_confusion": _head_drifted_from_track_b_pin,
+    "test_b1_r4_1188_22_pb_v1.py::test_gate_rejects_resealed_opb_mutations": _head_drifted_from_track_b_pin,
+    "test_b1_r4_1188_22_pb_v1.py::test_gate_rejects_variable_map_orientation_or_bool_id": _head_drifted_from_track_b_pin,
+    "test_b1_r4_1188_22_pb_v1.py::test_target_schemas_and_a004_complete_replay": _head_drifted_from_track_b_pin,
+    "test_b1_r4_1188_22_pb_v1.py::test_translation_outputs_refuse_overwrite_and_symlink": _head_drifted_from_track_b_pin,
+    # noncert-cuts A/B trust (merged 2026-07-25): same two failure modes.
+    # HEAD-pin: repository-head replay asserts the codex worktree HEAD.
+    "test_noncert_cuts_ab16_campaign_bootstrap_v1.py::test_repository_head_executes_the_same_pinned_git_fd": _head_drifted_from_track_b_pin,
+    # artifact-absent: positive-control closeout replays .artifacts/noncert_cuts_ab_trust_20260723 bytes.
+    "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_complete_history_manifest_replays_all_v1_bytes": _missing_noncert_cuts_ab_trust_artifacts,
+    "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_current_gate_a002_remains_fail_closed_on_missing_resource_authority": _missing_noncert_cuts_ab_trust_artifacts,
+    "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_current_gate_input_arms_replay_no_applied_cut": _missing_noncert_cuts_ab_trust_artifacts,
+    "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_gate_v2_environment_resource_and_tool_mutations_fail_closed": _missing_noncert_cuts_ab_trust_artifacts,
+    "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_missing_resource_authority_blocks_both_complete_classifications": _missing_noncert_cuts_ab_trust_artifacts,
+    "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_resource_pass_is_common_to_both_complete_classifications": _missing_noncert_cuts_ab_trust_artifacts,
+    "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_resource_verifier_rejects_incomplete_terminal_fields": _missing_noncert_cuts_ab_trust_artifacts,
+    "test_noncert_cuts_ab_positive_control_closeout_v2.py::test_resource_verifier_rejects_oom_kill_and_limit_drift": _missing_noncert_cuts_ab_trust_artifacts,
+    # witness W2b run-supervisor launchers: run_dir name + start/stop identity
+    # are derived from the live HEAD; any HEAD but baseline ea407fa => GIT_HEAD_DRIFT.
+    "test_witness_shelf_power_launcher.py::test_dry_run_records_one_fresh_a001_without_starting_service": _head_drifted_from_witness_pin,
+    "test_witness_shelf_power_launcher.py::test_busy_preflight_never_starts_or_creates_run": _head_drifted_from_witness_pin,
+    "test_witness_shelf_power_launcher.py::test_missing_result_is_classified_fail_closed_while_lock_is_held": _head_drifted_from_witness_pin,
+    "test_witness_shelf_power_launcher.py::test_result_json_and_cgroup_telemetry_are_strict_and_independently_checked": _head_drifted_from_witness_pin,
+    "test_witness_fixed_geometry_router_launcher.py::test_dry_run_creates_one_content_bound_snapshot_and_never_starts_service": _head_drifted_from_witness_pin,
+    "test_witness_fixed_geometry_router_launcher.py::test_busy_preflight_does_not_create_a_run": _head_drifted_from_witness_pin,
+    "test_witness_fixed_geometry_router_launcher.py::test_structured_rejection_is_classified_while_outer_lock_is_held": _head_drifted_from_witness_pin,
+    "test_witness_fixed_geometry_router_launcher.py::test_feasible_result_requires_exact_cgroup_contract_and_geometry_binding": _head_drifted_from_witness_pin,
+    "test_witness_fixed_geometry_router_launcher.py::test_geometry_snapshot_mutation_discards_otherwise_clean_rejection": _head_drifted_from_witness_pin,
+    "test_witness_fixed_geometry_router_launcher.py::test_client_wait_timeout_is_bounded_and_records_nonterminal_unit_state": _head_drifted_from_witness_pin,
+    "test_witness_fixed_geometry_router_launcher.py::test_semantic_source_drift_discards_otherwise_clean_rejection": _head_drifted_from_witness_pin,
+}
+
+
+_FIXTURE_GUARDS = (
+    # B class: industrial_planner e2e fixture
+    ("test_industrial_planner_single_base_delivery", _missing_industrial_planner_single_base_e2e),
+    # C class: phase3b tuning artifact
+    # After 2026-05-16 phase3b reorganization tests live under
+    # src/tests/phase3b/checkpoint_free/signature_bucket/powered_support_coverer/
+    # so the original substring `test_phase3b_checkpoint_free_signature_bucket_powered_support_coverer`
+    # no longer appears contiguously in path/nodeid. Match the cluster path component instead.
+    (
+        "signature_bucket/powered_support_coverer",
+        _missing_phase3b_signature_bucket_review,
+    ),
+    # E class: temp_scripts module
+    ("test_production_campaign_child_reports", _missing_temp_scripts_benchmark_parallelism),
+)
+
+
+# ---------------------------------------------------------------------------
+# Heavyweight (slow) test registry (2026-06-21)
+#
+# The fast gate must stay seconds-fast so a failing test surfaces immediately
+# instead of being masked by a multi-minute integration suite hitting a global
+# timeout. Tests whose `call` phase runs >= 8s (measured from a full-suite
+# --durations sweep) are tagged `slow` so the fast gate can drop them with
+# `-m "not slow"` while the full suite still runs them.
+#
+# The set is kept here, in one place, as exact `module.py::test_name` nodeid
+# suffixes (no parametrization in this batch). Marking is additive: a test that
+# already carries @pytest.mark.xfail still gets @slow stacked on top. To retune,
+# rerun `pytest src/tests --durations=80` and edit this set; nothing else changes.
+# ---------------------------------------------------------------------------
+
+_SLOW_TEST_NODEIDS: frozenset[str] = frozenset(
+    {
+        # >= 8s call-time heavyweight solver / integration tests.
+        # Retuned 2026-07-04 from a serial full slow-lane --durations sweep
+        # (no concurrent pytest): entries measured < 8s were dropped
+        # (11x inspector 4-7s, 7x delivery_manifest 1-2s, b5a summary 3s,
+        # v86/v89 precheck-only ~1s, v97 ~1s) along with two stale nodeids
+        # that no longer collect. v98 stays: its call is sub-second but the
+        # golden-surface fixture setup alone is ~23s.
+        "test_regression.py::test_aspect_ratio_sliced_search_cannot_claim_terminal_certified",
+        # front-clear lift 全池黄金对照：真实 session+master 构建 ~50s
+        "test_front_clear_lift_full_pool_golden.py::test_full_pool_offsets_bidirectional_golden",
+        "test_exact_contract.py::test_certified_result_writes_canonical_optimal_blueprint",
+        "test_exact_contract.py::test_toy_project_can_be_truly_certified",
+        "test_regression.py::test_exact_optional_cardinality_bounds_align_with_preprocessed_artifacts",
+        "test_regression.py::test_c1_default_build_shape_with_preprocessed_artifacts",
+        "test_v82_oriented_candidate_domain.py::test_full_frontier_candidate_domain_keeps_oriented_dimensions",
+        "test_regression.py::test_parallel_outer_search_matches_serial_on_controlled_small_frontier",
+        "test_routing.py::test_routing_small_solve",
+        "test_routing.py::test_routing_solver_worker_override_changes_only_solver_parameter",
+        "test_parallel_scheduler.py::test_parallel_and_serial_exact_candidate_results_match_on_toy_frontier",
+        "test_p1_2_sink_replay_authority.py::test_p1_2_legitimate_certified_exact_path_survives_all_sink_replays",
+        "test_v98_b5a_symlink_campaign_path_authority.py::test_v98_b5a_preserves_symlink_campaign_path_until_surface_verifier",
+        "test_parallel_scheduler.py::test_parallel_wave_keeps_best_certified_result_under_out_of_order_completion",
+        "test_v62_candidate_frontier_contract.py::test_v65_terminal_result_is_committed_before_final_solution_export",
+        "test_industrial_planner_full_demand_support_suite_inventory.py::test_support_suite_inventory_cli_detects_drift",
+        "test_v62_candidate_frontier_contract.py::test_v66_terminal_export_failure_clears_terminal_state_and_artifacts",
+        "test_regression.py::test_frontier_resume_reconstructs_same_next_selected_candidate",
+        "test_industrial_planner_checked_artifact_suite.py::test_checked_artifact_suite_cli_exits_nonzero_on_component_drift",
+        # v88 exercises the real ④b isolated replay (fresh -I subprocess
+        # re-solve, ~10s). Its siblings v86/v89 monkeypatch the authority
+        # validator away (precheck-only, ~1s) and left the slow set in the
+        # 2026-07-04 retune.
+        "test_v88_terminal_ghost_anchor_required.py::test_terminal_solution_match_ignores_candidate_record_ghost_marker",
+        # P1 backlog #1 redlines: real L0 supervisor child/seal semantics.
+        "test_p1_min_tcb_closure_redlines.py::test_golden_toy_supervisor_seal_semantic_digests",
+        "test_p1_min_tcb_closure_redlines.py::test_malicious_fixture_fail_closed",
+        "test_p1_min_tcb_closure_redlines.py::test_target_l0_child_runtime_excludes_scripts_from_snapshot",
+        "test_p1_min_tcb_closure_redlines.py::test_target_l0_snapshot_manifest_is_explicit_minimal_whitelist",
+        # AB16 R12 clean-checkout producer-byte chain sentinel (~13s).
+        "test_noncert_cuts_ab16_self_contained_chain_v1.py::test_clean_checkout_and_preregistration_drive_real_bytes_through_first_arm_close",
+        # AB16 R13 fresh-HEAD production Gate-1 qualification chain sentinel.
+        "test_noncert_cuts_ab_gate1_v4_fresh_head_production_chain.py::test_fresh_clean_head_reaches_real_package_pinned_assemble_formal",
+    }
+)
+
+
+def _nodeid_matches_slow(nodeid: str) -> bool:
+    """Match a collected nodeid against the slow registry.
+
+    Registry entries are stored as `module.py::test_name` suffixes so they are
+    independent of the `src/tests/...` (and phase3b subdir) path prefix pytest
+    prepends. A suffix match on `::module.py::...` (or the whole nodeid for a
+    top-level module) keeps the comparison anchored to a file boundary.
+    """
+
+    base = nodeid.split("[", 1)[0]
+    for entry in _SLOW_TEST_NODEIDS:
+        if base == entry or base.endswith("/" + entry) or base.endswith("::" + entry):
+            return True
+    return False
+
+
+def _track_b_guard_for(nodeid: str) -> "callable[[], str | None] | None":
+    """Match a collected nodeid against the Track B provenance-gate registry.
+
+    Entries are `module.py::test_name` suffixes; the parametrization `[param]`
+    suffix is stripped so every variant of a parametrized gate test resolves to
+    the same guard.
+    """
+
+    base = nodeid.split("[", 1)[0]
+    for entry, guard in _TRACK_B_NODEID_GUARDS.items():
+        if base == entry or base.endswith("/" + entry) or base.endswith("::" + entry):
+            return guard
+    return None
+
+
+def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
+    repository_state = _repository_pytest_state(config)
+    for item in items:
+        nodeid = item.nodeid
+        path_str = str(item.fspath)
+        if repository_state.enabled:
+            repo_path = _repo_relative_path(item.path)
+            if repo_path is not None and repo_path.startswith("src/tests/"):
+                lane = _lane_for_repo_path(repo_path, repository_state.lane_rules)
+                if lane in {"evidence", "replay"}:
+                    item.add_marker(getattr(pytest.mark, lane))
+        for substring, missing_check in _FIXTURE_GUARDS:
+            if substring in path_str or substring in nodeid:
+                reason = missing_check()
+                if reason is not None:
+                    item.add_marker(pytest.mark.skip(reason=reason))
+                break
+        track_b_guard = _track_b_guard_for(nodeid)
+        if track_b_guard is not None:
+            reason = track_b_guard()
+            if reason is not None:
+                item.add_marker(pytest.mark.skip(reason=reason))
+        if _nodeid_matches_slow(nodeid):
+            item.add_marker(pytest.mark.slow)
+
+
+def _target_has_selected_item(target: str, items: list[pytest.Item]) -> bool:
+    path_part, separator, node_suffix = target.partition("::")
+    repo_path = _repo_relative_path(path_part)
+    if repo_path is None or not repo_path.startswith("src/tests/"):
+        return True
+
+    candidate_path = PROJECT_ROOT / repo_path
+    is_directory = candidate_path.is_dir()
+    expected_nodeid = f"{repo_path}::{node_suffix}" if separator else ""
+    for item in items:
+        item_path = _repo_relative_path(item.path)
+        if item_path is None:
+            continue
+        if is_directory:
+            path_matches = item_path.startswith(repo_path.rstrip("/") + "/")
+        else:
+            path_matches = item_path == repo_path
+        if not path_matches:
+            continue
+        if not separator or item.nodeid == expected_nodeid or item.nodeid.startswith(expected_nodeid + "["):
+            return True
+    return False
+
+
+def pytest_collection_finish(session: pytest.Session) -> None:
+    state = _repository_pytest_state(session.config)
+    if not state.enabled:
+        return
+    if state.workflow != "focused-full" and not state.selector_compat:
+        return
+
+    missing = [target for target in session.config.args if not _target_has_selected_item(target, session.items)]
+    if missing:
+        rendered = ", ".join(missing)
+        raise pytest.UsageError(
+            "repository focused pytest target collected zero selected nodeids "
+            f"(missing, lane-isolated, or marker-deselected): {rendered}"
+        )
+
+
+# ---------------------------------------------------------------------------
+# Centralized module-level cache reset (GPT v4 P1 #4 fix)
+#
+# master_model.py 有 6 个 module-level mutable cache 是性能优化（跨 instance
+# 复用 power capacity 计算）, 但破坏测试 hermeticity — 顺序前跑的测试可能
+# populate cache → 假定 "fresh stats == 0" 的回归测试在随机顺序下 flake.
+# b4c2a03 是单点清, 但 GPT v4 指出根治应该是全套自动隔离.
+#
+# 本 autouse fixture 在每个测试 setup 时清掉 6 个 cache, 让任何 build()
+# 拿到的 stats 都是 from-scratch. 性能影响: 每个 test ~ 0.01s init cost.
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(autouse=True)
+def _reset_master_model_module_caches():
+    """Clear master_model module-level caches before each test to ensure hermeticity.
+
+    只对**已 import 过** master_model 的会话生效 — 不主动 import, 避免对纯
+    adapter / IP / surface 类测试引入 master_model 副作用.
+    """
+    _mm = sys.modules.get("src.models.master_model")
+    if _mm is None:
+        yield
+        return
+    _cache_names = (
+        "_LOCAL_POWER_CAPACITY_CACHE",
+        "_LOCAL_POWER_CAPACITY_COMPACT_CACHE",
+        "_LOCAL_POWER_CAPACITY_NORMALIZED_RECT_CACHE",
+        "_LOCAL_POWER_CAPACITY_RECT_DP_CACHE",
+        "_LOCAL_POWER_CAPACITY_RECT_DP_COMPILED_CACHE",
+        "_LOCAL_POWER_CAPACITY_COMPACT_RECT_CPSAT_DATA_CACHE",
+    )
+    for name in _cache_names:
+        cache = getattr(_mm, name, None)
+        if cache is not None and hasattr(cache, "clear"):
+            cache.clear()
+    yield

@@ -1,0 +1,17 @@
+{
+ "mode": "free",
+ "encoding": "c6_pairwise_cover_v0_prototype",
+ "master_seconds": 7200.0,
+ "workers": 12,
+ "core_build_seconds": 17.7,
+ "master_build_seconds": 19.7,
+ "power_coverage_encoding": "c6_pairwise_cover_v0_prototype",
+ "cover_literals": 582169,
+ "free": {
+  "status": "UNKNOWN",
+  "wall": 7204.2,
+  "branches": 6664654,
+  "conflicts": 23299,
+  "deterministic_time": 29307.10100319936
+ }
+}

@@ -1,0 +1,1044 @@
+{
+  "status": "coordinate-complete local repair for holes 1 and 3; power obstruction proves the adjacent-4 direct-core family has no full witness for Model A or B under corridor-reserved band-internal poles",
+  "coordinates": "zero based, inclusive ranges, origin southwest",
+  "band_heights": [
+    5,
+    3,
+    4,
+    3,
+    5,
+    3,
+    4,
+    3,
+    5,
+    3,
+    5,
+    3,
+    4,
+    4
+  ],
+  "corridor_y": [
+    1,
+    7,
+    11,
+    16,
+    20,
+    26,
+    30,
+    35,
+    39,
+    45,
+    49,
+    55,
+    59,
+    64,
+    69
+  ],
+  "bands": [
+    {
+      "band": 1,
+      "y": [
+        2,
+        6
+      ],
+      "height": 5,
+      "polarity": "N_to_S",
+      "template": "manufacturing_5x5",
+      "count": 13,
+      "x_starts": [
+        2,
+        7,
+        12,
+        17,
+        22,
+        27,
+        32,
+        37,
+        42,
+        47,
+        52,
+        57,
+        62
+      ],
+      "riser_or_slit_x": 69,
+      "free_column_runs": [
+        [
+          67,
+          68
+        ]
+      ],
+      "optimistic_2x2_slots_inside_band": 2
+    },
+    {
+      "band": 2,
+      "y": [
+        8,
+        10
+      ],
+      "height": 3,
+      "polarity": "S_to_N",
+      "template": "manufacturing_3x3",
+      "count": 22,
+      "x_starts": [
+        3,
+        6,
+        9,
+        12,
+        15,
+        18,
+        21,
+        24,
+        27,
+        30,
+        33,
+        36,
+        39,
+        42,
+        45,
+        48,
+        51,
+        54,
+        57,
+        60,
+        63,
+        66
+      ],
+      "riser_or_slit_x": 2,
+      "free_column_runs": [
+        [
+          69,
+          69
+        ]
+      ],
+      "optimistic_2x2_slots_inside_band": 0
+    },
+    {
+      "band": 3,
+      "y": [
+        12,
+        15
+      ],
+      "height": 4,
+      "polarity": "N_to_S",
+      "template": "manufacturing_6x4",
+      "count": 9,
+      "x_starts": [
+        2,
+        8,
+        14,
+        20,
+        26,
+        32,
+        38,
+        44,
+        50
+      ],
+      "riser_or_slit_x": 69,
+      "free_column_runs": [
+        [
+          56,
+          68
+        ]
+      ],
+      "optimistic_2x2_slots_inside_band": 12
+    },
+    {
+      "band": 4,
+      "y": [
+        17,
+        19
+      ],
+      "height": 3,
+      "polarity": "S_to_N",
+      "template": "manufacturing_3x3",
+      "count": 22,
+      "x_starts": [
+        3,
+        6,
+        9,
+        12,
+        15,
+        18,
+        21,
+        24,
+        27,
+        30,
+        33,
+        36,
+        39,
+        42,
+        45,
+        48,
+        51,
+        54,
+        57,
+        60,
+        63,
+        66
+      ],
+      "riser_or_slit_x": 2,
+      "free_column_runs": [
+        [
+          69,
+          69
+        ]
+      ],
+      "optimistic_2x2_slots_inside_band": 0
+    },
+    {
+      "band": 5,
+      "y": [
+        21,
+        25
+      ],
+      "height": 5,
+      "polarity": "N_to_S",
+      "template": "manufacturing_5x5",
+      "count": 13,
+      "x_starts": [
+        2,
+        7,
+        12,
+        17,
+        22,
+        27,
+        32,
+        37,
+        42,
+        47,
+        52,
+        57,
+        62
+      ],
+      "riser_or_slit_x": 69,
+      "free_column_runs": [
+        [
+          67,
+          68
+        ]
+      ],
+      "optimistic_2x2_slots_inside_band": 2
+    },
+    {
+      "band": 6,
+      "y": [
+        27,
+        29
+      ],
+      "height": 3,
+      "polarity": "S_to_N",
+      "template": "manufacturing_3x3",
+      "count": 22,
+      "x_starts": [
+        3,
+        6,
+        9,
+        12,
+        15,
+        18,
+        21,
+        24,
+        27,
+        30,
+        33,
+        36,
+        39,
+        42,
+        45,
+        48,
+        51,
+        54,
+        57,
+        60,
+        63,
+        66
+      ],
+      "riser_or_slit_x": 2,
+      "free_column_runs": [
+        [
+          69,
+          69
+        ]
+      ],
+      "optimistic_2x2_slots_inside_band": 0
+    },
+    {
+      "band": 7,
+      "y": [
+        31,
+        34
+      ],
+      "height": 4,
+      "polarity": "N_to_S",
+      "template": "manufacturing_6x4",
+      "count": 11,
+      "x_starts": [
+        2,
+        8,
+        14,
+        20,
+        26,
+        32,
+        38,
+        44,
+        50,
+        56,
+        62
+      ],
+      "riser_or_slit_x": 69,
+      "free_column_runs": [
+        [
+          68,
+          68
+        ]
+      ],
+      "optimistic_2x2_slots_inside_band": 0
+    },
+    {
+      "band": 8,
+      "y": [
+        36,
+        38
+      ],
+      "height": 3,
+      "polarity": "S_to_N",
+      "template": "manufacturing_3x3",
+      "count": 22,
+      "x_starts": [
+        3,
+        6,
+        9,
+        12,
+        15,
+        18,
+        21,
+        24,
+        27,
+        30,
+        33,
+        36,
+        39,
+        42,
+        45,
+        48,
+        51,
+        54,
+        57,
+        60,
+        63,
+        66
+      ],
+      "riser_or_slit_x": 2,
+      "free_column_runs": [
+        [
+          69,
+          69
+        ]
+      ],
+      "optimistic_2x2_slots_inside_band": 0
+    },
+    {
+      "band": 9,
+      "y": [
+        40,
+        44
+      ],
+      "height": 5,
+      "polarity": "N_to_S",
+      "template": "manufacturing_5x5",
+      "count": 12,
+      "x_starts": [
+        7,
+        12,
+        17,
+        22,
+        27,
+        32,
+        37,
+        42,
+        47,
+        52,
+        57,
+        62
+      ],
+      "riser_or_slit_x": 69,
+      "free_column_runs": [
+        [
+          67,
+          68
+        ]
+      ],
+      "optimistic_2x2_slots_inside_band": 2
+    },
+    {
+      "band": 10,
+      "y": [
+        46,
+        48
+      ],
+      "height": 3,
+      "polarity": "S_to_N",
+      "template": "manufacturing_3x3",
+      "count": 22,
+      "x_starts": [
+        3,
+        6,
+        9,
+        12,
+        15,
+        18,
+        21,
+        24,
+        27,
+        30,
+        33,
+        36,
+        39,
+        42,
+        45,
+        48,
+        51,
+        54,
+        57,
+        60,
+        63,
+        66
+      ],
+      "riser_or_slit_x": 2,
+      "free_column_runs": [
+        [
+          69,
+          69
+        ]
+      ],
+      "optimistic_2x2_slots_inside_band": 0
+    },
+    {
+      "band": 11,
+      "y": [
+        50,
+        54
+      ],
+      "height": 5,
+      "polarity": "N_to_S",
+      "template": "manufacturing_5x5",
+      "count": 11,
+      "x_starts": [
+        2,
+        7,
+        12,
+        17,
+        22,
+        27,
+        32,
+        37,
+        42,
+        47,
+        52
+      ],
+      "riser_or_slit_x": 69,
+      "free_column_runs": [
+        [
+          57,
+          68
+        ]
+      ],
+      "optimistic_2x2_slots_inside_band": 12
+    },
+    {
+      "band": 12,
+      "y": [
+        56,
+        58
+      ],
+      "height": 3,
+      "polarity": "S_to_N",
+      "template": "manufacturing_3x3",
+      "count": 22,
+      "x_starts": [
+        3,
+        6,
+        9,
+        12,
+        15,
+        18,
+        21,
+        24,
+        27,
+        30,
+        33,
+        36,
+        39,
+        42,
+        45,
+        48,
+        51,
+        54,
+        57,
+        61,
+        64,
+        67
+      ],
+      "riser_or_slit_x": 2,
+      "free_column_runs": [
+        [
+          60,
+          60
+        ]
+      ],
+      "optimistic_2x2_slots_inside_band": 0
+    },
+    {
+      "band": 13,
+      "y": [
+        60,
+        63
+      ],
+      "height": 4,
+      "polarity": "N_to_S",
+      "template": "manufacturing_6x4",
+      "count": 9,
+      "x_starts": [
+        2,
+        8,
+        14,
+        20,
+        26,
+        32,
+        38,
+        44,
+        50
+      ],
+      "riser_or_slit_x": 60,
+      "free_column_runs": [
+        [
+          56,
+          59
+        ]
+      ],
+      "optimistic_2x2_slots_inside_band": 4
+    },
+    {
+      "band": 14,
+      "y": [
+        65,
+        68
+      ],
+      "height": 4,
+      "polarity": "S_to_N",
+      "template": "manufacturing_6x4",
+      "count": 9,
+      "x_starts": [
+        2,
+        8,
+        14,
+        20,
+        26,
+        32,
+        38,
+        44,
+        50
+      ],
+      "riser_or_slit_x": 58,
+      "free_column_runs": [
+        [
+          56,
+          57
+        ],
+        [
+          59,
+          60
+        ]
+      ],
+      "optimistic_2x2_slots_inside_band": 4
+    }
+  ],
+  "core": {
+    "anchor": [
+      61,
+      60
+    ],
+    "body": {
+      "x": [
+        61,
+        69
+      ],
+      "y": [
+        60,
+        68
+      ]
+    },
+    "mode": "inputs_east_west",
+    "fronts": [
+      {
+        "id": "input_W_1",
+        "kind": "input",
+        "direction": "W",
+        "front": [
+          60,
+          61
+        ],
+        "active": false,
+        "connection": "inactive"
+      },
+      {
+        "id": "input_W_2",
+        "kind": "input",
+        "direction": "W",
+        "front": [
+          60,
+          62
+        ],
+        "active": false,
+        "connection": "inactive"
+      },
+      {
+        "id": "input_W_3",
+        "kind": "input",
+        "direction": "W",
+        "front": [
+          60,
+          63
+        ],
+        "active": true,
+        "connection": "b13 riser x=60, branch at y=63"
+      },
+      {
+        "id": "input_W_4",
+        "kind": "input",
+        "direction": "W",
+        "front": [
+          60,
+          64
+        ],
+        "active": true,
+        "connection": "c13/riser junction (60,64)"
+      },
+      {
+        "id": "input_W_5",
+        "kind": "input",
+        "direction": "W",
+        "front": [
+          60,
+          65
+        ],
+        "active": false,
+        "connection": "inactive"
+      },
+      {
+        "id": "input_W_6",
+        "kind": "input",
+        "direction": "W",
+        "front": [
+          60,
+          66
+        ],
+        "active": false,
+        "connection": "inactive"
+      },
+      {
+        "id": "input_W_7",
+        "kind": "input",
+        "direction": "W",
+        "front": [
+          60,
+          67
+        ],
+        "active": false,
+        "connection": "inactive"
+      },
+      {
+        "id": "input_E_1",
+        "kind": "input",
+        "direction": "E",
+        "front": [
+          70,
+          61
+        ],
+        "active": false,
+        "connection": "out of grid, inactive"
+      },
+      {
+        "id": "input_E_2",
+        "kind": "input",
+        "direction": "E",
+        "front": [
+          70,
+          62
+        ],
+        "active": false,
+        "connection": "out of grid, inactive"
+      },
+      {
+        "id": "input_E_3",
+        "kind": "input",
+        "direction": "E",
+        "front": [
+          70,
+          63
+        ],
+        "active": false,
+        "connection": "out of grid, inactive"
+      },
+      {
+        "id": "input_E_4",
+        "kind": "input",
+        "direction": "E",
+        "front": [
+          70,
+          64
+        ],
+        "active": false,
+        "connection": "out of grid, inactive"
+      },
+      {
+        "id": "input_E_5",
+        "kind": "input",
+        "direction": "E",
+        "front": [
+          70,
+          65
+        ],
+        "active": false,
+        "connection": "out of grid, inactive"
+      },
+      {
+        "id": "input_E_6",
+        "kind": "input",
+        "direction": "E",
+        "front": [
+          70,
+          66
+        ],
+        "active": false,
+        "connection": "out of grid, inactive"
+      },
+      {
+        "id": "input_E_7",
+        "kind": "input",
+        "direction": "E",
+        "front": [
+          70,
+          67
+        ],
+        "active": false,
+        "connection": "out of grid, inactive"
+      },
+      {
+        "id": "output_S_1",
+        "kind": "output",
+        "direction": "S",
+        "front": [
+          62,
+          59
+        ],
+        "active": true,
+        "connection": "c12 right source tail"
+      },
+      {
+        "id": "output_S_4",
+        "kind": "output",
+        "direction": "S",
+        "front": [
+          65,
+          59
+        ],
+        "active": true,
+        "connection": "c12 right source tail"
+      },
+      {
+        "id": "output_S_7",
+        "kind": "output",
+        "direction": "S",
+        "front": [
+          68,
+          59
+        ],
+        "active": true,
+        "connection": "c12 right source tail"
+      },
+      {
+        "id": "output_N_1",
+        "kind": "output",
+        "direction": "N",
+        "front": [
+          62,
+          69
+        ],
+        "active": true,
+        "connection": "c14 source feeder"
+      },
+      {
+        "id": "output_N_4",
+        "kind": "output",
+        "direction": "N",
+        "front": [
+          65,
+          69
+        ],
+        "active": true,
+        "connection": "c14 source feeder"
+      },
+      {
+        "id": "output_N_7",
+        "kind": "output",
+        "direction": "N",
+        "front": [
+          68,
+          69
+        ],
+        "active": true,
+        "connection": "c14 source feeder"
+      }
+    ]
+  },
+  "hole": {
+    "rectangle": {
+      "x": [
+        1,
+        6
+      ],
+      "y": [
+        39,
+        45
+      ]
+    },
+    "model": "A",
+    "a": 1,
+    "body_free": true
+  },
+  "special_transport_components": [
+    {
+      "cells": "(60,59)",
+      "kind": "merger",
+      "inputs": [
+        "W",
+        "E"
+      ],
+      "outputs": [
+        "N"
+      ],
+      "purpose": "merge c12 main arm and right source tail into b13 riser"
+    },
+    {
+      "cells": "(60,60)..(60,62)",
+      "kind": "straight",
+      "inputs": [
+        "S"
+      ],
+      "outputs": [
+        "N"
+      ],
+      "purpose": "b13 riser"
+    },
+    {
+      "cells": "(60,63)",
+      "kind": "splitter",
+      "inputs": [
+        "S"
+      ],
+      "outputs": [
+        "N",
+        "E"
+      ],
+      "purpose": "continue riser and feed core input_W_3"
+    },
+    {
+      "cells": "(60,64)",
+      "kind": "splitter",
+      "inputs": [
+        "S"
+      ],
+      "outputs": [
+        "W",
+        "E"
+      ],
+      "purpose": "enter c13 and feed core input_W_4"
+    },
+    {
+      "cells": "(59,64)",
+      "kind": "straight",
+      "inputs": [
+        "E"
+      ],
+      "outputs": [
+        "W"
+      ],
+      "purpose": "c13 westbound"
+    },
+    {
+      "cells": "(58,64)",
+      "kind": "merger",
+      "inputs": [
+        "E",
+        "N"
+      ],
+      "outputs": [
+        "W"
+      ],
+      "purpose": "merge top feeder into c13"
+    },
+    {
+      "cells": "(58,65)..(58,68)",
+      "kind": "straight",
+      "inputs": [
+        "N"
+      ],
+      "outputs": [
+        "S"
+      ],
+      "purpose": "band14 slit"
+    },
+    {
+      "cells": "(58,69)",
+      "kind": "merger",
+      "inputs": [
+        "W",
+        "E"
+      ],
+      "outputs": [
+        "S"
+      ],
+      "purpose": "merge both c14 arms into slit"
+    },
+    {
+      "cells": "(68,69)",
+      "kind": "turn",
+      "inputs": [
+        "S"
+      ],
+      "outputs": [
+        "W"
+      ],
+      "purpose": "core output_N_7 starts right c14 arm"
+    },
+    {
+      "cells": "(65,69),(62,69)",
+      "kind": "merger",
+      "inputs": [
+        "E",
+        "S"
+      ],
+      "outputs": [
+        "W"
+      ],
+      "purpose": "merge other north core outputs into right c14 arm"
+    },
+    {
+      "cells": "(2,59)",
+      "kind": "turn",
+      "inputs": [
+        "S"
+      ],
+      "outputs": [
+        "E"
+      ],
+      "purpose": "band12 x2 riser enters c12 main arm"
+    },
+    {
+      "cells": "(69,59)",
+      "kind": "turn",
+      "inputs": [
+        "S"
+      ],
+      "outputs": [
+        "W"
+      ],
+      "purpose": "band12 rightmost machine output starts c12 right source tail"
+    },
+    {
+      "cells": "(2,69)",
+      "kind": "turn",
+      "inputs": [
+        "S"
+      ],
+      "outputs": [
+        "E"
+      ],
+      "purpose": "band14 leftmost machine output starts c14 left arm"
+    },
+    {
+      "cells": "(1,64)",
+      "kind": "turn",
+      "inputs": [
+        "E"
+      ],
+      "outputs": [
+        "S"
+      ],
+      "purpose": "c13 enters x1 return trunk"
+    },
+    {
+      "cells": "(1,1)",
+      "kind": "merger",
+      "inputs": [
+        "N",
+        "S"
+      ],
+      "outputs": [
+        "E"
+      ],
+      "purpose": "return trunk and bottom boundary source enter c0"
+    }
+  ],
+  "counts": {
+    "3x3": 132,
+    "5x5": 49,
+    "6x4": 38,
+    "powered_manufacturing": 219
+  },
+  "areas": {
+    "required_body_cells": 3544,
+    "route_cells": 1132,
+    "route_intersection_hole": 17,
+    "route_union_hole": 1157,
+    "global_cells_left_for_poles": 199,
+    "global_area_pole_upper": 49,
+    "band_body_free_cells": 196,
+    "band_area_pole_upper": 49,
+    "optimistic_band_internal_slot_upper": 38
+  },
+  "endpoint_port_bindings": [
+    {
+      "band": 12,
+      "machine_body_x": [
+        67,
+        69
+      ],
+      "pose": "south_to_north",
+      "port": "one output at body-local x=2",
+      "front": [
+        69,
+        59
+      ]
+    },
+    {
+      "band": 14,
+      "machine_body_x": [
+        2,
+        7
+      ],
+      "pose": "south_to_north",
+      "port": "the output at body-local x=0",
+      "front": [
+        2,
+        69
+      ]
+    }
+  ],
+  "power_obstruction_scope": {
+    "core": "9x9 core occupies two adjacent 4-high bands, any anchor/orientation",
+    "hole_models": [
+      "A",
+      "B"
+    ],
+    "corridors": "all corridor rows reserved for transport",
+    "poles": "2x2 bodies wholly inside manufacturing-band free cells",
+    "conclusion": "no coverage of all 219 powered manufacturing facilities"
+  },
+  "accepted_errata": {
+    "original_band14_5x5_slit": "capacity <=11; 11 only at x=69 or internal s mod 5 in {2,3,4}",
+    "model_B_hole_net_cost": "20 at a=1; 25 at 2<=a<=64",
+    "four_4high_distributions": "35 labeled solutions, 11 merged classes; optimistic count 28 unchanged"
+  }
+}

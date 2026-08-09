@@ -1,0 +1,1 @@
+{'exhaustive_n4_hypergraphs': 2048, 'report_example': {'packing_rhs': 3, 'eplus_exact_partition': 3}, 'old_counterexample_after_eplus': {'physical_exact_partition': 3, 'relaxed_packing_rhs': 2, 'eplus_exact_partition': 2}, 'eplus_identity': True}

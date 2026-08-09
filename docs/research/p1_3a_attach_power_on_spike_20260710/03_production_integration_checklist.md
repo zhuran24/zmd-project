@@ -1,0 +1,45 @@
+# attach 通电线 production integration checklist（2026-07-11 凌晨立，GO 判决直接产物）
+
+## §0 定位与终点
+
+spike GO（`02_spike_evidence.md`）证明的是**工程开销可行**（10K attach 16.6s+solve +4.1%）；本清单是从「direct harness sanctioned 通路」到「生产 benders 循环正式通电」之间的全部工程就绪项。**终点 = owner promote 仪式**：把 `EXACT_CUT_FRAMEWORK_ATTACH` 从 `_CERTIFIED_MASTER_DOMAIN_UNSAFE_ENV_OVERRIDES` 移出（owner-only，含 PROJECT_LOCK 修订）——在那之前所有项完成也不等于通电（P1.2 手动门同款纪律）。
+
+## §1 就绪项清单（编号即引用名，排序=建议执行序）
+
+**PIC-0 宿主形态设计决策**（阻塞后续所有实测项）：通电宿主二选一——
+- (a) certified campaign：需 owner promote+lock 修订，攻击面评估随 RFC-001；
+- (b) exploratory campaign：当前 prod-scale 不可用（port clearance 启发式 build 爆炸+legacy master，见 memory 卡 exploratory-mode-prod-scale-unusable）——选此路需先修 exploratory（port clearance 开关+C1 delegate 解绑 exact_mode，均为生产代码改动）。
+- 默认推荐 (a)：exploratory 修复工作量大且修完仍是非生产 master 形态,对「生产通电」的验证价值有限。
+
+**PIC-1 三硬门（spike §3 拍板原文保留，不因 GO 消失）**：
+1. RFC-001 原子封口 ✅评估已成文并过双审(2026-07-11,`02_rfc_adoption_assessment.md` 正式判定节,opus+codex 双 AGREE_WITH_AMENDMENTS 修正后定稿)：判定=纵深不替代原子封口;通电第一批=RFC-001 阶段 B(封 state 侧 validate/compile 漂移——cut 侧已 frozen 结构性关闭);叠加 lock:487 三前置之上;spike 级活动不受阻。
+2. RFC-002 F5 独立 verifier：通电族=F1/F6/F7,F5 保持 shadow/不 mutate master；F5 转正的前置=独立 verifier 落地。
+3. RFC-003 ledger+dedup+epoch：spike 是单 epoch 单 master 豁免；生产 campaign 多 rect 多 epoch 场景必须落 ledger+dedup（跨 solve cut 池账本）。
+
+**PIC-2 agnostic-F5 语义缝二选一 ✅CLOSED BY ARCHITECTURE(2026-07-11 夜,B5a)**（原 spike TRIAGE 移交：lifecycle 对 GHOST_AGNOSTIC F5 走无条件 attach 但 delegate 拒空条件 → fail-closed;当时拍板「落地 F5 时二选一」）：B5a 已把 F5 的 apply/lowering 路径**物理删除**——F5 只产 `ShadowValidated`(无 `ConstraintPlan`,结构上进不了 step_8/typed_apply),原「二选一」的两个分支所依附的语义缝**不复存在**。若未来 F5 promotion,须另立 lowering 设计与证明（批D 规格 §5 转正清单③）,不得复活旧 delegate 分支。（07-12 文档外审 F05 校准：本条旧文与 §2 批次日志曾互相矛盾,以本状态为准。）
+
+**PIC-3 E3 预算 env 化 ✅已落地(2026-07-11 凌晨,`b9fcca9`)**（spike 规格原 §2 遗留）：`EXACT_CUT_FRAMEWORK_ATTACH_BUDGET=2000` 硬编码（benders_loop.py:946）→ env 可配。碰 benders_loop sealed 文件=reseal 链；新增 EXACT_* env=allowlist+lock+tests 三同步（CLAUDE.md §6 铁律）。小批次,可先行。
+
+**PIC-4 跨 solve cut 池演化实测**（spike 效度边界 #5）：campaign 多 rect 序列下 cut 生成→scope 检查→attach→anchor 切换退役（M4-A ghost conditioning）的端到端行为从未在 prod-scale 实测。依赖 PIC-0 宿主。
+
+**PIC-5 benders 循环编排路径验证（07-12 起拆两层记账,文档外审 F05 校准）**：原文=spike 直调 step_8 绕过了 `_maybe_attach_framework_cuts` 的 step5→6→7→8 完整编排与 2000 预算路径。**集成 harness 层 ✅已覆盖**（B5a 后 `test_cut_framework_attach_wiring.py` 直测 `_maybe_attach_framework_cuts` 三路编排、rejection taxonomy 分桶与零误写 master）;**生产 campaign 层 ⬜未做**（多 rect、多 epoch、真实 campaign telemetry 与成本,prod-scale）——与 PIC-4 同批实测。依赖 PIC-0。不得把 harness 层的绿当生产层已验。
+
+**PIC-6 replay 诊断 subset 残留清理 ✅DONE(2026-07-11 夜,B5a 搭车)**（原 cut 修复批 TRIAGE:生产不可达,顺通电批一并清）：B5a 已把 replay 拆为 typed/legacy 双表——typed 四族走单入口不 apply,legacy 四族结果保持 HELD/diagnostic、禁 reactivate。（07-12 文档外审 F05 校准：本条旧文与 §2 批次日志曾互相矛盾,以本状态为准。）
+
+**PIC-7 M5 独立前置 ✅已归因关闭(2026-07-11 凌晨,M5 A/B 四刀)**：「默认参数病态」证伪——smoke#4 死于当时的 42G+禁 swap 条款(<60G 尖峰),双变量混杂误读;修订条款(62G)下完整默认组合 fixed+p3+s3 OPTIMAL@649s(+26.4% wall)。通电对照可直接用生产默认参数,残余仅为 +26% 性能注记(优化机会,非阻塞)。证据 `../p1_3_m5_convergence_20260708/m5_ab_param_bisect_20260711.md`。
+
+## §2 批次划分建议
+
+- **批 A（可立即,不依赖 PIC-0）**：PIC-3 ✅（`b9fcca9`）；PIC-6 明确改为搭车项——单独为纯卫生残留做 reseal 轮不值,留给下一个碰 lifecycle.py 的批（C/D）顺带。
+- **批 B（设计评审）✅完成(2026-07-11)**：PIC-0 owner 拍板=(a) certified promote 路线；PIC-1.1 评估成文+双审定稿。
+- **阶段 B 工程批（通电线主线,规格书✅定稿 2026-07-11)**：`../cut_framework_review_gpt56pro_20260710/03_stage_b_implementation_spec.md`（v3,codex 三条侦察供料+两轮 opus/codex 双审 53 条全采纳）。批次序列 **B0 ✅落地(`de2df50`,AST 守卫立即生效+12 condition 哨兵)** → **B1 ✅落地(2026-07-11,bundle+snapshot 层+digest v1,双审 codex 主动攻击实证 8 项修复全落,两新 TCB 文件 floor 注册+checker 自钉)** → **B1.5 ✅落地(2026-07-11,typed 平台层:三分支代数+FamilyPlugin/registry+纯函数单入口+F5 全通路 oracle 复验+v1 adapter;双审 opus 4 LOW/codex 18 条含 10 BLOCK,8 组修复全落——F5 语义等价锚/SemanticCutRejection 异常边界/16-hex rehash 删除/quarantine 拒绝/registry 跨表钉;reseal 三层连锁:typed_platform 进 sink 台账 65→66+语义投影 floor 双写+runtime anchor(certified_artifact_contract)同步+checker 自钉;全 cuts 589;遗留:CutScope 无 raw preimage→v1 adapter scope identity fail-closed,B2 开工时 producer 侧补 raw preimage)** → **B2 ✅落地(2026-07-11,F1 纵切:ScopeIdentityPreimageV1 carrier 进 CutScope(方案 A,oracle 同读取捕获+adapter 16-hex 防伪核对全量先行)+assumptions snapshot-native 复验前移(无条件,版本 seam 不得绕过)+MasterDomainProjectionV1 snapshot 侧投影含 slot 身份+F1→COMPILABLE+四层 differential 含双拒 tamper matrix;codex 侦察三缝拍板先行+双审 opus 2 LOW/codex 6 条全落(含三项 accept-set 收窄追认);实现中途 codex 连接中断由主会话接管修复;五 pinned 文件 reseal+新 plugin region_capacity_typed.py 进 floor+mypy gate;全 cuts 638;B3 前置:semantic fingerprint 编码提案随 B3 双审把关)** → **B3 ✅落地(2026-07-11 午后,F6 纵切:shape_packing_hall_typed plugin(14 字段+legacy 12-phase snapshot-native 复验+fingerprint 照 F1 编码定格)+oracle preimage 单次捕获(恒 ghost-bound,无 agnostic 政策)+独立 F6 MasterDomainProjectionV1+registry 翻 COMPILABLE+借名机制测试统一迁 cutset(F2 永久 diagnostic,B4 不再撞);codex 主会话 fan-out 三路侦察(codex 通道中断期)+九项拍板先行,codex 新 thread 实现+双审 opus 2(计划内 reseal)/codex 7 条全落——literals=() 放宽洞(真 BLOCK,adapter framing 前拦截)+requires_ghost_bound 声明式字段(VALIDATED 出口跳检封死)+accept-set 差异表补齐立完备性义务+两处测试锁错攻击点修正;修复中新收窄 stale-exterior currentness 追认;全 cuts 707;reseal:v99 floor 三重钉+新 plugin 入 floor+sink 双更新+自钉)** → **B4 ✅落地(2026-07-11 傍晚,F7 纵切:power_hitting_set_typed plugin(八段复验 snapshot-native 平价+pole_radius int/float 归一)+oracle preimage 捕获+requires_ghost_bound=True+独立 F7 projection 含 canonical coverer rows+blocked digest 公共原语 blocked_cells_digest_v1(三消费者统一)+13 行 accept-set audit 表;侦察 codex 八问+九项拍板先行(两个条件拍板:slot 恒 0 保留+bundle raw 补检查);实现 codex 中断由主会话接管;双审 opus 1 BLOCK(计划内 reseal)+2 LOW/codex BLOCK 1+HIGH 1+MEDIUM 1——JSON-native TOCTOU+冻结层宽容真放宽洞(list→tuple 漂移 legacy 拒 typed 过,双复现)修复=单次原子冻结遍历+source-capture 读取点收严;修复由主会话执行;全 cuts 777;reseal:v99 floor 四重钉+新 plugin 入 floor+sink 双更新+自钉)** → **B5a ✅落地(2026-07-11 夜,wiring cut-over:typed 链首次通电——benders 编排 _maybe_attach_framework_cuts 三路 match(CompiledCut→step_7 attestation+resolver+新 step_8/ShadowValidated 独立桶/CutRejection 按 stage 分桶)+统一 plan interpreter 新文件 typed_apply.py(TCB,operation 三行表+F7 blocked digest 复算)+lifecycle._resolve_model_scope_binding(ModelScopeBinding 唯一构造链,六步校验+live master 投影复算)+step_6/7 改 digest attestation(incumbent violation filter 退役=唯一 typed 宽点,已裁决追认+PIC-4 复评注记)+F5 apply 路径物理删除(**PIC-2 语义缝就此消灭**,不 mutate master 升级为类型不变量)+replay 双表重写(typed 四族单入口不 apply/legacy 四族 HOLD 禁 reactivate,**PIC-6 顺带清理**)+store 切 build_replay_context;B0 哨兵 1-4 真转绿,哨兵 5 拆分指向 B5b;双审双 opus(codex 通道死):设计位 AGREE_WITH_AMENDMENTS(MEDIUM=store per-cut 重复构建已修)+攻击位 PASS(七攻击面零 master mutation);reseal:v99 floor 5 重钉+2 新增(typed_apply/__init__)+sink 3 条+checker 自钉;全 cuts 769;遗留:F6/F7 直调 9 skip 迁移+ModelScopeBinding 伪造面(B5b 义务收紧为 AST 钉唯一 caller+token 红测+add_* 私有化))** → **B5b ✅落地(2026-07-11 深夜,AST lockdown 收尾批:master add_* 三方法两层改名 _lower_*(facade+backend+protocol+typed_apply 四层同步)+F5 add_pattern_nogood_cut 三处物理退役+AST caller 钉(_build_model_scope_binding 唯一 caller=resolver,Counter 机制)+_coordinate_delegate getattr 旁路 AST 拒绝(新 collector+59 桶白名单+facade owner-scope 豁免,TRIPWIRE 定位明记)+§4.11 precheck 前移(backend 三 _lower_* 失败分支全部前移到首次 mint 前,两新纯谓词,F1/F6 真原子性修复+F7 vacuous 登记)+F6/F7 8 个 B5a-transitional skip 迁移完整 typed 链(弃自建 master,用已证同源 stage_b fixture,fail-closed 臂实测重定位)+哨兵 5 真转绿;双审双 opus:设计 AGREE_WITH_AMENDMENTS(precheck 逐分支对照 accept-set 逐点相同)+攻击 PASS(六攻击面,F5 存量 replay=HELD 不崩,coverer 投影碰撞构造失败);5 LOW 归并三修一注记(F7 原子测试改 clean-rejection 钉/AST 守卫威胁模型边界 docstring/F7 subsume 非严格等价措辞+gate 保留/`_lower_*` runtime token 化列可选后续);reseal:floor 4 重钉+sink 3 条+checker 自钉;全 cuts 794+1 skip(F5 e2e 归批 D))** → B6(promotion=owner)。
+- **批 C（实测,依赖 B）**：PIC-4+PIC-5。
+- **批 D（F5 线,可与 C 并行）**：PIC-1.2+PIC-2。**verifier 面 ✅落地(2026-07-12 凌晨,规格 `../cut_framework_review_gpt56pro_20260710/04_batch_d_f5_verifier_spec.md`:RFC-002 binding_empty_domain_v1 独立 verifier 从零写(零 oracle/registry/env 依赖,Kuhn 匹配≡计数,双实现 differential 357 组合)+typed 链叠加(过→independently-verified 新 tag/拒→fail-closed CutRejection)+RFC §7 六红测+F5 e2e skip 解除+可达性哨兵(真 adapter frozen-tuple gap 钉死,修复时必红);双审双 opus 均 AGREE_WITH_AMENDMENTS(数学位证判定与枚举器严格等价、致命方向反例构造失败;MEDIUM=真 adapter 路径 verifier 暂不可达已钉哨兵+3 LOW 全修);reseal 五层(sink 66→67+floor+投影双写+runtime anchor+自钉);PIC-2 已在 B5a 消灭;F5 仍 shadow-only,转正批必做清单五项沉淀在规格 §5**;剩:F5 转正面(与 B6 合批或紧随,owner 排期)。
+- **批 E（账本）**：PIC-1.3。
+- promote 仪式（owner-only）压轴。
+
+## §3 明确不做（边界）
+
+- 不在本线内做 cut 数学有效性升级（F 族语义归数学面/Fable5 负责人地盘）。
+- 不做 F8（已退役）与 F2/F4/F9 未接线族的 step_8 接线（`NotImplementedError` fallback 保持,接线归各族落地批）。
+- 不做吞吐/容量流(OUT-OF-SCOPE,PROJECT_LOCK §1A B)。

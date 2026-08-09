@@ -1,0 +1,46 @@
+# Step 3 machine gate self consistency
+date_utc=2026-06-17T11:59:58Z
+python=Python 3.13.5
+
+$ python3 scripts/check_p1_2_proof_obligations.py
+```text
+P1.2 proof obligation check passed: 9 obligations anchored; 50 proof-bearing sink files sealed
+```
+exit=0
+
+$ python3 scripts/check_phase_review_gate.py
+```text
+phase_1_2_spike_close: status=blocked_manual_review_count, anchor=v99_p1_2_close_kernel_sealing, next_allowed=False, counting_authority=owner_manual_count_outside_repo
+```
+exit=0
+
+$ python3 -m pytest --randomly-seed=0 src/tests/test_p1_2_proof_obligations.py -q
+```text
+..........                                                               [100%]
+10 passed in 11.16s
+```
+exit=0
+
+$ python3 -m pytest --randomly-seed=0 src/tests/test_phase_review_gate.py -q
+```text
+...........                                                              [100%]
+11 passed in 8.82s
+```
+exit=0
+
+$ python3 -m pytest --randomly-seed=0 src/tests/test_delivery_manifest.py -q
+```text
+.......................                                                  [100%]
+23 passed in 9.15s
+TIME elapsed=0:15.45 exit=0
+```
+exit=0
+
+$ python3 -m pytest --randomly-seed=0 src/tests/test_exact_campaign_state_soundness.py -q
+```text
+........                                                                 [100%]
+8 passed in 9.51s
+TIME elapsed=0:16.60 exit=0
+```
+exit=0
+

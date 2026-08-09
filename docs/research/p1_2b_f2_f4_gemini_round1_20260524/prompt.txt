@@ -1,0 +1,1855 @@
+你是 LBBD / combinatorial cut / Dinic max-flow / soundness 形式化方法 审查员。这是 Endfield IndustrialPlanner Exact Solver 项目 Phase 1.2 P1.2B-F2/F4 (cutset + component_reach generator + node-split Dinic / BFS helper) 的 **Round 1** 数学+spec-data cross-check。
+
+# 项目上下文 (3 句话)
+
+- 70x70 grid Endfield 工业规划求解器, certified exact path, outer search candidate enumeration + 内层 LBBD (master → binding → routing → flow), 客观 max_lex(area, min_side)
+- F2/F4 是 9 个 cut family 之二 (cutset / component_reach): routing infeasibility 子问题返不可行时, oracle 用 Menger min-cut (F2 边容量超 demand) 或 BFS 不连通 (F4 component disconnect) 提取 sound geometric cut 加到 master
+- Phase 1.2 P1.2B-F5/F9 已经 GO (5 round Gemini); F2/F4 generator + helper 是这个 round 的新增 (commit `92224c4` master). Validator 已在 Phase 1.1 land, 这轮只 review generator + helper
+
+# Round 1 你的任务 (v4 加严协议 — 不接受 GO ritual)
+
+按重要性顺序:
+
+1. **Spec-data gap focus** — 真数据 paths 我已 inline 在下方 DOC_PATHS. 实施 src 跟真数据接合时哪一步会 (a) crash, (b) FN (该发 cut 不发), (c) FP (发不该发的 cut)? 具体 file:line + 假设的字段名 / 类型 vs 真数据实际 schema.
+
+2. **Soundness 数学**: Menger min-cut + BFS connectivity 算法实现是否 sound? Dinic 实现细节 (anti-parallel edge / 节点拆分 / 残差) 是否有 bug? min-cut 提取 (residual BFS 从 super_source) 是否漏算 cut edge?
+
+3. **Fail-closed semantics**: 任何异常 / unknown / TIMEOUT / schema 错都必须返 []. 哪里可能 leak partial cut 或非 sound 路径?
+
+4. **Cross-partition 不变量**: F2 `_has_patch_escape` 验 side_a ∪ side_b 完全 enclosed (没有 escape 到 free_cells 外其他 free cell). 这个 check 在 generator 跟 validator 一致吗? 如果 generator pass 但 validator reject 会怎样?
+
+5. **Anonymity & multiset bound** (per state_machine_v2 §5): F2/F4 geometric mode 不绑 literal, 但 cert 含 commodity_id (F4) / contributing_commodities (F2) 是 active_assumption — assumption 跟 ghost binding 对吗?
+
+## Armor strict mode (per memory [[gpt-review-prompt-armor]])
+
+- **不接受** "looks fine / 完美 / 绝佳 / very solid / ship-ready" 等 vague hyperbole
+- **不接受** GO 章 ritual ("All checks pass, ready to ship") — 如果真没大问题, 必至少给 3 个 high-risk hypothesis 你尝试 disprove 的过程 + 反驳每一个
+- **critical claim 必 cite** file:line 或 spec §X 或 literature
+- **GO verdict 必先列 3 种最可能死法** + 逐一 disprove
+- 找 1 critical 比 100 surface comment 价值高 10× — 不堆 minor refactor 建议
+
+## 提示我自己已经预察到的 2 个 spec-data gap (verify + push more)
+
+Gap A (我推测 BLOCKER): `data/preprocessed/commodity_demands.json` 真数据 schema 是 `Dict[str, int|float]` (17 entries mix; e.g. `buckwheat: 5.5`, `oxalic_acid_solution: 0.55`), 但 BState.commodity_demands 类型签名 `Optional[Dict[str, int]]`. F2 generator `cutset_oracle.py:78` 的 `_is_strict_positive_int` gate (`isinstance(value, int) and not isinstance(value, bool) and value > 0`) **永远拒绝 float**, 17 commodities 中 5.5 / 0.55 等 float-demand 会被 generator silently skip — 永远不发 F2 cut. 这是真 BLOCKER 还是我误读? 请 verify + 给 fix 建议 (e.g. int(math.ceil(demand)) 还是改 BState schema 还是别的).
+
+Gap B (我推测 BLOCKER): `state.commodity_routes` 字段在生产代码里完全没填充 site — `grep commodity_routes src/ -r` 显示**只在 cuts/ 内部读**, 没在 outside prod path 设. F4 generator `component_reach_oracle.py:68-69` 第一个 gate `if state.commodity_routes is None: return []`, 真接入 LBBD 时 100% 走 None 分支永远不发 cut. 这是 BLOCKER 还是 Phase 1.5+ 的 wiring 留到那时再做? 请 verify (grep 我做的可能漏 dynamic key set site).
+
+Round 1 任务: verify Gap A/B + 找 round 1 第 3/4/5/... 个 finding. **不要重述** Gap A/B 当作新 finding (已在我提示里), focus 推进.
+
+## Format
+
+```
+## Round 1 Overall Verdict
+GO | GO_WITH_MINOR | CONCERN | NOT_GO
+
+## Verify 我提示的 Gap A/B
+- Gap A (float demand): CONFIRMED / PARTIAL / REJECTED — 详释 + fix 建议
+- Gap B (commodity_routes 无 prod fill): CONFIRMED / PARTIAL / REJECTED — 详释 + fix 时机建议
+
+## New findings (Round 1 catch — 不接受 0, 至少 3 个 high-risk hypothesis)
+
+1. [SEVERITY: BLOCKER/HIGH/MEDIUM/LOW/INFO] file:line — 问题陈述 + reproduce + 建议 fix
+2. ...
+3. ...
+
+## Sanity Arguments (如果真 GO, 至少 3 个 high-risk hypothesis disproved)
+
+1. Hypothesis: <可能死法>. Disproof: <证明 src 已 cover>.
+2. ...
+3. ...
+
+## 建议下一步 (Round 2 重点 / Phase 1.5+ defer)
+```
+
+# F2/F4 spec summary (来源 docs/research/p3_b_design_v2_20260521/cut_family_specs/)
+
+## SPEC: docs/research/p3_b_design_v2_20260521/cut_family_specs/02_cutset.md
+# Cut Family 2 — cutset (完整 spec, 复用 PCR-CUT)
+
+> **Status**: Day 17a v1.0 (2026-05-21)
+> **Mode**: geometric (_FAMILY_MODE_MAP)
+> **Family_version**: v1.0
+> **来源**: B Design v2 5 cut family taxonomy
+> **复用**: `src/search/patch_routing_core.py` (PCR-CUT min-cut helper, Path 14
+> 死路 留下 oracle infrastructure)
+
+## 1. 数学定义
+
+### 1a. Cut 形式
+
+设 belt routing graph `G = (V, E)`. `V` = grid free_cells, `E` = 相邻 free_cells
+间的 belt edge. demand 是 (commodity, src, sink) 三元组要求 belt 路径连通.
+
+给定 partition `(A, B)` of cells (A ∪ B = V, A ∩ B = ∅), 定义
+`cut(A, B) = #{e ∈ E : e 连接 A 和 B}`. Menger min-cut: 任意 (src∈A, sink∈B) 对的
+edge-disjoint path 数上限 = cut(A, B).
+
+Family 2 cut 表达:
+
+```
+∃ partition (A, B) s.t.
+    sum_{commodity c} demand(c) > cut(A, B)
+    ⇒  INFEASIBLE (Menger violation)
+```
+
+cut(A, B) 是 belt-usable edge 数上界. 若所有 commodity 需路过 cut, 需 ≤
+cut(A, B) edge-disjoint 路径, 超过即不可达.
+
+### 1b. 跟 Family 4 component_reach 区别
+
+- Family 4: src→sink **连通性** (BFS reachability binary). 跟 capacity 无关.
+- Family 2: src→sink **flow capacity** (min-cut quantitative). cut size < demand 是 sound INFEASIBLE.
+
+Family 4 适用单 commodity 简单连通; Family 2 适用 multi-commodity 共享 cut 容量.
+
+### 1c. 复用 Path 14 PCR-CUT 死路 留下的 patch belt CP-SAT min-cut helper
+
+Path 14 PCR-CUT 死法是 multi-anchor 0/8 CERTIFIED (paradigm-level 死), **但**
+patch belt CP-SAT min-cut helper 本身 work (Phase 0 验证 770 cells cover 98%
+SAC slack). v2 cutset cut 复用此 helper 作为 oracle.
+
+## 2. Soundness proof
+
+### 2a. Menger's theorem
+
+Menger: max edge-disjoint paths from A to B = min edge cut size. 若 demand
+要 K 个 disjoint commodity 流过 (A, B) cut, 必 cut size ≥ K. 反之 cut size <
+demand → INFEASIBLE.
+
+### 2b. Scope 限定
+
+cut(A, B) 跟 free_cells 一致变化:
+- ghost_rect change → free_cells 变 → cut size 可变
+- cell_owner change → free_cells 缩 → cut size 单调减
+
+scope 必绑 ghost_rect_id 但 cell_owner 影响通过 multi-literal cut (类似 F7
+causation split) 或 oracle 重生成. v1.0 单 literal 不充分场景走 oracle 重生成.
+
+## 3. Cert payload schema
+
+```python
+@dataclass(frozen=True)
+class CutsetCert:
+    """Cert for Family 2 cutset cut. cert.cert_kind = "menger_min_cut" """
+    side_a_bitset_b64: str          # base64 cell bitset
+    side_b_bitset_b64: str
+    cut_edges: Tuple[Tuple[Cell, Cell], ...]   # cross-partition belt edges
+    cut_size: int                    # |cut_edges|
+    commodity_demand: int             # 总 flow demand cross partition
+    gap: int                          # demand - cut_size (>0 = INFEASIBLE)
+    contributing_commodities: Tuple[str, ...]
+    menger_witness_kind: Literal["max_flow_LP", "node_disjoint_paths"]
+    witness_blob_b64: Optional[str]  # 复用 PCR-CUT 的 cert format
+```
+
+## 4. Cut object 构造
+
+geometric mode (literals=None, geometric_payload=cert_payload):
+
+```python
+cut = Cut(
+    family="cutset", literals=None,
+    geometric_payload=canonical_bytes(CutsetCert.asdict()),
+    scope=CutScope(
+        ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),  # 必非 AGNOSTIC
+        blocked_cells_hash=compute_blocked_cells_hash(state),
+        ...,
+        oracle_abstraction_version="cutset_v1",
+        active_assumptions=(
+            Assumption("commodity_demand_set", value=str(commodities_sorted)),
+        ),
+    ),
+    cert=OracleCert(cert_kind="menger_min_cut", ...),
+)
+```
+
+## 5. Generator (复用 PCR-CUT helper)
+
+```python
+class CutsetOracle:
+    name = "cutset_v1"
+
+    def generate(self, state: BState, master_solution) -> List[Cut]:
+        from src.search.patch_routing_core import compute_patch_min_cut
+        cuts = []
+        # 复用 PCR-CUT helper 在 patch boundary 跑 min-cut
+        for patch in iter_patches(state, master_solution):
+            (A, B, cut_edges) = compute_patch_min_cut(patch, state.free_cells)
+            demand = sum_commodity_demand_cross_partition(A, B, master_solution.commodities)
+            if demand > len(cut_edges):
+                cert = CutsetCert(
+                    side_a_bitset_b64=encode_bitset(A),
+                    side_b_bitset_b64=encode_bitset(B),
+                    cut_edges=tuple(cut_edges),
+                    cut_size=len(cut_edges),
+                    commodity_demand=demand,
+                    gap=demand - len(cut_edges),
+                    contributing_commodities=tuple(involved_commodities),
+                    menger_witness_kind="max_flow_LP",
+                    witness_blob_b64=encode_pcr_witness(...),
+                )
+                cuts.append(construct_cutset_cut(state, cert))
+        return cuts
+```
+
+## 6. evaluate_geometric
+
+```python
+def evaluate_geometric_cutset(cut: Cut, state: BState) -> bool:
+    """重算当前 free_cells 上 (A, B) partition 的 cut size, 验仍 < demand."""
+    cert = decode_cutset_cert(cut.geometric_payload)
+    A = decode_bitset(cert.side_a_bitset_b64)
+    B = decode_bitset(cert.side_b_bitset_b64)
+    current_cut_edges = compute_cross_partition_edges(A, B, state.free_cells)
+    return len(current_cut_edges) < cert.commodity_demand
+```
+
+## 7. Validator
+
+```python
+class CutsetValidator(CutValidator):
+    family = "cutset"
+    validator_version = "v1.0"
+
+    def validate(self, cut: Cut, state: BState) -> ValidationResult:
+        cert = decode_cutset_cert(cut.geometric_payload)
+        # 独立重算 Menger min-cut on cur state.free_cells
+        recomputed_cut = compute_min_cut(decode_bitset(cert.side_a_bitset_b64),
+                                          decode_bitset(cert.side_b_bitset_b64),
+                                          state.free_cells)
+        if len(recomputed_cut) != cert.cut_size:
+            return ValidationResult("unsound", ..., f"cut_size mismatch")
+        # 验 witness Menger algebraic check (max_flow LP dual)
+        if cert.menger_witness_kind == "max_flow_LP" and cert.witness_blob_b64:
+            if not verify_max_flow_witness(cert.witness_blob_b64, A, B):
+                return ValidationResult("unsound", ..., "max_flow witness fail")
+        if cert.commodity_demand <= cert.cut_size:
+            return ValidationResult("unsound", ..., "witness fail: demand ≤ cut")
+        return ValidationResult("ok", ...)
+
+    def evaluate_geometric(self, cut, state):
+        return evaluate_geometric_cutset(cut, state)
+```
+
+## 8. Replay + watcher
+
+按 v3.1 §4 6 步 verify. Watcher:
+- by_cell_watcher (每 cut_edge 端点)
+- by_ghost_watcher (Day 17d §7 加, ghost 变直接 invalidate)
+- by_commodity_watcher (每 contributing_commodity)
+
+## 9. Open questions → Phase 1
+
+1. Patch boundary selection (现复用 PCR-CUT patch enumerate, ROI 待测)
+2. Multi-commodity vertex split graph 跟 cut_edges 表达力差异
+3. Cell_owner 挤压 cut size 时多 literal cut 形式
+
+## 10. 验收
+
+- ✅ 数学定义 (Menger min-cut)
+- ✅ Soundness proof (Menger theorem)
+- ✅ Cert schema + cut 构造 + generator (PCR-CUT 复用) + evaluate + validator + replay
+- ⚠️ 复用 PCR-CUT patch enumerate (Phase 1 验 ROI)
+- ⏸ 实施 Phase 1, 直接 import patch_routing_core
+
+
+## Phase 1.1 exit hardening notes
+
+- `contributing_commodities` has set semantics. Duplicate commodity ids are rejected by the validator.
+- Every contributing commodity must exist in both `state.commodity_demands` and `state.commodity_routes`.
+- Every contributing route must cross the partition: src and sink must be on opposite sides. Same-side routes cannot contribute to the cut demand.
+- `commodity_demand` is recomputed from the registry and must match the cert exactly.
+
+
+## SPEC: docs/research/p3_b_design_v2_20260521/cut_family_specs/04_component_reach.md
+# Cut Family 4 — component_reach (完整 spec, 复用 D2 separator)
+
+> **Status**: Day 17e v1.1 (2026-05-21) — Gemini round 16 finding A1 修
+> **Mode**: geometric (_FAMILY_MODE_MAP)
+> **Family_version**: v1.1 (geometric mode 不校验 blocking_facility 具体 pose ID)
+> **复用**: `src/search/d2_separator.py` (D2 commodity flow BFS/Tarjan helper, Path 17 死路 留下)
+
+## Changelog
+
+- **v1.0** (Day 17a, commit 83d3242): 初版 spec
+- **v1.1** (Day 17e): 修 Gemini round 16 finding A1 — Validator §7 step 4 删
+  对 `blocking_facilities` 具体 pose ID 的校验. Geometric 哲学 "只认空间, 不
+  认 ID", 强行校验 ID 破坏跨排列 (permutation) soundness 误杀合法 cut. Causation
+  split 是 literal-based cut (F3/F7) 专利, geometric cut 不需要. cert 仍 carry
+  `blocking_facilities` 字段作 debug/audit 用, validator 不依赖它判 sound.
+
+## 1. 数学定义
+
+belt routing 要求 commodity flow 从 src 流到 sink, free_cells 上必须存在
+belt-traversable path. Family 4 拦截:
+
+```
+∃ (commodity c, src_c, sink_c) s.t.
+    BFS on state.free_cells from src_c 不可达 sink_c
+    ⇒ INFEASIBLE (component disconnect)
+```
+
+跟 Family 2 cutset 区别:
+- Family 4: 单一 commodity 不连通 (binary reachability)
+- Family 2: multi-commodity 共享 cut, 总 demand > min-cut capacity (quantitative)
+
+Family 4 更弱 (cap inferred 单一 commodity 即可), Family 2 更强 (覆盖 capacity).
+
+## 2. Soundness proof
+
+state.free_cells 上 BFS connected component 唯一. 若 src ∈ comp_A, sink ∈ comp_B,
+A ≠ B → 没有 belt path → flow infeasible.
+
+scope: state.free_cells 跟 ghost + cell_owner 一起单调缩. cell_owner change
+可破连通, 必带 multi-literal carry blocking facility.
+
+## 3. Cert payload schema
+
+```python
+@dataclass(frozen=True)
+class ComponentReachCert:
+    """cert_kind = "bfs_disconnect_witness"."""
+    src_cell: Tuple[int, int]
+    sink_cell: Tuple[int, int]
+    commodity_id: str
+    src_component_bitset_b64: str            # base64 src 所在连通分量 bitset
+    sink_component_bitset_b64: str            # sink 所在分量
+    separator_cells: Tuple[Tuple[int, int], ...]  # disconnect 的 boundary cells
+    blocking_facilities: Tuple[Tuple[GroupId, int, PoseId], ...]
+                                              # 占 separator_cells 的 facility (causation)
+    witness_path_attempt: Optional[Tuple[Tuple[int, int], ...]]
+                                              # BFS partial path 至 boundary (debug)
+```
+
+## 4. Cut object 构造
+
+geometric mode. 但 cell_owner causation 通过 cert.blocking_facilities 表达
+(非空 → 多 cause). v1.0 单 cert kind ("bfs_disconnect_witness"), Phase 1 可分
+ghost-cause vs cell_owner-cause sub-kind (类似 F7).
+
+```python
+cut = Cut(
+    family="component_reach", literals=None,
+    geometric_payload=canonical_bytes(ComponentReachCert.asdict()),
+    scope=CutScope(
+        ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),
+        blocked_cells_hash=compute_blocked_cells_hash(state),
+        ...,
+        oracle_abstraction_version="component_reach_v1",
+        active_assumptions=(
+            Assumption("commodity_route", value=f"{commodity_id}:src={src},sink={sink}"),
+        ),
+    ),
+    cert=OracleCert(cert_kind="bfs_disconnect_witness", ...),
+)
+```
+
+## 5. Generator (复用 D2 separator)
+
+```python
+class ComponentReachOracle:
+    name = "component_reach_v1"
+
+    def generate(self, state, master_solution):
+        from src.search.d2_separator import compute_bfs_components, find_separator
+        cuts = []
+        components = compute_bfs_components(state.free_cells)
+        for commodity in master_solution.commodities:
+            src_comp = components[commodity.src]
+            sink_comp = components[commodity.sink]
+            if src_comp != sink_comp:
+                # disconnect
+                separator = find_separator(components, commodity.src, commodity.sink, state)
+                blocking = identify_blocking_facilities(separator, state.cell_owner, state.groups)
+                cert = ComponentReachCert(
+                    src_cell=commodity.src,
+                    sink_cell=commodity.sink,
+                    commodity_id=commodity.id,
+                    src_component_bitset_b64=encode_bitset(src_comp),
+                    sink_component_bitset_b64=encode_bitset(sink_comp),
+                    separator_cells=tuple(separator),
+                    blocking_facilities=tuple(blocking),
+                    witness_path_attempt=None,  # debug only
+                )
+                cuts.append(construct_component_reach_cut(state, cert))
+        return cuts
+```
+
+## 6. evaluate_geometric
+
+```python
+def evaluate_geometric_component_reach(cut: Cut, state: BState) -> bool:
+    """重算当前 state.free_cells 上 src/sink BFS 是否仍 disconnected."""
+    cert = decode_component_reach_cert(cut.geometric_payload)
+    from src.search.d2_separator import compute_bfs_components
+    components = compute_bfs_components(state.free_cells)
+    return components[cert.src_cell] != components[cert.sink_cell]
+```
+
+注意: 这跟 Family 1 v1.1 "无条件 True" 不一样 — Family 4 partition 是 state-
+dependent (cell_owner 改可能 reconnect). 必须 hot path 重算.
+
+## 7. Validator
+
+```python
+class ComponentReachValidator(CutValidator):
+    family = "component_reach"
+    validator_version = "v1.0"
+
+    def validate(self, cut, state) -> ValidationResult:
+        cert = decode_component_reach_cert(cut.geometric_payload)
+        # 独立 BFS on cur free_cells
+        components = compute_bfs_components(state.free_cells)
+        if components[cert.src_cell] == components[cert.sink_cell]:
+            return ValidationResult("unsound", ..., "src/sink reconnected in cur state")
+        # 验 cert.src_component bitset 跟 BFS 结果 match
+        recomputed_src = encode_bitset(components[cert.src_cell])
+        if recomputed_src != cert.src_component_bitset_b64:
+            return ValidationResult("unsound", ..., "src_component bitset mismatch")
+        # 验 separator_cells 全在 (cell_owner ∪ ghost) (不是 free)
+        # v1.1 (Gemini round 16 finding A1): geometric mode 只验空间, 不验 ID.
+        # 谁占了 separator_cell 不重要, 只要它不在 free_cells 就够 sound.
+        for sep_cell in cert.separator_cells:
+            if sep_cell in state.free_cells:
+                return ValidationResult("unsound", ..., f"separator cell {sep_cell} is free")
+        # v1.0 step 4 删除: validator 不再校验 cert.blocking_facilities 具体
+        # pose ID — geometric cut 哲学是"只认空间不认 ID", 强行校验 ID 破坏跨
+        # permutation soundness. cert.blocking_facilities 仍 carry 但只作
+        # debug/audit, validator 不依赖.
+        return ValidationResult("ok", ...)
+
+    def evaluate_geometric(self, cut, state):
+        return evaluate_geometric_component_reach(cut, state)
+```
+
+## 8. Replay + watcher
+
+watcher:
+- by_cell_watcher (separator_cells 每 cell)
+- by_commodity_watcher (commodity_id)
+- by_ghost_watcher (Day 17d 加 6 维)
+
+## 9. Open questions
+
+1. **Multi-component**: cert 只 carry src/sink 两 component. 多 commodity 共享
+   separator 时, 是否合并 cut. Phase 1 evaluate.
+2. **Cell_owner causation split** (类 F7): v1.0 cert.blocking_facilities carry
+   但 cut 是 geometric (不进 literals). Phase 1 决定要不要拆 sub-kind.
+3. **跟 Family 8 power_grid_reach 区别**: Family 4 是 belt graph (连续 free_cells),
+   Family 8 是 power pole 跃迁 graph (R_conn radius). 两者 schema 分开 (Day 17b).
+
+## 10. 验收
+
+- ✅ 数学 (BFS disconnect) + soundness (component 唯一)
+- ✅ Cert + cut + generator (D2 separator 复用) + evaluate_geometric (hot path
+  重算, 跟 Family 1 简化版区别) + validator + replay
+- ⏸ Phase 1 实施 src/cuts/families/component_reach.py
+
+
+## Phase 1.1 exit hardening notes
+
+- `commodity_id` is not a free-form cert field. It must exist in `state.commodity_routes`.
+- The registry route's src/sink cells must match the cert's `src_cell` and `sink_cell`.
+- `separator_cells` must be in-grid and must be occupied by a facility or ghost cell (`cell_owner ∪ ghost_cells`).
+- F4 rejects `GHOST_AGNOSTIC` scope because the BFS free-cell graph is ghost-sensitive.
+
+
+# DOC_PATHS: 真数据 schema inline (v4 协议硬要求 — Gemini 看不到本地文件)
+## data/preprocessed/commodity_demands.json
+Schema: Dict[commodity_id: str, demand: int|float]. 17 entries.
+
+Full content (verify mix of int + float):
+```json
+{
+  "blue_iron_block": 34,
+  "blue_iron_ore": 34,
+  "blue_iron_powder": 34,
+  "buckwheat": 5.5,
+  "buckwheat_powder": 11,
+  "dense_blue_iron_powder": 17,
+  "dense_source_powder": 9,
+  "fine_buckwheat_powder": 5.5,
+  "qiaoyu_capsule": 0.55,
+  "sandleaf": 10.5,
+  "sandleaf_powder": 31.5,
+  "source_ore": 18,
+  "source_powder": 18,
+  "steel_block": 17,
+  "steel_bottle": 5.5,
+  "steel_part": 6,
+  "valley_battery": 0.6
+}
+```
+
+## data/preprocessed/generic_io_requirements.json
+Schema (top-level keys): metadata / required_generic_outputs / required_generic_inputs.
+
+```json
+{
+  "required_generic_outputs": {
+    "blue_iron_ore": 34,
+    "source_ore": 18
+  },
+  "required_generic_inputs": {
+    "qiaoyu_capsule": 1,
+    "valley_battery": 1
+  }
+}
+```
+
+## data/preprocessed/mandatory_exact_instances.json (preview)
+TYPE: list. LEN=266. First entry sample:
+```json
+{
+  "instance_id": "crusher_blue_iron_001",
+  "facility_type": "manufacturing_3x3",
+  "operation_type": "crusher_blue_iron",
+  "is_mandatory": true,
+  "bound_type": "exact",
+  "solve_modes": [
+    "certified_exact",
+    "exploratory"
+  ],
+  "notes": "由配方矩阵严格推导出的强制制造实例。"
+}
+```
+
+## data/preprocessed/candidate_placements.json (preview)
+TYPE: dict. keys top=['facility_pools']. ## rules/canonical_rules.json (太大, 只 cite path)
+Per PROJECT_LOCK, consolidated preprocess/recipe/target/commodity truth. Phase 1.2 F2/F4 不直接读此文件, 但若 commodity_routes 真数据来源是它的某个 sub-section, 请 flag.
+
+## BState.commodity_routes (字段)
+Schema (per src/cuts/lifecycle.py L390-L391): `Optional[Dict[str, JsonDict]]`, value 是 `{'src': (x,y), 'sink': (x,y)}`.
+
+**`grep commodity_routes src/ -r` 显示**: 只 cuts/ 内部 read, 没在 `src/preprocess/`, `src/search/benders_loop.py`, `src/models/` 任何 prod-side dataclass / loader 中 set. F4 generator gate `if state.commodity_routes is None: return []` 在 prod 100% 走 None.
+
+# F2/F4 src (full content inline)
+
+### FILE: src/cuts/helpers/dinic_node_split.py
+```python
+"""Dinic max-flow + min-cut on node-split graph for F2/F4 generators.
+
+Phase 1.2 P1.2B-F2/F4 helper. F2 (cutset) uses Dinic max-flow / min-cut to
+prove capacity insufficiency on a partition; F4 (component_reach) uses BFS
+reachability + frontier separator extraction to prove disconnection.
+
+Node-split convention (cell capacity model, default cap=1):
+    Each cell v ∈ free_cells → two vertices: v_in, v_out.
+    Internal edge: v_in --cap=cell_capacity--> v_out (single direction).
+    Adjacency edge: u_out --cap=edge_capacity--> v_in for each 4-neighbor
+        pair (u, v). Anti-parallel: also v_out --cap=edge_capacity--> u_in.
+        Each direction is its own residual edge (NOT a single edge with
+        rev_cap == fwd_cap — that would double-count).
+
+Super-source / super-sink:
+    F2 multi-commodity: SS → src_c_in (cap=demand), sink_c_out → ST (cap=demand).
+    F4 single commodity: src→sink BFS reachability only, no max-flow.
+
+Residual graph stored as adjacency list: adj[u] = list of (v, cap, rev_idx).
+Adding edge (u→v, cap):
+    adj[u].append((v, cap, len(adj[v])))
+    adj[v].append((u, 0, len(adj[u]) - 1))    # reverse residual
+
+Refs:
+- docs/项目说明/08_phase_1_2_plan.md §P1.2B-F2/F4
+- docs/项目说明/12_go_criteria.md §8.1.x acceptance C
+- docs/research/p3_b_design_v2_20260521/cut_family_specs/02_cutset.md
+- docs/research/p3_b_design_v2_20260521/cut_family_specs/04_component_reach.md
+"""
+from __future__ import annotations
+
+from collections import deque
+from dataclasses import dataclass
+from typing import Dict, FrozenSet, List, Tuple
+
+from src.cuts.lifecycle import Cell
+
+
+# 4-connected neighbor offsets (N, S, E, W)
+_NEIGHBOR_OFFSETS: Tuple[Tuple[int, int], ...] = ((-1, 0), (1, 0), (0, -1), (0, 1))
+
+
+def neighbors_4conn(cell: Cell, grid_size: int = 70) -> List[Cell]:
+    """Return 4-connected neighbors of a cell that lie inside the grid."""
+    x, y = cell
+    result: List[Cell] = []
+    for dx, dy in _NEIGHBOR_OFFSETS:
+        nx, ny = x + dx, y + dy
+        if 0 <= nx < grid_size and 0 <= ny < grid_size:
+            result.append((nx, ny))
+    return result
+
+
+def bfs_component(
+    start: Cell,
+    free_cells: FrozenSet[Cell],
+    grid_size: int = 70,
+) -> FrozenSet[Cell]:
+    """4-connected BFS over ``free_cells`` starting at ``start``.
+
+    Returns the reachable component as a frozenset. Empty if ``start`` is
+    not in ``free_cells``.
+    """
+    if start not in free_cells:
+        return frozenset()
+    visited: set[Cell] = {start}
+    queue: deque[Cell] = deque([start])
+    while queue:
+        cell = queue.popleft()
+        for nbr in neighbors_4conn(cell, grid_size):
+            if nbr in free_cells and nbr not in visited:
+                visited.add(nbr)
+                queue.append(nbr)
+    return frozenset(visited)
+
+
+def extract_frontier_separator(
+    src_component: FrozenSet[Cell],
+    blocked_cells: FrozenSet[Cell],
+    grid_size: int = 70,
+) -> Tuple[Cell, ...]:
+    """Return blocked cells 4-adjacent to ``src_component``.
+
+    Per F4 spec §3 + validator (component_reach.py): separator_cells must be
+    in ``cell_owner ∪ ghost_cells`` (NOT ``exterior_blocks``). Caller passes
+    ``blocked_cells = state.cell_owner.keys() ∪ state.ghost_cells``.
+
+    Returns deterministic canonical order (sorted by (x, y)) for cert hash
+    stability.
+    """
+    separator: set[Cell] = set()
+    for cell in src_component:
+        for nbr in neighbors_4conn(cell, grid_size):
+            if nbr in blocked_cells and nbr not in src_component:
+                separator.add(nbr)
+    return tuple(sorted(separator))
+
+
+# ============================================================================
+# Dinic max-flow on node-split graph
+# ============================================================================
+
+
+@dataclass
+class _DinicGraph:
+    """Mutable residual graph for one Dinic solve.
+
+    Vertex layout for cells: v_in = 2 * cell_idx, v_out = 2 * cell_idx + 1.
+    Special vertices: super_source = 2*N, super_sink = 2*N + 1.
+    """
+
+    n_cells: int
+    cell_to_idx: Dict[Cell, int]
+    idx_to_cell: List[Cell]
+    super_source: int
+    super_sink: int
+    # adj[u] = list of [v, residual_cap, rev_idx_in_adj_v]
+    adj: List[List[List[int]]]
+    # Original edges for cut extraction: (u, v, original_cap)
+    forward_edges: List[Tuple[int, int, int]]
+
+    def add_edge(self, u: int, v: int, cap: int) -> None:
+        """Add directed edge u→v with capacity ``cap`` + reverse residual.
+
+        Note: bidirectional adjacency requires two add_edge calls
+        (u→v + v→u), each with their own residual.
+        """
+        rev_in_v = len(self.adj[v])
+        rev_in_u = len(self.adj[u])
+        self.adj[u].append([v, cap, rev_in_v])
+        self.adj[v].append([u, 0, rev_in_u])
+        self.forward_edges.append((u, v, cap))
+
+
+def _build_node_split_graph(
+    free_cells: FrozenSet[Cell],
+    sources: List[Tuple[Cell, int]],  # (src_cell, demand)
+    sinks: List[Tuple[Cell, int]],
+    *,
+    cell_capacity: int = 1,
+    edge_capacity: int = 1,
+    grid_size: int = 70,
+) -> _DinicGraph:
+    """Build node-split graph with super-source / super-sink.
+
+    Each free cell gets v_in, v_out with internal cap = cell_capacity.
+    Each 4-adjacent free cell pair gets two anti-parallel edges
+    (u_out → v_in, v_out → u_in) each with cap = edge_capacity.
+    """
+    cell_list = sorted(free_cells)
+    cell_to_idx = {cell: i for i, cell in enumerate(cell_list)}
+    n_cells = len(cell_list)
+    super_source = 2 * n_cells
+    super_sink = 2 * n_cells + 1
+    n_vertices = super_sink + 1
+
+    graph = _DinicGraph(
+        n_cells=n_cells,
+        cell_to_idx=cell_to_idx,
+        idx_to_cell=cell_list,
+        super_source=super_source,
+        super_sink=super_sink,
+        adj=[[] for _ in range(n_vertices)],
+        forward_edges=[],
+    )
+
+    # Internal node-split edges: v_in → v_out
+    for idx in range(n_cells):
+        v_in = 2 * idx
+        v_out = 2 * idx + 1
+        graph.add_edge(v_in, v_out, cell_capacity)
+
+    # Adjacency edges: for each unordered free-pair, add both directions
+    seen_pairs: set[Tuple[int, int]] = set()
+    for cell, idx in cell_to_idx.items():
+        for nbr in neighbors_4conn(cell, grid_size):
+            nbr_idx = cell_to_idx.get(nbr)
+            if nbr_idx is None:
+                continue
+            key = (min(idx, nbr_idx), max(idx, nbr_idx))
+            if key in seen_pairs:
+                continue
+            seen_pairs.add(key)
+            # u_out → v_in
+            graph.add_edge(2 * idx + 1, 2 * nbr_idx, edge_capacity)
+            # v_out → u_in (anti-parallel)
+            graph.add_edge(2 * nbr_idx + 1, 2 * idx, edge_capacity)
+
+    # Super-source → src.v_in (demand cap)
+    for src_cell, demand in sources:
+        src_idx = cell_to_idx.get(src_cell)
+        if src_idx is None:
+            raise ValueError(f"src {src_cell} not in free_cells")
+        graph.add_edge(super_source, 2 * src_idx, demand)
+
+    # sink.v_out → super-sink (demand cap)
+    for sink_cell, demand in sinks:
+        sink_idx = cell_to_idx.get(sink_cell)
+        if sink_idx is None:
+            raise ValueError(f"sink {sink_cell} not in free_cells")
+        graph.add_edge(2 * sink_idx + 1, super_sink, demand)
+
+    return graph
+
+
+def _bfs_level(graph: _DinicGraph) -> List[int]:
+    """BFS level graph from super_source. Returns level[u] = depth or -1."""
+    n = len(graph.adj)
+    level = [-1] * n
+    level[graph.super_source] = 0
+    queue: deque[int] = deque([graph.super_source])
+    while queue:
+        u = queue.popleft()
+        for edge in graph.adj[u]:
+            v, cap, _rev = edge
+            if cap > 0 and level[v] == -1:
+                level[v] = level[u] + 1
+                queue.append(v)
+    return level
+
+
+def _dfs_blocking_flow(
+    graph: _DinicGraph,
+    u: int,
+    pushed: int,
+    level: List[int],
+    iter_ptr: List[int],
+) -> int:
+    """Recursive DFS to push blocking flow. Returns flow pushed."""
+    if u == graph.super_sink:
+        return pushed
+    while iter_ptr[u] < len(graph.adj[u]):
+        edge = graph.adj[u][iter_ptr[u]]
+        v, cap, rev = edge
+        if cap > 0 and level[v] == level[u] + 1:
+            d = _dfs_blocking_flow(graph, v, min(pushed, cap), level, iter_ptr)
+            if d > 0:
+                edge[1] -= d
+                graph.adj[v][rev][1] += d
+                return d
+        iter_ptr[u] += 1
+    return 0
+
+
+def _dinic_max_flow(graph: _DinicGraph) -> int:
+    """Run Dinic to completion. Returns total max flow."""
+    flow = 0
+    while True:
+        level = _bfs_level(graph)
+        if level[graph.super_sink] == -1:
+            return flow
+        iter_ptr = [0] * len(graph.adj)
+        while True:
+            pushed = _dfs_blocking_flow(graph, graph.super_source, 10**9, level, iter_ptr)
+            if pushed == 0:
+                break
+            flow += pushed
+
+
+def _min_cut_reachable(graph: _DinicGraph) -> FrozenSet[int]:
+    """BFS from super_source on residual graph. Reachable vertex set."""
+    visited: set[int] = {graph.super_source}
+    queue: deque[int] = deque([graph.super_source])
+    while queue:
+        u = queue.popleft()
+        for edge in graph.adj[u]:
+            v, cap, _rev = edge
+            if cap > 0 and v not in visited:
+                visited.add(v)
+                queue.append(v)
+    return frozenset(visited)
+
+
+@dataclass(frozen=True)
+class MaxFlowMinCutResult:
+    """Result of a Dinic solve on a node-split graph.
+
+    Invariants (Menger / max-flow min-cut theorem):
+    - ``max_flow_value == cut_capacity`` (sum of original caps on cut edges)
+    - ``cut_cell_edges`` are adjacency cuts (cell_u, cell_v) — internal
+      node-split edges + super-source/sink links are filtered out
+    - ``side_a`` (free_cells whose v_in OR v_out reachable from super_source)
+    - ``side_b`` = free_cells \\ side_a (sink side)
+    """
+
+    max_flow_value: int
+    cut_cell_edges: Tuple[Tuple[Cell, Cell], ...]  # canonical (smaller, larger)
+    cut_capacity: int
+    side_a: FrozenSet[Cell]
+    side_b: FrozenSet[Cell]
+
+
+def dinic_node_split_min_cut(
+    free_cells: FrozenSet[Cell],
+    sources: List[Tuple[Cell, int]],
+    sinks: List[Tuple[Cell, int]],
+    *,
+    cell_capacity: int = 1,
+    edge_capacity: int = 1,
+    grid_size: int = 70,
+) -> MaxFlowMinCutResult:
+    """Run Dinic + extract min-cut on a node-split grid graph.
+
+    Returns ``MaxFlowMinCutResult`` carrying max_flow + cut edges +
+    partition. Caller is responsible for verifying ``side_a`` ∪ ``side_b``
+    is enclosed (no escape to free_cells outside the patch) before
+    constructing a cut cert — per F2 validator ``_has_patch_escape``.
+    """
+    if not sources or not sinks:
+        return MaxFlowMinCutResult(
+            max_flow_value=0,
+            cut_cell_edges=(),
+            cut_capacity=0,
+            side_a=frozenset(),
+            side_b=frozenset(),
+        )
+    graph = _build_node_split_graph(
+        free_cells,
+        sources,
+        sinks,
+        cell_capacity=cell_capacity,
+        edge_capacity=edge_capacity,
+        grid_size=grid_size,
+    )
+    max_flow = _dinic_max_flow(graph)
+    reachable = _min_cut_reachable(graph)
+    n_cells = graph.n_cells
+    super_min = 2 * n_cells
+
+    # Extract cut edges. Forward edges where u reachable, v not reachable.
+    # Three edge kinds emit:
+    # - super_source → src.v_in (skip; not adjacency)
+    # - sink.v_out → super_sink (skip)
+    # - v_in → v_out (internal node-split; skip — represented as same-cell)
+    # - u_out → v_in (adjacency between distinct cells; KEEP, canonicalize)
+    cell_cut_edges_set: set[Tuple[Cell, Cell]] = set()
+    cut_capacity = 0
+    for (u, v, cap) in graph.forward_edges:
+        if u not in reachable or v in reachable:
+            continue
+        cut_capacity += cap
+        if u >= super_min or v >= super_min:
+            continue  # super-source/sink link, not adjacency
+        u_idx = u // 2
+        v_idx = v // 2
+        if u_idx == v_idx:
+            continue  # internal v_in → v_out, not adjacency
+        cell_u = graph.idx_to_cell[u_idx]
+        cell_v = graph.idx_to_cell[v_idx]
+        pair = (cell_u, cell_v) if cell_u <= cell_v else (cell_v, cell_u)
+        cell_cut_edges_set.add(pair)
+
+    side_a_cells: set[Cell] = set()
+    side_b_cells: set[Cell] = set()
+    for cell, idx in graph.cell_to_idx.items():
+        v_in = 2 * idx
+        v_out = 2 * idx + 1
+        if v_in in reachable or v_out in reachable:
+            side_a_cells.add(cell)
+        else:
+            side_b_cells.add(cell)
+
+    return MaxFlowMinCutResult(
+        max_flow_value=max_flow,
+        cut_cell_edges=tuple(sorted(cell_cut_edges_set)),
+        cut_capacity=cut_capacity,
+        side_a=frozenset(side_a_cells),
+        side_b=frozenset(side_b_cells),
+    )
+
+```
+
+### FILE: src/cuts/oracles/cutset_oracle.py
+```python
+"""F2 cutset generator (Phase 1.2 P1.2B-F2/F4).
+
+Per spec 02_cutset.md §5 + 12_go_criteria.md §8.1.x C: emit a cut when a
+commodity's demand exceeds the max-flow / min-cut capacity between its
+endpoints on the free-cells graph.
+
+Algorithm (Phase 1.2: edge-only mode, cell_capacity=∞):
+1. fail-closed gates: commodity_routes / commodity_demands / ghost None → []
+2. For each commodity:
+   a. parse src, sink; skip if either ∉ free_cells
+   b. BFS reachability — if disconnected, F4 handles (skip F2 here)
+   c. Run Dinic max-flow (edge-only mode); if cut_capacity >= demand, skip
+   d. Verify patch enclosure (side_a ∪ side_b has no escape edge to free cells)
+   e. Build CutsetCert + Cut
+
+Phase 1.5+ deferred:
+- node-split mode (cell_capacity < ∞) for belt routing with cell capacities
+- PCR-CUT patch enumerate + integration with patch_routing_core
+- LP dual algebraic witness (currently witness_blob_b64=None per F2 v1.0
+  validator allowance)
+
+Refs:
+- docs/项目说明/08_phase_1_2_plan.md §P1.2B-F2/F4
+- docs/research/p3_b_design_v2_20260521/cut_family_specs/02_cutset.md
+"""
+from __future__ import annotations
+
+import base64
+import hashlib
+from typing import Any, Dict, FrozenSet, List, Tuple
+
+from src.cuts.families.cutset import (
+    _cross_partition_edges,
+    _free_cells,
+    _has_patch_escape,
+    _parse_cell,
+)
+from src.cuts.helpers.dinic_node_split import (
+    bfs_component,
+    dinic_node_split_min_cut,
+)
+from src.cuts.lifecycle import (
+    BState,
+    Cell,
+    Cut,
+    CutScope,
+    OracleCert,
+    canonical_bytes_for_cert,
+    compute_blocked_cells_hash,
+    compute_exterior_blocks_hash,
+    compute_ghost_rect_id,
+    compute_source_digest,
+)
+
+
+ORACLE_NAME: str = "cutset_v1"
+FAMILY_VERSION: str = "v1.0"
+VALIDATOR_VERSION: str = "v1.0"
+CERT_KIND: str = "menger_min_cut"
+
+# Edge-only mode: internal v_in→v_out edges cannot be cut (cell capacity ∞).
+# Phase 1.5+ may switch to true node-split when belt cell capacity matters.
+_INF_CAP: int = 10**9
+
+
+def _encode_bitset(cells: FrozenSet[Cell], grid_size: int = 70) -> str:
+    """Encode cell set as 70x70 bitset base64 (mirrors families.cutset._decode_bitset)."""
+    n_bytes = (grid_size * grid_size + 7) // 8
+    arr = bytearray(n_bytes)
+    for (x, y) in cells:
+        if not (0 <= x < grid_size and 0 <= y < grid_size):
+            raise ValueError(f"cell {(x, y)} out of grid")
+        idx = x * grid_size + y
+        arr[idx // 8] |= 1 << (idx % 8)
+    return base64.b64encode(bytes(arr)).decode("ascii")
+
+
+def _is_strict_positive_int(value: object) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) and value > 0
+
+
+def generate_cutset_cuts(
+    state: BState,
+    master_solution: Any = None,
+    *,
+    iter_index: int = -1,
+) -> List[Cut]:
+    """Produce F2 cuts for commodities whose demand exceeds the min-cut capacity."""
+    del master_solution
+    if state.commodity_routes is None:
+        return []
+    if state.commodity_demands is None:
+        return []
+    if state.ghost_rect is None:
+        return []
+
+    try:
+        free_cells = _free_cells(state)
+    except Exception:  # noqa: BLE001
+        return []
+    if not free_cells:
+        return []
+
+    cuts: List[Cut] = []
+    for commodity_id, route in state.commodity_routes.items():
+        try:
+            cut = _try_generate_one(
+                state=state,
+                commodity_id=str(commodity_id),
+                route=route,
+                free_cells=free_cells,
+                iter_index=iter_index,
+            )
+        # Intentional fail-closed per commodity (oracle isolation).
+        except Exception:  # noqa: BLE001  # nosec B112
+            continue
+        if cut is not None:
+            cuts.append(cut)
+    return cuts
+
+
+def _try_generate_one(
+    *,
+    state: BState,
+    commodity_id: str,
+    route: Dict[str, Any],
+    free_cells: FrozenSet[Cell],
+    iter_index: int,
+) -> Cut | None:
+    if not isinstance(route, dict):
+        return None
+    try:
+        src = _parse_cell(route.get("src"), f"commodity_routes[{commodity_id!r}].src")
+        sink = _parse_cell(route.get("sink"), f"commodity_routes[{commodity_id!r}].sink")
+    except (ValueError, TypeError):
+        return None
+    if src not in free_cells or sink not in free_cells or src == sink:
+        return None
+    # F4 territory: disconnected → other family covers
+    src_component = bfs_component(src, free_cells)
+    if sink not in src_component:
+        return None
+    if state.commodity_demands is None:
+        return None
+    demand_raw = state.commodity_demands.get(commodity_id)
+    if not _is_strict_positive_int(demand_raw):
+        return None
+    demand = int(demand_raw)  # type: ignore[arg-type]
+    try:
+        result = dinic_node_split_min_cut(
+            free_cells,
+            sources=[(src, demand)],
+            sinks=[(sink, demand)],
+            cell_capacity=_INF_CAP,  # edge-only mode (Phase 1.2)
+            edge_capacity=1,
+        )
+    except Exception:  # noqa: BLE001
+        return None
+    if result.cut_capacity >= demand:
+        return None  # no F2 cut needed (capacity satisfies demand)
+    if not result.side_a or not result.side_b:
+        return None  # degenerate partition
+    if _has_patch_escape(result.side_a | result.side_b, free_cells):
+        return None  # patch not enclosed — fail-closed
+    # Cross-check: cut_edges from Dinic should match recomputed cross-partition edges
+    recomputed_edges = _cross_partition_edges(result.side_a, result.side_b, free_cells)
+    if frozenset(result.cut_cell_edges) != recomputed_edges:
+        return None  # Dinic / recompute drift — fail-closed
+    return _build_cutset_cut(
+        state=state,
+        commodity_id=commodity_id,
+        side_a=result.side_a,
+        side_b=result.side_b,
+        cut_edges=result.cut_cell_edges,
+        cut_capacity=result.cut_capacity,
+        demand=demand,
+        iter_index=iter_index,
+    )
+
+
+def _build_cutset_cut(
+    *,
+    state: BState,
+    commodity_id: str,
+    side_a: FrozenSet[Cell],
+    side_b: FrozenSet[Cell],
+    cut_edges: Tuple[Tuple[Cell, Cell], ...],
+    cut_capacity: int,
+    demand: int,
+    iter_index: int,
+) -> Cut:
+    cert_payload_dict: Dict[str, Any] = {
+        "cert_kind": CERT_KIND,
+        "side_a_bitset_b64": _encode_bitset(side_a),
+        "side_b_bitset_b64": _encode_bitset(side_b),
+        "cut_edges": [[list(u), list(v)] for (u, v) in cut_edges],
+        "cut_size": int(cut_capacity),
+        "commodity_demand": int(demand),
+        "contributing_commodities": [commodity_id],
+    }
+    cert_payload_bytes = canonical_bytes_for_cert(cert_payload_dict)
+    cert_hash = hashlib.sha256(cert_payload_bytes).hexdigest()
+
+    source_digest = state.source_digest or compute_source_digest(state)
+
+    scope = CutScope(
+        ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),
+        blocked_cells_hash=compute_blocked_cells_hash(state),
+        exterior_blocks_hash=compute_exterior_blocks_hash(state),
+        source_digest=source_digest,
+        oracle_abstraction_version=ORACLE_NAME,
+        artifact_hashes=dict(state.artifact_hashes),
+    )
+
+    cut = Cut(
+        cut_id=f"f2_{iter_index}_{cert_hash[:12]}",
+        family="cutset",
+        literals=None,
+        geometric_payload=cert_payload_bytes,
+        scope=scope,
+        cert=OracleCert(
+            cert_kind=CERT_KIND,
+            cert_payload=cert_payload_bytes,
+            cert_hash=cert_hash,
+        ),
+        family_version=FAMILY_VERSION,
+        validator_version=VALIDATOR_VERSION,
+        oracle_name=ORACLE_NAME,
+        oracle_cert_hash=cert_hash,
+        minimization_audit={
+            "size_before": len(side_a) + len(side_b),
+            "size_after": len(cut_edges),
+            "calls": 0,
+        },
+        iter_index=iter_index,
+    )
+    return cut
+
+```
+
+### FILE: src/cuts/oracles/component_reach_oracle.py
+```python
+"""F4 component_reach generator (Phase 1.2 P1.2B-F2/F4).
+
+Per spec 04_component_reach.md §5 + 12_go_criteria.md §8.1.x C: emit a cut
+when a commodity's src/sink endpoints lie in disconnected components of the
+4-connected free-cells graph.
+
+Algorithm:
+1. fail-closed gates: commodity_routes None / ghost None → []
+2. For each commodity in state.commodity_routes:
+   a. parse src, sink; skip if either ∉ free_cells (other family covers)
+   b. BFS src component on free_cells; if sink ∈ src_component, skip (connected)
+   c. BFS sink component; extract frontier separator (∈ cell_owner ∪ ghost_cells)
+   d. Build ComponentReachCert + Cut
+3. Per-commodity exception is fail-closed (skip that commodity, continue others)
+
+Refs:
+- docs/项目说明/08_phase_1_2_plan.md §P1.2B-F2/F4
+- docs/research/p3_b_design_v2_20260521/cut_family_specs/04_component_reach.md
+"""
+from __future__ import annotations
+
+import base64
+import hashlib
+from typing import Any, Dict, FrozenSet, List, Tuple
+
+from src.cuts.families.cutset import _free_cells, _parse_cell
+from src.cuts.helpers.dinic_node_split import bfs_component, extract_frontier_separator
+from src.cuts.lifecycle import (
+    BState,
+    Cell,
+    Cut,
+    CutScope,
+    OracleCert,
+    canonical_bytes_for_cert,
+    compute_blocked_cells_hash,
+    compute_exterior_blocks_hash,
+    compute_ghost_rect_id,
+    compute_source_digest,
+)
+
+
+ORACLE_NAME: str = "component_reach_v1"
+FAMILY_VERSION: str = "v1.1"
+VALIDATOR_VERSION: str = "v1.1"
+CERT_KIND: str = "bfs_disconnect_witness"
+
+
+def _encode_bitset(cells: FrozenSet[Cell], grid_size: int = 70) -> str:
+    """Encode cell set as 70x70 bitset base64 (mirrors families.cutset._decode_bitset)."""
+    n_bytes = (grid_size * grid_size + 7) // 8
+    arr = bytearray(n_bytes)
+    for (x, y) in cells:
+        if not (0 <= x < grid_size and 0 <= y < grid_size):
+            raise ValueError(f"cell {(x, y)} out of grid")
+        idx = x * grid_size + y
+        arr[idx // 8] |= 1 << (idx % 8)
+    return base64.b64encode(bytes(arr)).decode("ascii")
+
+
+def generate_component_reach_cuts(
+    state: BState,
+    master_solution: Any = None,
+    *,
+    iter_index: int = -1,
+) -> List[Cut]:
+    """Produce F4 cuts for each disconnected commodity in state.commodity_routes."""
+    del master_solution  # commodity_routes is the source of truth
+    if state.commodity_routes is None:
+        return []
+    if state.ghost_rect is None:
+        return []
+
+    try:
+        free_cells = _free_cells(state)
+    except Exception:  # noqa: BLE001
+        return []
+
+    blocked_for_separator: FrozenSet[Cell] = (
+        frozenset(state.cell_owner.keys()) | frozenset(state.ghost_cells)
+    )
+
+    cuts: List[Cut] = []
+    for commodity_id, route in state.commodity_routes.items():
+        try:
+            cut = _try_generate_one(
+                state=state,
+                commodity_id=str(commodity_id),
+                route=route,
+                free_cells=free_cells,
+                blocked_for_separator=blocked_for_separator,
+                iter_index=iter_index,
+            )
+        # Intentional fail-closed per commodity (oracle isolation).
+        except Exception:  # noqa: BLE001  # nosec B112
+            continue
+        if cut is not None:
+            cuts.append(cut)
+    return cuts
+
+
+def _try_generate_one(
+    *,
+    state: BState,
+    commodity_id: str,
+    route: Dict[str, Any],
+    free_cells: FrozenSet[Cell],
+    blocked_for_separator: FrozenSet[Cell],
+    iter_index: int,
+) -> Cut | None:
+    if not isinstance(route, dict):
+        return None
+    try:
+        src = _parse_cell(route.get("src"), f"commodity_routes[{commodity_id!r}].src")
+        sink = _parse_cell(route.get("sink"), f"commodity_routes[{commodity_id!r}].sink")
+    except (ValueError, TypeError):
+        return None
+    if src not in free_cells or sink not in free_cells:
+        return None
+    if src == sink:
+        return None
+    src_component = bfs_component(src, free_cells)
+    if sink in src_component:
+        return None  # connected, no F4 cut
+    sink_component = bfs_component(sink, free_cells)
+    separator = extract_frontier_separator(src_component, blocked_for_separator)
+    return _build_component_reach_cut(
+        state=state,
+        commodity_id=commodity_id,
+        src=src,
+        sink=sink,
+        src_component=src_component,
+        sink_component=sink_component,
+        separator=separator,
+        iter_index=iter_index,
+    )
+
+
+def _build_component_reach_cut(
+    *,
+    state: BState,
+    commodity_id: str,
+    src: Cell,
+    sink: Cell,
+    src_component: FrozenSet[Cell],
+    sink_component: FrozenSet[Cell],
+    separator: Tuple[Cell, ...],
+    iter_index: int,
+) -> Cut:
+    cert_payload_dict: Dict[str, Any] = {
+        "cert_kind": CERT_KIND,
+        "commodity_id": commodity_id,
+        "src_cell": [src[0], src[1]],
+        "sink_cell": [sink[0], sink[1]],
+        "src_component_bitset_b64": _encode_bitset(src_component),
+        "sink_component_bitset_b64": _encode_bitset(sink_component),
+        "separator_cells": [[c[0], c[1]] for c in separator],
+    }
+    cert_payload_bytes = canonical_bytes_for_cert(cert_payload_dict)
+    cert_hash = hashlib.sha256(cert_payload_bytes).hexdigest()
+
+    source_digest = state.source_digest or compute_source_digest(state)
+
+    scope = CutScope(
+        ghost_rect_id=compute_ghost_rect_id(state.ghost_rect),
+        blocked_cells_hash=compute_blocked_cells_hash(state),
+        exterior_blocks_hash=compute_exterior_blocks_hash(state),
+        source_digest=source_digest,
+        oracle_abstraction_version=ORACLE_NAME,
+        artifact_hashes=dict(state.artifact_hashes),
+    )
+
+    cut = Cut(
+        cut_id=f"f4_{iter_index}_{cert_hash[:12]}",
+        family="component_reach",
+        literals=None,
+        geometric_payload=cert_payload_bytes,
+        scope=scope,
+        cert=OracleCert(
+            cert_kind=CERT_KIND,
+            cert_payload=cert_payload_bytes,
+            cert_hash=cert_hash,
+        ),
+        family_version=FAMILY_VERSION,
+        validator_version=VALIDATOR_VERSION,
+        oracle_name=ORACLE_NAME,
+        oracle_cert_hash=cert_hash,
+        minimization_audit={
+            "size_before": len(src_component),
+            "size_after": len(separator),
+            "calls": 0,
+        },
+        iter_index=iter_index,
+    )
+    return cut
+
+```
+
+# Validator reference (Phase 1.1 已 land, 这轮不 review 主体, 但 cross-check generator 跟 validator schema 一致性时需 reference)
+
+### src/cuts/families/cutset.py — lines 1-260 (validator + helpers _free_cells / _parse_cell / _cross_partition_edges / _has_patch_escape — reused by generator)
+```python
+"""Family 2 cutset — production validator + evaluator + helpers.
+
+Implements cut_family_specs/02_cutset.md v1.0.
+
+Phase 1.1 P1.6 scope (minimum viable):
+- ``validate_cutset(cut, state, canonical_rules)`` — 验 cert structure +
+  cross-partition edge recompute on state.free_cells + witness (demand > cut_size).
+- ``evaluate_geometric_cutset(cut, state)`` — propagation hot path 重算 cur
+  cut edges, True iff still violating (demand > current_cut_size).
+
+Phase 1.5+ extends (per spec §9 open questions):
+- Patch belt CP-SAT min-cut extraction via patch_routing_core (Path 14 PCR-CUT
+  helper 复用 — Phase 0 验 770 cells cover 98% SAC slack).
+- Multi-commodity vertex split graph (commodity demand > cut_size 多 commodity 分配).
+- Max-flow LP witness algebraic check (verify_max_flow_witness from witness_blob).
+
+Refs:
+- docs/research/p3_b_design_v2_20260521/cut_family_specs/02_cutset.md v1.0
+"""
+from __future__ import annotations
+
+import base64
+import json
+import time
+from typing import Any, Dict, FrozenSet, Literal, Tuple, cast
+
+from src.cuts.lifecycle import BState, Cell, Cut, ValidationResult
+
+
+# Cross-partition edge between two adjacent cells (Manhattan 4-neighborhood).
+PartitionEdge = Tuple[Cell, Cell]
+
+
+def _is_strict_int(value: object) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def _parse_strict_int(value: object, field_name: str) -> int:
+    if not _is_strict_int(value):
+        raise ValueError(f"{field_name} must be int (bool/str rejected)")
+    return cast(int, value)
+
+
+def _parse_non_empty_str(value: object, field_name: str) -> str:
+    if not isinstance(value, str) or value == "":
+        raise ValueError(f"{field_name} must be non-empty str")
+    return value
+
+
+def _parse_cell(raw: object, field_name: str, grid_size: int = 70) -> Cell:
+    if not isinstance(raw, (list, tuple)) or len(raw) != 2:
+        raise ValueError(f"{field_name} must be a length-2 cell")
+    x_raw, y_raw = raw
+    if not _is_strict_int(x_raw) or not _is_strict_int(y_raw):
+        raise ValueError(f"{field_name} must contain strict ints, got {raw!r}")
+    x = int(x_raw)
+    y = int(y_raw)
+    if not (0 <= x < grid_size and 0 <= y < grid_size):
+        raise ValueError(f"{field_name} out of grid: {(x, y)!r}")
+    return (x, y)
+
+
+def _decode_bitset(b64: str, grid_size: int = 70) -> FrozenSet[Cell]:
+    arr = base64.b64decode(b64, validate=True)
+    expected_len = grid_size * grid_size // 8 + 1
+    if len(arr) != expected_len:
+        raise ValueError(f"bitset length mismatch: got {len(arr)}, expected {expected_len}")
+    cells = set()
+    for x in range(grid_size):
+        for y in range(grid_size):
+            idx = x * grid_size + y
+            if arr[idx // 8] & (1 << (idx % 8)):
+                cells.add((x, y))
+    extra_bits = len(arr) * 8 - grid_size * grid_size
+    if extra_bits > 0 and arr[-1] >> (8 - extra_bits):
+        raise ValueError("bitset has cells outside grid set")
+    return frozenset(cells)
+
+
+def _free_cells(state: BState, grid_size: int = 70) -> FrozenSet[Cell]:
+    """Belt-usable cells: all grid cells minus ghost/exterior/occupied cells.
+
+    F2/F4 reason over routes. ``exterior_blocks`` are forbidden just like ghost
+    cells; ignoring them would let replay validate a path through static blocks.
+    """
+    all_cells = {(x, y) for x in range(grid_size) for y in range(grid_size)}
+    return frozenset(
+        all_cells
+        - set(state.ghost_cells)
+        - set(state.exterior_blocks)
+        - set(state.cell_owner.keys())
+    )
+
+
+def _cross_partition_edges(
+    side_a: FrozenSet[Cell],
+    side_b: FrozenSet[Cell],
+    free_cells: FrozenSet[Cell],
+) -> FrozenSet[PartitionEdge]:
+    """Return undirected edges (a, b) where a ∈ A, b ∈ B, both ∈ free_cells, and
+    a/b Manhattan-adjacent. Canonicalize order (smaller first) to dedupe."""
+    edges: set[PartitionEdge] = set()
+    for cell in side_a & free_cells:
+        x, y = cell
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            neighbor = (x + dx, y + dy)
+            if neighbor in side_b and neighbor in free_cells:
+                edge = (cell, neighbor) if cell <= neighbor else (neighbor, cell)
+                edges.add(edge)
+    return frozenset(edges)
+
+
+def _has_patch_escape(
+    patch: FrozenSet[Cell],
+    free_cells: FrozenSet[Cell],
+) -> bool:
+    """patch 内 cell 相邻 patch 外 free cell → 流可绕过 patch, partition 不 enclose.
+
+    Returns True iff ∃ p ∈ patch, q ∈ free_cells \\ patch, q is 4-neighbor of p.
+    Used by validator to fail-closed on non-enclosed partition (GPT pro round 2
+    P0-3): F2 spec §1a partition (A, B) of V — V 必 = patch universe, patch 外
+    的 free cell 不在 partition 但流可走 → cut_size 假证.
+    """
+    outside_free = free_cells - patch
+    if not outside_free:
+        return False
+    for cell in patch:
+        x, y = cell
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            if (x + dx, y + dy) in outside_free:
+                return True
+    return False
+
+
+def _canonical_edges_from_cert(raw_edges: object) -> FrozenSet[PartitionEdge]:
+    parsed: set[PartitionEdge] = set()
+    if not isinstance(raw_edges, list):
+        raise ValueError("cut_edges must be a list")
+    for raw in raw_edges:
+        if not isinstance(raw, list) or len(raw) != 2:
+            raise ValueError(f"bad cut edge entry: {raw!r}")
+        c1_raw, c2_raw = raw
+        c1 = _parse_cell(c1_raw, "cut_edges.cell_a")
+        c2 = _parse_cell(c2_raw, "cut_edges.cell_b")
+        edge = (c1, c2) if c1 <= c2 else (c2, c1)
+        parsed.add(edge)
+    return frozenset(parsed)
+
+
+ValidationKind = Literal["ok", "unsound", "timeout", "schema_err"]
+
+
+def _vr(kind: ValidationKind, t0: float, detail: str = "") -> ValidationResult:
+    return ValidationResult(kind=kind, elapsed_seconds=time.monotonic() - t0, detail=detail or None)
+
+
+def _validate_cutset_scope(cut: Cut, t0: float) -> ValidationResult | None:
+    from src.cuts.lifecycle import GHOST_AGNOSTIC
+
+    if cut.scope is not None and cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
+        return _vr("unsound", t0, "F2 cutset 不允 GHOST_AGNOSTIC scope")
+    return None
+
+
+def _validate_partition_geometry(
+    side_a: FrozenSet[Cell],
+    side_b: FrozenSet[Cell],
+    free_cells: FrozenSet[Cell],
+    t0: float,
+) -> ValidationResult | None:
+    if side_a & side_b:
+        return _vr("unsound", t0, f"partition not disjoint (|A ∩ B|={len(side_a & side_b)})")
+    patch = side_a | side_b
+    non_free = patch - free_cells
+    if non_free:
+        return _vr("unsound", t0, f"partition contains {len(non_free)} non-free cell(s): sample={sorted(non_free)[:3]}")
+    if _has_patch_escape(patch, free_cells):
+        return _vr("unsound", t0, "partition not enclosed: patch has adjacent outside free cell")
+    return None
+
+
+def _validate_cut_edges(
+    cert_dict: Dict[str, Any],
+    side_a: FrozenSet[Cell],
+    side_b: FrozenSet[Cell],
+    free_cells: FrozenSet[Cell],
+    t0: float,
+) -> tuple[ValidationResult | None, int]:
+    current_cut_edges = _cross_partition_edges(side_a, side_b, free_cells)
+    if "cut_edges" not in cert_dict:
+        return _vr("schema_err", t0, "cert missing cut_edges field"), 0
+    cert_cut_size = _parse_strict_int(cert_dict.get("cut_size"), "cut_size")
+    if len(current_cut_edges) != cert_cut_size:
+        return _vr("unsound", t0, f"cut_size mismatch: cert={cert_cut_size}, recomputed={len(current_cut_edges)}"), cert_cut_size
+    cert_edges = _canonical_edges_from_cert(cert_dict.get("cut_edges", []))
+    if cert_edges != current_cut_edges:
+        return _vr("unsound", t0, "cut_edges set mismatch against recomputed cross-partition edges"), cert_cut_size
+    return None, cert_cut_size
+
+
+def _validate_cutset_registries(state: BState, t0: float) -> ValidationResult | None:
+    if state.commodity_demands is None:
+        return _vr("schema_err", t0, "F2 cutset validator 需 state.commodity_demands registry")
+    if state.commodity_routes is None:
+        return _vr("schema_err", t0, "F2 cutset validator 需 state.commodity_routes registry")
+    return None
+
+
+def _validate_contributing_commodities(
+    contributing: object,
+    state: BState,
+    t0: float,
+) -> tuple[ValidationResult | None, set[str]]:
+    if not isinstance(contributing, list) or not contributing:
+        return _vr("schema_err", t0, "F2 cert missing contributing_commodities"), set()
+    if state.commodity_demands is None or state.commodity_routes is None:
+        return _vr("schema_err", t0, "F2 commodity registries missing after registry gate"), set()
+    commodity_demands = state.commodity_demands
+    commodity_routes = state.commodity_routes
+    seen: set[str] = set()
+    for raw_c in contributing:
+        c = _parse_non_empty_str(raw_c, "contributing_commodities[]")
+        if c in seen:
+            return _vr("unsound", t0, f"duplicate contributing commodity {c!r} (spec §2 集合语义)"), seen
+        seen.add(c)
+        if c not in commodity_demands:
+            return _vr("unsound", t0, f"contributing commodity {c!r} not in commodity_demands registry"), seen
+        if c not in commodity_routes:
+            return _vr("unsound", t0, f"contributing commodity {c!r} not in commodity_routes registry"), seen
+    return None, seen
+
+
+def _validate_cross_partition_routes(
+    commodities: set[str],
+    side_a: FrozenSet[Cell],
+    side_b: FrozenSet[Cell],
+    state: BState,
+    t0: float,
+) -> ValidationResult | None:
+    if state.commodity_routes is None:
+        return _vr("schema_err", t0, "F2 commodity_routes missing after registry gate")
+    commodity_routes = state.commodity_routes
+    for c in commodities:
+        route = commodity_routes[c]
+        r_src = _parse_cell(route.get("src"), f"commodity_routes[{c!r}].src")
+        r_sink = _parse_cell(route.get("sink"), f"commodity_routes[{c!r}].sink")
+        crosses = (r_src in side_a and r_sink in side_b) or (r_src in side_b and r_sink in side_a)
+        if not crosses:
+            return _vr("unsound", t0, f"commodity {c!r} route 不跨 partition: src={r_src} sink={r_sink}")
+    return None
+
+
+def _validate_commodity_demand(
+    cert_dict: Dict[str, Any],
+    commodities: set[str],
+    cert_cut_size: int,
+    state: BState,
+    t0: float,
+) -> ValidationResult | None:
+    if state.commodity_demands is None:
+        return _vr("schema_err", t0, "F2 commodity_demands missing after registry gate")
+    commodity_demands = state.commodity_demands
+    registry_demand = sum(_parse_strict_int(commodity_demands[c], f"commodity_demands[{c!r}]") for c in commodities)
+    commodity_demand = _parse_strict_int(cert_dict.get("commodity_demand"), "commodity_demand")
+    if registry_demand != commodity_demand:
+        return _vr("unsound", t0, f"commodity_demand mismatch: cert={commodity_demand}, registry sum={registry_demand}")
+    if commodity_demand <= cert_cut_size:
+        return _vr("unsound", t0, f"witness fail: demand={commodity_demand} ≤ cut_size={cert_cut_size}")
+    return None
+
+
+def validate_cutset(
+    cut: Cut,
+    state: BState,
+    canonical_rules: Dict[str, Any],
+) -> ValidationResult:
+    """Production F2 validator."""
+    t0 = time.monotonic()
+    del canonical_rules
+    if cut.geometric_payload is None:
+# ... (60 more lines truncated)
+
+```
+
+### src/cuts/families/component_reach.py — lines 1-200 (validator — independent BFS recompute + separator check)
+```python
+"""Family 4 component_reach — production validator + evaluator.
+
+Implements cut_family_specs/04_component_reach.md v1.1.
+
+Phase 1.1 P1.8 scope (minimum viable):
+- ``validate_component_reach(cut, state, canonical_rules)`` — 3 步 check
+  (per v1.1 Gemini round 16 A1: geometric 只认 spatial 不校验 blocking pose ID):
+  1. src_component ∩ sink_component == ∅ (partition disjoint).
+  2. src_cell ∈ src_component, sink_cell ∈ sink_component (membership).
+  3. Recompute BFS components on current free_cells; src/sink仍 disconnected.
+- ``evaluate_geometric_component_reach(cut, state)`` — hot path 重算 BFS,
+  True iff disconnect still holds.
+
+Phase 1.5+ extends:
+- Wrap src/search/d2_separator.py for generator (compute_bfs_components +
+  find_separator).
+- ghost-cause vs cell_owner-cause sub-kinds (类 F7 causation split).
+- Multi-commodity reachability matrix (cf Family 2).
+
+Refs:
+- docs/research/p3_b_design_v2_20260521/cut_family_specs/04_component_reach.md v1.1
+"""
+from __future__ import annotations
+
+import json
+import time
+from collections import deque
+from typing import Any, Dict, FrozenSet, Literal, Set
+
+from src.cuts.families.cutset import _decode_bitset, _free_cells, _parse_cell
+from src.cuts.lifecycle import BState, Cell, Cut, ValidationResult
+
+
+def _bfs_component(start: Cell, free_cells: FrozenSet[Cell]) -> Set[Cell]:
+    """4-neighborhood BFS over free_cells from start."""
+    if start not in free_cells:
+        return set()
+    visited = {start}
+    q: deque[Cell] = deque([start])
+    while q:
+        x, y = q.popleft()
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            neighbor = (x + dx, y + dy)
+            if neighbor in free_cells and neighbor not in visited:
+                visited.add(neighbor)
+                q.append(neighbor)
+    return visited
+
+
+ValidationKind = Literal["ok", "unsound", "timeout", "schema_err"]
+
+
+def _vr(kind: ValidationKind, t0: float, detail: str = "") -> ValidationResult:
+    return ValidationResult(kind=kind, elapsed_seconds=time.monotonic() - t0, detail=detail or None)
+
+
+def _validate_component_scope(cut: Cut, t0: float) -> ValidationResult | None:
+    from src.cuts.lifecycle import GHOST_AGNOSTIC
+
+    if cut.scope is not None and cut.scope.ghost_rect_id == GHOST_AGNOSTIC:
+        return _vr("unsound", t0, "F4 component_reach 不允 GHOST_AGNOSTIC scope")
+    return None
+
+
+def _validate_component_membership(
+    src_cell: Cell,
+    sink_cell: Cell,
+    src_comp: FrozenSet[Cell],
+    sink_comp: FrozenSet[Cell],
+    t0: float,
+) -> ValidationResult | None:
+    if src_comp & sink_comp:
+        return _vr("unsound", t0, f"src/sink components 重叠 |∩|={len(src_comp & sink_comp)}")
+    if src_cell not in src_comp:
+        return _vr("unsound", t0, f"src_cell {src_cell} not in src_component")
+    if sink_cell not in sink_comp:
+        return _vr("unsound", t0, f"sink_cell {sink_cell} not in sink_component")
+    return None
+
+
+def _validate_recomputed_components(
+    src_cell: Cell,
+    sink_cell: Cell,
+    src_comp: FrozenSet[Cell],
+    sink_comp: FrozenSet[Cell],
+    state: BState,
+    t0: float,
+) -> ValidationResult | None:
+    free_cells = _free_cells(state)
+    if src_cell not in free_cells:
+        return _vr("unsound", t0, f"src_cell {src_cell} no longer in free_cells")
+    if sink_cell not in free_cells:
+        return _vr("unsound", t0, f"sink_cell {sink_cell} no longer in free_cells")
+    current_src_comp = frozenset(_bfs_component(src_cell, free_cells))
+    if current_src_comp != src_comp:
+        return _vr(
+            "unsound",
+            t0,
+            f"src_component cert mismatch: |cert|={len(src_comp)}, |recomputed|={len(current_src_comp)}",
+        )
+    current_sink_comp = frozenset(_bfs_component(sink_cell, free_cells))
+    if current_sink_comp != sink_comp:
+        return _vr(
+            "unsound",
+            t0,
+            f"sink_component cert mismatch: |cert|={len(sink_comp)}, |recomputed|={len(current_sink_comp)}",
+        )
+    if sink_cell in current_src_comp:
+        return _vr("unsound", t0, "witness fail: src/sink now reachable")
+    return None
+
+
+def _validate_separator_cells(
+    separator_cells: object,
+    state: BState,
+    t0: float,
+) -> ValidationResult | None:
+    if not isinstance(separator_cells, list):
+        return _vr("schema_err", t0, "separator_cells must be a list")
+    for idx, sep_cell_raw in enumerate(separator_cells):
+        try:
+            sep_cell = _parse_cell(sep_cell_raw, f"separator_cells[{idx}]")
+        except ValueError as e:
+            if "out of grid" in str(e):
+                return _vr("unsound", t0, f"separator cell {sep_cell_raw!r} not in grid (0-69 x 0-69)")
+            return _vr("schema_err", t0, str(e))
+        if sep_cell not in state.cell_owner and sep_cell not in state.ghost_cells:
+            return _vr("unsound", t0, f"separator cell {sep_cell} not in cell_owner ∪ ghost_cells")
+    return None
+
+
+def _validate_component_commodity(
+    commodity_id: object,
+    src_cell: Cell,
+    sink_cell: Cell,
+    state: BState,
+    t0: float,
+) -> ValidationResult | None:
+    if not isinstance(commodity_id, str) or commodity_id == "":
+        return _vr("schema_err", t0, "F4 cert missing/non-string commodity_id (spec 04 §3 必填)")
+    if state.commodity_routes is None:
+        return _vr("schema_err", t0, "F4 component_reach validator 需 state.commodity_routes registry")
+    route = state.commodity_routes.get(commodity_id)
+    if route is None:
+        return _vr("unsound", t0, f"commodity_id {commodity_id!r} not in commodity_routes registry")
+    try:
+        registry_src = _parse_cell(route.get("src"), f"commodity_routes[{commodity_id!r}].src")
+        registry_sink = _parse_cell(route.get("sink"), f"commodity_routes[{commodity_id!r}].sink")
+    except ValueError as e:
+        return _vr("schema_err", t0, str(e))
+    if registry_src != src_cell:
+        return _vr("unsound", t0, f"src_cell mismatch: cert={src_cell}, registry route src={registry_src}")
+    if registry_sink != sink_cell:
+        return _vr("unsound", t0, f"sink_cell mismatch: cert={sink_cell}, registry route sink={registry_sink}")
+    return None
+
+
+def validate_component_reach(
+    cut: Cut,
+    state: BState,
+    canonical_rules: Dict[str, Any],
+) -> ValidationResult:
+    """F4 component_reach validator."""
+    t0 = time.monotonic()
+    del canonical_rules
+    if cut.geometric_payload is None:
+        return _vr("schema_err", t0, "cut.geometric_payload is None (F4 schema invariant violated)")
+    scope_error = _validate_component_scope(cut, t0)
+    if scope_error is not None:
+        return scope_error
+    try:
+        cert_dict: Dict[str, Any] = json.loads(cut.geometric_payload)
+        src_cell = _parse_cell(cert_dict.get("src_cell"), "src_cell")
+        sink_cell = _parse_cell(cert_dict.get("sink_cell"), "sink_cell")
+        src_comp = _decode_bitset(cert_dict["src_component_bitset_b64"])
+        sink_comp = _decode_bitset(cert_dict["sink_component_bitset_b64"])
+        for error in (
+            _validate_component_membership(src_cell, sink_cell, src_comp, sink_comp, t0),
+            _validate_recomputed_components(src_cell, sink_cell, src_comp, sink_comp, state, t0),
+            _validate_separator_cells(cert_dict.get("separator_cells", []), state, t0),
+            _validate_component_commodity(cert_dict.get("commodity_id"), src_cell, sink_cell, state, t0),
+        ):
+            if error is not None:
+                return error
+        return _vr("ok", t0)
+    except Exception as e:
+        return _vr("schema_err", t0, f"{type(e).__name__}: {e}")
+
+def evaluate_geometric_component_reach(cut: Cut, state: BState) -> bool:
+    """Hot path: recompute BFS reachability on current free_cells.
+
+    **Phase 1.1 scope**: 此函数在 lifecycle.step_7_evaluate_cut 调用一次/cut
+    (post-attach), 不在 CP-SAT propagator 真 hot path. 4900-cell BFS 单调
+    ms 级内, ≤ 1/cut/iter 不构成 bottleneck.
+
+    **Phase 1.3 P1.21 必修 (defer)** — Gemini round 35 perf hypothesis:
+    若 Phase 1.3 接 CP-SAT propagator 真 hot path (10K calls/sec), 必须改
+    incremental connectivity check (e.g. union-find with rollback, 或 cache
+    last-known component bitset 比 dirty-flag check). 当前 O(|Grid|) BFS 当
+    Phase 1.3 集成时数量级退化.
+
+    Returns True iff src/sink still disconnected (cut still violating).
+    """
+    if cut.geometric_payload is None:
+        return False  # fail-safe: schema 缺失不报 violate
+    try:
+        cert_dict = json.loads(cut.geometric_payload)
+        src_cell = _parse_cell(cert_dict.get("src_cell"), "src_cell")
+        sink_cell = _parse_cell(cert_dict.get("sink_cell"), "sink_cell")
+    except Exception:
+        return False
+    free_cells = _free_cells(state)
+    if src_cell not in free_cells or sink_cell not in free_cells:
+        # Either endpoint no longer free — cut soundness violated; eval False
+        return False
+    current_src_comp = _bfs_component(src_cell, free_cells)
+    return sink_cell not in current_src_comp
+
+```
+
+
+
+# 完. 严格按 Format 输出, 不省任何 section. 提醒: 不 GO ritual, 真没 critical 也给 3 个 disproved hypothesis.

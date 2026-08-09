@@ -1,0 +1,22 @@
+belt_cap=1/tick, tick=2s
+运行率恰=1 的 operation: 10/17
+非满残道 17 条:
+  crusher_buckwheat [in] buckwheat: 11/12
+  crusher_buckwheat [out] buckwheat_powder: 5/6
+  crusher_sandleaf [in] sandleaf: 21/22
+  crusher_sandleaf [out] sandleaf_powder: 19/22
+  filling_capsule [in] fine_buckwheat_powder: 5/6
+  filling_capsule [in] steel_bottle: 5/6
+  filling_capsule [out] qiaoyu_capsule: 11/60
+  grinder_fine_buckwheat [in] buckwheat_powder: 5/6
+  grinder_fine_buckwheat [in] sandleaf_powder: 11/12
+  grinder_fine_buckwheat [out] fine_buckwheat_powder: 11/12
+  molding_bottle [in] steel_block: 5/6
+  molding_bottle [out] steel_bottle: 11/12
+  packaging_battery [out] valley_battery: 1/5
+  seed_collector_buckwheat [in] buckwheat: 11/12
+  seed_collector_buckwheat [out] buckwheat_seed: 5/6
+  seed_collector_sandleaf [in] sandleaf: 21/22
+  seed_collector_sandleaf [out] sandleaf_seed: 10/11
+残余速率集合: ['11/60', '1/5', '5/6', '19/22', '10/11', '11/12', '21/22']
+中间产物残道两两之和≤1 的反例: 0 对

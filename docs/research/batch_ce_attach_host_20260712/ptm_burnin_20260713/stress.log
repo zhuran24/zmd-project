@@ -1,0 +1,70 @@
+stress-ng: info:  [9847] setting to a 15 mins run per stressor
+stress-ng: info:  [9847] dispatching hogs: 24 cpu
+stress-ng: info:  [9847] stopping 24 stressors
+stress-ng: warn:  [9859] cpu: WARNING: finished prematurely after just 2 mins 39.04 secs
+stress-ng: warn:  [9864] cpu: WARNING: finished prematurely after just 2 mins 39.04 secs
+stress-ng: warn:  [9876] cpu: WARNING: finished prematurely after just 2 mins 39.04 secs
+stress-ng: info:  [9847] skipped: 0
+stress-ng: info:  [9847] passed: 24: cpu (24)
+stress-ng: info:  [9847] failed: 0
+stress-ng: info:  [9847] metrics untrustworthy: 0
+stress-ng: info:  [9847] successful run completed in 2 mins 38.54 secs
+stress-ng: info:  [13801] defaulting to a 1 day run per stressor
+stress-ng: info:  [13801] dispatching hogs: 24 cpu
+stress-ng: info:  [13801] stopping 24 stressors
+stress-ng: info:  [13801] skipped: 0
+stress-ng: info:  [13801] passed: 24: cpu (24)
+stress-ng: info:  [13801] failed: 0
+stress-ng: info:  [13801] metrics untrustworthy: 0
+stress-ng: info:  [13801] successful run completed in 14 mins 1.71 sec
+stress-ng: info:  [42515] defaulting to a 1 day run per stressor
+stress-ng: info:  [42515] dispatching hogs: 17 cpu
+stress-ng: info:  [42515] stopping 17 stressors
+stress-ng: warn:  [42526] cpu: WARNING: finished prematurely after just 1 hour 7.15 secs
+stress-ng: warn:  [42525] cpu: WARNING: finished prematurely after just 1 hour 7.15 secs
+stress-ng: warn:  [42528] cpu: WARNING: finished prematurely after just 1 hour 7.15 secs
+stress-ng: warn:  [42539] cpu: WARNING: finished prematurely after just 1 hour 7.15 secs
+stress-ng: info:  [42515] skipped: 0
+stress-ng: info:  [42515] passed: 17: cpu (17)
+stress-ng: info:  [42515] failed: 0
+stress-ng: info:  [42515] metrics untrustworthy: 0
+stress-ng: info:  [42515] successful run completed in 1 hour 6.65 secs
+stress-ng: info:  [91592] defaulting to a 1 day run per stressor
+stress-ng: info:  [91592] dispatching hogs: 17 cpu
+stress-ng: info:  [91592] stopping 17 stressors
+stress-ng: info:  [91592] skipped: 0
+stress-ng: info:  [91592] passed: 17: cpu (17)
+stress-ng: info:  [91592] failed: 0
+stress-ng: info:  [91592] metrics untrustworthy: 0
+stress-ng: info:  [91592] successful run completed in 1 hour 20.95 secs
+stress-ng: info:  [168833] defaulting to a 1 day run per stressor
+stress-ng: info:  [168833] dispatching hogs: 17 cpu
+stress-ng: info:  [168833] stopping 17 stressors
+stress-ng: warn:  [168854] cpu: WARNING: finished prematurely after just 4.00 secs
+stress-ng: info:  [168833] skipped: 0
+stress-ng: info:  [168833] passed: 17: cpu (17)
+stress-ng: info:  [168833] failed: 0
+stress-ng: info:  [168833] metrics untrustworthy: 0
+stress-ng: info:  [168833] successful run completed in 3.50 secs
+stress-ng: info:  [6650] defaulting to a 1 day run per stressor
+stress-ng: info:  [6650] dispatching hogs: 17 cpu
+stress-ng: info:  [6650] stopping 17 stressors
+stress-ng: warn:  [6663] cpu: WARNING: finished prematurely after just 1 hour 17.54 secs
+stress-ng: warn:  [6662] cpu: WARNING: finished prematurely after just 1 hour 17.54 secs
+stress-ng: warn:  [6674] cpu: WARNING: finished prematurely after just 1 hour 17.54 secs
+stress-ng: warn:  [6672] cpu: WARNING: finished prematurely after just 1 hour 17.54 secs
+stress-ng: warn:  [6667] cpu: WARNING: finished prematurely after just 1 hour 17.54 secs
+stress-ng: warn:  [6673] cpu: WARNING: finished prematurely after just 1 hour 17.54 secs
+stress-ng: info:  [6650] skipped: 0
+stress-ng: info:  [6650] passed: 17: cpu (17)
+stress-ng: info:  [6650] failed: 0
+stress-ng: info:  [6650] metrics untrustworthy: 0
+stress-ng: info:  [6650] successful run completed in 1 hour 17.04 secs
+stress-ng: info:  [113761] defaulting to a 1 day run per stressor
+stress-ng: info:  [113761] dispatching hogs: 17 cpu
+stress-ng: info:  [113761] stopping 17 stressors
+stress-ng: info:  [113761] skipped: 0
+stress-ng: info:  [113761] passed: 17: cpu (17)
+stress-ng: info:  [113761] failed: 0
+stress-ng: info:  [113761] metrics untrustworthy: 0
+stress-ng: info:  [113761] successful run completed in 1 hour 17.03 secs

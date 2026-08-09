@@ -1,0 +1,32 @@
+[
+ {
+  "anchor": 132,
+  "status": "UNKNOWN",
+  "accepted": false,
+  "reason": "unknown",
+  "wall": 300.5,
+  "forced_slot_field_count": 798,
+  "branches": 7232495,
+  "conflicts": 4748
+ },
+ {
+  "anchor": 133,
+  "status": "UNKNOWN",
+  "accepted": false,
+  "reason": "unknown",
+  "wall": 300.5,
+  "forced_slot_field_count": 798,
+  "branches": 7240373,
+  "conflicts": 5401
+ },
+ {
+  "anchor": 134,
+  "status": "UNKNOWN",
+  "accepted": false,
+  "reason": "unknown",
+  "wall": 300.5,
+  "forced_slot_field_count": 798,
+  "branches": 7239069,
+  "conflicts": 5648
+ }
+]

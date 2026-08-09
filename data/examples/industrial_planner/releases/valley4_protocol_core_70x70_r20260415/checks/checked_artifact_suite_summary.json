@@ -1,0 +1,256 @@
+{
+  "summary": {
+    "checked_family_count": 1,
+    "clean_family_count": 1,
+    "drift_family_count": 0,
+    "checked_suite_count": 1,
+    "clean_suite_count": 1,
+    "drift_suite_count": 0,
+    "checked_file_count": 6,
+    "drift_entry_count": 0,
+    "is_clean": true
+  },
+  "family_inventory_path": "/mnt/data/work/full/exact_refactor_project_20260414_single_base_scope/data/examples/industrial_planner/checked_artifact_family_inventory.json",
+  "families": [
+    {
+      "inventory_entry": {
+        "family_id": "full_demand_support_suite",
+        "family_label": "IndustrialPlanner full-demand support report sets",
+        "inventory_path": "/mnt/data/work/full/exact_refactor_project_20260414_single_base_scope/data/examples/industrial_planner/full_demand_support_suite_inventory.json",
+        "result_builder": "scripts.audit_industrial_planner_full_demand_support_suite_inventory:build_full_demand_support_suite_inventory_result",
+        "scope_label_singular": "report set",
+        "checked_scope_count_attr": "checked_report_set_count",
+        "clean_scope_count_attr": "clean_report_set_count",
+        "notes": [
+          "active single-base strict/deployment decision-surface reports"
+        ]
+      },
+      "family_summary": {
+        "checked_scope_count": 1,
+        "clean_scope_count": 1,
+        "drift_scope_count": 0,
+        "checked_file_count": 6,
+        "drift_entry_count": 0,
+        "is_clean": true
+      },
+      "family_result": {
+        "summary": {
+          "checked_report_set_count": 1,
+          "clean_report_set_count": 1,
+          "drift_report_set_count": 0,
+          "checked_file_count": 6,
+          "drift_entry_count": 0,
+          "default_contract_scope_report_set_count": 1,
+          "explicit_subset_report_set_count": 0,
+          "summed_audited_base_membership_count": 1,
+          "unique_audited_base_count": 1,
+          "audited_base_ids": [
+            "valley4_protocol_core"
+          ],
+          "future_scope_base_count": 5,
+          "future_scope_base_ids": [
+            "valley4_infra_outpost",
+            "valley4_rebuilt_command",
+            "valley4_refugee_shelter",
+            "wuling_protocol_core",
+            "wuling_tianwangping_aid"
+          ],
+          "repeated_audited_base_count": 0,
+          "repeated_audited_base_ids": [],
+          "status_transition_report_set_count": 0,
+          "unique_status_transition_base_count": 0,
+          "status_transition_base_ids": [],
+          "unlocked_base_count": 0,
+          "unlocked_base_ids": [],
+          "best_available_proven_equivalent_base_count": 1,
+          "unique_best_available_proven_equivalent_base_count": 1,
+          "best_available_proven_equivalent_base_ids": [
+            "valley4_protocol_core"
+          ],
+          "is_clean": true
+        },
+        "inventory_path": "/mnt/data/work/full/exact_refactor_project_20260414_single_base_scope/data/examples/industrial_planner/full_demand_support_suite_inventory.json",
+        "entries": [
+          {
+            "inventory_entry": {
+              "report_set_id": "default_full_demand_support_suite",
+              "blueprint_path": "/mnt/data/work/full/exact_refactor_project_20260414_single_base_scope/data/examples/industrial_planner/full_demand_recipe_capacity_canonical_blueprint.json",
+              "output_dir": "/mnt/data/work/full/exact_refactor_project_20260414_single_base_scope/data/examples/industrial_planner",
+              "base_ids": [],
+              "notes": [
+                "active single-base 70×70 support report set for valley4_protocol_core only"
+              ]
+            },
+            "scope_kind": "default_contract_scope",
+            "audited_base_ids": [
+              "valley4_protocol_core"
+            ],
+            "future_scope_base_ids": [
+              "valley4_infra_outpost",
+              "valley4_rebuilt_command",
+              "valley4_refugee_shelter",
+              "wuling_protocol_core",
+              "wuling_tianwangping_aid"
+            ],
+            "status_transition_base_ids": [],
+            "unlocked_base_ids": [],
+            "best_available_proven_equivalent_base_ids": [
+              "valley4_protocol_core"
+            ],
+            "overview_summary": {
+              "total_base_count": 1,
+              "scope_mode": "default_contract_scope",
+              "audited_base_ids": [
+                "valley4_protocol_core"
+              ],
+              "future_scope_base_count": 5,
+              "future_scope_base_ids": [
+                "valley4_infra_outpost",
+                "valley4_rebuilt_command",
+                "valley4_refugee_shelter",
+                "wuling_protocol_core",
+                "wuling_tianwangping_aid"
+              ],
+              "canonical_path_proven_equivalent_base_count": 1,
+              "canonical_path_proven_equivalent_base_ids": [
+                "valley4_protocol_core"
+              ],
+              "best_available_proven_equivalent_base_count": 1,
+              "best_available_proven_equivalent_base_ids": [
+                "valley4_protocol_core"
+              ],
+              "additional_bases_unlocked_by_outer_path_base_count": 0,
+              "additional_bases_unlocked_by_outer_path_base_ids": [],
+              "status_transition_base_count": 0,
+              "status_transition_base_ids": [],
+              "canonical_contract_ceiling_base_count": 0,
+              "best_available_canonical_contract_ceiling_base_count": 0,
+              "manufacturing_area_shortfall_base_count": 0,
+              "status_transition_counts": {},
+              "best_available_path_counts": {
+                "canonical_contract": 1
+              },
+              "unlocked_base_ids": [],
+              "future_scope_outer_path_base_count": 1
+            },
+            "check_result": {
+              "output_dir": "/mnt/data/work/full/exact_refactor_project_20260414_single_base_scope/data/examples/industrial_planner",
+              "checked_file_count": 6,
+              "is_clean": true,
+              "drift_entries": []
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "support_suite": {
+    "summary": {
+      "checked_report_set_count": 1,
+      "clean_report_set_count": 1,
+      "drift_report_set_count": 0,
+      "checked_file_count": 6,
+      "drift_entry_count": 0,
+      "default_contract_scope_report_set_count": 1,
+      "explicit_subset_report_set_count": 0,
+      "summed_audited_base_membership_count": 1,
+      "unique_audited_base_count": 1,
+      "audited_base_ids": [
+        "valley4_protocol_core"
+      ],
+      "future_scope_base_count": 5,
+      "future_scope_base_ids": [
+        "valley4_infra_outpost",
+        "valley4_rebuilt_command",
+        "valley4_refugee_shelter",
+        "wuling_protocol_core",
+        "wuling_tianwangping_aid"
+      ],
+      "repeated_audited_base_count": 0,
+      "repeated_audited_base_ids": [],
+      "status_transition_report_set_count": 0,
+      "unique_status_transition_base_count": 0,
+      "status_transition_base_ids": [],
+      "unlocked_base_count": 0,
+      "unlocked_base_ids": [],
+      "best_available_proven_equivalent_base_count": 1,
+      "unique_best_available_proven_equivalent_base_count": 1,
+      "best_available_proven_equivalent_base_ids": [
+        "valley4_protocol_core"
+      ],
+      "is_clean": true
+    },
+    "inventory_path": "/mnt/data/work/full/exact_refactor_project_20260414_single_base_scope/data/examples/industrial_planner/full_demand_support_suite_inventory.json",
+    "entries": [
+      {
+        "inventory_entry": {
+          "report_set_id": "default_full_demand_support_suite",
+          "blueprint_path": "/mnt/data/work/full/exact_refactor_project_20260414_single_base_scope/data/examples/industrial_planner/full_demand_recipe_capacity_canonical_blueprint.json",
+          "output_dir": "/mnt/data/work/full/exact_refactor_project_20260414_single_base_scope/data/examples/industrial_planner",
+          "base_ids": [],
+          "notes": [
+            "active single-base 70×70 support report set for valley4_protocol_core only"
+          ]
+        },
+        "scope_kind": "default_contract_scope",
+        "audited_base_ids": [
+          "valley4_protocol_core"
+        ],
+        "future_scope_base_ids": [
+          "valley4_infra_outpost",
+          "valley4_rebuilt_command",
+          "valley4_refugee_shelter",
+          "wuling_protocol_core",
+          "wuling_tianwangping_aid"
+        ],
+        "status_transition_base_ids": [],
+        "unlocked_base_ids": [],
+        "best_available_proven_equivalent_base_ids": [
+          "valley4_protocol_core"
+        ],
+        "overview_summary": {
+          "total_base_count": 1,
+          "scope_mode": "default_contract_scope",
+          "audited_base_ids": [
+            "valley4_protocol_core"
+          ],
+          "future_scope_base_count": 5,
+          "future_scope_base_ids": [
+            "valley4_infra_outpost",
+            "valley4_rebuilt_command",
+            "valley4_refugee_shelter",
+            "wuling_protocol_core",
+            "wuling_tianwangping_aid"
+          ],
+          "canonical_path_proven_equivalent_base_count": 1,
+          "canonical_path_proven_equivalent_base_ids": [
+            "valley4_protocol_core"
+          ],
+          "best_available_proven_equivalent_base_count": 1,
+          "best_available_proven_equivalent_base_ids": [
+            "valley4_protocol_core"
+          ],
+          "additional_bases_unlocked_by_outer_path_base_count": 0,
+          "additional_bases_unlocked_by_outer_path_base_ids": [],
+          "status_transition_base_count": 0,
+          "status_transition_base_ids": [],
+          "canonical_contract_ceiling_base_count": 0,
+          "best_available_canonical_contract_ceiling_base_count": 0,
+          "manufacturing_area_shortfall_base_count": 0,
+          "status_transition_counts": {},
+          "best_available_path_counts": {
+            "canonical_contract": 1
+          },
+          "unlocked_base_ids": [],
+          "future_scope_outer_path_base_count": 1
+        },
+        "check_result": {
+          "output_dir": "/mnt/data/work/full/exact_refactor_project_20260414_single_base_scope/data/examples/industrial_planner",
+          "checked_file_count": 6,
+          "is_clean": true,
+          "drift_entries": []
+        }
+      }
+    ]
+  }
+}

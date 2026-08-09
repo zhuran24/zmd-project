@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "description": "Boundary between tracked historical evidence under .artifacts/ and ignored regenerable runtime artifacts.",
+  "tracked_historical_evidence": [
+    {
+      "path_prefix": ".artifacts/v28_gpt_review/",
+      "reason": "Preserved Phase 1.2 v28 external review evidence and patched-file reproduction material."
+    },
+    {
+      "path_prefix": ".artifacts/phase3b_accel_tuning/",
+      "reason": "Preserved Phase 3B tuning scoreboards referenced by historical roadmap/memory."
+    },
+    {
+      "path_prefix": ".artifacts/phase3b_ai_accel_20260429/",
+      "reason": "Preserved AI acceleration feature dataset snapshot used by historical analysis."
+    },
+    {
+      "path_prefix": ".artifacts/_v28_",
+      "reason": "One-off v28 review hygiene helper scripts kept as evidence helpers."
+    },
+    {
+      "path_prefix": ".artifacts/v46_validation/",
+      "reason": "Preserved preflight validation logs from the v46 historical review gate."
+    },
+    {
+      "path_prefix": ".artifacts/axiom_analysis_20260806/",
+      "reason": "Axiom kernel analysis line evidence: owner-ratified axiom system, verification annex, slot params, L1-transit probes, source-front unlock recon (2026-08-06)."
+    },
+    {
+      "path_prefix": ".artifacts/band22_r4_prep_20260806/",
+      "reason": "band22 round-4 design task pack staging with frozen-input pins and assembly record (2026-08-06)."
+    },
+    {
+      "path_prefix": ".artifacts/mixflow_review_pack_20260806/",
+      "reason": "Mixflow surgery external-review pack staging: review ask, diff, before/after model text, differential tests (2026-08-06)."
+    },
+    {
+      "path_prefix": ".artifacts/p2_0_refresh_20260805/",
+      "reason": "P2.0 throughput-semantics research line: refresh memo, area-bound obligations receipts, six-round refute/repair evidence chain feeding docs/research/p2_0_area_bound_20260806 (2026-08-05/07)."
+    },
+    {
+      "path_prefix": ".artifacts/band22_registration_20260805/coupling_verdict_20260806/",
+      "reason": "Rate-lemma recompute script and receipt backing the axiom-era coupling verdict annotations (2026-08-06)."
+    },
+    {
+      "path_prefix": ".artifacts/band22_strict_redesign_pack_20260805/ERRATA_20260805.md",
+      "reason": "Errata ledger for the strict redesign consultation pack, incl. E-05 canonical stale-snapshot finding (2026-08-06)."
+    }
+  ],
+  "ignored_runtime_artifact_prefixes": [
+    ".artifacts/research_runs/",
+    ".artifacts/takeover_read_20260607/",
+    ".artifacts/industrial_planner_checked_artifacts/",
+    ".artifacts/industrial_planner_single_base_delivery_surface_alignment/",
+    ".pytest_cache/",
+    ".pytest_tmp/",
+    ".ruff_cache/",
+    ".mypy_cache/"
+  ]
+}

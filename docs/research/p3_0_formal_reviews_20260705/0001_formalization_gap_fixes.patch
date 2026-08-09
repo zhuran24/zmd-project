@@ -1,0 +1,255 @@
+diff -ruN p3_audit/F5OrbitLift.lean p3_audit_patched/F5OrbitLift.lean
+--- p3_audit/F5OrbitLift.lean	2026-07-05 02:44:52.000000000 +0000
++++ p3_audit_patched/F5OrbitLift.lean	2026-07-04 19:02:11.591794350 +0000
+@@ -5,14 +5,17 @@
+   docs/research/p1_3_f5_orbit_lift_soundness_design_v2.md (v3)
+   · 定理 1 前提 P-HOM(谓词对同组换位不变) —— 本文件作为假设 `hHom` 接入,
+     模型侧成立性由设计稿的逐谓词审计表 + 266 实例机器验证 + 结构门承担。
+-  · 定理 2(轨道提升 soundness):对具名 slot 的 whole-layout nogood,
+-    沿保群变换搬运后仍 sound —— `labeled_orbit_lift`。
++  · 定理 2 的具名字面搬运核心:对具名 slot 的 whole-layout nogood,
++    沿 P-preserving 重标搬运后仍 sound —— `labeled_orbit_lift`;
++    带“同组置换”显式前提的包装陈述为 `labeled_orbit_lift_group_preserving`。
++    完整匿名 multiset 包含 ⇒ cut sound 还需要有限群延拓引理(`anon_lift_sound`,待 mathlib)。
+   · 匿名(presence/multiset)语义:pattern 实现要求**不同 slot 的单射指派**,
+-    该语义下实现关系沿保群单射搬运 —— `realizes_comp`;结合 P-HOM 得
++    该语义下实现关系沿保群单射搬运 —— `realizes_comp`;结合已给定的匿名 nogood 得
+     "模掉重标后匹配即被排除" —— `nogood_mod_relabel`。
+-  · 定理 2 前提"禁重复 (group,pose)"为什么是定理前提而非工程洁癖:
+-    multiplicity≥2 的 pattern 经 boolean presence 去重会**变强**(误杀合法布局),
+-    `dedup_collapse_strengthens` 给出机器检查的反例。
++  · 定理 2 前提"禁重复 (group,pose/attach-key)"为什么是定理前提而非工程洁癖:
++    multiplicity≥2 的 pattern 经 boolean presence 去重会**变强**;
++    `dedup_collapse_can_false_reject` 给出抽象 P 下的机器检查误杀反例。
++    `presence_key_alias_can_false_reject` 覆盖 v3 补强的 attach presence-key alias 风险。
+ 
+ 抽象约定: Layout = Slot → Pose(mandatory 全指派);组用谓词 G : Slot → Prop;
+ 谓词 P : Layout → Prop 是六谓词合取的抽象。
+@@ -28,7 +31,13 @@
+     (p : List (Slot × Pose)) : Prop :=
+   ∀ sp ∈ p, L sp.1 = sp.2
+ 
+-/-- 定理 2(具名形态):设 σ 是 slot 变换,P-HOM 给出 P L → P (L ∘ σ)。
++/-- σ 不跨组:每个 slot 的 group id 在 σ 后保持不变。
++    这只表达“保群”这一设计稿前提;置换性另用 `Function.Bijective σ`。 -/
++def GroupPreserving {Slot Group : Type} (grp : Slot → Group)
++    (σ : Slot → Slot) : Prop :=
++  ∀ s, grp (σ s) = grp s
++
++/-- 定理 2 的具名字面核心:设 σ 是 slot 变换,P-HOM 给出 P L → P (L ∘ σ)。
+     若 pattern p 的 whole-layout nogood sound(匹配 p 的布局全不满足 P),
+     则沿 σ 搬运后的 pattern(字面 slot 各取 σ)nogood 也 sound。
+     注意:此方向甚至不需要 σ 可逆——单向 P-HOM 已足;实际系统中 σ 取
+@@ -47,6 +56,22 @@
+     List.mem_map.mpr ⟨sp, hsp, rfl⟩
+   exact hM (σ sp.1, sp.2) hmem
+ 
++/-- 带设计稿“保群置换”显式前提的包装版。
++    证明仍只消耗 `hHom`:保群/双射前提的作用在前提审计层,用于证明 `hHom`
++    以及从匿名 multiset 匹配构造 σ;这里把它们写进陈述,避免把核心引理误读为
++    “任意函数 σ 已经是 F5 群作用”。 -/
++theorem labeled_orbit_lift_group_preserving {Slot Pose Group : Type}
++    (grp : Slot → Group)
++    (P : (Slot → Pose) → Prop)
++    (σ : Slot → Slot)
++    (_hBij : Function.Bijective σ)
++    (_hGroup : GroupPreserving grp σ)
++    (hHom : ∀ L, P L → P (fun s => L (σ s)))
++    (p : List (Slot × Pose))
++    (hNogood : ∀ L, Matches L p → ¬ P L) :
++    ∀ L, Matches L (p.map (fun sp => (σ sp.1, sp.2))) → ¬ P L := by
++  exact labeled_orbit_lift P σ hHom p hNogood
++
+ /-- 匿名 pattern(多重集形态,列表带重数)在组 G 内被布局实现:
+     存在**单射** f 把 pattern 的每个位置指派到互不相同的组内 slot,
+     且各 slot 上的 pose 与 pattern 一致。单射 = "同一字面不重用同一 slot",
+@@ -56,6 +81,13 @@
+   ∃ f : Fin p.length → Slot,
+     Function.Injective f ∧ (∀ i, G (f i)) ∧ ∀ i, L (f i) = p.get i
+ 
++/-- attach/master presence key 层的匿名实现关系。
++    当 `key` 不是单射时,不同 pose_id 可在 master presence 层 alias。 -/
++def RealizesKey {Slot Pose Key : Type} (L : Slot → Pose) (G : Slot → Prop)
++    (key : Pose → Key) (p : List Key) : Prop :=
++  ∃ f : Fin p.length → Slot,
++    Function.Injective f ∧ (∀ i, G (f i)) ∧ ∀ i, key (L (f i)) = p.get i
++
+ /-- 实现关系沿保群单射变换搬运:若 L ∘ σ 实现 p,则 L 实现 p。
+     (σ 单射且把组映进组;实际系统中 σ 是同组置换,自动满足。) -/
+ theorem realizes_comp {Slot Pose : Type}
+@@ -128,4 +160,52 @@
+     have hv : (0 : Nat) = 1 := congrArg Fin.val h01
+     exact absurd hv (by decide)
+ 
++/-- 更强的误杀形态:存在一个抽象合法性谓词 P,使 [v,v] 的 nogood 是 sound 的,
++    但把它 presence 去重成 [v] 会排除一个满足 P 的布局。 -/
++theorem dedup_collapse_can_false_reject :
++    ∃ (L : Bool → Bool) (P : (Bool → Bool) → Prop),
++      (∀ L', Realizes L' (fun _ => True) [true, true] → ¬ P L') ∧
++      Realizes L (fun _ => True) [true] ∧
++      P L := by
++  obtain ⟨L, hOne, hNotTwo⟩ := dedup_collapse_strengthens
++  refine ⟨L, (fun L' => ¬ Realizes L' (fun _ => True) [true, true]), ?_, hOne, hNotTwo⟩
++  intro L' hR hNotR
++  exact hNotR hR
++
++/-- presence-key alias 的语义坍缩:两个不同 pose 可映到同一个 attach key。
++    下面布局触发去重后的单 key presence,但并不实现原始 [true,false] pose pattern。 -/
++theorem presence_key_alias_collapse_strengthens :
++    ∃ (L : Bool → Bool) (key : Bool → Unit),
++      key true = key false ∧
++      RealizesKey L (fun _ => True) key [key true] ∧
++      ¬ Realizes L (fun _ => True) [true, false] := by
++  refine ⟨(fun _ => true), (fun _ => ()), rfl, ?_, ?_⟩
++  · refine ⟨fun _ => true, ?_, ?_, ?_⟩
++    · intro i j _
++      apply Fin.ext
++      have hi := i.isLt
++      have hj := j.isLt
++      simp only [List.length_cons, List.length_nil] at hi hj
++      omega
++    · intro _
++      trivial
++    · intro _
++      exact Subsingleton.elim _ _
++  · rintro ⟨f, -, -, hL⟩
++    have hFalse : true = false := by
++      simpa using hL ⟨1, by decide⟩
++    cases hFalse
++
++/-- presence-key alias 的误杀形态:原始 [true,false] nogood 可以是 sound 的,
++    但 alias 后的单 key presence 会排除满足 P 的布局。 -/
++theorem presence_key_alias_can_false_reject :
++    ∃ (L : Bool → Bool) (key : Bool → Unit) (P : (Bool → Bool) → Prop),
++      (∀ L', Realizes L' (fun _ => True) [true, false] → ¬ P L') ∧
++      RealizesKey L (fun _ => True) key [key true] ∧
++      P L := by
++  obtain ⟨L, key, _, hKey, hNotOriginal⟩ := presence_key_alias_collapse_strengthens
++  refine ⟨L, key, (fun L' => ¬ Realizes L' (fun _ => True) [true, false]), ?_, hKey, hNotOriginal⟩
++  intro L' hR hNotR
++  exact hNotR hR
++
+ end ZmdFormal.F5
+diff -ruN p3_audit/README.md p3_audit_patched/README.md
+--- p3_audit/README.md	2026-07-05 02:46:38.000000000 +0000
++++ p3_audit_patched/README.md	2026-07-04 19:02:51.648769755 +0000
+@@ -19,15 +19,19 @@
+ 
+ | Lean 定理 | 对应设计稿命题 | 公理依赖 |
+ |---|---|---|
+-| `Tns.all_bad_of_cover` | TNS v3 覆盖论证骨架（覆盖集全 INFEASIBLE ⇒ 域全 INFEASIBLE） | 无 |
++| `Tns.all_bad_of_cover` | TNS v3 覆盖论证骨架（覆盖集全 INFEASIBLE ⇒ 域全 INFEASIBLE）。不覆盖 evidence schema、sink replay、negative reverification、seal/publish 生命周期。 | 无 |
+ | `Tns.exists_minimal_below` | 乘积序良基性：任意域中每点下方存在极小元 | 经典三公理 |
+-| `Tns.all_bad_of_minimal_bad` | TNS v3 一般域形态：极小元集合（反链）是合法覆盖证书 | 经典三公理 |
++| `Tns.all_bad_of_minimal_bad` | TNS v3 一般域数学形态：极小元集合（反链）全 bad ⇒ 域全 bad。空域拒绝是 validator 层义务，不是此 theorem 的结论。 | 经典三公理 |
+ | `Tns.std_domain_collapse` | TNS v3 标准域坍缩：(6,6) 单点证书覆盖全域 | 无 |
+-| `Tns.std_domain_minimal_66` | "标准域最小反链 = 单点" 的机器确认 | 经典三公理 |
+-| `F5.labeled_orbit_lift` | F5 v3 定理 2（具名形态）：P-HOM 下 nogood 沿保群变换搬运 sound | propext, Quot.sound |
+-| `F5.realizes_comp` | 匿名 multiset 实现关系沿保群单射搬运 | 无 |
+-| `F5.nogood_mod_relabel` | 匿名 nogood 模掉重标后的排除力 | 无 |
+-| `F5.dedup_collapse_strengthens` | F5 v3 "禁重复"前提的机器反例：presence 去重会把 cut 变强（误杀） | propext, Quot.sound |
++| `Tns.std_domain_minimal_66` | (6,6) 是标准域极小元 | 经典三公理 |
++| `Tns.std_domain_minimal_iff` | 标准域极小元集合确为单点 `{(6,6)}` | 经典三公理；新增后需重跑 axiom audit |
++| `F5.labeled_orbit_lift` | F5 v3 定理 2 证明中的具名字面 P-preserving 搬运核心；不是完整匿名 multiset theorem | propext, Quot.sound |
++| `F5.labeled_orbit_lift_group_preserving` | 上一行的保真包装：把设计稿的“同组置换 σ∈G”显式写入前提；证明仍只消耗 `hHom` | 同 `labeled_orbit_lift`；新增后需重跑 axiom audit |
++| `F5.realizes_comp` | 单组匿名 multiset 实现关系沿保群单射搬运；建模的是 pose equality，不建模 attach presence-key alias | 无 |
++| `F5.nogood_mod_relabel` | 在匿名 nogood `hNogood` 已经给定时，重标视图匹配即可排除；不从单个具名 oracle 结论推出匿名 nogood | 无 |
++| `F5.dedup_collapse_strengthens` | 语义层反例：presence 去重把 `[v,v]` 坍缩成更强的 `[v]` | propext, Quot.sound |
++| `F5.dedup_collapse_can_false_reject` | 更强反例：存在抽象合法性谓词 P，使原 `[v,v]` nogood sound，但去重 `[v]` 会误杀满足 P 的布局 | 同 `dedup_collapse_strengthens`；新增后需重跑 axiom audit |
++| `F5.presence_key_alias_collapse_strengthens` / `F5.presence_key_alias_can_false_reject` | v3 attach presence-key alias 风险：不同 pose_id 同 key 时，boolean presence 可同样坍缩并误杀 | 新增后需重跑 axiom audit |
+ 
+ "经典三公理" = `propext`、`Classical.choice`、`Quot.sound`（Lean/mathlib 标准信任基）。
+ 无任何 `sorry`。公理审计命令：`lake env lean axiom_audit.lean`（脚本见设计稿附录）。
+@@ -38,6 +42,13 @@
+ 在这里是**假设**，不是被证明的结论。它们的成立性由对应设计稿的机器可查义务承担
+ （TNS 的 ghost-use inventory / master"缩小不收紧"审计；F5 的逐谓词审计表 + 结构门）。
+ 这是刻意分层：抽象定理层（本目录，机器证明）+ 前提审计层（结构门）+ 工程层。
++
++当前 F5 侧只覆盖定理 2 的具名字面搬运核心和若干匿名语义边界引理；完整的
++“单个具名代表 oracle nogood ⇒ 任意布局的逐组 pose multiset 包含该代表 ⇒ 不可行”
++仍是下一块 `anon_lift_sound`，需要有限群置换延拓/`Equiv` 基建。`Realizes` 是单组、pose equality
++层的 multiset 模型；master attach presence-key alias 由 `RealizesKey` 反例刻画,但生产防线仍是 validator/attach fail-close。
++TNS 侧只覆盖数学覆盖骨架；oriented key parser、空域拒绝、sealed evidence digest 链、负向复验门均在工程/审计层。
++
+ **Lean 陈述与设计稿定理的对应保真是本层最大风险面**——修改任何定理陈述都必须
+ 重新对照设计稿原文并过独立复审（教训来源见设计稿 §formalization-gap）。
+ 
+diff -ruN p3_audit/TnsCoverage.lean p3_audit_patched/TnsCoverage.lean
+--- p3_audit/TnsCoverage.lean	2026-07-05 02:44:50.000000000 +0000
++++ p3_audit_patched/TnsCoverage.lean	2026-07-04 19:02:11.591313096 +0000
+@@ -93,8 +93,7 @@
+   intro a b hD
+   exact hUp 6 6 a b hD.1 hD.2.2.1 h66
+ 
+-/-- 一致性 sanity:(6,6) 本身在标准域内且是其极小元
+-    (机器确认"标准域的最小反链 = 单点"这半句)。 -/
++/-- 一致性 sanity:(6,6) 本身在标准域内且是其极小元。 -/
+ theorem std_domain_minimal_66 : MinimalIn StdDomain 6 6 := by
+   constructor
+   · exact ⟨Nat.le_refl _, by omega, Nat.le_refl _, by omega⟩
+@@ -103,4 +102,18 @@
+     have := hD.2.2.1
+     omega
+ 
++/-- 标准域的极小元集合确为单点 {(6,6)}。
++    这条才是 README 中“标准域最小反链 = 单点”的完整机器陈述。 -/
++theorem std_domain_minimal_iff (a b : Nat) :
++    MinimalIn StdDomain a b ↔ a = 6 ∧ b = 6 := by
++  constructor
++  · intro h
++    have h66 : StdDomain 6 6 :=
++      ⟨Nat.le_refl _, by omega, Nat.le_refl _, by omega⟩
++    have hbelow := h.2 6 6 h66 h.1.1 h.1.2.2.1
++    exact ⟨hbelow.1.symm, hbelow.2.symm⟩
++  · intro h
++    rcases h with ⟨rfl, rfl⟩
++    exact std_domain_minimal_66
++
+ end ZmdFormal.Tns
+diff -ruN p3_audit/p3_0_formal_verification_head_start_design_v1.md p3_audit_patched/p3_0_formal_verification_head_start_design_v1.md
+--- p3_audit/p3_0_formal_verification_head_start_design_v1.md	2026-07-05 02:47:42.000000000 +0000
++++ p3_audit_patched/p3_0_formal_verification_head_start_design_v1.md	2026-07-04 19:03:03.147645067 +0000
+@@ -4,7 +4,7 @@
+ > 原 P3 defer）提前开头。**锁面不动**：项目政策"数学 sound 用工程 verify、不用形式化
+ > proof system"（`docs/项目说明/16_workflow_review.md` §6.4）在本稿存在期间继续有效;
+ > 本线是前瞻投资,不改变 P1.2/P1.3/P2.0 任何 gate 的验收标准。
+-> 首批产物：`formal/`（Lean 4,7 条定理,零 sorry,公理审计干净）。
++> 首批产物：`formal/`（Lean 4,9 条已落库定理；后续 gap-audit 补丁可能增加保真包装/反例定理；零 sorry,公理审计干净）。
+ 
+ ## 1. 双轴架构（这条线到底在证什么）
+ 
+@@ -51,17 +51,15 @@
+ 
+ ## 3. 首批成果（P3.0a,已落库）
+ 
+-`formal/` 7 条定理,Lean 4.31.0 core（零 mathlib 依赖）,`lake build` 绿,
++`formal/` 9 条已落库定理,Lean 4.31.0 core（零 mathlib 依赖）,`lake build` 绿,
+ 无 sorry,公理依赖仅经典三公理（propext/Classical.choice/Quot.sound,部分定理零公理）。
+ 清单与对应表见 `formal/README.md`。要点:
+ 
+ - **TNS 侧**:覆盖论证骨架 + 乘积序良基性(极小元存在) + 一般域"极小反链=合法证书"
+   + 标准域单点坍缩 + "(6,6) 是标准域唯一极小元"的机器确认。终审发现的
+   "一般域反链非单点"警告被定理形态自然覆盖(证书=极小元集合,标准域时恰为单点)。
+-- **F5 侧**:具名 nogood 沿保群变换搬运的 soundness(定理 2 具名形态;发现:
+-  该方向只需单向 P-HOM、不需 σ 可逆)+ 匿名 multiset 实现关系的搬运引理 +
+-  模掉重标的排除力 + **"禁重复"前提的机器反例**(presence 去重把 [v,v] 变 [v]
+-  会误杀"只摆一个 v"的合法布局——设计稿定理 2 前提的必要性现在是机器事实)。
++- **F5 侧**:具名 nogood 沿 P-preserving 重标搬运的 soundness 核心引理（完整匿名 multiset 定理仍需 `anon_lift_sound`）+ 匿名 multiset 实现关系的搬运引理 +
++  在匿名 nogood 已给定时模掉重标的排除力 + **"禁重复"前提的语义反例**（presence 去重把 [v,v] 变 [v] 会严格增强 cut；gap-audit 补丁进一步把它加强为抽象 P 下的误杀反例）。
+ 
+ ## 4. 阶梯（P3.0a → d,给后续模型的路线）
+ 
+@@ -105,8 +103,13 @@
+ #print axioms ZmdFormal.Tns.all_bad_of_minimal_bad
+ #print axioms ZmdFormal.Tns.std_domain_collapse
+ #print axioms ZmdFormal.Tns.std_domain_minimal_66
++#print axioms ZmdFormal.Tns.std_domain_minimal_iff
+ #print axioms ZmdFormal.F5.labeled_orbit_lift
++#print axioms ZmdFormal.F5.labeled_orbit_lift_group_preserving
+ #print axioms ZmdFormal.F5.realizes_comp
+ #print axioms ZmdFormal.F5.nogood_mod_relabel
+ #print axioms ZmdFormal.F5.dedup_collapse_strengthens
++#print axioms ZmdFormal.F5.dedup_collapse_can_false_reject
++#print axioms ZmdFormal.F5.presence_key_alias_collapse_strengthens
++#print axioms ZmdFormal.F5.presence_key_alias_can_false_reject
+ ```

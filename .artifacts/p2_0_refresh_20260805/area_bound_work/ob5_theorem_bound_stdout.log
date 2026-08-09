@@ -1,0 +1,8 @@
+=== OB5 面积上界总定理（v8，五轮复核修正版） ===
+L（state 下界）: 容量计数 305（终品计入口径 306）
+无条件【严格·模型内】: A ≤ 1356 − 4·9 − ⌈305/2⌉ = 1167
+单层【条件·待OB6】  : A ≤ 1356 − 4·9 − 305 = 1015
+终品计入对照: 单层 1014 / 无条件 1167
+ℓ̄ 敏感度表: {"1": {"L_ge": 305, "A_single_le": 1015, "A_uncond_le": 1167}, "2": {"L_ge": 609, "A_single_le": 711, "A_uncond_le": 1015}, "3": {"L_ge": 914, "A_single_le": 406, "A_uncond_le": 863}}
+front-state 路线: REFUTED，见 refute_20260806/
+receipt -> /home/zhuran24/zmd-pj/.artifacts/p2_0_refresh_20260805/area_bound_work/ob5_theorem_bound_receipt.json

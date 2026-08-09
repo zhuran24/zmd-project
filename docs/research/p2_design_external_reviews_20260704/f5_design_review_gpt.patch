@@ -1,0 +1,91 @@
+--- docs/research/p1_3_f5_orbit_lift_soundness_design_v1.md	2026-07-04 11:41:02.703812467 +0000
++++ docs/research/p1_3_f5_orbit_lift_soundness_design_v1.review_fixed.md	2026-07-04 11:42:05.158640570 +0000
+@@ -19,7 +19,7 @@
+ | crusher_source | 18 | | parts_maker | 6 |
+ | refinery_steel | 17 | | crusher_buckwheat | 6 |
+ 
+-合计 132。跨 operation_type **不可交换**的直接反证：recipe commodity 不同（`refinery_blue_iron` 吃 ore 出 block，`crusher_blue_iron` 吃 block 出 powder，`rules/canonical_rules.json:202-230`）。因此标签对称群不是 S₁₃₂ 而是 **G = Π_g S_{n_g}**（乘积群，g 遍历全部 `(facility_type, operation_type)` 组，含 manufacturing 8 组、`boundary_storage_port` 46、以及 optional slot families）。置换墙从 "132!≈10^224" 修正为 Π n_g!（仅 manufacturing 部分 ≈ 34!²·18!·17!·11!·6!³ ≈ 10^105）——数字变小，墙照样在，提升的价值不变。
++合计 132。跨 operation_type **不可交换**的直接反证：recipe commodity 不同（`refinery_blue_iron` 吃 ore 出 block，`crusher_blue_iron` 吃 block 出 powder，`rules/canonical_rules.json:202-230`）。因此标签对称群不是 S₁₃₂ 而是 **G = Π_g S_{n_g}**（乘积群，g 遍历可证明同质的 `(facility_type, operation_type)` 组；`manufacturing_3x3` 的 8 组只是本节关注对象，`boundary_storage_port` 46、其它 mandatory manufacturing 组和未来 optional slot family 必须各自过同质门后才能纳入）。置换墙从 "132!≈10^224" 修正为 Π n_g!。**计数更正**：仅上述 8 个 `manufacturing_3x3` 组，`log10(34!²·18!·17!·11!·6!³)=123.47`，即约 `3×10^123`，不是 `10^105`；若纳入本包全部 19 个 mandatory exact 同质组，则 `log10 Π n_g!≈243.50`。数字口径要写清楚，提升价值不受该更正影响。
+ 
+ ### 1.2 机器现状：提升的"机械"已存在一半，缺的是定理
+ 
+@@ -61,22 +61,28 @@
+ | (P7 吞吐，前瞻) | operation 速率 + selected graph | 速率按 operation_type（`operation_profiles.py:21-31`）——交换性对 P7 自动成立，与 `p2_0_throughput_certification_paradigm_design_v1.md` 兼容 |
+ | 目标 | 仅 ghost rect | 与实例标签无关 |
+ 
+-**前提（必须机器化，见 §4）**：P-HOM——同组实例的 mandatory 记录除 `instance_id` 外逐字段相同（含 `bound_type`/`solve_modes`/`notes`）；operation profile 仅按 operation_type 键控；pose 池仅按 template 键控；需求仅聚合形态。当前数据全部成立（`instance_builder.py:52-70`；`mandatory_exact_instances.json` 抽查），但**没有门在守**。
++**前提（必须机器化，见 §4）**：P-HOM——同组实例的 mandatory 记录除 `instance_id` 外逐字段相同（含 `bound_type`/`solve_modes`/`notes` 和未来新增字段）；operation profile 仅按 operation_type 键控；实际消费的 `candidate_placements.json.facility_pools` 仅按 template 键控且同一 `pose_id` 的几何/端口/供电字段不含 instance 维度；需求仅聚合形态。审查实测：本包 `mandatory_exact_instances.json` 对 266 条、19 个 `(facility_type, operation_type)` 组全量成立，非抽查；但本包没有提供实际 `candidate_placements.json`，只能证明 generator 意图按 template 产池，不能证明运行时 artifact 没漂移。P-HOM 门必须挂在 certified preflight 与 cut replay scope 上：门的输入摘要（至少 mandatory 全记录、candidate_placements 全池、canonical_rules / operation profile 来源版本）进入 `source_digest` 或 active assumption；缺失、漂移或新增 per-instance 字段一律 fail-closed。P7 只在其数据继续仅按 `operation_type` / template / 规范图键控时继承交换性，不能写成自动成立。
+ 
+ ### 2.3 定理 2（轨道提升 soundness）
+ 
+-**命题**：设 sub-problem oracle 在定理 1 的前提下对带标签 pattern π₀（某组内两两不同 slot）复验为 INFEASIBLE（含独立复验）。则对**任意**带标签解 A，若 A 的逐组被选 pose 多重集包含 π₀ 的多重集像 [π₀]，A 不可行。
++**命题（修正版）**：设带标签 pattern π₀ 在每个组内无 slot 复用。设 sub-problem oracle 对 π₀ 返回的 `INFEASIBLE` 是 **liftable reject**：它证明的是“在同一 scope-hashed 的不可变问题数据、ghost/exterior 条件下，任何完整解只要扩展 π₀ 的任一带标签代表就不可行”。oracle 不得把当前 incumbent 中不在 π₀ 里的 selected pose、`cell_owner`、routing_context blocker、binding 选择、搜索 hint、TIMEOUT 边界等当成 reject 语义的一部分；若这些上下文参与了不可行性证明，它们必须先被提升为 core literal 并进入 π₀，或该 oracle verdict 不得生成 F5。则对任意带标签解 A，若 A 的逐组 pose 多重集包含 π₀ 的多重集像 [π₀]，A 不可行。
+ 
+-**证明**：A 的多重集包含 [π₀] ⇒ 存在 σ ∈ G 使 σ(A) 的具体 slot 赋值字面上扩展 π₀（把 A 中承载 [π₀] 各 pose 的 slot 重标到 π₀ 指名的 slot；π₀ 无 slot 复用保证注入存在）。oracle 的 reject 语义是"任何扩展 π₀ 的完整解都不可行"；故 σ(A) 不可行；由定理 1，A 不可行。∎
++**证明（补严注入重标）**：固定任一组 g。令 π₀ 在 g 中出现 k_g 个 literal，且各 literal 的 slot 互异。A 的 g 组 pose 多重集包含 [π₀]，所以对 π₀ 的每个 pose occurrence 都能在 A 的 g 组中选到一个承载相同 pose 的互异 source slot；这给出一个从 π₀ occurrence 到 A slot 的注入。定义 σ_g 的逆像，把 π₀ 指名的 target slot 映回这些 source slot；target slot 互异、source slot 互异，故这是一个部分双射。将剩余 n_g-k_g 个 slot 任意双射补全，得到 σ_g∈S_{n_g}。各组独立补全后 σ=(σ_g)_g∈G，且 σ(A) 字面扩展 π₀。由 liftable reject，σ(A) 不可行；由定理 1 的谓词不变性，A 不可行。∎
+ 
+-**两个边界条件（都已有机器对应物，必须保持）**：
++**边界条件（定理前提，不是工程偏好）**：
+ 
+-1. **无 slot 复用前提**：π₀ 内同一 `(group_id, slot_index)` 出现两次时，"INFEASIBLE" 可能是平凡真，提升会产生 FP——validator 禁令（`pattern_nogood.py:239-265`）是定理 2 的前提，不是工程洁癖，红测必须钉死"去掉禁令 → 构造出 FP"。
+-2. **oracle verdict 本身必须 label-invariant**：oracle 若在语义里读了 instance 标签（而非 (group, pose) 数据），定理 1 的传递断裂。实施义务：真实 adapter（binding/routing/PCR）生产化时，输入必须经**规范重标**（canonical relabeling：按 `canonical_sort_assignment` 序把 pattern 映到规范代表，`bounded_core_minimizer.py:115-125` 已有），使 oracle 只见规范形。
++1. **无 slot 复用前提**：π₀ 内同一 `(group_id, slot_index)` 出现两次时，"INFEASIBLE" 可能只是“单 slot 不能取两 pose”的平凡真，提升会产生 FP；validator 禁令是定理前提。
++2. **闭包/量词前提（BLOCK）**：adapter 协议必须明确 `INFEASIBLE` 的量词是“所有扩展 π₀ 的完整解不可行”，不是“π₀ ∪ 当前 state 上下文不可行”。当前 `query(core, state, deadline)` 形状天然允许后者，§6 不能把这留作开放问题；P1.3 前必须封死。binding 的 routing-aware filter、routing 的 blocked/front/disconnected precheck、PCR patch 都必须说明哪些外部占用/端口/binding 选择被纳入 core，哪些只属于 scope。
++3. **多重集 multiplicity 必须端到端保真**：若 π₀ 含同一 `(group_id, pose_id)` 多次，正确 cut 是 `count_g(pose) ≥ multiplicity` 才触发。任何 master attach 若把它折成 boolean `present(g,pose)`，会把“至少两份 pose”误剪成“至少一份 pose”，产生 FP。实现可以选择：A) validator 禁止重复 `(group_id, pose_id)`（把这类几何平凡真交给 no-overlap / F6），或 B) master 提供 cardinality-aware literal attach。二者必须二选一。
++4. **TIMEOUT/UNKNOWN 不是数学 verdict**：instance_id 排序、CP-SAT search guidance、`symmetry_level` 只能影响搜索路径和是否超时；只有 solver 返回可复验的 `INFEASIBLE` 才能进入 cut，任何 `TIMEOUT`/`UNKNOWN`/contract violation 都是 no-cut / quarantine。
+ 
+-### 2.4 引理（与 master 对称序的复合安全）
++### 2.4 引理（与 master 对称序及 solver 内部 symmetry 的复合安全）
+ 
+-master 的 order_key 单调序是**代表元选择**：每个 G-等价类至少留一个满足序的代表（F-GM-R8-SYM-01 的表述与 same-order gate 保证）。轨道 cut 是 **G-不变集合的删除**：删的是整个等价类。两者复合：被 cut 删的类整类消失（正确——定理 2 证明整类不可行）；未被 cut 删的类，其序代表仍存活。故复合不产生"类内代表被序删光而类未被证不可行"的 false-INFEASIBLE。**注意反方向陷阱**：若未来引入非 G-不变的 cut（读 slot 身份的 cut），此引理失效——这正是 §3A "slot_index 不参与 soundness 推理" 的深层原因，红测应含一个"标签敏感 cut + 序 = 删光合法类"的反例展示。
++master 的 `order_key` 单调序是**模型级代表元选择**：每个 G-等价类至少留一个满足序的代表（F-GM-R8-SYM-01 的“至多一个全序”约束由 `order_key` 承担；secondary `signature` 序只有在 same-order gate 证明为 primary order 的后果时才允许）。轨道 cut 必须是 **G-不变集合的删除**：删的是整个等价类。两者复合：被 cut 删的类整类消失（由定理 2 证明整类不可行）；未被 cut 删的类，其 `order_key` 序代表仍存活。
++
++CP-SAT 内部 `symmetry_level` 不是建模层新增的第二全序；它是 solver 搜索/预处理策略。复合引理依赖的前提是 solver status 被按认证语义消费：`INFEASIBLE` 必须来自 solver 的可复验模型不可满足结论，`FEASIBLE/OPTIMAL` 必须有 witness，`UNKNOWN/TIMEOUT` 不能下沉为 cut 或 certified infeasible。若未来把 solver 内部 symmetry 产物外显成持久约束、hint-to-constraint、或用 timeout 当 exhaustion proof，则本引理不覆盖，必须按 F-GM-R8-SYM-01 重新证明。
++
++**注意反方向陷阱**：若未来引入非 G-不变的 cut（读 slot 身份的 cut），此引理失效。这正是 §3A “slot_index 不参与 soundness 推理”的深层原因，红测应含一个“标签敏感 cut + 序 = 删光合法类”的反例展示。
+ 
+ ## 3. 与既有禁令的边界（本稿不越界的声明）
+ 
+@@ -85,23 +91,31 @@
+ 
+ ## 4. 实施规格（P1.3 时执行；按依赖排序）
+ 
+-1. **P-HOM 结构门**（先行，独立小步）：新 checker 校验——同组 mandatory 记录 modulo instance_id 逐字段相等；`operation_profiles` 无 per-instance 键；`facility_pools` 无 instance 维度。挂进 preflight；任何将来引入 per-instance 字段的改动被迫显式面对交换性破坏。产出 = 定理 1 前提的机器锚。
+-2. **规范重标层**：generator 在 minimize 前、oracle query 前把 pattern 映到规范代表（组内按 pose_id 字典序占用 slot 0..k-1）；cert 存规范形。消除"同一轨道的 cut 因标签不同重复生成"（这是撞墙计数虚高的直接来源）。
+-3. **validator 增补**：现有检查（slot 无复用、pose ∈ pose_domain、frozenset 等值）之上，加"cert 必须是规范形"检查——非规范形 = schema_err（fail-closed，防重复与防 canonical drift）。
+-4. **oracle adapter 生产化**（P1.3 主工作量，与 F5 本体同期）：binding/routing adapter 的输入接规范重标层；每个 adapter 出一条 label-invariance 红测（对随机 σ 重标输入，verdict 必须不变）。
+-5. **master attach**：已有 presence nogood 机械（§1.2）直接承载 F5 literal cut 的施加；alias fail-closed 保留。Step 8 接入时 F5 无需新增 master 端表达形式。
+-6. **验收 telemetry**（沿用历史判据，`05_open_questions.md:481-483`）：生产 trial 中 manufacturing 组 F5 cut 计数 >10⁵ = 提升失效（撞墙）；<10³ = 工作。加一个新指标：规范化去重命中率（同轨道重复 pattern 被去重的比例）——它直接度量提升价值。
+-7. **红测清单**：①slot-collision FP 反例（去禁令必现）；②标签敏感 cut × 序删光类反例（§2.4）；③σ-重标 verdict 不变性（每 adapter）；④P-HOM 门对注入 per-instance 字段 fail-closed；⑤规范形 validator 拒非规范 cert。
++1. **P-HOM 结构门（先行，独立小步）**：新 checker 校验同组 mandatory 记录 modulo `instance_id` 逐字段相等；`operation_profiles` / preprocess context 无 per-instance 键；实际 `candidate_placements.json.facility_pools` 只按 template 键控，且每个 pool entry 的 `pose_id`、`occupied_cells`、`input_port_cells`、`output_port_cells`、`power_coverage_cells` 无 instance 维度。checker 输出 `orbit_homogeneity_digest` 并注入 certified preflight 与 cut replay scope；缺失 digest、digest 漂移、候选池 artifact 缺失或新增 per-instance 字段均 fail-closed。
++2. **liftable oracle adapter 契约**：把 F5 adapter 分成 `query_liftable(core, immutable_scope, deadline)` 与普通 “当前 state reject” 两类。只有前者可产 orbit-lift F5。adapter 不得读取 `state.groups[*].selected_poses`、`cell_owner`、当前 binding selection、routing_context blocker 等未在 core 中出现的 mutable incumbent 信息；若证明需要这些信息，必须先把对应 pose/port/binding literal 加入 core。返回 `INFEASIBLE` 以外的 verdict 全部 no-cut。
++3. **规范重标层（每次 oracle query 前，而不只是 minimize 前）**：定义 idempotent `canonical_relabel(pattern)`：逐组按 `(pose_id, occurrence_serial)` 排序，把占用 slot 重标为 `0..k_g-1`；不同组独立处理。generator 的初始 full assignment、deletion minimizer 的每个 trial core、oracle query 输入、最终 cert 存储都必须先过该函数。现有 `canonical_sort_assignment()` 只排序/去重，不会把删除后的 slot gap（如只剩 `(g,7,p)`）重标为 `(g,0,p)`，不能单独满足本条。
++4. **validator 增补**：现有检查（slot 无复用、slot in range、pose ∈ pose_domain、cert↔cut literal 等值）之上，加 “cert 必须等于 `canonical_relabel(cert)`” 检查；非规范形 = schema_err。另加 multiplicity 策略检查：若 master attach 仍是 boolean presence 形，禁止重复 `(group_id, pose_id)`；若允许重复，validator 必须确认 cut family 声明了 cardinality-aware attach 版本。
++5. **master attach**：F5 literal cut 不能复用会丢 multiplicity 的 whole-layout boolean presence nogood。对每个 `(group, pose)` 生成 count channel 或 threshold literal `count_g_pose ≥ m`，再加 `Σ threshold_lits ≤ r-1`；或在 validator 侧禁止所有 `m>1`。alias fail-closed 保留，但不能把 duplicate presence 当作两个独立 literal。
++6. **oracle adapter 生产化**：binding/routing/PCR adapter 的输入接规范重标层；每个 adapter 出两类红测：随机 σ 重标 verdict 不变；删除当前 state 中不在 core 的 blocker/selected pose 后，若 verdict 改变，则该 reject 不得产 F5。
++7. **验收 telemetry**（沿用历史判据，`05_open_questions.md:481-483`）：生产 trial 中 manufacturing 组 F5 cut 计数 >10⁵ = 提升失效（撞墙）；<10³ = 工作。加两个新指标：规范化去重命中率；因 non-liftable context / multiplicity policy 被拒的 oracle reject 数。
++8. **红测清单**：①slot-collision FP 反例（去禁令必现）；②标签敏感 cut × 序删光类反例（§2.4）；③σ-重标 verdict 不变性（每 adapter）；④P-HOM 门对注入 per-instance 字段 fail-closed；⑤规范形 validator 拒非规范 cert；⑥context-dependent oracle 反例（core 外 blocker 导致 reject 时不得产 F5）；⑦duplicate `(group,pose)` collapse 反例（boolean presence attach 会把 multiplicity=2 错剪成 multiplicity=1）。
+ 
+ ## 5. 组合收益计数
+ 
+-带标签 pattern 空间（大小 k 的组内 pattern）约 C(n_g,k)·k!·|pose|^k；轨道商后为 pose 多重集计数 C(|pose|+k−1, k) 量级——每组 k 阶 pattern 缩减约 n_g!/(n_g−k)! 倍。对 n=34 组、k=8 的 pattern，缩减 ≈ 34·33·…·27 ≈ 2×10¹²。全 132 实例 full-assignment nogood 的极端情形从 Π n_g! ≈ 10¹⁰⁵ 个等价重复缩到 1 个多重集 cut。这就是历史 "132! 撞墙" 的修正版本量化。
++令组大小为 n、pose 域大小为 P、pattern 大小为 k，且 cert literal 是无序集合（serialization 顺序不计）。
++
++- 若允许 pose 重复，带标签原始空间是 `C(n,k)·P^k`：先选 k 个互异 slot，再给每个 slot 选一个 pose。轨道商后是 pose 多重集数 `C(P+k−1,k)`。当 `P≫k` 时，缩减约 `C(n,k)·P^k / (P^k/k!) = n!/(n−k)!`。
++- 若禁止同一 `(group,pose)` 重复（推荐，除非 master attach 已 cardinality-aware），带标签空间是 `C(n,k)·(P)_k`，轨道商后是 `C(P,k)`，缩减**精确**为 `n!/(n−k)!`。
++
++因此原稿的 `C(n,k)·k!·|pose|^k` 把 literal 顺序又数了一遍，与后文 `n!/(n−k)!` 的缩减因子不一致。重复 pose 在几何上通常是 no-overlap 平凡不可行；若保留这类 cut，必须按 §2.3 的 multiplicity 保真要求落地，不能在 master 端折成 boolean presence。
++
++对 n=34、k=8，缩减因子 `(34)_8 = 34·33·…·27 = 732,058,145,280 ≈ 7.3×10^11`，不是 `2×10^12`。全 132 个 `manufacturing_3x3` full-assignment nogood 的极端重复数是 `34!²·18!·17!·11!·6!³ ≈ 3×10^123` 个等价标签代表，轨道商后每个 pose 多重集只保留 1 个 cut。
+ 
+ ## 6. 开放问题
+ 
+-1. oracle adapter 对**部分赋值**上下文的 verdict invariance：state 中未涉组的已选 pose 也要参与重标吗？（建议：state 同样过规范重标——需要在 adapter 规格里定死）
+-2. 轨道 cut 与 whole-layout nogood 独立复验（I1）的组合：I1 复验的是带标签 conflict_set，提升后复验对象应是规范代表——I1 输入是否也走重标层，P1.3 定。
+-3. `boundary_storage_port`（46 同质）与 optional families 的同型处理：定理与机器完全同构适用，实施时一并覆盖还是先 manufacturing 8 组试点，P1.3 排期定。
++1. **已升级为 BLOCK 前提**：oracle adapter 对部分赋值上下文的 verdict invariance 不能开放；P1.3 必须采用 §2.3/§4 的 liftable oracle 契约，否则 F5 orbit lift 不得接入 certified path。
++2. 轨道 cut 与 whole-layout nogood 独立复验（I1）的组合：I1 复验对象应是规范代表，并且必须保留 multiplicity。若 I1 只能消费 instance→pose mapping 或 boolean presence，则只能复验无重复 `(group,pose)` 的 F5 cut。
++3. `boundary_storage_port`（46 同质）与 optional families 的同型处理：定理与机器完全同构适用，但每个 family 必须先过 P-HOM / pose-pool / multiplicity attach 门；实施时一并覆盖还是先 manufacturing 8 组试点，P1.3 排期定。
+ 4. 方案 B（跨 family 复合 cut）的重启条件：若验收 telemetry 显示提升后仍撞墙（>10⁵），再议。
+ 
+ ---

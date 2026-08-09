@@ -1,0 +1,116 @@
+{
+  "bound_events": [
+    {
+      "bound_scaled": 0.0,
+      "raw_bound_scaled": null,
+      "source": "explicit",
+      "t": 0.0
+    }
+  ],
+  "bound_samples": [
+    {
+      "bound_scaled": 0.0,
+      "t": 0.0
+    }
+  ],
+  "bucket_weights_scaled": {
+    "M3_1i1o": 9,
+    "M3_1i2o+2i1o": 9,
+    "M3_1i3o+2i1o": 9,
+    "M5_1i1o": 25,
+    "M5_1i2o": 25,
+    "M6_3i1o": 24,
+    "M6_4i1o": 24,
+    "M6_5i1o": 24
+  },
+  "build_wall_seconds": 0.006386,
+  "cap_source": "explicit",
+  "certified_objective_bound": 0.0,
+  "certified_objective_bound_scaled": 0.0,
+  "dual": "D0_AREA",
+  "epsilon_bound": 0.0,
+  "epsilon_bound_scaled": 0.0,
+  "family": "CORE",
+  "final_validation": {
+    "actual_bucket_counts": {},
+    "actual_ge_credited": true,
+    "actual_objective_scaled": 0,
+    "body_count": 0,
+    "credited_bucket_counts": {},
+    "credited_objective_scaled": 0,
+    "evaluator_ok": true,
+    "evaluator_violations": [],
+    "independent_audit_issues": [],
+    "independent_audit_ok": true,
+    "pole_count_after_minimization": 0,
+    "single_component": true
+  },
+  "hole": false,
+  "incumbent_events": [
+    {
+      "credited_bucket_counts": {},
+      "objective_scaled": -0.0,
+      "t": 0.023861
+    }
+  ],
+  "lambda_scaled": 0,
+  "max_poles": null,
+  "model_signature_sha256": "3d565d6daef7c138f82ab584c0da983d5ca8878bbee9ab0a3025c5bd91f743c9",
+  "model_size": {
+    "all_semantic_body_pose_literals": 0,
+    "bucket_count_variables": 8,
+    "connectivity_literals": 101,
+    "constraints": 1072,
+    "directed_flow_variables": 314,
+    "hole_literals": 0,
+    "kept_body_pose_literals": 0,
+    "kept_levels": {
+      "manufacturing_3x3": [
+        1
+      ],
+      "manufacturing_5x5": [
+        1
+      ],
+      "manufacturing_6x4": [
+        3
+      ]
+    },
+    "occupancy_literals": 101,
+    "pole_literals": 20,
+    "source_variables": 1,
+    "variables": 545
+  },
+  "mu_scaled": {
+    "3I2": 0,
+    "3L": 0,
+    "3O2": 0,
+    "3O3": 0,
+    "5L": 0,
+    "5O2": 0,
+    "6I3": 0,
+    "6I4": 0,
+    "6I5": 0
+  },
+  "objective_cap_scaled": 0,
+  "objective_value": -0.0,
+  "objective_value_scaled": -0.0,
+  "pi_scaled": 0,
+  "raw_objective_bound": -0.0,
+  "raw_objective_bound_scaled": -0.0,
+  "relaxed": false,
+  "research_only": true,
+  "runtime": {
+    "bundle": "/mnt/data/w0_pricing_bound_exp_20260804/pricing_exp/11_runnable",
+    "ortools": "9.15.6755",
+    "python": "3.13.5"
+  },
+  "scale": 1,
+  "schema_version": 2,
+  "seconds_limit": 2.0,
+  "seed": 0,
+  "solve_wall_seconds": 0.026429,
+  "status": "OPTIMAL",
+  "strict": true,
+  "wall_seconds": 0.033418,
+  "workers": 4
+}

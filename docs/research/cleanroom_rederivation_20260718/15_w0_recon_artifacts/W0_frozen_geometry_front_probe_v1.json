@@ -1,0 +1,40 @@
+{
+  "artifact_status": "bounded negative probe",
+  "date": "2026-07-28",
+  "antecedent": {
+    "geometry_file": "W0_geometry_only_seed_v1.json",
+    "manufacturing_body_coordinates_frozen": true,
+    "boundary_core_poles_cycle_and_protected_rectangle_frozen": true
+  },
+  "probe_rule": "Assign the exact manufacturing demand classes and a legal template mode to every frozen manufacturing body. For each active side, require at least the demanded number of access cells to be inside the map and free of every facility body. Port positions may be chosen freely. Transport incidence and routing are ignored.",
+  "result": "INFEASIBLE",
+  "compatible_body_counts_before_global_assignment": {
+    "3L": 43,
+    "3I2": 39,
+    "3O2": 39,
+    "3O3": 38,
+    "5L": 33,
+    "5O2": 33,
+    "6G": 14,
+    "6F": 13,
+    "6B": 13
+  },
+  "required_class_counts": {
+    "3L": 109,
+    "3I2": 6,
+    "3O2": 6,
+    "3O3": 11,
+    "5L": 32,
+    "5O2": 17,
+    "6G": 32,
+    "6F": 3,
+    "6B": 3
+  },
+  "valid_conclusion": "These particular body coordinates are a geometry-only warm start and cannot be promoted by assigning classes and modes afterward. Body placement, operation class, mode, and active front choice must be solved jointly.",
+  "invalid_conclusions": [
+    "the power-cell framework is infeasible",
+    "the directed-cycle routing framework is infeasible",
+    "the tile-count ledger is infeasible under a different body packing",
+    "the benchmark has no 6x7 witness"
+  ]
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "raw_ore",
+    "name": "Raw Ore",
+    "category": "resource"
+  },
+  {
+    "id": "iron_plate",
+    "name": "Iron Plate",
+    "category": "intermediate"
+  }
+]

@@ -1,0 +1,6110 @@
+{
+ "artifact": "p2_0_specialized_split_free_probe_v2",
+ "date": "2026-08-07",
+ "supersedes": "docs/research/p2_0_specialized_20260807/split_free_probe.py (v1，均摊占空写死)",
+ "defect_repaired": "v1 把 duty[op]=x[op]/n_op[op] 当约定写死（每台同占空）。占空由供料决定、台间分配是布局自由度；v1 还逐商品独立判，而 duty 是机器级共享变量。",
+ "question": "占空自由 + 整网联立下，逐商品『无分流(merge-only)车道路由』是否存在",
+ "belt_capacity_per_tick": "1",
+ "part_a_duty_freedom": {
+  "crusher_blue_iron": {
+   "x_op": "34",
+   "n_op": 34,
+   "uniform_duty": "1",
+   "has_freedom": false,
+   "idle_allowed": false,
+   "note": "占空被 Σd=x=n、d≤1 唯一钉死为全 1"
+  },
+  "crusher_buckwheat": {
+   "x_op": "11/2",
+   "n_op": 6,
+   "uniform_duty": "11/12",
+   "has_freedom": true,
+   "idle_allowed": false,
+   "note": "n-1 台满速仅得 5 < 11/2 ⇒ 每台都必须 >0；台间分摊自由"
+  },
+  "crusher_sandleaf": {
+   "x_op": "21/2",
+   "n_op": 11,
+   "uniform_duty": "21/22",
+   "has_freedom": true,
+   "idle_allowed": false,
+   "note": "n-1 台满速仅得 10 < 21/2 ⇒ 每台都必须 >0；台间分摊自由"
+  },
+  "crusher_source": {
+   "x_op": "18",
+   "n_op": 18,
+   "uniform_duty": "1",
+   "has_freedom": false,
+   "idle_allowed": false,
+   "note": "占空被 Σd=x=n、d≤1 唯一钉死为全 1"
+  },
+  "filling_capsule": {
+   "x_op": "11/4",
+   "n_op": 3,
+   "uniform_duty": "11/12",
+   "has_freedom": true,
+   "idle_allowed": false,
+   "note": "n-1 台满速仅得 2 < 11/4 ⇒ 每台都必须 >0；台间分摊自由"
+  },
+  "grinder_dense_blue_iron": {
+   "x_op": "17",
+   "n_op": 17,
+   "uniform_duty": "1",
+   "has_freedom": false,
+   "idle_allowed": false,
+   "note": "占空被 Σd=x=n、d≤1 唯一钉死为全 1"
+  },
+  "grinder_dense_source": {
+   "x_op": "9",
+   "n_op": 9,
+   "uniform_duty": "1",
+   "has_freedom": false,
+   "idle_allowed": false,
+   "note": "占空被 Σd=x=n、d≤1 唯一钉死为全 1"
+  },
+  "grinder_fine_buckwheat": {
+   "x_op": "11/2",
+   "n_op": 6,
+   "uniform_duty": "11/12",
+   "has_freedom": true,
+   "idle_allowed": false,
+   "note": "n-1 台满速仅得 5 < 11/2 ⇒ 每台都必须 >0；台间分摊自由"
+  },
+  "molding_bottle": {
+   "x_op": "11/2",
+   "n_op": 6,
+   "uniform_duty": "11/12",
+   "has_freedom": true,
+   "idle_allowed": false,
+   "note": "n-1 台满速仅得 5 < 11/2 ⇒ 每台都必须 >0；台间分摊自由"
+  },
+  "packaging_battery": {
+   "x_op": "3",
+   "n_op": 3,
+   "uniform_duty": "1",
+   "has_freedom": false,
+   "idle_allowed": false,
+   "note": "占空被 Σd=x=n、d≤1 唯一钉死为全 1"
+  },
+  "parts_maker": {
+   "x_op": "6",
+   "n_op": 6,
+   "uniform_duty": "1",
+   "has_freedom": false,
+   "idle_allowed": false,
+   "note": "占空被 Σd=x=n、d≤1 唯一钉死为全 1"
+  },
+  "planter_buckwheat": {
+   "x_op": "11",
+   "n_op": 11,
+   "uniform_duty": "1",
+   "has_freedom": false,
+   "idle_allowed": false,
+   "note": "占空被 Σd=x=n、d≤1 唯一钉死为全 1"
+  },
+  "planter_sandleaf": {
+   "x_op": "21",
+   "n_op": 21,
+   "uniform_duty": "1",
+   "has_freedom": false,
+   "idle_allowed": false,
+   "note": "占空被 Σd=x=n、d≤1 唯一钉死为全 1"
+  },
+  "refinery_blue_iron": {
+   "x_op": "34",
+   "n_op": 34,
+   "uniform_duty": "1",
+   "has_freedom": false,
+   "idle_allowed": false,
+   "note": "占空被 Σd=x=n、d≤1 唯一钉死为全 1"
+  },
+  "refinery_steel": {
+   "x_op": "17",
+   "n_op": 17,
+   "uniform_duty": "1",
+   "has_freedom": false,
+   "idle_allowed": false,
+   "note": "占空被 Σd=x=n、d≤1 唯一钉死为全 1"
+  },
+  "seed_collector_buckwheat": {
+   "x_op": "11/2",
+   "n_op": 6,
+   "uniform_duty": "11/12",
+   "has_freedom": true,
+   "idle_allowed": false,
+   "note": "n-1 台满速仅得 5 < 11/2 ⇒ 每台都必须 >0；台间分摊自由"
+  },
+  "seed_collector_sandleaf": {
+   "x_op": "21/2",
+   "n_op": 11,
+   "uniform_duty": "21/22",
+   "has_freedom": true,
+   "idle_allowed": false,
+   "note": "n-1 台满速仅得 10 < 21/2 ⇒ 每台都必须 >0；台间分摊自由"
+  }
+ },
+ "part_b_lane_counting": {
+  "blue_iron_block": {
+   "producer_lanes_min": 34,
+   "producer_lanes_max": 34,
+   "consumer_lanes_min": 34,
+   "consumer_lanes_max": 34,
+   "producers": [
+    {
+     "op": "refinery_blue_iron",
+     "full_rate": "1",
+     "x_op": "34",
+     "n_op": 34,
+     "lanes_min": 34,
+     "lanes_max": 34,
+     "profile_at_min": [
+      0,
+      34
+     ],
+     "profile_at_max": [
+      0,
+      34
+     ]
+    }
+   ],
+   "consumers": [
+    {
+     "op": "crusher_blue_iron",
+     "full_rate": "1",
+     "x_op": "34",
+     "n_op": 34,
+     "lanes_min": 34,
+     "lanes_max": 34,
+     "profile_at_min": [
+      0,
+      34
+     ],
+     "profile_at_max": [
+      0,
+      34
+     ]
+    }
+   ],
+   "forced_split_for_every_duty": false,
+   "counting_certificate": null
+  },
+  "blue_iron_ore": {
+   "producer_lanes_min": 34,
+   "producer_lanes_max": 34,
+   "consumer_lanes_min": 34,
+   "consumer_lanes_max": 34,
+   "producers": [
+    {
+     "op": "boundary_io",
+     "full_rate": "1",
+     "n_op": 34,
+     "lanes_min": 34,
+     "lanes_max": 34
+    }
+   ],
+   "consumers": [
+    {
+     "op": "refinery_blue_iron",
+     "full_rate": "1",
+     "x_op": "34",
+     "n_op": 34,
+     "lanes_min": 34,
+     "lanes_max": 34,
+     "profile_at_min": [
+      0,
+      34
+     ],
+     "profile_at_max": [
+      0,
+      34
+     ]
+    }
+   ],
+   "forced_split_for_every_duty": false,
+   "counting_certificate": null
+  },
+  "blue_iron_powder": {
+   "producer_lanes_min": 34,
+   "producer_lanes_max": 34,
+   "consumer_lanes_min": 34,
+   "consumer_lanes_max": 34,
+   "producers": [
+    {
+     "op": "crusher_blue_iron",
+     "full_rate": "1",
+     "x_op": "34",
+     "n_op": 34,
+     "lanes_min": 34,
+     "lanes_max": 34,
+     "profile_at_min": [
+      0,
+      34
+     ],
+     "profile_at_max": [
+      0,
+      34
+     ]
+    }
+   ],
+   "consumers": [
+    {
+     "op": "grinder_dense_blue_iron",
+     "full_rate": "2",
+     "x_op": "17",
+     "n_op": 17,
+     "lanes_min": 34,
+     "lanes_max": 34,
+     "profile_at_min": [
+      0,
+      0,
+      17
+     ],
+     "profile_at_max": [
+      0,
+      0,
+      17
+     ]
+    }
+   ],
+   "forced_split_for_every_duty": false,
+   "counting_certificate": null
+  },
+  "buckwheat": {
+   "producer_lanes_min": 11,
+   "producer_lanes_max": 11,
+   "consumer_lanes_min": 12,
+   "consumer_lanes_max": 12,
+   "producers": [
+    {
+     "op": "planter_buckwheat",
+     "full_rate": "1",
+     "x_op": "11",
+     "n_op": 11,
+     "lanes_min": 11,
+     "lanes_max": 11,
+     "profile_at_min": [
+      0,
+      11
+     ],
+     "profile_at_max": [
+      0,
+      11
+     ]
+    }
+   ],
+   "consumers": [
+    {
+     "op": "crusher_buckwheat",
+     "full_rate": "1",
+     "x_op": "11/2",
+     "n_op": 6,
+     "lanes_min": 6,
+     "lanes_max": 6,
+     "profile_at_min": [
+      0,
+      6
+     ],
+     "profile_at_max": [
+      0,
+      6
+     ]
+    },
+    {
+     "op": "seed_collector_buckwheat",
+     "full_rate": "1",
+     "x_op": "11/2",
+     "n_op": 6,
+     "lanes_min": 6,
+     "lanes_max": 6,
+     "profile_at_min": [
+      0,
+      6
+     ],
+     "profile_at_max": [
+      0,
+      6
+     ]
+    }
+   ],
+   "forced_split_for_every_duty": true,
+   "counting_certificate": "耗道数 ≥ 12 > 11 ≥ 产道数（对任意合法占空分配）；整道指派要求每条耗道至少收一条产道 ⇒ 鸽巢 ⇒ 必然分流"
+  },
+  "buckwheat_powder": {
+   "producer_lanes_min": 11,
+   "producer_lanes_max": 12,
+   "consumer_lanes_min": 11,
+   "consumer_lanes_max": 12,
+   "producers": [
+    {
+     "op": "crusher_buckwheat",
+     "full_rate": "2",
+     "x_op": "11/2",
+     "n_op": 6,
+     "lanes_min": 11,
+     "lanes_max": 12,
+     "profile_at_min": [
+      0,
+      1,
+      5
+     ],
+     "profile_at_max": [
+      0,
+      0,
+      6
+     ]
+    }
+   ],
+   "consumers": [
+    {
+     "op": "grinder_fine_buckwheat",
+     "full_rate": "2",
+     "x_op": "11/2",
+     "n_op": 6,
+     "lanes_min": 11,
+     "lanes_max": 12,
+     "profile_at_min": [
+      0,
+      1,
+      5
+     ],
+     "profile_at_max": [
+      0,
+      0,
+      6
+     ]
+    }
+   ],
+   "forced_split_for_every_duty": false,
+   "counting_certificate": null
+  },
+  "buckwheat_seed": {
+   "producer_lanes_min": 11,
+   "producer_lanes_max": 12,
+   "consumer_lanes_min": 11,
+   "consumer_lanes_max": 11,
+   "producers": [
+    {
+     "op": "seed_collector_buckwheat",
+     "full_rate": "2",
+     "x_op": "11/2",
+     "n_op": 6,
+     "lanes_min": 11,
+     "lanes_max": 12,
+     "profile_at_min": [
+      0,
+      1,
+      5
+     ],
+     "profile_at_max": [
+      0,
+      0,
+      6
+     ]
+    }
+   ],
+   "consumers": [
+    {
+     "op": "planter_buckwheat",
+     "full_rate": "1",
+     "x_op": "11",
+     "n_op": 11,
+     "lanes_min": 11,
+     "lanes_max": 11,
+     "profile_at_min": [
+      0,
+      11
+     ],
+     "profile_at_max": [
+      0,
+      11
+     ]
+    }
+   ],
+   "forced_split_for_every_duty": false,
+   "counting_certificate": null
+  },
+  "dense_blue_iron_powder": {
+   "producer_lanes_min": 17,
+   "producer_lanes_max": 17,
+   "consumer_lanes_min": 17,
+   "consumer_lanes_max": 17,
+   "producers": [
+    {
+     "op": "grinder_dense_blue_iron",
+     "full_rate": "1",
+     "x_op": "17",
+     "n_op": 17,
+     "lanes_min": 17,
+     "lanes_max": 17,
+     "profile_at_min": [
+      0,
+      17
+     ],
+     "profile_at_max": [
+      0,
+      17
+     ]
+    }
+   ],
+   "consumers": [
+    {
+     "op": "refinery_steel",
+     "full_rate": "1",
+     "x_op": "17",
+     "n_op": 17,
+     "lanes_min": 17,
+     "lanes_max": 17,
+     "profile_at_min": [
+      0,
+      17
+     ],
+     "profile_at_max": [
+      0,
+      17
+     ]
+    }
+   ],
+   "forced_split_for_every_duty": false,
+   "counting_certificate": null
+  },
+  "dense_source_powder": {
+   "producer_lanes_min": 9,
+   "producer_lanes_max": 9,
+   "consumer_lanes_min": 9,
+   "consumer_lanes_max": 9,
+   "producers": [
+    {
+     "op": "grinder_dense_source",
+     "full_rate": "1",
+     "x_op": "9",
+     "n_op": 9,
+     "lanes_min": 9,
+     "lanes_max": 9,
+     "profile_at_min": [
+      0,
+      9
+     ],
+     "profile_at_max": [
+      0,
+      9
+     ]
+    }
+   ],
+   "consumers": [
+    {
+     "op": "packaging_battery",
+     "full_rate": "3",
+     "x_op": "3",
+     "n_op": 3,
+     "lanes_min": 9,
+     "lanes_max": 9,
+     "profile_at_min": [
+      0,
+      0,
+      0,
+      3
+     ],
+     "profile_at_max": [
+      0,
+      0,
+      0,
+      3
+     ]
+    }
+   ],
+   "forced_split_for_every_duty": false,
+   "counting_certificate": null
+  },
+  "fine_buckwheat_powder": {
+   "producer_lanes_min": 6,
+   "producer_lanes_max": 6,
+   "consumer_lanes_min": 6,
+   "consumer_lanes_max": 6,
+   "producers": [
+    {
+     "op": "grinder_fine_buckwheat",
+     "full_rate": "1",
+     "x_op": "11/2",
+     "n_op": 6,
+     "lanes_min": 6,
+     "lanes_max": 6,
+     "profile_at_min": [
+      0,
+      6
+     ],
+     "profile_at_max": [
+      0,
+      6
+     ]
+    }
+   ],
+   "consumers": [
+    {
+     "op": "filling_capsule",
+     "full_rate": "2",
+     "x_op": "11/4",
+     "n_op": 3,
+     "lanes_min": 6,
+     "lanes_max": 6,
+     "profile_at_min": [
+      0,
+      0,
+      3
+     ],
+     "profile_at_max": [
+      0,
+      0,
+      3
+     ]
+    }
+   ],
+   "forced_split_for_every_duty": false,
+   "counting_certificate": null
+  },
+  "qiaoyu_capsule": {
+   "producer_lanes_min": 3,
+   "producer_lanes_max": 3,
+   "consumer_lanes_min": 1,
+   "consumer_lanes_max": 1,
+   "producers": [
+    {
+     "op": "filling_capsule",
+     "full_rate": "1/5",
+     "x_op": "11/4",
+     "n_op": 3,
+     "lanes_min": 3,
+     "lanes_max": 3,
+     "profile_at_min": [
+      0,
+      3
+     ],
+     "profile_at_max": [
+      0,
+      3
+     ]
+    }
+   ],
+   "consumers": [
+    {
+     "op": "generic_input",
+     "rate": "11/20",
+     "n_op": 1,
+     "lanes_min": 1,
+     "lanes_max": 1
+    }
+   ],
+   "forced_split_for_every_duty": false,
+   "counting_certificate": null
+  },
+  "sandleaf": {
+   "producer_lanes_min": 21,
+   "producer_lanes_max": 21,
+   "consumer_lanes_min": 22,
+   "consumer_lanes_max": 22,
+   "producers": [
+    {
+     "op": "planter_sandleaf",
+     "full_rate": "1",
+     "x_op": "21",
+     "n_op": 21,
+     "lanes_min": 21,
+     "lanes_max": 21,
+     "profile_at_min": [
+      0,
+      21
+     ],
+     "profile_at_max": [
+      0,
+      21
+     ]
+    }
+   ],
+   "consumers": [
+    {
+     "op": "crusher_sandleaf",
+     "full_rate": "1",
+     "x_op": "21/2",
+     "n_op": 11,
+     "lanes_min": 11,
+     "lanes_max": 11,
+     "profile_at_min": [
+      0,
+      11
+     ],
+     "profile_at_max": [
+      0,
+      11
+     ]
+    },
+    {
+     "op": "seed_collector_sandleaf",
+     "full_rate": "1",
+     "x_op": "21/2",
+     "n_op": 11,
+     "lanes_min": 11,
+     "lanes_max": 11,
+     "profile_at_min": [
+      0,
+      11
+     ],
+     "profile_at_max": [
+      0,
+      11
+     ]
+    }
+   ],
+   "forced_split_for_every_duty": true,
+   "counting_certificate": "耗道数 ≥ 22 > 21 ≥ 产道数（对任意合法占空分配）；整道指派要求每条耗道至少收一条产道 ⇒ 鸽巢 ⇒ 必然分流"
+  },
+  "sandleaf_powder": {
+   "producer_lanes_min": 32,
+   "producer_lanes_max": 33,
+   "consumer_lanes_min": 32,
+   "consumer_lanes_max": 32,
+   "producers": [
+    {
+     "op": "crusher_sandleaf",
+     "full_rate": "3",
+     "x_op": "21/2",
+     "n_op": 11,
+     "lanes_min": 32,
+     "lanes_max": 33,
+     "profile_at_min": [
+      0,
+      0,
+      1,
+      10
+     ],
+     "profile_at_max": [
+      0,
+      0,
+      0,
+      11
+     ]
+    }
+   ],
+   "consumers": [
+    {
+     "op": "grinder_dense_blue_iron",
+     "full_rate": "1",
+     "x_op": "17",
+     "n_op": 17,
+     "lanes_min": 17,
+     "lanes_max": 17,
+     "profile_at_min": [
+      0,
+      17
+     ],
+     "profile_at_max": [
+      0,
+      17
+     ]
+    },
+    {
+     "op": "grinder_dense_source",
+     "full_rate": "1",
+     "x_op": "9",
+     "n_op": 9,
+     "lanes_min": 9,
+     "lanes_max": 9,
+     "profile_at_min": [
+      0,
+      9
+     ],
+     "profile_at_max": [
+      0,
+      9
+     ]
+    },
+    {
+     "op": "grinder_fine_buckwheat",
+     "full_rate": "1",
+     "x_op": "11/2",
+     "n_op": 6,
+     "lanes_min": 6,
+     "lanes_max": 6,
+     "profile_at_min": [
+      0,
+      6
+     ],
+     "profile_at_max": [
+      0,
+      6
+     ]
+    }
+   ],
+   "forced_split_for_every_duty": false,
+   "counting_certificate": null
+  },
+  "sandleaf_seed": {
+   "producer_lanes_min": 21,
+   "producer_lanes_max": 22,
+   "consumer_lanes_min": 21,
+   "consumer_lanes_max": 21,
+   "producers": [
+    {
+     "op": "seed_collector_sandleaf",
+     "full_rate": "2",
+     "x_op": "21/2",
+     "n_op": 11,
+     "lanes_min": 21,
+     "lanes_max": 22,
+     "profile_at_min": [
+      0,
+      1,
+      10
+     ],
+     "profile_at_max": [
+      0,
+      0,
+      11
+     ]
+    }
+   ],
+   "consumers": [
+    {
+     "op": "planter_sandleaf",
+     "full_rate": "1",
+     "x_op": "21",
+     "n_op": 21,
+     "lanes_min": 21,
+     "lanes_max": 21,
+     "profile_at_min": [
+      0,
+      21
+     ],
+     "profile_at_max": [
+      0,
+      21
+     ]
+    }
+   ],
+   "forced_split_for_every_duty": false,
+   "counting_certificate": null
+  },
+  "source_ore": {
+   "producer_lanes_min": 18,
+   "producer_lanes_max": 18,
+   "consumer_lanes_min": 18,
+   "consumer_lanes_max": 18,
+   "producers": [
+    {
+     "op": "boundary_io",
+     "full_rate": "1",
+     "n_op": 18,
+     "lanes_min": 18,
+     "lanes_max": 18
+    }
+   ],
+   "consumers": [
+    {
+     "op": "crusher_source",
+     "full_rate": "1",
+     "x_op": "18",
+     "n_op": 18,
+     "lanes_min": 18,
+     "lanes_max": 18,
+     "profile_at_min": [
+      0,
+      18
+     ],
+     "profile_at_max": [
+      0,
+      18
+     ]
+    }
+   ],
+   "forced_split_for_every_duty": false,
+   "counting_certificate": null
+  },
+  "source_powder": {
+   "producer_lanes_min": 18,
+   "producer_lanes_max": 18,
+   "consumer_lanes_min": 18,
+   "consumer_lanes_max": 18,
+   "producers": [
+    {
+     "op": "crusher_source",
+     "full_rate": "1",
+     "x_op": "18",
+     "n_op": 18,
+     "lanes_min": 18,
+     "lanes_max": 18,
+     "profile_at_min": [
+      0,
+      18
+     ],
+     "profile_at_max": [
+      0,
+      18
+     ]
+    }
+   ],
+   "consumers": [
+    {
+     "op": "grinder_dense_source",
+     "full_rate": "2",
+     "x_op": "9",
+     "n_op": 9,
+     "lanes_min": 18,
+     "lanes_max": 18,
+     "profile_at_min": [
+      0,
+      0,
+      9
+     ],
+     "profile_at_max": [
+      0,
+      0,
+      9
+     ]
+    }
+   ],
+   "forced_split_for_every_duty": false,
+   "counting_certificate": null
+  },
+  "steel_block": {
+   "producer_lanes_min": 17,
+   "producer_lanes_max": 17,
+   "consumer_lanes_min": 17,
+   "consumer_lanes_max": 18,
+   "producers": [
+    {
+     "op": "refinery_steel",
+     "full_rate": "1",
+     "x_op": "17",
+     "n_op": 17,
+     "lanes_min": 17,
+     "lanes_max": 17,
+     "profile_at_min": [
+      0,
+      17
+     ],
+     "profile_at_max": [
+      0,
+      17
+     ]
+    }
+   ],
+   "consumers": [
+    {
+     "op": "molding_bottle",
+     "full_rate": "2",
+     "x_op": "11/2",
+     "n_op": 6,
+     "lanes_min": 11,
+     "lanes_max": 12,
+     "profile_at_min": [
+      0,
+      1,
+      5
+     ],
+     "profile_at_max": [
+      0,
+      0,
+      6
+     ]
+    },
+    {
+     "op": "parts_maker",
+     "full_rate": "1",
+     "x_op": "6",
+     "n_op": 6,
+     "lanes_min": 6,
+     "lanes_max": 6,
+     "profile_at_min": [
+      0,
+      6
+     ],
+     "profile_at_max": [
+      0,
+      6
+     ]
+    }
+   ],
+   "forced_split_for_every_duty": false,
+   "counting_certificate": null
+  },
+  "steel_bottle": {
+   "producer_lanes_min": 6,
+   "producer_lanes_max": 6,
+   "consumer_lanes_min": 6,
+   "consumer_lanes_max": 6,
+   "producers": [
+    {
+     "op": "molding_bottle",
+     "full_rate": "1",
+     "x_op": "11/2",
+     "n_op": 6,
+     "lanes_min": 6,
+     "lanes_max": 6,
+     "profile_at_min": [
+      0,
+      6
+     ],
+     "profile_at_max": [
+      0,
+      6
+     ]
+    }
+   ],
+   "consumers": [
+    {
+     "op": "filling_capsule",
+     "full_rate": "2",
+     "x_op": "11/4",
+     "n_op": 3,
+     "lanes_min": 6,
+     "lanes_max": 6,
+     "profile_at_min": [
+      0,
+      0,
+      3
+     ],
+     "profile_at_max": [
+      0,
+      0,
+      3
+     ]
+    }
+   ],
+   "forced_split_for_every_duty": false,
+   "counting_certificate": null
+  },
+  "steel_part": {
+   "producer_lanes_min": 6,
+   "producer_lanes_max": 6,
+   "consumer_lanes_min": 6,
+   "consumer_lanes_max": 6,
+   "producers": [
+    {
+     "op": "parts_maker",
+     "full_rate": "1",
+     "x_op": "6",
+     "n_op": 6,
+     "lanes_min": 6,
+     "lanes_max": 6,
+     "profile_at_min": [
+      0,
+      6
+     ],
+     "profile_at_max": [
+      0,
+      6
+     ]
+    }
+   ],
+   "consumers": [
+    {
+     "op": "packaging_battery",
+     "full_rate": "2",
+     "x_op": "3",
+     "n_op": 3,
+     "lanes_min": 6,
+     "lanes_max": 6,
+     "profile_at_min": [
+      0,
+      0,
+      3
+     ],
+     "profile_at_max": [
+      0,
+      0,
+      3
+     ]
+    }
+   ],
+   "forced_split_for_every_duty": false,
+   "counting_certificate": null
+  },
+  "valley_battery": {
+   "producer_lanes_min": 3,
+   "producer_lanes_max": 3,
+   "consumer_lanes_min": 1,
+   "consumer_lanes_max": 1,
+   "producers": [
+    {
+     "op": "packaging_battery",
+     "full_rate": "1/5",
+     "x_op": "3",
+     "n_op": 3,
+     "lanes_min": 3,
+     "lanes_max": 3,
+     "profile_at_min": [
+      0,
+      3
+     ],
+     "profile_at_max": [
+      0,
+      3
+     ]
+    }
+   ],
+   "consumers": [
+    {
+     "op": "generic_input",
+     "rate": "3/5",
+     "n_op": 1,
+     "lanes_min": 1,
+     "lanes_max": 1
+    }
+   ],
+   "forced_split_for_every_duty": false,
+   "counting_certificate": null
+  }
+ },
+ "part_b_forced_for_every_duty": [
+  "buckwheat",
+  "sandleaf"
+ ],
+ "part_c_witness_duty": {
+  "crusher_blue_iron": [
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1"
+  ],
+  "crusher_buckwheat": [
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1/2"
+  ],
+  "crusher_sandleaf": [
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1/2"
+  ],
+  "crusher_source": [
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1"
+  ],
+  "filling_capsule": [
+   "1",
+   "1",
+   "3/4"
+  ],
+  "grinder_dense_blue_iron": [
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1"
+  ],
+  "grinder_dense_source": [
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1"
+  ],
+  "grinder_fine_buckwheat": [
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1/2"
+  ],
+  "molding_bottle": [
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1/2"
+  ],
+  "packaging_battery": [
+   "1",
+   "1",
+   "1"
+  ],
+  "parts_maker": [
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1"
+  ],
+  "planter_buckwheat": [
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1"
+  ],
+  "planter_sandleaf": [
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1"
+  ],
+  "refinery_blue_iron": [
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1"
+  ],
+  "refinery_steel": [
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1"
+  ],
+  "seed_collector_buckwheat": [
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1/2"
+  ],
+  "seed_collector_sandleaf": [
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1",
+   "1/2"
+  ]
+ },
+ "part_c_per_commodity": {
+  "blue_iron_block": {
+   "producer_lanes": 34,
+   "consumer_lanes": 34,
+   "total_rate": "34",
+   "producer_lane_rates": [
+    [
+     "refinery_blue_iron#0.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#1.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#2.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#3.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#4.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#5.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#6.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#7.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#8.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#9.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#10.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#11.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#12.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#13.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#14.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#15.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#16.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#17.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#18.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#19.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#20.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#21.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#22.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#23.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#24.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#25.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#26.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#27.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#28.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#29.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#30.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#31.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#32.out.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#33.out.0",
+     "1"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "crusher_blue_iron#0.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#1.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#2.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#3.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#4.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#5.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#6.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#7.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#8.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#9.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#10.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#11.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#12.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#13.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#14.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#15.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#16.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#17.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#18.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#19.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#20.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#21.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#22.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#23.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#24.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#25.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#26.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#27.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#28.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#29.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#30.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#31.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#32.in.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#33.in.0",
+     "1"
+    ]
+   ],
+   "split_free": true,
+   "method": "sorted_bijection",
+   "verify": "ok",
+   "assignment": [
+    [
+     "refinery_blue_iron#0.out.0",
+     "crusher_blue_iron#0.in.0"
+    ],
+    [
+     "refinery_blue_iron#1.out.0",
+     "crusher_blue_iron#1.in.0"
+    ],
+    [
+     "refinery_blue_iron#2.out.0",
+     "crusher_blue_iron#2.in.0"
+    ],
+    [
+     "refinery_blue_iron#3.out.0",
+     "crusher_blue_iron#3.in.0"
+    ],
+    [
+     "refinery_blue_iron#4.out.0",
+     "crusher_blue_iron#4.in.0"
+    ],
+    [
+     "refinery_blue_iron#5.out.0",
+     "crusher_blue_iron#5.in.0"
+    ],
+    [
+     "refinery_blue_iron#6.out.0",
+     "crusher_blue_iron#6.in.0"
+    ],
+    [
+     "refinery_blue_iron#7.out.0",
+     "crusher_blue_iron#7.in.0"
+    ],
+    [
+     "refinery_blue_iron#8.out.0",
+     "crusher_blue_iron#8.in.0"
+    ],
+    [
+     "refinery_blue_iron#9.out.0",
+     "crusher_blue_iron#9.in.0"
+    ],
+    [
+     "refinery_blue_iron#10.out.0",
+     "crusher_blue_iron#10.in.0"
+    ],
+    [
+     "refinery_blue_iron#11.out.0",
+     "crusher_blue_iron#11.in.0"
+    ],
+    [
+     "refinery_blue_iron#12.out.0",
+     "crusher_blue_iron#12.in.0"
+    ],
+    [
+     "refinery_blue_iron#13.out.0",
+     "crusher_blue_iron#13.in.0"
+    ],
+    [
+     "refinery_blue_iron#14.out.0",
+     "crusher_blue_iron#14.in.0"
+    ],
+    [
+     "refinery_blue_iron#15.out.0",
+     "crusher_blue_iron#15.in.0"
+    ],
+    [
+     "refinery_blue_iron#16.out.0",
+     "crusher_blue_iron#16.in.0"
+    ],
+    [
+     "refinery_blue_iron#17.out.0",
+     "crusher_blue_iron#17.in.0"
+    ],
+    [
+     "refinery_blue_iron#18.out.0",
+     "crusher_blue_iron#18.in.0"
+    ],
+    [
+     "refinery_blue_iron#19.out.0",
+     "crusher_blue_iron#19.in.0"
+    ],
+    [
+     "refinery_blue_iron#20.out.0",
+     "crusher_blue_iron#20.in.0"
+    ],
+    [
+     "refinery_blue_iron#21.out.0",
+     "crusher_blue_iron#21.in.0"
+    ],
+    [
+     "refinery_blue_iron#22.out.0",
+     "crusher_blue_iron#22.in.0"
+    ],
+    [
+     "refinery_blue_iron#23.out.0",
+     "crusher_blue_iron#23.in.0"
+    ],
+    [
+     "refinery_blue_iron#24.out.0",
+     "crusher_blue_iron#24.in.0"
+    ],
+    [
+     "refinery_blue_iron#25.out.0",
+     "crusher_blue_iron#25.in.0"
+    ],
+    [
+     "refinery_blue_iron#26.out.0",
+     "crusher_blue_iron#26.in.0"
+    ],
+    [
+     "refinery_blue_iron#27.out.0",
+     "crusher_blue_iron#27.in.0"
+    ],
+    [
+     "refinery_blue_iron#28.out.0",
+     "crusher_blue_iron#28.in.0"
+    ],
+    [
+     "refinery_blue_iron#29.out.0",
+     "crusher_blue_iron#29.in.0"
+    ],
+    [
+     "refinery_blue_iron#30.out.0",
+     "crusher_blue_iron#30.in.0"
+    ],
+    [
+     "refinery_blue_iron#31.out.0",
+     "crusher_blue_iron#31.in.0"
+    ],
+    [
+     "refinery_blue_iron#32.out.0",
+     "crusher_blue_iron#32.in.0"
+    ],
+    [
+     "refinery_blue_iron#33.out.0",
+     "crusher_blue_iron#33.in.0"
+    ]
+   ]
+  },
+  "blue_iron_ore": {
+   "producer_lanes": 34,
+   "consumer_lanes": 34,
+   "total_rate": "34",
+   "producer_lane_rates": [
+    [
+     "boundary#0",
+     "1"
+    ],
+    [
+     "boundary#1",
+     "1"
+    ],
+    [
+     "boundary#2",
+     "1"
+    ],
+    [
+     "boundary#3",
+     "1"
+    ],
+    [
+     "boundary#4",
+     "1"
+    ],
+    [
+     "boundary#5",
+     "1"
+    ],
+    [
+     "boundary#6",
+     "1"
+    ],
+    [
+     "boundary#7",
+     "1"
+    ],
+    [
+     "boundary#8",
+     "1"
+    ],
+    [
+     "boundary#9",
+     "1"
+    ],
+    [
+     "boundary#10",
+     "1"
+    ],
+    [
+     "boundary#11",
+     "1"
+    ],
+    [
+     "boundary#12",
+     "1"
+    ],
+    [
+     "boundary#13",
+     "1"
+    ],
+    [
+     "boundary#14",
+     "1"
+    ],
+    [
+     "boundary#15",
+     "1"
+    ],
+    [
+     "boundary#16",
+     "1"
+    ],
+    [
+     "boundary#17",
+     "1"
+    ],
+    [
+     "boundary#18",
+     "1"
+    ],
+    [
+     "boundary#19",
+     "1"
+    ],
+    [
+     "boundary#20",
+     "1"
+    ],
+    [
+     "boundary#21",
+     "1"
+    ],
+    [
+     "boundary#22",
+     "1"
+    ],
+    [
+     "boundary#23",
+     "1"
+    ],
+    [
+     "boundary#24",
+     "1"
+    ],
+    [
+     "boundary#25",
+     "1"
+    ],
+    [
+     "boundary#26",
+     "1"
+    ],
+    [
+     "boundary#27",
+     "1"
+    ],
+    [
+     "boundary#28",
+     "1"
+    ],
+    [
+     "boundary#29",
+     "1"
+    ],
+    [
+     "boundary#30",
+     "1"
+    ],
+    [
+     "boundary#31",
+     "1"
+    ],
+    [
+     "boundary#32",
+     "1"
+    ],
+    [
+     "boundary#33",
+     "1"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "refinery_blue_iron#0.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#1.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#2.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#3.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#4.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#5.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#6.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#7.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#8.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#9.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#10.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#11.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#12.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#13.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#14.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#15.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#16.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#17.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#18.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#19.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#20.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#21.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#22.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#23.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#24.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#25.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#26.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#27.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#28.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#29.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#30.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#31.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#32.in.0",
+     "1"
+    ],
+    [
+     "refinery_blue_iron#33.in.0",
+     "1"
+    ]
+   ],
+   "split_free": true,
+   "method": "sorted_bijection",
+   "verify": "ok",
+   "assignment": [
+    [
+     "boundary#0",
+     "refinery_blue_iron#0.in.0"
+    ],
+    [
+     "boundary#1",
+     "refinery_blue_iron#1.in.0"
+    ],
+    [
+     "boundary#2",
+     "refinery_blue_iron#2.in.0"
+    ],
+    [
+     "boundary#3",
+     "refinery_blue_iron#3.in.0"
+    ],
+    [
+     "boundary#4",
+     "refinery_blue_iron#4.in.0"
+    ],
+    [
+     "boundary#5",
+     "refinery_blue_iron#5.in.0"
+    ],
+    [
+     "boundary#6",
+     "refinery_blue_iron#6.in.0"
+    ],
+    [
+     "boundary#7",
+     "refinery_blue_iron#7.in.0"
+    ],
+    [
+     "boundary#8",
+     "refinery_blue_iron#8.in.0"
+    ],
+    [
+     "boundary#9",
+     "refinery_blue_iron#9.in.0"
+    ],
+    [
+     "boundary#10",
+     "refinery_blue_iron#10.in.0"
+    ],
+    [
+     "boundary#11",
+     "refinery_blue_iron#11.in.0"
+    ],
+    [
+     "boundary#12",
+     "refinery_blue_iron#12.in.0"
+    ],
+    [
+     "boundary#13",
+     "refinery_blue_iron#13.in.0"
+    ],
+    [
+     "boundary#14",
+     "refinery_blue_iron#14.in.0"
+    ],
+    [
+     "boundary#15",
+     "refinery_blue_iron#15.in.0"
+    ],
+    [
+     "boundary#16",
+     "refinery_blue_iron#16.in.0"
+    ],
+    [
+     "boundary#17",
+     "refinery_blue_iron#17.in.0"
+    ],
+    [
+     "boundary#18",
+     "refinery_blue_iron#18.in.0"
+    ],
+    [
+     "boundary#19",
+     "refinery_blue_iron#19.in.0"
+    ],
+    [
+     "boundary#20",
+     "refinery_blue_iron#20.in.0"
+    ],
+    [
+     "boundary#21",
+     "refinery_blue_iron#21.in.0"
+    ],
+    [
+     "boundary#22",
+     "refinery_blue_iron#22.in.0"
+    ],
+    [
+     "boundary#23",
+     "refinery_blue_iron#23.in.0"
+    ],
+    [
+     "boundary#24",
+     "refinery_blue_iron#24.in.0"
+    ],
+    [
+     "boundary#25",
+     "refinery_blue_iron#25.in.0"
+    ],
+    [
+     "boundary#26",
+     "refinery_blue_iron#26.in.0"
+    ],
+    [
+     "boundary#27",
+     "refinery_blue_iron#27.in.0"
+    ],
+    [
+     "boundary#28",
+     "refinery_blue_iron#28.in.0"
+    ],
+    [
+     "boundary#29",
+     "refinery_blue_iron#29.in.0"
+    ],
+    [
+     "boundary#30",
+     "refinery_blue_iron#30.in.0"
+    ],
+    [
+     "boundary#31",
+     "refinery_blue_iron#31.in.0"
+    ],
+    [
+     "boundary#32",
+     "refinery_blue_iron#32.in.0"
+    ],
+    [
+     "boundary#33",
+     "refinery_blue_iron#33.in.0"
+    ]
+   ]
+  },
+  "blue_iron_powder": {
+   "producer_lanes": 34,
+   "consumer_lanes": 34,
+   "total_rate": "34",
+   "producer_lane_rates": [
+    [
+     "crusher_blue_iron#0.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#1.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#2.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#3.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#4.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#5.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#6.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#7.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#8.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#9.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#10.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#11.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#12.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#13.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#14.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#15.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#16.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#17.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#18.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#19.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#20.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#21.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#22.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#23.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#24.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#25.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#26.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#27.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#28.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#29.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#30.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#31.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#32.out.0",
+     "1"
+    ],
+    [
+     "crusher_blue_iron#33.out.0",
+     "1"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "grinder_dense_blue_iron#0.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#0.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#1.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#1.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#2.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#2.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#3.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#3.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#4.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#4.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#5.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#5.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#6.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#6.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#7.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#7.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#8.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#8.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#9.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#9.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#10.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#10.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#11.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#11.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#12.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#12.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#13.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#13.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#14.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#14.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#15.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#15.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#16.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#16.in.1",
+     "1"
+    ]
+   ],
+   "split_free": true,
+   "method": "sorted_bijection",
+   "verify": "ok",
+   "assignment": [
+    [
+     "crusher_blue_iron#0.out.0",
+     "grinder_dense_blue_iron#0.in.0"
+    ],
+    [
+     "crusher_blue_iron#1.out.0",
+     "grinder_dense_blue_iron#0.in.1"
+    ],
+    [
+     "crusher_blue_iron#2.out.0",
+     "grinder_dense_blue_iron#1.in.0"
+    ],
+    [
+     "crusher_blue_iron#3.out.0",
+     "grinder_dense_blue_iron#1.in.1"
+    ],
+    [
+     "crusher_blue_iron#4.out.0",
+     "grinder_dense_blue_iron#2.in.0"
+    ],
+    [
+     "crusher_blue_iron#5.out.0",
+     "grinder_dense_blue_iron#2.in.1"
+    ],
+    [
+     "crusher_blue_iron#6.out.0",
+     "grinder_dense_blue_iron#3.in.0"
+    ],
+    [
+     "crusher_blue_iron#7.out.0",
+     "grinder_dense_blue_iron#3.in.1"
+    ],
+    [
+     "crusher_blue_iron#8.out.0",
+     "grinder_dense_blue_iron#4.in.0"
+    ],
+    [
+     "crusher_blue_iron#9.out.0",
+     "grinder_dense_blue_iron#4.in.1"
+    ],
+    [
+     "crusher_blue_iron#10.out.0",
+     "grinder_dense_blue_iron#5.in.0"
+    ],
+    [
+     "crusher_blue_iron#11.out.0",
+     "grinder_dense_blue_iron#5.in.1"
+    ],
+    [
+     "crusher_blue_iron#12.out.0",
+     "grinder_dense_blue_iron#6.in.0"
+    ],
+    [
+     "crusher_blue_iron#13.out.0",
+     "grinder_dense_blue_iron#6.in.1"
+    ],
+    [
+     "crusher_blue_iron#14.out.0",
+     "grinder_dense_blue_iron#7.in.0"
+    ],
+    [
+     "crusher_blue_iron#15.out.0",
+     "grinder_dense_blue_iron#7.in.1"
+    ],
+    [
+     "crusher_blue_iron#16.out.0",
+     "grinder_dense_blue_iron#8.in.0"
+    ],
+    [
+     "crusher_blue_iron#17.out.0",
+     "grinder_dense_blue_iron#8.in.1"
+    ],
+    [
+     "crusher_blue_iron#18.out.0",
+     "grinder_dense_blue_iron#9.in.0"
+    ],
+    [
+     "crusher_blue_iron#19.out.0",
+     "grinder_dense_blue_iron#9.in.1"
+    ],
+    [
+     "crusher_blue_iron#20.out.0",
+     "grinder_dense_blue_iron#10.in.0"
+    ],
+    [
+     "crusher_blue_iron#21.out.0",
+     "grinder_dense_blue_iron#10.in.1"
+    ],
+    [
+     "crusher_blue_iron#22.out.0",
+     "grinder_dense_blue_iron#11.in.0"
+    ],
+    [
+     "crusher_blue_iron#23.out.0",
+     "grinder_dense_blue_iron#11.in.1"
+    ],
+    [
+     "crusher_blue_iron#24.out.0",
+     "grinder_dense_blue_iron#12.in.0"
+    ],
+    [
+     "crusher_blue_iron#25.out.0",
+     "grinder_dense_blue_iron#12.in.1"
+    ],
+    [
+     "crusher_blue_iron#26.out.0",
+     "grinder_dense_blue_iron#13.in.0"
+    ],
+    [
+     "crusher_blue_iron#27.out.0",
+     "grinder_dense_blue_iron#13.in.1"
+    ],
+    [
+     "crusher_blue_iron#28.out.0",
+     "grinder_dense_blue_iron#14.in.0"
+    ],
+    [
+     "crusher_blue_iron#29.out.0",
+     "grinder_dense_blue_iron#14.in.1"
+    ],
+    [
+     "crusher_blue_iron#30.out.0",
+     "grinder_dense_blue_iron#15.in.0"
+    ],
+    [
+     "crusher_blue_iron#31.out.0",
+     "grinder_dense_blue_iron#15.in.1"
+    ],
+    [
+     "crusher_blue_iron#32.out.0",
+     "grinder_dense_blue_iron#16.in.0"
+    ],
+    [
+     "crusher_blue_iron#33.out.0",
+     "grinder_dense_blue_iron#16.in.1"
+    ]
+   ]
+  },
+  "buckwheat": {
+   "producer_lanes": 11,
+   "consumer_lanes": 12,
+   "total_rate": "11",
+   "producer_lane_rates": [
+    [
+     "planter_buckwheat#0.out.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#1.out.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#2.out.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#3.out.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#4.out.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#5.out.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#6.out.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#7.out.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#8.out.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#9.out.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#10.out.0",
+     "1"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "crusher_buckwheat#0.in.0",
+     "1"
+    ],
+    [
+     "crusher_buckwheat#1.in.0",
+     "1"
+    ],
+    [
+     "crusher_buckwheat#2.in.0",
+     "1"
+    ],
+    [
+     "crusher_buckwheat#3.in.0",
+     "1"
+    ],
+    [
+     "crusher_buckwheat#4.in.0",
+     "1"
+    ],
+    [
+     "crusher_buckwheat#5.in.0",
+     "1/2"
+    ],
+    [
+     "seed_collector_buckwheat#0.in.0",
+     "1"
+    ],
+    [
+     "seed_collector_buckwheat#1.in.0",
+     "1"
+    ],
+    [
+     "seed_collector_buckwheat#2.in.0",
+     "1"
+    ],
+    [
+     "seed_collector_buckwheat#3.in.0",
+     "1"
+    ],
+    [
+     "seed_collector_buckwheat#4.in.0",
+     "1"
+    ],
+    [
+     "seed_collector_buckwheat#5.in.0",
+     "1/2"
+    ]
+   ],
+   "split_free": false,
+   "method": "pigeonhole",
+   "verify": "no assignment",
+   "assignment": null
+  },
+  "buckwheat_powder": {
+   "producer_lanes": 11,
+   "consumer_lanes": 11,
+   "total_rate": "11",
+   "producer_lane_rates": [
+    [
+     "crusher_buckwheat#0.out.0",
+     "1"
+    ],
+    [
+     "crusher_buckwheat#0.out.1",
+     "1"
+    ],
+    [
+     "crusher_buckwheat#1.out.0",
+     "1"
+    ],
+    [
+     "crusher_buckwheat#1.out.1",
+     "1"
+    ],
+    [
+     "crusher_buckwheat#2.out.0",
+     "1"
+    ],
+    [
+     "crusher_buckwheat#2.out.1",
+     "1"
+    ],
+    [
+     "crusher_buckwheat#3.out.0",
+     "1"
+    ],
+    [
+     "crusher_buckwheat#3.out.1",
+     "1"
+    ],
+    [
+     "crusher_buckwheat#4.out.0",
+     "1"
+    ],
+    [
+     "crusher_buckwheat#4.out.1",
+     "1"
+    ],
+    [
+     "crusher_buckwheat#5.out.0",
+     "1"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "grinder_fine_buckwheat#0.in.0",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#0.in.1",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#1.in.0",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#1.in.1",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#2.in.0",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#2.in.1",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#3.in.0",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#3.in.1",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#4.in.0",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#4.in.1",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#5.in.0",
+     "1"
+    ]
+   ],
+   "split_free": true,
+   "method": "sorted_bijection",
+   "verify": "ok",
+   "assignment": [
+    [
+     "crusher_buckwheat#0.out.0",
+     "grinder_fine_buckwheat#0.in.0"
+    ],
+    [
+     "crusher_buckwheat#0.out.1",
+     "grinder_fine_buckwheat#0.in.1"
+    ],
+    [
+     "crusher_buckwheat#1.out.0",
+     "grinder_fine_buckwheat#1.in.0"
+    ],
+    [
+     "crusher_buckwheat#1.out.1",
+     "grinder_fine_buckwheat#1.in.1"
+    ],
+    [
+     "crusher_buckwheat#2.out.0",
+     "grinder_fine_buckwheat#2.in.0"
+    ],
+    [
+     "crusher_buckwheat#2.out.1",
+     "grinder_fine_buckwheat#2.in.1"
+    ],
+    [
+     "crusher_buckwheat#3.out.0",
+     "grinder_fine_buckwheat#3.in.0"
+    ],
+    [
+     "crusher_buckwheat#3.out.1",
+     "grinder_fine_buckwheat#3.in.1"
+    ],
+    [
+     "crusher_buckwheat#4.out.0",
+     "grinder_fine_buckwheat#4.in.0"
+    ],
+    [
+     "crusher_buckwheat#4.out.1",
+     "grinder_fine_buckwheat#4.in.1"
+    ],
+    [
+     "crusher_buckwheat#5.out.0",
+     "grinder_fine_buckwheat#5.in.0"
+    ]
+   ]
+  },
+  "buckwheat_seed": {
+   "producer_lanes": 11,
+   "consumer_lanes": 11,
+   "total_rate": "11",
+   "producer_lane_rates": [
+    [
+     "seed_collector_buckwheat#0.out.0",
+     "1"
+    ],
+    [
+     "seed_collector_buckwheat#0.out.1",
+     "1"
+    ],
+    [
+     "seed_collector_buckwheat#1.out.0",
+     "1"
+    ],
+    [
+     "seed_collector_buckwheat#1.out.1",
+     "1"
+    ],
+    [
+     "seed_collector_buckwheat#2.out.0",
+     "1"
+    ],
+    [
+     "seed_collector_buckwheat#2.out.1",
+     "1"
+    ],
+    [
+     "seed_collector_buckwheat#3.out.0",
+     "1"
+    ],
+    [
+     "seed_collector_buckwheat#3.out.1",
+     "1"
+    ],
+    [
+     "seed_collector_buckwheat#4.out.0",
+     "1"
+    ],
+    [
+     "seed_collector_buckwheat#4.out.1",
+     "1"
+    ],
+    [
+     "seed_collector_buckwheat#5.out.0",
+     "1"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "planter_buckwheat#0.in.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#1.in.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#2.in.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#3.in.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#4.in.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#5.in.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#6.in.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#7.in.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#8.in.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#9.in.0",
+     "1"
+    ],
+    [
+     "planter_buckwheat#10.in.0",
+     "1"
+    ]
+   ],
+   "split_free": true,
+   "method": "sorted_bijection",
+   "verify": "ok",
+   "assignment": [
+    [
+     "seed_collector_buckwheat#0.out.0",
+     "planter_buckwheat#0.in.0"
+    ],
+    [
+     "seed_collector_buckwheat#0.out.1",
+     "planter_buckwheat#1.in.0"
+    ],
+    [
+     "seed_collector_buckwheat#1.out.0",
+     "planter_buckwheat#2.in.0"
+    ],
+    [
+     "seed_collector_buckwheat#1.out.1",
+     "planter_buckwheat#3.in.0"
+    ],
+    [
+     "seed_collector_buckwheat#2.out.0",
+     "planter_buckwheat#4.in.0"
+    ],
+    [
+     "seed_collector_buckwheat#2.out.1",
+     "planter_buckwheat#5.in.0"
+    ],
+    [
+     "seed_collector_buckwheat#3.out.0",
+     "planter_buckwheat#6.in.0"
+    ],
+    [
+     "seed_collector_buckwheat#3.out.1",
+     "planter_buckwheat#7.in.0"
+    ],
+    [
+     "seed_collector_buckwheat#4.out.0",
+     "planter_buckwheat#8.in.0"
+    ],
+    [
+     "seed_collector_buckwheat#4.out.1",
+     "planter_buckwheat#9.in.0"
+    ],
+    [
+     "seed_collector_buckwheat#5.out.0",
+     "planter_buckwheat#10.in.0"
+    ]
+   ]
+  },
+  "dense_blue_iron_powder": {
+   "producer_lanes": 17,
+   "consumer_lanes": 17,
+   "total_rate": "17",
+   "producer_lane_rates": [
+    [
+     "grinder_dense_blue_iron#0.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#1.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#2.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#3.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#4.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#5.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#6.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#7.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#8.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#9.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#10.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#11.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#12.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#13.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#14.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#15.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#16.out.0",
+     "1"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "refinery_steel#0.in.0",
+     "1"
+    ],
+    [
+     "refinery_steel#1.in.0",
+     "1"
+    ],
+    [
+     "refinery_steel#2.in.0",
+     "1"
+    ],
+    [
+     "refinery_steel#3.in.0",
+     "1"
+    ],
+    [
+     "refinery_steel#4.in.0",
+     "1"
+    ],
+    [
+     "refinery_steel#5.in.0",
+     "1"
+    ],
+    [
+     "refinery_steel#6.in.0",
+     "1"
+    ],
+    [
+     "refinery_steel#7.in.0",
+     "1"
+    ],
+    [
+     "refinery_steel#8.in.0",
+     "1"
+    ],
+    [
+     "refinery_steel#9.in.0",
+     "1"
+    ],
+    [
+     "refinery_steel#10.in.0",
+     "1"
+    ],
+    [
+     "refinery_steel#11.in.0",
+     "1"
+    ],
+    [
+     "refinery_steel#12.in.0",
+     "1"
+    ],
+    [
+     "refinery_steel#13.in.0",
+     "1"
+    ],
+    [
+     "refinery_steel#14.in.0",
+     "1"
+    ],
+    [
+     "refinery_steel#15.in.0",
+     "1"
+    ],
+    [
+     "refinery_steel#16.in.0",
+     "1"
+    ]
+   ],
+   "split_free": true,
+   "method": "sorted_bijection",
+   "verify": "ok",
+   "assignment": [
+    [
+     "grinder_dense_blue_iron#0.out.0",
+     "refinery_steel#0.in.0"
+    ],
+    [
+     "grinder_dense_blue_iron#1.out.0",
+     "refinery_steel#1.in.0"
+    ],
+    [
+     "grinder_dense_blue_iron#2.out.0",
+     "refinery_steel#2.in.0"
+    ],
+    [
+     "grinder_dense_blue_iron#3.out.0",
+     "refinery_steel#3.in.0"
+    ],
+    [
+     "grinder_dense_blue_iron#4.out.0",
+     "refinery_steel#4.in.0"
+    ],
+    [
+     "grinder_dense_blue_iron#5.out.0",
+     "refinery_steel#5.in.0"
+    ],
+    [
+     "grinder_dense_blue_iron#6.out.0",
+     "refinery_steel#6.in.0"
+    ],
+    [
+     "grinder_dense_blue_iron#7.out.0",
+     "refinery_steel#7.in.0"
+    ],
+    [
+     "grinder_dense_blue_iron#8.out.0",
+     "refinery_steel#8.in.0"
+    ],
+    [
+     "grinder_dense_blue_iron#9.out.0",
+     "refinery_steel#9.in.0"
+    ],
+    [
+     "grinder_dense_blue_iron#10.out.0",
+     "refinery_steel#10.in.0"
+    ],
+    [
+     "grinder_dense_blue_iron#11.out.0",
+     "refinery_steel#11.in.0"
+    ],
+    [
+     "grinder_dense_blue_iron#12.out.0",
+     "refinery_steel#12.in.0"
+    ],
+    [
+     "grinder_dense_blue_iron#13.out.0",
+     "refinery_steel#13.in.0"
+    ],
+    [
+     "grinder_dense_blue_iron#14.out.0",
+     "refinery_steel#14.in.0"
+    ],
+    [
+     "grinder_dense_blue_iron#15.out.0",
+     "refinery_steel#15.in.0"
+    ],
+    [
+     "grinder_dense_blue_iron#16.out.0",
+     "refinery_steel#16.in.0"
+    ]
+   ]
+  },
+  "dense_source_powder": {
+   "producer_lanes": 9,
+   "consumer_lanes": 9,
+   "total_rate": "9",
+   "producer_lane_rates": [
+    [
+     "grinder_dense_source#0.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#1.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#2.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#3.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#4.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#5.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#6.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#7.out.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#8.out.0",
+     "1"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "packaging_battery#0.in.0",
+     "1"
+    ],
+    [
+     "packaging_battery#0.in.1",
+     "1"
+    ],
+    [
+     "packaging_battery#0.in.2",
+     "1"
+    ],
+    [
+     "packaging_battery#1.in.0",
+     "1"
+    ],
+    [
+     "packaging_battery#1.in.1",
+     "1"
+    ],
+    [
+     "packaging_battery#1.in.2",
+     "1"
+    ],
+    [
+     "packaging_battery#2.in.0",
+     "1"
+    ],
+    [
+     "packaging_battery#2.in.1",
+     "1"
+    ],
+    [
+     "packaging_battery#2.in.2",
+     "1"
+    ]
+   ],
+   "split_free": true,
+   "method": "sorted_bijection",
+   "verify": "ok",
+   "assignment": [
+    [
+     "grinder_dense_source#0.out.0",
+     "packaging_battery#0.in.0"
+    ],
+    [
+     "grinder_dense_source#1.out.0",
+     "packaging_battery#0.in.1"
+    ],
+    [
+     "grinder_dense_source#2.out.0",
+     "packaging_battery#0.in.2"
+    ],
+    [
+     "grinder_dense_source#3.out.0",
+     "packaging_battery#1.in.0"
+    ],
+    [
+     "grinder_dense_source#4.out.0",
+     "packaging_battery#1.in.1"
+    ],
+    [
+     "grinder_dense_source#5.out.0",
+     "packaging_battery#1.in.2"
+    ],
+    [
+     "grinder_dense_source#6.out.0",
+     "packaging_battery#2.in.0"
+    ],
+    [
+     "grinder_dense_source#7.out.0",
+     "packaging_battery#2.in.1"
+    ],
+    [
+     "grinder_dense_source#8.out.0",
+     "packaging_battery#2.in.2"
+    ]
+   ]
+  },
+  "fine_buckwheat_powder": {
+   "producer_lanes": 6,
+   "consumer_lanes": 6,
+   "total_rate": "11/2",
+   "producer_lane_rates": [
+    [
+     "grinder_fine_buckwheat#0.out.0",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#1.out.0",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#2.out.0",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#3.out.0",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#4.out.0",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#5.out.0",
+     "1/2"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "filling_capsule#0.in.0",
+     "1"
+    ],
+    [
+     "filling_capsule#0.in.1",
+     "1"
+    ],
+    [
+     "filling_capsule#1.in.0",
+     "1"
+    ],
+    [
+     "filling_capsule#1.in.1",
+     "1"
+    ],
+    [
+     "filling_capsule#2.in.0",
+     "1"
+    ],
+    [
+     "filling_capsule#2.in.1",
+     "1/2"
+    ]
+   ],
+   "split_free": true,
+   "method": "sorted_bijection",
+   "verify": "ok",
+   "assignment": [
+    [
+     "grinder_fine_buckwheat#5.out.0",
+     "filling_capsule#2.in.1"
+    ],
+    [
+     "grinder_fine_buckwheat#0.out.0",
+     "filling_capsule#0.in.0"
+    ],
+    [
+     "grinder_fine_buckwheat#1.out.0",
+     "filling_capsule#0.in.1"
+    ],
+    [
+     "grinder_fine_buckwheat#2.out.0",
+     "filling_capsule#1.in.0"
+    ],
+    [
+     "grinder_fine_buckwheat#3.out.0",
+     "filling_capsule#1.in.1"
+    ],
+    [
+     "grinder_fine_buckwheat#4.out.0",
+     "filling_capsule#2.in.0"
+    ]
+   ]
+  },
+  "qiaoyu_capsule": {
+   "producer_lanes": 3,
+   "consumer_lanes": 1,
+   "total_rate": "11/20",
+   "producer_lane_rates": [
+    [
+     "filling_capsule#0.out.0",
+     "1/5"
+    ],
+    [
+     "filling_capsule#1.out.0",
+     "1/5"
+    ],
+    [
+     "filling_capsule#2.out.0",
+     "3/20"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "generic_input.0",
+     "11/20"
+    ]
+   ],
+   "split_free": true,
+   "method": "cpsat",
+   "verify": "ok",
+   "assignment": [
+    [
+     "filling_capsule#0.out.0",
+     "generic_input.0"
+    ],
+    [
+     "filling_capsule#1.out.0",
+     "generic_input.0"
+    ],
+    [
+     "filling_capsule#2.out.0",
+     "generic_input.0"
+    ]
+   ]
+  },
+  "sandleaf": {
+   "producer_lanes": 21,
+   "consumer_lanes": 22,
+   "total_rate": "21",
+   "producer_lane_rates": [
+    [
+     "planter_sandleaf#0.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#1.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#2.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#3.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#4.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#5.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#6.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#7.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#8.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#9.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#10.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#11.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#12.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#13.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#14.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#15.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#16.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#17.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#18.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#19.out.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#20.out.0",
+     "1"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "crusher_sandleaf#0.in.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#1.in.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#2.in.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#3.in.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#4.in.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#5.in.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#6.in.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#7.in.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#8.in.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#9.in.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#10.in.0",
+     "1/2"
+    ],
+    [
+     "seed_collector_sandleaf#0.in.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#1.in.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#2.in.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#3.in.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#4.in.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#5.in.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#6.in.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#7.in.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#8.in.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#9.in.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#10.in.0",
+     "1/2"
+    ]
+   ],
+   "split_free": false,
+   "method": "pigeonhole",
+   "verify": "no assignment",
+   "assignment": null
+  },
+  "sandleaf_powder": {
+   "producer_lanes": 32,
+   "consumer_lanes": 32,
+   "total_rate": "63/2",
+   "producer_lane_rates": [
+    [
+     "crusher_sandleaf#0.out.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#0.out.1",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#0.out.2",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#1.out.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#1.out.1",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#1.out.2",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#2.out.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#2.out.1",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#2.out.2",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#3.out.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#3.out.1",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#3.out.2",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#4.out.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#4.out.1",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#4.out.2",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#5.out.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#5.out.1",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#5.out.2",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#6.out.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#6.out.1",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#6.out.2",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#7.out.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#7.out.1",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#7.out.2",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#8.out.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#8.out.1",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#8.out.2",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#9.out.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#9.out.1",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#9.out.2",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#10.out.0",
+     "1"
+    ],
+    [
+     "crusher_sandleaf#10.out.1",
+     "1/2"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "grinder_dense_blue_iron#0.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#1.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#2.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#3.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#4.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#5.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#6.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#7.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#8.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#9.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#10.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#11.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#12.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#13.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#14.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#15.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_blue_iron#16.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#0.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#1.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#2.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#3.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#4.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#5.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#6.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#7.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#8.in.0",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#0.in.0",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#1.in.0",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#2.in.0",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#3.in.0",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#4.in.0",
+     "1"
+    ],
+    [
+     "grinder_fine_buckwheat#5.in.0",
+     "1/2"
+    ]
+   ],
+   "split_free": true,
+   "method": "sorted_bijection",
+   "verify": "ok",
+   "assignment": [
+    [
+     "crusher_sandleaf#10.out.1",
+     "grinder_fine_buckwheat#5.in.0"
+    ],
+    [
+     "crusher_sandleaf#0.out.0",
+     "grinder_dense_blue_iron#0.in.0"
+    ],
+    [
+     "crusher_sandleaf#0.out.1",
+     "grinder_dense_blue_iron#1.in.0"
+    ],
+    [
+     "crusher_sandleaf#0.out.2",
+     "grinder_dense_blue_iron#2.in.0"
+    ],
+    [
+     "crusher_sandleaf#1.out.0",
+     "grinder_dense_blue_iron#3.in.0"
+    ],
+    [
+     "crusher_sandleaf#1.out.1",
+     "grinder_dense_blue_iron#4.in.0"
+    ],
+    [
+     "crusher_sandleaf#1.out.2",
+     "grinder_dense_blue_iron#5.in.0"
+    ],
+    [
+     "crusher_sandleaf#2.out.0",
+     "grinder_dense_blue_iron#6.in.0"
+    ],
+    [
+     "crusher_sandleaf#2.out.1",
+     "grinder_dense_blue_iron#7.in.0"
+    ],
+    [
+     "crusher_sandleaf#2.out.2",
+     "grinder_dense_blue_iron#8.in.0"
+    ],
+    [
+     "crusher_sandleaf#3.out.0",
+     "grinder_dense_blue_iron#9.in.0"
+    ],
+    [
+     "crusher_sandleaf#3.out.1",
+     "grinder_dense_blue_iron#10.in.0"
+    ],
+    [
+     "crusher_sandleaf#3.out.2",
+     "grinder_dense_blue_iron#11.in.0"
+    ],
+    [
+     "crusher_sandleaf#4.out.0",
+     "grinder_dense_blue_iron#12.in.0"
+    ],
+    [
+     "crusher_sandleaf#4.out.1",
+     "grinder_dense_blue_iron#13.in.0"
+    ],
+    [
+     "crusher_sandleaf#4.out.2",
+     "grinder_dense_blue_iron#14.in.0"
+    ],
+    [
+     "crusher_sandleaf#5.out.0",
+     "grinder_dense_blue_iron#15.in.0"
+    ],
+    [
+     "crusher_sandleaf#5.out.1",
+     "grinder_dense_blue_iron#16.in.0"
+    ],
+    [
+     "crusher_sandleaf#5.out.2",
+     "grinder_dense_source#0.in.0"
+    ],
+    [
+     "crusher_sandleaf#6.out.0",
+     "grinder_dense_source#1.in.0"
+    ],
+    [
+     "crusher_sandleaf#6.out.1",
+     "grinder_dense_source#2.in.0"
+    ],
+    [
+     "crusher_sandleaf#6.out.2",
+     "grinder_dense_source#3.in.0"
+    ],
+    [
+     "crusher_sandleaf#7.out.0",
+     "grinder_dense_source#4.in.0"
+    ],
+    [
+     "crusher_sandleaf#7.out.1",
+     "grinder_dense_source#5.in.0"
+    ],
+    [
+     "crusher_sandleaf#7.out.2",
+     "grinder_dense_source#6.in.0"
+    ],
+    [
+     "crusher_sandleaf#8.out.0",
+     "grinder_dense_source#7.in.0"
+    ],
+    [
+     "crusher_sandleaf#8.out.1",
+     "grinder_dense_source#8.in.0"
+    ],
+    [
+     "crusher_sandleaf#8.out.2",
+     "grinder_fine_buckwheat#0.in.0"
+    ],
+    [
+     "crusher_sandleaf#9.out.0",
+     "grinder_fine_buckwheat#1.in.0"
+    ],
+    [
+     "crusher_sandleaf#9.out.1",
+     "grinder_fine_buckwheat#2.in.0"
+    ],
+    [
+     "crusher_sandleaf#9.out.2",
+     "grinder_fine_buckwheat#3.in.0"
+    ],
+    [
+     "crusher_sandleaf#10.out.0",
+     "grinder_fine_buckwheat#4.in.0"
+    ]
+   ]
+  },
+  "sandleaf_seed": {
+   "producer_lanes": 21,
+   "consumer_lanes": 21,
+   "total_rate": "21",
+   "producer_lane_rates": [
+    [
+     "seed_collector_sandleaf#0.out.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#0.out.1",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#1.out.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#1.out.1",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#2.out.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#2.out.1",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#3.out.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#3.out.1",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#4.out.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#4.out.1",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#5.out.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#5.out.1",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#6.out.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#6.out.1",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#7.out.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#7.out.1",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#8.out.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#8.out.1",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#9.out.0",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#9.out.1",
+     "1"
+    ],
+    [
+     "seed_collector_sandleaf#10.out.0",
+     "1"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "planter_sandleaf#0.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#1.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#2.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#3.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#4.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#5.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#6.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#7.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#8.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#9.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#10.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#11.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#12.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#13.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#14.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#15.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#16.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#17.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#18.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#19.in.0",
+     "1"
+    ],
+    [
+     "planter_sandleaf#20.in.0",
+     "1"
+    ]
+   ],
+   "split_free": true,
+   "method": "sorted_bijection",
+   "verify": "ok",
+   "assignment": [
+    [
+     "seed_collector_sandleaf#0.out.0",
+     "planter_sandleaf#0.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#0.out.1",
+     "planter_sandleaf#1.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#1.out.0",
+     "planter_sandleaf#2.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#1.out.1",
+     "planter_sandleaf#3.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#2.out.0",
+     "planter_sandleaf#4.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#2.out.1",
+     "planter_sandleaf#5.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#3.out.0",
+     "planter_sandleaf#6.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#3.out.1",
+     "planter_sandleaf#7.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#4.out.0",
+     "planter_sandleaf#8.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#4.out.1",
+     "planter_sandleaf#9.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#5.out.0",
+     "planter_sandleaf#10.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#5.out.1",
+     "planter_sandleaf#11.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#6.out.0",
+     "planter_sandleaf#12.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#6.out.1",
+     "planter_sandleaf#13.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#7.out.0",
+     "planter_sandleaf#14.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#7.out.1",
+     "planter_sandleaf#15.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#8.out.0",
+     "planter_sandleaf#16.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#8.out.1",
+     "planter_sandleaf#17.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#9.out.0",
+     "planter_sandleaf#18.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#9.out.1",
+     "planter_sandleaf#19.in.0"
+    ],
+    [
+     "seed_collector_sandleaf#10.out.0",
+     "planter_sandleaf#20.in.0"
+    ]
+   ]
+  },
+  "source_ore": {
+   "producer_lanes": 18,
+   "consumer_lanes": 18,
+   "total_rate": "18",
+   "producer_lane_rates": [
+    [
+     "boundary#0",
+     "1"
+    ],
+    [
+     "boundary#1",
+     "1"
+    ],
+    [
+     "boundary#2",
+     "1"
+    ],
+    [
+     "boundary#3",
+     "1"
+    ],
+    [
+     "boundary#4",
+     "1"
+    ],
+    [
+     "boundary#5",
+     "1"
+    ],
+    [
+     "boundary#6",
+     "1"
+    ],
+    [
+     "boundary#7",
+     "1"
+    ],
+    [
+     "boundary#8",
+     "1"
+    ],
+    [
+     "boundary#9",
+     "1"
+    ],
+    [
+     "boundary#10",
+     "1"
+    ],
+    [
+     "boundary#11",
+     "1"
+    ],
+    [
+     "boundary#12",
+     "1"
+    ],
+    [
+     "boundary#13",
+     "1"
+    ],
+    [
+     "boundary#14",
+     "1"
+    ],
+    [
+     "boundary#15",
+     "1"
+    ],
+    [
+     "boundary#16",
+     "1"
+    ],
+    [
+     "boundary#17",
+     "1"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "crusher_source#0.in.0",
+     "1"
+    ],
+    [
+     "crusher_source#1.in.0",
+     "1"
+    ],
+    [
+     "crusher_source#2.in.0",
+     "1"
+    ],
+    [
+     "crusher_source#3.in.0",
+     "1"
+    ],
+    [
+     "crusher_source#4.in.0",
+     "1"
+    ],
+    [
+     "crusher_source#5.in.0",
+     "1"
+    ],
+    [
+     "crusher_source#6.in.0",
+     "1"
+    ],
+    [
+     "crusher_source#7.in.0",
+     "1"
+    ],
+    [
+     "crusher_source#8.in.0",
+     "1"
+    ],
+    [
+     "crusher_source#9.in.0",
+     "1"
+    ],
+    [
+     "crusher_source#10.in.0",
+     "1"
+    ],
+    [
+     "crusher_source#11.in.0",
+     "1"
+    ],
+    [
+     "crusher_source#12.in.0",
+     "1"
+    ],
+    [
+     "crusher_source#13.in.0",
+     "1"
+    ],
+    [
+     "crusher_source#14.in.0",
+     "1"
+    ],
+    [
+     "crusher_source#15.in.0",
+     "1"
+    ],
+    [
+     "crusher_source#16.in.0",
+     "1"
+    ],
+    [
+     "crusher_source#17.in.0",
+     "1"
+    ]
+   ],
+   "split_free": true,
+   "method": "sorted_bijection",
+   "verify": "ok",
+   "assignment": [
+    [
+     "boundary#0",
+     "crusher_source#0.in.0"
+    ],
+    [
+     "boundary#1",
+     "crusher_source#1.in.0"
+    ],
+    [
+     "boundary#2",
+     "crusher_source#2.in.0"
+    ],
+    [
+     "boundary#3",
+     "crusher_source#3.in.0"
+    ],
+    [
+     "boundary#4",
+     "crusher_source#4.in.0"
+    ],
+    [
+     "boundary#5",
+     "crusher_source#5.in.0"
+    ],
+    [
+     "boundary#6",
+     "crusher_source#6.in.0"
+    ],
+    [
+     "boundary#7",
+     "crusher_source#7.in.0"
+    ],
+    [
+     "boundary#8",
+     "crusher_source#8.in.0"
+    ],
+    [
+     "boundary#9",
+     "crusher_source#9.in.0"
+    ],
+    [
+     "boundary#10",
+     "crusher_source#10.in.0"
+    ],
+    [
+     "boundary#11",
+     "crusher_source#11.in.0"
+    ],
+    [
+     "boundary#12",
+     "crusher_source#12.in.0"
+    ],
+    [
+     "boundary#13",
+     "crusher_source#13.in.0"
+    ],
+    [
+     "boundary#14",
+     "crusher_source#14.in.0"
+    ],
+    [
+     "boundary#15",
+     "crusher_source#15.in.0"
+    ],
+    [
+     "boundary#16",
+     "crusher_source#16.in.0"
+    ],
+    [
+     "boundary#17",
+     "crusher_source#17.in.0"
+    ]
+   ]
+  },
+  "source_powder": {
+   "producer_lanes": 18,
+   "consumer_lanes": 18,
+   "total_rate": "18",
+   "producer_lane_rates": [
+    [
+     "crusher_source#0.out.0",
+     "1"
+    ],
+    [
+     "crusher_source#1.out.0",
+     "1"
+    ],
+    [
+     "crusher_source#2.out.0",
+     "1"
+    ],
+    [
+     "crusher_source#3.out.0",
+     "1"
+    ],
+    [
+     "crusher_source#4.out.0",
+     "1"
+    ],
+    [
+     "crusher_source#5.out.0",
+     "1"
+    ],
+    [
+     "crusher_source#6.out.0",
+     "1"
+    ],
+    [
+     "crusher_source#7.out.0",
+     "1"
+    ],
+    [
+     "crusher_source#8.out.0",
+     "1"
+    ],
+    [
+     "crusher_source#9.out.0",
+     "1"
+    ],
+    [
+     "crusher_source#10.out.0",
+     "1"
+    ],
+    [
+     "crusher_source#11.out.0",
+     "1"
+    ],
+    [
+     "crusher_source#12.out.0",
+     "1"
+    ],
+    [
+     "crusher_source#13.out.0",
+     "1"
+    ],
+    [
+     "crusher_source#14.out.0",
+     "1"
+    ],
+    [
+     "crusher_source#15.out.0",
+     "1"
+    ],
+    [
+     "crusher_source#16.out.0",
+     "1"
+    ],
+    [
+     "crusher_source#17.out.0",
+     "1"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "grinder_dense_source#0.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#0.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_source#1.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#1.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_source#2.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#2.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_source#3.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#3.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_source#4.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#4.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_source#5.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#5.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_source#6.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#6.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_source#7.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#7.in.1",
+     "1"
+    ],
+    [
+     "grinder_dense_source#8.in.0",
+     "1"
+    ],
+    [
+     "grinder_dense_source#8.in.1",
+     "1"
+    ]
+   ],
+   "split_free": true,
+   "method": "sorted_bijection",
+   "verify": "ok",
+   "assignment": [
+    [
+     "crusher_source#0.out.0",
+     "grinder_dense_source#0.in.0"
+    ],
+    [
+     "crusher_source#1.out.0",
+     "grinder_dense_source#0.in.1"
+    ],
+    [
+     "crusher_source#2.out.0",
+     "grinder_dense_source#1.in.0"
+    ],
+    [
+     "crusher_source#3.out.0",
+     "grinder_dense_source#1.in.1"
+    ],
+    [
+     "crusher_source#4.out.0",
+     "grinder_dense_source#2.in.0"
+    ],
+    [
+     "crusher_source#5.out.0",
+     "grinder_dense_source#2.in.1"
+    ],
+    [
+     "crusher_source#6.out.0",
+     "grinder_dense_source#3.in.0"
+    ],
+    [
+     "crusher_source#7.out.0",
+     "grinder_dense_source#3.in.1"
+    ],
+    [
+     "crusher_source#8.out.0",
+     "grinder_dense_source#4.in.0"
+    ],
+    [
+     "crusher_source#9.out.0",
+     "grinder_dense_source#4.in.1"
+    ],
+    [
+     "crusher_source#10.out.0",
+     "grinder_dense_source#5.in.0"
+    ],
+    [
+     "crusher_source#11.out.0",
+     "grinder_dense_source#5.in.1"
+    ],
+    [
+     "crusher_source#12.out.0",
+     "grinder_dense_source#6.in.0"
+    ],
+    [
+     "crusher_source#13.out.0",
+     "grinder_dense_source#6.in.1"
+    ],
+    [
+     "crusher_source#14.out.0",
+     "grinder_dense_source#7.in.0"
+    ],
+    [
+     "crusher_source#15.out.0",
+     "grinder_dense_source#7.in.1"
+    ],
+    [
+     "crusher_source#16.out.0",
+     "grinder_dense_source#8.in.0"
+    ],
+    [
+     "crusher_source#17.out.0",
+     "grinder_dense_source#8.in.1"
+    ]
+   ]
+  },
+  "steel_block": {
+   "producer_lanes": 17,
+   "consumer_lanes": 17,
+   "total_rate": "17",
+   "producer_lane_rates": [
+    [
+     "refinery_steel#0.out.0",
+     "1"
+    ],
+    [
+     "refinery_steel#1.out.0",
+     "1"
+    ],
+    [
+     "refinery_steel#2.out.0",
+     "1"
+    ],
+    [
+     "refinery_steel#3.out.0",
+     "1"
+    ],
+    [
+     "refinery_steel#4.out.0",
+     "1"
+    ],
+    [
+     "refinery_steel#5.out.0",
+     "1"
+    ],
+    [
+     "refinery_steel#6.out.0",
+     "1"
+    ],
+    [
+     "refinery_steel#7.out.0",
+     "1"
+    ],
+    [
+     "refinery_steel#8.out.0",
+     "1"
+    ],
+    [
+     "refinery_steel#9.out.0",
+     "1"
+    ],
+    [
+     "refinery_steel#10.out.0",
+     "1"
+    ],
+    [
+     "refinery_steel#11.out.0",
+     "1"
+    ],
+    [
+     "refinery_steel#12.out.0",
+     "1"
+    ],
+    [
+     "refinery_steel#13.out.0",
+     "1"
+    ],
+    [
+     "refinery_steel#14.out.0",
+     "1"
+    ],
+    [
+     "refinery_steel#15.out.0",
+     "1"
+    ],
+    [
+     "refinery_steel#16.out.0",
+     "1"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "molding_bottle#0.in.0",
+     "1"
+    ],
+    [
+     "molding_bottle#0.in.1",
+     "1"
+    ],
+    [
+     "molding_bottle#1.in.0",
+     "1"
+    ],
+    [
+     "molding_bottle#1.in.1",
+     "1"
+    ],
+    [
+     "molding_bottle#2.in.0",
+     "1"
+    ],
+    [
+     "molding_bottle#2.in.1",
+     "1"
+    ],
+    [
+     "molding_bottle#3.in.0",
+     "1"
+    ],
+    [
+     "molding_bottle#3.in.1",
+     "1"
+    ],
+    [
+     "molding_bottle#4.in.0",
+     "1"
+    ],
+    [
+     "molding_bottle#4.in.1",
+     "1"
+    ],
+    [
+     "molding_bottle#5.in.0",
+     "1"
+    ],
+    [
+     "parts_maker#0.in.0",
+     "1"
+    ],
+    [
+     "parts_maker#1.in.0",
+     "1"
+    ],
+    [
+     "parts_maker#2.in.0",
+     "1"
+    ],
+    [
+     "parts_maker#3.in.0",
+     "1"
+    ],
+    [
+     "parts_maker#4.in.0",
+     "1"
+    ],
+    [
+     "parts_maker#5.in.0",
+     "1"
+    ]
+   ],
+   "split_free": true,
+   "method": "sorted_bijection",
+   "verify": "ok",
+   "assignment": [
+    [
+     "refinery_steel#0.out.0",
+     "molding_bottle#0.in.0"
+    ],
+    [
+     "refinery_steel#1.out.0",
+     "molding_bottle#0.in.1"
+    ],
+    [
+     "refinery_steel#2.out.0",
+     "molding_bottle#1.in.0"
+    ],
+    [
+     "refinery_steel#3.out.0",
+     "molding_bottle#1.in.1"
+    ],
+    [
+     "refinery_steel#4.out.0",
+     "molding_bottle#2.in.0"
+    ],
+    [
+     "refinery_steel#5.out.0",
+     "molding_bottle#2.in.1"
+    ],
+    [
+     "refinery_steel#6.out.0",
+     "molding_bottle#3.in.0"
+    ],
+    [
+     "refinery_steel#7.out.0",
+     "molding_bottle#3.in.1"
+    ],
+    [
+     "refinery_steel#8.out.0",
+     "molding_bottle#4.in.0"
+    ],
+    [
+     "refinery_steel#9.out.0",
+     "molding_bottle#4.in.1"
+    ],
+    [
+     "refinery_steel#10.out.0",
+     "molding_bottle#5.in.0"
+    ],
+    [
+     "refinery_steel#11.out.0",
+     "parts_maker#0.in.0"
+    ],
+    [
+     "refinery_steel#12.out.0",
+     "parts_maker#1.in.0"
+    ],
+    [
+     "refinery_steel#13.out.0",
+     "parts_maker#2.in.0"
+    ],
+    [
+     "refinery_steel#14.out.0",
+     "parts_maker#3.in.0"
+    ],
+    [
+     "refinery_steel#15.out.0",
+     "parts_maker#4.in.0"
+    ],
+    [
+     "refinery_steel#16.out.0",
+     "parts_maker#5.in.0"
+    ]
+   ]
+  },
+  "steel_bottle": {
+   "producer_lanes": 6,
+   "consumer_lanes": 6,
+   "total_rate": "11/2",
+   "producer_lane_rates": [
+    [
+     "molding_bottle#0.out.0",
+     "1"
+    ],
+    [
+     "molding_bottle#1.out.0",
+     "1"
+    ],
+    [
+     "molding_bottle#2.out.0",
+     "1"
+    ],
+    [
+     "molding_bottle#3.out.0",
+     "1"
+    ],
+    [
+     "molding_bottle#4.out.0",
+     "1"
+    ],
+    [
+     "molding_bottle#5.out.0",
+     "1/2"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "filling_capsule#0.in.0",
+     "1"
+    ],
+    [
+     "filling_capsule#0.in.1",
+     "1"
+    ],
+    [
+     "filling_capsule#1.in.0",
+     "1"
+    ],
+    [
+     "filling_capsule#1.in.1",
+     "1"
+    ],
+    [
+     "filling_capsule#2.in.0",
+     "1"
+    ],
+    [
+     "filling_capsule#2.in.1",
+     "1/2"
+    ]
+   ],
+   "split_free": true,
+   "method": "sorted_bijection",
+   "verify": "ok",
+   "assignment": [
+    [
+     "molding_bottle#5.out.0",
+     "filling_capsule#2.in.1"
+    ],
+    [
+     "molding_bottle#0.out.0",
+     "filling_capsule#0.in.0"
+    ],
+    [
+     "molding_bottle#1.out.0",
+     "filling_capsule#0.in.1"
+    ],
+    [
+     "molding_bottle#2.out.0",
+     "filling_capsule#1.in.0"
+    ],
+    [
+     "molding_bottle#3.out.0",
+     "filling_capsule#1.in.1"
+    ],
+    [
+     "molding_bottle#4.out.0",
+     "filling_capsule#2.in.0"
+    ]
+   ]
+  },
+  "steel_part": {
+   "producer_lanes": 6,
+   "consumer_lanes": 6,
+   "total_rate": "6",
+   "producer_lane_rates": [
+    [
+     "parts_maker#0.out.0",
+     "1"
+    ],
+    [
+     "parts_maker#1.out.0",
+     "1"
+    ],
+    [
+     "parts_maker#2.out.0",
+     "1"
+    ],
+    [
+     "parts_maker#3.out.0",
+     "1"
+    ],
+    [
+     "parts_maker#4.out.0",
+     "1"
+    ],
+    [
+     "parts_maker#5.out.0",
+     "1"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "packaging_battery#0.in.0",
+     "1"
+    ],
+    [
+     "packaging_battery#0.in.1",
+     "1"
+    ],
+    [
+     "packaging_battery#1.in.0",
+     "1"
+    ],
+    [
+     "packaging_battery#1.in.1",
+     "1"
+    ],
+    [
+     "packaging_battery#2.in.0",
+     "1"
+    ],
+    [
+     "packaging_battery#2.in.1",
+     "1"
+    ]
+   ],
+   "split_free": true,
+   "method": "sorted_bijection",
+   "verify": "ok",
+   "assignment": [
+    [
+     "parts_maker#0.out.0",
+     "packaging_battery#0.in.0"
+    ],
+    [
+     "parts_maker#1.out.0",
+     "packaging_battery#0.in.1"
+    ],
+    [
+     "parts_maker#2.out.0",
+     "packaging_battery#1.in.0"
+    ],
+    [
+     "parts_maker#3.out.0",
+     "packaging_battery#1.in.1"
+    ],
+    [
+     "parts_maker#4.out.0",
+     "packaging_battery#2.in.0"
+    ],
+    [
+     "parts_maker#5.out.0",
+     "packaging_battery#2.in.1"
+    ]
+   ]
+  },
+  "valley_battery": {
+   "producer_lanes": 3,
+   "consumer_lanes": 1,
+   "total_rate": "3/5",
+   "producer_lane_rates": [
+    [
+     "packaging_battery#0.out.0",
+     "1/5"
+    ],
+    [
+     "packaging_battery#1.out.0",
+     "1/5"
+    ],
+    [
+     "packaging_battery#2.out.0",
+     "1/5"
+    ]
+   ],
+   "consumer_lane_rates": [
+    [
+     "generic_input.0",
+     "3/5"
+    ]
+   ],
+   "split_free": true,
+   "method": "cpsat",
+   "verify": "ok",
+   "assignment": [
+    [
+     "packaging_battery#0.out.0",
+     "generic_input.0"
+    ],
+    [
+     "packaging_battery#1.out.0",
+     "generic_input.0"
+    ],
+    [
+     "packaging_battery#2.out.0",
+     "generic_input.0"
+    ]
+   ]
+  }
+ },
+ "part_c_split_free": [
+  "blue_iron_block",
+  "blue_iron_ore",
+  "blue_iron_powder",
+  "buckwheat_powder",
+  "buckwheat_seed",
+  "dense_blue_iron_powder",
+  "dense_source_powder",
+  "fine_buckwheat_powder",
+  "qiaoyu_capsule",
+  "sandleaf_powder",
+  "sandleaf_seed",
+  "source_ore",
+  "source_powder",
+  "steel_block",
+  "steel_bottle",
+  "steel_part",
+  "valley_battery"
+ ],
+ "part_c_still_split": [
+  "buckwheat",
+  "sandleaf"
+ ],
+ "part_d_cpsat_lattice": {
+  "buckwheat": {
+   "cpsat_status": "INFEASIBLE",
+   "lattice_denominator": 660,
+   "max_producer_lane_slots": 11,
+   "max_consumer_lane_slots": 12,
+   "split_free_exists_on_lattice": false
+  },
+  "buckwheat_seed": {
+   "cpsat_status": "OPTIMAL",
+   "lattice_denominator": 660,
+   "max_producer_lane_slots": 12,
+   "max_consumer_lane_slots": 11,
+   "split_free_exists_on_lattice": true,
+   "witness_duty": {
+    "seed_collector_buckwheat": [
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1/2"
+    ],
+    "planter_buckwheat": [
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1"
+    ]
+   },
+   "witness_min_lane_rate": "1"
+  },
+  "sandleaf": {
+   "cpsat_status": "INFEASIBLE",
+   "lattice_denominator": 660,
+   "max_producer_lane_slots": 21,
+   "max_consumer_lane_slots": 22,
+   "split_free_exists_on_lattice": false
+  },
+  "sandleaf_powder": {
+   "cpsat_status": "OPTIMAL",
+   "lattice_denominator": 660,
+   "max_producer_lane_slots": 33,
+   "max_consumer_lane_slots": 32,
+   "split_free_exists_on_lattice": true,
+   "witness_duty": {
+    "crusher_sandleaf": [
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1/2"
+    ],
+    "grinder_dense_blue_iron": [
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1"
+    ],
+    "grinder_dense_source": [
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1"
+    ],
+    "grinder_fine_buckwheat": [
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1/2"
+    ]
+   },
+   "witness_min_lane_rate": "1/2"
+  },
+  "sandleaf_seed": {
+   "cpsat_status": "OPTIMAL",
+   "lattice_denominator": 660,
+   "max_producer_lane_slots": 22,
+   "max_consumer_lane_slots": 21,
+   "split_free_exists_on_lattice": true,
+   "witness_duty": {
+    "seed_collector_sandleaf": [
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1/2"
+    ],
+    "planter_sandleaf": [
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1"
+    ]
+   },
+   "witness_min_lane_rate": "1"
+  },
+  "steel_block": {
+   "cpsat_status": "OPTIMAL",
+   "lattice_denominator": 660,
+   "max_producer_lane_slots": 17,
+   "max_consumer_lane_slots": 18,
+   "split_free_exists_on_lattice": true,
+   "witness_duty": {
+    "refinery_steel": [
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1"
+    ],
+    "molding_bottle": [
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1/2"
+    ],
+    "parts_maker": [
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1"
+    ]
+   },
+   "witness_min_lane_rate": "1"
+  }
+ },
+ "part_e_rate_lemma": {
+  "definition": "residual = rate - (ceil(rate)-1)，同 docs/research/canonical_batch_20260807/rate_lemma_recompute.py",
+  "uniform_duty": {
+   "intermediate_residual_set": [
+    "5/6",
+    "19/22",
+    "10/11",
+    "11/12",
+    "21/22",
+    "1"
+   ],
+   "min_intermediate_residual": "5/6",
+   "pairwise_sum_le_cap_violations": 0,
+   "example_violations": []
+  },
+  "staircase_duty": {
+   "intermediate_residual_set": [
+    "1/2",
+    "1"
+   ],
+   "min_intermediate_residual": "1/2",
+   "pairwise_sum_le_cap_violations": 40,
+   "example_violations": [
+    [
+     "crusher_buckwheat#5 [in] buckwheat",
+     "1/2",
+     "crusher_sandleaf#10 [in] sandleaf",
+     "1/2"
+    ],
+    [
+     "crusher_buckwheat#5 [in] buckwheat",
+     "1/2",
+     "crusher_sandleaf#10 [out] sandleaf_powder",
+     "1/2"
+    ],
+    [
+     "crusher_buckwheat#5 [in] buckwheat",
+     "1/2",
+     "filling_capsule#2 [in] fine_buckwheat_powder",
+     "1/2"
+    ],
+    [
+     "crusher_buckwheat#5 [in] buckwheat",
+     "1/2",
+     "filling_capsule#2 [in] steel_bottle",
+     "1/2"
+    ],
+    [
+     "crusher_buckwheat#5 [in] buckwheat",
+     "1/2",
+     "grinder_fine_buckwheat#5 [in] sandleaf_powder",
+     "1/2"
+    ],
+    [
+     "crusher_buckwheat#5 [in] buckwheat",
+     "1/2",
+     "grinder_fine_buckwheat#5 [out] fine_buckwheat_powder",
+     "1/2"
+    ]
+   ]
+  }
+ },
+ "part_f_max_min_residual_per_op": {
+  "crusher_blue_iron": {
+   "max_min_residual": "1",
+   "duty_at_optimum": [
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1"
+   ],
+   "uniform_duty": "1",
+   "status": "OPTIMAL"
+  },
+  "crusher_buckwheat": {
+   "max_min_residual": "5/6",
+   "duty_at_optimum": [
+    "11/12",
+    "11/12",
+    "11/12",
+    "11/12",
+    "11/12",
+    "11/12"
+   ],
+   "uniform_duty": "11/12",
+   "status": "OPTIMAL"
+  },
+  "crusher_sandleaf": {
+   "max_min_residual": "19/22",
+   "duty_at_optimum": [
+    "21/22",
+    "21/22",
+    "21/22",
+    "21/22",
+    "21/22",
+    "21/22",
+    "21/22",
+    "21/22",
+    "21/22",
+    "21/22",
+    "21/22"
+   ],
+   "uniform_duty": "21/22",
+   "status": "OPTIMAL"
+  },
+  "crusher_source": {
+   "max_min_residual": "1",
+   "duty_at_optimum": [
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1"
+   ],
+   "uniform_duty": "1",
+   "status": "OPTIMAL"
+  },
+  "filling_capsule": {
+   "max_min_residual": "5/6",
+   "duty_at_optimum": [
+    "11/12",
+    "11/12",
+    "11/12"
+   ],
+   "uniform_duty": "11/12",
+   "status": "OPTIMAL"
+  },
+  "grinder_dense_blue_iron": {
+   "max_min_residual": "1",
+   "duty_at_optimum": [
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1"
+   ],
+   "uniform_duty": "1",
+   "status": "OPTIMAL"
+  },
+  "grinder_dense_source": {
+   "max_min_residual": "1",
+   "duty_at_optimum": [
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1"
+   ],
+   "uniform_duty": "1",
+   "status": "OPTIMAL"
+  },
+  "grinder_fine_buckwheat": {
+   "max_min_residual": "5/6",
+   "duty_at_optimum": [
+    "11/12",
+    "11/12",
+    "11/12",
+    "11/12",
+    "11/12",
+    "11/12"
+   ],
+   "uniform_duty": "11/12",
+   "status": "OPTIMAL"
+  },
+  "molding_bottle": {
+   "max_min_residual": "5/6",
+   "duty_at_optimum": [
+    "11/12",
+    "11/12",
+    "11/12",
+    "11/12",
+    "11/12",
+    "11/12"
+   ],
+   "uniform_duty": "11/12",
+   "status": "OPTIMAL"
+  },
+  "packaging_battery": {
+   "max_min_residual": "1",
+   "duty_at_optimum": [
+    "1",
+    "1",
+    "1"
+   ],
+   "uniform_duty": "1",
+   "status": "OPTIMAL"
+  },
+  "parts_maker": {
+   "max_min_residual": "1",
+   "duty_at_optimum": [
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1"
+   ],
+   "uniform_duty": "1",
+   "status": "OPTIMAL"
+  },
+  "planter_buckwheat": {
+   "max_min_residual": "1",
+   "duty_at_optimum": [
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1"
+   ],
+   "uniform_duty": "1",
+   "status": "OPTIMAL"
+  },
+  "planter_sandleaf": {
+   "max_min_residual": "1",
+   "duty_at_optimum": [
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1"
+   ],
+   "uniform_duty": "1",
+   "status": "OPTIMAL"
+  },
+  "refinery_blue_iron": {
+   "max_min_residual": "1",
+   "duty_at_optimum": [
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1"
+   ],
+   "uniform_duty": "1",
+   "status": "OPTIMAL"
+  },
+  "refinery_steel": {
+   "max_min_residual": "1",
+   "duty_at_optimum": [
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1"
+   ],
+   "uniform_duty": "1",
+   "status": "OPTIMAL"
+  },
+  "seed_collector_buckwheat": {
+   "max_min_residual": "5/6",
+   "duty_at_optimum": [
+    "11/12",
+    "11/12",
+    "11/12",
+    "11/12",
+    "11/12",
+    "11/12"
+   ],
+   "uniform_duty": "11/12",
+   "status": "OPTIMAL"
+  },
+  "seed_collector_sandleaf": {
+   "max_min_residual": "10/11",
+   "duty_at_optimum": [
+    "21/22",
+    "21/22",
+    "21/22",
+    "21/22",
+    "21/22",
+    "21/22",
+    "21/22",
+    "21/22",
+    "21/22",
+    "21/22",
+    "21/22"
+   ],
+   "uniform_duty": "21/22",
+   "status": "OPTIMAL"
+  }
+ },
+ "part_g_segment_thickness": {
+  "buckwheat": {
+   "uniform_duty": {
+    "status": "OPTIMAL",
+    "max_min_segment": "1/3",
+    "producer_lanes": 11,
+    "consumer_lanes": 12,
+    "split_points": 13
+   },
+   "staircase_duty": {
+    "status": "OPTIMAL",
+    "max_min_segment": "1/2",
+    "producer_lanes": 11,
+    "consumer_lanes": 12,
+    "split_points": 1
+   },
+   "free_duty": {
+    "status": "OPTIMAL",
+    "max_min_segment": "1/2",
+    "producer_lanes": 11,
+    "consumer_lanes": 12,
+    "split_points": 7
+   }
+  },
+  "sandleaf": {
+   "uniform_duty": {
+    "status": "FEASIBLE",
+    "max_min_segment": "7/22",
+    "producer_lanes": 21,
+    "consumer_lanes": 22,
+    "split_points": 23
+   },
+   "staircase_duty": {
+    "status": "OPTIMAL",
+    "max_min_segment": "1/2",
+    "producer_lanes": 21,
+    "consumer_lanes": 22,
+    "split_points": 1
+   },
+   "free_duty": {
+    "status": "OPTIMAL",
+    "max_min_segment": "1/2",
+    "producer_lanes": 21,
+    "consumer_lanes": 22,
+    "split_points": 1
+   }
+  }
+ },
+ "part_g_mixflow_windows": {
+  "uniform_duty": {
+   "network_min_segment": "7/22",
+   "thin_per_commodity": {
+    "blue_iron_block": "1",
+    "blue_iron_ore": "1",
+    "blue_iron_powder": "1",
+    "buckwheat": "1/3",
+    "buckwheat_powder": "5/6",
+    "buckwheat_seed": "1/3",
+    "dense_blue_iron_powder": "1",
+    "dense_source_powder": "1",
+    "fine_buckwheat_powder": "5/6",
+    "sandleaf": "7/22",
+    "sandleaf_powder": "14/33",
+    "sandleaf_seed": "4/11",
+    "source_ore": "1",
+    "source_powder": "1",
+    "steel_block": "1/3",
+    "steel_bottle": "5/6",
+    "steel_part": "1"
+   },
+   "window_pairs": [
+    [
+     "buckwheat",
+     "1/3",
+     "buckwheat_seed",
+     "1/3",
+     "2/3"
+    ],
+    [
+     "buckwheat",
+     "1/3",
+     "sandleaf",
+     "7/22",
+     "43/66"
+    ],
+    [
+     "buckwheat",
+     "1/3",
+     "sandleaf_powder",
+     "14/33",
+     "25/33"
+    ],
+    [
+     "buckwheat",
+     "1/3",
+     "sandleaf_seed",
+     "4/11",
+     "23/33"
+    ],
+    [
+     "buckwheat",
+     "1/3",
+     "steel_block",
+     "1/3",
+     "2/3"
+    ],
+    [
+     "buckwheat_seed",
+     "1/3",
+     "sandleaf",
+     "7/22",
+     "43/66"
+    ],
+    [
+     "buckwheat_seed",
+     "1/3",
+     "sandleaf_powder",
+     "14/33",
+     "25/33"
+    ],
+    [
+     "buckwheat_seed",
+     "1/3",
+     "sandleaf_seed",
+     "4/11",
+     "23/33"
+    ],
+    [
+     "buckwheat_seed",
+     "1/3",
+     "steel_block",
+     "1/3",
+     "2/3"
+    ],
+    [
+     "sandleaf",
+     "7/22",
+     "sandleaf_powder",
+     "14/33",
+     "49/66"
+    ],
+    [
+     "sandleaf",
+     "7/22",
+     "sandleaf_seed",
+     "4/11",
+     "15/22"
+    ],
+    [
+     "sandleaf",
+     "7/22",
+     "steel_block",
+     "1/3",
+     "43/66"
+    ],
+    [
+     "sandleaf_powder",
+     "14/33",
+     "sandleaf_seed",
+     "4/11",
+     "26/33"
+    ],
+    [
+     "sandleaf_powder",
+     "14/33",
+     "steel_block",
+     "1/3",
+     "25/33"
+    ],
+    [
+     "sandleaf_seed",
+     "4/11",
+     "steel_block",
+     "1/3",
+     "23/33"
+    ]
+   ],
+   "count": 15
+  },
+  "staircase_duty": {
+   "network_min_segment": "1/2",
+   "thin_per_commodity": {
+    "blue_iron_block": "1",
+    "blue_iron_ore": "1",
+    "blue_iron_powder": "1",
+    "buckwheat": "1/2",
+    "buckwheat_powder": "1",
+    "buckwheat_seed": "1",
+    "dense_blue_iron_powder": "1",
+    "dense_source_powder": "1",
+    "fine_buckwheat_powder": "1/2",
+    "sandleaf": "1/2",
+    "sandleaf_powder": "1/2",
+    "sandleaf_seed": "1",
+    "source_ore": "1",
+    "source_powder": "1",
+    "steel_block": "1",
+    "steel_bottle": "1/2",
+    "steel_part": "1"
+   },
+   "window_pairs": [
+    [
+     "buckwheat",
+     "1/2",
+     "fine_buckwheat_powder",
+     "1/2",
+     "1"
+    ],
+    [
+     "buckwheat",
+     "1/2",
+     "sandleaf",
+     "1/2",
+     "1"
+    ],
+    [
+     "buckwheat",
+     "1/2",
+     "sandleaf_powder",
+     "1/2",
+     "1"
+    ],
+    [
+     "buckwheat",
+     "1/2",
+     "steel_bottle",
+     "1/2",
+     "1"
+    ],
+    [
+     "fine_buckwheat_powder",
+     "1/2",
+     "sandleaf",
+     "1/2",
+     "1"
+    ],
+    [
+     "fine_buckwheat_powder",
+     "1/2",
+     "sandleaf_powder",
+     "1/2",
+     "1"
+    ],
+    [
+     "fine_buckwheat_powder",
+     "1/2",
+     "steel_bottle",
+     "1/2",
+     "1"
+    ],
+    [
+     "sandleaf",
+     "1/2",
+     "sandleaf_powder",
+     "1/2",
+     "1"
+    ],
+    [
+     "sandleaf",
+     "1/2",
+     "steel_bottle",
+     "1/2",
+     "1"
+    ],
+    [
+     "sandleaf_powder",
+     "1/2",
+     "steel_bottle",
+     "1/2",
+     "1"
+    ]
+   ],
+   "count": 10
+  },
+  "unconditional_refutation": "buckwheat 与 sandleaf 对任意合法占空分配都必然分流（Part B 计数证明）；两者的产道速率恰为 1，被迫劈开后 min(两段) ≤ 1/2；二者是不同中间品，两条细流段之和 ≤ 1 ⇒ 速率合法的共道窗口在**任何**分配下都存在 ⇒ 网络级纯流强制无条件不成立。"
+ },
+ "verdict": {
+  "v1_forced_split": [
+   "buckwheat",
+   "buckwheat_seed",
+   "sandleaf",
+   "sandleaf_powder",
+   "sandleaf_seed",
+   "steel_block"
+  ],
+  "still_forced_under_free_duty": [
+   "buckwheat",
+   "sandleaf"
+  ],
+  "overturned": [
+   "buckwheat_seed",
+   "sandleaf_powder",
+   "sandleaf_seed",
+   "steel_block"
+  ],
+  "scope": "本判定是**速率算术层**的：split-free 存在 ≠ 该占空分配与该道对应在 70×70 真实布局几何里可实现（拓扑 / 占地 / 交叉 / 供电未验）。"
+ }
+}

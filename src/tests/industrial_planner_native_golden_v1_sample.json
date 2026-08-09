@@ -1,0 +1,4226 @@
+{
+  "schemaVersion": 4,
+  "blueprintId": "ebe84e58-c36e-4b6a-b495-6d96885eff8c",
+  "version": "",
+  "name": "Exact Export 2026-03-30T12:00:00Z",
+  "description": "",
+  "baseId": "valley4_protocol_core",
+  "initialGridPoint": {
+    "x": 35,
+    "y": 35
+  },
+  "entities": {
+    "legacy_ebe84e58_0001": {
+      "id": "legacy_ebe84e58_0001",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 10
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0002": {
+      "id": "legacy_ebe84e58_0002",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 13
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0003": {
+      "id": "legacy_ebe84e58_0003",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 16
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0004": {
+      "id": "legacy_ebe84e58_0004",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 19
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0005": {
+      "id": "legacy_ebe84e58_0005",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 22
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0006": {
+      "id": "legacy_ebe84e58_0006",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 25
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0007": {
+      "id": "legacy_ebe84e58_0007",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 28
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0008": {
+      "id": "legacy_ebe84e58_0008",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 31
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0009": {
+      "id": "legacy_ebe84e58_0009",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 34
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0010": {
+      "id": "legacy_ebe84e58_0010",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 37
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0011": {
+      "id": "legacy_ebe84e58_0011",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 40
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0012": {
+      "id": "legacy_ebe84e58_0012",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 43
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0013": {
+      "id": "legacy_ebe84e58_0013",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 46
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0014": {
+      "id": "legacy_ebe84e58_0014",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 49
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0015": {
+      "id": "legacy_ebe84e58_0015",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 52
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0016": {
+      "id": "legacy_ebe84e58_0016",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 55
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0017": {
+      "id": "legacy_ebe84e58_0017",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 58
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0018": {
+      "id": "legacy_ebe84e58_0018",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 61
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0019": {
+      "id": "legacy_ebe84e58_0019",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 64
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0020": {
+      "id": "legacy_ebe84e58_0020",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 0,
+        "y": 67
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0021": {
+      "id": "legacy_ebe84e58_0021",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 1,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0022": {
+      "id": "legacy_ebe84e58_0022",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 1,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0023": {
+      "id": "legacy_ebe84e58_0023",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 1,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0024": {
+      "id": "legacy_ebe84e58_0024",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 1,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0025": {
+      "id": "legacy_ebe84e58_0025",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 1,
+        "y": 26
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0026": {
+      "id": "legacy_ebe84e58_0026",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 1,
+        "y": 32
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0027": {
+      "id": "legacy_ebe84e58_0027",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 1,
+        "y": 38
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0028": {
+      "id": "legacy_ebe84e58_0028",
+      "definitionId": "seedcol_1",
+      "position": {
+        "x": 1,
+        "y": 44
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0029": {
+      "id": "legacy_ebe84e58_0029",
+      "definitionId": "filling_pd_mc_1",
+      "position": {
+        "x": 1,
+        "y": 50
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0030": {
+      "id": "legacy_ebe84e58_0030",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 1,
+        "y": 55
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0031": {
+      "id": "legacy_ebe84e58_0031",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 1,
+        "y": 60
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0032": {
+      "id": "legacy_ebe84e58_0032",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 1,
+        "y": 65
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0033": {
+      "id": "legacy_ebe84e58_0033",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 4,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0034": {
+      "id": "legacy_ebe84e58_0034",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 4,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0035": {
+      "id": "legacy_ebe84e58_0035",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 4,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0036": {
+      "id": "legacy_ebe84e58_0036",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 4,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0037": {
+      "id": "legacy_ebe84e58_0037",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 6,
+        "y": 26
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0038": {
+      "id": "legacy_ebe84e58_0038",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 6,
+        "y": 32
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0039": {
+      "id": "legacy_ebe84e58_0039",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 6,
+        "y": 38
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0040": {
+      "id": "legacy_ebe84e58_0040",
+      "definitionId": "seedcol_1",
+      "position": {
+        "x": 6,
+        "y": 44
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0041": {
+      "id": "legacy_ebe84e58_0041",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 7,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0042": {
+      "id": "legacy_ebe84e58_0042",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 7,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0043": {
+      "id": "legacy_ebe84e58_0043",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 7,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0044": {
+      "id": "legacy_ebe84e58_0044",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 7,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0045": {
+      "id": "legacy_ebe84e58_0045",
+      "definitionId": "filling_pd_mc_1",
+      "position": {
+        "x": 7,
+        "y": 50
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0046": {
+      "id": "legacy_ebe84e58_0046",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 7,
+        "y": 55
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0047": {
+      "id": "legacy_ebe84e58_0047",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 7,
+        "y": 60
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0048": {
+      "id": "legacy_ebe84e58_0048",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 7,
+        "y": 65
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0049": {
+      "id": "legacy_ebe84e58_0049",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 9,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0050": {
+      "id": "legacy_ebe84e58_0050",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 9,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0051": {
+      "id": "legacy_ebe84e58_0051",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 9,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0052": {
+      "id": "legacy_ebe84e58_0052",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 10,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0053": {
+      "id": "legacy_ebe84e58_0053",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 10,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0054": {
+      "id": "legacy_ebe84e58_0054",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 10,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0055": {
+      "id": "legacy_ebe84e58_0055",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 10,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0056": {
+      "id": "legacy_ebe84e58_0056",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 11,
+        "y": 26
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0057": {
+      "id": "legacy_ebe84e58_0057",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 11,
+        "y": 32
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0058": {
+      "id": "legacy_ebe84e58_0058",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 11,
+        "y": 38
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0059": {
+      "id": "legacy_ebe84e58_0059",
+      "definitionId": "seedcol_1",
+      "position": {
+        "x": 11,
+        "y": 44
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0060": {
+      "id": "legacy_ebe84e58_0060",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 12,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0061": {
+      "id": "legacy_ebe84e58_0061",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 12,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0062": {
+      "id": "legacy_ebe84e58_0062",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 12,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0063": {
+      "id": "legacy_ebe84e58_0063",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 13,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0064": {
+      "id": "legacy_ebe84e58_0064",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 13,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0065": {
+      "id": "legacy_ebe84e58_0065",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 13,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0066": {
+      "id": "legacy_ebe84e58_0066",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 13,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0067": {
+      "id": "legacy_ebe84e58_0067",
+      "definitionId": "filling_pd_mc_1",
+      "position": {
+        "x": 13,
+        "y": 50
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0068": {
+      "id": "legacy_ebe84e58_0068",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 13,
+        "y": 55
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0069": {
+      "id": "legacy_ebe84e58_0069",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 13,
+        "y": 60
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0070": {
+      "id": "legacy_ebe84e58_0070",
+      "definitionId": "tools_asm_mc_1",
+      "position": {
+        "x": 13,
+        "y": 65
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0071": {
+      "id": "legacy_ebe84e58_0071",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 15,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0072": {
+      "id": "legacy_ebe84e58_0072",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 15,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0073": {
+      "id": "legacy_ebe84e58_0073",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 15,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0074": {
+      "id": "legacy_ebe84e58_0074",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 16,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0075": {
+      "id": "legacy_ebe84e58_0075",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 16,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0076": {
+      "id": "legacy_ebe84e58_0076",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 16,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0077": {
+      "id": "legacy_ebe84e58_0077",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 16,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0078": {
+      "id": "legacy_ebe84e58_0078",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 16,
+        "y": 26
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0079": {
+      "id": "legacy_ebe84e58_0079",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 16,
+        "y": 32
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0080": {
+      "id": "legacy_ebe84e58_0080",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 16,
+        "y": 38
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0081": {
+      "id": "legacy_ebe84e58_0081",
+      "definitionId": "seedcol_1",
+      "position": {
+        "x": 16,
+        "y": 44
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0082": {
+      "id": "legacy_ebe84e58_0082",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 18,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0083": {
+      "id": "legacy_ebe84e58_0083",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 18,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0084": {
+      "id": "legacy_ebe84e58_0084",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 18,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0085": {
+      "id": "legacy_ebe84e58_0085",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 19,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0086": {
+      "id": "legacy_ebe84e58_0086",
+      "definitionId": "shaper_1",
+      "position": {
+        "x": 19,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0087": {
+      "id": "legacy_ebe84e58_0087",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 19,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0088": {
+      "id": "legacy_ebe84e58_0088",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 19,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0089": {
+      "id": "legacy_ebe84e58_0089",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 19,
+        "y": 50
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0090": {
+      "id": "legacy_ebe84e58_0090",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 19,
+        "y": 55
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0091": {
+      "id": "legacy_ebe84e58_0091",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 19,
+        "y": 60
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0092": {
+      "id": "legacy_ebe84e58_0092",
+      "definitionId": "tools_asm_mc_1",
+      "position": {
+        "x": 19,
+        "y": 65
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0093": {
+      "id": "legacy_ebe84e58_0093",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 21,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0094": {
+      "id": "legacy_ebe84e58_0094",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 21,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0095": {
+      "id": "legacy_ebe84e58_0095",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 21,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0096": {
+      "id": "legacy_ebe84e58_0096",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 21,
+        "y": 26
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0097": {
+      "id": "legacy_ebe84e58_0097",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 21,
+        "y": 32
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0098": {
+      "id": "legacy_ebe84e58_0098",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 21,
+        "y": 38
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0099": {
+      "id": "legacy_ebe84e58_0099",
+      "definitionId": "seedcol_1",
+      "position": {
+        "x": 21,
+        "y": 44
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0100": {
+      "id": "legacy_ebe84e58_0100",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 22,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0101": {
+      "id": "legacy_ebe84e58_0101",
+      "definitionId": "shaper_1",
+      "position": {
+        "x": 22,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0102": {
+      "id": "legacy_ebe84e58_0102",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 22,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0103": {
+      "id": "legacy_ebe84e58_0103",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 22,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0104": {
+      "id": "legacy_ebe84e58_0104",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 24,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0105": {
+      "id": "legacy_ebe84e58_0105",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 24,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0106": {
+      "id": "legacy_ebe84e58_0106",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 24,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0107": {
+      "id": "legacy_ebe84e58_0107",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 25,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0108": {
+      "id": "legacy_ebe84e58_0108",
+      "definitionId": "shaper_1",
+      "position": {
+        "x": 25,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0109": {
+      "id": "legacy_ebe84e58_0109",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 25,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0110": {
+      "id": "legacy_ebe84e58_0110",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 25,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0111": {
+      "id": "legacy_ebe84e58_0111",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 25,
+        "y": 50
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0112": {
+      "id": "legacy_ebe84e58_0112",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 25,
+        "y": 55
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0113": {
+      "id": "legacy_ebe84e58_0113",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 25,
+        "y": 60
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0114": {
+      "id": "legacy_ebe84e58_0114",
+      "definitionId": "tools_asm_mc_1",
+      "position": {
+        "x": 25,
+        "y": 65
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0115": {
+      "id": "legacy_ebe84e58_0115",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 26,
+        "y": 26
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0116": {
+      "id": "legacy_ebe84e58_0116",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 26,
+        "y": 32
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0117": {
+      "id": "legacy_ebe84e58_0117",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 26,
+        "y": 38
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0118": {
+      "id": "legacy_ebe84e58_0118",
+      "definitionId": "seedcol_1",
+      "position": {
+        "x": 26,
+        "y": 44
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0119": {
+      "id": "legacy_ebe84e58_0119",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 27,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0120": {
+      "id": "legacy_ebe84e58_0120",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 27,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0121": {
+      "id": "legacy_ebe84e58_0121",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 27,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0122": {
+      "id": "legacy_ebe84e58_0122",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 28,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0123": {
+      "id": "legacy_ebe84e58_0123",
+      "definitionId": "shaper_1",
+      "position": {
+        "x": 28,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0124": {
+      "id": "legacy_ebe84e58_0124",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 28,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0125": {
+      "id": "legacy_ebe84e58_0125",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 28,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0126": {
+      "id": "legacy_ebe84e58_0126",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 30,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0127": {
+      "id": "legacy_ebe84e58_0127",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 30,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0128": {
+      "id": "legacy_ebe84e58_0128",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 30,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0129": {
+      "id": "legacy_ebe84e58_0129",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 31,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0130": {
+      "id": "legacy_ebe84e58_0130",
+      "definitionId": "shaper_1",
+      "position": {
+        "x": 31,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0131": {
+      "id": "legacy_ebe84e58_0131",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 31,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0132": {
+      "id": "legacy_ebe84e58_0132",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 31,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0133": {
+      "id": "legacy_ebe84e58_0133",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 31,
+        "y": 26
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0134": {
+      "id": "legacy_ebe84e58_0134",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 31,
+        "y": 32
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0135": {
+      "id": "legacy_ebe84e58_0135",
+      "definitionId": "seedcol_1",
+      "position": {
+        "x": 31,
+        "y": 38
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0136": {
+      "id": "legacy_ebe84e58_0136",
+      "definitionId": "seedcol_1",
+      "position": {
+        "x": 31,
+        "y": 44
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0137": {
+      "id": "legacy_ebe84e58_0137",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 31,
+        "y": 50
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0138": {
+      "id": "legacy_ebe84e58_0138",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 31,
+        "y": 55
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0139": {
+      "id": "legacy_ebe84e58_0139",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 31,
+        "y": 60
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0140": {
+      "id": "legacy_ebe84e58_0140",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 31,
+        "y": 69
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0141": {
+      "id": "legacy_ebe84e58_0141",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 33,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0142": {
+      "id": "legacy_ebe84e58_0142",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 33,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0143": {
+      "id": "legacy_ebe84e58_0143",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 33,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0144": {
+      "id": "legacy_ebe84e58_0144",
+      "definitionId": "log_hongs_bus",
+      "position": {
+        "x": 33,
+        "y": 65
+      },
+      "rotation": 90,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0145": {
+      "id": "legacy_ebe84e58_0145",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 34,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0146": {
+      "id": "legacy_ebe84e58_0146",
+      "definitionId": "shaper_1",
+      "position": {
+        "x": 34,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0147": {
+      "id": "legacy_ebe84e58_0147",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 34,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0148": {
+      "id": "legacy_ebe84e58_0148",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 34,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0149": {
+      "id": "legacy_ebe84e58_0149",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 34,
+        "y": 69
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0150": {
+      "id": "legacy_ebe84e58_0150",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 36,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0151": {
+      "id": "legacy_ebe84e58_0151",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 36,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0152": {
+      "id": "legacy_ebe84e58_0152",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 36,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0153": {
+      "id": "legacy_ebe84e58_0153",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 36,
+        "y": 26
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0154": {
+      "id": "legacy_ebe84e58_0154",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 36,
+        "y": 32
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0155": {
+      "id": "legacy_ebe84e58_0155",
+      "definitionId": "seedcol_1",
+      "position": {
+        "x": 36,
+        "y": 38
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0156": {
+      "id": "legacy_ebe84e58_0156",
+      "definitionId": "seedcol_1",
+      "position": {
+        "x": 36,
+        "y": 44
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0157": {
+      "id": "legacy_ebe84e58_0157",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 37,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0158": {
+      "id": "legacy_ebe84e58_0158",
+      "definitionId": "cmpt_mc_1",
+      "position": {
+        "x": 37,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0159": {
+      "id": "legacy_ebe84e58_0159",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 37,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0160": {
+      "id": "legacy_ebe84e58_0160",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 37,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0161": {
+      "id": "legacy_ebe84e58_0161",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 37,
+        "y": 50
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0162": {
+      "id": "legacy_ebe84e58_0162",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 37,
+        "y": 55
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0163": {
+      "id": "legacy_ebe84e58_0163",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 37,
+        "y": 60
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0164": {
+      "id": "legacy_ebe84e58_0164",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 37,
+        "y": 69
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0165": {
+      "id": "legacy_ebe84e58_0165",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 39,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0166": {
+      "id": "legacy_ebe84e58_0166",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 39,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0167": {
+      "id": "legacy_ebe84e58_0167",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 39,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0168": {
+      "id": "legacy_ebe84e58_0168",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 40,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0169": {
+      "id": "legacy_ebe84e58_0169",
+      "definitionId": "cmpt_mc_1",
+      "position": {
+        "x": 40,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0170": {
+      "id": "legacy_ebe84e58_0170",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 40,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0171": {
+      "id": "legacy_ebe84e58_0171",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 40,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0172": {
+      "id": "legacy_ebe84e58_0172",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 40,
+        "y": 69
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0173": {
+      "id": "legacy_ebe84e58_0173",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 41,
+        "y": 26
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0174": {
+      "id": "legacy_ebe84e58_0174",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 41,
+        "y": 32
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0175": {
+      "id": "legacy_ebe84e58_0175",
+      "definitionId": "seedcol_1",
+      "position": {
+        "x": 41,
+        "y": 38
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0176": {
+      "id": "legacy_ebe84e58_0176",
+      "definitionId": "seedcol_1",
+      "position": {
+        "x": 41,
+        "y": 44
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0177": {
+      "id": "legacy_ebe84e58_0177",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 42,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0178": {
+      "id": "legacy_ebe84e58_0178",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 42,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0179": {
+      "id": "legacy_ebe84e58_0179",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 42,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0180": {
+      "id": "legacy_ebe84e58_0180",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 43,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0181": {
+      "id": "legacy_ebe84e58_0181",
+      "definitionId": "cmpt_mc_1",
+      "position": {
+        "x": 43,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0182": {
+      "id": "legacy_ebe84e58_0182",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 43,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0183": {
+      "id": "legacy_ebe84e58_0183",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 43,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0184": {
+      "id": "legacy_ebe84e58_0184",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 43,
+        "y": 50
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0185": {
+      "id": "legacy_ebe84e58_0185",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 43,
+        "y": 55
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0186": {
+      "id": "legacy_ebe84e58_0186",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 43,
+        "y": 60
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0187": {
+      "id": "legacy_ebe84e58_0187",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 43,
+        "y": 69
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0188": {
+      "id": "legacy_ebe84e58_0188",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 45,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0189": {
+      "id": "legacy_ebe84e58_0189",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 45,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0190": {
+      "id": "legacy_ebe84e58_0190",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 45,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0191": {
+      "id": "legacy_ebe84e58_0191",
+      "definitionId": "log_hongs_bus",
+      "position": {
+        "x": 45,
+        "y": 65
+      },
+      "rotation": 90,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0192": {
+      "id": "legacy_ebe84e58_0192",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 46,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0193": {
+      "id": "legacy_ebe84e58_0193",
+      "definitionId": "cmpt_mc_1",
+      "position": {
+        "x": 46,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0194": {
+      "id": "legacy_ebe84e58_0194",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 46,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0195": {
+      "id": "legacy_ebe84e58_0195",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 46,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0196": {
+      "id": "legacy_ebe84e58_0196",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 46,
+        "y": 26
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0197": {
+      "id": "legacy_ebe84e58_0197",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 46,
+        "y": 32
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0198": {
+      "id": "legacy_ebe84e58_0198",
+      "definitionId": "seedcol_1",
+      "position": {
+        "x": 46,
+        "y": 38
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0199": {
+      "id": "legacy_ebe84e58_0199",
+      "definitionId": "seedcol_1",
+      "position": {
+        "x": 46,
+        "y": 44
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0200": {
+      "id": "legacy_ebe84e58_0200",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 46,
+        "y": 69
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0201": {
+      "id": "legacy_ebe84e58_0201",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 48,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0202": {
+      "id": "legacy_ebe84e58_0202",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 48,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0203": {
+      "id": "legacy_ebe84e58_0203",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 48,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0204": {
+      "id": "legacy_ebe84e58_0204",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 49,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0205": {
+      "id": "legacy_ebe84e58_0205",
+      "definitionId": "cmpt_mc_1",
+      "position": {
+        "x": 49,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0206": {
+      "id": "legacy_ebe84e58_0206",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 49,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0207": {
+      "id": "legacy_ebe84e58_0207",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 49,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0208": {
+      "id": "legacy_ebe84e58_0208",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 49,
+        "y": 50
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0209": {
+      "id": "legacy_ebe84e58_0209",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 49,
+        "y": 55
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0210": {
+      "id": "legacy_ebe84e58_0210",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 49,
+        "y": 60
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0211": {
+      "id": "legacy_ebe84e58_0211",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 49,
+        "y": 69
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0212": {
+      "id": "legacy_ebe84e58_0212",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 51,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0213": {
+      "id": "legacy_ebe84e58_0213",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 51,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0214": {
+      "id": "legacy_ebe84e58_0214",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 51,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0215": {
+      "id": "legacy_ebe84e58_0215",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 51,
+        "y": 26
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0216": {
+      "id": "legacy_ebe84e58_0216",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 51,
+        "y": 32
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0217": {
+      "id": "legacy_ebe84e58_0217",
+      "definitionId": "seedcol_1",
+      "position": {
+        "x": 51,
+        "y": 38
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0218": {
+      "id": "legacy_ebe84e58_0218",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 52,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0219": {
+      "id": "legacy_ebe84e58_0219",
+      "definitionId": "cmpt_mc_1",
+      "position": {
+        "x": 52,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0220": {
+      "id": "legacy_ebe84e58_0220",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 52,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0221": {
+      "id": "legacy_ebe84e58_0221",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 52,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0222": {
+      "id": "legacy_ebe84e58_0222",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 52,
+        "y": 69
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0223": {
+      "id": "legacy_ebe84e58_0223",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 54,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0224": {
+      "id": "legacy_ebe84e58_0224",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 54,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0225": {
+      "id": "legacy_ebe84e58_0225",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 54,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0226": {
+      "id": "legacy_ebe84e58_0226",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 55,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0227": {
+      "id": "legacy_ebe84e58_0227",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 55,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0228": {
+      "id": "legacy_ebe84e58_0228",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 55,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0229": {
+      "id": "legacy_ebe84e58_0229",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 55,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0230": {
+      "id": "legacy_ebe84e58_0230",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 55,
+        "y": 50
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0231": {
+      "id": "legacy_ebe84e58_0231",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 55,
+        "y": 55
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0232": {
+      "id": "legacy_ebe84e58_0232",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 55,
+        "y": 60
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0233": {
+      "id": "legacy_ebe84e58_0233",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 55,
+        "y": 69
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0234": {
+      "id": "legacy_ebe84e58_0234",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 56,
+        "y": 26
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0235": {
+      "id": "legacy_ebe84e58_0235",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 56,
+        "y": 32
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0236": {
+      "id": "legacy_ebe84e58_0236",
+      "definitionId": "seedcol_1",
+      "position": {
+        "x": 56,
+        "y": 38
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0237": {
+      "id": "legacy_ebe84e58_0237",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 57,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0238": {
+      "id": "legacy_ebe84e58_0238",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 57,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0239": {
+      "id": "legacy_ebe84e58_0239",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 57,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0240": {
+      "id": "legacy_ebe84e58_0240",
+      "definitionId": "log_hongs_bus",
+      "position": {
+        "x": 57,
+        "y": 65
+      },
+      "rotation": 90,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0241": {
+      "id": "legacy_ebe84e58_0241",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 58,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0242": {
+      "id": "legacy_ebe84e58_0242",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 58,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0243": {
+      "id": "legacy_ebe84e58_0243",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 58,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0244": {
+      "id": "legacy_ebe84e58_0244",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 58,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0245": {
+      "id": "legacy_ebe84e58_0245",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 58,
+        "y": 69
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0246": {
+      "id": "legacy_ebe84e58_0246",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 60,
+        "y": 0
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0247": {
+      "id": "legacy_ebe84e58_0247",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 60,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0248": {
+      "id": "legacy_ebe84e58_0248",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 60,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0249": {
+      "id": "legacy_ebe84e58_0249",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 61,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0250": {
+      "id": "legacy_ebe84e58_0250",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 61,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0251": {
+      "id": "legacy_ebe84e58_0251",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 61,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0252": {
+      "id": "legacy_ebe84e58_0252",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 61,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0253": {
+      "id": "legacy_ebe84e58_0253",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 61,
+        "y": 26
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0254": {
+      "id": "legacy_ebe84e58_0254",
+      "definitionId": "planter_1",
+      "position": {
+        "x": 61,
+        "y": 32
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0255": {
+      "id": "legacy_ebe84e58_0255",
+      "definitionId": "seedcol_1",
+      "position": {
+        "x": 61,
+        "y": 38
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0256": {
+      "id": "legacy_ebe84e58_0256",
+      "definitionId": "log_hongs_bus",
+      "position": {
+        "x": 61,
+        "y": 43
+      },
+      "rotation": 90,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0257": {
+      "id": "legacy_ebe84e58_0257",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 61,
+        "y": 50
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0258": {
+      "id": "legacy_ebe84e58_0258",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 61,
+        "y": 55
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0259": {
+      "id": "legacy_ebe84e58_0259",
+      "definitionId": "thickener_1",
+      "position": {
+        "x": 61,
+        "y": 60
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0260": {
+      "id": "legacy_ebe84e58_0260",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 61,
+        "y": 69
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0261": {
+      "id": "legacy_ebe84e58_0261",
+      "definitionId": "loader_1",
+      "position": {
+        "x": 63,
+        "y": 0
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0262": {
+      "id": "legacy_ebe84e58_0262",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 63,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0263": {
+      "id": "legacy_ebe84e58_0263",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 63,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0264": {
+      "id": "legacy_ebe84e58_0264",
+      "definitionId": "log_admission",
+      "position": {
+        "x": 64,
+        "y": 1
+      },
+      "rotation": 270,
+      "config": {
+        "portGroups[0].ports[0].acceptRule": {
+          "base": {
+            "kind": "item",
+            "itemId": "item_bottled_rec_hp_3"
+          },
+          "exclude": []
+        },
+        "portGroups[0].ports[0].admissionRule": {
+          "itemId": "item_bottled_rec_hp_3",
+          "limit": null,
+          "perMinuteLimit": null
+        }
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0265": {
+      "id": "legacy_ebe84e58_0265",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 64,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0266": {
+      "id": "legacy_ebe84e58_0266",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 64,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0267": {
+      "id": "legacy_ebe84e58_0267",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 64,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0268": {
+      "id": "legacy_ebe84e58_0268",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 64,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0269": {
+      "id": "legacy_ebe84e58_0269",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 64,
+        "y": 69
+      },
+      "rotation": 0,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0270": {
+      "id": "legacy_ebe84e58_0270",
+      "definitionId": "loader_1",
+      "position": {
+        "x": 66,
+        "y": 0
+      },
+      "rotation": 180,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0271": {
+      "id": "legacy_ebe84e58_0271",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 66,
+        "y": 2
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0272": {
+      "id": "legacy_ebe84e58_0272",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 66,
+        "y": 6
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0273": {
+      "id": "legacy_ebe84e58_0273",
+      "definitionId": "log_admission",
+      "position": {
+        "x": 67,
+        "y": 1
+      },
+      "rotation": 270,
+      "config": {
+        "portGroups[0].ports[0].acceptRule": {
+          "base": {
+            "kind": "item",
+            "itemId": "item_proc_battery_3"
+          },
+          "exclude": []
+        },
+        "portGroups[0].ports[0].admissionRule": {
+          "itemId": "item_proc_battery_3",
+          "limit": null,
+          "perMinuteLimit": null
+        }
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0274": {
+      "id": "legacy_ebe84e58_0274",
+      "definitionId": "grinder_1",
+      "position": {
+        "x": 67,
+        "y": 10
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0275": {
+      "id": "legacy_ebe84e58_0275",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 67,
+        "y": 14
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0276": {
+      "id": "legacy_ebe84e58_0276",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 67,
+        "y": 18
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0277": {
+      "id": "legacy_ebe84e58_0277",
+      "definitionId": "furnance_1",
+      "position": {
+        "x": 67,
+        "y": 22
+      },
+      "rotation": 0,
+      "config": {},
+      "tags": []
+    },
+    "legacy_ebe84e58_0278": {
+      "id": "legacy_ebe84e58_0278",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 69,
+        "y": 43
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    },
+    "legacy_ebe84e58_0279": {
+      "id": "legacy_ebe84e58_0279",
+      "definitionId": "unloader_1",
+      "position": {
+        "x": 69,
+        "y": 46
+      },
+      "rotation": 270,
+      "config": {
+        "storageSlotGroups[0].slots[0].ignoreStock": true
+      },
+      "tags": []
+    }
+  },
+  "entityOrder": [
+    "legacy_ebe84e58_0001",
+    "legacy_ebe84e58_0002",
+    "legacy_ebe84e58_0003",
+    "legacy_ebe84e58_0004",
+    "legacy_ebe84e58_0005",
+    "legacy_ebe84e58_0006",
+    "legacy_ebe84e58_0007",
+    "legacy_ebe84e58_0008",
+    "legacy_ebe84e58_0009",
+    "legacy_ebe84e58_0010",
+    "legacy_ebe84e58_0011",
+    "legacy_ebe84e58_0012",
+    "legacy_ebe84e58_0013",
+    "legacy_ebe84e58_0014",
+    "legacy_ebe84e58_0015",
+    "legacy_ebe84e58_0016",
+    "legacy_ebe84e58_0017",
+    "legacy_ebe84e58_0018",
+    "legacy_ebe84e58_0019",
+    "legacy_ebe84e58_0020",
+    "legacy_ebe84e58_0021",
+    "legacy_ebe84e58_0022",
+    "legacy_ebe84e58_0023",
+    "legacy_ebe84e58_0024",
+    "legacy_ebe84e58_0025",
+    "legacy_ebe84e58_0026",
+    "legacy_ebe84e58_0027",
+    "legacy_ebe84e58_0028",
+    "legacy_ebe84e58_0029",
+    "legacy_ebe84e58_0030",
+    "legacy_ebe84e58_0031",
+    "legacy_ebe84e58_0032",
+    "legacy_ebe84e58_0033",
+    "legacy_ebe84e58_0034",
+    "legacy_ebe84e58_0035",
+    "legacy_ebe84e58_0036",
+    "legacy_ebe84e58_0037",
+    "legacy_ebe84e58_0038",
+    "legacy_ebe84e58_0039",
+    "legacy_ebe84e58_0040",
+    "legacy_ebe84e58_0041",
+    "legacy_ebe84e58_0042",
+    "legacy_ebe84e58_0043",
+    "legacy_ebe84e58_0044",
+    "legacy_ebe84e58_0045",
+    "legacy_ebe84e58_0046",
+    "legacy_ebe84e58_0047",
+    "legacy_ebe84e58_0048",
+    "legacy_ebe84e58_0049",
+    "legacy_ebe84e58_0050",
+    "legacy_ebe84e58_0051",
+    "legacy_ebe84e58_0052",
+    "legacy_ebe84e58_0053",
+    "legacy_ebe84e58_0054",
+    "legacy_ebe84e58_0055",
+    "legacy_ebe84e58_0056",
+    "legacy_ebe84e58_0057",
+    "legacy_ebe84e58_0058",
+    "legacy_ebe84e58_0059",
+    "legacy_ebe84e58_0060",
+    "legacy_ebe84e58_0061",
+    "legacy_ebe84e58_0062",
+    "legacy_ebe84e58_0063",
+    "legacy_ebe84e58_0064",
+    "legacy_ebe84e58_0065",
+    "legacy_ebe84e58_0066",
+    "legacy_ebe84e58_0067",
+    "legacy_ebe84e58_0068",
+    "legacy_ebe84e58_0069",
+    "legacy_ebe84e58_0070",
+    "legacy_ebe84e58_0071",
+    "legacy_ebe84e58_0072",
+    "legacy_ebe84e58_0073",
+    "legacy_ebe84e58_0074",
+    "legacy_ebe84e58_0075",
+    "legacy_ebe84e58_0076",
+    "legacy_ebe84e58_0077",
+    "legacy_ebe84e58_0078",
+    "legacy_ebe84e58_0079",
+    "legacy_ebe84e58_0080",
+    "legacy_ebe84e58_0081",
+    "legacy_ebe84e58_0082",
+    "legacy_ebe84e58_0083",
+    "legacy_ebe84e58_0084",
+    "legacy_ebe84e58_0085",
+    "legacy_ebe84e58_0086",
+    "legacy_ebe84e58_0087",
+    "legacy_ebe84e58_0088",
+    "legacy_ebe84e58_0089",
+    "legacy_ebe84e58_0090",
+    "legacy_ebe84e58_0091",
+    "legacy_ebe84e58_0092",
+    "legacy_ebe84e58_0093",
+    "legacy_ebe84e58_0094",
+    "legacy_ebe84e58_0095",
+    "legacy_ebe84e58_0096",
+    "legacy_ebe84e58_0097",
+    "legacy_ebe84e58_0098",
+    "legacy_ebe84e58_0099",
+    "legacy_ebe84e58_0100",
+    "legacy_ebe84e58_0101",
+    "legacy_ebe84e58_0102",
+    "legacy_ebe84e58_0103",
+    "legacy_ebe84e58_0104",
+    "legacy_ebe84e58_0105",
+    "legacy_ebe84e58_0106",
+    "legacy_ebe84e58_0107",
+    "legacy_ebe84e58_0108",
+    "legacy_ebe84e58_0109",
+    "legacy_ebe84e58_0110",
+    "legacy_ebe84e58_0111",
+    "legacy_ebe84e58_0112",
+    "legacy_ebe84e58_0113",
+    "legacy_ebe84e58_0114",
+    "legacy_ebe84e58_0115",
+    "legacy_ebe84e58_0116",
+    "legacy_ebe84e58_0117",
+    "legacy_ebe84e58_0118",
+    "legacy_ebe84e58_0119",
+    "legacy_ebe84e58_0120",
+    "legacy_ebe84e58_0121",
+    "legacy_ebe84e58_0122",
+    "legacy_ebe84e58_0123",
+    "legacy_ebe84e58_0124",
+    "legacy_ebe84e58_0125",
+    "legacy_ebe84e58_0126",
+    "legacy_ebe84e58_0127",
+    "legacy_ebe84e58_0128",
+    "legacy_ebe84e58_0129",
+    "legacy_ebe84e58_0130",
+    "legacy_ebe84e58_0131",
+    "legacy_ebe84e58_0132",
+    "legacy_ebe84e58_0133",
+    "legacy_ebe84e58_0134",
+    "legacy_ebe84e58_0135",
+    "legacy_ebe84e58_0136",
+    "legacy_ebe84e58_0137",
+    "legacy_ebe84e58_0138",
+    "legacy_ebe84e58_0139",
+    "legacy_ebe84e58_0140",
+    "legacy_ebe84e58_0141",
+    "legacy_ebe84e58_0142",
+    "legacy_ebe84e58_0143",
+    "legacy_ebe84e58_0144",
+    "legacy_ebe84e58_0145",
+    "legacy_ebe84e58_0146",
+    "legacy_ebe84e58_0147",
+    "legacy_ebe84e58_0148",
+    "legacy_ebe84e58_0149",
+    "legacy_ebe84e58_0150",
+    "legacy_ebe84e58_0151",
+    "legacy_ebe84e58_0152",
+    "legacy_ebe84e58_0153",
+    "legacy_ebe84e58_0154",
+    "legacy_ebe84e58_0155",
+    "legacy_ebe84e58_0156",
+    "legacy_ebe84e58_0157",
+    "legacy_ebe84e58_0158",
+    "legacy_ebe84e58_0159",
+    "legacy_ebe84e58_0160",
+    "legacy_ebe84e58_0161",
+    "legacy_ebe84e58_0162",
+    "legacy_ebe84e58_0163",
+    "legacy_ebe84e58_0164",
+    "legacy_ebe84e58_0165",
+    "legacy_ebe84e58_0166",
+    "legacy_ebe84e58_0167",
+    "legacy_ebe84e58_0168",
+    "legacy_ebe84e58_0169",
+    "legacy_ebe84e58_0170",
+    "legacy_ebe84e58_0171",
+    "legacy_ebe84e58_0172",
+    "legacy_ebe84e58_0173",
+    "legacy_ebe84e58_0174",
+    "legacy_ebe84e58_0175",
+    "legacy_ebe84e58_0176",
+    "legacy_ebe84e58_0177",
+    "legacy_ebe84e58_0178",
+    "legacy_ebe84e58_0179",
+    "legacy_ebe84e58_0180",
+    "legacy_ebe84e58_0181",
+    "legacy_ebe84e58_0182",
+    "legacy_ebe84e58_0183",
+    "legacy_ebe84e58_0184",
+    "legacy_ebe84e58_0185",
+    "legacy_ebe84e58_0186",
+    "legacy_ebe84e58_0187",
+    "legacy_ebe84e58_0188",
+    "legacy_ebe84e58_0189",
+    "legacy_ebe84e58_0190",
+    "legacy_ebe84e58_0191",
+    "legacy_ebe84e58_0192",
+    "legacy_ebe84e58_0193",
+    "legacy_ebe84e58_0194",
+    "legacy_ebe84e58_0195",
+    "legacy_ebe84e58_0196",
+    "legacy_ebe84e58_0197",
+    "legacy_ebe84e58_0198",
+    "legacy_ebe84e58_0199",
+    "legacy_ebe84e58_0200",
+    "legacy_ebe84e58_0201",
+    "legacy_ebe84e58_0202",
+    "legacy_ebe84e58_0203",
+    "legacy_ebe84e58_0204",
+    "legacy_ebe84e58_0205",
+    "legacy_ebe84e58_0206",
+    "legacy_ebe84e58_0207",
+    "legacy_ebe84e58_0208",
+    "legacy_ebe84e58_0209",
+    "legacy_ebe84e58_0210",
+    "legacy_ebe84e58_0211",
+    "legacy_ebe84e58_0212",
+    "legacy_ebe84e58_0213",
+    "legacy_ebe84e58_0214",
+    "legacy_ebe84e58_0215",
+    "legacy_ebe84e58_0216",
+    "legacy_ebe84e58_0217",
+    "legacy_ebe84e58_0218",
+    "legacy_ebe84e58_0219",
+    "legacy_ebe84e58_0220",
+    "legacy_ebe84e58_0221",
+    "legacy_ebe84e58_0222",
+    "legacy_ebe84e58_0223",
+    "legacy_ebe84e58_0224",
+    "legacy_ebe84e58_0225",
+    "legacy_ebe84e58_0226",
+    "legacy_ebe84e58_0227",
+    "legacy_ebe84e58_0228",
+    "legacy_ebe84e58_0229",
+    "legacy_ebe84e58_0230",
+    "legacy_ebe84e58_0231",
+    "legacy_ebe84e58_0232",
+    "legacy_ebe84e58_0233",
+    "legacy_ebe84e58_0234",
+    "legacy_ebe84e58_0235",
+    "legacy_ebe84e58_0236",
+    "legacy_ebe84e58_0237",
+    "legacy_ebe84e58_0238",
+    "legacy_ebe84e58_0239",
+    "legacy_ebe84e58_0240",
+    "legacy_ebe84e58_0241",
+    "legacy_ebe84e58_0242",
+    "legacy_ebe84e58_0243",
+    "legacy_ebe84e58_0244",
+    "legacy_ebe84e58_0245",
+    "legacy_ebe84e58_0246",
+    "legacy_ebe84e58_0247",
+    "legacy_ebe84e58_0248",
+    "legacy_ebe84e58_0249",
+    "legacy_ebe84e58_0250",
+    "legacy_ebe84e58_0251",
+    "legacy_ebe84e58_0252",
+    "legacy_ebe84e58_0253",
+    "legacy_ebe84e58_0254",
+    "legacy_ebe84e58_0255",
+    "legacy_ebe84e58_0256",
+    "legacy_ebe84e58_0257",
+    "legacy_ebe84e58_0258",
+    "legacy_ebe84e58_0259",
+    "legacy_ebe84e58_0260",
+    "legacy_ebe84e58_0261",
+    "legacy_ebe84e58_0262",
+    "legacy_ebe84e58_0263",
+    "legacy_ebe84e58_0264",
+    "legacy_ebe84e58_0265",
+    "legacy_ebe84e58_0266",
+    "legacy_ebe84e58_0267",
+    "legacy_ebe84e58_0268",
+    "legacy_ebe84e58_0269",
+    "legacy_ebe84e58_0270",
+    "legacy_ebe84e58_0271",
+    "legacy_ebe84e58_0272",
+    "legacy_ebe84e58_0273",
+    "legacy_ebe84e58_0274",
+    "legacy_ebe84e58_0275",
+    "legacy_ebe84e58_0276",
+    "legacy_ebe84e58_0277",
+    "legacy_ebe84e58_0278",
+    "legacy_ebe84e58_0279"
+  ],
+  "slotLinks": [
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0001:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0001",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0002:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0002",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0003:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0003",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0004:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0004",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0005:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0005",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0006:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0006",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0007:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0007",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0008:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0008",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0009:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0009",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0010:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0010",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0011:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0011",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0012:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0012",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0013:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0013",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0014:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0014",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0015:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0015",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0016:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0016",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0017:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0017",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0018:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0018",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0019:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0019",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0020:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0020",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0049:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0049",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0060:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0060",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0071:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0071",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0082:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0082",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0093:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0093",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0104:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0104",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0119:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0119",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0126:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0126",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0140:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0140",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0141:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0141",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0149:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0149",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0150:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0150",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0164:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0164",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0165:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0165",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0172:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0172",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0177:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0177",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0187:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0187",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0188:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0188",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0200:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0200",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0201:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0201",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0211:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0211",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0212:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0212",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0222:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0222",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0223:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0223",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0233:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0233",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0237:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0237",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0245:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0245",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0246:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0246",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_iron_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0260:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0260",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0269:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0269",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0278:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0278",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    },
+    {
+      "id": "warehouse-link:legacy_ebe84e58_0279:unloader_buffer:slot_1",
+      "linkType": "share-all",
+      "source": {
+        "entityId": "legacy_ebe84e58_0279",
+        "storageSlotGroupId": "unloader_buffer",
+        "slotId": "slot_1"
+      },
+      "target": {
+        "entityId": "warehouse",
+        "storageSlotGroupId": "warehouse",
+        "slotId": "item_originium_ore"
+      }
+    }
+  ],
+  "createdAt": "2026-03-30T12:00:00Z",
+  "updatedAt": "2026-03-30T12:00:00Z"
+}

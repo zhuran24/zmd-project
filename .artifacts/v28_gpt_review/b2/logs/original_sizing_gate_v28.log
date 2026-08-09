@@ -1,0 +1,65 @@
+registry type-pool sizes: {'boundary_storage_port': 134, 'manufacturing_3x3': 17952, 'manufacturing_5x5': 16896, 'manufacturing_6x4': 16900, 'power_pole': 4761, 'protocol_core': 7200, 'protocol_storage_box': 17952}
+type-pool total poses: 81795
+concrete/group multipliers: {'boundary_storage_port': 1, 'manufacturing_3x3': 8, 'manufacturing_5x5': 4, 'manufacturing_6x4': 5, 'power_pole': 1, 'protocol_core': 1, 'protocol_storage_box': 1}
+concrete master var upper proxy: 325747
+
+family term/cut: compact=witness/no-good; exp_scoped=type-pool scoped; exp_type_all=type-pool UB; exp_group_all=all-group concrete proxy
+  (for group-bound certs, exp_group_all is a conservative cross-group stress proxy; P1.3A must cap len(final_concrete_literals))
+  (density_envelope expanded now carried in summary, not compact-4 fallback — B-F1)
+family                 n   compact     exp_scoped     exp_type_all      exp_group_all
+component_reach        6       1.0         5429.0           5429.0            20157.0
+cutset                 6       1.0          173.3            173.3              669.3
+density_envelope       6       4.0         2778.8           2778.8            10836.2
+pattern_nogood         6       1.0            1.0              1.0                1.0
+port_exposure          6       2.0          500.0            500.0             1649.7
+power_grid_reach       6       1.0           16.0            676.7             2578.0
+power_hitting_set      4       1.0           16.0            846.0             2902.0
+region_capacity        6       1.0          134.0           1315.0             4971.0
+shape_packing_hall     4       1.0            1.0              1.0                1.0
+
+F9 density_envelope window_rect -> pose overlap (all fixture rows):
+  window           single-grp   type-all     same-tpl      all-mfg    group-all    cells
+  [0, 0, 10, 10]        360       1720         2880         6120         6760      100
+  [1, 3, 10, 10]        524       2417         4032         8748         9613      100
+  [2, 6, 10, 10]        644       2841         4416        10202        11205      100
+  [3, 9, 10, 10]        700       3103         4608        10898        12027      100
+  [4, 12, 10, 10]       756       3251         4608        11402        12567      100
+  [5, 15, 10, 10]       784       3341         4608        11644        12845      100
+  F9 current single-group upper-bound avg=628 max=784 ; type-all avg=2779 max=3341 ; same-template proxy avg=4192 max=4608 ; all-mfg proxy avg=9836 max=11644 ; group-all proxy avg=10836 max=12845
+
+OR-Tools incremental proto bytes/term (ExportToFile; 81,795 vars, high-index tail terms):
+  terms    slice    linear<=B/t    BoolOr-no-goodB/t 
+  784      tail     4.03           10.01             
+  5429     tail     4.01           10.00             
+
+100K proto projections, by constraint kind:
+  compact all families 1-4 terms/cut: about 1-4 MB at 100K
+  F9 current single-group max:
+    linear  ~4 B/term : 784 x 100K x 4  = 0.31 GB
+    BoolOr ~11 B/term : 784 x 100K x 11 = 0.86 GB
+  F9 same-template proxy max:
+    linear  ~4 B/term : 4608 x 100K x 4  = 1.84 GB
+    BoolOr ~11 B/term : 4608 x 100K x 11 = 5.07 GB
+  F9 all-manufacturing cross-group proxy:
+    linear  ~4 B/term : 11644 x 100K x 4  = 4.66 GB
+    BoolOr ~11 B/term : 11644 x 100K x 11 = 12.81 GB
+  F4 component_reach group-expanded max:
+    linear  ~4 B/term : 20157 x 100K x 4  = 8.06 GB
+    BoolOr ~11 B/term : 20157 x 100K x 11 = 22.17 GB
+  full manufacturing group-expanded pool:
+    linear  ~4 B/term : 295700 x 100K x 4  = 118.28 GB
+    BoolOr ~11 B/term : 295700 x 100K x 11 = 325.27 GB
+  full concrete proxy all pools:
+    linear  ~4 B/term : 325747 x 100K x 4  = 130.30 GB
+    BoolOr ~11 B/term : 325747 x 100K x 11 = 358.32 GB
+
+Conclusion:
+- LSB bitset sizing remains corrected; the old MSB-first 2026-style F1 count is not used.
+- Compact witness/no-good lowering is still cheap across all families.
+- Expanded/geometric lowering must be capped on the final CONCRETE literal vector
+  (after group/template/optional expansion), NOT just the type-pool count.
+- Current F9 certs are single-group; all-mfg/group-all numbers are stress proxies,
+  not the present F9 per-cut concrete literal vector.
+- type-pool UBs (F9 3341, F4 5429, ~16-18K) are cheap proxies, not real-master literal bounds.
+- Budgets must remain constraint-kind-specific: linear about 4 B/term, BoolOr/no-good about 11 B/term.
+- P1.3A guard: per-cut max/p99 cap + cumulative proto budget after group/template/optional resolution.

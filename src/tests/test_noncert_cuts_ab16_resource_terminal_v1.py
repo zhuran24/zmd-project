@@ -1,0 +1,2541 @@
+from __future__ import annotations
+
+import base64
+import copy
+import importlib.util
+import os
+from pathlib import Path
+import select
+import stat
+import sys
+from types import ModuleType, SimpleNamespace
+from typing import Any, Callable, Sequence
+
+import pytest
+
+
+ROOT = Path(__file__).resolve().parents[2]
+TOOLS = ROOT / "docs/research/noncert_cuts_ab16_20260724"
+LIFECYCLE_PATH = TOOLS / "organic_resource_lifecycle_v1.py"
+VERIFIER_PATH = TOOLS / "organic_resource_verifier_v1.py"
+ORCHESTRATOR_PATH = TOOLS / "organic_unit_orchestrator_v1.py"
+GATE1_TOOLS = ROOT / "docs/research/noncert_cuts_ab_trust_gate1_v4_20260724"
+MANAGER_AUTHORITY_PATH = GATE1_TOOLS / "campaign_authority_v4.py"
+MANAGER_ATTESTOR_PATH = GATE1_TOOLS / "manager_attestor_v4.py"
+
+
+def _load(name: str, path: Path) -> ModuleType:
+    spec = importlib.util.spec_from_file_location(name, path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+LIFECYCLE = _load("ab16_resource_lifecycle_test", LIFECYCLE_PATH)
+VERIFIER = _load("ab16_resource_verifier_test", VERIFIER_PATH)
+ORCHESTRATOR = _load("ab16_unit_orchestrator_test", ORCHESTRATOR_PATH)
+MANAGER_AUTHORITY = _load("ab16_manager_authority_test", MANAGER_AUTHORITY_PATH)
+
+
+def _identity(path: Path) -> dict[str, object]:
+    return dict(LIFECYCLE.snapshot_regular(path).identity)
+
+
+def _detached(identity: dict[str, object]) -> dict[str, object]:
+    return {field: identity[field] for field in ("path", "sha256", "size_bytes")}
+
+
+def _write(path: Path, value: object) -> dict[str, object]:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    return LIFECYCLE.write_json_exclusive(path, value)
+
+
+def _full_identity(path: Path) -> dict[str, object]:
+    return dict(MANAGER_AUTHORITY.full_identity(MANAGER_AUTHORITY.snapshot_regular(path)))
+
+
+def _manager_material(
+    authority_dir: Path,
+) -> tuple[dict[str, object], dict[str, object]]:
+    tool_dir = authority_dir / "manager-tools"
+    tool_dir.mkdir()
+    tools: dict[str, Path] = {}
+    for role in ("systemd", "busctl", "sudo", "python"):
+        path = tool_dir / role
+        path.write_bytes(f"fixture {role}\n".encode())
+        tools[role] = path
+    attestor_identity = _full_identity(MANAGER_ATTESTOR_PATH)
+    audit = MANAGER_AUTHORITY.audit_attestor_source(MANAGER_ATTESTOR_PATH.read_bytes())
+    epoch: dict[str, object] = {
+        "attestation_toolchain": {
+            "attestor": attestor_identity,
+            "python": _full_identity(tools["python"]),
+            "sudo": _full_identity(tools["sudo"]),
+        },
+        "attestor_ast_audit": audit,
+        "boot_id": "11111111-2222-3333-4444-555555555555",
+        "capture_protocol": ("double-unprivileged-join-plus-read-only-sudo-attestation-v4"),
+        "dbus_unique_owner": ":1.42",
+        "manager_executable": _full_identity(tools["systemd"]),
+        "manager_features": "+PAM +AUDIT",
+        "manager_pid": 2118,
+        "manager_pid_starttime": 101,
+        "manager_version": "systemd 261.1",
+        "observation_toolchain": {"busctl": _full_identity(tools["busctl"])},
+        "schema": MANAGER_AUTHORITY.MANAGER_EPOCH_SCHEMA,
+    }
+    state = {
+        key: epoch[key]
+        for key in (
+            "boot_id",
+            "dbus_unique_owner",
+            "manager_features",
+            "manager_pid",
+            "manager_pid_starttime",
+            "manager_version",
+        )
+    }
+    attestation = {
+        "manager_executable": epoch["manager_executable"],
+        "request": {
+            "boot_id": epoch["boot_id"],
+            "dbus_unique_owner": epoch["dbus_unique_owner"],
+            "manager_pid": epoch["manager_pid"],
+            "manager_pid_starttime": epoch["manager_pid_starttime"],
+        },
+        "schema": MANAGER_AUTHORITY.ATTESTOR_SCHEMA,
+        "status": "PASS",
+    }
+    attestation_tools = epoch["attestation_toolchain"]
+    assert isinstance(attestation_tools, dict)
+    invocation = {
+        "argv": [
+            attestation_tools["sudo"]["path"],
+            "-n",
+            "--",
+            attestation_tools["python"]["path"],
+            "-I",
+            "-c",
+            MANAGER_AUTHORITY._LOADER,  # noqa: SLF001
+            "--pid",
+            str(epoch["manager_pid"]),
+            "--expected-starttime",
+            str(epoch["manager_pid_starttime"]),
+            "--expected-boot-id",
+            epoch["boot_id"],
+            "--dbus-owner",
+            epoch["dbus_unique_owner"],
+        ],
+        "exit_code": 0,
+        "stdin_sha256": attestor_identity["sha256"],
+        "stdin_size_bytes": attestor_identity["size_bytes"],
+        "stdout_base64": base64.b64encode(MANAGER_AUTHORITY.canonical_json(attestation)).decode("ascii"),
+    }
+    rounds = []
+    for index in (1, 2):
+        rounds.append(
+            {
+                "attestation_toolchain": copy.deepcopy(epoch["attestation_toolchain"]),
+                "attestor_ast_audit": copy.deepcopy(epoch["attestor_ast_audit"]),
+                "attestor_invocation": copy.deepcopy(invocation),
+                "observation_toolchain": copy.deepcopy(epoch["observation_toolchain"]),
+                "observation_finished_monotonic_ns": index * 20,
+                "observation_started_monotonic_ns": index * 20 - 10,
+                "privileged_attestation": copy.deepcopy(attestation),
+                "round_index": index,
+                "unprivileged_after": copy.deepcopy(state),
+                "unprivileged_before": copy.deepcopy(state),
+            }
+        )
+    transcript = {
+        "capture_protocol": ("two-round-before-read-only-attestor-after-transcript-v4"),
+        "rounds": rounds,
+        "schema": MANAGER_AUTHORITY.MANAGER_EPOCH_TRANSCRIPT_SCHEMA,
+    }
+    MANAGER_AUTHORITY.validate_manager_epoch_capture_transcript(
+        transcript,
+        expected_epoch=epoch,
+    )
+    return epoch, transcript
+
+
+def _tool_identity(path: Path) -> dict[str, object]:
+    return dict(LIFECYCLE.snapshot_regular(path).identity)
+
+
+class FakeAdapter:
+    def __init__(
+        self,
+        *,
+        attempt_dir: Path,
+        slot: str,
+        payload_exit_code: int = 0,
+        epoch_drift_phase: str | None = None,
+        transcript_drift_phase: str | None = None,
+        terminal_invocation_drift: bool = False,
+        oom_kill: int = 0,
+        cleanup_residual: bool = False,
+        abort_cleanup_residual: bool = False,
+        memory_max_adjustment: int = 0,
+        collect_mode: str = "inactive-or-failed",
+        payload_failure_error: str | None = None,
+        payload_signal: int = 0,
+    ) -> None:
+        self.attempt_dir = attempt_dir
+        self.slot = slot
+        self.payload_exit_code = payload_exit_code
+        self.epoch_drift_phase = epoch_drift_phase
+        self.transcript_drift_phase = transcript_drift_phase
+        self.terminal_invocation_drift = terminal_invocation_drift
+        self.oom_kill = oom_kill
+        self.cleanup_residual = cleanup_residual
+        self.abort_cleanup_residual = abort_cleanup_residual
+        self.memory_max_adjustment = memory_max_adjustment
+        self.collect_mode = collect_mode
+        self.payload_failure_error = payload_failure_error
+        self.payload_signal = payload_signal
+        self.clock = 100
+        self.invocation = "0123456789abcdef0123456789abcdef"
+        self.keeper_pid = 4100
+        self.payload_pid = 4101
+        self.abort_count = 0
+        pre_run = VERIFIER.snapshot_json(attempt_dir / "pre-run-authority.json").value
+        self.resource_contract = copy.deepcopy(pre_run["resource_contract"])
+        self.manager_epoch = copy.deepcopy(pre_run["manager_epoch"])
+        self.manager_transcript = copy.deepcopy(
+            VERIFIER.snapshot_json(pre_run["preselection_transcript_identity"]["path"]).value
+        )
+
+    def monotonic_ns(self) -> int:
+        self.clock += 100
+        return self.clock
+
+    def observe_manager_epoch(self, phase: str) -> Any:
+        epoch = copy.deepcopy(self.manager_epoch)
+        if phase == self.epoch_drift_phase:
+            epoch["boot_id"] = "boot-drift"
+        transcript = copy.deepcopy(self.manager_transcript)
+        if phase == self.transcript_drift_phase:
+            transcript["rounds"][0]["round_index"] = 99
+        return ORCHESTRATOR.EpochCapture(
+            manager_epoch=epoch,
+            transcript=transcript,
+        )
+
+    def launch_and_wait_for_keeper(
+        self,
+        *,
+        unit_name: str,
+        systemd_run_argv: Sequence[str],
+        payload_argv: Sequence[str],
+    ) -> Any:
+        assert unit_name.endswith(".service")
+        assert f"--property=MemoryHigh={self.resource_contract['memory_high_bytes']}" in systemd_run_argv
+        assert f"--property=MemoryMax={self.resource_contract['memory_max_bytes']}" in systemd_run_argv
+        assert (f"--property=MemorySwapMax={self.resource_contract['memory_swap_max_bytes']}") in systemd_run_argv
+        assert f"--property=CollectMode={self.resource_contract['collect_mode']}" in systemd_run_argv
+        assert f"--property=RuntimeMaxSec={self.resource_contract['runtime_max_seconds']}" in systemd_run_argv
+        assert payload_argv
+        launch = ORCHESTRATOR.LaunchEvidence(
+            invocation_id=self.invocation,
+            supervisor_pid=self.keeper_pid,
+            supervisor_starttime=77,
+            payload_pid=self.payload_pid,
+            payload_starttime=78,
+            payload_seal_monotonic_ns=300,
+            payload_exit_monotonic_ns=400,
+            payload_exit_code=self.payload_exit_code,
+            payload_signal=self.payload_signal,
+            payload_reaped=True,
+            keeper_ready_monotonic_ns=500,
+        )
+        pre_run_snapshot = LIFECYCLE.snapshot_regular(self.attempt_dir / "pre-run-authority.json")
+        selection_snapshot = LIFECYCLE.snapshot_regular(self.attempt_dir / "selection.json")
+        pre_run = LIFECYCLE.strict_loads(pre_run_snapshot.raw, "fixture pre-run")
+        selection = LIFECYCLE.strict_loads(
+            selection_snapshot.raw,
+            "fixture selection",
+        )
+        if self.payload_failure_error is None:
+            payload_output_kind = "result"
+            payload_output_identity = LIFECYCLE.write_exclusive(
+                self.attempt_dir / "result.json",
+                LIFECYCLE.canonical_json_bytes(
+                    {
+                        "schema_version": "noncert-cuts-ab16-organic-arm-result-v1",
+                        "slot": self.slot,
+                        "status": "UNKNOWN",
+                    }
+                )
+                + b"\n",
+            )
+        else:
+            payload_output_kind = "failure"
+            payload_output_identity = LIFECYCLE.write_exclusive(
+                self.attempt_dir / "failure.json",
+                LIFECYCLE.canonical_json_bytes(
+                    {
+                        "authorizations": {
+                            "global_claim_authorized": False,
+                            "mathematical_claim_authorized": False,
+                            "organic_runtime_effect_authorized": False,
+                            "production_certified_authorized": False,
+                        },
+                        "error": self.payload_failure_error,
+                        "schema_version": "noncert-cuts-ab16-organic-arm-result-v1",
+                        "selection_identity": _detached(selection_snapshot.identity),
+                        "status": "CREDIBILITY_INCOMPLETE",
+                    }
+                )
+                + b"\n",
+            )
+        launch_epoch_snapshot = LIFECYCLE.snapshot_regular(self.attempt_dir / "manager-epoch-launch.json")
+        launch_epoch = LIFECYCLE.strict_loads(
+            launch_epoch_snapshot.raw,
+            "fixture launch epoch",
+        )
+        inner = LIFECYCLE.build_inner_record(
+            pre_run,
+            pre_run_snapshot.identity,
+            selection,
+            selection_snapshot.identity,
+            invocation_id=launch.invocation_id,
+            launch_observation=launch_epoch,
+            supervisor_pid=launch.supervisor_pid,
+            supervisor_starttime=launch.supervisor_starttime,
+            payload_pid=launch.payload_pid,
+            payload_starttime=launch.payload_starttime,
+            payload_seal_monotonic_ns=launch.payload_seal_monotonic_ns,
+            payload_exit_monotonic_ns=launch.payload_exit_monotonic_ns,
+            payload_exit_code=launch.payload_exit_code,
+            payload_signal=launch.payload_signal,
+            payload_reaped=launch.payload_reaped,
+            payload_result_identity=(
+                payload_output_identity if payload_output_kind == "result" else None
+            ),
+            keeper_ready_monotonic_ns=launch.keeper_ready_monotonic_ns,
+            payload_failure_identity=(
+                payload_output_identity if payload_output_kind == "failure" else None
+            ),
+        )
+        _write(self.attempt_dir / "inner-lifecycle.json", inner)
+        return launch
+
+    def capture_preterminal(
+        self,
+        *,
+        unit_name: str,
+        launch: Any,
+    ) -> Any:
+        assert launch.payload_exit_monotonic_ns == 400
+        self.clock = 700
+        events = f"low 0\nhigh 0\nmax 0\noom 0\noom_kill {self.oom_kill}\noom_group_kill 0\n"
+        return ORCHESTRATOR.PreterminalEvidence(
+            captured_at_monotonic_ns=700,
+            systemd_raw={
+                "ActiveState": "active",
+                "CollectMode": self.collect_mode,
+                "ControlGroup": "/user.slice/ab16.scope",
+                "InvocationID": self.invocation,
+                "KillMode": "control-group",
+                "MainPID": str(self.keeper_pid),
+                "MemoryHigh": str(self.resource_contract["memory_high_bytes"]),
+                "MemoryMax": str(self.resource_contract["memory_max_bytes"] + self.memory_max_adjustment),
+                "MemorySwapMax": str(self.resource_contract["memory_swap_max_bytes"]),
+                "OOMPolicy": "continue",
+                "RuntimeMaxUSec": str(self.resource_contract["runtime_max_seconds"] * 1_000_000),
+                "SendSIGKILL": "yes",
+                "SubState": "running",
+            },
+            cgroup_raw={
+                "cgroup.events": "populated 1\nfrozen 0\n",
+                "cgroup.procs": f"{self.keeper_pid}\n",
+                "memory.current": "100",
+                "memory.events": events,
+                "memory.high": str(self.resource_contract["memory_high_bytes"]),
+                "memory.max": str(self.resource_contract["memory_max_bytes"]),
+                "memory.peak": "200",
+                "memory.swap.current": "0",
+                "memory.swap.max": str(self.resource_contract["memory_swap_max_bytes"]),
+            },
+            payload_current_starttime=None,
+            keeper_current_starttime=77,
+        )
+
+    def release_keeper(
+        self,
+        *,
+        unit_name: str,
+        release_path: Path,
+        launch: Any,
+    ) -> None:
+        assert release_path.is_file()
+        assert launch.payload_reaped is True
+
+    def capture_terminal(
+        self,
+        *,
+        unit_name: str,
+        invocation_id: str,
+    ) -> Any:
+        assert invocation_id == self.invocation
+        self.clock = 1100
+        observed = "fedcba9876543210fedcba9876543210" if self.terminal_invocation_drift else self.invocation
+        failed = self.payload_exit_code != 0
+        return ORCHESTRATOR.TerminalEvidence(
+            captured_at_monotonic_ns=1100,
+            systemd_raw={
+                "ActiveState": "failed" if failed else "inactive",
+                "ControlGroup": "",
+                "ExecMainCode": "exited",
+                "ExecMainStatus": str(self.payload_exit_code),
+                "InvocationID": observed,
+                "Result": "exit-code" if failed else "success",
+                "SubState": "failed" if failed else "dead",
+            },
+        )
+
+    def capture_cleanup(
+        self,
+        *,
+        unit_name: str,
+        launch: Any,
+        control_group: str,
+    ) -> Any:
+        assert control_group == "/user.slice/ab16.scope"
+        self.clock = 1300
+        return ORCHESTRATOR.CleanupEvidence(
+            captured_at_monotonic_ns=1300,
+            payload_current_starttime=None,
+            keeper_current_starttime=77 if self.cleanup_residual else None,
+            cgroup_path=control_group,
+            cgroup_path_exists=self.cleanup_residual,
+            unit_load_state="loaded" if self.cleanup_residual else "not-found",
+            matching_unit_names=[unit_name] if self.cleanup_residual else [],
+        )
+
+    def abort_and_capture_cleanup(
+        self,
+        *,
+        unit_name: str,
+        launch: Any,
+        control_group: str | None,
+    ) -> Any:
+        self.abort_count += 1
+        residual = self.abort_cleanup_residual
+        return ORCHESTRATOR.CleanupEvidence(
+            captured_at_monotonic_ns=self.monotonic_ns(),
+            payload_current_starttime=78 if residual else None,
+            keeper_current_starttime=77 if residual else None,
+            cgroup_path=control_group or "/user.slice/ab16.scope",
+            cgroup_path_exists=residual,
+            unit_load_state="loaded" if residual else "not-found",
+            matching_unit_names=[unit_name] if residual else [],
+        )
+
+
+def _fixture(
+    tmp_path: Path,
+    *,
+    postseal_failure_exit_code: int = 0,
+    postseal_failure_signal: int = 0,
+) -> tuple[Path, Path, Path]:
+    authority_attempt = tmp_path / "attempt"
+    attempt = authority_attempt / "run"
+    attempt.mkdir(parents=True)
+    (authority_attempt / "support").mkdir()
+    authority_dir = tmp_path / "authority"
+    authority_dir.mkdir()
+    identities: dict[str, dict[str, object]] = {}
+    for name in (
+        "root",
+        "continuation",
+        "manifest",
+        "suite-selection",
+        "baseline",
+        "prestate",
+        "binding",
+        "strict",
+        "package-manifest",
+        "package-seal",
+        "git",
+        "systemctl",
+        "systemd-run",
+    ):
+        path = authority_dir / f"{name}.json"
+        identities[name] = _write(path, {"name": name})
+    identities["environment"] = _write(
+        authority_dir / "environment.json",
+        {
+            "clear_ambient": True,
+            "schema_version": "noncert-cuts-ab16-launch-environment-v1",
+            "variables": {
+                "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
+                "HOME": "/home/fixture",
+                "LANG": "C.UTF-8",
+                "LC_ALL": "C.UTF-8",
+                "PATH": "/usr/bin:/bin",
+                "PYTHONHASHSEED": "0",
+                "TZ": "UTC",
+                "XDG_RUNTIME_DIR": "/run/user/1000",
+            },
+        },
+    )
+    manager_epoch, manager_transcript = _manager_material(authority_dir)
+    runtime_python = authority_dir / "runtime-python"
+    runtime_python.write_bytes(b"fixture runtime python distinct from attestor python\n")
+    preselection_transcript_identity = _write(
+        authority_dir / "preselection-transcript.json",
+        manager_transcript,
+    )
+    preselection = LIFECYCLE.build_epoch_observation(
+        phase="preselection",
+        slot="region-capacity-ab-control",
+        observed_epoch=manager_epoch,
+        observed_at_monotonic_ns=100,
+        capture_transcript_identity=preselection_transcript_identity,
+    )
+    identities["preselection"] = _write(
+        authority_dir / "preselection.json",
+        preselection,
+    )
+    output_names = {
+        "attempt_result": "result.json",
+        "cleanup": "cleanup.json",
+        "detached_replay": "detached-replay.json",
+        "inner": "inner-lifecycle.json",
+        "preterminal": "preterminal-resource.json",
+        "release": "release-token.json",
+        "resource_verification": "independent-resource-verification.json",
+        "terminal": "terminal-envelope.json",
+    }
+    epoch_names = {
+        phase: f"manager-epoch-{phase}.json"
+        for phase in (
+            "launch",
+            "preterminal",
+            "release",
+            "terminal",
+            "cleanup",
+            "detached-replay",
+        )
+    }
+    transcript_names = {
+        phase: f"manager-epoch-{phase}-transcript.json"
+        for phase in (
+            "launch",
+            "preterminal",
+            "release",
+            "terminal",
+            "cleanup",
+            "detached-replay",
+        )
+    }
+    pre_run_path = attempt / "pre-run-authority.json"
+    selection_path = attempt / "selection.json"
+    package = {
+        "manifest_identity": identities["package-manifest"],
+        "package_id": identities["package-seal"]["sha256"],
+        "seal_identity": identities["package-seal"],
+    }
+    authority_chain = {
+        "campaign_root_identity": identities["root"],
+        "continuation_identity": identities["continuation"],
+        "manager_epoch_authority_identity": identities["preselection"],
+        "package": package,
+    }
+    execution_class = "FORMAL_AB16"
+    expected_payload_status = {
+        "exit_code": postseal_failure_exit_code,
+        "expectation": (
+            "SUCCESS"
+            if postseal_failure_exit_code == 0 and postseal_failure_signal == 0
+            else "POST_SEAL_FAILURE"
+        ),
+        "signal": postseal_failure_signal,
+    }
+    tool_identities = {
+        "attestor_python": _tool_identity(Path(manager_epoch["attestation_toolchain"]["python"]["path"])),
+        "busctl": _tool_identity(Path(manager_epoch["observation_toolchain"]["busctl"]["path"])),
+        "manager_attestor": _tool_identity(MANAGER_ATTESTOR_PATH),
+        "manager_epoch_authority": _tool_identity(MANAGER_AUTHORITY_PATH),
+        "organic_arm_runner": _tool_identity(TOOLS / "organic_arm_runner_v1.py"),
+        "organic_resource_lifecycle": _tool_identity(LIFECYCLE_PATH),
+        "organic_resource_verifier": _tool_identity(VERIFIER_PATH),
+        "organic_unit_orchestrator": _tool_identity(ORCHESTRATOR_PATH),
+        "python3_13": _tool_identity(runtime_python),
+        "sudo": _tool_identity(Path(manager_epoch["attestation_toolchain"]["sudo"]["path"])),
+        "systemctl": identities["systemctl"],
+        "systemd_run": identities["systemd-run"],
+    }
+    execution_tool_identities = {
+        **tool_identities,
+        "ab16_contract": _tool_identity(TOOLS / "ab16_contract_v1.py"),
+        "ab16_terminal_gate": _tool_identity(TOOLS / "ab16_terminal_gate_v1.py"),
+        "organic_arm_replay": _tool_identity(TOOLS / "organic_arm_replay_v1.py"),
+    }
+    research_only_authorizations = {
+        "cut_authorized": False,
+        "family_global_soundness_authorized": False,
+        "global_claim_authorized": False,
+        "lower_bound_authorized": False,
+        "mathematical_claim_authorized": False,
+        "optimality_authorized": False,
+        "production_certified_authorized": False,
+        "stage_b_promotion_authorized": False,
+        "upper_bound_authorized": False,
+        "witness_authorized": False,
+    }
+    input_set_identity = _write(
+        authority_attempt / "attempt-input-set.json",
+        {"schema_version": "noncert-cuts-ab16-attempt-input-set-v2"},
+    )
+    execution = {
+        "attempt_ordinal": 1,
+        "authorizations": research_only_authorizations,
+        "authority_attempt_dir": str(authority_attempt),
+        "authority_chain": authority_chain,
+        "campaign_id": "c" * 64,
+        "campaign_root_identity": identities["root"],
+        "continuation_identity": identities["continuation"],
+        "input_set_identity": input_set_identity,
+        "input_set_sha256": "e" * 64,
+        "manager_epoch": manager_epoch,
+        "manifest_identity": _detached(identities["manifest"]),
+        "package": package,
+        "pre_run_authority_path": str(pre_run_path),
+        "preregistration_sha256": "f" * 64,
+        "repository_git_tool_identity": identities["git"],
+        "repository_head": "d" * 40,
+        "repository_root": str(ROOT),
+        "run_dir": str(attempt),
+        "run_nonce": "run-a",
+        "schema_version": LIFECYCLE.ATTEMPT_EXECUTION_SCHEMA,
+        "scientific_input_set_sha256": "1" * 64,
+        "scientific_materialization_sha256": "2" * 64,
+        "selection_path": str(selection_path),
+        "slot": "region-capacity-ab-control",
+        "status": "READY",
+        "suite_selection_identity": _detached(identities["suite-selection"]),
+        "support_dir": str(authority_attempt / "support"),
+        "tool_identities": execution_tool_identities,
+        "unit_name": "cuts-ab16-region-capacity-ab-control.service",
+    }
+    execution_identity = _detached(_write(authority_attempt / "attempt-execution.json", execution))
+    payload_script = str(TOOLS / "organic_arm_runner_v1.py")
+    pre_run = {
+        "arm": "control",
+        "arm_binding_identity": identities["binding"],
+        "arm_launch_authorized": False,
+        "arm_selection_write_authorized": True,
+        "attempt_execution_identity": execution_identity,
+        "attempt_dir": str(attempt),
+        "attempt_ordinal": 1,
+        "authority_chain": authority_chain,
+        "baseline_admission_identity": identities["baseline"],
+        "baseline_incumbent_sha256": "b" * 64,
+        "campaign_id": "c" * 64,
+        "campaign_root_identity": identities["root"],
+        "common_prestate_identity": identities["prestate"],
+        "configuration": "region-capacity",
+        "continuation_identity": identities["continuation"],
+        "epoch_observation_paths": {phase: str(attempt / name) for phase, name in epoch_names.items()},
+        "epoch_transcript_paths": {phase: str(attempt / name) for phase, name in transcript_names.items()},
+        "execution_class": execution_class,
+        "expected_payload_status": expected_payload_status,
+        "launch": {
+            "cwd": str(ROOT),
+            "environment_identity": identities["environment"],
+            "payload_argv": [
+                tool_identities["python3_13"]["path"],
+                "-I",
+                payload_script,
+            ],
+            "python3_13_path": tool_identities["python3_13"]["path"],
+            "supervisor_argv": [
+                tool_identities["python3_13"]["path"],
+                "-I",
+                str(LIFECYCLE_PATH),
+                "supervise",
+                "--pre-run",
+                str(pre_run_path),
+                "--selection",
+                str(selection_path),
+            ],
+            "systemctl_path": identities["systemctl"]["path"],
+            "systemd_run_path": identities["systemd-run"]["path"],
+        },
+        "manager_epoch": manager_epoch,
+        "order": "ab",
+        "output_paths": {role: str(attempt / name) for role, name in output_names.items()},
+        "package": package,
+        "pre_run_authority_path": str(pre_run_path),
+        "prelaunch_allowlist": ["pre-run-authority.json", "selection.json"],
+        "preflight_results": {
+            "epoch_identity_pass": True,
+            "head_identity_pass": True,
+            "package_replay_pass": True,
+            "path_preregistration_pass": True,
+            "resource_contract_pass": True,
+            "slot_order_pass": True,
+            "strict_inputs_replay_pass": True,
+            "tool_identities_replay_pass": True,
+        },
+        "preselection_epoch_identity": identities["preselection"],
+        "preselection_transcript_identity": preselection_transcript_identity,
+        "prospective_manifest_identity": _detached(identities["manifest"]),
+        "preregistration_sha256": "f" * 64,
+        "purpose": "PROSPECTIVE_AB16_ORGANIC_ARM_PRE_RUN_AUTHORITY",
+        "repository_head": "d" * 40,
+        "repository_git_tool_identity": identities["git"],
+        "repository_root": str(ROOT),
+        "resource_contract": dict(LIFECYCLE.FORMAL_RESOURCE_CONTRACT),
+        "run_nonce": "run-a",
+        "runner_selection_path": str(selection_path),
+        "schema_version": LIFECYCLE.PRE_RUN_AUTHORITY_SCHEMA,
+        "seed": 2026072301,
+        "slot": "region-capacity-ab-control",
+        "solver_run_authorized": False,
+        "status": "PASS",
+        "strict_input_identities": {"strict": identities["strict"]},
+        "suite_selection_identity": _detached(identities["suite-selection"]),
+        "tool_identities": tool_identities,
+        "unit_name": "cuts-ab16-region-capacity-ab-control.service",
+        "verdict": "AB16_ORGANIC_PRE_RUN_AUTHORITY_PASS",
+        "workers": 1,
+    }
+    LIFECYCLE.validate_pre_run_authority(pre_run)
+    pre_run_identity = _detached(_write(pre_run_path, pre_run))
+    selection = {
+        "arm": "control",
+        "arm_binding_identity": identities["binding"],
+        "attempt_execution_identity": execution_identity,
+        "attempt_dir": str(attempt),
+        "attempt_ordinal": 1,
+        "authority_chain": authority_chain,
+        "authorizations": {
+            "global_claim_authorized": False,
+            "mathematical_claim_authorized": False,
+            "organic_arm_launch_authorized": True,
+            "production_certified_authorized": False,
+            "solver_run_authorized": True,
+        },
+        "baseline_admission_identity": identities["baseline"],
+        "baseline_incumbent_sha256": "b" * 64,
+        "campaign_id": "c" * 64,
+        "common_prestate_identity": identities["prestate"],
+        "configuration": "region-capacity",
+        "enabled_families": [],
+        "execution_class": execution_class,
+        "expected_payload_status": expected_payload_status,
+        "fresh_process_required": True,
+        "manifest_identity": _detached(identities["manifest"]),
+        "order": "ab",
+        "pre_run_authority_identity": pre_run_identity,
+        "preregistration_sha256": "f" * 64,
+        "purpose": "prospective_noncert_cuts_ab16_formal_arm",
+        "repository_head": "d" * 40,
+        "repository_git_tool_identity": identities["git"],
+        "repository_root": str(ROOT),
+        "run_nonce": "run-a",
+        "schema_version": LIFECYCLE.RUNNER_SELECTION_SCHEMA,
+        "seed": 2026072301,
+        "selection_nonce": "selection-a",
+        "slot": "region-capacity-ab-control",
+        "unit_name": "cuts-ab16-region-capacity-ab-control.service",
+        "workers": 1,
+    }
+    LIFECYCLE.validate_runner_selection(
+        selection,
+        pre_run_authority=pre_run,
+        pre_run_authority_identity=pre_run_identity,
+    )
+    _write(selection_path, selection)
+    return attempt, pre_run_path, selection_path
+
+
+def _run(
+    tmp_path: Path,
+    **adapter_kwargs: object,
+) -> tuple[Path, dict[str, object]]:
+    exit_code = adapter_kwargs.get("payload_exit_code", 0)
+    assert type(exit_code) is int
+    attempt, pre_run_path, selection_path = _fixture(
+        tmp_path,
+        postseal_failure_exit_code=exit_code,
+    )
+    result = ORCHESTRATOR.orchestrate_with_adapter(
+        pre_run_path=pre_run_path,
+        selection_path=selection_path,
+        adapter=FakeAdapter(
+            attempt_dir=attempt,
+            slot="region-capacity-ab-control",
+            **adapter_kwargs,
+        ),
+    )
+    return attempt, result
+
+
+class _HeldSystemdWaiter:
+    pid = 42420
+
+    def __init__(self) -> None:
+        self.returncode: int | None = None
+        self.stopped = False
+        self.reaped = False
+        self.gc_attempted = False
+
+    def poll(self) -> int | None:
+        return self.returncode
+
+    def send_signal(self, value: int) -> None:
+        assert value == ORCHESTRATOR.signal.SIGSTOP
+        assert self.returncode is None
+        self.stopped = True
+
+    def kill(self) -> None:
+        self.returncode = -ORCHESTRATOR.signal.SIGKILL
+
+    def communicate(self, timeout: float | None = None) -> tuple[bytes, bytes]:
+        assert timeout is not None and timeout > 0
+        assert self.returncode == -ORCHESTRATOR.signal.SIGKILL
+        self.reaped = True
+        return b"", b""
+
+
+def _prearmed_live_terminal_adapter(
+    *,
+    unit_name: str,
+    expected_invocation_id: str,
+    visible_invocation_id: str,
+    install_wait_observer: bool = True,
+) -> Any:
+    adapter = object.__new__(ORCHESTRATOR.SubprocessLifecycleAdapter)
+    adapter._monotonic = lambda: 1.0
+    adapter._monotonic_ns = lambda: 1100
+    adapter.sleep = lambda _seconds: None
+    waiter = _HeldSystemdWaiter()
+
+    def show(_unit: str, _fields: Sequence[str]) -> dict[str, str]:
+        # The controlled manager performs the real race transition: after
+        # keeper release, only a stopped wait client's AddRef prevents GC.
+        invocation_id = visible_invocation_id or (
+            expected_invocation_id if not waiter.gc_attempted or waiter.stopped else ""
+        )
+        return {
+            "ActiveState": "inactive",
+            "ControlGroup": "",
+            "ExecMainCode": "exited" if invocation_id else "0",
+            "ExecMainStatus": "0",
+            "InvocationID": invocation_id,
+            "Result": "success",
+            "SubState": "dead",
+        }
+
+    adapter._show = show
+    adapter._fixture_waiter = waiter
+    if install_wait_observer:
+        adapter._systemd_wait_process = waiter
+        adapter._systemd_wait_unit_name = unit_name
+        adapter._systemd_wait_invocation_id = expected_invocation_id
+        adapter._systemd_wait_stopped = False
+        adapter.waitid = lambda _idtype, _pid, _options: (
+            SimpleNamespace(
+                si_code=ORCHESTRATOR.os.CLD_STOPPED,
+                si_status=ORCHESTRATOR.signal.SIGSTOP,
+            )
+            if waiter.stopped
+            else None
+        )
+    else:
+        adapter._systemd_wait_process = None
+        waiter.gc_attempted = True
+    return adapter
+
+
+class _CollectionRaceAdapter(FakeAdapter):
+    def __init__(
+        self,
+        *,
+        attempt_dir: Path,
+        slot: str,
+        replacement_invocation_id: str = "",
+    ) -> None:
+        super().__init__(attempt_dir=attempt_dir, slot=slot)
+        self.released = False
+        self.collection_window_entered = False
+        self.live = _prearmed_live_terminal_adapter(
+            unit_name="cuts-ab16-region-capacity-ab-control.service",
+            expected_invocation_id=self.invocation,
+            visible_invocation_id=replacement_invocation_id,
+        )
+
+    def launch_and_wait_for_keeper(
+        self,
+        *,
+        unit_name: str,
+        systemd_run_argv: Sequence[str],
+        payload_argv: Sequence[str],
+    ) -> Any:
+        launch = super().launch_and_wait_for_keeper(
+            unit_name=unit_name,
+            systemd_run_argv=systemd_run_argv,
+            payload_argv=payload_argv,
+        )
+        hold = getattr(self.live, "_stop_systemd_wait_observer", None)
+        if hold is not None:
+            hold(unit_name=unit_name, invocation_id=launch.invocation_id)
+        return launch
+
+    def release_keeper(
+        self,
+        *,
+        unit_name: str,
+        release_path: Path,
+        launch: Any,
+    ) -> None:
+        super().release_keeper(
+            unit_name=unit_name,
+            release_path=release_path,
+            launch=launch,
+        )
+        self.released = True
+        self.live._fixture_waiter.gc_attempted = True  # noqa: SLF001
+
+    def capture_terminal(
+        self,
+        *,
+        unit_name: str,
+        invocation_id: str,
+    ) -> Any:
+        assert self.released is True
+        self.collection_window_entered = True
+        return self.live.capture_terminal(
+            unit_name=unit_name,
+            invocation_id=invocation_id,
+        )
+
+    def capture_cleanup(self, **kwargs: object) -> Any:
+        kill = getattr(self.live, "_kill_systemd_wait_observer", None)
+        if kill is not None:
+            kill()
+        return super().capture_cleanup(**kwargs)
+
+    def abort_and_capture_cleanup(self, **kwargs: object) -> Any:
+        kill = getattr(self.live, "_kill_systemd_wait_observer", None)
+        if kill is not None:
+            kill()
+        return super().abort_and_capture_cleanup(**kwargs)
+
+
+def test_two_stage_success_and_detached_replay(tmp_path: Path) -> None:
+    attempt, result = _run(tmp_path)
+    assert result["status"] == "PASS"
+    assert result["verdict"] == "RESOURCE_TERMINAL_CLEANUP_REPLAY_PASS"
+    assert result["authorizations"]["global_claim_authorized"] is False
+    assert (attempt / "detached-replay.json").is_file()
+    terminal = VERIFIER.snapshot_json(attempt / "terminal-envelope.json").value
+    cleanup = VERIFIER.snapshot_json(attempt / "cleanup.json").value
+    assert terminal["systemd_raw"]["ControlGroup"] == ""
+    assert cleanup["cgroup_path_exists"] is False
+    assert cleanup["unit_load_state"] == "not-found"
+
+
+def test_collected_same_invocation_terminal_is_published_from_prearmed_live_observer(
+    tmp_path: Path,
+) -> None:
+    attempt, pre_run, selection = _fixture(tmp_path)
+    adapter = _CollectionRaceAdapter(
+        attempt_dir=attempt,
+        slot="region-capacity-ab-control",
+    )
+
+    result = ORCHESTRATOR.orchestrate_with_adapter(
+        pre_run_path=pre_run,
+        selection_path=selection,
+        adapter=adapter,
+    )
+
+    assert adapter.released is True
+    assert adapter.collection_window_entered is True
+    assert adapter.live._systemd_wait_process is None  # noqa: SLF001
+    assert adapter.live._fixture_waiter.stopped is True  # noqa: SLF001
+    assert adapter.live._fixture_waiter.gc_attempted is True  # noqa: SLF001
+    assert adapter.live._fixture_waiter.reaped is True  # noqa: SLF001
+    assert result["status"] == "PASS"
+    terminal = VERIFIER.snapshot_json(attempt / "terminal-envelope.json").value
+    assert terminal["invocation_id"] == adapter.invocation
+    assert terminal["systemd_raw"]["InvocationID"] == adapter.invocation
+    assert terminal["systemd_raw"]["Result"] == "success"
+    assert (attempt / "detached-replay.json").is_file()
+
+
+def test_prearmed_terminal_observer_rejects_same_name_different_invocation(
+    tmp_path: Path,
+) -> None:
+    attempt, pre_run, selection = _fixture(tmp_path)
+    adapter = _CollectionRaceAdapter(
+        attempt_dir=attempt,
+        slot="region-capacity-ab-control",
+        replacement_invocation_id="fedcba9876543210fedcba9876543210",
+    )
+
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match="terminal InvocationID drifted",
+    ):
+        ORCHESTRATOR.orchestrate_with_adapter(
+            pre_run_path=pre_run,
+            selection_path=selection,
+            adapter=adapter,
+        )
+
+    assert adapter.released is True
+    assert adapter.collection_window_entered is True
+    assert adapter.live._systemd_wait_process is None  # noqa: SLF001
+    assert adapter.live._fixture_waiter.reaped is True  # noqa: SLF001
+    assert not (attempt / "terminal-envelope.json").exists()
+    assert not (attempt / "detached-replay.json").exists()
+
+
+def test_collected_default_shell_without_bound_observation_is_rejected() -> None:
+    unit_name = "cuts-ab16-region-capacity-ab-control.service"
+    invocation_id = "0123456789abcdef0123456789abcdef"
+    adapter = _prearmed_live_terminal_adapter(
+        unit_name=unit_name,
+        expected_invocation_id=invocation_id,
+        visible_invocation_id="",
+        install_wait_observer=False,
+    )
+
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match="terminal InvocationID drifted",
+    ):
+        adapter.capture_terminal(
+            unit_name=unit_name,
+            invocation_id=invocation_id,
+        )
+
+
+def test_every_live_phase_binds_fresh_double_round_epoch_transcript(
+    tmp_path: Path,
+) -> None:
+    attempt, _result = _run(tmp_path)
+    pre_run = VERIFIER.snapshot_json(attempt / "pre-run-authority.json").value
+    for phase in (
+        "launch",
+        "preterminal",
+        "release",
+        "terminal",
+        "cleanup",
+        "detached-replay",
+    ):
+        observation = VERIFIER.snapshot_json(Path(pre_run["epoch_observation_paths"][phase])).value
+        transcript = VERIFIER.snapshot_json(Path(pre_run["epoch_transcript_paths"][phase]))
+        assert observation["phase"] == phase
+        assert observation["observed_epoch"] == pre_run["manager_epoch"]
+        assert observation["capture_transcript_identity"] == transcript.identity
+        assert [item["round_index"] for item in transcript.value["rounds"]] == [
+            1,
+            2,
+        ]
+        MANAGER_AUTHORITY.validate_manager_epoch_capture_transcript(
+            transcript.value,
+            expected_epoch=pre_run["manager_epoch"],
+        )
+
+
+def test_postseal_payload_failure_is_not_hidden_by_keeper(tmp_path: Path) -> None:
+    attempt, result = _run(tmp_path, payload_exit_code=7)
+    assert result["status"] == "PASS"
+    assert result["verdict"] == "EXPECTED_POST_SEAL_FAILURE_REPLAY_PASS"
+    assert (attempt / "release-token.json").is_file()
+    assert (attempt / "terminal-envelope.json").is_file()
+    assert (attempt / "cleanup.json").is_file()
+    assert (attempt / "detached-replay.json").is_file()
+
+
+def test_unregistered_payload_failure_still_fails_closed(tmp_path: Path) -> None:
+    attempt, pre_run, selection = _fixture(tmp_path)
+    with pytest.raises(Exception, match="differs from preregistration"):
+        ORCHESTRATOR.orchestrate_with_adapter(
+            pre_run_path=pre_run,
+            selection_path=selection,
+            adapter=FakeAdapter(
+                attempt_dir=attempt,
+                slot="region-capacity-ab-control",
+                payload_exit_code=7,
+            ),
+        )
+    assert not (attempt / "release-token.json").exists()
+    assert not (attempt / "detached-replay.json").exists()
+
+
+@pytest.mark.parametrize(
+    "adapter_kwargs",
+    [
+        {"epoch_drift_phase": "preterminal"},
+        {"oom_kill": 1},
+        {"memory_max_adjustment": -1},
+    ],
+)
+def test_post_launch_failure_stops_selected_unit_and_proves_cleanup(
+    tmp_path: Path,
+    adapter_kwargs: dict[str, object],
+) -> None:
+    attempt, pre_run, selection = _fixture(tmp_path)
+    adapter = FakeAdapter(
+        attempt_dir=attempt,
+        slot="region-capacity-ab-control",
+        **adapter_kwargs,
+    )
+    with pytest.raises(Exception):
+        ORCHESTRATOR.orchestrate_with_adapter(
+            pre_run_path=pre_run,
+            selection_path=selection,
+            adapter=adapter,
+        )
+    assert adapter.abort_count == 1
+    cleanup = VERIFIER.snapshot_json(attempt / "cleanup.json").value
+    assert cleanup["schema_version"] == "noncert-cuts-ab16-abort-cleanup-v1"
+    assert cleanup["status"] == "PASS"
+    assert cleanup["verdict"] == "SELECTED_UNIT_ABORT_CLEANUP_PASS"
+    assert cleanup["authorizations"]["runtime_effect_authorized"] is False
+
+
+def test_payload_failure_output_reaches_outer_error_and_abort_cleanup(
+    tmp_path: Path,
+) -> None:
+    attempt, pre_run, selection = _fixture(tmp_path)
+    adapter = FakeAdapter(
+        attempt_dir=attempt,
+        slot="region-capacity-ab-control",
+        payload_exit_code=2,
+        payload_failure_error="RunnerError: injected production-path failure",
+    )
+
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match="payload failed: RunnerError: injected production-path failure",
+    ) as raised:
+        ORCHESTRATOR.orchestrate_with_adapter(
+            pre_run_path=pre_run,
+            selection_path=selection,
+            adapter=adapter,
+        )
+
+    assert "symlink or invalid file path" not in str(raised.value)
+    assert adapter.abort_count == 1
+    assert not (attempt / "result.json").exists()
+    inner = VERIFIER.snapshot_json(attempt / "inner-lifecycle.json").value
+    failure_identity = VERIFIER.snapshot_runner_json(attempt / "failure.json").identity
+    assert inner["payload_failure_identity"] == failure_identity
+    assert inner["payload_result_identity"] is None
+    cleanup = VERIFIER.snapshot_json(attempt / "cleanup.json").value
+    assert cleanup["schema_version"] == "noncert-cuts-ab16-abort-cleanup-v1"
+    assert cleanup["failure_class"] == "OrchestratorError"
+    assert cleanup["payload_failure_identity"] == failure_identity
+    assert cleanup["status"] == "PASS"
+    for name in (
+        "preterminal-resource.json",
+        "independent-resource-verification.json",
+        "release-token.json",
+        "terminal-envelope.json",
+        "detached-replay.json",
+    ):
+        assert not (attempt / name).exists()
+
+
+@pytest.mark.parametrize(
+    ("payload_exit_code", "payload_signal", "observed_terminal"),
+    (
+        (7, 0, "observed exit_code=7 signal=0"),
+        (0, 9, "observed exit_code=0 signal=9"),
+    ),
+    ids=("wrong-exit", "signal"),
+)
+def test_payload_failure_terminal_mismatch_is_precise_and_still_cleans_up(
+    tmp_path: Path,
+    payload_exit_code: int,
+    payload_signal: int,
+    observed_terminal: str,
+) -> None:
+    attempt, pre_run, selection = _fixture(tmp_path)
+    adapter = FakeAdapter(
+        attempt_dir=attempt,
+        slot="region-capacity-ab-control",
+        payload_exit_code=payload_exit_code,
+        payload_failure_error="RunnerError: injected terminal mismatch",
+        payload_signal=payload_signal,
+    )
+
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match="payload failure terminal mismatch",
+    ) as raised:
+        ORCHESTRATOR.orchestrate_with_adapter(
+            pre_run_path=pre_run,
+            selection_path=selection,
+            adapter=adapter,
+        )
+
+    assert "expected exit_code=2 signal=0" in str(raised.value)
+    assert observed_terminal in str(raised.value)
+    assert "payload error: RunnerError: injected terminal mismatch" in str(raised.value)
+    assert adapter.abort_count == 1
+    inner_snapshot = VERIFIER.snapshot_json(attempt / "inner-lifecycle.json")
+    inner = inner_snapshot.value
+    assert inner["payload_exit_code"] == payload_exit_code
+    assert inner["payload_signal"] == payload_signal
+    failure_identity = VERIFIER.snapshot_runner_json(attempt / "failure.json").identity
+    assert inner["payload_failure_identity"] == failure_identity
+    cleanup = VERIFIER.snapshot_json(attempt / "cleanup.json").value
+    assert cleanup["inner_identity"] == inner_snapshot.identity
+    assert cleanup["payload_failure_identity"] == failure_identity
+    assert cleanup["status"] == "PASS"
+
+
+def test_post_launch_failure_without_cleanup_proof_is_incomplete(
+    tmp_path: Path,
+) -> None:
+    attempt, pre_run, selection = _fixture(tmp_path)
+    adapter = FakeAdapter(
+        attempt_dir=attempt,
+        slot="region-capacity-ab-control",
+        oom_kill=1,
+        abort_cleanup_residual=True,
+    )
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match="cleanup could not be established",
+    ):
+        ORCHESTRATOR.orchestrate_with_adapter(
+            pre_run_path=pre_run,
+            selection_path=selection,
+            adapter=adapter,
+        )
+    assert adapter.abort_count == 1
+    assert not (attempt / "cleanup.json").exists()
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "message"),
+    [
+        ({"epoch_drift_phase": "preterminal"}, "epoch drift"),
+        ({"transcript_drift_phase": "preterminal"}, "transcript semantic"),
+        ({"terminal_invocation_drift": True}, "terminal status"),
+        ({"oom_kill": 1}, "OOM event"),
+        ({"memory_max_adjustment": -1}, "resource contract"),
+        ({"collect_mode": "inactive"}, "preterminal supervisor"),
+        ({"cleanup_residual": True}, "cleanup did not prove"),
+    ],
+)
+def test_lifecycle_mutations_fail_closed(
+    tmp_path: Path,
+    kwargs: dict[str, object],
+    message: str,
+) -> None:
+    with pytest.raises(Exception, match=message):
+        _run(tmp_path, **kwargs)
+
+
+def test_pre_run_tool_and_selection_join_mutations_fail(tmp_path: Path) -> None:
+    _attempt, pre_run_path, selection_path = _fixture(tmp_path)
+    pre_run = copy.deepcopy(VERIFIER.snapshot_json(pre_run_path).value)
+    pre_run["tool_identities"]["organic_resource_verifier"]["sha256"] = "0" * 64
+    with pytest.raises(VERIFIER.VerificationError, match="tool"):
+        VERIFIER.validate_pre_run_authority(pre_run)
+    original_pre_run = VERIFIER.snapshot_json(pre_run_path)
+    selection = copy.deepcopy(VERIFIER.snapshot_json(selection_path).value)
+    selection["pre_run_authority_identity"]["sha256"] = "1" * 64
+    with pytest.raises(VERIFIER.VerificationError, match="pre-run identity"):
+        VERIFIER._validate_selection(
+            selection,
+            pre_run=original_pre_run.value,
+            pre_run_identity=original_pre_run.identity,
+        )
+
+
+def test_preselection_transcript_semantics_fail_closed(tmp_path: Path) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
+    pre_run = copy.deepcopy(VERIFIER.snapshot_json(pre_run_path).value)
+    original_transcript = VERIFIER.snapshot_json(pre_run["preselection_transcript_identity"]["path"]).value
+    mutated_transcript = copy.deepcopy(original_transcript)
+    mutated_transcript["rounds"][0]["round_index"] = 99
+    mutated_transcript_identity = _write(
+        tmp_path / "authority/mutated-preselection-transcript.json",
+        mutated_transcript,
+    )
+    mutated_observation = LIFECYCLE.build_epoch_observation(
+        phase="preselection",
+        slot=pre_run["slot"],
+        observed_epoch=pre_run["manager_epoch"],
+        observed_at_monotonic_ns=101,
+        capture_transcript_identity=mutated_transcript_identity,
+    )
+    pre_run["preselection_transcript_identity"] = mutated_transcript_identity
+    pre_run["preselection_epoch_identity"] = _write(
+        tmp_path / "authority/mutated-preselection-observation.json",
+        mutated_observation,
+    )
+    with pytest.raises(
+        VERIFIER.VerificationError,
+        match="transcript semantic replay",
+    ):
+        VERIFIER.validate_pre_run_authority(pre_run)
+
+
+@pytest.mark.parametrize(
+    ("field", "mutation", "message"),
+    [
+        ("repository_root", "relative/path", "repository root"),
+    ],
+)
+def test_pre_run_repository_and_execution_mutations_fail_closed(
+    tmp_path: Path,
+    field: str,
+    mutation: object,
+    message: str,
+) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
+    pre_run = copy.deepcopy(VERIFIER.snapshot_json(pre_run_path).value)
+    pre_run[field] = mutation
+    with pytest.raises(VERIFIER.VerificationError, match=message):
+        VERIFIER.validate_pre_run_authority(pre_run)
+
+
+def test_resource_contract_constants_and_systemd_argv_are_exact() -> None:
+    assert LIFECYCLE.FORMAL_RESOURCE_CONTRACT == {
+        "collect_mode": "inactive-or-failed",
+        "kill_mode": "control-group",
+        "memory_high_bytes": 35 * 1024**3,
+        "memory_max_bytes": 39 * 1024**3,
+        "memory_swap_max_bytes": 16 * 1024**3,
+        "oom_policy": "continue",
+        "runtime_max_seconds": 3600,
+        "send_sigkill": True,
+        "single_worker": True,
+    }
+    assert VERIFIER.FORMAL_RESOURCE_CONTRACT == LIFECYCLE.FORMAL_RESOURCE_CONTRACT
+    formal_argv = LIFECYCLE.build_systemd_run_argv(
+        systemd_run_path="/usr/bin/systemd-run",
+        unit_name="cuts-ab16-formal-fixture.service",
+        supervisor_argv=["/python", "-I", "/supervisor.py"],
+        resource_contract=LIFECYCLE.FORMAL_RESOURCE_CONTRACT,
+        execution_class="FORMAL_AB16",
+    )
+    assert formal_argv == [
+        "/usr/bin/systemd-run",
+        "--user",
+        "--quiet",
+        "--wait",
+        "--unit=cuts-ab16-formal-fixture",
+        f"--property=MemoryHigh={35 * 1024**3}",
+        f"--property=MemoryMax={39 * 1024**3}",
+        f"--property=MemorySwapMax={16 * 1024**3}",
+        "--property=CollectMode=inactive-or-failed",
+        "--property=OOMPolicy=continue",
+        "--property=KillMode=control-group",
+        "--property=SendSIGKILL=yes",
+        "--property=RuntimeMaxSec=3600",
+        "--",
+        "/python",
+        "-I",
+        "/supervisor.py",
+    ]
+
+
+@pytest.mark.parametrize("field", ["send_sigkill", "single_worker"])
+def test_resource_contract_rejects_boolean_integer_alias(
+    tmp_path: Path,
+    field: str,
+) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
+    pre_run = copy.deepcopy(VERIFIER.snapshot_json(pre_run_path).value)
+    pre_run["resource_contract"][field] = 1
+    with pytest.raises(
+        VERIFIER.VerificationError,
+        match="exact boolean",
+    ):
+        VERIFIER.validate_pre_run_authority(pre_run)
+    with pytest.raises(
+        LIFECYCLE.LifecycleError,
+        match="exact boolean",
+    ):
+        LIFECYCLE.validate_pre_run_authority(pre_run)
+
+
+def test_pre_run_launch_tool_join_and_selection_payload_join_fail_closed(
+    tmp_path: Path,
+) -> None:
+    _attempt, pre_run_path, selection_path = _fixture(tmp_path)
+    pre_run_snapshot = VERIFIER.snapshot_json(pre_run_path)
+    pre_run = copy.deepcopy(pre_run_snapshot.value)
+    pre_run["launch"]["systemctl_path"] = pre_run["launch"]["systemd_run_path"]
+    with pytest.raises(VERIFIER.VerificationError, match="systemctl_path"):
+        VERIFIER.validate_pre_run_authority(pre_run)
+    selection = copy.deepcopy(VERIFIER.snapshot_json(selection_path).value)
+    selection["expected_payload_status"]["exit_code"] = 3
+    with pytest.raises(
+        VERIFIER.VerificationError,
+        match="expected_payload_status",
+    ):
+        VERIFIER._validate_selection(
+            selection,
+            pre_run=pre_run_snapshot.value,
+            pre_run_identity=pre_run_snapshot.identity,
+        )
+
+
+def test_pinned_launch_environment_semantics_fail_closed(tmp_path: Path) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
+    pre_run = copy.deepcopy(VERIFIER.snapshot_json(pre_run_path).value)
+    environment = copy.deepcopy(VERIFIER.snapshot_json(pre_run["launch"]["environment_identity"]["path"]).value)
+    environment["variables"]["PYTHONHASHSEED"] = "random"
+    pre_run["launch"]["environment_identity"] = _write(
+        tmp_path / "authority/mutated-environment.json",
+        environment,
+    )
+    with pytest.raises(
+        VERIFIER.VerificationError,
+        match="fixed values",
+    ):
+        VERIFIER.validate_pre_run_authority(pre_run)
+
+
+def test_live_adapter_passes_only_pinned_environment_to_commands(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
+    pre_run = VERIFIER.snapshot_json(pre_run_path).value
+    calls: list[tuple[list[str], dict[str, object]]] = []
+
+    def fake_run(
+        argv: Sequence[str],
+        **kwargs: object,
+    ) -> SimpleNamespace:
+        calls.append((list(argv), dict(kwargs)))
+        return SimpleNamespace(returncode=0, stdout=b"", stderr=b"")
+
+    monkeypatch.setenv("AB16_UNPINNED_SECRET", "must-not-propagate")
+    adapter = ORCHESTRATOR.SubprocessLifecycleAdapter(
+        pre_run=pre_run,
+        epoch_observer=lambda _phase: pytest.fail("epoch observer was called"),
+        run=fake_run,
+    )
+    adapter._run(  # noqa: SLF001
+        [str(pre_run["launch"]["systemctl_path"]), "--version"],
+        timeout=1,
+    )
+    assert len(calls) == 1
+    argv, kwargs = calls[0]
+    assert argv == [pre_run["launch"]["systemctl_path"], "--version"]
+    assert Path(argv[0]).is_absolute()
+    assert "pass_fds" not in kwargs
+    assert "executable" not in kwargs
+    assert kwargs["close_fds"] is True
+    assert kwargs["env"] == {
+        "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
+        "HOME": "/home/fixture",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "PATH": "/usr/bin:/bin",
+        "PYTHONHASHSEED": "0",
+        "TZ": "UTC",
+        "XDG_RUNTIME_DIR": "/run/user/1000",
+    }
+    assert "AB16_UNPINNED_SECRET" not in kwargs["env"]
+
+
+@pytest.mark.parametrize(
+    ("role", "launch_field"),
+    [
+        ("systemctl", "systemctl_path"),
+        ("systemd_run", "systemd_run_path"),
+    ],
+)
+def test_live_adapter_uses_pinned_absolute_path_as_argv0(
+    tmp_path: Path,
+    role: str,
+    launch_field: str,
+) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
+    pre_run = VERIFIER.snapshot_json(pre_run_path).value
+    pinned_path = pre_run["launch"][launch_field]
+    observed_argv: list[list[str]] = []
+
+    def fake_run(
+        argv: Sequence[str],
+        **_kwargs: object,
+    ) -> SimpleNamespace:
+        observed_argv.append(list(argv))
+        return SimpleNamespace(returncode=0, stdout=b"", stderr=b"")
+
+    assert pre_run["tool_identities"][role]["path"] == pinned_path
+    assert Path(pinned_path).name not in {"systemctl", "systemd-run"}
+    assert Path(pinned_path).is_absolute()
+    adapter = ORCHESTRATOR.SubprocessLifecycleAdapter(
+        pre_run=pre_run,
+        epoch_observer=lambda _phase: pytest.fail("epoch observer was called"),
+        run=fake_run,
+    )
+    adapter._run([pinned_path, "--fixture-probe"], timeout=1)  # noqa: SLF001
+    assert observed_argv == [[pinned_path, "--fixture-probe"]]
+
+
+def test_live_adapter_rejects_prelaunch_executable_byte_drift(
+    tmp_path: Path,
+) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
+    pre_run = VERIFIER.snapshot_json(pre_run_path).value
+    executable = Path(pre_run["launch"]["systemctl_path"])
+    executable.chmod(0o644)
+    executable.write_bytes(b"ordinary prelaunch package drift")
+
+    adapter = ORCHESTRATOR.SubprocessLifecycleAdapter(
+        pre_run=pre_run,
+        epoch_observer=lambda _phase: pytest.fail("epoch observer was called"),
+        run=lambda *_args, **_kwargs: pytest.fail("drifted executable was launched"),
+    )
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match="ordinary-user executable byte identity drifted",
+    ):
+        adapter._run([str(executable), "--version"], timeout=1)  # noqa: SLF001
+
+
+@pytest.mark.parametrize(
+    ("outcome", "message"),
+    [
+        (OSError("fixture exec failure"), "systemctl command execution failed"),
+        (
+            ORCHESTRATOR.subprocess.TimeoutExpired(cmd=["fixture-systemctl"], timeout=1),
+            "systemctl command execution failed",
+        ),
+        (
+            SimpleNamespace(returncode=23, stdout=b"", stderr=b"fixture failure"),
+            r"ordinary-user command failed \(23\)",
+        ),
+    ],
+)
+def test_live_adapter_reports_ordinary_command_failures(
+    tmp_path: Path,
+    outcome: object,
+    message: str,
+) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
+    pre_run = VERIFIER.snapshot_json(pre_run_path).value
+    executable = Path(pre_run["launch"]["systemctl_path"])
+
+    def failing_run(
+        _argv: Sequence[str],
+        **_kwargs: object,
+    ) -> SimpleNamespace:
+        if isinstance(outcome, BaseException):
+            raise outcome
+        assert isinstance(outcome, SimpleNamespace)
+        return outcome
+
+    adapter = ORCHESTRATOR.SubprocessLifecycleAdapter(
+        pre_run=pre_run,
+        epoch_observer=lambda _phase: pytest.fail("epoch observer was called"),
+        run=failing_run,
+    )
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match=message,
+    ):
+        adapter._run([str(executable), "--version"], timeout=1)  # noqa: SLF001
+
+
+@pytest.mark.parametrize(
+    ("role", "launch_field"),
+    [
+        ("systemctl", "systemctl_path"),
+        ("systemd_run", "systemd_run_path"),
+    ],
+)
+def test_live_adapter_runs_a_small_local_fixture_binary_for_each_system_tool(
+    tmp_path: Path,
+    role: str,
+    launch_field: str,
+) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
+    pre_run = copy.deepcopy(VERIFIER.snapshot_json(pre_run_path).value)
+    executable = tmp_path / f"fixture-true-{role}"
+    executable.write_bytes(Path("/usr/bin/true").read_bytes())
+    executable.chmod(0o555)
+    identity = _tool_identity(executable)
+    pre_run["launch"][launch_field] = str(executable)
+    pre_run["tool_identities"][role] = identity
+    adapter = ORCHESTRATOR.SubprocessLifecycleAdapter(
+        pre_run=pre_run,
+        epoch_observer=lambda _phase: pytest.fail("epoch observer was called"),
+    )
+    completed = adapter._run([str(executable)], timeout=5)  # noqa: SLF001
+    assert completed.returncode == 0
+
+
+def test_epoch_attestor_capture_uses_pinned_environment_and_restores_ambient(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _attempt, pre_run_path, _selection_path = _fixture(tmp_path)
+    pre_run = VERIFIER.snapshot_json(pre_run_path).value
+    transcript = VERIFIER.snapshot_json(pre_run["preselection_transcript_identity"]["path"]).value
+    captured_environments: list[dict[str, str]] = []
+    attestor_python = pre_run["tool_identities"]["attestor_python"]
+    epoch_attestor_python = pre_run["manager_epoch"]["attestation_toolchain"]["python"]
+    runtime_python = pre_run["tool_identities"]["python3_13"]
+    assert attestor_python["path"] != runtime_python["path"]
+    assert attestor_python["sha256"] != runtime_python["sha256"]
+    assert all(
+        epoch_attestor_python[field] == attestor_python[field]
+        for field in ("mode", "path", "sha256", "size_bytes")
+    )
+
+    def capture_manager_epoch_with_transcript(**kwargs: str) -> dict[str, object]:
+        assert kwargs == {
+            "attestor_path": pre_run["tool_identities"]["manager_attestor"]["path"],
+            "busctl_path": pre_run["tool_identities"]["busctl"]["path"],
+            "python_path": attestor_python["path"],
+            "sudo_path": pre_run["tool_identities"]["sudo"]["path"],
+        }
+        captured_environments.append(dict(ORCHESTRATOR.os.environ))
+        return {
+            "manager_epoch": copy.deepcopy(pre_run["manager_epoch"]),
+            "transcript": copy.deepcopy(transcript),
+        }
+
+    fake_authority = SimpleNamespace(
+        capture_manager_epoch_with_transcript=capture_manager_epoch_with_transcript,
+        validate_manager_epoch=lambda _value: None,
+        validate_manager_epoch_capture_transcript=lambda _value, **_kwargs: None,
+    )
+    monkeypatch.setattr(
+        ORCHESTRATOR,
+        "_load_pinned_module",
+        lambda *_args, **_kwargs: fake_authority,
+    )
+    monkeypatch.setenv("AB16_UNPINNED_SECRET", "must-be-restored-only")
+    observer = ORCHESTRATOR.build_pinned_epoch_observer(pre_run)
+    capture = observer("launch")
+    assert capture.manager_epoch == pre_run["manager_epoch"]
+    assert captured_environments == [
+        {
+            "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
+            "HOME": "/home/fixture",
+            "LANG": "C.UTF-8",
+            "LC_ALL": "C.UTF-8",
+            "PATH": "/usr/bin:/bin",
+            "PYTHONHASHSEED": "0",
+            "TZ": "UTC",
+            "XDG_RUNTIME_DIR": "/run/user/1000",
+        }
+    ]
+    assert ORCHESTRATOR.os.environ["AB16_UNPINNED_SECRET"] == "must-be-restored-only"
+
+
+def test_same_fd_reader_rejects_hardlink_and_symlink(tmp_path: Path) -> None:
+    source = tmp_path / "source.json"
+    _write(source, {"value": 1})
+    hardlink = tmp_path / "hardlink.json"
+    hardlink.hardlink_to(source)
+    with pytest.raises(LIFECYCLE.LifecycleError, match="regular file"):
+        LIFECYCLE.snapshot_regular(source)
+    target = tmp_path / "target.json"
+    target.symlink_to(source)
+    with pytest.raises(VERIFIER.VerificationError, match="symlink"):
+        VERIFIER.snapshot_json(target)
+
+
+def test_lifecycle_same_fd_reader_reports_missing_file_honestly(
+    tmp_path: Path,
+) -> None:
+    missing = tmp_path / "missing.json"
+    with pytest.raises(LIFECYCLE.LifecycleError, match="does not exist") as raised:
+        LIFECYCLE.snapshot_regular(missing)
+    assert "symlink" not in str(raised.value)
+    with pytest.raises(ORCHESTRATOR.OrchestratorError, match="does not exist") as outer_raised:
+        ORCHESTRATOR.snapshot_bytes(missing)
+    assert "symlink" not in str(outer_raised.value)
+    missing_parent = tmp_path / "missing-parent" / "missing.json"
+    with pytest.raises(LIFECYCLE.LifecycleError, match="does not exist") as lifecycle_parent_raised:
+        LIFECYCLE.snapshot_regular(missing_parent)
+    assert "symlink" not in str(lifecycle_parent_raised.value)
+    with pytest.raises(ORCHESTRATOR.OrchestratorError, match="does not exist") as parent_raised:
+        ORCHESTRATOR.snapshot_bytes(missing_parent)
+    assert "symlink" not in str(parent_raised.value)
+
+
+def test_lifecycle_exclusive_publication_hides_partial_final(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    output = tmp_path / "inner-lifecycle.json"
+    raw = LIFECYCLE.canonical_json_bytes(
+        {
+            "payload": "x" * 16_384,
+            "schema_version": "atomic-inner-publication-test-v1",
+        }
+    )
+    original_write = LIFECYCLE.os.write
+    original_link = LIFECYCLE.os.link
+    observed_writes: list[bool] = []
+    observed_links: list[tuple[str, str]] = []
+
+    def short_write(descriptor: int, value: bytes | memoryview) -> int:
+        observed_writes.append(os.path.lexists(output))
+        return original_write(descriptor, value[:31])
+
+    def inspect_link(source: str, target: str, **kwargs: object) -> None:
+        assert not os.path.lexists(output)
+        assert (tmp_path / source).read_bytes() == raw
+        assert stat.S_IMODE((tmp_path / source).stat().st_mode) == 0o444
+        observed_links.append((source, target))
+        original_link(source, target, **kwargs)
+
+    monkeypatch.setattr(LIFECYCLE.os, "write", short_write)
+    monkeypatch.setattr(LIFECYCLE.os, "link", inspect_link)
+    identity = LIFECYCLE.write_atomic_exclusive(output, raw)
+
+    assert observed_writes and not any(observed_writes)
+    assert len(observed_links) == 1
+    assert observed_links[0][1] == output.name
+    assert output.read_bytes() == raw
+    assert output.stat().st_nlink == 1
+    assert identity == _identity(output)
+    assert not list(tmp_path.glob(f".{output.name}.pending-*"))
+
+
+def test_live_adapter_retries_controlled_inner_link_publication_window(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    inner_path = tmp_path / "inner-lifecycle.json"
+    supervisor_pid = 4242
+    pending = tmp_path / f".{inner_path.name}.pending-{supervisor_pid}-123"
+    inner = {
+        "invocation_id": "0123456789abcdef0123456789abcdef",
+        "keeper_ready_monotonic_ns": 500,
+        "payload_exit_code": 2,
+        "payload_exit_monotonic_ns": 400,
+        "payload_pid": 4243,
+        "payload_reaped": True,
+        "payload_seal_monotonic_ns": 300,
+        "payload_signal": 0,
+        "payload_starttime": 78,
+        "schema_version": "noncert-cuts-ab16-inner-lifecycle-v1",
+        "supervisor_pid": supervisor_pid,
+        "supervisor_starttime": 77,
+        "unit_name": "cuts-ab16-selected.service",
+    }
+    pending.write_bytes(ORCHESTRATOR.canonical_json_bytes(inner))
+    pending.chmod(0o444)
+    os.link(pending, inner_path)
+    assert inner_path.stat().st_nlink == 2
+
+    adapter = object.__new__(ORCHESTRATOR.SubprocessLifecycleAdapter)
+    adapter.pre_run = {
+        "launch": {"payload_argv": ["payload"]},
+        "output_paths": {"inner": str(inner_path)},
+        "resource_contract": {"runtime_max_seconds": 120},
+    }
+    adapter._run = lambda _argv, timeout: SimpleNamespace(returncode=0)  # type: ignore[method-assign]
+    adapter._show = lambda _unit, _fields: {  # type: ignore[method-assign]
+        "ActiveState": "active",
+        "ExecMainCode": "0",
+        "ExecMainStatus": "0",
+        "MainPID": str(supervisor_pid),
+        "Result": "success",
+        "SubState": "running",
+    }
+    adapter._monotonic = lambda: 0.0
+    sleeps: list[float] = []
+
+    def finish_publication(seconds: float) -> None:
+        sleeps.append(seconds)
+        pending.unlink()
+
+    adapter.sleep = finish_publication
+    monkeypatch.setattr(ORCHESTRATOR.os, "geteuid", lambda: 1000)
+    monkeypatch.setattr(ORCHESTRATOR.os, "getuid", lambda: 1000)
+    monkeypatch.setattr(ORCHESTRATOR, "_proc_starttime", lambda _pid: 77)
+
+    launch = adapter.launch_and_wait_for_keeper(
+        unit_name="cuts-ab16-selected.service",
+        systemd_run_argv=["/usr/bin/systemd-run"],
+        payload_argv=["payload"],
+    )
+    assert sleeps == [0.05]
+    assert launch.payload_reaped is True
+    assert launch.payload_exit_code == 2
+    assert inner_path.stat().st_nlink == 1
+
+
+def test_live_launch_holds_identity_bound_wait_observer_before_return(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    unit_name = "cuts-ab16-selected.service"
+    invocation_id = "0123456789abcdef0123456789abcdef"
+    supervisor_pid = 4242
+    inner_path = tmp_path / "inner-lifecycle.json"
+    inner_path.write_bytes(
+        ORCHESTRATOR.canonical_json_bytes(
+            {
+                "invocation_id": invocation_id,
+                "keeper_ready_monotonic_ns": 500,
+                "payload_exit_code": 0,
+                "payload_exit_monotonic_ns": 400,
+                "payload_pid": 4243,
+                "payload_reaped": True,
+                "payload_seal_monotonic_ns": 300,
+                "payload_signal": 0,
+                "payload_starttime": 78,
+                "schema_version": "noncert-cuts-ab16-inner-lifecycle-v1",
+                "supervisor_pid": supervisor_pid,
+                "supervisor_starttime": 77,
+                "unit_name": unit_name,
+            }
+        )
+    )
+    waiter = _HeldSystemdWaiter()
+    popen_kwargs: dict[str, object] = {}
+
+    def fake_popen(_argv: Sequence[str], **kwargs: object) -> _HeldSystemdWaiter:
+        popen_kwargs.update(kwargs)
+        return waiter
+
+    adapter = object.__new__(ORCHESTRATOR.SubprocessLifecycleAdapter)
+    adapter.pre_run = {
+        "launch": {"cwd": str(tmp_path), "payload_argv": ["payload"]},
+        "output_paths": {"inner": str(inner_path)},
+        "resource_contract": {"runtime_max_seconds": 120},
+    }
+    adapter.environment = {"PATH": "/usr/bin:/bin"}
+    adapter.popen = fake_popen
+    adapter.waitid = lambda _idtype, _pid, _options: (
+        SimpleNamespace(
+            si_code=ORCHESTRATOR.os.CLD_STOPPED,
+            si_status=ORCHESTRATOR.signal.SIGSTOP,
+        )
+        if waiter.stopped
+        else None
+    )
+    adapter._pinned_command = lambda argv: (list(argv), "systemd_run")  # type: ignore[method-assign]
+    adapter._show = lambda _unit, fields: (  # type: ignore[method-assign]
+        {
+            "ActiveState": "active",
+            "ExecMainCode": "0",
+            "ExecMainStatus": "0",
+            "InvocationID": invocation_id,
+            "LoadState": "loaded",
+            "MainPID": str(supervisor_pid),
+            "Result": "success",
+            "SubState": "running",
+        }
+        if tuple(fields) == ORCHESTRATOR.SYSTEMD_WAIT_LAUNCH_FIELDS
+        else pytest.fail("wrong fields")
+    )
+    adapter._monotonic = lambda: 1.0
+    adapter._monotonic_ns = lambda: 1
+    adapter.sleep = lambda _seconds: None
+    adapter._systemd_wait_process = None
+    adapter._systemd_wait_unit_name = ""
+    adapter._systemd_wait_invocation_id = ""
+    adapter._systemd_wait_stopped = False
+    monkeypatch.setattr(ORCHESTRATOR.os, "geteuid", lambda: 1000)
+    monkeypatch.setattr(ORCHESTRATOR.os, "getuid", lambda: 1000)
+    monkeypatch.setattr(ORCHESTRATOR, "_proc_starttime", lambda _pid: 77)
+
+    launch = adapter.launch_and_wait_for_keeper(
+        unit_name=unit_name,
+        systemd_run_argv=["/pinned/systemd-run", "--wait"],
+        payload_argv=["payload"],
+    )
+
+    assert launch.invocation_id == invocation_id
+    assert waiter.stopped is True
+    assert adapter._systemd_wait_stopped is True  # noqa: SLF001
+    setup = popen_kwargs["preexec_fn"]
+    assert setup.func is ORCHESTRATOR._arm_parent_death_sigkill  # type: ignore[attr-defined]  # noqa: SLF001
+    assert setup.args == (os.getpid(),)  # type: ignore[attr-defined]
+    assert popen_kwargs["close_fds"] is True
+    assert popen_kwargs["env"] == {"PATH": "/usr/bin:/bin"}
+    adapter._kill_systemd_wait_observer()  # noqa: SLF001
+    assert waiter.reaped is True
+
+
+def test_wait_observer_reap_timeout_retains_control_handle() -> None:
+    class UnreapedWaiter:
+        pid = 42421
+        returncode = None
+
+        def poll(self) -> None:
+            return None
+
+        def kill(self) -> None:
+            return None
+
+        def communicate(self, timeout: float | None = None) -> tuple[bytes, bytes]:
+            assert timeout == 15
+            raise ORCHESTRATOR.subprocess.TimeoutExpired(cmd="systemd-run", timeout=timeout)
+
+    waiter = UnreapedWaiter()
+    adapter = object.__new__(ORCHESTRATOR.SubprocessLifecycleAdapter)
+    adapter._systemd_wait_process = waiter
+    adapter._systemd_wait_unit_name = "cuts-ab16-selected.service"
+    adapter._systemd_wait_invocation_id = "0123456789abcdef0123456789abcdef"
+    adapter._systemd_wait_stopped = True
+
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match="could not be reaped",
+    ):
+        adapter._kill_systemd_wait_observer()  # noqa: SLF001
+
+    assert adapter._systemd_wait_process is waiter  # noqa: SLF001
+    assert adapter._systemd_wait_unit_name == "cuts-ab16-selected.service"  # noqa: SLF001
+    assert adapter._systemd_wait_stopped is True  # noqa: SLF001
+
+
+def test_terminal_replacement_blocks_production_abort_without_name_mutation() -> None:
+    expected_invocation = "0123456789abcdef0123456789abcdef"
+    replacement_invocation = "fedcba9876543210fedcba9876543210"
+    unit_name = "cuts-ab16-selected.service"
+    waiter = _HeldSystemdWaiter()
+    waiter.stopped = True
+    commands: list[list[str]] = []
+    adapter = object.__new__(ORCHESTRATOR.SubprocessLifecycleAdapter)
+    adapter._systemd_wait_process = waiter
+    adapter._systemd_wait_unit_name = unit_name
+    adapter._systemd_wait_invocation_id = expected_invocation
+    adapter._systemd_wait_stopped = True
+    adapter._terminal_invocation_drifted = False
+    adapter._monotonic = lambda: 1.0
+    adapter._show = lambda _unit, _fields: {  # type: ignore[method-assign]
+        "ActiveState": "active",
+        "ControlGroup": "/user.slice/replacement.service",
+        "ExecMainCode": "0",
+        "ExecMainStatus": "0",
+        "InvocationID": replacement_invocation,
+        "Result": "success",
+        "SubState": "running",
+    }
+    adapter._run = lambda argv, **_kwargs: commands.append(list(argv))  # type: ignore[method-assign]
+    launch = ORCHESTRATOR.LaunchEvidence(
+        invocation_id=expected_invocation,
+        supervisor_pid=4242,
+        supervisor_starttime=77,
+        payload_pid=4243,
+        payload_starttime=78,
+        payload_seal_monotonic_ns=300,
+        payload_exit_monotonic_ns=400,
+        payload_exit_code=0,
+        payload_signal=0,
+        payload_reaped=True,
+        keeper_ready_monotonic_ns=500,
+    )
+
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match="terminal InvocationID drifted",
+    ):
+        adapter.capture_terminal(
+            unit_name=unit_name,
+            invocation_id=expected_invocation,
+        )
+    with pytest.raises(
+        ORCHESTRATOR.OrchestratorError,
+        match="refusing cleanup after terminal InvocationID drift",
+    ):
+        adapter.abort_and_capture_cleanup(
+            unit_name=unit_name,
+            launch=launch,
+            control_group=None,
+        )
+
+    assert waiter.reaped is True
+    assert commands == []
+
+
+def test_normal_terminal_cleanup_observes_absence_without_stop_or_reset() -> None:
+    unit_name = "cuts-ab16-selected.service"
+    control_group = "/user.slice/cuts-ab16-selected.service"
+    commands: list[list[str]] = []
+    adapter = object.__new__(ORCHESTRATOR.SubprocessLifecycleAdapter)
+    adapter._systemd_wait_process = None
+    adapter.systemctl = "/pinned/systemctl"
+    adapter._selected_unit_state = lambda **_kwargs: (True, control_group)  # type: ignore[method-assign]
+
+    def run(argv: Sequence[str], **_kwargs: object) -> SimpleNamespace:
+        command = list(argv)
+        commands.append(command)
+        assert "stop" not in command and "reset-failed" not in command
+        if "list-units" in command:
+            return SimpleNamespace(returncode=0, stdout=b"", stderr=b"")
+        assert "--property=LoadState" in command
+        return SimpleNamespace(returncode=0, stdout=b"not-found\n", stderr=b"")
+
+    adapter._run = run
+    adapter._monotonic = lambda: 1.0
+    adapter._monotonic_ns = lambda: 1300
+    adapter.sleep = lambda _seconds: None
+    launch = ORCHESTRATOR.LaunchEvidence(
+        invocation_id="0123456789abcdef0123456789abcdef",
+        supervisor_pid=999_999_991,
+        supervisor_starttime=77,
+        payload_pid=999_999_992,
+        payload_starttime=78,
+        payload_seal_monotonic_ns=300,
+        payload_exit_monotonic_ns=400,
+        payload_exit_code=0,
+        payload_signal=0,
+        payload_reaped=True,
+        keeper_ready_monotonic_ns=500,
+    )
+
+    cleanup = adapter.capture_cleanup(
+        unit_name=unit_name,
+        launch=launch,
+        control_group=control_group,
+    )
+
+    assert cleanup.unit_load_state == "not-found"
+    assert cleanup.matching_unit_names == []
+    assert all("stop" not in command and "reset-failed" not in command for command in commands)
+
+
+def test_wait_observer_parent_death_sigkill_releases_stopped_child() -> None:
+    helper_code = r"""
+import functools
+import importlib.util
+import os
+import signal
+import subprocess
+import sys
+
+spec = importlib.util.spec_from_file_location("ab16_r18_pdeath_helper", sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = module
+spec.loader.exec_module(module)
+child = subprocess.Popen(
+    [sys.executable, "-c", "import time; time.sleep(60)", sys.argv[2]],
+    close_fds=True,
+    preexec_fn=functools.partial(module._arm_parent_death_sigkill, os.getpid()),
+    stdin=subprocess.DEVNULL,
+    stdout=sys.stdout,
+    stderr=subprocess.DEVNULL,
+)
+child.send_signal(signal.SIGSTOP)
+status = os.waitid(os.P_PID, child.pid, os.WEXITED | os.WNOWAIT | os.WSTOPPED)
+assert status.si_code == os.CLD_STOPPED and status.si_status == signal.SIGSTOP
+print(child.pid, flush=True)
+sys.stdin.buffer.read(1)
+os._exit(0)
+"""
+    child_token = f"ab16-r18-pdeath-{os.getpid()}-{ORCHESTRATOR.time.monotonic_ns()}"
+    helper = ORCHESTRATOR.subprocess.Popen(
+        [sys.executable, "-c", helper_code, str(ORCHESTRATOR_PATH), child_token],
+        close_fds=True,
+        stdin=ORCHESTRATOR.subprocess.PIPE,
+        stdout=ORCHESTRATOR.subprocess.PIPE,
+        stderr=ORCHESTRATOR.subprocess.PIPE,
+        text=True,
+    )
+    assert helper.stdout is not None
+    child_pid = int(helper.stdout.readline())
+    child_starttime = ORCHESTRATOR._proc_starttime(child_pid)  # noqa: SLF001
+    assert child_starttime is not None
+    try:
+        assert helper.stdin is not None
+        helper.stdin.write("x")
+        helper.stdin.close()
+        assert helper.wait(timeout=5) == 0
+        readable, _writable, _exceptional = select.select([helper.stdout], [], [], 5)
+        assert readable == [helper.stdout]
+        assert helper.stdout.read() == ""
+    finally:
+        if helper.poll() is None:
+            helper.kill()
+            helper.wait()
+        if ORCHESTRATOR._proc_starttime(child_pid) == child_starttime:  # noqa: SLF001
+            try:
+                cmdline = Path(f"/proc/{child_pid}/cmdline").read_bytes().split(b"\0")
+            except FileNotFoundError:
+                cmdline = []
+            if child_token.encode("ascii") in cmdline:
+                try:
+                    os.kill(child_pid, ORCHESTRATOR.signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+
+
+def test_live_user_manager_collection_race_retains_identity_until_observer_reap() -> None:
+    suffix = f"{os.getpid()}-{ORCHESTRATOR.time.monotonic_ns()}"
+    unheld_unit = f"codex-r18-unheld-{suffix}.service"
+    held_unit = f"codex-r18-held-{suffix}.service"
+    fields = (
+        "LoadState",
+        "ActiveState",
+        "SubState",
+        "InvocationID",
+        "Result",
+        "ExecMainCode",
+        "ExecMainStatus",
+    )
+
+    def show(unit_name: str) -> dict[str, str]:
+        completed = ORCHESTRATOR.subprocess.run(
+            [
+                "/usr/bin/systemctl",
+                "--user",
+                "show",
+                unit_name,
+                *(f"--property={field}" for field in fields),
+            ],
+            check=False,
+            close_fds=True,
+            stdin=ORCHESTRATOR.subprocess.DEVNULL,
+            stdout=ORCHESTRATOR.subprocess.PIPE,
+            stderr=ORCHESTRATOR.subprocess.PIPE,
+            timeout=5,
+        )
+        assert completed.returncode == 0, completed.stderr.decode(errors="replace")
+        state = dict(line.split("=", 1) for line in completed.stdout.decode("utf-8").splitlines())
+        assert set(state) == set(fields)
+        return state
+
+    def wait_for(
+        unit_name: str,
+        predicate: Callable[[dict[str, str]], bool],
+    ) -> dict[str, str]:
+        deadline = ORCHESTRATOR.time.monotonic() + 5
+        while ORCHESTRATOR.time.monotonic() <= deadline:
+            state = show(unit_name)
+            if predicate(state):
+                return state
+            ORCHESTRATOR.time.sleep(0.02)
+        raise AssertionError(f"timed out waiting for {unit_name}: {state}")
+
+    def launch(unit_name: str, seconds: str) -> Any:
+        return ORCHESTRATOR.subprocess.Popen(
+            [
+                "/usr/bin/systemd-run",
+                "--user",
+                "--quiet",
+                "--wait",
+                f"--unit={unit_name.removesuffix('.service')}",
+                "--property=CollectMode=inactive-or-failed",
+                "--",
+                "/usr/bin/sleep",
+                seconds,
+            ],
+            close_fds=True,
+            preexec_fn=ORCHESTRATOR.partial(
+                ORCHESTRATOR._arm_parent_death_sigkill,  # noqa: SLF001
+                os.getpid(),
+            ),
+            stdin=ORCHESTRATOR.subprocess.DEVNULL,
+            stdout=ORCHESTRATOR.subprocess.PIPE,
+            stderr=ORCHESTRATOR.subprocess.PIPE,
+        )
+
+    unheld = launch(unheld_unit, "0.1")
+    held: Any | None = None
+    try:
+        stdout, stderr = unheld.communicate(timeout=5)
+        assert (unheld.returncode, stdout, stderr) == (0, b"", b"")
+        collected = wait_for(
+            unheld_unit,
+            lambda state: state["LoadState"] == "not-found",
+        )
+        assert collected == {
+            "ActiveState": "inactive",
+            "ExecMainCode": "0",
+            "ExecMainStatus": "0",
+            "InvocationID": "",
+            "LoadState": "not-found",
+            "Result": "success",
+            "SubState": "dead",
+        }
+
+        held = launch(held_unit, "0.4")
+        launch_state = wait_for(
+            held_unit,
+            lambda state: state["LoadState"] == "loaded" and bool(state["InvocationID"]),
+        )
+        invocation_id = launch_state["InvocationID"]
+        held.send_signal(ORCHESTRATOR.signal.SIGSTOP)
+        stop_status = ORCHESTRATOR.os.waitid(
+            ORCHESTRATOR.os.P_PID,
+            held.pid,
+            ORCHESTRATOR.os.WEXITED
+            | ORCHESTRATOR.os.WNOHANG
+            | ORCHESTRATOR.os.WNOWAIT
+            | ORCHESTRATOR.os.WSTOPPED,
+        )
+        if stop_status is None:
+            stop_status = ORCHESTRATOR.os.waitid(
+                ORCHESTRATOR.os.P_PID,
+                held.pid,
+                ORCHESTRATOR.os.WEXITED | ORCHESTRATOR.os.WNOWAIT | ORCHESTRATOR.os.WSTOPPED,
+            )
+        assert stop_status.si_code == ORCHESTRATOR.os.CLD_STOPPED
+        assert stop_status.si_status == ORCHESTRATOR.signal.SIGSTOP
+        ORCHESTRATOR.time.sleep(0.7)
+
+        retained = show(held_unit)
+        assert retained["LoadState"] == "loaded"
+        assert retained["InvocationID"] == invocation_id
+        assert retained["ActiveState"] == "inactive"
+        assert retained["SubState"] == "dead"
+        assert retained["Result"] == "success"
+        assert retained["ExecMainCode"] in {"exited", "1"}
+        assert retained["ExecMainStatus"] == "0"
+
+        held.kill()
+        held.communicate(timeout=5)
+        assert held.returncode == -ORCHESTRATOR.signal.SIGKILL
+        recollected = wait_for(
+            held_unit,
+            lambda state: state["LoadState"] == "not-found",
+        )
+        assert recollected["InvocationID"] == ""
+    finally:
+        for process in (unheld, held):
+            if process is not None and process.poll() is None:
+                process.kill()
+                process.communicate(timeout=5)
+
+
+def test_inner_publication_classifier_handles_unlink_after_pending_list(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    inner_path = tmp_path / "inner-lifecycle.json"
+    supervisor_pid = 4242
+    pending = tmp_path / f".{inner_path.name}.pending-{supervisor_pid}-456"
+    pending.write_bytes(b"{}")
+    pending.chmod(0o444)
+    os.link(pending, inner_path)
+    original_listdir = ORCHESTRATOR.os.listdir
+
+    def unlink_after_list(descriptor: int) -> list[str]:
+        names = original_listdir(descriptor)
+        pending.unlink()
+        return names
+
+    monkeypatch.setattr(ORCHESTRATOR.os, "listdir", unlink_after_list)
+    assert (
+        ORCHESTRATOR._inner_publication_state(  # noqa: SLF001
+            inner_path,
+            supervisor_pid=supervisor_pid,
+        )
+        == "ready"
+    )
+    assert inner_path.stat().st_nlink == 1
+
+
+def test_dirfd_walk_rejects_symlinked_parent_for_reads_and_writes(
+    tmp_path: Path,
+) -> None:
+    real_parent = tmp_path / "real-parent"
+    real_parent.mkdir()
+    source = real_parent / "source.json"
+    _write(source, {"value": 1})
+    linked_parent = tmp_path / "linked-parent"
+    linked_parent.symlink_to(real_parent, target_is_directory=True)
+    linked_source = linked_parent / "source.json"
+    for snapshot, error in (
+        (LIFECYCLE.snapshot_regular, LIFECYCLE.LifecycleError),
+        (VERIFIER.snapshot_json, VERIFIER.VerificationError),
+        (ORCHESTRATOR.snapshot_bytes, ORCHESTRATOR.OrchestratorError),
+    ):
+        with pytest.raises(error, match="symlink"):
+            snapshot(linked_source)
+    with pytest.raises(LIFECYCLE.LifecycleError, match="symlink"):
+        LIFECYCLE.write_json_exclusive(
+            linked_parent / "lifecycle-output.json",
+            {"value": 2},
+        )
+    with pytest.raises(VERIFIER.VerificationError, match="symlink"):
+        VERIFIER.write_exclusive(
+            linked_parent / "verifier-output.json",
+            {"value": 3},
+        )
+    assert not (real_parent / "lifecycle-output.json").exists()
+    assert not (real_parent / "verifier-output.json").exists()
+
+
+def test_same_fd_reader_rejects_mid_read_metadata_change(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    source = tmp_path / "mutable.json"
+    _write(source, {"value": 1})
+    original_read = LIFECYCLE.os.read
+    changed = False
+
+    def mutating_read(descriptor: int, size: int) -> bytes:
+        nonlocal changed
+        chunk = original_read(descriptor, size)
+        if chunk and not changed:
+            changed = True
+            source.chmod(0o644)
+        return chunk
+
+    monkeypatch.setattr(LIFECYCLE.os, "read", mutating_read)
+    with pytest.raises(LIFECYCLE.LifecycleError, match="changed during same-FD"):
+        LIFECYCLE.snapshot_regular(source)
+
+
+def test_payload_result_parser_is_runner_framed_without_relaxing_authority_json(
+    tmp_path: Path,
+) -> None:
+    value = {
+        "schema_version": "noncert-cuts-ab16-organic-arm-result-v1",
+        "slot": "region-capacity-ab-control",
+    }
+    compact = LIFECYCLE.canonical_json_bytes(value)
+    authority_path = tmp_path / "authority.json"
+    runner_path = tmp_path / "result.json"
+    LIFECYCLE.write_exclusive(authority_path, compact)
+    LIFECYCLE.write_exclusive(runner_path, compact + b"\n")
+
+    assert LIFECYCLE._load_json_snapshot(authority_path, "authority")[0] == value  # noqa: SLF001
+    assert LIFECYCLE._load_runner_json_snapshot(runner_path, "payload result")[0] == value  # noqa: SLF001
+    with pytest.raises(LIFECYCLE.LifecycleError, match="exactly one trailing LF"):
+        LIFECYCLE._load_runner_json_snapshot(authority_path, "payload result")  # noqa: SLF001
+    with pytest.raises(LIFECYCLE.LifecycleError, match="canonical JSON"):
+        LIFECYCLE._load_json_snapshot(runner_path, "authority")  # noqa: SLF001
+
+
+@pytest.mark.parametrize(
+    "raw",
+    (
+        b'{"schema_version":"noncert-cuts-ab16-organic-arm-result-v1","slot":"x"}\n\n',
+        b'{"schema_version":"noncert-cuts-ab16-organic-arm-result-v1","slot":"x"}\r\n',
+        b'{"schema_version":"noncert-cuts-ab16-organic-arm-result-v1", "slot":"x"}\n',
+        b'{"schema_version":"noncert-cuts-ab16-organic-arm-result-v1","slot":"x","slot":"y"}\n',
+    ),
+)
+def test_payload_result_parser_rejects_noncanonical_line_framing(
+    tmp_path: Path,
+    raw: bytes,
+) -> None:
+    path = tmp_path / "result.json"
+    LIFECYCLE.write_exclusive(path, raw)
+    with pytest.raises(LIFECYCLE.LifecycleError):
+        LIFECYCLE._load_runner_json_snapshot(path, "payload result")  # noqa: SLF001
+
+
+@pytest.mark.parametrize(
+    (
+        "payload_returncode",
+        "payload_output_kind",
+        "preregistered_exit_code",
+        "preregistered_signal",
+        "expected_inner_exit_code",
+        "expected_inner_signal",
+    ),
+    (
+        (0, "result", 0, 0, 0, 0),
+        (7, "result", 7, 0, 7, 0),
+        (2, "failure", 2, 0, 2, 0),
+        (7, "failure", 7, 0, 7, 0),
+        (-9, "failure", 0, 9, 0, 9),
+    ),
+    ids=(
+        "success-result",
+        "expected-postseal-result",
+        "runner-failure",
+        "failure-wrong-exit",
+        "failure-signal",
+    ),
+)
+def test_ordinary_user_supervisor_writes_inner_and_waits_for_pass_release(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    payload_returncode: int,
+    payload_output_kind: str,
+    preregistered_exit_code: int,
+    preregistered_signal: int,
+    expected_inner_exit_code: int,
+    expected_inner_signal: int,
+) -> None:
+    attempt, pre_run_path, selection_path = _fixture(
+        tmp_path,
+        postseal_failure_exit_code=preregistered_exit_code,
+        postseal_failure_signal=preregistered_signal,
+    )
+    pre_run_snapshot = LIFECYCLE.snapshot_regular(pre_run_path)
+    selection_snapshot = LIFECYCLE.snapshot_regular(selection_path)
+    pre_run = LIFECYCLE.strict_loads(pre_run_snapshot.raw, "pre-run")
+    transcript = VERIFIER.snapshot_json(pre_run["preselection_transcript_identity"]["path"]).value
+    launch_transcript_identity = _write(
+        Path(pre_run["epoch_transcript_paths"]["launch"]),
+        transcript,
+    )
+    launch_epoch = LIFECYCLE.build_epoch_observation(
+        phase="launch",
+        slot=pre_run["slot"],
+        observed_epoch=pre_run["manager_epoch"],
+        observed_at_monotonic_ns=150,
+        capture_transcript_identity=launch_transcript_identity,
+    )
+    _write(attempt / "manager-epoch-launch.json", launch_epoch)
+    if payload_output_kind == "result":
+        payload_output_path = attempt / "result.json"
+        payload_output = {
+            "schema_version": "noncert-cuts-ab16-organic-arm-result-v1",
+            "slot": pre_run["slot"],
+            "status": "UNKNOWN",
+        }
+    else:
+        payload_output_path = attempt / "failure.json"
+        payload_output = {
+            "authorizations": {
+                "global_claim_authorized": False,
+                "mathematical_claim_authorized": False,
+                "organic_runtime_effect_authorized": False,
+                "production_certified_authorized": False,
+            },
+            "error": "RunnerError: injected supervisor failure",
+            "schema_version": "noncert-cuts-ab16-organic-arm-result-v1",
+            "selection_identity": _detached(selection_snapshot.identity),
+            "status": "CREDIBILITY_INCOMPLETE",
+        }
+    LIFECYCLE.write_exclusive(
+        payload_output_path,
+        LIFECYCLE.canonical_json_bytes(payload_output) + b"\n",
+    )
+
+    class FakeProcess:
+        pid = 9191
+        returncode = payload_returncode
+        reaped = False
+
+        def wait(self, timeout: float | None = None) -> int:
+            del timeout
+            self.reaped = True
+            return payload_returncode
+
+        def send_signal(self, value: int) -> None:
+            raise AssertionError(f"unexpected signal {value}")
+
+        def kill(self) -> None:
+            raise AssertionError("unexpected kill")
+
+    process = FakeProcess()
+    observed_popen: dict[str, object] = {}
+    clock = {"value": 200}
+
+    def monotonic_ns() -> int:
+        clock["value"] += 10
+        return clock["value"]
+
+    def proc_starttime(pid: int) -> int | None:
+        if pid == LIFECYCLE.os.getpid():
+            return 77
+        if pid == process.pid:
+            return None if process.reaped else 78
+        raise AssertionError(f"unexpected pid {pid}")
+
+    def wait_without_reaping(
+        pid: int,
+        *,
+        timeout_seconds: float,
+        monotonic: object,
+        sleep: object,
+    ) -> object:
+        del timeout_seconds, monotonic, sleep
+        assert pid == process.pid
+        return SimpleNamespace(
+            si_code=(LIFECYCLE.os.CLD_EXITED if payload_returncode >= 0 else LIFECYCLE.os.CLD_KILLED),
+            si_status=(payload_returncode if payload_returncode >= 0 else -payload_returncode),
+        )
+
+    def release_on_sleep(_seconds: float) -> None:
+        inner_path = attempt / "inner-lifecycle.json"
+        release_path = attempt / "release-token.json"
+        if not inner_path.exists() or release_path.exists():
+            return
+        inner_identity = _identity(inner_path)
+        resource = {
+            "inner_identity": _detached(inner_identity),
+            "schema_version": "noncert-cuts-ab16-resource-verification-v1",
+            "status": "PASS",
+            "verdict": LIFECYCLE._expected_resource_verdict(pre_run),  # noqa: SLF001
+        }
+        resource_identity = _write(
+            attempt / "independent-resource-verification.json",
+            resource,
+        )
+        _write(
+            release_path,
+            {
+                "campaign_id": pre_run["campaign_id"],
+                "invocation_id": "0123456789abcdef0123456789abcdef",
+                "keeper_pid": LIFECYCLE.os.getpid(),
+                "keeper_starttime": 77,
+                "pre_run_authority_identity": pre_run_snapshot.identity,
+                "resource_verification_identity": resource_identity,
+                "run_nonce": pre_run["run_nonce"],
+                "runner_selection_identity": selection_snapshot.identity,
+                "schema_version": "noncert-cuts-ab16-release-token-v1",
+                "slot": pre_run["slot"],
+                "unit_name": pre_run["unit_name"],
+                "verdict": LIFECYCLE._expected_resource_verdict(pre_run),  # noqa: SLF001
+            },
+        )
+
+    def fake_popen(*args: object, **kwargs: object) -> FakeProcess:
+        observed_popen["args"] = args
+        observed_popen["kwargs"] = kwargs
+        return process
+
+    monkeypatch.setenv("INVOCATION_ID", "0123456789abcdef0123456789abcdef")
+    monkeypatch.setattr(LIFECYCLE.os, "geteuid", lambda: 1000)
+    monkeypatch.setattr(LIFECYCLE.os, "getuid", lambda: 1000)
+    result = LIFECYCLE.supervise_payload(
+        pre_run_path=pre_run_path,
+        selection_path=selection_path,
+        popen=fake_popen,
+        monotonic=lambda: 1.0,
+        monotonic_ns=monotonic_ns,
+        sleep=release_on_sleep,
+        proc_starttime=proc_starttime,
+        wait_without_reaping=wait_without_reaping,
+    )
+    assert result == (payload_returncode if payload_returncode >= 0 else 128 - payload_returncode)
+    assert process.reaped is True
+    inner = VERIFIER.snapshot_json(attempt / "inner-lifecycle.json").value
+    assert inner["payload_reaped"] is True
+    assert inner["keeper_pid"] == LIFECYCLE.os.getpid()
+    assert inner["payload_exit_code"] == expected_inner_exit_code
+    assert inner["payload_signal"] == expected_inner_signal
+    payload_output_identity = VERIFIER.snapshot_runner_json(payload_output_path).identity
+    assert inner["payload_failure_identity"] == (
+        payload_output_identity if payload_output_kind == "failure" else None
+    )
+    assert inner["payload_result_identity"] == (
+        payload_output_identity if payload_output_kind == "result" else None
+    )
+    popen_kwargs = observed_popen["kwargs"]
+    assert isinstance(popen_kwargs, dict)
+    assert popen_kwargs["env"] == {
+        "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
+        "HOME": "/home/fixture",
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "PATH": "/usr/bin:/bin",
+        "PYTHONHASHSEED": "0",
+        "TZ": "UTC",
+        "XDG_RUNTIME_DIR": "/run/user/1000",
+    }

@@ -1,0 +1,93 @@
+# 07 — front-clear 上收批收官：owner 决策包（2026-07-17）
+
+> 输入 = doc 06（阶梯 3-5 + 探针 2/3/4 + §4.7 round-4/5 互证）+ 过夜长跑
+> `arm_on_overnight`（lift ON + presolve off + automatic，42G/40G 帽，无时限
+> 24h 保险丝）。§1 待长跑终态回填；§2 起为决策菜单，不依赖终态方向。
+
+## §1 过夜长跑终态（07-17 22:43 owner 手动停，已回填）
+
+- **配方**：lift ON + `EXACT_MASTER_CP_MODEL_PRESOLVE=0` + automatic branching
+  + 单 worker；6×6 锚点；MemoryMax=42G / MemorySwapMax=40G；24h 保险丝。
+- **时长**：wall 23h50m44s / CPU 23h48m（CPU/wall≈99.9%——全程满速真搜索，
+  未被 swap 拖慢；热工作集 ~11.6G 稳坐 RAM、~27-31G 冷数据躺 swap 的形态
+  整日不变）。内存峰 29.1G RAM + 31G swap，帽内安全，零 OOM 事件。
+- **结局**：`UNKNOWN`——无 incumbent、无 INFEASIBLE，停止时仍在 master
+  solve。owner 手动停=硬杀，solver 内部遥测（分支数等）无终态快照；
+  build 期数据在 `cell.json`（session build 33.9s / master build 15.0s /
+  lift 17 组覆盖）。
+- **判读**：这是三种结局里最平淡的一种，但信息是实的——探针 3/4 的
+  30 分钟单发 ×47.6 倍时长（23.8 CPU 小时）仍然两头干涸，**「堆时间」
+  杠杆在单 worker 档正式测穿**。结合 §6 装箱侧战报（witness 纯装箱松弛
+  同夜塞不动），6×6 锚点在本机当前工具谱下「找解」与「证无解」两个方向
+  都够不着。lift 维持 default-OFF（台账 #10 确认项不变）；下一步进
+  §3 决策菜单（B/C/D/E 的相对价值经本夜两线实测全部上调）。
+
+## §2 已确立的事实（不随终态变化）
+
+1. lift 语义正确性三面实证（哨兵 45 / 全池 286,636 pose / corpus 1,314 双向
+   零 mismatch），OFF 路径零回归——**工程面无遗留**。
+2. presolve off（`EXACT_MASTER_CP_MODEL_PRESOLVE=0`，已 allowlisted）=任何
+   lift-ON 运行的必要操作配方（不开则 presolve 展开爆炸、solver 不搜索）。
+3. 硬度证据（截至探针 4）：两套独立编码（本批 certified master + round-4/5
+   研究原型）× 四个锚点（6×6/7×7/6×8/8×6）× fixed/automatic 两种 search，
+   30 分钟单发全部无 incumbent 无 INFEASIBLE。
+4. 迭代 cut 通道（RAB-SEP）工作正常但六轮无收敛迹象——皮带可用，不是证明
+   引擎。
+
+## §3 决策菜单（按投入从低到高；可并行项已标注）
+
+| # | 牌 | 内容 | 前置/成本 | 赌注 |
+|---|---|---|---|---|
+| A | **witness 构造器**（下界侧，可并行，不受 solver 墙影响） | 构造 area-42 布局 + 多项式验证（construct-then-verify）；front-clear/demand SSOT 机械可直接当构造约束 | 研究脚本级，零 sealed | 拿下"3 负锚点+1 witness"里的 1；round-2 已把 front_blocked 582→138，方向通 |
+| B | **两段式 master**（层数响应，判据 v2.1 直接产物） | 便宜松弛格（front-clear 计数+不重叠+面积）先解，解作 hint 喂完整 master | runner 级改造+一发单发验证 | ON 臂困境若是"单格合并过头"，此牌直接救 |
+| C | **双线合流**（B6 flip 后） | F1/F6/F7 结构规则库对 lift 后 master 开火（区域容量/Hall/hitting set = 现成的健全必要条件库） | **B6 owner 手动门** + PIC-4/5 证据口径表态（台账 #9） | 工程线两个月的库第一次服务研究线主攻 |
+| D | **证明日志求解器侦察** | lift 后模型仅 1-3 万变量，PB/SAT+VeriPB/DRAT 首次可行；与支线轴 B 同一笔投资 | 纸面评估+小实例试编码 | 负锚点 INFEASIBLE 出机器可查证书（比 CP-SAT 口头 UNKNOWN/INFEASIBLE 更硬） |
+| E | **云算力** | portfolio×多 worker 需 128G+ 内存，本机装不下 | 租用决策+环境搬迁 | 把"可接受时间"扩一档 |
+| F | **兜底姿态**（非降级） | witness 到手后最优解夹在 [42, 上界] 区间，3 负锚点=开放内核，RAB-SEP 皮带照转 | 无 | 阶段性可发布数学状态，目标不让寸 |
+
+## §4 owner-only 决策项
+
+- lift 默认值：维持 OFF（无翻转理由，按纪律确认现状）——台账 #10。
+- 调参演习 go/no-go 与牌序拍板——台账 #11。
+- 牌 C 的 B6 flip 与 PIC-4/5 证据口径——台账 #9。
+
+## §5 执行建议（我的推荐，可否决）
+
+A 与 B 并行开工（A 已于 07-17 凌晨离线时段起步，见
+`witness_constructor_20260717/`）；D 做半日纸面侦察；C 等 owner 门；
+E 视 B/C 结果再花钱；F 是 A 成功后的自然中间态。
+
+## §6 牌 A 夜班中期战报（07-17 晨，详见 witness_constructor_20260717/01）
+
+1. **几何三本账建立**（口格悬空于 body 外、整行带式布局被算术判死
+   5,400>4,900、front-only 点状口径 ~4,100 装得下但余量踩着 3% 密铺）。
+2. 贪心系五代构造器天花板 ~241/266（front-clear 审计全程 0 违规——
+   构造语义与 binding 机械已证一致）；CP-SAT 装箱小模型（NoOverlap2D
+   ~760 矩形）可行性形态三连 UNKNOWN（120s/300s+对称破除/600s+四朝向
+   +241 件 warm hint）。
+3. **中期判读——这个"难"本身是新证据**：witness 的纯装箱松弛（不带
+   供电/binding/routing）已经塞不动 CP-SAT 十分钟级预算 ⇒ ①lift 后
+   master 30 分钟干涸完全合理（它解严格更难的问题）；②area-42 witness
+   的存在性不宜再当默认假设——**若装箱侧持续拿不下，负锚点侧
+   （6×6 INFEASIBLE 上界证书）的相对价值上升**，过夜跑的赌注变大不变小；
+   ③牌 D（证明日志求解器）动机增强。
+4. 注意本模型的 UNKNOWN/将来若 UNSAT ≠ 原问题不可行：固定须点不共享是
+   过约束（真松弛需允许 front 共格），且 CP-SAT 无证明日志——只作研究
+   信号，不作数学结论。
+
+## §7 牌 B 两段式 master 终判（07-17 夜，owner 拍板执行）
+
+- **实施**：段 1 = 装箱小模型 6×6 锚点 maximize（480s）→ 228/266（审计
+  0 违规；6×6 与 6×7 装箱难度几乎一致 228 vs 229，锚点尺寸非短板）。
+  段 2 = runner 加 `--solution-hint-file`（commit `8fa9182`），228 件解经
+  `apply_solution_hint` 注入（684 hint literals，pole 槽零污染），探针 4
+  同配方 30 分钟单发——干净单变量对照。
+- **终态**：`UNKNOWN @ 1805.8s`，无 incumbent 无 INFEASIBLE，与探针 4
+  （无 hint）无可见差异。内存 30.7G+9.5G 帽内，DONE_EXIT=0。
+- **判读**：CP-SAT 的 hint 修复要能从部分骨架补全出完整可行解才起作用；
+  缺 38 件 + 全部电线杆 + lift 约束下修复失败，hint 随即失效退回普通
+  搜索。**牌 B（部分 hint 形态）测穿**。完整 hint 形态的前置 = 266 全放
+  的装箱解——那正是牌 A 卡住的同一堵墙。**牌 A 与牌 B 已合流为同一个
+  问题：「造出一张 266 全放 + 锚点 ghost 的布局」**。本机工具谱对它
+  两侧（构造/证明）均已测穿；剩余活牌 = C（B6 门）/ D（证明日志）/
+  E（云算力 128G portfolio）。

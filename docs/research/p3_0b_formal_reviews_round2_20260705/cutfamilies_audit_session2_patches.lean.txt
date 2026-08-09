@@ -1,0 +1,166 @@
+import Mathlib
+
+/-!
+Statement-fidelity repair sketches for `CutFamilies.lean`.
+
+Status: UNCOMPILED in this sandbox. The sandbox image has no `lean`/`lake`; these are
+Lean 4/mathlib-shaped replacement segments intended for local integration against the
+original file.
+-/
+
+namespace ZmdFormal.CutFamilies
+
+/-! ## F1 repair: make the survey demand lower bound explicit. -/
+
+/-- F1 bound, survey-faithful boundary: `requiredCells` is the report-side
+`Σ_{g∈C} demand(g) * cells_per_pose(g)`.  The separate `hdemand` premise is the
+missing binding from group demand to the instance-indexed occupancy witness. -/
+theorem f1_region_capacity_bound {ι α : Type*} [DecidableEq ι] [DecidableEq α]
+    (S : Finset ι) (occ : ι → Finset α) (Free : Finset α) (cells : ι → ℕ)
+    (requiredCells : ℕ)
+    (hdemand : requiredCells ≤ ∑ i ∈ S, cells i)
+    (hsub : ∀ i ∈ S, occ i ⊆ Free)
+    (hdisj : ∀ i ∈ S, ∀ j ∈ S, i ≠ j → Disjoint (occ i) (occ j))
+    (hcells : ∀ i ∈ S, cells i ≤ (occ i).card) :
+    requiredCells ≤ Free.card :=
+  le_trans hdemand (f1_occupancy_bound S occ Free cells hsub hdisj hcells)
+
+/-- F1 infeasible, survey-faithful boundary: overflow is against the report-side
+required cell demand, not merely against an already-expanded arbitrary `S`. -/
+theorem f1_region_capacity_overflow_infeasible {ι α : Type*}
+    [DecidableEq ι] [DecidableEq α]
+    (S : Finset ι) (occ : ι → Finset α) (Free : Finset α) (cells : ι → ℕ)
+    (requiredCells : ℕ) (hfire : Free.card < requiredCells) :
+    ¬ ((requiredCells ≤ ∑ i ∈ S, cells i) ∧
+       (∀ i ∈ S, occ i ⊆ Free) ∧
+       (∀ i ∈ S, ∀ j ∈ S, i ≠ j → Disjoint (occ i) (occ j)) ∧
+       (∀ i ∈ S, cells i ≤ (occ i).card)) := by
+  rintro ⟨hdemand, hsub, hdisj, hcells⟩
+  exact absurd
+    (f1_region_capacity_bound S occ Free cells requiredCells hdemand hsub hdisj hcells)
+    (Nat.not_le.mpr hfire)
+
+/-! ## F7 repair: model pole footprints and ghost-scope monotonicity. -/
+
+/-- F7 cover set with the 2×2-pole-footprint obligation visible.  `Anchors` is the
+finite pole-anchor universe; `footprint a ⊆ FreeCells` is the validator's footprint
+subset-free check; `CanCover` is the geometry/radius predicate. -/
+def F7CoverSet {α β : Type*} [DecidableEq α] [DecidableEq β]
+    (Anchors : Finset α) (footprint : α → Finset β)
+    (CanCover : α → Prop) [DecidablePred CanCover]
+    (FreeCells : Finset β) : Finset α :=
+  Anchors.filter (fun a => CanCover a ∧ footprint a ⊆ FreeCells)
+
+/-- F7 monotonicity with the footprint-free predicate exposed. -/
+theorem f7_cover_set_monotone_with_footprint {α β : Type*}
+    [DecidableEq α] [DecidableEq β]
+    (Anchors : Finset α) (footprint : α → Finset β)
+    (CanCover : α → Prop) [DecidablePred CanCover]
+    (FreeCells FreeCells' : Finset β) (hsub : FreeCells' ⊆ FreeCells) :
+    F7CoverSet Anchors footprint CanCover FreeCells' ⊆
+      F7CoverSet Anchors footprint CanCover FreeCells := by
+  intro a ha
+  simp [F7CoverSet] at ha ⊢
+  exact ⟨ha.1, fun c hc => hsub (ha.2 hc)⟩
+
+/-- F7 ghost-scope empty-cover soundness core.  The empty set must be proved in the
+owner-insensitive ghost/exterior scope; replay/current scopes are then required to be
+subsets of that scope. -/
+theorem f7_empty_cover_ghost_scope {α β : Type*}
+    [DecidableEq α] [DecidableEq β]
+    (Anchors : Finset α) (footprint : α → Finset β)
+    (CanCover : α → Prop) [DecidablePred CanCover]
+    (GhostFreeCells ReplayFreeCells : Finset β)
+    (hscope : ReplayFreeCells ⊆ GhostFreeCells)
+    (hemptyGhost : F7CoverSet Anchors footprint CanCover GhostFreeCells = ∅) :
+    F7CoverSet Anchors footprint CanCover ReplayFreeCells = ∅ :=
+  Finset.subset_empty.mp
+    (hemptyGhost ▸
+      f7_cover_set_monotone_with_footprint Anchors footprint CanCover
+        GhostFreeCells ReplayFreeCells hscope)
+
+/-! ## F6 repair: expose the interval-cover witness and combine region-demand with the
+cross-side lower bound. -/
+
+/-- F6 packing bound with the bucket as an existential proof obligation rather than a
+preselected total function.  This is closer to the survey wording: every legal pose is
+wholly contained in some unblocked interval. -/
+theorem f6_packing_bound_exists_bucket {ι κ α : Type*}
+    [DecidableEq ι] [DecidableEq κ] [DecidableEq α]
+    (S : Finset ι) (J : Finset κ) (seg : ι → Finset α) (interval : κ → Finset α)
+    (L : ℕ) (hL : 0 < L)
+    (hcovered : ∀ i ∈ S, ∃ j ∈ J, seg i ⊆ interval j)
+    (hcard : ∀ i ∈ S, (seg i).card = L)
+    (hdisj : ∀ i ∈ S, ∀ j ∈ S, i ≠ j → Disjoint (seg i) (seg j)) :
+    S.card ≤ ∑ j ∈ J, (interval j).card / L := by
+  classical
+  choose bucket hbucket using hcovered
+  exact f6_packing_bound S J seg interval L hL bucket
+    (fun i hi => (hbucket i hi).1)
+    (fun i hi => (hbucket i hi).2)
+    hcard hdisj
+
+/-- F6 current-validator shape: `dR` is the certified region demand lower bound,
+`Cother` is the opposite-side capacity.  This combines the direct interval capacity
+bound with the survey's `dR ≤ max(0, D - Cother)` lower-bound certificate. -/
+theorem f6_region_demand_overflow_infeasible {ι υ κ α : Type*}
+    [DecidableEq ι] [DecidableEq κ] [DecidableEq α]
+    (Sside : Finset ι) (Sother : Finset υ)
+    (J : Finset κ) (seg : ι → Finset α) (interval : κ → Finset α)
+    (L : ℕ) (hL : 0 < L) (D Cother dR : ℕ)
+    (hdemand : dR ≤ D - Cother)
+    (hfire : (∑ j ∈ J, (interval j).card / L) < dR) :
+    ¬ ((∀ i ∈ Sside, ∃ j ∈ J, seg i ⊆ interval j) ∧
+       (∀ i ∈ Sside, (seg i).card = L) ∧
+       (∀ i ∈ Sside, ∀ j ∈ Sside, i ≠ j → Disjoint (seg i) (seg j)) ∧
+       (D ≤ Sside.card + Sother.card) ∧
+       (Sother.card ≤ Cother)) := by
+  rintro ⟨hcovered, hcard, hdisj, htotal, hother⟩
+  have hcap := f6_packing_bound_exists_bucket Sside J seg interval L hL hcovered hcard hdisj
+  have hlb := f6_cross_side_lower_bound D Cother Sside.card Sother.card htotal hother
+  omega
+
+/-! ## F2 repair: keep the pigeonhole lemma, but state cut soundness only after a
+separation lemma has turned graph/enclosure facts into `hhit`. -/
+
+/-- F2 survey-faithful wrapper.  `Legal edges` is the real graph-routing predicate.
+The validator's A/B partition, enclosure, and side-of-commodity checks must discharge
+`hseparator`; edge-capacity-1 disjointness must discharge `hdisjoint`. -/
+theorem f2_cutset_infeasible_from_separator {ι ε : Type*}
+    [DecidableEq ι] [DecidableEq ε]
+    (routes : Finset ι) (δ : Finset ε) (Legal : (ι → Finset ε) → Prop)
+    (hseparator : ∀ edges, Legal edges → ∀ i ∈ routes, ∃ e ∈ edges i, e ∈ δ)
+    (hdisjoint : ∀ edges, Legal edges →
+      ∀ i ∈ routes, ∀ j ∈ routes, i ≠ j → Disjoint (edges i) (edges j))
+    (hfire : δ.card < routes.card) :
+    ∀ edges, ¬ Legal edges := by
+  intro edges hleg
+  exact absurd
+    (f2_cutset_bound routes edges δ (hseparator edges hleg) (hdisjoint edges hleg))
+    (Nat.not_le.mpr hfire)
+
+/-! ## F3 repair: use multiset-selected literals for the literal evaluator claim. -/
+
+/-- F3 port-exposure predicate over a multiset of selected literals.  Multiplicity is
+visible here; unlike `Finset`, two equal `(group, pose)` literals do not collapse. -/
+def PortExposureFreeMulti {ι π α : Type*} (selected : Multiset ι)
+    (occupied : ι → Finset α) (ports : ι → Finset π) (frontCell : π → α) : Prop :=
+  ∀ i, i ∈ selected → ∀ q ∈ ports i, ∀ j, j ∈ selected → frontCell q ∉ occupied j
+
+/-- F3 literal cut soundness with true sub-multiset semantics.  `([A, B] : List ι).toMultiset`
+keeps two copies when `A = B`; that is the lifecycle evaluator semantics the docstring
+was trying to claim. -/
+theorem f3_pair_literal_cut_sound_multi {ι π α : Type*} [DecidableEq ι]
+    (occupied : ι → Finset α) (ports : ι → Finset π) (frontCell : π → α)
+    {A B : ι} {p : π}
+    (hp : p ∈ ports A) (hblock : frontCell p ∈ occupied B) :
+    ∀ selected : Multiset ι, (([A, B] : List ι).toMultiset ≤ selected) →
+      ¬ PortExposureFreeMulti selected occupied ports frontCell := by
+  intro selected hsub hfree
+  have hA : A ∈ selected := by
+    exact Multiset.mem_of_le hsub (by simp)
+  have hB : B ∈ selected := by
+    exact Multiset.mem_of_le hsub (by simp)
+  exact hfree A hA p hp B hB hblock
+
+end ZmdFormal.CutFamilies

@@ -1,0 +1,178 @@
+From ee138ff4662d2a34ec1a0f6221753301f4cd167d Mon Sep 17 00:00:00 2001
+From: Cut Framework Review <review@example.invalid>
+Date: Thu, 9 Jul 2026 22:34:27 +0000
+Subject: [PATCH 1/4] cuts: seal integrity at irreversible attach boundary
+
+---
+ src/cuts/lifecycle.py                         | 13 +++-
+ src/search/benders_loop.py                    | 22 ++++++-
+ src/tests/test_cut_framework_attach_wiring.py | 64 +++++++++++++++++++
+ 3 files changed, 95 insertions(+), 4 deletions(-)
+
+diff --git a/src/cuts/lifecycle.py b/src/cuts/lifecycle.py
+index bd7ea53..f860dc1 100644
+--- a/src/cuts/lifecycle.py
++++ b/src/cuts/lifecycle.py
+@@ -1204,6 +1204,17 @@ def step_8_apply_to_master(
+     GHOST_AGNOSTIC), and the master re-checks its own coverer table against
+     ``ghost_blocked_cells`` before accepting (runtime helper-vs-master gate).
+     """
++    # Defense in depth: Step 8 is the irreversible trust boundary.  Callers
++    # must not be able to validate one body and compile a different cert (or a
++    # cert whose hash bookkeeping is stale).  The production caller performs
++    # the same check for rejection telemetry; keep it here as the final guard
++    # for every direct/test/ future caller of Step 8.
++    integrity_error = validate_cut_integrity(cut)
++    if integrity_error is not None:
++        raise ValueError(
++            f"step_8: cut integrity failed (fail-closed): {integrity_error}"
++        )
++
+     if cut.family == "region_capacity":
+         if cut.cert is None:
+             raise ValueError("step_8: region_capacity cut carries no cert (fail-closed)")
+@@ -1355,7 +1366,7 @@ def step_8_apply_to_master(
+                 "step_8: forbidden_pose_pattern must be a non-empty list"
+             )
+         pattern: List[Tuple[str, str]] = []
+-        seen_group_pose: set = set()
++        seen_group_pose: set[Tuple[str, str]] = set()
+         for entry in raw_pattern:
+             if not isinstance(entry, list) or len(entry) != 3:
+                 raise ValueError(
+diff --git a/src/search/benders_loop.py b/src/search/benders_loop.py
+index 870a1c0..c573a2b 100644
+--- a/src/search/benders_loop.py
++++ b/src/search/benders_loop.py
+@@ -7861,19 +7861,34 @@ class LBBDController:
+                 )
+         attached = 0
+         attached_by_family: Dict[str, int] = {}
++        rejected_by_reason: Dict[str, int] = {}
++
++        def reject(reason: str) -> None:
++            rejected_by_reason[reason] = rejected_by_reason.get(reason, 0) + 1
++
+         for cut in cuts:
+             if budget_used + attached >= EXACT_CUT_FRAMEWORK_ATTACH_BUDGET:
+                 break
+-            validate_cut_integrity(cut)
++            integrity_error = validate_cut_integrity(cut)
++            if integrity_error is not None:
++                reject("integrity")
++                continue
++            # Scope/currentness is cheaper and does not invoke any family
++            # verifier.  Gate stale cuts before validator work, especially F5
++            # whose verifier can query a sub-problem adapter.
++            if step_6_attach_scope_check(cut, state) != "ATTACH":
++                reject("scope")
++                continue
+             validator = FAMILY_VALIDATORS.get(cut.family)
+             if validator is None:
++                reject("validator_missing")
+                 continue
+             result = validator(cut, state, state.canonical_rules or {})
+             if getattr(result, "kind", None) != "ok":
+-                continue
+-            if step_6_attach_scope_check(cut, state) != "ATTACH":
++                reject(f"validator_{getattr(result, 'kind', 'unknown')}")
+                 continue
+             if not step_7_evaluate_cut(cut, state):
++                reject("not_violated")
+                 continue
+             step_8_apply_to_master(
+                 cut,
+@@ -7894,6 +7909,7 @@ class LBBDController:
+                 "generated": len(cuts),
+                 "attached": attached,
+                 "attached_by_family": dict(sorted(attached_by_family.items())),
++                "rejected_by_reason": dict(sorted(rejected_by_reason.items())),
+             }
+         return attached
+ 
+diff --git a/src/tests/test_cut_framework_attach_wiring.py b/src/tests/test_cut_framework_attach_wiring.py
+index 940f381..bc5a419 100644
+--- a/src/tests/test_cut_framework_attach_wiring.py
++++ b/src/tests/test_cut_framework_attach_wiring.py
+@@ -15,7 +15,10 @@ test_ghost_anchor_filter / test_v62_candidate_frontier_contract patterns).
+ from __future__ import annotations
+ 
+ import os
++import hashlib
++import json
+ import tempfile
++from dataclasses import replace
+ from pathlib import Path
+ from typing import Any, Dict, Mapping
+ from unittest import mock
+@@ -246,6 +249,67 @@ def test_full_chain_generates_validates_and_attaches() -> None:
+             "region_capacity": 1,
+             "shape_packing_hall": 1,
+         },
++        "rejected_by_reason": {},
++    }
++
++
++def test_integrity_mismatch_never_reaches_master() -> None:
++    """A validator must not approve body A while Step 8 compiles cert B."""
++    from src.cuts.oracles.region_capacity_oracle import (
++        generate_region_capacity_cuts,
++    )
++
++    state = _boundary_overflow_state()
++    original = generate_region_capacity_cuts(
++        state, state.canonical_rules or {}, iter_index=1
++    )[0]
++    assert original.cert is not None
++    assert original.geometric_payload is not None
++
++    # Keep the validator-facing geometric body valid, but replace the
++    # compiler-facing cert with an over-pruning capacity.  Hashes are updated,
++    # so only the body/cert cross-binding check can catch the split brain.
++    malicious = json.loads(original.cert.cert_payload)
++    malicious["cap_R"] = 0
++    malicious["gap"] = int(malicious["demand_R"])
++    malicious_bytes = json.dumps(
++        malicious, sort_keys=True, ensure_ascii=False
++    ).encode("utf-8")
++    malicious_hash = hashlib.sha256(malicious_bytes).hexdigest()
++    tampered = replace(
++        original,
++        cert=replace(
++            original.cert,
++            cert_payload=malicious_bytes,
++            cert_hash=malicious_hash,
++        ),
++        oracle_cert_hash=malicious_hash,
++    )
++
++    spy = _SpyMaster()
++    controller = _controller(spy)
++    with mock.patch.dict(os.environ, {"EXACT_CUT_FRAMEWORK_ATTACH": "1"}):
++        with mock.patch.object(
++            LBBDController, "_build_cut_framework_state", return_value=state
++        ), mock.patch.object(
++            LBBDController,
++            "_selected_ghost_context",
++            return_value=_mock_ghost_context(),
++        ), mock.patch(
++            "src.cuts.oracles.region_capacity_oracle.generate_region_capacity_cuts",
++            return_value=[tampered],
++        ), mock.patch(
++            "src.cuts.oracles.shape_packing_hall_oracle.compute_sot_region_demand_overrides",
++            return_value={},
++        ):
++            attached = controller._maybe_attach_framework_cuts(
++                trigger="binding_infeasible", iteration=1
++            )
++
++    assert attached == 0
++    assert spy.region_capacity_calls == []
++    assert spy.build_stats["cut_framework_attach_last"]["rejected_by_reason"] == {
++        "integrity": 1
+     }
+ 
+ 
+-- 
+2.47.3
+

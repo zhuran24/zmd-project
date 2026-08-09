@@ -1,0 +1,5 @@
+resolved_cp_sat_worker_profile: master=8[default], local_capacity=8[default], binding=4[default], routing=8[default]
+
+--- [LBBD Exact Loop] Iteration 1/2 ---
+  > Solving Master Problem...
+status=UNKNOWN

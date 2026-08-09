@@ -1,0 +1,15 @@
+{"event": "core_built", "seconds": 39.197, "rss_mb": 2444.8}
+{"event": "groups", "group_count": 19, "largest_group": 46, "rss_mb": 4306.6}
+{"event": "clone", "scenario": "pattern_v2", "seconds": 35.212, "rss_mb": 2832.2}
+{"event": "solve", "scenario": "pattern_v2", "cuts_total": 0, "status_int": 0, "python_wall_seconds": 68.748, "solver_wall": 65.967, "overhead_seconds": 2.781, "branches": 0, "rss_mb": 2956.3}
+{"event": "add_batch", "scenario": "pattern_v2", "batch": 100, "added_ok": 100, "added_fail": 0, "cuts_total": 100, "add_wall_seconds": 6.671, "ms_per_cut": 66.713, "rss_mb": 2984.0}
+{"event": "solve", "scenario": "pattern_v2", "cuts_total": 100, "status_int": 0, "python_wall_seconds": 82.263, "solver_wall": 78.756, "overhead_seconds": 3.507, "branches": 0, "rss_mb": 3104.0}
+{"event": "add_batch", "scenario": "pattern_v2", "batch": 900, "added_ok": 900, "added_fail": 0, "cuts_total": 1000, "add_wall_seconds": 84.866, "ms_per_cut": 94.296, "rss_mb": 3618.1}
+{"event": "solve", "scenario": "pattern_v2", "cuts_total": 1000, "status_int": 0, "python_wall_seconds": 74.525, "solver_wall": 65.848, "overhead_seconds": 8.676, "branches": 0, "rss_mb": 3895.1}
+{"event": "add_batch", "scenario": "pattern_v2", "batch": 4000, "added_ok": 4000, "added_fail": 0, "cuts_total": 5000, "add_wall_seconds": 467.765, "ms_per_cut": 116.941, "rss_mb": 6422.3}
+{"event": "solve", "scenario": "pattern_v2", "cuts_total": 5000, "status_int": 0, "python_wall_seconds": 155.525, "solver_wall": 85.067, "overhead_seconds": 70.458, "branches": 0, "rss_mb": 7833.1}
+{"event": "add_batch", "scenario": "pattern_v2", "batch": 5000, "added_ok": 5000, "added_fail": 0, "cuts_total": 10000, "add_wall_seconds": 1259.98, "ms_per_cut": 251.996, "rss_mb": 9890.1}
+{"event": "solve", "scenario": "pattern_v2", "cuts_total": 10000, "status_int": 0, "python_wall_seconds": 327.327, "solver_wall": 95.314, "overhead_seconds": 232.013, "branches": 0, "rss_mb": 12175.9}
+{"event": "scenario_done", "scenario": "pattern_v2", "rss_mb": 12175.9}
+{"event": "clone", "scenario": "whole_v2", "seconds": 51.366, "rss_mb": 13877.4}
+{"event": "solve", "scenario": "whole_v2", "cuts_total": 0, "status_int": 0, "python_wall_seconds": 1103.125, "solver_wall": 1073.607, "overhead_seconds": 29.518, "branches": 0, "rss_mb": 14395.4}
