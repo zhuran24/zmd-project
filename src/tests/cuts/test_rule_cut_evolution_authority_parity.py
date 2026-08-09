@@ -56,8 +56,25 @@ _BASELINE_SURFACE_SHA256 = {
     "src/search/benders_loop.py": "edeb594621c5f5fed140785c75419946ead74403ea6f72c1937822e1e8dfd852",
 }
 
-# The authorized preflight successor is the memory-lane retirement one
-# (2026-08-09, 记忆层整体移除待空白重建): both memory subsystems and every hook
+# The authorized preflight successor is the interpreter self-check one
+# (2026-08-09, 门禁解释器盲点): every lane starts its subprocesses with
+# `sys.executable`, so whichever python launched the gate decides what the whole
+# run actually inspects — and that was never checked.  Measured the same day:
+# launched with the system interpreter, mypy / ruff / pytest each went red with
+# ModuleNotFoundError and the gate never mentioned the interpreter, while the
+# same tree under `.venv/bin/python` reported 7301 passed.  The dangerous case is
+# the opposite one, a partially equipped interpreter that lets the gate finish
+# green while inspecting something other than what the project requires — false
+# green, same family as the spinning "无 staged 文件" OKs of a missing .git.  A new
+# `[0/18]` step therefore fails closed on the pinned floor plus the modules each
+# lane needs, and skips every later lane when it trips, since their red would say
+# nothing about the tree.  The test is capability-based, not identity-based: CI
+# and stripped review copies may legitimately use their own environment.  The
+# authority is the owner's instruction of 2026-08-09; no existing step's
+# behaviour, order or exit-code semantics changed.
+# It supersedes the memory-lane retirement successor (2026-08-09,
+# f342e4df58fbfeaac2f95646fd1ed204e1bdd115521d23562d05293687e38355), which was
+# the one (2026-08-09, 记忆层整体移除待空白重建) where both memory subsystems and every hook
 # were removed whole, so the lane's three registry constants — MEMORY_TEST_DIRS,
 # MEMORY_SCOPE_PREFIXES, MEMORY_CARD_VERIFIER — are now empty and the lane
 # retires itself rather than blocking on roots that were deliberately taken
@@ -113,7 +130,7 @@ _BASELINE_SURFACE_SHA256 = {
 # framework — nothing in the cut lifecycle wiring moved.
 _PROTECTED_SURFACE_SHA256 = {
     **_BASELINE_SURFACE_SHA256,
-    "scripts/preflight_gate.py": "f342e4df58fbfeaac2f95646fd1ed204e1bdd115521d23562d05293687e38355",
+    "scripts/preflight_gate.py": "1cecd1a6498aac4d7306e635c299429a11260f6df634a828a7d621da0e52dbfb",
     "src/search/benders_loop.py": "34e198fc475ea2c7ea74ec05371fe59f8749a1e228ae68147577bd719be96a4e",
 }
 

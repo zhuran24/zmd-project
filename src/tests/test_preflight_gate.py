@@ -508,6 +508,73 @@ def test_an_empty_registry_retires_the_lane_without_going_silent(monkeypatch, tm
 
 
 # --------------------------------------------------------------------------
+# 解释器自检 (2026-08-09)
+# --------------------------------------------------------------------------
+
+
+def _interpreter_run(monkeypatch, *, missing: tuple[str, ...] = (), version=(3, 13, 13)):
+    """按能力伪造一个解释器：missing 里的模块查不到，其余照实。"""
+    real_find_spec = preflight_gate.importlib.util.find_spec
+
+    def fake_find_spec(name, *args, **kwargs):
+        if name in missing:
+            return None
+        return real_find_spec(name, *args, **kwargs)
+
+    monkeypatch.setattr(preflight_gate.importlib.util, "find_spec", fake_find_spec)
+    monkeypatch.setattr(preflight_gate.sys, "version_info", version)
+    gate = preflight_gate.GateResult()
+    return preflight_gate.check_interpreter(gate), gate
+
+
+def test_a_complete_interpreter_passes(monkeypatch) -> None:
+    ok, gate = _interpreter_run(monkeypatch)
+
+    assert ok is True
+    assert not gate.blockers
+
+
+def test_a_missing_lane_module_blocks_and_names_which(monkeypatch) -> None:
+    """缺哪个必须点名。
+
+    2026-08-09 之前这里不校验，拿系统解释器跑的结果是 mypy / ruff / pytest 各红一
+    条 ModuleNotFoundError，而门禁一个字都不提解释器——读者顺着 19 个 ImportError
+    去查代码，代码却是好的。点名缺哪几个，是把那一轮白查省掉。
+    """
+    ok, gate = _interpreter_run(monkeypatch, missing=("ruff", "ortools"))
+
+    assert ok is False
+    assert any("ruff" in blocker and "ortools" in blocker for blocker in gate.blockers), gate.blockers
+
+
+def test_the_block_message_points_at_the_project_interpreter(monkeypatch) -> None:
+    """光说缺模块会把人引去装系统包；要给出可直接复制的重跑命令。"""
+    _, gate = _interpreter_run(monkeypatch, missing=("mypy",))
+
+    assert any(".venv" in blocker for blocker in gate.blockers), gate.blockers
+
+
+def test_an_interpreter_below_the_pinned_floor_blocks(monkeypatch) -> None:
+    ok, gate = _interpreter_run(monkeypatch, version=(3, 12, 9))
+
+    assert ok is False
+    assert any("低于项目锁定" in blocker for blocker in gate.blockers), gate.blockers
+
+
+def test_a_partially_equipped_interpreter_does_not_pass_quietly(monkeypatch) -> None:
+    """半套依赖是这条自检真正要防的东西。
+
+    全缺会让每条 lane 都红，吵但看得见；只缺一两个则可能让门禁跑完并报绿，而它
+    实际检查的面与项目要求的不是同一件事——那是假绿，和无 .git 时那几条「无 staged
+    文件」的空转 OK 同类，且更难看出来。所以判据是全套齐备，不是「大致能跑」。
+    """
+    ok, gate = _interpreter_run(monkeypatch, missing=("jsonschema",))
+
+    assert ok is False
+    assert not gate.passed, "半套依赖不该留下任何 OK"
+
+
+# --------------------------------------------------------------------------
 # memory lane: compiled MEMORY.md advisory closure (2026-08-08)
 # --------------------------------------------------------------------------
 

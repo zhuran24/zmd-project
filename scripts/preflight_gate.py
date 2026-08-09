@@ -259,6 +259,67 @@ def get_staged_files() -> list[str]:
     return [line.replace("\\", "/") for line in _git_lines(["diff", "--cached", "--name-only"])]
 
 
+# 各 lane 真正要用到的模块：jsonschema / yaml 供 checker 读配置，mypy / ruff / pytest
+# 是三条 lane 本体，ortools 是被测代码的核心求解器——少任何一个，对应的 lane 报的都
+# 不是被测代码的状况。
+GATE_INTERPRETER_MODULES = ("jsonschema", "mypy", "ortools", "pytest", "ruff", "yaml")
+GATE_MIN_PYTHON = (3, 13)
+
+
+def check_interpreter(gate: GateResult) -> bool:
+    """查明门禁跑在哪个解释器上；不合格就只说这一句，后面一条 lane 都不跑。
+
+    每条 lane 都用 `sys.executable` 起子进程（mypy / ruff / pytest / 各 checker），
+    所以「谁启动了门禁」就决定了这一整轮在检查什么。这件事此前从不校验，代价
+    在 2026-08-09 实测到：拿系统解释器跑，mypy / ruff / pytest 各红一条，报的全是
+    ModuleNotFoundError，而门禁一个字都没提解释器——顺着 19 个 ImportError 去查
+    代码只会白查，同一棵树换 `.venv/bin/python` 立刻 7301 passed。
+
+    反面更值得防。一个恰好装了**部分**依赖的解释器不会让门禁红，它会让门禁跑完
+    并报绿，而实际检查面与项目要求的并不是同一件事。那是假绿，与无 .git 时那几条
+    「无 staged 文件」的空转 OK 同类，且更难看出来。所以这里 fail-closed，并且不
+    往下跑：解释器不对时，后续每条 lane 的红都与被测代码无关，让它们照红只会把
+    真正的那一句话淹掉。
+
+    判据是**能力而非身份**：不要求 `sys.executable` 落在本仓库 .venv 里——CI 与
+    分发出去的审查副本用自己的环境是合法的——只要求项目锁定的最低版本，以及每条
+    lane 真正要用到的模块都能导入。
+    """
+    print("\n[0/18] 解释器自检")
+    version = ".".join(str(part) for part in sys.version_info[:3])
+    problems: list[str] = []
+
+    if sys.version_info[:2] < GATE_MIN_PYTHON:
+        problems.append(
+            f"版本 {version} 低于项目锁定的 {'.'.join(str(p) for p in GATE_MIN_PYTHON)}"
+        )
+
+    missing: list[str] = []
+    for name in GATE_INTERPRETER_MODULES:
+        try:
+            found = importlib.util.find_spec(name) is not None
+        except (ImportError, ValueError):
+            found = False
+        if not found:
+            missing.append(name)
+    if missing:
+        problems.append(f"缺模块 {', '.join(missing)}")
+
+    if not problems:
+        gate.ok(f"解释器: Python {version} — {sys.executable}")
+        return True
+
+    recommended = PROJECT_ROOT / ".venv" / "bin" / "python"
+    gate.block(
+        "解释器不合格: "
+        + "；".join(problems)
+        + f"\n         当前解释器: {sys.executable}"
+        + "\n         门禁的每条 lane 都用它起子进程，继续跑只会红出一串与被测代码无关的结果"
+        + f"\n         改用项目解释器重跑: {recommended} scripts/preflight_gate.py"
+    )
+    return False
+
+
 def check_frozen_artifacts(gate: GateResult) -> None:
     print("\n[1/18] 冻结/外部制品 hash 校验")
     for rel_path, expected_hash in FROZEN_ARTIFACTS.items():
@@ -1109,7 +1170,11 @@ def run_gate(
 
     gate = GateResult()
 
-    if slow_tests:
+    # 解释器自检先于一切 lane，且不合格就到此为止：那种情况下后面每条 lane 检查的
+    # 都不是这棵树的真实状况，照跑只会把唯一有用的那一句话淹在一串无关的红里。
+    if not check_interpreter(gate):
+        print("\n后续 lane 全部跳过：先换用项目解释器，这一轮门禁才算数。")
+    elif slow_tests:
         # 专用慢 soundness lane (CI / 阶段收口前): 只跑 @slow 重型测试, 长超时真跑到完成。
         check_slow_tests(gate, require_collection=True)
     else:
