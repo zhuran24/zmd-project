@@ -54,14 +54,20 @@ class CriterionResult:
 
 
 # ============================================================================
-# Criterion #1 — Boundary 语义冻结 + 源码文档一致
+# Criterion #1 — Boundary 登记一致（placement_rule + 候选池计数）
 # ============================================================================
 
 def check_boundary_source_of_truth() -> CriterionResult:
     """Phase 0 Day 1-2 done. 验:
     - canonical_rules.json `boundary_storage_port.placement_rule ==
       "left_or_bottom_boundary"`
-    - candidate_placements.json boundary pose 数 == 134 (left 67 + bottom 67)
+    - candidate_placements.json boundary pose 数 == 136（left 67 + bottom 67 + 拐角 (0,0)
+      两 pose——canonical `semantics.boundary_placement` 强制拐角两 pose 都枚举、不得预删，
+      owner 2026-07-18 裁决；旧期望 134 是该裁决前的陈旧值，2026-08-13 实测坐实 67+67+2）
+
+    本判据核的是已登记字段与派生池计数的一致性（登记检查），不构成游戏语义断言。
+    candidate_placements.json 是外部大工件，lightweight checkout 允许缺失——缺失时
+    该腿显式记 SKIPPED 放行；文件在场但计数不符则按自报 pass_condition 判 FAIL。
     """
     detail_parts: List[str] = []
     try:
@@ -73,34 +79,43 @@ def check_boundary_source_of_truth() -> CriterionResult:
             detail_parts.append("canonical_rules.boundary_storage_port.placement_rule == 'left_or_bottom_boundary' ✓")
         else:
             return CriterionResult(
-                id=1, description="boundary 语义冻结 + 源码文档一致",
+                id=1, description="boundary 登记一致（placement_rule + 候选池计数）",
                 check_kind="automated", pass_condition="placement_rule == 'left_or_bottom_boundary'",
                 artifact="rules/canonical_rules.json",
                 status="FAIL", detail=f"got {boundary_rule!r}",
             )
 
-        # 验 candidate_placements boundary pose count (期望 134)
+        # 验 candidate_placements boundary pose count（期望 136 = 67 左 + 67 下 + 拐角 2）
         # Schema: data.facility_pools.boundary_storage_port (list)
         placements_path = REPO / "data" / "preprocessed" / "candidate_placements.json"
         if placements_path.exists():
             placements = json.loads(placements_path.read_text())
             boundary_poses = placements.get("facility_pools", {}).get("boundary_storage_port", [])
             count = len(boundary_poses)
-            if count == 134:
+            if count == 136:
                 detail_parts.append(f"candidate_placements boundary pose count == {count} ✓")
             else:
-                detail_parts.append(f"candidate_placements boundary count {count} ≠ 134 ⚠️")
+                return CriterionResult(
+                    id=1, description="boundary 登记一致（placement_rule + 候选池计数）",
+                    check_kind="automated",
+                    pass_condition="placement_rule==left_or_bottom_boundary + candidate count 136",
+                    artifact="rules/canonical_rules.json + data/preprocessed/candidate_placements.json",
+                    status="FAIL",
+                    detail=" / ".join([*detail_parts, f"candidate_placements boundary count {count} ≠ 136"]),
+                )
+        else:
+            detail_parts.append("candidate_placements.json 缺失（外部大工件，lightweight checkout 允许）→ 计数腿 SKIPPED")
 
         return CriterionResult(
-            id=1, description="boundary 语义冻结 + 源码文档一致",
+            id=1, description="boundary 登记一致（placement_rule + 候选池计数）",
             check_kind="automated",
-            pass_condition="placement_rule==left_or_bottom_boundary + candidate count 134",
+            pass_condition="placement_rule==left_or_bottom_boundary + candidate count 136",
             artifact="rules/canonical_rules.json + data/preprocessed/candidate_placements.json",
             status="PASS", detail=" / ".join(detail_parts),
         )
     except Exception as e:
         return CriterionResult(
-            id=1, description="boundary 语义冻结 + 源码文档一致",
+            id=1, description="boundary 登记一致（placement_rule + 候选池计数）",
             check_kind="automated", pass_condition="...",
             artifact="rules/canonical_rules.json",
             status="FAIL", error=str(e),

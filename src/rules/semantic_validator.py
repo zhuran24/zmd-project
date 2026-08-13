@@ -2,8 +2,12 @@
 Semantic validator for canonical rules.
 Status: CURRENT_CODE_ALIGNED
 
-目标：执行 JSON Schema 与 Pydantic 模型之外的跨字段校验，拦截违反冻结真理或
+目标：执行 JSON Schema 与 Pydantic 模型之外的跨字段校验，拦截与当前 canonical 登记不符或
 破坏 preprocess 真值一致性的静态规则变更。
+
+本校验器执行的是登记准入检查：报错只表示被校验文档与当前 canonical/certified
+profile 的登记不匹配，不构成关于游戏语义的断言（游戏语义权威在 canonical 的
+semantics 区与 owner 裁决）。
 """
 
 from __future__ import annotations
@@ -14,7 +18,7 @@ from src.rules.models import CanonicalRulesDocument
 
 
 class SemanticValidationError(ValueError):
-    """当静态规则底座违反跨字段业务语义或冻结真理时抛出。"""
+    """当静态规则底座与跨字段业务语义或当前 canonical 登记不符时抛出。"""
 
 
 class CanonicalSemanticValidator:
@@ -42,22 +46,22 @@ class CanonicalSemanticValidator:
 
     def _check_frozen_constants(self) -> None:
         if self.doc.globals.grid.width != 70 or self.doc.globals.grid.height != 70:
-            self.errors.append("违反冻结真理：主基地必须为 70x70 离散网格。")
+            self.errors.append("canonical 登记不匹配：主基地必须为 70x70 离散网格。")
 
         if self.doc.globals.time.tick_interval_seconds != 2.0:
-            self.errors.append("违反冻结真理：基础时间单位必须为 1 tick = 2.0 秒。")
+            self.errors.append("canonical 登记不匹配：基础时间单位必须为 1 tick = 2.0 秒。")
 
         bridge = self.doc.routing_rules.bridge_mechanics
         if not bridge.can_overlap_straight_belt:
             self.errors.append(
-                "违反冻结真理：物流桥必须允许真三维重叠跨越直线传送带 (can_overlap_straight_belt 必须为 True)。"
+                "canonical 登记不匹配：cross-junction 建模要求 can_overlap_straight_belt 为 True（两层是单格十字接头的建模表示、无物理高度，见 canonical semantics.routing_cross_junction）。"
             )
         if bridge.can_turn:
-            self.errors.append("违反冻结真理：物流桥在空中绝对不可转弯 (can_turn 必须为 False)。")
+            self.errors.append("canonical 登记不匹配：物流桥在空中绝对不可转弯 (can_turn 必须为 False)。")
 
         for tpl_id, tpl in self.doc.facility_templates.items():
             if tpl.port_rule == "core_specific" and not tpl.rotatable:
-                self.errors.append(f"违反冻结真理：协议核心必须可移动、可旋转。模板 '{tpl_id}' 的 rotatable 为 False。")
+                self.errors.append(f"canonical 登记不匹配：协议核心必须可移动、可旋转。模板 '{tpl_id}' 的 rotatable 为 False。")
 
     def _check_recipe_template_references(self) -> None:
         templates = self.doc.facility_templates
@@ -71,7 +75,7 @@ class CanonicalSemanticValidator:
             tpl = templates.get(recipe.template)
             if tpl and not tpl.needs_power:
                 self.errors.append(
-                    f"违反冻结真理：配方 '{recipe_id}' 引用的制造设施模板 '{recipe.template}' 被标记为不需要供电 (needs_power=False)。所有制造单位必须供电。"
+                    f"canonical 登记不匹配：配方 '{recipe_id}' 引用的制造设施模板 '{recipe.template}' 被标记为不需要供电 (needs_power=False)。所有制造单位必须供电。"
                 )
 
     def _check_port_rule_dependencies(self) -> None:
@@ -89,7 +93,7 @@ class CanonicalSemanticValidator:
 
             if getattr(tpl, "power_coverage_radius", None) is not None and tpl.needs_power:
                 self.errors.append(
-                    f"违反冻结真理：模板 '{tpl_id}' 提供了供电半径，但其自身要求供电 (needs_power=True)。供电/物流设施不需要供电。"
+                    f"canonical 登记不匹配：模板 '{tpl_id}' 提供了供电半径，但其自身要求供电 (needs_power=True)。供电/物流设施不需要供电。"
                 )
 
             if getattr(tpl, "placement_rule", None) == "left_or_bottom_boundary" and tpl.port_rule != "inward_facing":

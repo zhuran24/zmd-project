@@ -442,7 +442,7 @@ def _is_skip_marker(receipt: Mapping[str, object]) -> bool:
 
 
 def _receipt_runs_default_targeted_tests(receipt: Mapping[str, object]) -> bool:
-    """A receipt is only acceptable proof if its command is EXACTLY the canonical pytest invocation
+    """A receipt is only an acceptable execution-verification record if its command is EXACTLY the canonical pytest invocation
     over the FULL DEFAULT_TARGETED_TESTS set under hermetic plugin-autoload isolation. The command
     tail (everything after the interpreter path) must equal ``-m pytest <DEFAULT_TARGETED_TESTS> -q``.
     Membership-only matching is not enough: a forged command like ``python -c '...' pytest <paths>``
@@ -466,7 +466,10 @@ def _validate_embedded_verification(
     if not verification:
         raise RuntimeError("embedded review snapshot manifest missing verification receipt")
     if not any(_is_success_receipt(receipt, kind="proof_checker") for receipt in verification):
-        raise RuntimeError("embedded review snapshot manifest missing proof checker receipt")
+        raise RuntimeError(
+            "embedded review snapshot manifest missing obligations-checker execution receipt"
+            " (kind='proof_checker'; the receipt records that the structural checker ran, not a soundness proof)"
+        )
 
     pytest_receipts = [
         receipt
@@ -754,7 +757,7 @@ def build_package(args: argparse.Namespace) -> int:
         sentinel = stage_root / PROJECT_DOC_SENTINEL
         if not sentinel.exists():
             raise RuntimeError(f"{treeish} materialization is missing Unicode sentinel path: {sentinel}")
-        # The staging selftest (proof checker + pytest) imports modules and so generates transient
+        # The staging selftest (obligations checker + pytest) imports modules and so generates transient
         # __pycache__/*.pyc and .pytest_cache artifacts in the stage tree. Those are NOT part of the
         # materialized git inventory, so exclude them from the archive — otherwise extract-time
         # inventory verification rejects the package for unexpected generated files.
@@ -874,7 +877,7 @@ def parse_args(argv: Sequence[str]) -> argparse.Namespace:
     parser.add_argument(
         "--skip-tests",
         action="store_true",
-        help="only run archive integrity, Unicode sentinel, and proof checker self-tests",
+        help="only run archive integrity, Unicode sentinel, and obligations-checker self-tests",
     )
     return parser.parse_args(argv)
 
