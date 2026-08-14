@@ -1,13 +1,11 @@
 ---
 name: solving-methodology
-description: 求解面「知识×计算」分解方法论的速览与路由。任何求解面决策——开新线/新实验、规则上收下放、切分与门序、cut 设计、解读 INFEASIBLE/UNKNOWN、上下界汇报——先过这里。判据本体权威在 §0b 正文，起争议回正文仲裁。
+description: 求解面「知识×计算」分解方法论的速览与路由。适用域（owner 拍板，尺度无关）：科学/求解/数学面的任何「知识×计算」分解边界——管线之间、门之间、门内部、证明与检查之间、实验设计与分析之间；发布/治理面不归本卡管（那边另有锁面纪律）。任何求解面决策——开新线/新实验、规则上收下放、切分与门序、cut 设计、解读 INFEASIBLE/UNKNOWN、上下界汇报——先过这里。判据本体权威在 §0b 正文，起争议回正文仲裁。
 ---
 
 # 求解面方法论（速览与路由）
 
 > **本页身份**：项目级 skill 的 tracked 真本；安装副本在 `.claude/skills/solving-methodology/SKILL.md`（`.claude/` 被 gitignore，副本被清则从本页重装，两处内容保持逐字相同）。**本页零权威**——判据本体＝`docs/项目说明/00_master_roadmap.md` §0b（主席文件，持续演进），起争议回正文仲裁；全集快照＝`docs/research/methodology_compilation_20260814/APX_E_pipeline_methodology.snapshot.md`。
-
-**适用域**（owner 拍板，尺度无关）：科学/求解/数学面的**任何**「知识×计算」分解边界——管线之间、门之间、门内部、证明与检查之间、实验设计与分析之间。发布/治理面不归本卡管（那边另有锁面纪律）。
 
 ## 三条公理
 
