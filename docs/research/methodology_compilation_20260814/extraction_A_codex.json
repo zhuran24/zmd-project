@@ -1,0 +1,1151 @@
+{
+ "obCard": {
+  "items": [
+   {
+    "name": "两层结构与仲裁家规",
+    "essence": "§0b 自 v2.5 起分两层：卡本体（操作卡·日常入口）是按决策时刻排列的执行入口（⓪–⑥七问）；卡下方的正文各版本块（v1→v2.7→补记⑥⑦⑧⑧续）是推导依据与判例库，二者互为映射。家规＝日常直接照卡执行；一旦对判据的理解有分歧，回正文找对应版本块的推导仲裁，不凭卡面短句自行解释。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:92-93",
+    "status": "现行纪律（v2.6 起生效，owner 认可）",
+    "trigger": "任何时候要用§0b判据；尤其两人对卡面同一问的理解出现分歧时"
+   },
+   {
+    "name": "⓪ 锚点问（预设锚点判据）",
+    "essence": "押任何结构性预设（ansatz）之前最先问：这条预设卡在哪笔零余量账上（＝问题算术里被迫的结构，所有解本来就得长这样）？来源分四类——①算术被迫②对称WLOG③求解器方便④配方类比，③④类必须当场标价（写明扔掉的解空间+撤退线）。快诊断：多份独立方案的撞车点≈被迫结构，分歧点≈愿望区＝审查火力集中处。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:95-99（判据本体见 v2.7 正文 285-314）",
+    "status": "现行纪律（v2.7，owner 从「假设必须卡到结构上」推出并认可）",
+    "trigger": "开工前押任何结构性预设（房间划分、条带方向、滑窗尺寸等）之前，先于切分问"
+   },
+   {
+    "name": "① 切分问",
+    "essence": "开线/设计新管线时，每条规则先切三档形态——健全影子（不依赖下层决策即可求值的必要条件松弛）/精确本体/启发式残部。上收从来不是整条规则搬家，能上去的只是影子，精确本体永远留在下游当复核官（fail-closed双保险是切分的必然结构，不是保守偏好）。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:101-103（详述见132-139）",
+    "status": "现行纪律（v2 系列核心判据）",
+    "trigger": "开线/设计新管线时，评估一条规则该不该往上收之前"
+   },
+   {
+    "name": "② 住址问（支撑域判据）",
+    "essence": "每一片规则的变量管辖范围装得进哪一层？整个装得进子问题的就住进子问题模型（内聚代价是局部的）；「切开省计算」只对跨子问题的规则成立。聚类判据＝厚薄：共享决策变量、互相剪枝的片必须同住一个求解上下文，只交换判决的片允许分居。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:104-105（详述见140-144；v2.5亦复用为门内归属四则之一，257-260）",
+    "status": "现行纪律（v2.5，owner认可）",
+    "trigger": "决定一片规则该放在求解器/管线的哪一层时；子问题模型与其过滤器之间也要再用一次"
+   },
+   {
+    "name": "③ 排序问（管线门序）",
+    "essence": "门按实测拒绝成本从便宜到贵排；知识坐在它能剪掉的昂贵步骤之前，验证坐在它要背书的步骤之后。成本拿不准就先花小钱实测，不许拍脑袋。踏车的顺序论解读＝知识坐在了昂贵步骤之后。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:106-107（详述145-148；泛化到任意管线见233-245）",
+    "status": "现行纪律（v2核心；v2.4已泛化为通用管线门序设计法）",
+    "trigger": "设计任何管线（求解器内部或构造/研究工作流）的工序位置时"
+   },
+   {
+    "name": "④ 耦合问（目标耦合测试）",
+    "essence": "把一条规则切出去当过滤器之前，先花小钱实测「无此规则的最优解在过滤下的存活率」随目标值怎么变。最优邻域存活塌缩＝规则与目标对抗耦合＝必须内聚或改用禁闭子句反馈；耦合弱才允许切开。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:109-112；G1病例见257-269",
+    "status": "现行纪律（v2.5，owner认可）",
+    "trigger": "打算把一条规则从求解本体切出去做成过滤器/剥落式预筛之前"
+   },
+   {
+    "name": "⑤ 计量问（报警计量完整性）",
+    "essence": "过滤器的拒绝率是一等报警指标、必须上报；任何 fail-soft 降级（剥落/取子集）仍要计入拒绝率，不许把拒绝转译成接受、把报警清零。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:113-115；G1病例（stripped_to_smaller把报警清零）见261-267",
+    "status": "现行纪律（v2.5，owner认可）；执行侧配套=对抗审查席常设「报警计量是否被fail-soft清零」检查项（266-267）",
+    "trigger": "任何过滤器/剥落式降级投入使用时，尤其怀疑绊线（如丢弃率阈值）可能被静默清零时"
+   },
+   {
+    "name": "⑥ 余量问（余量-影子定律）",
+    "essence": "读任何可行/不可行结果时问：需求离松弛上限多近？余量约2%量级时一切未建模约束都会咬，影子必须「加肥」后其可行/不可行两个方向的读数才可信。与⓪锚点问互为对偶——零余量既是杀手（未建模约束必咬）也是路标（预设的合法锚点）。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:116-118；对偶阐述见303-304",
+    "status": "现行纪律（v2.5，owner认可）",
+    "trigger": "读任何 INFEASIBLE/CLEAN 结果、尤其余量个位数百分比时"
+   },
+   {
+    "name": "两条不变式与过堂留记录义务",
+    "essence": "两条不变式——①早期拒绝带证书、早期放行皆暂定；②终审归精确本体（下游验证人复核）。执行纪律：新开管线须按操作卡过堂并留记录，过堂表模板含预设锚点/逐规则三档切分与住址/门序与判死条件/余量核算四段，哪怕逐项填「不适用」也要留痕。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:120-129（模板本体）；「哪怕不适用也要留痕」的收敛规则见276-278",
+    "status": "现行纪律（v2.5起模板固定；v2.6起「默认必试」扩大到整个科学面）",
+    "trigger": "新批/新方案/新实验开工前（默认必试，无场景例外）；任务书须内嵌已填过堂表（Plan席产出义务，266）"
+   },
+   {
+    "name": "归属四元组框架",
+    "essence": "一条规则的归属不是「上收/下放」一维选择，是切分后各片的四元组位置：1.切分（纵向三档）；2.住址（聚类轴，厚薄判据）；3.管线序（顺序轴，按实测拒绝成本排）；4.下游验证人（每个早期拒绝带证书、每个早期放行是暂定，由该规则的精确孪生在最低管辖层终审——I1复核、terminal validator即此结构）。各维附实证先例（front-clear、F-GM-BS-R2-01、demand三helper进sealed port_binding）。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:132-150",
+    "status": "现行纪律（v2主干判据）",
+    "trigger": "给一条规则做完整归属定位时，四维缺一不可"
+   },
+   {
+    "name": "报警信号双向对称",
+    "essence": "上收信号＝踏车（下层通道反复学同类教训不完，判死条件之一）；下放信号有三——①白吃饭（高成本×低剪枝命中率，可遥测）；②超杀（比真相强，高层会冤杀——处置是降级为启发式/诊断，不是删除）；③越权判断（所需信息在该层根本不存在）。三腿（健全性/尺寸/传播力/机器兼容）可推理程度不同：健全性纯证明、尺寸纯算术、传播力约七成经验可预判、机器兼容靠带遥测便宜探针；漏斗纪律＝否决便宜（纸面终审）、通过昂贵（实测只施加于漏斗底部幸存者）。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:152-156；v2.2四问双向统一版见192-206（同一套判据的取反读法）",
+    "status": "现行纪律（v2核心症状清单；v2.2将其从症状升级为病理，见四问双向统一表）",
+    "trigger": "怀疑某层规则该上收或该下放时，对照四个信号自查；routing等层出现踏车时优先套用"
+   },
+   {
+    "name": "归属是master表示法的函数",
+    "essence": "同一条规则的归属结论只对当前 master 表示法有效；换表示（如 pose-bool→coordinate）后必须重跑全部归属测试，不能沿用旧表示下的上收/下放结论。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:156-158",
+    "status": "现行纪律（v2，一句话钉死的边界条件）",
+    "trigger": "master 求解模型换表示法之后，任何既有归属结论重用之前"
+   },
+   {
+    "name": "层数与切口自身是被决定项（v2.1）",
+    "essence": "规则的完整归属方案是一个有序划分（分组+顺序），但划分的格数与切口位置不是继承给定的——当前 precheck→master→RAB过滤→binding→routing→终验的格局是历史累积。格数＝聚合力（共享变量互相剪枝→同格，传播更强但单格更重）与切分力（拒绝成本梯度→分格漏斗+每格专用引擎）在信息依赖DAG上的均衡；正确切口＝沿信息依赖边界下刀（五月47,666惨案＝违反此边界的硬合并反例）。对搜索硬度的层数响应：单格解不动时先问「这格是否合并过头」，候选＝两段式master（便宜松弛格先解、解作hint喂完整格）。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:159-174",
+    "status": "现行纪律（v2.1补，owner同日推出）",
+    "trigger": "怀疑当前的分层/分格设计本身有问题（而不是某条规则该放哪层）时，尤其单格求解长期卡死时"
+   },
+   {
+    "name": "cut方法论定义",
+    "essence": "cut＝住在下层的规则向master运送知识的运输形态——上收是整条规则搬家，cut是分期付款的包裹。九族（F1-F9，2026-05-22定型）是从五月失败样本归纳出来的，无覆盖性论证（F8建立在错误游戏规则前提上仍能立项即铁证）；owner 07-18指控「cut无方法论」成立，本节即补账。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:176-181",
+    "status": "现行纪律（v2.2补，owner两轮推出）",
+    "trigger": "需要设计/评估一族新cut，或审计既有cut族的正当性时"
+   },
+   {
+    "name": "打包三问",
+    "essence": "给定一次下层拒绝，包裹打法不是选出来的、是问出来的：①责任圈能收多小（点名越少禁得越多，五月整层nogood踏车＝没问此问）；②死因里有没有可抬的数量律（计数型死因可抬成算术律如F1/F6/F7/F9，身份型死因抬不动只能原样打包，F5正当业务）；③抬出的定律上层词汇说得出吗（说得出发泛化版，说不出退回冲突核降级版，连通性即此类）。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:183-190",
+    "status": "现行纪律（v2.2补）",
+    "trigger": "一次下层拒绝发生后，决定要不要、以及怎样把它打包成cut回传上层之前"
+   },
+   {
+    "name": "四问双向统一",
+    "essence": "上收判据与下放判据是同一套提问的正反两读（表格形式）：①责任圈/激活面宽吗（通→常驻上层有价值；卡→激活面极窄则下层待命）；②有可抬的数量律吗（通→抬成算术律上楼；卡→身份型零散则下层+F5式个案快递，此即「白吃饭」病理的机制解释——命中率低＝知识本质泛化不了）；③上层词汇说得出吗（通→直接编码；卡→说不出/爆炸则下层+冲突核降级快递）；④求值依赖下层决策吗（通→整条上收；卡→依赖则只能保守猜＝越权→超杀的因果链，47,666惨案全链，或切出不依赖的影子上楼、本体留守）。四问全通才上收；卡在哪问同时决定住址和该规则cut的打法。每族cut终局三选一：毕业上收（F3→front-clear）/确认真例外（F5）/前提证伪退役（F8）。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:192-206（表格195-200）",
+    "status": "现行纪律（v2.2补，把v2三个下放信号从症状升级为病理）",
+    "trigger": "评估一条规则/一族cut该上收还是留守下层时的系统化四步检查；routing踏车时第一天即枚举拒绝路径逐条过三问生成cut族"
+   },
+   {
+    "name": "权威归属公式 owner(r)=max{owner(v):v∈scope(r)}",
+    "essence": "规则的权威owner由其语义所需变量的最晚层决定，更早层只能持有§0b-1意义下被证明的投影。这是「精确本体留在下游当复核官」的形式化表达——把此前偏叙述性的归属直觉，钉成一个关于变量作用域的确定性公式。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:211-215",
+    "status": "owner拍板公理（v2.3，干净房间R2判读独立公式化后owner批准收编，07-20）",
+    "trigger": "判定一条规则的「权威」应挂在哪一层时（区别于性能优化意义上的表示归属）"
+   },
+   {
+    "name": "权威归属 vs 表示归属两问不得混",
+    "essence": "权威归属（语义必然，由owner(r)=max{owner(v)}公式定死）与表示归属（性能选择，由住址问的三腿测试——尺寸紧凑/传播力足/机器兼容——定）是两个不同的问题，问法和答案都不能相互替代或混问。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:213-215",
+    "status": "owner拍板公理（v2.3同批收编）",
+    "trigger": "每次做归属判断时先自查在问哪一问，防止把「求解器摆哪层快」误当成「语义上谁说了算」的答案"
+   },
+   {
+    "name": "三极性登记",
+    "essence": "每条规则登记三极（v2.2三档的扩容）：必要投影（上界证明用）/充分限制（构造器用：比真规则严、构造出的必合法——v2.2三档没有这一极，witness构造器的L1保守子集即此形态）/精确语义（终审checker用）。可空但不可混极——同一处表述不得同时兼职两极。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:216-219",
+    "status": "owner拍板公理（v2.3，R3判读收编）",
+    "trigger": "给规则的三种下游用法（上界证明/构造器/终审）分别选表达式时，尤其防止把充分限制误当精确语义用"
+   },
+   {
+    "name": "cut必须带前件",
+    "essence": "每条学习cut表示为「前件配置⇒必要修复析取」；裸正极障碍集不得直接做几何cut——前件缺失是cut在前提变动后仍幽灵存活（继续生效于不再适用场景）的病根。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:220-222",
+    "status": "owner拍板公理（v2.3，R3判读收编）",
+    "trigger": "生成/接受一条新cut之前，检查它是否显式带了适用前提"
+   },
+   {
+    "name": "主动挖对偶（micro-oracle）",
+    "essence": "最强lift不必等踏车报警——解局部松弛的小对偶问题（micro-oracle）主动挖计数不变量，经精确枚举验证后全局求和成证书（先例＝供电光环396权重证书→P≥9下界）。这是对踏车警报的补充而非替代；漏斗序相应修订：micro-oracle插在前提数据核查与全局build-only之间。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:223-226",
+    "status": "owner拍板公理（v2.3，R3判读收编）",
+    "trigger": "想主动挖掘更强约束/证书而不是被动等待某层踏车报警时"
+   },
+   {
+    "name": "等式挖矿",
+    "essence": "全局不等式近紧（余量趋零）时，每条成分不等式都是结构约束源——ceiling命中时的强制条件（如恰N杆/零箱/内部矩形不贴边）即构造规格，可以直接倒读出设计约束。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:227-228；应用实例见237",
+    "status": "owner拍板公理（v2.3，R3判读收编）",
+    "trigger": "发现某全局不等式近乎打满（余量趋零）时，把它的成分逐条倒读为构造规则"
+   },
+   {
+    "name": "双ledger汇报",
+    "essence": "下界账（witness构造只抬此账）与上界账（松弛证书只压此账）必须分开记；同instance hash+同假设下，两账相遇才准报optimal；资源中止（超时/停机）不改任何一账（不得把「没找到更好」误记为「证明不存在更好」）。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:229-231",
+    "status": "owner拍板公理（v2.3，R3判读收编）",
+    "trigger": "汇报任何求解/构造结果的最优性状态之前，尤其涉及提前停机/资源耗尽的场景"
+   },
+   {
+    "name": "管线门序泛化（v2.4）+ W0 pinned seed反面校准",
+    "essence": "本判据的管辖对象不只「一条规则住求解器哪层」，而是任何管线的门序设计——构造线/研究线的工作流同样是管线，服从同一套定律（健全影子必须前置为便宜门、按实测拒绝成本从便宜到贵排、早期门带证书终审留精确本体）。反面校准：W0 pinned seed（08-03判死）把可毫秒级求值、不依赖任何路由决策的端口合法性隐式埋进末端小时级大求解，六次UNKNOWN被误读成「难」而非「无解」，外脑用一个前置影子检查毫秒判死整条线——与五月47,666惨案构成同构对偶（那次是违反信息依赖的硬合并，这次是违反管线序的硬后置）。执行纪律：新开任何构造/求解管线，门序须显式对照本节过堂并留记录；外脑交付的构造方案以「待审管线设计」身份进场，不因算术闭合美感免检。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:233-245",
+    "status": "现行纪律（v2.4，08-03 owner认可，已泛化生效于W0开线G1/G2/G3等）",
+    "trigger": "新开任何构造/研究/求解管线时，评估其工序位置（门序）是否犯了硬后置错误"
+   },
+   {
+    "name": "Shadow-only 实现注（non-authorizing 边界声明）",
+    "essence": "由§0b判据导出的一份test/offline-only静态台账、一致性门、合同矩阵与onboarding fixture（记录于23_rule_cut_evolution_protocol.md），其full_preflight_passed receipt只绑定并验收特定HEAD的test/offline shadow维护面；明确声明：它不修订§0b方法论本身，不改变production runtime/owner/phase gate/authority digest/P1.2封存，不授权production接线、family晋级、owner flip、P1.2 reseal、持久化schema变更或新数学结论；该历史receipt不外推为其他HEAD上新生成的authority。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:247-255；被引用文档 docs/项目说明/23_rule_cut_evolution_protocol.md",
+    "status": "non-authorizing附注（2026-07-24生效，纯边界声明，不是判据本身）",
+    "trigger": "看到23号协议的绿色receipt时，防止误读为§0b方法论已被该protocol修订或已授权production变更"
+   },
+   {
+    "name": "管线门内归属四则（v2.5）+ G1连通性病例",
+    "essence": "v2.4管的是门与门之间的次序，v2.5管门的内部——子问题模型与其过滤器之间同一套归属原则要再用一层：①支撑域判据（操作卡②）②目标耦合测试（操作卡④）③报警计量完整性（操作卡⑤）④余量-影子定律（操作卡⑥）。校准案例＝G1生成器把连通性（支撑域本天生房间级，196格单房间）后置为剥落式过滤器，三重失效叠加：目标（最大化密度）与连通性对抗耦合未实测（存活骤降到2台/50格才暴露）、剥落把拒绝转译成接受致丢弃率绊线永零、全局余量仅2%下影子过瘦（目录供给缺212格），最终G1双INFEASIBLE。修复：把连通性搬进房间级生成模型后90秒CLEAN、20/20全存活，坐实「内聚代价是局部的」。另一半诚实账：内聚只买到找好解更快，未买到不存在性证明（CORNER≥111判定仍UNKNOWN）。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:257-269",
+    "status": "现行纪律（v2.5，08-03夜owner认可后落）",
+    "trigger": "评估一个子问题模型与其过滤器之间该如何分工时（不是求解器分层意义上的归属，是同层内部的归属）"
+   },
+   {
+    "name": "适用域与收敛声明（v2.6）",
+    "essence": "本节原则是尺度无关的——适用于科学面上任何「知识×计算」的分解边界：管线与管线之间、门与门之间、门的内部、证明与检查之间、实验设计与分析之间；v2.2/v2.4/v2.5不是三个范围各异的规则，是同一组原则在三种边界上的实例化记录。默认必试（owner口径「只要在做求解方向上的东西都要、至少要去试一下」）：科学面任何新批/新方案/新实验开工前至少过一遍操作卡六问，过堂表哪怕逐项填「不适用」也要留痕，「试过没咬」与「没试」必须可区分，成本按分钟计、省它没有正当理由。收敛规则（防尾巴）：新场景默认直接用操作卡六问过堂，不为场景增设新版本块；只有发现新原则（六问回答不了的归属决策）才允许版本号前进，判例库自由增长但判例是校准数据、不是规则本身。边界注：发布/治理面另有锁面纪律（PROJECT_LOCK体系）不由本节管辖，两面在「计量完整性」上的同构不是巧合但各自权威独立。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:272-282",
+    "status": "owner拍板（v2.6，08-03夜「范围＝整个科学/求解/数学面，不再按场景限定」）",
+    "trigger": "①决定本判据是否适用于某个新场景（答案几乎总是「适用」）；②想为某场景新开一个§0b版本块之前，先确认是否真的发现了新原则而非仅是新判例；③需要厘清§0b与PROJECT_LOCK锁面纪律的管辖边界时"
+   },
+   {
+    "name": "预设锚点判据核心（v2.7，榫眼定义）",
+    "essence": "六问管的是「规则怎么分家」，本条管更早一步——分家之前押下的结构性预设（ansatz）本身。核心判据：好预设不是搭在问题旁边的支架，是插进问题自带榫眼的榫头；榫眼＝问题算术里余量为零、所有解被迫同形的结构。卡在被迫结构上的预设几乎不损失解空间（所有解本来就得这样）；卡在「方便/愿望」上的预设在偷偷扔解，且不知道扔了多少。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:285-293",
+    "status": "owner拍板公理（v2.7，08-04 owner从「假设不能只是有道理、必须卡到结构上」推出并认可）",
+    "trigger": "押任何结构性预设（几何划分/方向假设/滑窗尺寸等）之前，是⓪锚点问的判据本体"
+   },
+   {
+    "name": "预设来源四分类（价签制度）",
+    "essence": "预设来源按价签档次分四类：①算术被迫（零余量账逼出「只能这样」）——免费，随便押；②对称性/WLOG——便宜，配一行证明；③求解器方便（「切了问题就小」）——必须标价；④配方/类比（「这类问题一般用X」）——必须标价。③④的价签＝写明扔掉的解空间范围+撤退线。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:295-298",
+    "status": "owner拍板公理（v2.7同批）",
+    "trigger": "给一个已识别的预设定性、判断它是否需要标价时"
+   },
+   {
+    "name": "撞车诊断（v2.7初版）",
+    "essence": "多份独立设计的重合点≈被迫结构（各自独立发现了同一个榫眼）；分歧点≈愿望区＝可谈判区，审查火力应集中在分歧区。（注：08-05补记⑥对此初版做了二分修正，见对应条目。）",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:300-301",
+    "status": "owner拍板公理（v2.7初版，08-05补记⑥已修正其分歧侧判据，二者需合并读）",
+    "trigger": "多个独立设计/方案存在时，比对它们的一致处与分歧处来定位被迫结构与自由区"
+   },
+   {
+    "name": "余量问与锚点问的对偶",
+    "essence": "⑥余量-影子定律与⓪预设锚点判据是同一枚硬币两面：余量趋零处既是危险区（一切未建模约束都会咬）又是榫眼（预设的合法锚点）。零余量既是杀手也是路标。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:303-304",
+    "status": "owner拍板公理（v2.7）",
+    "trigger": "发现某处余量趋零时，同时用两副眼镜读它——既查危险又找锚点"
+   },
+   {
+    "name": "v2.7 校准判例集",
+    "essence": "08-04六席复核数据固化的判例：22号14条带高度账54+15=69零余量、带组成审计为唯一解＝①类免费锚点；46边界口周长陷阱（138格必铺满两边）＝被迫结构，三次独立设计（cand C五月线/17号/22号）全部钉死边界＝撞车诊断实证；G1的14×14房间网格＝半锚（供电几何真结构，但杆不被迫按网格摆），其愿望半边（机器不跨房/门洞固定死）恰是L2全部松绑候选所在；cand C的12×12 stride6＝无锚（纯手感数字），生产规模第0轮死；H20全场极性交替＝无锚愿望，死。现行G1章程八条R-*已诚实挂「充分限制」牌＝③类已挂牌未标价，价签补齐挂L2批。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:306-314",
+    "status": "已钉死的判例库条目（v2.7，08-04六席复核）",
+    "trigger": "需要一个「有锚/半锚/无锚」的实证参照系时；评估新预设是否属于已知同型判例"
+   },
+   {
+    "name": "v2.7补记①·榫眼组合规则",
+    "essence": "每个榫眼登记时带前提集——无条件榫眼（从问题本身算出，前提集空）全兼容可任意叠加；条件榫眼（在某预设家族内被逼出，如22号54+15=69之于「横带+单格走廊」）只能与同前提家族叠加，合并判据＝前提集之并自洽。设计真正押注的只是前提集，榫眼是前提选定后的免费产物——「找齐榫眼」既白拿搜索空间缩减，又提前暴露该家族的零余量脆弱点。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:316-321",
+    "status": "owner认可（v2.7补记，08-04，owner追问「多榫眼可否并用/应否系统性找」操作化后落）",
+    "trigger": "手上有多个已识别榫眼，判断能否叠加使用/是否互相兼容时"
+   },
+   {
+    "name": "v2.7补记②·余量审计表（系统性找法）",
+    "essence": "把问题的每本资源账（面积/边界周长/台数容纳/端口槽位/供电覆盖/商品源汇/整除/模数）逐行算「容量−需求＝余量」按升序排——趋零行＝无条件榫眼清单（设计必钉）；选定预设家族后重算，新增趋零行＝条件榫眼+未来脆弱点。一张表两用：正读＝锚点清单（设计输入），倒读＝危险清单（余量-影子定律的审查输入）。撞车诊断随之升级为交叉验证：独立设计在趋零行上应精确一致，不一致必有一方算错。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:322-327",
+    "status": "owner认可（v2.7补记，08-04）；首个实例化挂W0老路子批第一步",
+    "trigger": "需要系统性（而非碰运气）找出一个问题的全部榫眼时，替代逐个手动发现"
+   },
+   {
+    "name": "v2.7补记③·条件的来源与产率读法",
+    "essence": "条件榫眼的条件＝押下的③④类（偶含②类）愿望预设本身——条件榫眼是愿望买来的赠品（付出解空间，换得被迫结构+搜索缩减）。设计质量的经济学读法＝单位解空间代价买回的榫眼产率（22号一注条带愿望换一把被迫结构＝高产率；G1房间网格愿望贵榫眼少）。递归性：愿望→条件榫眼→内层再押愿望→更深榫眼成树，前提集＝路径。隐藏前提审计技巧：推导条件榫眼所用的每条前提必须已申报于愿望清单，推导逼暗桩现形。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:328-334",
+    "status": "owner认可（v2.7补记，08-04，owner追问「条件是哪来的」后补）",
+    "trigger": "评估一个条件榫眼的「性价比」，或审计一条推导链里是否藏了未申报的前提时"
+   },
+   {
+    "name": "v2.7补记④·理论根基（自由两源）",
+    "essence": "自由两源——问题真余量（被迫结构钉不死的地方问题不在乎，设计必须选）+认知余量（问题在乎但推导比猜贵，愿望＝推导太贵处的替代品）；自由为零⟺一切被逼死⟺解可直接读出⟺问题平凡，故非平凡问题必有自由。方法必不唯一（解层+路径层双重多样性，区别在贵贱不在对错）；方法空间的坐标＝自由选择，被迫核＝一切正确方法的公共部分——撞车诊断由此从经验规律升格为定义推论。风险只住认知型自由（真余量型怎么填都留解；认知型愿望可能杀光解＝pinned seed死法），价签制度专管认知型。动态观：自由/被迫边界随计算投入移动，探测/审计/证书＝用计算购买被迫性。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:335-344",
+    "status": "owner认可（v2.7补记，08-04，owner追问「自由部分为何存在/方法是否唯一/二者关系」后补）",
+    "trigger": "需要向owner或队友解释「为什么方法不唯一」「撞车诊断为什么可靠」的理论根基时"
+   },
+   {
+    "name": "v2.7补记⑤·择愿五启发",
+    "essence": "愿望非均匀随机，择法有先验：(1)瞄准最贵耦合使之按构造消失（在问题最痛处人工制造条件榫眼）；(2)锚在精确闭合恒等式上（余量审计表零余量行的构造版用法）；(3)新愿望＝上一张死亡证书的逆否；(4)选死得便宜的愿望（最脆义务配便宜第一门，好猜的标准不是不死是死得快）；(5)产率评分（候选愿望比「单位解空间代价买回的被迫结构」）。总纲（08-04 owner追问「该以试探为主线吗」后修正初版混淆）：主线是伸、不是探——测量探针问小问题（纯学习、便宜），愿望问大问题（这副骨架驮得动一个完整解吗），是从榫眼出发向完整见证伸出的悬臂，试探价值是保险设计出的副产品而非目的。期望收益＝中奖概率×构造价值+死亡概率×信息价值−检验成本：启发(1)(2)(3)(5)抬第一项，(4)抬第二项、压第三项。战略节奏＝测量→伸→断口判读→再测量→再伸（lift-loop战略尺度形态）。每次死亡产出证书喂回(3)，与「用计算购买被迫性」同构闭环。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:345-361",
+    "status": "owner认可（v2.7补记，08-04，含总纲一次修正）",
+    "trigger": "需要选择下一个要押的愿望/结构性预设时，尤其在多个候选之间做优先级排序"
+   },
+   {
+    "name": "补记⑥·撞车诊断二分修正",
+    "essence": "撞车诊断的两半各加一条限定（2026-08-05，27/28号双独立样本实测推出）。重合侧：先剔除任务书/ASK强加的共同输入（两份都遵守带高多重集不构成独立佐证——伪撞车），剩余的自发重合才是被迫结构候选，且仍是弱证据非定理。分歧侧：「分歧＝自由区」不总成立——先分类，两边都活着的分歧是真自由度；一边在该维度宣告「不可行」的分歧不是自由区、是前提冲突（该方把自己的选择内化成了被迫结构），暗桩就在那，审查火力应指向该方的隐藏前提。判据＝该维度上有无不可行断言。实证判例：28号把「3×3只进3高带」默认为铁律并据此建不可行定理，27号把同一维当自由度用（混装8台）直接产出可行见证、当场证伪该定理——分水岭恰落在被误读为「自由区」的分歧维上。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:363-371",
+    "status": "owner认可（08-05）",
+    "trigger": "用撞车诊断比对多份独立设计时，尤其某一方在某维度上给出「不可行」断言时——不要默认那是自由区"
+   },
+   {
+    "name": "补记⑦·零余量第三读法：可判性",
+    "essence": "零余量/低自由度有三种读法——杀手（余量-影子定律：未建模约束必咬处）、路标（榫眼：预设合法锚点）、第三读法快速法庭：自由度越低的愿望判得越便宜——生死都快。操作规则：低自由度候选应插队先试，判定成本低是无条件的、与成败无关（既可能几步构造完也可能几步撞死，事前确定的只有「判得快」这一件）。反面教材＝22号首件审计已算出低自由读数却全部归档为脆弱性证据，没人翻过来读「剩余是有限算术→直接算完试试」，判定实验因此迟到十天；病根＝求解器项目的工具形状偏置（默认布局出自CP-SAT，纸笔可完的构造不入队）。与启发(4)「死得便宜」的关系：⑷选的是「败局便宜」，⑦选的是「判决便宜」（后者双向，含生也含死）。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:373-382",
+    "status": "owner认可（08-05，22→27/28号复盘推出）",
+    "trigger": "面对多个候选方案，决定先测哪个时——低自由度候选应优先插队，不因「看起来像死路」而延后"
+   },
+   {
+    "name": "补记⑧·切分质量的两个隐藏维度",
+    "essence": "评价一条切分线除了「切在天然松耦合处」，还有两问：㈠回传带宽——切口两边怎么通信？「一次一条否定」式细通道，在被拒方大量提案时就是枚举墙；好的切分要在拒绝理由可编译时把它整批编译回上游的选项域。㈡工况相关性——耦合强弱不是问题的静态属性，是「问题×工况」的属性：同一刀在旧工况下是好刀，换工况就成墙（binding↔routing切分在master自产稀疏提案下多年无恙，塞满的设计布局下同一刀让数数门形同虚设）。切分决策入档时应记下它成立的工况前提，工况迁移时重审。修法方向：先加粗通道，不先挪刀——挪刀退回巨模型会把切分的全部收益还回去，加粗通道（固定布局下预筛端口域、按登记语义钉死见证绑定）保刀保收益。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:384-397",
+    "status": "owner认可（08-05，band22正式门盲枚举现场推出）",
+    "trigger": "一条曾经良好运作的切分线突然表现为枚举墙/大量来回时，先诊断是否是工况变了而不是切分线本身错了"
+   },
+   {
+    "name": "补记⑧续·切缝判断方法",
+    "essence": "切缝（A提案→B裁决）的过路费由两个可测量决定：㈠死因谱——candidates死在哪条约束上、该约束住在缝的哪一边（死在A模型内不花钱，死在缝对面才付来回费）；㈡否决带宽——B每打回一次剪掉A多少候选空间，三档：点否决（nogood，最细）＜族否决＜可预编译（拒绝理由在本工况下是常数，整批写进A的选项域，最粗）。墙的预言式：死因集中在缝对面×否决只有点级＝必撞墙。测法不需专门实验——门的拒绝原因日志本身就是缝健康仪表，三步流程：①抽样看谱（几十个candidates按「哪条约束杀的×住哪边」分类）②对谱查带宽（大头在缝对面→查可否预编译/族化）③先修通道再放量（预编译没做完不开大预算；反面实证＝冒烟收据已给出谱、未换动作即开正跑→2,259+来回）。工况复审三触发器：①输入密度变了（稀疏自产提案→塞满设计布局）②变量变常数了（布局钉死→可查表，预编译窗口打开）③预算量级变了（删失谱勿当真谱）。与「从规则推条件性规则」直觉的合流：死因谱告诉你条件性规则该往哪推——往死因大头、缝对面、可预编译的那条约束上推。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:399-413",
+    "status": "owner认可（08-05）",
+    "trigger": "诊断一条既有切分线为何撞墙/来回过多，需要定位「加粗通道」的具体着力点时；三触发器场景出现时（密度/变量/预算量级任一变化）主动重审"
+   }
+  ],
+  "notes": "范围核验：§0b 区经 grep 定位边界为 docs/项目说明/00_master_roadmap.md:90（节标题）至 :414（其后 :415 即「## 1. 主线」，区外）。节标题行（:90）声明版本号为「v2 → v2.7」，但正文实际延伸至 08-05 的「补记⑧续」（:399-413），版本头相对正文口径滞后（未把补记⑥⑦⑧⑧续计入版本号推进）——这符合 §0b 自身「收敛规则」的设计原意（补记不算版本号前进，因为它们是既有判据的修正/深化而非新原则），但意味着单看 :90 的版本字符串会误判\"当前只到 v2.7\"。\n\n结构性观察·外部前指未落地：里程碑表（`##` 顶层\"0.\"节的时间线）里另有两条被明确标注为\"§0b 级\"的条目——08-07「双向保真公理」(:616) 与 08-07「规则派生闭包公理（第二条）」(:618)——但截至本次通读，§0b 本体区（:90-414）的正文里**没有**这两条公理的落地段落，只在里程碑叙事行里被提及且各自主要落地在 rule_system_redesign_20260807 工作流与独立记忆卡（bidirectional-fidelity-axiom / rule-derivation-closure-axiom），尚未被合并进 §0b 正文形成新的版本块。按 §0b 自身\"起争议回正文仲裁\"的家规，这两条目前只能算\"声称属于 §0b 级但尚未完成入本体\"的候选，不应被当作 §0b 正文已收编的判据引用。\n\n家规摘录（供索引使用）：卡本体是执行入口，正文各版本块是判例库，日常按卡走、起争议回正文仲裁（:92-93）；§0b 判据尺度无关、默认必试，但发布/治理面另有独立权威的锁面纪律（PROJECT_LOCK 体系）不受本节管辖（:281-282）。\n\n清点方法：`grep -n` 定位含\"§0b\"\"操作卡\"\"v2.x\"\"补记\"关键词的全部命中行作为骨架锚点，随后用 Read 工具一次性通读 :90-414 全区确认段落边界与内部引用关系（如\"操作卡②\"=\"住址问\"这类卡与正文互指），未依赖片段抽样。清单条目数＝41，按正文出现顺序排列，覆盖用户列出的全部指定元素（七问/两不变式/报警信号/master表示法函数/权威公式/两问不得混/三极性/双ledger/适用域声明/过堂留记录义务/W0与G1判例）及若干未点名但同属\"操作卡本体与其下版本正文块\"的判据（cut方法论定义、打包三问、四问双向统一、v2.1层数被决定项、v2.7补记①-⑤全部五条、Shadow-only边界声明）。"
+ },
+ "apxE": {
+  "items": [
+   {
+    "name": "尺度无关的「知识 × 计算」分解边界",
+    "essence": "该体系适用于管线之间、门之间、门内部、证明与检查之间以及实验设计与分析之间；它不只回答求解器里某条规则住哪一层。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.0.2、E.7（22-26、316-328 行）",
+    "status": "untracked 濒危（仅存外审包副本）；核心适用域已被 tracked roadmap §0b（272-282 行）吸收。",
+    "trigger": "出现任何科学、求解或数学面的知识与计算分解边界时。"
+   },
+   {
+    "name": "操作卡—正文两层入口",
+    "essence": "日常按七问操作卡执行；发生归属争议时回到版本正文和判例库仲裁，避免把判例叙述当成操作步骤。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.0.5、E.1（82-83、87-89 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（92-93 行）吸收。",
+    "trigger": "使用本方法论开线、审查方案或解决方法论争议时。"
+   },
+   {
+    "name": "证据等级四档",
+    "essence": "区分【owner 方法论裁决】、【项目实测】、【判例归纳】和【设计分析】；尤其不得把方法论采纳决定误写成游戏事实定谳，也不得把小样本归纳冒充独立验证定律。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.0.3（28-37 行）",
+    "status": "untracked 濒危（仅存外审包副本）；未见 roadmap §0b 或其他 tracked 文书完整吸收这套四档定义。",
+    "trigger": "引用、攻击或升级本体系中的裁决、实测、判例规律和设计推理时。"
+   },
+   {
+    "name": "判例读法边界",
+    "essence": "失败判例只判死当时那一具体形态、预设和门序，不判死整个范式家族；同族变体只要避开既有死因，仍可作为带前提候选重新评估。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.0.4（61-63 行）",
+    "status": "untracked 濒危（仅存外审包副本）；未见 roadmap §0b 或其他 tracked 文书完整吸收该解释边界。",
+    "trigger": "用历史失败反驳新方案，或提出与失败路线同属一个范式家族的变体时。"
+   },
+   {
+    "name": "七问操作卡与过堂表",
+    "essence": "按决策时刻依次问锚点、切分、住址、排序、耦合、计量和余量，并把预设价签、规则切分、门序成本、证书及余量核算写入任务书。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.1（87-138 行）",
+    "status": "untracked 濒危（仅存外审包副本）；七问及表格已被 tracked roadmap §0b（92-129 行）吸收。",
+    "trigger": "任何新批、新方案、新实验或新构造、求解管线开工前。"
+   },
+   {
+    "name": "⓪ 锚点问（预设锚点判据）",
+    "essence": "押结构性预设前，先找它依托的零余量账，并把来源分为算术被迫、对称 WLOG、求解器方便或配方类比；后两类必须标明丢弃的解空间和撤退线。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.1、E.8.1-E.8.2（91-96、337-355 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（95-99、285-298 行）吸收。",
+    "trigger": "准备以网格、条带、固定拓扑或其他骨架限制搜索空间时。"
+   },
+   {
+    "name": "① 三档切分：健全影子／精确本体／启发式残部",
+    "essence": "先把规则切成不依赖下层决策的必要条件松弛、完整精确语义和非健全启发式残部；上收的只能是健全影子，精确本体必须留在下游复核，残部只能用于提示或诊断。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.1、E.2.1（100-101、148-152 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（102-103、134-139 行）吸收。",
+    "trigger": "考虑把一条下游规则上收、提前过滤或降级成启发式时。"
+   },
+   {
+    "name": "② 住址问（支撑域判据）",
+    "essence": "按规则片段实际需要的变量管辖范围确定住址；若全部变量都在一个子问题内，就应优先在该子问题模型中内聚，而不是为了表面切小计算而外置过滤。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.1、E.6（103-104、295-309 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（104-105、257-267 行）吸收。",
+    "trigger": "决定规则应进入 master、子问题模型还是门外过滤器时。"
+   },
+   {
+    "name": "③ 排序问（实测拒绝成本门序）",
+    "essence": "门按实际拒绝一个候选的成本从便宜到昂贵排列；知识放在它能剪掉的昂贵步骤之前，验证放在它要背书的步骤之后，成本未知时先做廉价测量。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.1、E.2.1（106-107、158-160 行）",
+    "status": "untracked 濒危（仅存外审包副本）；包括 RAB→binding→routing→master 的实测顺序，已被 tracked roadmap §0b（106-107、145-148 行）吸收。",
+    "trigger": "设计或重排 precheck、RAB、binding、routing、master、终验等门序时。"
+   },
+   {
+    "name": "④ 耦合问（目标耦合测试）",
+    "essence": "先测量移除该规则后的最优解在过滤下的存活率如何随目标值变化；最优邻域存活率塌缩说明规则与目标强对抗，必须内聚或把禁闭子句反馈上游。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.1、E.6（109-112、297-312 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（109-112、257-269 行）吸收。",
+    "trigger": "准备把影响可行性的规则从优化模型切出去作为事后过滤器时。"
+   },
+   {
+    "name": "⑤ 计量问（报警计量完整性）",
+    "essence": "过滤器拒绝率是一等报警指标；剥落、取子集等 fail-soft 降级仍必须计为拒绝，不能把拒绝转译成较小结果后记成接受。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.1、E.6（114-115、300-306 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（113-114、257-267 行）吸收。",
+    "trigger": "过滤器会修剪、降级、取子集或以其他 fail-soft 方式继续运行时。"
+   },
+   {
+    "name": "⑥ 余量问（余量-影子定律）",
+    "essence": "计算需求相对最松上限的余量；余量接近约 2% 时，未建模约束几乎必然生效，过瘦影子对可行和不可行两个方向的读数都不可信。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.1、E.6（117-120、300-312 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（116-118、257-269 行）吸收。",
+    "trigger": "解释松弛模型的可行、不可行或容量接近饱和的结果时。"
+   },
+   {
+    "name": "早期拒绝带证书、早期放行皆暂定、终审归精确本体",
+    "essence": "便宜门可以凭可核证的必要条件提前判死，但不能把提前放行当成最终正确；最后必须由规则的精确孪生在最低有权层终审。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.1、E.2.1（122-124、162-163 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（120-121、149-150 行）吸收。",
+    "trigger": "增加任何前置检查、必要条件剪枝、缓存判决或终端复验时。"
+   },
+   {
+    "name": "过堂执行纪律与 fail-soft 常设检查",
+    "essence": "过堂表必须在设计阶段填入任务书，哪怕各项为不适用也要留痕；对抗审查方常设检查报警计量是否被 fail-soft 清零，明确区分没咬与没试。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.1（126-138 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（123-129、266-267、276-280 行）吸收。",
+    "trigger": "起草任务书、审查实验设计或验收带降级路径的管线时。"
+   },
+   {
+    "name": "归属四元组",
+    "essence": "规则归属不是上收或下放的一维选择，而是切分形态、住址、管线顺序和下游验证人组成的四元组；四项必须同时登记。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.2.1（142-163 行）",
+    "status": "untracked 濒危（仅存外审包副本）；完整四元组已被 tracked roadmap §0b（132-150 行）吸收。",
+    "trigger": "为一条规则或知识片段指定完整计算归属时。"
+   },
+   {
+    "name": "三腿测试与厚／薄腰聚类",
+    "essence": "表示归属要通过尺寸紧凑、传播力足和机器兼容三腿；共享变量并互相剪枝的是厚耦合，应同住，只有交换判决的是薄腰，可以分居；跨层共享计算必须单一真相源化。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.2.1（154-156 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（140-144 行）吸收。",
+    "trigger": "比较规则片段应合并在同一模型还是通过接口分层时。"
+   },
+   {
+    "name": "报警信号双向对称与漏斗纪律",
+    "essence": "踏车是上收信号；白吃饭、超杀和越权判断是下放或降级信号。纸面健全性、尺寸等便宜否决先做，只有幸存者才进入需要遥测的传播力和机器兼容试验。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.2.2（165-172 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（152-157 行）吸收。",
+    "trigger": "某层反复学习同类失败、长期低命中，或高层规则疑似误杀、越权时。"
+   },
+   {
+    "name": "归属是 master 表示法的函数",
+    "essence": "规则在 pose-bool、坐标编码等不同 master 表示下的尺寸、传播力和机器兼容性会变化；换表示后旧归属结论自动失效，必须重跑全部归属测试。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.2.2（171-173 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（155-158 行）吸收。",
+    "trigger": "替换或大改 master 的变量表示、约束编码或求解引擎时。"
+   },
+   {
+    "name": "有序划分：层数与切口自身是被决定项",
+    "essence": "完整归属是分组加顺序的有序划分；层数和切口不能继承历史结构，而应由聚合力、拒绝成本梯度及信息依赖 DAG 共同决定。互不依赖且成本相近的格可以并行。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.2.3（175-188 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（159-168 行）吸收。",
+    "trigger": "现有层数显得任意、出现新过滤层，或需要重新决定合并、分层和并行关系时。"
+   },
+   {
+    "name": "沿信息依赖边界下刀",
+    "essence": "正确切口位于信息依赖边界：不需要下层决策即可求值的部分形成影子上收，依赖下层选择的本体留守；违反该边界会产生硬合并。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.2.3（181-186 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（163-167 行）吸收。",
+    "trigger": "准备从下游规则中抽取上层代理、必要条件或 lift 时。"
+   },
+   {
+    "name": "两段式 master 的层数响应",
+    "essence": "单格模型解不动时，先诊断是否合并过头；候选修法是让便宜松弛格先求解，再把其解作为 hint 交给完整格。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.2.3（188-191 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（168-170 行）吸收。",
+    "trigger": "大型单体模型传播瘫痪、首解困难或长期 UNKNOWN 时。"
+   },
+   {
+    "name": "下放前提：例外通道扛得动残余",
+    "essence": "把职责下放给例外通道前，必须证明该通道能承受剩余问题；否则下放只是把必做工作推到一个更弱的末端。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.2.4（193-197 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（171-174 行）吸收。",
+    "trigger": "准备把补全、例外处理或复杂规则从主路径移到兜底通道时。"
+   },
+   {
+    "name": "cut = 知识的运输形态",
+    "essence": "cut 不是整条规则搬家，而是下层规则把已学知识分期运回 master 的包裹；其正当性取决于包裹是否保留失败前提并做到可健全泛化。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.3.1（201-208 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（176-181 行）吸收。",
+    "trigger": "下层拒绝候选后，需要向上游学习 nogood、计数律或其他剪枝知识时。"
+   },
+   {
+    "name": "打包三问",
+    "essence": "依次问责任圈能缩多小、死因能否抬成数量律、上层词汇能否表达；回答决定使用泛化算术 cut、冲突核降级版还是身份型个案快递。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.3.2（210-218 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（183-188 行）吸收。",
+    "trigger": "为一次下层拒绝选择 cut 的责任范围、强度和表达形式时。"
+   },
+   {
+    "name": "cut 类型有界枚举与有限覆盖审计",
+    "essence": "cut 类型空间可由各验证者的拒绝路径乘以每条路径最泛化的健全表达枚举；个案快递兜底占比就是尚未覆盖失败流量的在线指标。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.3.2（220-221 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（188-190 行）吸收。",
+    "trigger": "评估 cut 家族是否完整，或决定是否需要新增 cut 家族时。"
+   },
+   {
+    "name": "四问双向统一",
+    "essence": "责任圈、数量律、上层词汇和下层决策依赖四问同时决定规则住址与 cut 打法；四问全通可上收，卡点则指出应留在下层及如何快递知识。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.3.3（223-236 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（192-203 行）吸收。",
+    "trigger": "在上收、下放、切影子和设计 cut 之间作统一归属决策时。"
+   },
+   {
+    "name": "cut 终局三选一",
+    "essence": "每族 cut 最终只能毕业上收、确认是真例外而保留个案快递，或因前提被证伪而退役；不能无限保持来源和用途不清的中间状态。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.3.3（238-241 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（203-206 行）吸收。",
+    "trigger": "定期复审既有 cut 家族的去留和晋级状态时。"
+   },
+   {
+    "name": "权威归属公式",
+    "essence": "owner(r) = max{owner(v): v ∈ scope(r)}：规则精确语义的权威 owner 由其需要变量的最晚层决定；更早层只能拥有被证明的投影。语义权威归属不得与性能性的表示归属混问。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.4（249-251 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（211-215 行）吸收。",
+    "trigger": "判断哪一层有权给出规则最终语义结论，或区分权威与编码性能选择时。"
+   },
+   {
+    "name": "三极性登记",
+    "essence": "每条规则分别登记必要投影、充分限制和精确语义；三极可以为空但不可混用。充分限制比真规则严，适合构造合法见证，却不能用于无条件上界或精确语义声明。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.4（253-256 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（216-219 行）吸收。",
+    "trigger": "登记规则形态，尤其是构造器使用保守子域或充分限制时。"
+   },
+   {
+    "name": "cut 必须带前件",
+    "essence": "学习 cut 必须写成「前件配置 ⇒ 必要修复析取」；裸障碍集在前提变化后会幽灵存活，因此不得直接作为几何 cut。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.4（258-259 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（220-222 行）吸收。",
+    "trigger": "从条件性失败、特定布局或局部配置生成学习 cut 时。"
+   },
+   {
+    "name": "主动挖对偶（micro-oracle）",
+    "essence": "不必等踏车才学习；可先求局部松弛的小对偶问题，主动发现计数不变量，经精确枚举核验后全局求和成证书，并把 micro-oracle 放在前提核查与全局 build-only 之间。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.4（261-263 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（223-226 行）吸收。",
+    "trigger": "怀疑存在可 lift 的局部计数规律，或等待全局搜索暴露规律成本过高时。"
+   },
+   {
+    "name": "等式挖矿",
+    "essence": "当全局不等式接近取等时，逐项检查每个成分不等式的取等条件；由此得到必须恰取某数量、禁止某对象或强制位置关系等构造规格。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.4（265-266 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（227-228 行）吸收。",
+    "trigger": "上界或下界已经近紧，需要从取等条件提炼构造约束时。"
+   },
+   {
+    "name": "双 ledger 汇报",
+    "essence": "见证只抬下界账，松弛证书只压上界账；只有同一 instance hash、同一假设下两账相遇才能报告 optimal，超时或资源中止不能改写任何账。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.4（268-269 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（229-231 行）吸收。",
+    "trigger": "汇报最优性、资源中止、见证改进或上界证书进展时。"
+   },
+   {
+    "name": "管线门序泛化与硬合并／硬后置对偶",
+    "essence": "门序规律适用于构造线和研究工作流；依赖下层决策的规则整条上收是硬合并，不依赖下层的必要条件埋到末端是硬后置，两者是违反信息与成本秩序的对偶错误。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.5（273-291 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（233-245 行）吸收。",
+    "trigger": "新建或诊断构造、求解、研究管线，尤其出现长时间 UNKNOWN 时。"
+   },
+   {
+    "name": "外脑方案按待审管线设计进场",
+    "essence": "外部大脑给出的构造方案不能凭算术闭合或叙事美感免检，必须按同一门序和七问审查其预设、前置门、精确终审及撤退线。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.5（290-291 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（243-245 行）吸收。",
+    "trigger": "接收外部评审者、模型或顾问交付的完整构造处方时。"
+   },
+   {
+    "name": "管线门内归属四则",
+    "essence": "门序原则必须递归应用到门内部的子问题模型与过滤器之间；具体复用支撑域、目标耦合、报警计量和余量-影子四则。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.6（295-309 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（257-267 行）吸收。",
+    "trigger": "一个门内部还包含生成模型、后置过滤、剥落或局部复验时。"
+   },
+   {
+    "name": "内聚收益与不存在性证明分账",
+    "essence": "把规则内聚进局部模型可以证明找好解更快，却不能据此宣称已经取得不可行或不存在性证明；性能改善与健全上界必须分开记账。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.6（308-312 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（265-269 行）吸收。",
+    "trigger": "规则内聚后解质量或成功率改善，但判定器仍为 UNKNOWN 时。"
+   },
+   {
+    "name": "默认必试",
+    "essence": "科学面任何新批、新方案和新实验开工前都必须至少过一次操作卡；不适用也要留下记录，不能用分钟级成本为跳过找理由。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.7（321-322 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（276-278 行）吸收，但 roadmap 段内仍残留“六问”旧称，顶部实际为七问。",
+    "trigger": "任何科学、求解或数学方向的新工作单元准备启动时。"
+   },
+   {
+    "name": "收敛规则（防尾巴）",
+    "essence": "新场景直接复用操作卡，不因增加判例而继续扩版本；只有操作卡无法回答的新归属原则出现时才推进方法论版本，判例库可以独立增长。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.7（324-325 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（279-281 行）吸收。",
+    "trigger": "准备为新场景另立方法论版本或新增规则块时。"
+   },
+   {
+    "name": "科学面与发布治理面权威分界",
+    "essence": "本体系管科学面的知识与计算归属，不取代字节冻结和发布治理纪律；两者即使在计量完整性上同构，也保持独立权威。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.7（327-328 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（281-282 行）吸收。",
+    "trigger": "方法论结论可能被误用于修改锁面、冻结工件、发布门或治理权限时。"
+   },
+   {
+    "name": "预设来源四分类与价签制度",
+    "essence": "算术被迫预设免费，对称 WLOG 配证明；求解器方便和配方类比属于认知型愿望，必须登记丢弃范围与撤退线。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.8.2（345-355 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（295-298 行）吸收。",
+    "trigger": "评价一个结构假设是被迫结构、对称规范化还是会损失解空间的方便性假设时。"
+   },
+   {
+    "name": "撞车诊断及二分修正",
+    "essence": "独立方案的自发重合是被迫结构候选，分歧是审查重点；先剔除任务书强加的伪撞车。分歧两边都可行才是真自由，一边宣告不可行则是前提冲突，应追查隐藏前提。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.8.3、E.8.7（356-360、433-445 行）",
+    "status": "untracked 濒危（仅存外审包副本）；初始判据和二分修正已被 tracked roadmap §0b（300-301、363-371 行）吸收。",
+    "trigger": "对照两份以上独立设计，准备从重合或分歧推断被迫结构和自由度时。"
+   },
+   {
+    "name": "零余量既是杀手也是路标",
+    "essence": "余量趋零一方面意味着未建模约束最危险，另一方面揭示所有解都被迫满足的榫眼；同一张余量账既服务风险审查，也服务结构设计。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.8.4（361-364 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（303-304 行）吸收。",
+    "trigger": "资源账接近取等，需要同时寻找风险点和合法结构锚点时。"
+   },
+   {
+    "name": "榫眼组合规则",
+    "essence": "每个榫眼必须登记前提集；无条件榫眼可任意组合，条件榫眼只能在兼容前提家族内叠加，合并判据是前提集并集自洽。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.8.6①（380-384 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（316-321 行）吸收。",
+    "trigger": "准备把多个零余量结构同时押入同一构造骨架时。"
+   },
+   {
+    "name": "余量审计表",
+    "essence": "逐项计算面积、周长、台数、槽位、覆盖、源汇、整除和模数等资源账的容量减需求并升序排列；初始趋零行给出无条件榫眼，选定预设后重算得到条件榫眼和脆弱点。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.8.6②（386-390 行）",
+    "status": "untracked 濒危（仅存外审包副本）；正读锚点、倒读风险的双用途已被 tracked roadmap §0b（322-327 行）吸收。",
+    "trigger": "系统寻找结构锚点、给愿望标价或审查近饱和资源账时。"
+   },
+   {
+    "name": "条件榫眼的产率、递归与隐藏前提审计",
+    "essence": "条件榫眼是用愿望造成的解空间损失换来的被迫结构，设计质量可按单位代价的榫眼产率评价；愿望与榫眼可递归成树，推导消耗的每条前提都必须在愿望清单显式申报。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.8.6③（392-398 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（328-334 行）吸收。",
+    "trigger": "比较两个愿望预设的性价比，或审计条件定理是否偷带暗桩时。"
+   },
+   {
+    "name": "自由两源与用计算购买被迫性",
+    "essence": "自由来自问题真余量和认知余量；真正可能杀光解的是以愿望替代昂贵推导的认知型自由。探测、审计和证书不断把自由转为被迫，直到残余自由可被搜索器处理。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.8.6④（400-410 行）",
+    "status": "untracked 濒危（仅存外审包副本）；理论根基、风险位置和动态观已被 tracked roadmap §0b（335-344 行）吸收。",
+    "trigger": "解释方法为何不唯一、愿望为何有风险，或决定计算资源应买哪类结构知识时。"
+   },
+   {
+    "name": "择愿五启发",
+    "essence": "愿望优先瞄准最贵耦合、锚在闭合恒等式上、取死亡证书的逆否、选择能便宜判死的形态，并按单位解空间代价换回的被迫结构产率评分。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.8.6⑤（412-421 行）",
+    "status": "untracked 濒危（仅存外审包副本）；五条启发已被 tracked roadmap §0b（345-352 行）吸收。",
+    "trigger": "多个非被迫的构造愿望都可尝试，需要决定先押哪一个时。"
+   },
+   {
+    "name": "主线是伸，不是探",
+    "essence": "测量探针只问便宜小问题，愿望则从榫眼伸向完整见证；愿望死亡带来的信息只是保险副产品。战略节奏是测量→伸→断口判读→再测量→再伸。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.8.6⑤（423-431 行）",
+    "status": "untracked 濒危（仅存外审包副本）；期望收益式和战略闭环已被 tracked roadmap §0b（353-361 行）吸收。",
+    "trigger": "区分该做纯学习探针还是投入完整构造愿望，并安排两者节奏时。"
+   },
+   {
+    "name": "零余量第三读法：快速法庭",
+    "essence": "低自由度不仅是风险和锚点，也意味着判定成本低；候选无论最终生或死都应插队先试，避免因工具形状偏置漏掉纸笔即可完成的有限算术。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.9（449-465 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（373-382 行）吸收。",
+    "trigger": "审计发现变量只剩少数取值、组合唯一或其他低自由度信号时。"
+   },
+   {
+    "name": "切分质量两维度：回传带宽与工况相关性",
+    "essence": "天然松耦合还不够；必须检查切口每次能回传多少知识，以及耦合强弱是否只在特定密度、提案来源或预算工况下成立。切分入档必须带工况前提。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.10（469-480 行）",
+    "status": "untracked 濒危（仅存外审包副本）；包括 33 小时枚举墙诊断，已被 tracked roadmap §0b（384-393 行）吸收。",
+    "trigger": "既有切分在稀疏提案下正常，却在高密度、固定布局或长预算下发生盲枚举时。"
+   },
+   {
+    "name": "先加粗通道，不先挪刀",
+    "essence": "出现枚举墙时，优先把可编译拒绝理由批量回传或预筛选上游域；不要立即把分层重新合成巨模型，以免丢掉工具适配、证明模块化和贵贱门序收益。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.10（482-485 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（394-397 行）吸收。",
+    "trigger": "切口细通道导致大量往返，但原切分仍有明显结构和工程收益时。"
+   },
+   {
+    "name": "死因谱 × 否决带宽的墙预言式",
+    "essence": "测量候选死在哪条约束及该约束在切缝哪边，再测每次否决能剪掉点、族还是整片可预编译域；死因集中在缝对面且否决只有点级时必然撞墙。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.10.1（487-497 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（399-405 行）吸收。",
+    "trigger": "诊断 binding↔routing 等切缝的来回成本，或决定 nogood 是否需要族化、预编译时。"
+   },
+   {
+    "name": "缝健康仪表、三步测法与工况复审触发器",
+    "essence": "直接用门的拒绝原因日志抽样死因谱、对谱检查带宽、修通道后再放量。输入密度变化、变量变常数或预算量级变化都会触发重审，删失谱不得当真谱。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.10.1（499-508 行）",
+    "status": "untracked 濒危（仅存外审包副本）；三步测法和三触发器已被 tracked roadmap §0b（406-411 行）吸收。",
+    "trigger": "准备从冒烟实验扩大预算，或工况由稀疏迁移到密集、固定布局时。"
+   },
+   {
+    "name": "从死因谱推条件性规则",
+    "essence": "条件性规则优先向死因大头、切缝对面且可预编译的约束推导，把本工况已成常数的拒绝理由整批写回上游。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.10.1（510-511 行）",
+    "status": "untracked 濒危（仅存外审包副本）；已被 tracked roadmap §0b（412-413 行）吸收。",
+    "trigger": "需要选择下一条条件性 lift、预筛规则或上游域限制的目标时。"
+   },
+   {
+    "name": "双向保真公理",
+    "essence": "防纳伪与防拒真同等重要；在全局最优性证明中，模型过严会产生假证书，模型过松会产生假见证。过严限制只造成缺失答案，不会自动报警。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.11（515-527 行）",
+    "status": "untracked 濒危（仅存外审包副本）；未进入 roadmap §0b 正文，但已被 tracked roadmap §0a（616 行）和 docs/项目说明/26_rules_handbook.md §9.1（207-215 行）吸收。",
+    "trigger": "新增、审查或放松任何守卫、模型限制、范围排除或全局最优性论证时。"
+   },
+   {
+    "name": "完整性台账与墙审计",
+    "essence": "分类学必须登记 exclusion 层，把 model_stricter_faces 作为一等完整性欠账；墙审计是孔审计的对偶，主动枚举合法能力并核对模型是否能表达，弥补过严限制永不自曝的问题。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.11（527-531 行）",
+    "status": "untracked 濒危（仅存外审包副本）；未进入 roadmap §0b 正文，但已被 tracked 26_rules_handbook.md §8、§9.1 和 canonical model_stricter_faces 三键吸收。",
+    "trigger": "做规则系统梳理、认证范围审计、守卫清点或准备完整性声明时。"
+   },
+   {
+    "name": "双向保真验收与消费切片审计前置",
+    "essence": "流程必须设置双向保真验收和对抗回测；守卫批既要回答堵住了哪些伪，也要回答是否挡掉合法真。凡规则豁免或能力被下游谓词消费，其拒真侧审计不能后置。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.11（529-533 行）",
+    "status": "untracked 濒危（仅存外审包副本）；APX_E 写的是双向保真流程与守卫两问；「消费切片审计不得后置」这一后续项目叫法见 tracked roadmap §0a（643 行），26_rules_handbook.md §8-§9.1 已承接制度。",
+    "trigger": "验收任何 guard、豁免消费、新限制接线或规则系统重设计批时。"
+   },
+   {
+    "name": "规则派生闭包公理",
+    "essence": "规则系统是生成式的，基础规则与派生规则继续组合会在解空间塌点结晶新规则；派生结论应被系统推出并带前提登记，而不是等待偶然发现。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.12（537-547 行）",
+    "status": "untracked 濒危（仅存外审包副本）；未进入 roadmap §0b 正文，但已被 tracked roadmap §0a（618 行）和 docs/项目说明/26_rules_handbook.md §9.2（217-227 行）吸收。",
+    "trigger": "多个基础规则、条件定理或资源等式可能共同钉死新结论时。"
+   },
+   {
+    "name": "派生规则一等登记、饱和扫描与塌点上报",
+    "essence": "派生规则必须带完整前提集和层级成为一等对象；承重结论出厂前做组合扫描至不再产出新规则，并显式报告自由度被组合钉死的塌点及正负样板。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.12（542-547 行）",
+    "status": "untracked 濒危（仅存外审包副本）；未进入 roadmap §0b 正文，但已被 tracked 26_rules_handbook.md §9.2（219-225 行）吸收。",
+    "trigger": "承重定理、规则分类或条件结论准备发布、入册或进入 certified 叙事前。"
+   },
+   {
+    "name": "解空间类问题先过推理关",
+    "essence": "解空间问题上桌前必须先尝试就地推导；能推出就附前提集关案，推不动才能升级，而且必须点名缺失的最小前提，禁止把未推理的裸问题递交 owner 或外部裁决。",
+    "authority_location": ".artifacts/gpt_pro_review_batch_20260808/9F_followup/pkg/APX_E_pipeline_methodology.md:E.12（549-553 行）",
+    "status": "untracked 濒危（仅存外审包副本）；未进入 roadmap §0b 正文，但已被 tracked roadmap §0a（629 行）作为现行流程规则吸收。",
+    "trigger": "准备把可行性、建模必要性或解空间排除问题升级为 owner 决策或外部评审问题时。"
+   }
+  ],
+  "notes": "只读核验结论：五份副本完全相同，均为 573 行、40,946 字节，完整 SHA-256 均为 8088f8c19ffa3b28d9c1b164b087072c70d1e85101e20ea693c8108dbafd98fb。各副本前 8 位均为 8088f8c1：9F_followup/pkg、9_architecture_holistic_review/pkg/files、round3/pkg/files、dispatch_20260810/B_with_reframe/pkg/files、dispatch_20260810/A_legacy_clean/pkg/files。因为字节完全一致，不存在版本关系可供 diff 判定；本清点选 9F_followup/pkg/APX_E_pipeline_methodology.md 为基准，只因路径最直接，不代表更新或权威优先。git ls-files 对 APX_E_pipeline_methodology.md 零命中，五个已知路径在 git status --short --untracked-files=all 中均为 ??。\n\n与 roadmap 的实测关系：docs/项目说明/00_master_roadmap.md 实际存在 §0b，范围为第 90-414 行，不需要关键词替代判断。它已经近乎逐项吸收 APX_E 的 E.1-E.10：七问和过堂表、归属四元组、三腿和报警信号、有序划分与信息依赖切口、cut 运输形态／打包三问／四问统一、外部收编六条、门序泛化、门内归属四则、默认必试与收敛规则、预设锚点和余量审计表、榫眼组合与择愿体系、撞车二分修正、零余量快速法庭、33 小时枚举墙及死因谱×否决带宽诊断都在 §0b 有对应正文。roadmap §0b 的 v2.6 段仍两次写「六问」，但同节顶部已经是七问（⓪-⑥），且后文明确⓪已纳入默认必试；这是吸收后的局部旧称漂移，不改变实际七问结构。\n\n§0b 正文在 E.10 对应内容后结束，没有纳入 E.11 和 E.12。双向保真公理已由 tracked roadmap §0a 第 616 行及 docs/项目说明/26_rules_handbook.md §9.1 承接，model_stricter_faces、usage_rule 和 completeness 三个 canonical 键进一步吸收其完整性台账制度；规则派生闭包公理已由 roadmap §0a 第 618、629 行和 26_rules_handbook.md §9.2 承接。「消费切片审计不得后置」不是 APX_E E.11 的逐字术语，而是 roadmap §0a 第 643 行对 E.11 双向保真公理作出的后续流程判读；APX_E 本体提供的是双向保真验收、完整性台账、墙审计和守卫两问。\n\n只在 APX_E 或仅由它完整保留的内容主要有：E.0.3 对【owner 方法论裁决】／【项目实测】／【判例归纳】／【设计分析】的四档区分；E.0.4 明确「失败判例只判死具体形态、不判死范式家族」的读法边界；十一轮入册时间线、稳定的脱敏判例代号、E.13 全判例交叉索引，以及把操作卡、推导、判例和两条公理合在同一文件中的完整结构。APX_E E.0.1 所记「除 E.11 外其余未被主文书吸收」是当时对旧主设计材料的历史比较，不能代表当前 tracked roadmap；当前 §0b 已发生大规模吸收。\n\n濒危评估：方法论核心并非全部只有这一载体，因为 E.1-E.10 已进入 §0b、E.11-E.12 已进入其他 tracked 文书；但 APX_E 作为自称科学面方法论权威的完整合订本、其证据等级、判例解释边界、演进谱系和完整案例索引，仍只有五份 untracked 副本。五份又全部位于同一 .artifacts/gpt_pro_review_batch_20260808 外审包树且字节完全相同，属于同一清理和丢失故障域，不构成独立版本历史或 Git 可恢复备份。因此统一状态应为「untracked 濒危（仅存外审包副本）」；清理未跟踪工件、重新打包或工作区迁移均可能同时抹掉 APX_E 独有部分。\n\n（本清点由 codex 经 relay 转发生成，本转发代理只承担无损搬运与 schema 整形，未改动任何实质内容。）"
+ },
+ "disciplines": {
+  "items": [
+   {
+    "name": "权威分层与承重回源",
+    "essence": "总结页、记忆卡和工作区指令只负责导航；外审、规则放开、守卫设计等承重用途必须回到 lock、机器 gate、canonical 键或谓词权威原文。这样避免低权威摘要漂移后反向改写事实。",
+    "authority_location": "docs/项目说明/26_rules_handbook.md:3-29；PROJECT_LOCK.md:3-6；AGENTS.md:16-35；CLAUDE.md:19-38",
+    "status": "现行权威纪律；26 手册与工作区指令是索引，PROJECT_LOCK 和机器状态才是承重层",
+    "trigger": "引用规则、宣称当前状态、写守卫、外审、发布或解决多文档冲突时"
+   },
+   {
+    "name": "historical_timepoint_evidence / never_by_presence",
+    "essence": "历史研究、.artifacts 和旧路径保存的是当时观察，不能仅因文件仍存在就成为现行实现或 certified 权威。历史中的“当前、已闭、测试数”必须按记录时点读取。",
+    "authority_location": "data/repository_governance/code_assets.json:544-595；AGENTS.md:27-32；PROJECT_LOCK.md:6",
+    "status": "现行机器治理分类",
+    "trigger": "从 docs/research、历史工件、旧执行记录或旧 commit 叙事提取当前结论时"
+   },
+   {
+    "name": "绿灯不推导关门",
+    "essence": "checker、preflight、测试和 seal 的 PASS 最多证明相应登记结构或局部条件未漂移，不自动证明数学 soundness、阶段关闭或 release closure。关门结论必须另有明确权威动作。",
+    "authority_location": "PROJECT_LOCK.md:174-208；docs/项目说明/28_pitfalls_and_sop.md:143-146；AGENTS.md:34-35；CLAUDE.md:32-35",
+    "status": "owner 拍板的现行公理，多处重复陈述",
+    "trigger": "准备把测试、checker、局部修复、入口存在或内部 seal 写成阶段完成时"
+   },
+   {
+    "name": "informational_record_only",
+    "essence": "review receipt 和报告可保留人类审计轨迹，但仓库不得据此计算 clean-review credit，也不得自动开启下一阶段。收据记录发生过什么，不授予关门权。",
+    "authority_location": "data/review_gates/phase_1_2_spike_close.json:9-21,426-430；PROJECT_LOCK.md:244-251；CLAUDE.md:32-35",
+    "status": "现行机器 gate 政策",
+    "trigger": "消费评审收据、汇总 clean streak、判断 P1.3 entry 或发布资格时"
+   },
+   {
+    "name": "owner_manual_decision 唯一性",
+    "essence": "阶段 gate 只认 owner 的显式手动决定；receipt、clean-count、package metadata、manifest 和内部 seal 都不能替代。缺失、畸形或非 owner-closed 形态必须 fail-closed。",
+    "authority_location": "PROJECT_LOCK.md:227-251；data/review_gates/phase_1_2_spike_close.json:23-35；AGENTS.md:20-22",
+    "status": "owner 拍板公理及机器强制",
+    "trigger": "变更阶段状态、开放发布、允许下一阶段入口时"
+   },
+   {
+    "name": "方法存在 ≠ 入口存在 ≠ release closure",
+    "essence": "一个方法、生产入口或输出文件存在，只能证明相应构件存在；它们不能跨越 supervisor、publisher 和 owner gate 的分权边界。文件里写着 CERTIFIED 也不等于可发布。",
+    "authority_location": "PROJECT_LOCK.md:182-195,213-228,332-350；CLAUDE.md:148-171",
+    "status": "现行 lock 不变量",
+    "trigger": "看到 supervisor_seal()、运行完 main.py、发现交付文件或新增 launcher 时"
+   },
+   {
+    "name": "sink replay 授权",
+    "essence": "producer、writer、函数对象、registry、当前进程新鲜度和调用者内存都不授予 proof authority；强状态必须由磁盘侧隔离 sink 重新绑定输入并 replay。自报的证明请求只是数据，不是证明。",
+    "authority_location": "PROJECT_LOCK.md:229-239,337-357",
+    "status": "现行 certified 不变量",
+    "trigger": "让 CERTIFIED/INFEASIBLE 进入 frontier pruning、terminal evidence、seal 或发布面前"
+   },
+   {
+    "name": "独立复验不得照抄被验实现",
+    "essence": "独立 verifier 必须从规则和权威输入重新推出判据，不能复制 solver 的方向、键或中间对象；否则两层会共享同一个误读。原子问题也不能自己给自己的 whole-layout conflict 作独立证明。",
+    "authority_location": "PROJECT_LOCK.md:386-388,710-723；PROJECT_LOCK.md:232-233",
+    "status": "现行 lock 原则",
+    "trigger": "新增 verifier、oracle、replayer、differential check 或 proof-bearing nogood 时"
+   },
+   {
+    "name": "证据等级顺位：owner 定谳最高",
+    "essence": "游戏规则证据顺位是 owner 游戏内定谳高于模拟器规则层，再高于 canonical 文本和文档转述；owner 口述的游戏裁决不能仅因是口述而降级。仍需区分 owner 给的是条款还是例子。",
+    "authority_location": "rules/canonical_rules.json:416；docs/项目说明/26_rules_handbook.md:27-30,256-263",
+    "status": "顺位是现行公理；capacity-50 等两个具体 evidence_grade 订正仍登记为 canonical 欠账",
+    "trigger": "多来源规则冲突、给参数定级、把 owner 回答写入 canonical 或决定是否继续待核时"
+   },
+   {
+    "name": "转述不算观察",
+    "essence": "卡片、收据和摘要会压掉失败分支与结论形态，不能代替对源码、冻结件或 owner 原话的直接观察。尤其依赖“某分支不存在”的结论，必须回原始实现验不存在性。",
+    "authority_location": "docs/项目说明/26_rules_handbook.md:21-25；docs/项目说明/28_pitfalls_and_sop.md:9,231-234",
+    "status": "现行引用纪律；被引用的原记忆卡当前已不在外部记忆目录",
+    "trigger": "依据记忆卡、兄弟线收据、摘要或转述作承重判断时"
+   },
+   {
+    "name": "研究证据局部量词",
+    "essence": "研究 run 的 FEASIBLE/INFEASIBLE 只约束其 byte-bound antecedent 和完整 protocol cohort；UNKNOWN、执行失败或 replay 失败没有拒绝力。研究工件不得自动改变全局上下界、cut、production 或 certified authority。",
+    "authority_location": "PROJECT_LOCK.md:537-580,582-590,687-691",
+    "status": "现行 lock 中的研究边界",
+    "trigger": "把研究实验、咨询回件、局部 checker 或历史 receipt 提升为全局结论时"
+   },
+   {
+    "name": "model_stricter_faces_completeness",
+    "essence": "所有已知会移除合法游戏行为的模型限制必须穷尽登记；不在账上不等于模型与游戏等价。新发现的过严面要先登记，再进入 certified 求解或最优性叙事。",
+    "authority_location": "docs/项目说明/26_rules_handbook.md:180-188",
+    "status": "canonical 现行完整性条款；目前缺少源码收窄与台账自动对账装置",
+    "trigger": "发现模型少变量、多约束、设备未建模或某合法能力不可表达时"
+   },
+   {
+    "name": "model_stricter_faces_usage_rule",
+    "essence": "完整性台账描述 current-model scope，不是游戏语义前提来源；依赖过严面的定理必须点名依赖，并在该面放开时自动失效重证。放松一堵墙前还要反查谁把它当了支点。",
+    "authority_location": "docs/项目说明/26_rules_handbook.md:184-199",
+    "status": "canonical 现行使用纪律",
+    "trigger": "证明 current-model theorem、放松限制、复用保守模型事实或声称游戏级最优性时"
+   },
+   {
+    "name": "双向保真公理与墙审计",
+    "essence": "防纳伪和防拒真同等重要；对全局最优证明而言，过严模型会把真正最优解关在门外，产生假证书。除孔审计外必须主动枚举游戏合法能力，做模型表达力的墙审计。",
+    "authority_location": "docs/项目说明/26_rules_handbook.md:205-215",
+    "status": "owner 拍板的 §0b 级公理",
+    "trigger": "新增约束、守卫、剪枝、设备省略、域收窄或评估 certified 完整性时"
+   },
+   {
+    "name": "guard 双问",
+    "essence": "每个 guard 或限制批验收必须同时回答“堵了哪些孔”和“有没有把合法能力关在门外”。只证明守卫能抓坏输入，不足以证明它适合全局最优模型。",
+    "authority_location": "docs/项目说明/26_rules_handbook.md:195-200,207-214",
+    "status": "现行方法论纪律",
+    "trigger": "实现或评审 fail-closed guard、hard nogood、预检查或模型域限制时"
+   },
+   {
+    "name": "规则派生闭包公理",
+    "essence": "派生规则必须带完整前提与层级，并通过组合扫描推到饱和；前提变化后能追踪失效，解空间塌点要显式上报。条件定理不得被简化成无条件规则。",
+    "authority_location": "docs/项目说明/26_rules_handbook.md:217-227",
+    "status": "owner 拍板的 §0b 级公理",
+    "trigger": "从多条规则组合出新界、WLOG、唯一分配、免建模结论或 cut 前提时"
+   },
+   {
+    "name": "触发器键控欠账登记",
+    "essence": "“以后再做”必须登记在未来相关会话必经的触发路口，而不是仅留在对话、时间流水或易丢工件中。登记要回答将来谁在动什么文件或批次时必须看到它。",
+    "authority_location": "/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/memory/deferred-work-must-reach-future-sessions.md:11-15；docs/项目说明/26_rules_handbook.md:256-270",
+    "status": "现行外部记忆家规；通用触发器判据尚无仓内等价规范",
+    "trigger": "决定延期、挂待核、等待下一次 canonical/reseal/promotion 批或留下审计发现时"
+   },
+   {
+    "name": "单一当前权威 + 四类表示",
+    "essence": "绝对的“字符串只能出现一次”已经撤销；现行设计要求同一 id 只能有一份 AUTHORITATIVE_CURRENT，其余只能是机器投影、不可变历史快照或带 span/hash 的证据引文。这样既防第二真相源，也保留 owner 原话和历史纠错证据。",
+    "authority_location": "docs/research/rule_system_redesign_20260807/FIRST_PRINCIPLES_DESIGN.md:470-490,654-676；docs/项目说明/00_master_roadmap.md:650-652",
+    "status": "设计稿未实施；重设计线已获 owner 立项，表示接口部分获批",
+    "trigger": "同一裁决、参数或事实需要同时出现在 canonical、档案、报告和生成视图时"
+   },
+   {
+    "name": "单门牌化",
+    "essence": "记忆卡只能有一块人维护的语义门牌，索引应由卡片标题和 description 编译生成；两个独立摘要会必然分叉，使卡存在却不可召回。门牌变更后还要重编索引并检查注入水位。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:207-213；docs/项目说明/00_master_roadmap.md:642,647",
+    "status": "历史上已落地；仓内 cc_memory/vnext 集成现已移除，外部文件记忆目录仍保留同型结构",
+    "trigger": "创建、批量改写、迁移或编译文件记忆卡时"
+   },
+   {
+    "name": "数值与身份不造第二真相源",
+    "essence": "sha、字节数、计数和其他易漂数字只住唯一机器真相源；手册仅给文件和符号指针。行号可作快照提示但不得当稳定权威。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:3-9；CLAUDE.md:209-228；AGENTS.md:286-303；PROJECT_LOCK.md:6",
+    "status": "现行文档纪律",
+    "trigger": "在 README、手册、任务书或 runbook 复写 pin、测试数、计数和源码位置时"
+   },
+   {
+    "name": "无时态文档只写现行读法",
+    "essence": "living 手册正文只陈述当前真相，旧读法进入明确的退役表并指明 superseder；拿不准标待核，不能让错误的现在时继续害人。机制变化必须同批更新对应手册。",
+    "authority_location": "docs/项目说明/26_rules_handbook.md:1-5,235-280；docs/项目说明/28_pitfalls_and_sop.md:1-5,436",
+    "status": "现行文档维护家规；两页自身声明零权威",
+    "trigger": "修改规则手册、坑册、现状说明或纠正旧结论时"
+   },
+   {
+    "name": "异源席位优先于模型适配",
+    "essence": "多席核查先保证模型或推理来源异构，再优化任务匹配；同源核查链会共享盲区。合并席和链末复核也算审查层，不能与被审席形成自审闭环。",
+    "authority_location": "/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/memory/heterogeneous-seats-beat-model-fit.md:11-21；docs/项目说明/00_master_roadmap.md:644",
+    "status": "现行外部记忆家规，并有仓内台账实证",
+    "trigger": "组织多席审查、合并裁断、对抗复核或高风险承重结论验真时"
+   },
+   {
+    "name": "裁判自产文书必须过独立证伪席",
+    "essence": "编排者或裁判自己写的综合文书是天然盲区，容易混淆实测值、上界和最优值；入库或外发前要交给独立 refuter，数字前提逐条标证据等级。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:301-304",
+    "status": "现行家规，但原记忆卡已不在现存记忆目录",
+    "trigger": "主线程、合并席或裁判席自产了承重判读、咨询裁决或最终综合报告时"
+   },
+   {
+    "name": "审查覆盖层次显式化",
+    "essence": "“已审查”必须写明实际检查了哪些层、哪些命题和哪些装置；审干净下层不能被读成上层已证。报告强度不得超过执行过的检查。",
+    "authority_location": "docs/research/rule_system_redesign_20260807/FIRST_PRINCIPLES_DESIGN.md:450-452,660-666；docs/项目说明/28_pitfalls_and_sop.md:301-304",
+    "status": "重设计稿中的未实施义务，已有现行 refuter 家规支撑",
+    "trigger": "发布 review verdict、PASS、覆盖率、独立确认或“无问题”结论时"
+   },
+   {
+    "name": "防泄题盲测",
+    "essence": "全新眼睛或盲推导包必须剔除我方答案、术语、回件编号和下游测试文件，不能只清提示词而忽略附件。否则外部一致只能算被喂前提后的复述。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:623,644,648",
+    "status": "tracked 台账中的现行审查家规",
+    "trigger": "制作 blind review、fresh-eyes、模拟器盲推导或独立重设计材料包时"
+   },
+   {
+    "name": "独立性收据",
+    "essence": "独立性必须用材料全集的命中扫描和输入身份收据证明；污染后按依赖关系把结论分成保留、降档和作废，不能维持“完全独立确认”的总称。收据扫描范围必须覆盖全部附件。",
+    "authority_location": "docs/项目说明/00_master_roadmap.md:634,648",
+    "status": "现行家规，由污染事故订正后入册",
+    "trigger": "声称两个外审独立撞车、统计独立确认数量或复用上一轮材料时"
+   },
+   {
+    "name": "承重搜索 git grep 起手",
+    "essence": "默认 rg 只是开发者投影，会漏掉 .rgignore 中的活契约、拼接字符串和大小写不同的 pin。承重的存在性、影响面和 pin 面审计要先用 git grep，集合成员资格再用运行时真值或契约测试确认。",
+    "authority_location": "AGENTS.md:379-399；CLAUDE.md:250-261；docs/项目说明/28_pitfalls_and_sop.md:123-131,316-319",
+    "status": "现行工作区纪律，多处重复",
+    "trigger": "查 pin、allowlist、符号是否存在、影响闭包或准备写“没有其他位置”时"
+   },
+   {
+    "name": "全称否定要穷尽同义搜索",
+    "essence": "写“没有、只有、零处、全篇无一处”前，必须列出多种同义表述逐一搜索；更稳妥的是改写为有界正面陈述。承重否定还应交给异源席复核。",
+    "authority_location": "/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/memory/universal-negatives-need-exhaustive-search.md:11-23",
+    "status": "现行外部记忆家规；仓内只有较窄的“默认搜索零命中不算不存在”版本",
+    "trigger": "对文档、源码、提示词或审查材料作全称否定时"
+   },
+   {
+    "name": "pin 是身份声明，不是校验和",
+    "essence": "expected hash 表示被授权的特定身份，不是让它追随当前文件；mismatch 时先判断文件错还是确实换代。单独把 expected 改成当前值会把 superseded 工件重新放入证明。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:111-121；AGENTS.md:286-303；CLAUDE.md:219-221",
+    "status": "现行 freeze 公理",
+    "trigger": "遇到 artifact/source hash mismatch 或准备更新 expected 值时"
+   },
+   {
+    "name": "freeze-ritual",
+    "essence": "改被钉字节必须按完整事务走：找 pin 面、先清 lint、保持 LF 改字节、重生成或机器证明派生字节不变、迭代更新 pin、跑结构门和 full/slow、以完整一致 pathspec 提交。任何一步省略都可能制造本地绿而提交树红。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:338-356；AGENTS.md:307-323；CLAUDE.md:223-228",
+    "status": "现行操作规程，多处镜像",
+    "trigger": "修改冻结工件、V99 sealed 源、PROJECT_LOCK 或 preflight_gate 时"
+   },
+   {
+    "name": "reseal 连锁按“谁钉了字节”触发",
+    "essence": "连锁入口不是文件类型或常量名，而是改动字节被哪些身份面消费；同一改动可同时触发多条链。派生 digest 要由构造器重算，checker self-pin 最后计算，不能手填。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:358-389；AGENTS.md:325-343",
+    "status": "现行 reseal 设计原则",
+    "trigger": "冻结工件、close-kernel 源、preflight_gate、PROJECT_LOCK 或环境身份发生变化时"
+   },
+   {
+    "name": "活 pin 与史料 pin 分账",
+    "essence": "命中旧值后要区分活代码/测试 pin、展示 pin 和故意保留旧代的历史/replay 门；是否更新取决于门运行时是否真的比较该值，不取决于文件是否被 import。史料 pin 的失败可能正是其复现功能。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:123-141,340-355；AGENTS.md:312-315",
+    "status": "现行 freeze 审计纪律",
+    "trigger": "批量替换旧 sha、解释器路径或外部根身份时"
+   },
+   {
+    "name": "解释器能力闭包",
+    "essence": "所有项目 Python 命令必须使用 .venv/bin/python；解释器自检看完整能力集合，而不只看路径或“能导入几个包”。部分依赖环境会产生错误检查面和假绿。",
+    "authority_location": "AGENTS.md:39-49；CLAUDE.md:42-50",
+    "status": "现行工作区纪律",
+    "trigger": "运行 main、pytest、preflight、mypy、ruff、checker 或研究脚本时"
+   },
+   {
+    "name": "命令退出码按本协议解释",
+    "essence": "不能套用通用退出码想象：preflight 只有 0/1，BLOCK 看 blocker；select_tests_for_paths.py 的 2 表示保守建议全量，不是精确闭包。先读拥有者协议再自动化分支。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:19-22,331-334；AGENTS.md:124-127,150",
+    "status": "现行项目操作事实",
+    "trigger": "编写 wrapper、CI 分支、监控脚本或解释 checker 结果时"
+   },
+   {
+    "name": "--full 不是全部测试",
+    "essence": "--full 固定排除 slow；认证核心变更必须额外跑专用 slow soundness lane。只报 full 绿会留下整类盲区。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:24-27；AGENTS.md:128-129；CLAUDE.md:113-115",
+    "status": "现行测试纪律",
+    "trigger": "修改 producer、seal、publish、checker、V99 源或 freeze/reseal 批后"
+   },
+   {
+    "name": "slow 测试集中登记",
+    "essence": "慢测试由 _SLOW_TEST_NODEIDS 统一赋 marker，新增长测必须登记；登记条数与参数化后收集实例数是不同口径。时长重标定要串行测，避免并发资源竞争造成虚高。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:29-32；AGENTS.md:130-132",
+    "status": "现行测试卫生",
+    "trigger": "新增或重标定约八秒以上测试、解释 slow 收集数量时"
+   },
+   {
+    "name": "pytest 可复现与 basetemp 隔离",
+    "essence": "复现测试要显式禁用 randomly；多个 pytest 进程必须使用不同 basetemp，避免互相清目录。默认环境是否安装随机插件不能成为测试顺序的一部分。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:34-42；AGENTS.md:133-136",
+    "status": "现行测试卫生",
+    "trigger": "单测复现、多窗口并发 pytest、比较两台机器结果时"
+   },
+   {
+    "name": "验收看 skip，不只看 passed",
+    "essence": "skip 可能同时掩盖“链没被验证”和“真跑会红”两层欠账；判断标准不是 skip 数量，而是该义务是否在别处实际验证。不可避免的关键外部依赖宁可 fail，也不要静默跳过。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:49-52；AGENTS.md:140-141",
+    "status": "现行测试卫生",
+    "trigger": "汇报测试验收、增加 skip、处理外部依赖或看到 skip 数变化时"
+   },
+   {
+    "name": "认证测试期间整树冻结",
+    "essence": "认证链 source digest 覆盖范围大于 sealed 名单，测试运行中任何生产树改动、docstring 变化或 commit 都可能制造假红。长门发射前完成提交，运行时只做树外工作。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:54-58,177-180；AGENTS.md:142-145",
+    "status": "现行测试与长跑纪律；自动 hook 已下线，主要靠文本执行",
+    "trigger": "运行 preflight pytest 段、slow lane、seal/replay 测试或并发会话共享工作树时"
+   },
+   {
+    "name": "绿灯资格三问",
+    "essence": "正向 FEASIBLE、解锁或红利结论前，要检查输入是否由真链自产、装置是否物理可实现、投影是否比 live 权威层更严。正结果容易被不忠实 fixture 假绿，必要时必须保留忠实对照装置。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:60-63",
+    "status": "现行验收方法论",
+    "trigger": "手造 fixture、投影模型、探针或小型 harness 给出突破性正结果时"
+   },
+   {
+    "name": "外部大工件缺失要硬诊断",
+    "essence": "缺 candidate_placements.json 会在 fixture 阶段形成一批 error，不是优雅 skip；先跑专用外部工件检查，再决定恢复。不能把缺输入误诊为算法或测试簇回归。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:44-47；AGENTS.md:137-139",
+    "status": "现行项目测试纪律",
+    "trigger": "binding/routing 测试批量报错或 lightweight checkout 开始 certified 验收时"
+   },
+   {
+    "name": "只读勘察先审命令副作用",
+    "essence": "名字叫 gate 或 checker 不保证只读；例如 production readiness 会创建目录并带平台假设。只读任务不能顺手运行未知副作用脚本，先读实现或帮助。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:70-73；AGENTS.md:148-149",
+    "status": "现行操作纪律",
+    "trigger": "用户要求只读审计、环境勘察或准备运行陌生诊断脚本时"
+   },
+   {
+    "name": "CLI 与 wrapper 语义显式核对",
+    "essence": "--exploratory 会覆盖 mode，skip-readiness 不跳 freeze monitor，不同平台 wrapper 的 resume 注入也不对称。不能从参数名字或另一平台脚本类推真实执行模式。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:65-68,182-185；AGENTS.md:146-147",
+    "status": "现行项目操作事实",
+    "trigger": "发射 certified/exploratory、跳 gate、跨 Linux/Windows 接手续跑时"
+   },
+   {
+    "name": "全量日志 + DONE 终态",
+    "essence": "门禁和测试要把 stdout/stderr 全量落文件，不能用 tail 管道裁证据并覆盖退出码；长任务用 setsid nohup、退出码记录和 DONE 文件判终态。日志关键词与 pgrep -f 都会被回显或自匹配伪造。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:150-165；AGENTS.md:152-155",
+    "status": "现行长任务纪律",
+    "trigger": "运行超过十分钟的门禁、测试、求解或搭建监控/杀进程脚本时"
+   },
+   {
+    "name": "事件驱动盯守与真实资源测量",
+    "essence": "能本地判定终态的等待应由脚本写 flag 并事件唤醒；监控频率要按实际冷/热成本重算。prod-scale 一次只跑一个，内存看高频 VmHWM/swap 或 OS RSS，不能用逻辑对象大小或稀疏采样冒充峰值。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:172-175,400-409；PROJECT_LOCK.md:524-532",
+    "status": "现行本机运行家规",
+    "trigger": "盯长任务、做资源验收、并发发射 prod-scale master 或声称内存门 PASS 时"
+   },
+   {
+    "name": "共享 index 的完整一致 pathspec",
+    "essence": "提交前必须核对工作区和 staged 清单，只提交这次逻辑改动的完整一致集；既不能夹带别人的 staged 文件，也不能漏掉 reseal pin 依赖。提交后还要从 HEAD 重新核身份。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:79-82；AGENTS.md:362-366",
+    "status": "现行共享工作区 git 家规",
+    "trigger": "多人或多会话共用仓库时执行 add、commit、freeze/reseal 提交"
+   },
+   {
+    "name": "HEAD 是隐式参数，先验归属",
+    "essence": "amend、reset、rebase、cherry-pick 都会作用于此刻 HEAD；执行前必须比对 hash，不比 message。误 amend 用 mixed reset 无损拆开，禁止 hard reset。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:84-87；AGENTS.md:367-369",
+    "status": "现行共享工作区 git 家规",
+    "trigger": "执行任何以 HEAD 为隐式目标的历史改写操作时"
+   },
+   {
+    "name": "untracked 不构成安全存储",
+    "essence": "共享工作区清理会带走 untracked 文件，安全线是进入 commit 或仓外私有目录；审查快照又只包含 committed tree。重要产物要快速提交，打包后抽查内容。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:89-102；AGENTS.md:370-372；CLAUDE.md:8-9",
+    "status": "现行共享工作区家规",
+    "trigger": "新建文件、跨回合迭代、外审打包或依赖 untracked 工件继续工作时"
+   },
+   {
+    "name": "proof 输出禁提交路径",
+    "essence": "checkpoint、最终 blueprint、final solution 和 delivery manifest 属运行产物，不进入 git；但不能因此把整个 data/solutions/ 忽略，否则会吞掉正常审计文件。忽略边界必须保持精确。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:94-97；AGENTS.md:347-360",
+    "status": "现行 preflight 强制",
+    "trigger": "git add、修改 .gitignore、清理或打包求解输出时"
+   },
+   {
+    "name": "卡片真相源与编译缓存闭环",
+    "essence": "修改卡片后必须重建其消费索引并运行验证；真相源更新而缓存未更新，效果等同于没写。批量修改前还要把快照与现文逐字节对账，避免覆盖并发的新结论。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:201-213,391-398",
+    "status": "仓内旧记忆系统的历史规程；通用真相源/缓存纪律仍有效，现行仓内 gate 已移除",
+    "trigger": "重建记忆层、编辑外部文件记忆索引或维护任何生成缓存时"
+   },
+   {
+    "name": "入卡门槛与 stale-card 生命周期",
+    "essence": "只有会反复犯、调查成本高或属于 owner 决策的通用判断才值得入卡；过时的 active 卡比没有更危险，发现后要立即订正、supersede 或 archive。卡片不是执行流水的垃圾桶。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:221-229",
+    "status": "历史记忆家规；原 vnext 实现已下线",
+    "trigger": "决定是否记录教训，或发现现有卡与新证据、当前代码冲突时"
+   },
+   {
+    "name": "SQLite 真只读必须 immutable",
+    "essence": "WAL 数据库的普通 mode=ro 仍可能创建侧车文件；零写足迹要求 mode=ro&immutable=1 并断言没有 sidecar。只读是可验证后置条件，不是连接参数名称。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:215-219",
+    "status": "历史记忆档案规程；对应仓内 SQLite 层已移除，但方法仍可复用",
+    "trigger": "以零写足迹读取 WAL SQLite、冻结数据库或审计档案时"
+   },
+   {
+    "name": "advisory 扫描看增量与前提",
+    "essence": "advisory 扫描器的意义在于相对稳态基线新增了什么，不是“是否有候选”；同时要满足分支、已提交真相源和治理登记等自检前提。前提不满足时拒绝报告比给假完整性更诚实。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:241-245",
+    "status": "现行方法；部分记忆基础设施已下线，运行前须核脚本当前存在性",
+    "trigger": "运行记忆或文档引用完整性扫描并解释候选结果时"
+   },
+   {
+    "name": "工具坏了先修工具，失败必须明说",
+    "essence": "工具失败不能被猜测结果或看似明显的下一步替代；先验证摩擦是否真实，真实就修工具。绕行会把一次故障固化成长期税和不可复现的人工流程。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:326-329",
+    "status": "现行通用家规；原记忆卡不在当前目录",
+    "trigger": "搜索、索引、checker、浏览器或自动化工具报错、不可用或结果可疑时"
+   },
+   {
+    "name": "对照树只定位先后，不证明陈年",
+    "essence": "clean clone 同样失败，只能证明红早于当前改动，不能证明它是老问题；环境身份变化也可能同日造成基线红。归因必须另查出生时刻与身份 pin。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:321-324",
+    "status": "现行诊断纪律",
+    "trigger": "区分“我的红”和“已有红”、用 clean clone 做回归归因时"
+   },
+   {
+    "name": "编排消息要有回执与兜底通道",
+    "essence": "API 返回 queued 不证明长跑席收到关键拍板；关键指令要请求确认，未回执不得假设送达，并用标记文件或主线程转发兜底。完工后还要对账产物是否引用了新指令。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:261-269",
+    "status": "旧 Claude 编排工具面的历史家规；消息投递原则仍可复用",
+    "trigger": "向异步代理、孙代理或长跑 teammate 追加关键方向、拍板或范围修改时"
+   },
+   {
+    "name": "长自治委托防自加固循环",
+    "essence": "防御基建会诱导自治席不断加固自己的脚手架，侵占科学本体；开线时应先定义科学产出的阶段验收，心跳问产出而不是状态。",
+    "authority_location": "docs/项目说明/28_pitfalls_and_sop.md:296-299",
+    "status": "现行通用编排家规；原记忆卡不在当前目录",
+    "trigger": "发起长周期自治研究、重构、治理或防御基建任务时"
+   },
+   {
+    "name": "owner 读者画像",
+    "essence": "给 owner 的解释要抽象但不省略信息，讲结构和结论，不要求记内部坐标；术语首次出现即解释。“听不懂”优先查中间是否缺环，而不是继续降浅度。",
+    "authority_location": "AGENTS.md:10-12；CLAUDE.md:13-15；/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/memory/owner-reader-profile.md:11-15",
+    "status": "现行知识型家规，三处重复",
+    "trigger": "向 owner 解释项目结构、数学结论、状态或交付长报告时"
+   },
+   {
+    "name": "游戏实体正式名与结构保真",
+    "essence": "对用户讲游戏实体要使用游戏正式中文名并全程一致；不确定先查 canonical 或问 owner。复述原设计时不能顺手简化口数、槽组等结构，否则会把翻译错误伪装成事实。",
+    "authority_location": "/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/memory/game-entity-names-must-match-in-game-terms.md:11-22",
+    "status": "仅活在外部记忆卡的现行家规，仓内无同等具体登记",
+    "trigger": "面向 owner 讲设施、operation、端口、槽组或把代码标识符翻成游戏名时"
+   },
+   {
+    "name": "子代理模型派活口径",
+    "essence": "选择席位前先读全局实时额度权威；给 Codex 划清任务边界与不管范围，不必把执行步骤逐项钉死。具体模型偏好是活值，不能永久写死在项目卡里。",
+    "authority_location": "/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/memory/subagent-model-dispatch-profile.md:11-23",
+    "status": "外部记忆卡家规；实时模型/额度权威在仓外全局 CLAUDE.md，本次未核该活值",
+    "trigger": "准备派子代理、选择模型或编写开放判断题任务书时"
+   }
+  ],
+  "notes": "源状态与版本关系：已完整通读 26 手册、28 坑册、PROJECT_LOCK、CLAUDE.md、AGENTS.md 及指定目录现存全部 7 个 Markdown（记忆卡目录）。26 与 28 均自声明\"零权威\"；PROJECT_LOCK 为 CURRENT_LOCK，但 phase gate 的当前机器记录更新更晚，因此关门事实应以 data/review_gates/phase_1_2_spike_close.json 为准。CLAUDE.md 与 AGENTS.md 当前均为 untracked，CLAUDE.md 自己也警告 untracked 会被共享会话清掉；它们是有效工作区指令，但属于濒危第二真相源。\n\n重复陈述、潜在第二真相源：绿灯不推导关门同时出现在 PROJECT_LOCK、phase gate、26/28、CLAUDE、AGENTS 和 roadmap；freeze/reseal、测试卫生、git 共享工作区纪律、git grep 搜索纪律又同时存在于 28、CLAUDE、AGENTS。owner 画像同时存在于 CLAUDE、AGENTS 和外部卡。卡/receipt 非权威同时出现在 26、28、PROJECT_LOCK 和机器 gate。重复本身多为刻意镜像，但只有 PROJECT_LOCK、canonical 和机器 gate 能承重；工作区指令和手册中的具体数字、行号及基础设施状态最容易漂移。\n\n只活在现存外部记忆卡、仓内无同等完整登记的纪律：游戏实体必须使用正式中文名；Codex 派活要钉任务边界而非步骤且实时模型口径回全局文件；全称否定必须穷尽同义表述；\"以后再做\"必须按未来触发器键控登记。异源席位与 owner 画像虽有外部卡，也在仓内台账或工作区指令中有镜像。\n\n断引用与退役基础设施：现存外部记忆目录只有 6 张正文卡加 1 张索引。26/28 仍引用 sibling-line-receipt-paraphrase-not-evidence、classification-labels-hide-parameters、bidirectional-fidelity-axiom、rule-derivation-closure-axiom、referee-authored-docs-blind-spot、freeze/reseal 等大量当前已不存在于外部记忆目录的卡；本清单未假装读过这些已消失的卡，只采用了 26/28/lock 中仍完整陈述的规则本身（这些规则条文仍在，只是原始记忆卡载体已不在）。AGENTS.md 明确 cc_memory、cc_memory_vnext、hook、codegraph 等仓内基础设施已经移除，所以 28 号坑册里依赖这些设施的条目（卡片真相源缓存闭环、入卡门槛、SQLite immutable、advisory 扫描、消息回执兜底、长自治防自加固）只能标为历史家规或方法论仍可复用，不应报告成当前机器强制。\n\n关键订正：`单一陈述位置`的绝对版本已在 docs/research/rule_system_redesign_20260807/FIRST_PRINCIPLES_DESIGN.md 中被 supersede；现行设计是\"单一当前权威 + GENERATED_PROJECTION / IMMUTABLE_HISTORICAL_SNAPSHOT / QUOTATION_FOR_EVIDENCE\"四类表示。该重设计线已获 owner 2026-08-13 口头拍板立项，但文书头部仍明确写\"设计稿，未实施\"。单门牌化曾在仓内记忆系统落地，但该记忆系统随后被整体移除；外部文件记忆目录仍保留同型的索引/卡片结构。\n\n证据族边界（本次任务特别要求收全的族）：owner 游戏内口述裁决处于最高级，但 owner 回答仍要辨认是条款还是例子（不能不加区分地全部提级）；文档转述、receipt、测试 PASS、文件存在（presence）和历史工件都不自动升级为\"观察本身\"、\"现行权威\"或\"certified admission\"——这是 never_by_presence 与 historical_timepoint_evidence 两条分列但同族的判据。独立外审若提示词或任一附件泄露先前答案，必须按依赖关系把结论拆分为保留/降档/作废，不能继续笼统声称\"完全独立确认\"——这条防泄题+独立性收据的判据本身就是被一次真实污染事故订正后才入册的（登记在 docs/项目说明/00_master_roadmap.md 的相应日期条目里）。\n\n坑册筛选边界（按任务要求把方法论和一次性坑记录分开）：本清单只收了可重复触发、能迁移到未来工作的判据，没有逐项收入 28 号坑册里只描述某次具体文件、某次 PID、某个已退役 hook 具体名称或单次事故数字的纯症状记录。项目专用但会持续反复触发的操作事实——如 preflight 退出码语义、slow lane 登记、外部大工件硬诊断、prod-scale 单跑资源测量口径、CLI/wrapper 语义差异——因为未来仍会反复撞到，予以保留收录。"
+ }
+}
