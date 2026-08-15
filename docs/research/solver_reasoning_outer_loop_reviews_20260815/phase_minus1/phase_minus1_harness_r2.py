@@ -267,7 +267,11 @@ def _run_layout(
                         gate_side="routing_precheck",
                         feedback_form="binding_selection_family",
                         support_core_status=(
-                            "AVAILABLE_NOT_REPLAYED" if conflict_set else "UNAVAILABLE"
+                            "AVAILABLE_REPLAYED"
+                            if conflict_set and replay_status == "REPLAYED_IDENTICAL"
+                            else "AVAILABLE_NOT_REPLAYED"
+                            if conflict_set
+                            else "UNAVAILABLE"
                         ),
                         diagnostic_replay_status=replay_status,
                         details=projection,
@@ -706,6 +710,10 @@ def _augment_aggregate_with_censored_observations(
     family_splits: dict[str, set[str]] = {}
     family_censors: dict[str, set[str]] = {}
     family_replays: dict[str, set[str]] = {}
+    discovery_layouts: dict[str, set[str]] = {}
+    discovery_strata: dict[str, set[str]] = {}
+    discovery_replays: dict[str, set[str]] = {}
+    discovery_supports: dict[str, set[str]] = {}
     last_stage_counts: dict[str, int] = {}
     for result in results:
         last_stage = str(
@@ -729,6 +737,17 @@ def _augment_aggregate_with_censored_observations(
             replay = event.get("diagnosticReplayStatus")
             if replay:
                 family_replays.setdefault(key, set()).add(str(replay))
+            if (
+                str(result.get("split")) == "discovery"
+                and str(result.get("censorStatus")) == "UNCENSORED"
+            ):
+                discovery_layouts.setdefault(key, set()).add(str(result["layout_id"]))
+                discovery_strata.setdefault(key, set()).add(str(result["stratum"]))
+                if replay:
+                    discovery_replays.setdefault(key, set()).add(str(replay))
+                discovery_supports.setdefault(key, set()).add(
+                    str(event.get("supportCoreStatus", "UNAVAILABLE"))
+                )
 
     observed_families = []
     for key in sorted(family_layouts):
@@ -752,6 +771,41 @@ def _augment_aggregate_with_censored_observations(
             }
         )
 
+    discovery_families = []
+    for key in sorted(discovery_layouts):
+        reason, gate_side, feedback_form, event_censor = key.split("|", 3)
+        supports = sorted(discovery_supports.get(key, set()))
+        replays = sorted(discovery_replays.get(key, set()))
+        eligible = (
+            len(discovery_layouts[key]) >= 3
+            and len(discovery_strata[key]) >= 2
+            and feedback_form not in {"point_nogood", "none"}
+            and "AVAILABLE_REPLAYED" in supports
+            and "REPLAYED_IDENTICAL" in replays
+        )
+        discovery_families.append(
+            {
+                "familyKey": key,
+                "reason": reason,
+                "gateSide": gate_side,
+                "feedbackForm": feedback_form,
+                "eventCensorStatus": event_censor,
+                "layout_ids": sorted(discovery_layouts[key]),
+                "layout_count": len(discovery_layouts[key]),
+                "strata": sorted(discovery_strata[key]),
+                "strata_count": len(discovery_strata[key]),
+                "support_core_statuses": supports,
+                "diagnostic_replay_statuses": replays,
+                "eligible_for_d3": eligible,
+            }
+        )
+    eligible_discovery_families = [
+        family for family in discovery_families if family["eligible_for_d3"]
+    ]
+    eligible_discovery_families.sort(
+        key=lambda item: (-int(item["layout_count"]), str(item["familyKey"]))
+    )
+
     spectrum_path = output_dir / "D1_DEATH_SPECTRUM.json"
     spectrum = base._read_json(spectrum_path)
     if not isinstance(spectrum, Mapping):
@@ -759,6 +813,15 @@ def _augment_aggregate_with_censored_observations(
     updated = dict(spectrum)
     updated["harness_revision"] = HARNESS_REVISION
     updated["observed_families_all"] = observed_families
+    updated["discovery_families_uncensored"] = discovery_families
+    updated["d3_eligible_families"] = eligible_discovery_families
+    updated["d3_triggered"] = bool(
+        int(updated.get("uncensored_terminal_count", 0)) >= 6
+        and eligible_discovery_families
+    )
+    updated["d3_eligibility_rule"] = (
+        "Only uncensored discovery layouts contribute; holdout observations are excluded rather than disqualifying a family."
+    )
     updated["last_observed_stage_counts"] = dict(sorted(last_stage_counts.items()))
     updated["censored_layouts_with_observed_events"] = sum(
         result.get("censorStatus") != "UNCENSORED" and bool(result.get("events"))
@@ -776,6 +839,10 @@ def _augment_aggregate_with_censored_observations(
         handle.write(f"- Last observed stages: `{updated['last_observed_stage_counts']}`.\n")
         handle.write(
             "- These observations are telemetry only and do not satisfy the uncensored D3 gate.\n"
+        )
+        handle.write(
+            f"- D3-eligible discovery families after holdout exclusion: "
+            f"`{len(eligible_discovery_families)}`.\n"
         )
         for family in observed_families:
             handle.write(
