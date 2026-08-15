@@ -1,7 +1,7 @@
 # 结论有效性与换代账本
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:753f2c5e89e0a2ec086436e17937029c855ae619dbb6f727abcbfaeba7ce4c62`。
+> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:b1cb229828bacdcb5b14bb3c7153d6c32b3e2384f108d26ca7792785b76bb485`。
 
 本页不把所有失败混成一个标签。它区分直接反例、语义替代、作用域修正、实现失效、实验装置失效、归因更正、路线撤回与修复后重验。
 `validity_profile` 回答的是一条 claim 在认知历史中的位置；claim 的数学内容、authority 和证据仍以 CATALOG 详情为准。

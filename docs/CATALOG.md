@@ -1,7 +1,7 @@
 # 项目知识目录
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:753f2c5e89e0a2ec086436e17937029c855ae619dbb6f727abcbfaeba7ce4c62`。
+> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:b1cb229828bacdcb5b14bb3c7153d6c32b3e2384f108d26ca7792785b76bb485`。
 
 这里登记稳定 ID。claim 回答“我们知道什么”，decision 回答“谁改变了什么规则或门”，
 dossier 回答“原始证据包在哪里”，validity profile 回答“旧结论为何失效、怎样换代、能否复用”。目录不把历史材料自动升级为当前权威。
@@ -11,7 +11,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 - claim：`92` 条，其中当前 / 开放 `73` 条，带 validity profile `32` 条。
 - decision：`7` 条。
 - backfill review：`51` 条，其中 current `41` 条。
-- dossier：`206` 个，其中 tracked `151` 个、local optional `55` 个、当前证据标记 `16` 个、人工精编 `27` 个。
+- dossier：`207` 个，其中 tracked `152` 个、local optional `55` 个、当前证据标记 `16` 个、人工精编 `27` 个。
 - `docs/research/` 的一级目录和一级 Markdown 已全登记；`.artifacts/` 只登记一级目录，其路径允许在轻量 checkout 中缺失。
 
 ## Claim 索引
@@ -126,7 +126,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 ## Topic 索引
 
 - `p1_2-proof-chain`：72 个 dossier。
-- `other`：43 个 dossier。
+- `other`：44 个 dossier。
 - `solver-experiment`：25 个 dossier。
 - `upper-bound`：24 个 dossier。
 - `cut-framework`：19 个 dossier。
@@ -226,6 +226,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
+| `DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99` | `2026-08-15` | [推理外环三轮外部评审归档（2026-08-15）](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)<br>三份归档正文均为仓外原件的逐字节副本，不含修订、批注或归档头。 | `other` | `historical` | `historical` |
 | `DOSSIER-METHODOLOGY-COMPILATION-20260814-BF49D11CCD` | `2026-08-14` | [附录 E · 管线与归属方法论（项目既有方法论权威）](<research/methodology_compilation_20260814/APX_E_pipeline_methodology.snapshot.md>)<br>本附录是本项目科学面的方法论权威：一套关于「一条知识该住在计算管线的哪一层、管线本身该怎么切、 一个结构性预设该押在哪」的判据体系。 | `other` | `historical` | `historical` |
 | `DOSSIER-PLANE-MIXING-AUDIT-20260813-176281B3F4` | `2026-08-13` | [三面防污染架构审计——发现与挂账登记（2026-08-13）](<research/plane_mixing_audit_20260813/FINDINGS.md>) | `other` | `historical` | `historical` |
 | `DOSSIER-CANONICAL-BATCH-20260808-B2462129DF` | `2026-08-08` | [BLOCKERS / 待定点（canonical 08-08 改稿草案 · v3）](<research/canonical_batch_20260808/BLOCKERS.md>)<br>--- | `rules-semantics` | `historical` | `historical` |

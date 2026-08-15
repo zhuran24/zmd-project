@@ -81,7 +81,7 @@
 | `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-LOCAL-RULES-SEMANTICS` | 3 个 dossier 处于 local_optional_queue，优先级 normal。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-LOCAL-UPPER-BOUND-AND-BAND22` | 10 个 dossier 处于 local_optional_queue，优先级 normal。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-LOCAL-WITNESS` | 6 个 dossier 处于 local_optional_queue，优先级 normal。 | `knowledge.build`<br>`knowledge.check` |
-| `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-OTHER-TRACKED-LONGTAIL` | 18 个 dossier 处于 historical_semantic_queue，优先级 low。 | `knowledge.build`<br>`knowledge.check` |
+| `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-OTHER-TRACKED-LONGTAIL` | 19 个 dossier 处于 historical_semantic_queue，优先级 low。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-P1-2-PROOF-CHAIN-FAMILY` | 67 个 dossier 处于 family_context_only，优先级 normal。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-P2-THROUGHPUT-TRACKED-LONGTAIL` | 2 个 dossier 处于 historical_semantic_queue，优先级 normal。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-UPPER-BOUND-TRACKED-LONGTAIL` | 5 个 dossier 处于 family_context_only，优先级 normal。 | `knowledge.build`<br>`knowledge.check` |

@@ -51,3 +51,4 @@
 - 语义迁移：roadmap 文末 owner 拍板进入上节与 `data/knowledge/decisions.jsonl`；仪表盘 §9 的开放残余进入 [ROADMAP.md](ROADMAP.md)；`CLAUDE.md` 经 manual overlay 调和（补文档系统自举段）后保留，不入 commit；耐久操作知识吸收进 [AGENT_OPERATIONS](../AGENT_OPERATIONS.md)。
 - 仪表盘 §9 的已解叙事与完整原文只保留在上述落地归档；未来路线图只列开放残余。
 - owner 于 2026-08-15 解除与「三面防污染架构审计」线的落地协调义务；该线文档层前置工作已结束。
+- owner 的 GPT Pro 项目对话三轮外部评审以逐字正文归档进入 tracked 研究面，并登记推理外环设计约束；该登记为 `non_authorizing`，推理外环仍处于未立项／概念收敛状态。

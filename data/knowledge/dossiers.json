@@ -3230,6 +3230,22 @@
       "summary": "Phase 1 wires the SMT Modulo Monotonic Theories outer pruning engine into src/search/outersearch.py behind EXACTSMTMTOUTERPRUNING=1 env flag. Phase 0 cheap-gate (Dummy inner mock) measured 76.7% prune ratio + p95 293ms + 0.43GB RSS delta + 38.6s build wall —…"
     },
     {
+      "id": "DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99",
+      "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815",
+      "entry_file": "docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md",
+      "title": "推理外环三轮外部评审归档（2026-08-15）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-08-15",
+      "topics": [
+        "other"
+      ],
+      "summary": "三份归档正文均为仓外原件的逐字节副本，不含修订、批注或归档头。"
+    },
+    {
       "id": "DOSSIER-TERMINAL-NO-SOLUTION-EVIDENCE-CONTRACT-DESIGN-V1-A9EA1B8AA3",
       "path": "docs/research/terminal_no_solution_evidence_contract_design_v1.md",
       "entry_file": "docs/research/terminal_no_solution_evidence_contract_design_v1.md",
