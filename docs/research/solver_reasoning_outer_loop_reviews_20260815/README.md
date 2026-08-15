@@ -27,6 +27,10 @@
 
 [`REASONING_OUTER_LOOP_DESIGN_CONSTRAINTS.md`](REASONING_OUTER_LOOP_DESIGN_CONSTRAINTS.md) 保存条件式设计约束和可证伪架构假设。归档与 `non_authorizing` 登记动作的许可及其非蕴含边界，只以 [`DECISION-OUTER-LOOP-REVIEW-REGISTRATION-20260815`](../../../data/knowledge/decisions.jsonl) 为准；证据链为该 decision → [`OWNER_INSTRUCTION_20260815.md`](OWNER_INSTRUCTION_20260815.md) 窄存录 → 存录内所列仓外会话转录。
 
+## Phase -1 立项前实验闸
+
+[`phase_minus1/`](phase_minus1/README.md) 保存 owner 已授权开展、但仍不产生立项的 Phase -1 证据线。该线先冻结协议和 corpus，再运行无 cap 死因谱、producer→consumer 触达与外部布局终验 canary；实验结果只能进入 owner 的第二道立项闸。
+
 ## 已知字节保真 lint debt
 
 **状态：** `ACCEPTED_KNOWN_LINT_DEBT`。

@@ -1,0 +1,216 @@
+{
+  "schema_version": "zmd_reasoning_outer_loop_phase_minus1_corpus_v1",
+  "status": "FROZEN_PRE_RUN",
+  "research_only": true,
+  "created_at": "2026-08-15",
+  "repository_base_head": "cf553bfc94194dec2bdb3ea2b2410d36b682211e",
+  "freeze_identity": "the Git commit containing this manifest and PHASE_MINUS1_PROTOCOL.md",
+  "sampling_seed": 20260815,
+  "sampling_frame": {
+    "description": "All locally available fixed-placement JSON candidates in the selected post-current-semantics and cross-line strata that were statically inspected before protocol freeze, plus the six earlier arm-off candidates retained as explicit admission exclusions.",
+    "candidate_count": 15,
+    "admitted_count": 9,
+    "excluded_count": 6,
+    "deduplication_key": "sha256 of canonical normalized placement map",
+    "independence_unit": "distinct normalized fixed placement; duplicate copies of the same incumbent count once"
+  },
+  "current_input_identities": {
+    "data/preprocessed/candidate_placements.json": "f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3",
+    "data/preprocessed/mandatory_exact_instances.json": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6",
+    "data/preprocessed/generic_io_requirements.json": "ad5125b50e607a7f3f3bf0b54fea64f93edf87cedb62e8d24f5590e1c895c44e",
+    "rules/canonical_rules.json": "c3fc3a34e67b2321048a8861a9b178c744361698a838039b0361287c9fb542c0"
+  },
+  "normalization_contract": {
+    "mandatory_instance_count": 266,
+    "pose_resolution_order": [
+      "exact facility_type plus exact pose_id lookup in the frozen current candidate pool",
+      "otherwise current pose_idx only when it is in range and the recorded anchor equals the current pose anchor"
+    ],
+    "forbidden_repairs": [
+      "coordinate inference",
+      "nearest-pose matching",
+      "guessing an ambiguous port mode",
+      "dropping a mandatory instance",
+      "changing facility_type"
+    ],
+    "ghost_sources": [
+      "embedded ghost_pick",
+      "embedded top-level ghost=[x,y,w,h] converted mechanically",
+      "the explicitly pinned sibling max-empty-rectangle record named by a corpus entry"
+    ]
+  },
+  "split": {
+    "discovery_ids": [
+      "POSTMEM-00",
+      "POSTMEM-01",
+      "POSTMEM-03",
+      "POSTMEM-04",
+      "W0-ALIGNMENT",
+      "AB16-BASELINE"
+    ],
+    "holdout_ids": [
+      "POSTMEM-02",
+      "POSTMEM-05",
+      "GREEDY-S0"
+    ],
+    "rule": "The split is frozen before any Phase -1 run. Holdout records may not contribute to family discovery or threshold selection."
+  },
+  "records": [
+    {
+      "id": "POSTMEM-00",
+      "role": "discovery",
+      "stratum": "postmem_fcl_lift",
+      "path": ".artifacts/batch4_20260718/prod_ab/fcl_lift__postmem/layouts/layout_000_0f42873c9b43.json",
+      "raw_sha256": "0f42873c9b43221469ffba98a91affad13af2747da3740935e7baf960130f69b",
+      "normalized_sha256": "77b33253e83e83ed98089c85814a92e600f04244938e2a1db8bb57395b0c332b",
+      "adapter": "top_level_pose_map",
+      "expected_record_count": 293,
+      "expected_pose_id_remaps": 1,
+      "ghost_source": "embedded_ghost_pick"
+    },
+    {
+      "id": "POSTMEM-01",
+      "role": "discovery",
+      "stratum": "postmem_fcl_lift",
+      "path": ".artifacts/batch4_20260718/prod_ab/fcl_lift__postmem/layouts/layout_001_a14a5c500105.json",
+      "raw_sha256": "a14a5c500105fa782d29508a2e2fc617a25c1b5b1ba1690681f74af83823f46f",
+      "normalized_sha256": "a144967f83c6568d5b7464f040a770f80ab9d1d20e038a5256a16595fc713216",
+      "adapter": "top_level_pose_map",
+      "expected_record_count": 289,
+      "expected_pose_id_remaps": 1,
+      "ghost_source": "embedded_ghost_pick"
+    },
+    {
+      "id": "POSTMEM-02",
+      "role": "holdout",
+      "stratum": "postmem_fcl_lift",
+      "path": ".artifacts/batch4_20260718/prod_ab/fcl_lift__postmem/layouts/layout_002_ef0b7227a62b.json",
+      "raw_sha256": "ef0b7227a62b6769035849333c162b60c32e6f38ef5457237c6a904710eaf1ee",
+      "normalized_sha256": "176d64548c30177a9c5c88c54f77bc929a7602186f32233d9fbd504ebb253369",
+      "adapter": "top_level_pose_map",
+      "expected_record_count": 292,
+      "expected_pose_id_remaps": 1,
+      "ghost_source": "embedded_ghost_pick"
+    },
+    {
+      "id": "POSTMEM-03",
+      "role": "discovery",
+      "stratum": "postmem_fcl_lift",
+      "path": ".artifacts/batch4_20260718/prod_ab/fcl_lift__postmem/layouts/layout_003_5596b65a4f37.json",
+      "raw_sha256": "5596b65a4f37fbb3aeb5ba5036eb4eabb48e9477942b49d1f1ecc15ef5efd66b",
+      "normalized_sha256": "a5116c1418d7d3d980392ad6614d5a75073d6de8d0968c473c489044f717105f",
+      "adapter": "top_level_pose_map",
+      "expected_record_count": 290,
+      "expected_pose_id_remaps": 1,
+      "ghost_source": "embedded_ghost_pick"
+    },
+    {
+      "id": "POSTMEM-04",
+      "role": "discovery",
+      "stratum": "postmem_fcl_lift",
+      "path": ".artifacts/batch4_20260718/prod_ab/fcl_lift__postmem/layouts/layout_004_776857413af5.json",
+      "raw_sha256": "776857413af5792c7d9ef4dd01d3cb84bff5904e5daaa5776ae88980d489c9f5",
+      "normalized_sha256": "1f88cbc9f21c30bd7adfb815763749086b2a48bb6da71f428326daae2266705f",
+      "adapter": "top_level_pose_map",
+      "expected_record_count": 294,
+      "expected_pose_id_remaps": 1,
+      "ghost_source": "embedded_ghost_pick"
+    },
+    {
+      "id": "POSTMEM-05",
+      "role": "holdout",
+      "stratum": "postmem_fcl_lift",
+      "path": ".artifacts/batch4_20260718/prod_ab/fcl_lift__postmem/layouts/layout_005_7048771ffd2c.json",
+      "raw_sha256": "7048771ffd2c626f5ae23466200664d4facbb9761ceebca69695ee7fb2ad5056",
+      "normalized_sha256": "eb09f977ba220da743292cf429e91250ae8a310be2f0f67850972faf6f3c6530",
+      "adapter": "top_level_pose_map",
+      "expected_record_count": 292,
+      "expected_pose_id_remaps": 1,
+      "ghost_source": "embedded_ghost_pick"
+    },
+    {
+      "id": "W0-ALIGNMENT",
+      "role": "discovery",
+      "stratum": "cross_line_fixed_layout",
+      "path": ".artifacts/w0_fixrerun_20260804/band22_alignment/registration_placement_solution.json",
+      "raw_sha256": "db85d3e18fd0fc12ba743e0fd86e38183262a24c90d28805634c952cf27103c7",
+      "normalized_sha256": "d199c88e6d65582a269ec5142b33e3d9db9294eeb0b1a25f9ee05005ff1a26aa",
+      "adapter": "solution_pose_map",
+      "expected_record_count": 292,
+      "expected_pose_id_remaps": 0,
+      "ghost_source": {
+        "path": ".artifacts/w0_fixrerun_20260804/band22_alignment/max_empty_rect_for_this_placement.json",
+        "json_pointer": "/max_admissible_empty_rect_minside_ge_6/rect",
+        "mapping": "x=x0,y=y0,w=w,h=h"
+      }
+    },
+    {
+      "id": "AB16-BASELINE",
+      "role": "discovery",
+      "stratum": "cross_line_fixed_layout",
+      "path": ".artifacts/ab16_arms_20260802/run-20260802T221714Z-r6/prospective-ab16/baseline/incumbent.json",
+      "raw_sha256": "83cc472f32219d49b2d6691430329757d2862c0d033575eebe229a69fdd6fa1c",
+      "normalized_sha256": "13f88404d7f5e4fde86929f82997a2b9850fa1cc4791d710c0363ed3e072f223",
+      "adapter": "top_level_pose_map",
+      "expected_record_count": 293,
+      "expected_pose_id_remaps": 0,
+      "ghost_source": "embedded_ghost_pick"
+    },
+    {
+      "id": "GREEDY-S0",
+      "role": "holdout",
+      "stratum": "cross_line_fixed_layout",
+      "path": ".artifacts/batch4_20260718/witness_newpool/greedy_s0/result.json",
+      "raw_sha256": "8a93b2f9cfb8617f649007126126acadee186edb826ba60f53cc93f1c1bf6207",
+      "normalized_sha256": "574a3690fda39923a5a329837940bd6508dc891c4b49d603da6ade904f89a3b7",
+      "adapter": "solution_pose_map_plus_ghost_list",
+      "expected_record_count": 267,
+      "expected_pose_id_remaps": 0,
+      "ghost_source": "top_level_ghost_list"
+    }
+  ],
+  "excluded_candidates": [
+    {
+      "id": "ARM-OFF-00",
+      "path": ".artifacts/fc_lift_ab_20260716/arm_off/arm_off_layouts/layout_000_2011ebcc2cff.json",
+      "raw_sha256": "2011ebcc2cff308f9afe7b87d62d1b619a4bccdd9a055b2b5ca4448e8cdddbc2",
+      "reason": "AMBIGUOUS_OPTIONAL_STORAGE_BOX_MIGRATION"
+    },
+    {
+      "id": "ARM-OFF-01",
+      "path": ".artifacts/fc_lift_ab_20260716/arm_off/arm_off_layouts/layout_001_5e6a95d0d2db.json",
+      "raw_sha256": "5e6a95d0d2db224cc10eff967eda14bd419581e846c58591177e339c048e628b",
+      "reason": "AMBIGUOUS_OPTIONAL_STORAGE_BOX_MIGRATION"
+    },
+    {
+      "id": "ARM-OFF-02",
+      "path": ".artifacts/fc_lift_ab_20260716/arm_off/arm_off_layouts/layout_002_b3b6be0a8d69.json",
+      "raw_sha256": "b3b6be0a8d69b7c1375f8894691487bc8bcd6717e797a17e520f7bc8edf7e33c",
+      "reason": "AMBIGUOUS_OPTIONAL_STORAGE_BOX_MIGRATION"
+    },
+    {
+      "id": "ARM-OFF-03",
+      "path": ".artifacts/fc_lift_ab_20260716/arm_off/arm_off_layouts/layout_003_5a1e599faf39.json",
+      "raw_sha256": "5a1e599faf391e900bbceae0a99c2e98acc1ad8fa8c218622e5fc0d3471b8f55",
+      "reason": "AMBIGUOUS_OPTIONAL_STORAGE_BOX_MIGRATION"
+    },
+    {
+      "id": "ARM-OFF-04",
+      "path": ".artifacts/fc_lift_ab_20260716/arm_off/arm_off_layouts/layout_004_63831c3cb587.json",
+      "raw_sha256": "63831c3cb587f158960b99f3a57c588264cb435ebcaf1fffdb6cddb5aa874814",
+      "reason": "AMBIGUOUS_OPTIONAL_STORAGE_BOX_MIGRATION"
+    },
+    {
+      "id": "ARM-OFF-05",
+      "path": ".artifacts/fc_lift_ab_20260716/arm_off/arm_off_layouts/layout_005_ddfc4a823f41.json",
+      "raw_sha256": "ddfc4a823f41dbc38c02f579a9ee94fe8de107e61812bae9f5439e35856b1020",
+      "reason": "AMBIGUOUS_OPTIONAL_STORAGE_BOX_MIGRATION"
+    }
+  ],
+  "external_witness_canary": {
+    "id": "STRICT42-V51",
+    "path": ".artifacts/band22_strict_redesign_replies_20260805/r3_strict42_v51/band22_strict42_v51_delivery/01_witness_strict42_v51.json",
+    "raw_sha256": "2050c4052bcd30f2acb3eeb21106ca14e388304531ea4b71f1d0724b1f937f0f",
+    "purpose": "D5a adapter and terminal-path canary only; never accepted as certified evidence by provenance alone"
+  }
+}
