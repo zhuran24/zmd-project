@@ -102,7 +102,7 @@ A10–A14 的原始登记与已发生事件保存在 [HISTORY](HISTORY.md) 和 [
 ### A14：求解面方法论载体与维护闭环
 
 - **目标：** 修复 §0b 的版本头滞后、`277/279` 行六问残留、双向保真与派生闭包两公理未进入本体区、“绿灯≠关门”重复陈述、APX_E 原件未进入 tracked 真源；补齐出身故事绑定无维护、拒真防线不对称、缺少反向 reseal、外发包完备性无机器闸、口述定谳在途期无登记位。
-- **前提：** 原始问题集以 [方法论地图](../research/methodology_compilation_20260814/METHODOLOGY_MAP.md) 和落地时仪表盘归档的 A14 为准；方法论 skill 继续只覆盖求解面，不接管发布或治理 authority。
+- **前提：** 原始问题集以 [方法论地图](../research/methodology_compilation_20260814/METHODOLOGY_MAP.md) 和落地时仪表盘归档的 A14 为准；方法论 skill 继续只覆盖求解面，不接管发布或治理 authority；口述定谳登记位的设计有在案先例可参考——[`DECISION-OUTER-LOOP-REVIEW-REGISTRATION-20260815`](../CATALOG.md#decision-outer-loop-review-registration-20260815) 的窄记录形态（只登记动作本身、`does_not_imply` 明列不批内容/不立项/零现行义务）。
 - **退出证据：** 判据本体有明确 canonical successor；公理、操作卡与维护触发器在单一真源闭合；APX_E 与外发包完备性进入可验证的 tracked 路径；反向 reseal 和口述定谳过渡状态有机器可见入口。
 - **非目标：** 不把方法论 skill 扩成全项目默认手册，不把历史判例改写成现态，也不从方法论登记授予数学或发布 authority。
 
