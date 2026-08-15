@@ -25,9 +25,9 @@
 | `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-RULE-SYSTEM-REDESIGN-20260807-9B23FA19D2` | active dossier 已打开 6 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
 | `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-RULES-AUDIT-20260718-A447D60E10` | active dossier 已打开 26 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
 | `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-WITNESS-CONSTRUCTOR-20260717-5F04E123B3` | active dossier 已打开 27 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
-| `info` | `DOC-AUDIT-DEPRECATED-KNOWLEDGE-REFERENCES` | `deprecated-reference-summary` | 扫描 105 份 current 手写文档，没有发现无语境的失效 claim 引用。 | `docsystem.intake`<br>`knowledge.check` |
+| `info` | `DOC-AUDIT-DEPRECATED-KNOWLEDGE-REFERENCES` | `deprecated-reference-summary` | 扫描 106 份 current 手写文档，没有发现无语境的失效 claim 引用。 | `docsystem.intake`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-EPHEMERAL-EXPIRY` | `ephemeral-registry` | 当前没有登记中的临时文档。 | `docsystem.intake`<br>`docsystem.doctor` |
-| `info` | `DOC-AUDIT-LIVING-FRESHNESS` | `living-freshness-summary` | 按 review_policy 检查了 102 份 current 文档；Git 日期仅作为重审触发器。 | `docsystem.intake`<br>`docsystem.doctor` |
+| `info` | `DOC-AUDIT-LIVING-FRESHNESS` | `living-freshness-summary` | 按 review_policy 检查了 103 份 current 文档；Git 日期仅作为重审触发器。 | `docsystem.intake`<br>`docsystem.doctor` |
 | `info` | `DOC-AUDIT-OPEN-CLAIM-QUEUE` | `CLAIM-CERTIFIED-EXISTENCE-OPEN` | 现行语义下 whole-layout 认证级存在性仍为 OPEN | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-OPEN-CLAIM-QUEUE` | `CLAIM-GENERIC-CP-SAT-SEPARATION-IMPOSSIBILITY-OPEN` | 通用 CP-SAT 传播不能替代领域分离的正式命题仍开放 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-OPEN-CLAIM-QUEUE` | `CLAIM-P2-MIN-SIDE-UPPER-OPEN` | P2.0 的 min_side 上界仍未建立 | `knowledge.build`<br>`knowledge.check` |
@@ -81,12 +81,12 @@
 | `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-LOCAL-RULES-SEMANTICS` | 3 个 dossier 处于 local_optional_queue，优先级 normal。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-LOCAL-UPPER-BOUND-AND-BAND22` | 10 个 dossier 处于 local_optional_queue，优先级 normal。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-LOCAL-WITNESS` | 6 个 dossier 处于 local_optional_queue，优先级 normal。 | `knowledge.build`<br>`knowledge.check` |
-| `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-OTHER-TRACKED-LONGTAIL` | 16 个 dossier 处于 historical_semantic_queue，优先级 low。 | `knowledge.build`<br>`knowledge.check` |
+| `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-OTHER-TRACKED-LONGTAIL` | 18 个 dossier 处于 historical_semantic_queue，优先级 low。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-P1-2-PROOF-CHAIN-FAMILY` | 67 个 dossier 处于 family_context_only，优先级 normal。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-P2-THROUGHPUT-TRACKED-LONGTAIL` | 2 个 dossier 处于 historical_semantic_queue，优先级 normal。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-UPPER-BOUND-TRACKED-LONGTAIL` | 5 个 dossier 处于 family_context_only，优先级 normal。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-WITNESS-TRACKED-LONGTAIL` | 3 个 dossier 处于 historical_semantic_queue，优先级 normal。 | `knowledge.build`<br>`knowledge.check` |
-| `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `backfill-triage-ledger` | triage ledger 最近复核于 2026-08-12，当前包含 15 个分组。 | `knowledge.build`<br>`knowledge.check` |
+| `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `backfill-triage-ledger` | triage ledger 最近复核于 2026-08-15，当前包含 15 个分组。 | `knowledge.build`<br>`knowledge.check` |
 
 ## 维护边界
 

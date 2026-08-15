@@ -1,7 +1,7 @@
 # 项目知识目录
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-14`；源摘要：`sha256:3f855ad1567c11dae188e2a676ec4fcd6d36eb7fd58fea47445b488e68180803`。
+> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:2febe6903faa914ac98bc667a99e8315c5831f322ba741ab0067a006bc5b0409`。
 
 这里登记稳定 ID。claim 回答“我们知道什么”，decision 回答“谁改变了什么规则或门”，
 dossier 回答“原始证据包在哪里”，validity profile 回答“旧结论为何失效、怎样换代、能否复用”。目录不把历史材料自动升级为当前权威。
@@ -9,9 +9,9 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 ## 覆盖概览
 
 - claim：`92` 条，其中当前 / 开放 `73` 条，带 validity profile `32` 条。
-- decision：`4` 条。
+- decision：`7` 条。
 - backfill review：`51` 条，其中 current `41` 条。
-- dossier：`204` 个，其中 tracked `149` 个、local optional `55` 个、当前证据标记 `16` 个、人工精编 `27` 个。
+- dossier：`206` 个，其中 tracked `151` 个、local optional `55` 个、当前证据标记 `16` 个、人工精编 `27` 个。
 - `docs/research/` 的一级目录和一级 Markdown 已全登记；`.artifacts/` 只登记一级目录，其路径允许在轻量 checkout 中缺失。
 
 ## Claim 索引
@@ -117,13 +117,16 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 |---|---|---|---|---|
 | [`DECISION-B6-HOLD-20260803`](#decision-b6-hold-20260803) | B6 promotion 维持不动 | `current` | `2026-08-03` | `research_governance` |
 | [`DECISION-EMPTY-RECTANGLE-STRICT-20260805`](#decision-empty-rectangle-strict-20260805) | 空矩形采用完全空地语义 | `current` | `2026-08-05` | `project_semantics` |
+| [`DECISION-LEDGER-AUTHORITY-INTERFACES-20260813`](#decision-ledger-authority-interfaces-20260813) | 文档补丁链两接口点联合结论四条通过 | `current` | `2026-08-13` | `research_governance` |
 | [`DECISION-P1-2-CLOSE-20260707`](#decision-p1-2-close-20260707) | P1.2 首次关闭并允许进入 P1.3 | `superseded` | `2026-07-07` | `phase_gate` |
 | [`DECISION-P1-2-RECLOSE-20260806`](#decision-p1-2-reclose-20260806) | 严格语义修复后重新关闭 P1.2 | `current` | `2026-08-06` | `phase_gate` |
+| [`DECISION-RULE-SYSTEM-REDESIGN-OPEN-20260813`](#decision-rule-system-redesign-open-20260813) | rule_system_redesign_20260807 线允许立项 | `current` | `2026-08-13` | `research_governance` |
+| [`DECISION-SEMANTICS-SPLIT-EXPERIMENT-FIRST-20260813`](#decision-semantics-split-experiment-first-20260813) | semantics 拆分走先实验后拍板路线 | `current` | `2026-08-13` | `research_governance` |
 
 ## Topic 索引
 
 - `p1_2-proof-chain`：72 个 dossier。
-- `other`：41 个 dossier。
+- `other`：43 个 dossier。
 - `solver-experiment`：25 个 dossier。
 - `upper-bound`：24 个 dossier。
 - `cut-framework`：19 个 dossier。
@@ -223,6 +226,8 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
+| `DOSSIER-METHODOLOGY-COMPILATION-20260814-BF49D11CCD` | `2026-08-14` | [附录 E · 管线与归属方法论（项目既有方法论权威）](<research/methodology_compilation_20260814/APX_E_pipeline_methodology.snapshot.md>)<br>本附录是本项目科学面的方法论权威：一套关于「一条知识该住在计算管线的哪一层、管线本身该怎么切、 一个结构性预设该押在哪」的判据体系。 | `other` | `historical` | `historical` |
+| `DOSSIER-PLANE-MIXING-AUDIT-20260813-176281B3F4` | `2026-08-13` | [三面防污染架构审计——发现与挂账登记（2026-08-13）](<research/plane_mixing_audit_20260813/FINDINGS.md>) | `other` | `historical` | `historical` |
 | `DOSSIER-CANONICAL-BATCH-20260808-B2462129DF` | `2026-08-08` | [BLOCKERS / 待定点（canonical 08-08 改稿草案 · v3）](<research/canonical_batch_20260808/BLOCKERS.md>)<br>--- | `rules-semantics` | `historical` | `historical` |
 | `DOSSIER-RULE-SYSTEM-REDESIGN-20260807-9B23FA19D2` | `2026-08-07` | [规则形态与推理流程重设计](<research/rule_system_redesign_20260807/FIRST_PRINCIPLES_DESIGN.md>)<br>低余量发现法、条件塌点、pairwise closure 反例、双向保真与 derived-rule 工作流的现行研究文书。 | `reasoning-system`, `rules-semantics`, `separation-method` | `active` | `current_evidence` |
 | `DOSSIER-P2-0-SPECIALIZED-20260807-C40266E222` | `2026-08-07` | [P2.0 特化推理与反例重判](<research/p2_0_specialized_20260807/README.md>)<br>台间占空自由度、作物必分支、steel_block 反例和阶梯见证的主 dossier。 | `p2-throughput` | `active` | `current_evidence` |
@@ -4303,6 +4308,29 @@ owner 选择严格解释：空矩形内不得出现任何 occupant。该决定�
 
 - **证据：** [rules/canonical_rules.json](<../rules/canonical_rules.json>)〔frozen decision projection〕；[docs/research/rules_audit_20260718/02_empty_rectangle_semantics_adjudication_20260805.md](<research/rules_audit_20260718/02_empty_rectangle_semantics_adjudication_20260805.md>)〔owner adjudication record〕
 
+<a id="decision-ledger-authority-interfaces-20260813"></a>
+
+### 文档补丁链两接口点联合结论四条通过
+
+- **Decision ID：** `DECISION-LEDGER-AUTHORITY-INTERFACES-20260813`
+- **状态：** `current`
+- **登记角色：** `non_authorizing=true`
+- **权威作用：** `research_governance`
+- **决定人：** `zhuran24`
+- **决定日期：** `2026-08-13`
+- **外部决定 ID：** `owner-ledger-authority-interfaces-20260813`
+- **外部权威源：** `docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md`
+
+owner 口头拍板通过双线联合结论四条:①decisions.jsonl 为显式非权威 append-only(non_authorizing 声明+指针必填+checker 校验指针真源+预留 ruling_event_id;档案面落地后翻转 GENERATED_PROJECTION 或退役,生成式镜像定为目标形态非现在);②claims authority 准入=knowledge checker 能且确实对当前树 tracked 机器真源核验承重字段,authority_basis 必填,历史执行收据封顶 research_authority,3 条超标条目降级;③表示标签字段名 representation_class(四类值,与 authority 正交,与 document_class 建映射),enum 扩类权留 redesign 档案面批;④四条全并进落地适配批不单开。绿灯≠关门,不产生任何 release closure。
+
+- **适用范围：** knowledge_ledger；authority_interfaces；document_governance
+
+- **直接后果：** decisions.jsonl 显式非权威化并带指针校验；claims 增加 authority_basis 与 representation_class；R3/R4/SMM4 三条 machine 条目降级 research_authority
+
+- **明确不推出：** decisions.jsonl 可独立承载 owner authority；任何数学结论的 authority 等级被本决定改变；任何 release closure
+
+- **证据：** [docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md](<history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md>)〔owner 口头拍板的落地时字节保真归档(roadmap 文末;sha256 38a5a752342d96e29542f466f3099a9668d4a6b60b04c792265cb539e04f8415)〕；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔编年史事件登记〕
+
 <a id="decision-p1-2-close-20260707"></a>
 
 ### P1.2 首次关闭并允许进入 P1.3
@@ -4350,6 +4378,52 @@ owner 在严格空地语义修复、三轮外审与 seal batch 后重新关闭 P
 - **取代决定：** DECISION-P1-2-CLOSE-20260707
 
 - **证据：** [data/review_gates/phase_1_2_spike_close.json](<../data/review_gates/phase_1_2_spike_close.json>)〔owner manual gate authority〕；[docs/research/p1_2_v99_close_kernel_sealing.md](<research/p1_2_v99_close_kernel_sealing.md>)〔tracked close-kernel anchor〕；[.artifacts/ghost_strict_fix_20260805/BLOCK_ADJUDICATION_20260806.md](<../.artifacts/ghost_strict_fix_20260805/BLOCK_ADJUDICATION_20260806.md>)〔strict-semantics repair adjudication〕（工作区可选工件）
+
+<a id="decision-rule-system-redesign-open-20260813"></a>
+
+### rule_system_redesign_20260807 线允许立项
+
+- **Decision ID：** `DECISION-RULE-SYSTEM-REDESIGN-OPEN-20260813`
+- **状态：** `current`
+- **登记角色：** `non_authorizing=true`
+- **权威作用：** `research_governance`
+- **决定人：** `zhuran24`
+- **决定日期：** `2026-08-13`
+- **外部决定 ID：** `owner-rule-system-redesign-open-20260813`
+- **外部权威源：** `docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md`
+
+owner 口头拍板(主线程 2026-08-13 当日登记):rule_system_redesign_20260807 线获准开工。入批口径未指定(缺省候选=FINAL_DESIGN 批序,批 0 零 freeze 流程批先行);OWNER_DECISION_SUMMARY.md 八项送审决定未逐项裁定,仍逐项上桌。绿灯≠关门,不产生任何 release closure。
+
+- **适用范围：** rule_system_redesign；research_line_opening
+
+- **直接后果：** rule_system_redesign_20260807 线获准开工；入批口径与八项送审决定仍待 owner 逐项裁定
+
+- **明确不推出：** 任何批次已获准执行的具体口径；OWNER_DECISION_SUMMARY 八项中的任何一项已被裁定；任何 release closure
+
+- **证据：** [docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md](<history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md>)〔owner 口头拍板的落地时字节保真归档(roadmap 文末;sha256 38a5a752342d96e29542f466f3099a9668d4a6b60b04c792265cb539e04f8415)〕；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔编年史事件登记〕
+
+<a id="decision-semantics-split-experiment-first-20260813"></a>
+
+### semantics 拆分走先实验后拍板路线
+
+- **Decision ID：** `DECISION-SEMANTICS-SPLIT-EXPERIMENT-FIRST-20260813`
+- **状态：** `current`
+- **登记角色：** `non_authorizing=true`
+- **权威作用：** `research_governance`
+- **决定人：** `zhuran24`
+- **决定日期：** `2026-08-13`
+- **外部决定 ID：** `owner-semantics-split-experiment-first-20260813`
+- **外部权威源：** `docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md`
+
+owner 口头拍板认可 semantics 拆分「先实验后拍板」路线(按 fen5 核签 §11 缺省推荐):先落传递依赖根、实测一个 canonical 批的成本,再由 owner 决定拆/不拆/整文件 SHA 进依赖根;实验属已立项 rule_system_redesign 线批 C 范围。绿灯≠关门,不产生任何 release closure。
+
+- **适用范围：** rule_system_redesign；semantics_split
+
+- **直接后果：** semantics 拆分决定推迟到实验数据之后；实验归属 redesign 线批 C
+
+- **明确不推出：** semantics 拆分方案已被选定；canonical 批成本已有实测；任何 release closure
+
+- **证据：** [docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md](<history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md>)〔owner 口头拍板的落地时字节保真归档(roadmap 文末;sha256 38a5a752342d96e29542f466f3099a9668d4a6b60b04c792265cb539e04f8415)〕；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔编年史事件登记〕
 
 
 ## Backfill review 详情

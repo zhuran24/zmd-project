@@ -1,7 +1,7 @@
 # 当前文档分区索引
 
 > 本页由 section registry 与有效 `DOC_POLICY.json` 自动生成；禁止手工修改。
-> 文档系统版本：`2.6.0`；分区摘要：`sha256:ca2b884bd08e5cd90c591b5255cd09bf60fb28a561dcff8799d3b3a7909bbd3c`。
+> 文档系统版本：`2.6.0`；分区摘要：`sha256:b2bdeef3f5e18bb753d5876cc3ba52645ab6e88c3a800c4f65275c3e5721bafd`。
 > 真源：[`data/repository_governance/document_system/sections.json`](<../data/repository_governance/document_system/sections.json>)。
 
 分区把当前文档按问题域组织起来。它不改变 authority，也不把历史 evidence 提升为现行说明。一个文档可以跨多个分区，但每个分区只有一个登记入口。
@@ -15,7 +15,7 @@
 | `repository-navigation` | [`README.md`](<../README.md>) | `manual` | 7 | 稳定仓库身份、任务路由、代码地图和 agent 最小自举入口。 |
 | `knowledge` | [`data/knowledge/README.md`](<../data/knowledge/README.md>) | `manual` | 9 | current state、claim、decision、dossier、topic、terminology 与有效性投影的写入和查询入口。 |
 | `documentation-framework` | [`docs/governance/document-system/ARCHITECTURE.md`](<governance/document-system/ARCHITECTURE.md>) | `manual` | 35 | 文档类型、继承策略、框架维护、自举恢复、职责投影、周期审计与常态交接。 |
-| `project-manual` | [`docs/项目说明/README.md`](<项目说明/README.md>) | `manual` | 23 | 稳定语义、数学背景、工作流、风险、未来路线与编年史。 |
+| `project-manual` | [`docs/项目说明/README.md`](<项目说明/README.md>) | `manual` | 24 | 稳定语义、数学背景、工作流、风险、未来路线与编年史。 |
 | `specifications` | [`specs/README.md`](<../specs/README.md>) | `manual` | 26 | 编号 specification 的规范边界、阅读顺序与非权威生态注记分流。 |
 | `operations` | [`docs/OPERATIONS.md`](<OPERATIONS.md>) | `manual` | 8 | campaign、并行、环境变量、probe、脚本、agent 操作与故障处理入口。 |
 | `research-archive` | [`docs/research/README.md`](<research/README.md>) | `manual` | 3 | dated dossier、外审、实验与 transcript 的证据边界和知识晋升入口。 |
@@ -133,6 +133,7 @@ current state、claim、decision、dossier、topic、terminology 与有效性投
 | [`docs/项目说明/26_rules_handbook.md`](<项目说明/26_rules_handbook.md>) | `normative` | `governed` | Human-readable canonical-rule interpretation and source-of-authority guide. |
 | [`docs/项目说明/27_status_dashboard.md`](<项目说明/27_status_dashboard.md>) | `generated_projection` | `generator_only` | Generated compatibility redirects to unique current, future, terminology or open-question successors. |
 | [`docs/项目说明/28_pitfalls_and_sop.md`](<项目说明/28_pitfalls_and_sop.md>) | `living` | `direct` | Operational pitfalls, fail-closed recovery patterns and recurring SOPs. |
+| [`docs/项目说明/29_solving_methodology_skill.md`](<项目说明/29_solving_methodology_skill.md>) | `living` | `direct` | Project-level solving-methodology skill source for knowledge-computation decomposition in scientific, mathematical and solver work; it summarizes and routes methodology without granting owner authority. |
 | [`docs/项目说明/README.md`](<项目说明/README.md>) **（入口）** | `living` | `direct` | Bounded project-manual front door for current guides, normative contracts, future work and history. |
 | [`docs/项目说明/REASONING_METHOD.md`](<项目说明/REASONING_METHOD.md>) | `normative` | `governed` | Reusable mathematical reasoning and separation-method design principles. |
 | [`docs/项目说明/ROADMAP.md`](<项目说明/ROADMAP.md>) | `living` | `direct` | Future-only roadmap with dependencies and exit evidence, excluding current-state copies. |

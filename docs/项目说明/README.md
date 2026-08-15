@@ -25,6 +25,7 @@
 
 - [ROADMAP.md](ROADMAP.md)：只写未来工作、依赖与退出证据，不复制当前状态。
 - [REASONING_METHOD.md](REASONING_METHOD.md)：保存仍有效的推理与管线设计方法。
+- [29_solving_methodology_skill.md](29_solving_methodology_skill.md)：求解面「知识×计算」分解方法论的项目级 skill tracked 真本。
 - [HISTORY.md](HISTORY.md)：只按日期追加编年史与迁移坐标。
 - [../history/status/](../history/status/)：退出当前职责的字节保真快照。
 

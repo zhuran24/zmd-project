@@ -2,7 +2,7 @@
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
 > 机器状态从冻结规则、义务、gate 与 exact-status 文件直接读取；研究结论从稳定 ID 账本投影。
-> 账本人工审阅日：`2026-08-14`；源摘要：`sha256:3f855ad1567c11dae188e2a676ec4fcd6d36eb7fd58fea47445b488e68180803`。
+> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:2febe6903faa914ac98bc667a99e8315c5831f322ba741ab0067a006bc5b0409`。
 
 ## 权威边界
 
@@ -1977,6 +1977,6 @@ owner 选择严格解释：空矩形内不得出现任何 occupant。该决定�
 
 - **dossier 目录覆盖：** 已登记 docs/research 一级目录与一级 Markdown，以及本机存在或被承重证据引用的 .artifacts 一级目录。轻量 checkout 可缺少 local artifact root。
 - **claim 覆盖：** Phase 4 Batch 4 CP2 迁移后共 92 条稳定 claim；CURRENT 按 claim_selection_policy 只投影当前承重子集，完整账本由 CATALOG、topic、reasoning 与 validity 页面查询。
-- **历史 claim 回填：** 第二阶段已收口：41 个 dossier 有 current review，其中 40 个为语义审阅、1 个为缺失外部根的 availability/provenance review；其余 163 个 dossier 全部且仅进入一个显式 triage group。100% inventory coverage 不等于 100% semantic review。
+- **历史 claim 回填：** 第二阶段已收口：41 个 dossier 有 current review，其中 40 个为语义审阅、1 个为缺失外部根的 availability/provenance review；其余 165 个 dossier 全部且仅进入一个显式 triage group。100% inventory coverage 不等于 100% semantic review。
 
 完整 claim、decision 与 evidence package 目录见 [CATALOG](<CATALOG.md>)；推理分类与历史回填进度见 [REASONING_LEDGER](<REASONING_LEDGER.md>)；历史反例、语义更正、实现失效与重验谱系见 [VALIDITY_LEDGER](<VALIDITY_LEDGER.md>)；语义审阅、可用性核对与长尾分诊闭包见 [BACKFILL_LEDGER](<BACKFILL_LEDGER.md>)；按稳定主题坐标查询见 [TOPIC_INDEX](<TOPIC_INDEX.md>)；规范术语与别名见 [TERMINOLOGY](<TERMINOLOGY.md>)；当前开放问题见 [OPEN_QUESTIONS](<OPEN_QUESTIONS.md>)；按问题进入项目见 [START_HERE](<START_HERE.md>)。

@@ -1,7 +1,7 @@
 # 文档职责收束验收报告
 
 > 本页由当前 `DOC_POLICY.json`、前门注册表、section registry 与 Markdown 链接图自动生成；禁止手工修改。
-> 文档系统版本：`2.6.0`；验收状态：`PASS`；审计摘要：`sha256:f84b7295c85e269f2e8174945509208c698696563969e69f0402e9e83cc1b0ad`。
+> 文档系统版本：`2.6.0`；验收状态：`BLOCKED`；审计摘要：`sha256:6f39ac0f5a16b8c16503faf744ea1a121c14eb82af8640209bfe3796f810babb`。
 
 本页回答第三阶段是否已经消除局部孤岛、重复职责、手写易变状态和经退役入口下钻。它不授予项目 authority，也不把历史证据提升为 current。
 
@@ -9,13 +9,13 @@
 
 | 项目 | 结果 |
 |---|---:|
-| current Markdown | 131 |
+| current Markdown | 132 |
 | 显式 section | 14 |
 | 生成式兼容入口 | 14 |
 | 重复 current 职责组 | 0 |
-| 手写易变状态命中 | 0 |
+| 手写易变状态命中 | 1 |
 | current → retired redirect 链接 | 0 |
-| 阻断项 | 0 |
+| 阻断项 | 1 |
 
 ## Section 局部可达性
 
@@ -26,7 +26,7 @@
 | `repository-navigation` | `README.md` | 7 | 7 | 0 |
 | `knowledge` | `data/knowledge/README.md` | 9 | 9 | 0 |
 | `documentation-framework` | `docs/governance/document-system/ARCHITECTURE.md` | 30 | 30 | 0 |
-| `project-manual` | `docs/项目说明/README.md` | 18 | 18 | 0 |
+| `project-manual` | `docs/项目说明/README.md` | 19 | 19 | 0 |
 | `specifications` | `specs/README.md` | 25 | 25 | 0 |
 | `operations` | `docs/OPERATIONS.md` | 8 | 8 | 0 |
 | `research-archive` | `docs/research/README.md` | 2 | 2 | 0 |
@@ -40,7 +40,7 @@
 
 ## 阻断项
 
-- 无。当前职责图满足登记的第三阶段收束不变量。
+- current document docs/项目说明/ROADMAP.md copies volatile state: pattern '(?<![0-9a-f])[0-9a-f]{64}(?![0-9a-f])' matched '2f6df966769372a7f412cbf2ba14ccb2c1f6caae841b1f5366d7d0691d5cce40'
 
 ## 保留边界
 

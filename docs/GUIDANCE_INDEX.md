@@ -1,7 +1,7 @@
 # 当前文档职责索引
 
 > 本页由有效 `DOC_POLICY.json` 契约、前门注册表与 section registry 自动生成；禁止手工修改。
-> 文档系统版本：`2.6.0`；职责摘要：`sha256:387717b5e89c5b8e8d611a5551ed4422b5641dbadf0e426cfe030e7306d790b1`。
+> 文档系统版本：`2.6.0`；职责摘要：`sha256:22c98b4117da4eb03f344113e80416bfd77c82858d29c9cdd57f7a51468964fc`。
 
 本页回答“哪些文档仍承担当前职责、各自唯一负责什么”。它不授予新的 authority，也不列历史证据；历史 dossier 与快照分别从 CATALOG、BACKFILL_LEDGER 和 `docs/history/` 下钻。
 
@@ -84,7 +84,7 @@
 | `locked_authority` | 1 |
 | `generated_projection` | 25 |
 | `normative` | 32 |
-| `living` | 45 |
+| `living` | 46 |
 | `governance_control` | 1 |
 | `framework_core` | 26 |
 
@@ -202,6 +202,7 @@
 | [`docs/项目说明/18_workflow_env_config.md`](<项目说明/18_workflow_env_config.md>) | `project-manual` | `explanatory` | `direct` | Environment configuration ownership, precedence and reproducibility discipline. |
 | [`docs/项目说明/19_implementation_rhythm.md`](<项目说明/19_implementation_rhythm.md>) | `project-manual` | `explanatory` | `direct` | Iteration rhythm, handoff discipline and phase-boundary maintenance protocol. |
 | [`docs/项目说明/28_pitfalls_and_sop.md`](<项目说明/28_pitfalls_and_sop.md>) | `project-manual` | `explanatory` | `direct` | Operational pitfalls, fail-closed recovery patterns and recurring SOPs. |
+| [`docs/项目说明/29_solving_methodology_skill.md`](<项目说明/29_solving_methodology_skill.md>) | `project-manual` | `explanatory` | `direct` | Project-level solving-methodology skill source for knowledge-computation decomposition in scientific, mathematical and solver work; it summarizes and routes methodology without granting owner authority. |
 | [`docs/项目说明/README.md`](<项目说明/README.md>) | `project-manual` | `current_guidance` | `direct` | Bounded project-manual front door for current guides, normative contracts, future work and history. |
 | [`docs/项目说明/ROADMAP.md`](<项目说明/ROADMAP.md>) | `project-manual` | `current_guidance` | `direct` | Future-only roadmap with dependencies and exit evidence, excluding current-state copies. |
 | [`formal/README.md`](<../formal/README.md>) | `formal-verification` | `current_guidance` | `governed` | Bounded local entrypoint for Lean replay, statement scope, axiom audit and certification boundaries. |

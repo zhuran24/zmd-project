@@ -267,7 +267,8 @@
           "17_workflow_telemetry.md",
           "18_workflow_env_config.md",
           "19_implementation_rhythm.md",
-          "28_pitfalls_and_sop.md"
+          "28_pitfalls_and_sop.md",
+          "29_solving_methodology_skill.md"
         ]
       },
       "set": {
@@ -634,6 +635,27 @@
         ]
       },
       "rationale": "Each current project-manual surface owns one mechanically distinguishable responsibility."
+    },
+    {
+      "id": "precise_purpose_16",
+      "match": {
+        "path": "29_solving_methodology_skill.md"
+      },
+      "set": {
+        "purpose": "Project-level solving-methodology skill source for knowledge-computation decomposition in scientific, mathematical and solver work; it summarizes and routes methodology without granting owner authority.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-009",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "The tracked skill source remains current and discoverable without becoming a second owner-authority surface."
     }
   ],
   "legacy_projection": {
@@ -684,6 +706,7 @@
             "docs/项目说明/26_rules_handbook.md",
             "docs/项目说明/27_status_dashboard.md",
             "docs/项目说明/28_pitfalls_and_sop.md",
+            "docs/项目说明/29_solving_methodology_skill.md",
             "docs/项目说明/README.md",
             "docs/项目说明/REASONING_METHOD.md",
             "docs/项目说明/ROADMAP.md"
