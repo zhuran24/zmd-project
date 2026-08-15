@@ -658,6 +658,8 @@ def test_phase2_topic_and_terminology_registries_are_exhaustive() -> None:
 
 
 def test_phase2_closure_generated_pages_preserve_the_coverage_boundary() -> None:
+    model = load_model(PROJECT_ROOT)
+    census = _census(model)
     backfill = (PROJECT_ROOT / "docs/BACKFILL_LEDGER.md").read_text(encoding="utf-8")
     topics = (PROJECT_ROOT / "docs/TOPIC_INDEX.md").read_text(encoding="utf-8")
     terms = (PROJECT_ROOT / "docs/TERMINOLOGY.md").read_text(encoding="utf-8")
@@ -665,9 +667,9 @@ def test_phase2_closure_generated_pages_preserve_the_coverage_boundary() -> None
     assert "semantic review" in backfill
     assert "availability/provenance" in backfill
     assert "inventory triage" in backfill
-    assert "`204`" in backfill
-    assert "`40`" in backfill
-    assert "`163`" in backfill
+    assert f"`{census['dossiers_total']}`" in backfill
+    assert f"`{census['semantic_review_dossiers']}`" in backfill
+    assert f"`{census['triaged_dossiers']}`" in backfill
     assert "TOPIC-SIX-PREDICATE-UPPER-BOUND" in topics
     assert "TERM-BACKFILL-TRIAGE" in terms
     assert "不表示内容已经语义审阅" in terms
