@@ -1,0 +1,368 @@
+{
+  "schema_version": "zmd_reasoning_outer_loop_phase_minus1_d1_compact_v1",
+  "research_only": true,
+  "non_authorizing": true,
+  "verdict": "INCONCLUSIVE",
+  "protocol_freeze_commit": "2bd28a9848a1b247a96ca2c34b1f83782f2cda11",
+  "solver_run_code_commit": "e781b5a714493ca34aa17869f01e50327571452c",
+  "aggregation_code_commit": "6e926e8be3602d40a6b7680263ecdce4f814bf1f",
+  "source_run": {
+    "run_id": "phase-minus1-r3-20260815",
+    "started_at_utc": "2026-08-15T15:42:27Z",
+    "finished_at_utc": "2026-08-15T16:09:30Z",
+    "exit_code": 0,
+    "done_marker_present": true,
+    "source_aggregate_path": ".artifacts/solver_reasoning_outer_loop_phase_minus1_20260815/phase-minus1-r3-20260815/D1_DEATH_SPECTRUM.json",
+    "source_aggregate_sha256": "92692bf5fb125736e4f2538c08f058ab7f0cc90c0284f4f47a9570e012460935",
+    "source_aggregate_schema_version": "zmd_reasoning_outer_loop_phase_minus1_d1_v2",
+    "source_aggregate_revision": "postrun_exact_journal_counts_v2"
+  },
+  "counter_semantics": {
+    "progress_counters_lower_bound": {
+      "source": "父看门狗保存的最后一份原子 progress snapshot",
+      "write_cadence": "每完成 10 次 feedback round-trip 写一次，另在主要阶段转换时写入",
+      "meaning": "只表示最后一次完整快照时已经完成的周期性下界，不是子进程被终止时的最终事件数",
+      "observed_840_interpretation": "九个布局的 routing_prechecks 都显示 840，是因为它们都越过了第 840 次快照点、但尚未来得及写第 850 次快照便被 180 秒看门狗终止。该均匀值是快照节拍现象，不能解释为九个布局都恰好执行了 840 次 precheck。"
+    },
+    "journal_derived_counts_exact": {
+      "source": "append-only event/feedback JSONL 中所有以换行完整结束的记录",
+      "meaning": "这是进程终止前已耐久落盘的精确事件数，是 D1/D2 总计的真源",
+      "tail_policy": "仅忽略可能存在的不完整末行；任一畸形完整行都应记为 journal corruption。本轮 18 份 journal 均无截断末行、无畸形完整行。"
+    }
+  },
+  "progress_snapshot_observation": {
+    "routing_precheck_lower_bounds_by_layout": {
+      "POSTMEM-00": 840,
+      "POSTMEM-01": 840,
+      "POSTMEM-02": 840,
+      "POSTMEM-03": 840,
+      "POSTMEM-04": 840,
+      "POSTMEM-05": 840,
+      "W0-ALIGNMENT": 840,
+      "AB16-BASELINE": 840,
+      "GREEDY-S0": 840
+    },
+    "uniform_routing_precheck_lower_bound": 840,
+    "authoritative_comparison_field": "layouts[].journal_derived_counts.routing_precheck_count_exact"
+  },
+  "corpus": {
+    "admitted_layout_count": 9,
+    "excluded_pre_run_count": 6,
+    "discovery_layout_count": 6,
+    "holdout_layout_count": 3,
+    "admission_status": "9_OF_9_ADMITTED",
+    "excluded_reason": "AMBIGUOUS_OPTIONAL_STORAGE_BOX_MIGRATION"
+  },
+  "terminal_observations": {
+    "layout_count": 9,
+    "terminal_counts": {
+      "UNKNOWN": 9
+    },
+    "censor_counts": {
+      "WALL_TIMEOUT_END_TO_END": 9
+    },
+    "uncensored_terminal_count": 0,
+    "minimum_uncensored_required": 6,
+    "routing_solve_count_exact": 0,
+    "d3_triggered": false
+  },
+  "journal_exact_totals": {
+    "event_record_count": 7578,
+    "selection_bearing_event_count": 7578,
+    "routing_precheck_count": 7578,
+    "routing_front_blocked_count": 7578,
+    "routing_solve_count": 0,
+    "feedback_applied_count": 7578,
+    "feedback_outcome_count": 7569,
+    "feedback_effect_count": 7569,
+    "feedback_pending_at_censor_count": 9
+  },
+  "actual_feedback_families": [
+    {
+      "family_key": "routing_front_blocked|routing_precheck|point_nogood|UNCENSORED",
+      "reason": "routing_front_blocked",
+      "gate_side": "routing_precheck",
+      "feedback_form": "point_nogood",
+      "event_evidence_status": "UNCENSORED",
+      "terminal_censor_status": "WALL_TIMEOUT_END_TO_END",
+      "event_count": 7578,
+      "layout_count": 9,
+      "strata_count": 2,
+      "binding_selection_safe_reject_count": 7578,
+      "support_core_status": "AVAILABLE_REPLAYED",
+      "diagnostic_replay_status": "REPLAYED_IDENTICAL",
+      "uncensored_discovery_layout_count": 0,
+      "eligible_for_d3": false,
+      "ineligibility_reason": "0/9 terminal observations were uncensored, below the frozen 6/9 floor; the actual consumer also remained a full-selection point nogood."
+    }
+  ],
+  "d3_gate": {
+    "required_uncensored_terminal_observations": 6,
+    "observed_uncensored_terminal_observations": 0,
+    "diagnostic_local_family_candidate_count": 138,
+    "compiled_family_count": 0,
+    "paired_holdout_ab_executed": false,
+    "status": "NOT_OPENED_BY_FROZEN_PROTOCOL"
+  },
+  "layouts": [
+    {
+      "layout_id": "POSTMEM-00",
+      "split": "discovery",
+      "stratum": "postmem_fcl_lift",
+      "terminal_status": "UNKNOWN",
+      "censor_status": "WALL_TIMEOUT_END_TO_END",
+      "progress_routing_prechecks_lower_bound": 840,
+      "journal_derived_counts": {
+        "routing_precheck_count_exact": 841,
+        "routing_prechecks_after_last_progress_snapshot": 1,
+        "feedback_applied_count": 841,
+        "feedback_outcome_count": 840,
+        "feedback_pending_at_censor_count": 1,
+        "routing_solve_count": 0,
+        "unique_selection_digest_count": 841,
+        "unique_local_signature_digest_count": 213,
+        "stable_local_signature_count": 45
+      }
+    },
+    {
+      "layout_id": "POSTMEM-01",
+      "split": "discovery",
+      "stratum": "postmem_fcl_lift",
+      "terminal_status": "UNKNOWN",
+      "censor_status": "WALL_TIMEOUT_END_TO_END",
+      "progress_routing_prechecks_lower_bound": 840,
+      "journal_derived_counts": {
+        "routing_precheck_count_exact": 841,
+        "routing_prechecks_after_last_progress_snapshot": 1,
+        "feedback_applied_count": 841,
+        "feedback_outcome_count": 840,
+        "feedback_pending_at_censor_count": 1,
+        "routing_solve_count": 0,
+        "unique_selection_digest_count": 841,
+        "unique_local_signature_digest_count": 205,
+        "stable_local_signature_count": 40
+      }
+    },
+    {
+      "layout_id": "POSTMEM-02",
+      "split": "holdout",
+      "stratum": "postmem_fcl_lift",
+      "terminal_status": "UNKNOWN",
+      "censor_status": "WALL_TIMEOUT_END_TO_END",
+      "progress_routing_prechecks_lower_bound": 840,
+      "journal_derived_counts": {
+        "routing_precheck_count_exact": 841,
+        "routing_prechecks_after_last_progress_snapshot": 1,
+        "feedback_applied_count": 841,
+        "feedback_outcome_count": 840,
+        "feedback_pending_at_censor_count": 1,
+        "routing_solve_count": 0,
+        "unique_selection_digest_count": 841,
+        "unique_local_signature_digest_count": 268,
+        "stable_local_signature_count": 42
+      }
+    },
+    {
+      "layout_id": "POSTMEM-03",
+      "split": "discovery",
+      "stratum": "postmem_fcl_lift",
+      "terminal_status": "UNKNOWN",
+      "censor_status": "WALL_TIMEOUT_END_TO_END",
+      "progress_routing_prechecks_lower_bound": 840,
+      "journal_derived_counts": {
+        "routing_precheck_count_exact": 841,
+        "routing_prechecks_after_last_progress_snapshot": 1,
+        "feedback_applied_count": 841,
+        "feedback_outcome_count": 840,
+        "feedback_pending_at_censor_count": 1,
+        "routing_solve_count": 0,
+        "unique_selection_digest_count": 841,
+        "unique_local_signature_digest_count": 235,
+        "stable_local_signature_count": 42
+      }
+    },
+    {
+      "layout_id": "POSTMEM-04",
+      "split": "discovery",
+      "stratum": "postmem_fcl_lift",
+      "terminal_status": "UNKNOWN",
+      "censor_status": "WALL_TIMEOUT_END_TO_END",
+      "progress_routing_prechecks_lower_bound": 840,
+      "journal_derived_counts": {
+        "routing_precheck_count_exact": 842,
+        "routing_prechecks_after_last_progress_snapshot": 2,
+        "feedback_applied_count": 842,
+        "feedback_outcome_count": 841,
+        "feedback_pending_at_censor_count": 1,
+        "routing_solve_count": 0,
+        "unique_selection_digest_count": 842,
+        "unique_local_signature_digest_count": 324,
+        "stable_local_signature_count": 35
+      }
+    },
+    {
+      "layout_id": "POSTMEM-05",
+      "split": "holdout",
+      "stratum": "postmem_fcl_lift",
+      "terminal_status": "UNKNOWN",
+      "censor_status": "WALL_TIMEOUT_END_TO_END",
+      "progress_routing_prechecks_lower_bound": 840,
+      "journal_derived_counts": {
+        "routing_precheck_count_exact": 842,
+        "routing_prechecks_after_last_progress_snapshot": 2,
+        "feedback_applied_count": 842,
+        "feedback_outcome_count": 841,
+        "feedback_pending_at_censor_count": 1,
+        "routing_solve_count": 0,
+        "unique_selection_digest_count": 842,
+        "unique_local_signature_digest_count": 236,
+        "stable_local_signature_count": 40
+      }
+    },
+    {
+      "layout_id": "W0-ALIGNMENT",
+      "split": "discovery",
+      "stratum": "cross_line_fixed_layout",
+      "terminal_status": "UNKNOWN",
+      "censor_status": "WALL_TIMEOUT_END_TO_END",
+      "progress_routing_prechecks_lower_bound": 840,
+      "journal_derived_counts": {
+        "routing_precheck_count_exact": 845,
+        "routing_prechecks_after_last_progress_snapshot": 5,
+        "feedback_applied_count": 845,
+        "feedback_outcome_count": 844,
+        "feedback_pending_at_censor_count": 1,
+        "routing_solve_count": 0,
+        "unique_selection_digest_count": 845,
+        "unique_local_signature_digest_count": 3,
+        "stable_local_signature_count": 3
+      }
+    },
+    {
+      "layout_id": "AB16-BASELINE",
+      "split": "discovery",
+      "stratum": "cross_line_fixed_layout",
+      "terminal_status": "UNKNOWN",
+      "censor_status": "WALL_TIMEOUT_END_TO_END",
+      "progress_routing_prechecks_lower_bound": 840,
+      "journal_derived_counts": {
+        "routing_precheck_count_exact": 840,
+        "routing_prechecks_after_last_progress_snapshot": 0,
+        "feedback_applied_count": 840,
+        "feedback_outcome_count": 839,
+        "feedback_pending_at_censor_count": 1,
+        "routing_solve_count": 0,
+        "unique_selection_digest_count": 840,
+        "unique_local_signature_digest_count": 213,
+        "stable_local_signature_count": 47
+      }
+    },
+    {
+      "layout_id": "GREEDY-S0",
+      "split": "holdout",
+      "stratum": "cross_line_fixed_layout",
+      "terminal_status": "UNKNOWN",
+      "censor_status": "WALL_TIMEOUT_END_TO_END",
+      "progress_routing_prechecks_lower_bound": 840,
+      "journal_derived_counts": {
+        "routing_precheck_count_exact": 845,
+        "routing_prechecks_after_last_progress_snapshot": 5,
+        "feedback_applied_count": 845,
+        "feedback_outcome_count": 844,
+        "feedback_pending_at_censor_count": 1,
+        "routing_solve_count": 0,
+        "unique_selection_digest_count": 845,
+        "unique_local_signature_digest_count": 74,
+        "stable_local_signature_count": 5
+      }
+    }
+  ],
+  "diagnostic_local_family_candidates": {
+    "total_count": 138,
+    "stored_top_count": 10,
+    "compilation_status": "NOT_COMPILED",
+    "eligibility_note": "这些签名只证明局部诊断形态跨 selection/layout 重复；本轮实际 consumer 仍是 285-literal full-selection point nogood，且 D3 无删失门未开启，故不得把签名写成 sound family cut。",
+    "top": [
+      {
+        "signature": "manufacturing_3x3|power_pole|N|0,3",
+        "layout_count": 8,
+        "discovery_layout_count": 6,
+        "discovery_strata_count": 2,
+        "event_presence_count": 6709,
+        "total_blocked_port_relations": 10066
+      },
+      {
+        "signature": "manufacturing_3x3|power_pole|N|1,3",
+        "layout_count": 8,
+        "discovery_layout_count": 6,
+        "discovery_strata_count": 2,
+        "event_presence_count": 2553,
+        "total_blocked_port_relations": 5274
+      },
+      {
+        "signature": "manufacturing_3x3|power_pole|S|1,-2",
+        "layout_count": 8,
+        "discovery_layout_count": 6,
+        "discovery_strata_count": 2,
+        "event_presence_count": 48,
+        "total_blocked_port_relations": 192
+      },
+      {
+        "signature": "manufacturing_3x3|manufacturing_3x3|N|0,3",
+        "layout_count": 7,
+        "discovery_layout_count": 5,
+        "discovery_strata_count": 2,
+        "event_presence_count": 5888,
+        "total_blocked_port_relations": 640083
+      },
+      {
+        "signature": "manufacturing_3x3|manufacturing_3x3|S|0,-3",
+        "layout_count": 7,
+        "discovery_layout_count": 5,
+        "discovery_strata_count": 2,
+        "event_presence_count": 5888,
+        "total_blocked_port_relations": 571110
+      },
+      {
+        "signature": "manufacturing_6x4|manufacturing_6x4|S|0,-4",
+        "layout_count": 7,
+        "discovery_layout_count": 5,
+        "discovery_strata_count": 2,
+        "event_presence_count": 5888,
+        "total_blocked_port_relations": 456707
+      },
+      {
+        "signature": "manufacturing_5x5|manufacturing_5x5|N|0,5",
+        "layout_count": 7,
+        "discovery_layout_count": 5,
+        "discovery_strata_count": 2,
+        "event_presence_count": 5888,
+        "total_blocked_port_relations": 236331
+      },
+      {
+        "signature": "manufacturing_5x5|manufacturing_5x5|S|0,-5",
+        "layout_count": 7,
+        "discovery_layout_count": 5,
+        "discovery_strata_count": 2,
+        "event_presence_count": 5888,
+        "total_blocked_port_relations": 171571
+      },
+      {
+        "signature": "manufacturing_6x4|manufacturing_6x4|N|0,4",
+        "layout_count": 7,
+        "discovery_layout_count": 5,
+        "discovery_strata_count": 2,
+        "event_presence_count": 5888,
+        "total_blocked_port_relations": 143825
+      },
+      {
+        "signature": "manufacturing_6x4|manufacturing_6x4|S|-1,-4",
+        "layout_count": 7,
+        "discovery_layout_count": 5,
+        "discovery_strata_count": 2,
+        "event_presence_count": 5888,
+        "total_blocked_port_relations": 47338
+      }
+    ]
+  }
+}

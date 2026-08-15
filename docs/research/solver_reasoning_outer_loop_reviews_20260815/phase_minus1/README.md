@@ -1,6 +1,6 @@
 # Phase -1：推理外环立项前实验闸
 
-> **状态：** 协议 v1.1 已冻结；r1 因 9/9 wall censor 判 `INCONCLUSIVE`；r2 因累计 snapshot 观测者效应主动终止；r3 compact-journal harness 待发射。
+> **状态：** 日终证据包已收口，冻结判词为 `INCONCLUSIVE`；r3 已 `.DONE / EXIT_CODE=0`，9/9 wall censor、0/9 uncensored terminal，D3/D4 按协议未打开；待 sol 事后机械审计。
 > **性质：** `non_authorizing / research_only`。本目录记录立项前证据，不产生推理外环立项、认证结论或发布权限。
 
 ## 冻结入口
@@ -16,6 +16,11 @@
 - [`phase_minus1_harness_r3.py`](phase_minus1_harness_r3.py)：tiny progress + append-only compact event/feedback journals；实际消费形式按 `point_nogood` 记账。
 - [`launch_phase_minus1_batch_r3.sh`](launch_phase_minus1_batch_r3.sh)：r3 launcher。
 - [`D5A_EXTERNAL_WITNESS_CANARY.md`](D5A_EXTERNAL_WITNESS_CANARY.md)：外部完整布局进入当前终验链的管道分析。
+- [`D1_DEATH_SPECTRUM.json`](D1_DEATH_SPECTRUM.json)：紧凑死因谱，明确区分 progress 周期快照下界与 append-only journal 精确计数。
+- [`D2_REACHABILITY_MANIFEST.json`](D2_REACHABILITY_MANIFEST.json)：injected/organic producer→consumer 触达、effect 与三态分类。
+- [`BATCH_SUMMARY.md`](BATCH_SUMMARY.md)：r3 批次摘要与逐布局精确计数。
+- [`EVIDENCE_MANIFEST.json`](EVIDENCE_MANIFEST.json)：tracked 小工件与 `.artifacts` 原始 journals/logs 的 SHA-256 绑定。
+- [`GO_NO_GO.md`](GO_NO_GO.md)：提交 owner 的冻结判词、限界与建议动作。
 
 ## 顺序纪律
 
@@ -30,7 +35,7 @@
 ## 命令
 
 ```bash
-.venv/bin/python docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/phase_minus1_harness.py validate
+.venv/bin/python docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/phase_minus1_harness_r3.py validate
 bash docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/launch_phase_minus1_batch_r3.sh
 ```
 

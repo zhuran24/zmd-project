@@ -1,0 +1,73 @@
+{
+  "schema_version": "zmd_reasoning_outer_loop_phase_minus1_d2_compact_v1",
+  "research_only": true,
+  "non_authorizing": true,
+  "verdict": "EFFECT_NO_TERMINAL",
+  "protocol_freeze_commit": "2bd28a9848a1b247a96ca2c34b1f83782f2cda11",
+  "solver_run_code_commit": "e781b5a714493ca34aa17869f01e50327571452c",
+  "aggregation_code_commit": "6e926e8be3602d40a6b7680263ecdce4f814bf1f",
+  "source_artifact": {
+    "path": ".artifacts/solver_reasoning_outer_loop_phase_minus1_20260815/phase-minus1-r3-20260815/D2_REACHABILITY_MANIFEST.json",
+    "sha256": "c55569f0d53071b3a3701628f6e4f1f016421a38563d9841c16301611baba2ff",
+    "schema_version": "zmd_reasoning_outer_loop_phase_minus1_d2_v2"
+  },
+  "required_failure_classes": [
+    "NOT_REACHED",
+    "REACHED_NO_EFFECT",
+    "EFFECT_NO_TERMINAL"
+  ],
+  "injected": {
+    "layout_id": "POSTMEM-00",
+    "producer": "injected_selection_nogood",
+    "registry_status": "REGISTERED",
+    "resolver_status": "RESOLVED",
+    "consumer_status": "APPLIED",
+    "feedback_form": "point_nogood",
+    "literal_count": 285,
+    "first_status": "FEASIBLE",
+    "first_selection_digest": "a9b3f926a8d057e130b9250cb34b69d4e130f6d96edc65c83c279adce8defc60",
+    "second_status": "FEASIBLE",
+    "second_selection_digest": "6c8ae0633f85a4ed44e4778bb2fa4aaba2954ffec003673472bda74f4e6eed92",
+    "effect": true,
+    "reachability_failure_class": "EFFECT_NO_TERMINAL",
+    "terminal_outcome": null,
+    "wall_seconds": 0.24952282098820433
+  },
+  "organic": {
+    "producer": "routing_precheck:front_blocked",
+    "consumer": "PortBindingModel.add_nogood_cut",
+    "feedback_form": "point_nogood",
+    "literal_count_distribution": {
+      "285": 7578
+    },
+    "registry_status_distribution": {
+      "REGISTERED": 7578
+    },
+    "resolver_status_distribution": {
+      "RESOLVED": 7578
+    },
+    "consumer_status_distribution": {
+      "APPLIED": 7578
+    },
+    "feedback_applied_count": 7578,
+    "feedback_outcome_count": 7569,
+    "feedback_effect_count": 7569,
+    "feedback_pending_at_censor_count": 9,
+    "next_status_distribution": {
+      "FEASIBLE": 7569
+    },
+    "reachability_failure_class_distribution": {
+      "EFFECT_NO_TERMINAL": 7569
+    },
+    "not_reached_count": 0,
+    "reached_no_effect_count": 0,
+    "effect_no_terminal_count": 7569,
+    "terminal_outcome_count": 0
+  },
+  "interpretation": {
+    "consumer_reachability": "PROVEN_REACHED_BY_INJECTED_AND_ORGANIC_RECEIPTS",
+    "consumer_effect": "PROVEN_FOR_ALL_7569_COMPLETED_ORGANIC_OUTCOMES_AND_THE_INJECTED_CANARY",
+    "terminal_effect": "NOT_OBSERVED_WITHIN_FROZEN_BUDGET",
+    "scope_limit": "所有已消费反馈仍是完整 285-literal binding-selection point nogood；本工件不证明局部诊断签名已经 sound 编译成 family/domain feedback。"
+  }
+}
