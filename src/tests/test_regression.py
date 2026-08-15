@@ -155,8 +155,8 @@ def test_parallel_configuration_doc_exists_and_is_linked_from_pipeline_spec() ->
     doc_text = (project_root / "docs" / "parallel_configuration.md").read_text(encoding="utf-8")
     spec_text = (project_root / "specs" / "11_pipeline_orchestration.md").read_text(encoding="utf-8")
 
-    assert "48GB" in doc_text
-    assert "parallel_processes" in doc_text
+    assert "profile the actual host and artifact set" in doc_text
+    assert "src/models/cp_sat_worker_config.py" in doc_text
     assert "docs/parallel_configuration.md" in spec_text
 
 
