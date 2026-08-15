@@ -1094,6 +1094,10 @@ def _aggregate(output_dir: Path, manifest: Mapping[str, Any]) -> None:
     pending_feedbacks = 0
     last_stage_counts: Counter[str] = Counter()
     per_layout_journal: dict[str, dict[str, Any]] = {}
+    per_layout_exact: dict[str, dict[str, Any]] = {}
+    total_event_records = 0
+    total_selection_bearing_events = 0
+    total_routing_solve_events = 0
 
     for result in results:
         layout_id = str(result["layout_id"])
@@ -1114,9 +1118,63 @@ def _aggregate(output_dir: Path, manifest: Mapping[str, Any]) -> None:
             "feedback_journal": _journal_summary(feedback_path),
         }
 
+        event_records = event_read.records
+        total_event_records += len(event_records)
+        selection_digests = {
+            str(event["selection_digest"])
+            for event in event_records
+            if event.get("selection_digest")
+        }
+        local_signature_digests = Counter(
+            str(event["local_signature_digest"])
+            for event in event_records
+            if event.get("local_signature_digest")
+        )
+        signature_layout_presence: Counter[str] = Counter()
+        precheck_failure_count = 0
+        routing_solve_event_count = 0
+        for event in event_records:
+            if event.get("selection_digest"):
+                total_selection_bearing_events += 1
+            if event.get("record_type") == "routing_precheck_failure":
+                precheck_failure_count += 1
+            if event.get("record_type") in {"routing_solve_failure", "layout_feasible"}:
+                routing_solve_event_count += 1
+            for signature in event.get("local_signature_counts", {}):
+                signature_layout_presence[str(signature)] += 1
+        total_routing_solve_events += routing_solve_event_count
+        dominant_digest_count = (
+            local_signature_digests.most_common(1)[0][1]
+            if local_signature_digests
+            else 0
+        )
+        per_layout_exact[layout_id] = {
+            "event_record_count": len(event_records),
+            "unique_selection_digest_count": len(selection_digests),
+            "precheck_failure_event_count": precheck_failure_count,
+            "routing_solve_event_count": routing_solve_event_count,
+            "routing_precheck_count_exact": (
+                precheck_failure_count + routing_solve_event_count
+            ),
+            "unique_local_signature_digest_count": len(local_signature_digests),
+            "selection_to_local_digest_ratio": (
+                len(selection_digests) / len(local_signature_digests)
+                if local_signature_digests
+                else None
+            ),
+            "dominant_local_digest_count": dominant_digest_count,
+            "dominant_local_digest_share": (
+                dominant_digest_count / len(event_records) if event_records else None
+            ),
+            "stable_local_signature_count": sum(
+                count == len(event_records)
+                for count in signature_layout_presence.values()
+            ),
+            "local_signature_count": len(signature_layout_presence),
+        }
+
         seen_family: set[str] = set()
-        seen_signature: set[str] = set()
-        for event in event_read.records:
+        for event in event_records:
             family_key = str(event.get("familyKey", ""))
             if family_key and family_key not in seen_family:
                 seen_family.add(family_key)
@@ -1143,24 +1201,38 @@ def _aggregate(output_dir: Path, manifest: Mapping[str, Any]) -> None:
                     signature_layouts[signature].add(layout_id)
                     signature_strata[signature].add(stratum)
                     signature_splits[signature].add(split)
-                    seen_signature.add(signature)
                     if split == "discovery":
                         signature_discovery_layouts[signature].add(layout_id)
                         signature_discovery_strata[signature].add(stratum)
-        del seen_signature
-
         pairs = _feedback_pairs(feedback_read.records)
+        layout_applied = 0
+        layout_outcomes = 0
+        layout_effects = 0
+        layout_pending = 0
         for pair in pairs.values():
             if "feedback_applied" in pair:
                 organic_applied += 1
+                layout_applied += 1
             outcome = pair.get("feedback_outcome")
             if outcome is None:
                 pending_feedbacks += 1
+                layout_pending += 1
                 continue
             organic_outcomes += 1
-            organic_effects += bool(outcome.get("effect"))
+            layout_outcomes += 1
+            effect = bool(outcome.get("effect"))
+            organic_effects += effect
+            layout_effects += effect
             failure_class = outcome.get("reachabilityFailureClass")
             organic_failure_classes[str(failure_class)] += 1
+        per_layout_exact[layout_id].update(
+            {
+                "feedback_applied_count": layout_applied,
+                "feedback_outcome_count": layout_outcomes,
+                "feedback_effect_count": layout_effects,
+                "feedback_pending_at_censor_count": layout_pending,
+            }
+        )
 
     actual_families = []
     eligible_families = []
@@ -1236,8 +1308,67 @@ def _aggregate(output_dir: Path, manifest: Mapping[str, Any]) -> None:
         )
     )
 
+    progress_precheck_lower_bounds = {
+        str(item["layout_id"]): int(
+            dict(item.get("counters", {})).get("routing_prechecks", 0)
+        )
+        for item in results
+    }
+    unique_progress_precheck_values = sorted(set(progress_precheck_lower_bounds.values()))
+    uniform_progress_precheck_value = (
+        unique_progress_precheck_values[0]
+        if len(unique_progress_precheck_values) == 1
+        else None
+    )
+
+    layout_receipts = []
+    for item in results:
+        layout_id = str(item["layout_id"])
+        progress_lower_bound = dict(item.get("counters", {}))
+        journal_exact = dict(per_layout_exact.get(layout_id, {}))
+        exact_prechecks = int(journal_exact.get("routing_precheck_count_exact", 0))
+        lower_prechecks = int(progress_lower_bound.get("routing_prechecks", 0))
+        exact_feedback_applied = int(
+            journal_exact.get("feedback_applied_count", 0)
+        )
+        lower_feedback_applied = int(
+            progress_lower_bound.get("binding_routing_round_trips", 0)
+        )
+        layout_receipts.append(
+            {
+                "layout_id": layout_id,
+                "stratum": item["stratum"],
+                "split": item["split"],
+                "terminalStatus": item.get("terminalStatus"),
+                "censorStatus": item.get("censorStatus"),
+                "finalReason": item.get("finalReason"),
+                "progress_counters_lower_bound": progress_lower_bound,
+                "journal_derived_counts": journal_exact,
+                "counter_reconciliation": {
+                    "routing_prechecks_progress_lower_bound": lower_prechecks,
+                    "routing_prechecks_journal_exact": exact_prechecks,
+                    "routing_prechecks_after_last_progress_snapshot": max(
+                        0,
+                        exact_prechecks - lower_prechecks,
+                    ),
+                    "feedback_applied_progress_lower_bound": (
+                        lower_feedback_applied
+                    ),
+                    "feedback_applied_journal_exact": exact_feedback_applied,
+                    "feedback_applied_after_last_progress_snapshot": max(
+                        0,
+                        exact_feedback_applied - lower_feedback_applied,
+                    ),
+                },
+                "timings": item.get("timings", {}),
+                "total_wall_seconds": item.get("total_wall_seconds"),
+                "journals": per_layout_journal.get(layout_id, {}),
+            }
+        )
+
     spectrum = {
         "schema_version": "zmd_reasoning_outer_loop_phase_minus1_d1_v2",
+        "aggregation_revision": "postrun_exact_journal_counts_v2",
         "research_only": True,
         "harness_revision": HARNESS_REVISION,
         "protocol_freeze_commit": base.PROTOCOL_FREEZE_COMMIT,
@@ -1245,6 +1376,57 @@ def _aggregate(output_dir: Path, manifest: Mapping[str, Any]) -> None:
         "layout_count": len(results),
         "uncensored_terminal_count": len(uncensored),
         "minimum_uncensored_required": 6,
+        "total_event_records": total_event_records,
+        "total_selection_bearing_events": total_selection_bearing_events,
+        "total_routing_solve_events": total_routing_solve_events,
+        "counter_semantics": {
+            "progress_counters_lower_bound": {
+                "source": (
+                    "the last atomic progress snapshot copied into the parent "
+                    "watchdog receipt"
+                ),
+                "write_cadence": (
+                    f"every {PROGRESS_EVERY_N_FEEDBACKS} completed feedback "
+                    "round-trips, plus major stage transitions"
+                ),
+                "meaning": (
+                    "a periodic lower bound at the last completed snapshot, not "
+                    "the terminal event count"
+                ),
+                "uniform_value_warning": (
+                    "equal values across layouts can be a snapshot-cadence artifact; "
+                    "the observed 840 values mean each child passed the 840 checkpoint "
+                    "before watchdog termination, not that each child executed exactly "
+                    "840 prechecks"
+                ),
+            },
+            "journal_derived_counts_exact": {
+                "source": (
+                    "complete newline-terminated records in the append-only event "
+                    "and feedback JSONL journals"
+                ),
+                "meaning": (
+                    "the exact durable count before process termination; these counts "
+                    "are authoritative for D1/D2 event totals"
+                ),
+                "tail_policy": (
+                    "an incomplete final line is excluded; any malformed complete "
+                    "line is reported as journal corruption"
+                ),
+            },
+        },
+        "progress_snapshot_observation": {
+            "routing_precheck_lower_bounds_by_layout": (
+                progress_precheck_lower_bounds
+            ),
+            "uniform_routing_precheck_lower_bound": (
+                uniform_progress_precheck_value
+            ),
+            "interpretation": (
+                "This field describes the watchdog snapshot cadence only. Compare "
+                "each value with layout_receipts[].journal_derived_counts."
+            ),
+        },
         "terminal_counts": dict(sorted(terminal_counts.items())),
         "censor_counts": dict(sorted(censor_counts.items())),
         "actual_feedback_families": actual_families,
@@ -1253,21 +1435,7 @@ def _aggregate(output_dir: Path, manifest: Mapping[str, Any]) -> None:
         "diagnostic_local_family_candidates": diagnostic_candidates[:100],
         "diagnostic_candidate_count": len(diagnostic_candidates),
         "last_observed_stage_counts": dict(sorted(last_stage_counts.items())),
-        "layout_receipts": [
-            {
-                "layout_id": item["layout_id"],
-                "stratum": item["stratum"],
-                "split": item["split"],
-                "terminalStatus": item.get("terminalStatus"),
-                "censorStatus": item.get("censorStatus"),
-                "finalReason": item.get("finalReason"),
-                "counters": item.get("counters", {}),
-                "timings": item.get("timings", {}),
-                "total_wall_seconds": item.get("total_wall_seconds"),
-                "journals": per_layout_journal.get(str(item["layout_id"]), {}),
-            }
-            for item in results
-        ],
+        "layout_receipts": layout_receipts,
     }
     base._write_json(output_dir / "D1_DEATH_SPECTRUM.json", spectrum)
 
@@ -1307,22 +1475,24 @@ def _aggregate(output_dir: Path, manifest: Mapping[str, Any]) -> None:
         f"- Diagnostic local family candidates: `{len(diagnostic_candidates)}`; all remain `NOT_COMPILED`.",
         f"- Organic feedback applied/outcomes/effects/pending: `{organic_applied}` / `{organic_outcomes}` / `{organic_effects}` / `{pending_feedbacks}`.",
         f"- Injected effect: `{d2['injected_effect']}`.",
+        f"- Exact journal events: `{total_event_records}`; routing-solve events: `{total_routing_solve_events}`.",
         "",
         "## Layouts",
         "",
-        "| ID | split | terminal | censor | proposals | prechecks | routing solves | journal s | wall s |",
-        "|---|---|---|---|---:|---:|---:|---:|---:|",
+        "| ID | split | terminal | censor | exact prechecks | routing solves | unique local digests | stable signatures | journal s | wall s |",
+        "|---|---|---|---|---:|---:|---:|---:|---:|---:|",
     ]
     for item in spectrum["layout_receipts"]:
-        counters = item.get("counters", {})
+        exact = item.get("journal_derived_counts", {})
         timings = item.get("timings", {})
         wall = item.get("total_wall_seconds")
         wall_text = f"{float(wall):.2f}" if isinstance(wall, (int, float)) else "—"
         lines.append(
             f"| `{item['layout_id']}` | `{item['split']}` | `{item['terminalStatus']}` | "
-            f"`{item['censorStatus']}` | {int(counters.get('binding_proposals', 0))} | "
-            f"{int(counters.get('routing_prechecks', 0))} | "
-            f"{int(counters.get('routing_solves', 0))} | "
+            f"`{item['censorStatus']}` | {int(exact.get('precheck_failure_event_count', 0))} | "
+            f"{int(exact.get('routing_solve_event_count', 0))} | "
+            f"{int(exact.get('unique_local_signature_digest_count', 0))} | "
+            f"{int(exact.get('stable_local_signature_count', 0))} | "
             f"{float(timings.get('journal_seconds', 0.0)):.3f} | {wall_text} |"
         )
     lines.extend(("", "## Leading diagnostic local signatures", ""))
