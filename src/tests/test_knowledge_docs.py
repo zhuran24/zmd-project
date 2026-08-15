@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from dataclasses import replace
 from pathlib import Path
 import sys
 
@@ -24,6 +25,7 @@ from devtools.build_knowledge_docs import (  # noqa: E402
     _validate_validity_profile,
     check_repository,
     load_model,
+    render_backfill_ledger,
 )
 
 
@@ -117,6 +119,33 @@ def test_open_questions_projection_is_exact_and_deduplicated() -> None:
         assert f"`{claim_id}`" in page
     assert "CLAIM-ZERO-SLACK-AUDIT-METHOD" not in page
     assert "100% inventory coverage" not in page
+
+
+def test_active_workflow_with_current_review_counts_once_and_stays_out_of_triage() -> None:
+    model = load_model(PROJECT_ROOT)
+    dossier_id = "DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99"
+    dossier = deepcopy(model.dossier_by_id[dossier_id])
+    review = deepcopy(model.current_review_by_dossier[dossier_id])
+    dossiers = deepcopy(model.dossiers)
+    dossiers["records"] = [dossier]
+    triage = deepcopy(model.backfill_triage)
+    triage["groups"] = []
+    fixture = replace(
+        model,
+        dossiers=dossiers,
+        backfill_reviews=(review,),
+        backfill_triage=triage,
+    )
+
+    page = render_backfill_ledger(fixture, "fixture")
+
+    assert "- dossier 总数：`1`。" in page
+    assert "- current review：`1`，其中语义审阅 `1`，availability/provenance-only `0`。" in page
+    assert "- 尚无 current review、但已进入唯一 triage group：`0`。" in page
+    assert "- 新写入流程中尚未关闭的 active dossier：`1`；其中已有 current review `1`；open workflow 不进入历史 triage。" in page
+    assert "- inventory coverage：`1/1`。" in page
+    assert "- semantic review coverage：`1/1`。" in page
+    assert "| [`TRIAGE-" not in page
 
 
 def test_backfill_batches_preserve_generic_propagation_evidence_boundary() -> None:
@@ -258,6 +287,7 @@ def test_evidence_storage_contract_separates_durability_layers() -> None:
         for item in record["evidence"]
     ]
     assert {item["storage"] for item in all_evidence} == {
+        "external_root",
         "git_tracked",
         "workspace_untracked",
     }
@@ -265,9 +295,14 @@ def test_evidence_storage_contract_separates_durability_layers() -> None:
         if item["storage"] == "git_tracked":
             assert item["path"] in model.tracked_paths
             assert item.get("optional", False) is False
-        else:
+        elif item["storage"] == "workspace_untracked":
             assert item["path"] not in model.tracked_paths
             assert item["optional"] is True
+        else:
+            assert item["storage"] == "external_root"
+            assert item["path"] not in model.tracked_paths
+            assert item["optional"] is True
+            assert item["note"].strip()
 
     with pytest.raises(KnowledgeError, match="workspace_untracked evidence must be optional"):
         _validate_evidence(

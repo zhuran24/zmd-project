@@ -1,7 +1,7 @@
 # 项目知识目录
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:1dec48b6ae04876fc3443fb12d856b0008fbc8edd60c00c91f5dd654ef68659f`。
+> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:3a4b4e9d5298f0647ed57998960ed1c62ea69b89c5c73a27b0d40ac3a78317bd`。
 
 这里登记稳定 ID。claim 回答“我们知道什么”，decision 回答“谁改变了什么规则或门”，
 dossier 回答“原始证据包在哪里”，validity profile 回答“旧结论为何失效、怎样换代、能否复用”。目录不把历史材料自动升级为当前权威。
@@ -4346,7 +4346,7 @@ owner 拍板通过三面防污染架构审计线与文档评审线的联合结�
 - **决定人：** `zhuran24`
 - **决定日期：** `2026-08-15`
 - **外部决定 ID：** `owner-outer-loop-review-registration-20260815`
-- **外部权威源：** `docs/项目说明/HISTORY.md`
+- **外部权威源：** `docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md`
 
 owner 允许归档三轮外部评审并以 non_authorizing 形态登记设计约束。
 
@@ -4356,7 +4356,7 @@ owner 允许归档三轮外部评审并以 non_authorizing 形态登记设计约
 
 - **明确不推出：** 原登记八条内容及本次评审修复新增的指针型登记项获得批准；推理外环获得立项；对现行树新增义务
 
-- **证据：** [docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔owner 登记许可的 authority source〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
+- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
 
 <a id="decision-p1-2-close-20260707"></a>
 

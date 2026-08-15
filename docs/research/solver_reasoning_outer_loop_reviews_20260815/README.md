@@ -25,11 +25,13 @@
 
 ## 条件式登记
 
-[`REASONING_OUTER_LOOP_DESIGN_CONSTRAINTS.md`](REASONING_OUTER_LOOP_DESIGN_CONSTRAINTS.md) 保存条件式设计约束和可证伪架构假设。归档与 `non_authorizing` 登记动作的许可及其非蕴含边界，只以 [`DECISION-OUTER-LOOP-REVIEW-REGISTRATION-20260815`](../../../data/knowledge/decisions.jsonl) 为准。
+[`REASONING_OUTER_LOOP_DESIGN_CONSTRAINTS.md`](REASONING_OUTER_LOOP_DESIGN_CONSTRAINTS.md) 保存条件式设计约束和可证伪架构假设。归档与 `non_authorizing` 登记动作的许可及其非蕴含边界，只以 [`DECISION-OUTER-LOOP-REVIEW-REGISTRATION-20260815`](../../../data/knowledge/decisions.jsonl) 为准；证据链为该 decision → [`OWNER_INSTRUCTION_20260815.md`](OWNER_INSTRUCTION_20260815.md) 窄存录 → 存录内所列仓外会话转录。
 
-## 已知字节保真事项
+## 已知字节保真 lint debt
 
-第三轮归档第 502 行的 `=======` 是原文数学分式横线，`git diff --check` 会将其启发式识别为 leftover conflict marker；三份归档正文以逐字保真优先，不改写该行，也不为此增加豁免工程。
+**状态：** `ACCEPTED_KNOWN_LINT_DEBT`。
+
+复现命令 `git diff --check 3362dc7..HEAD` 会报告第三轮归档第 502 行的 `=======` 为 leftover conflict marker。该行是原文数学分式横线；三份归档正文以逐字保真优先，因此接受这项累计区间 lint debt，不改写原文，也不增加豁免工程。工作树级检查不受这项历史区间债务影响。
 
 ## Provenance
 

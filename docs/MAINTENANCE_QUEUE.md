@@ -1,7 +1,7 @@
 # 文档维护队列
 
 > 本页由周期审计注册表、policy、知识账本和生命周期真源自动生成；禁止手工修改。
-> 文档系统版本：`2.6.0`；快照日期：`2026-08-13`；profile：`phase_close`。
+> 文档系统版本：`2.6.0`；快照日期：`2026-08-15`；profile：`phase_close`。
 
 本页只投影维护触发器。它不建立第二套 current 状态、claim、review、triage 或 owner authority。接受某条 finding 后，仍须通过原有 intake、knowledge 或 policy 写入路径完成修复。
 
@@ -17,15 +17,15 @@
 
 | 严重度 | 检查 | 对象 | 触发器 | 后续动作 |
 |---|---|---|---|---|
-| `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-B1-SIDEWISE-MARKED-MEMBRANE-FRESH-AUTHORITY-20260727-EA260C6D6B` | active dossier 已打开 17 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
-| `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-B1-SIDEWISE-MARKED-MEMBRANE-STRICT-20260724-F275CFCFE2` | active dossier 已打开 20 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
+| `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-B1-SIDEWISE-MARKED-MEMBRANE-FRESH-AUTHORITY-20260727-EA260C6D6B` | active dossier 已打开 19 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
+| `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-B1-SIDEWISE-MARKED-MEMBRANE-STRICT-20260724-F275CFCFE2` | active dossier 已打开 22 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
 | `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-P1-2-V99-CLOSE-KERNEL-SEALING-207F650E44` | active dossier 没有可用于年龄计算的 opened_at/date；保持显式人工复核。 | `docsystem.intake`<br>`knowledge.build` |
-| `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-P2-0-AREA-BOUND-20260806-6016501B5F` | active dossier 已打开 7 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
-| `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-P2-0-SPECIALIZED-20260807-C40266E222` | active dossier 已打开 6 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
-| `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-RULE-SYSTEM-REDESIGN-20260807-9B23FA19D2` | active dossier 已打开 6 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
-| `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-RULES-AUDIT-20260718-A447D60E10` | active dossier 已打开 26 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
-| `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99` | active dossier 已打开 -2 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
-| `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-WITNESS-CONSTRUCTOR-20260717-5F04E123B3` | active dossier 已打开 27 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
+| `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-P2-0-AREA-BOUND-20260806-6016501B5F` | active dossier 已打开 9 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
+| `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-P2-0-SPECIALIZED-20260807-C40266E222` | active dossier 已打开 8 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
+| `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-RULE-SYSTEM-REDESIGN-20260807-9B23FA19D2` | active dossier 已打开 8 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
+| `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-RULES-AUDIT-20260718-A447D60E10` | active dossier 已打开 28 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
+| `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99` | active dossier 已打开 0 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
+| `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-WITNESS-CONSTRUCTOR-20260717-5F04E123B3` | active dossier 已打开 29 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
 | `info` | `DOC-AUDIT-DEPRECATED-KNOWLEDGE-REFERENCES` | `deprecated-reference-summary` | 扫描 106 份 current 手写文档，没有发现无语境的失效 claim 引用。 | `docsystem.intake`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-EPHEMERAL-EXPIRY` | `ephemeral-registry` | 当前没有登记中的临时文档。 | `docsystem.intake`<br>`docsystem.doctor` |
 | `info` | `DOC-AUDIT-LIVING-FRESHNESS` | `living-freshness-summary` | 按 review_policy 检查了 103 份 current 文档；Git 日期仅作为重审触发器。 | `docsystem.intake`<br>`docsystem.doctor` |
@@ -70,7 +70,7 @@
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260812-P2-REFRESH-BATCH5` | current review 保留 2 个未决项；重审触发：P2.0 area ledger、OB6 条件、route-state 计数或本地 receipt provenance 发生变化时。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260812-SMM4-LOCAL-AUTHORITY-AVAILABILITY-BATCH5` | current review 保留 1 个未决项；重审触发：外部 authority root 可用、其 manifest/hash 变化，或六谓词 research ledger 的 authority 链被重开时。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260815-SOLVER-REASONING-OUTER-LOOP-GPT-PRO` | current review 保留 2 个未决项；重审触发：typed closure 决定 dossier 是否拆分，或 Phase -1 tracked 实验协议进入评审时。 | `knowledge.build`<br>`knowledge.check` |
-| `info` | `DOC-AUDIT-SNAPSHOT-AGE` | `maintenance-snapshot` | 维护投影快照日期为 2026-08-13，距本次审计 0 天。 | `docsystem.render_maintenance`<br>`docsystem.audit` |
+| `info` | `DOC-AUDIT-SNAPSHOT-AGE` | `maintenance-snapshot` | 维护投影快照日期为 2026-08-15，距本次审计 0 天。 | `docsystem.render_maintenance`<br>`docsystem.audit` |
 | `info` | `DOC-AUDIT-TERMINOLOGY-COLLISION` | `terminology-summary` | 27 个 term 的 canonical label 与 alias 没有跨 ID 碰撞。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TOPIC-COVERAGE` | `topic-summary` | 13 个 topic 的 claim、term、entry 与 open-claim 坐标完整。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-CUT-SOLVER-TRACKED-LONGTAIL` | 14 个 dossier 处于 historical_semantic_queue，优先级 normal。 | `knowledge.build`<br>`knowledge.check` |

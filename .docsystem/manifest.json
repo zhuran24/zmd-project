@@ -81,21 +81,21 @@
       },
       {
         "path": "src/tests/test_knowledge_docs.py",
-        "sha256": "89f38f8ed6b0381e8872c0e9b217b57733904aef69ad1a32f72eee08a1aced9d"
+        "sha256": "e21714319e0a51a8b7ed90ebb950ce658dc7bb466e8a11c016781a58797cc0b5"
       },
       {
         "path": "src/tests/conftest.py",
         "sha256": "8205855b6bc4b4209a1f0d478d236cdb0c711e700cd3050f051805a220712657"
       }
     ],
-    "collected_tests": 86,
+    "collected_tests": 87,
     "maximum_call": {
       "nodeid": "src/tests/test_document_system.py::test_real_repository_document_system_is_self_consistent",
-      "seconds": 3.02
+      "seconds": 3.01
     },
     "nodes_at_or_above_threshold": [],
     "slow_registry_action": "no_new_entries_required",
-    "raw_output_sha256": "911aa0751d63d67d33b13da02ea60b3494e2fef4dfa39298f6a431e28721104f"
+    "raw_output_sha256": "5bd4fb051ddb9b32414636a14debd36c760ef257fedf160fd279cada9b415b21"
   },
   "intake_protocol": {
     "source": "data/repository_governance/document_system/intake.json",

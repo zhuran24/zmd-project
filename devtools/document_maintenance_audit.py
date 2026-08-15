@@ -266,7 +266,6 @@ def _check_active_dossier_age(
     as_of: date,
     snapshot_as_of: date,
 ) -> Sequence[MaintenanceFinding]:
-    del snapshot_as_of
     system._ensure_knowledge()
     dossiers = system._dossiers or ()
     findings: list[MaintenanceFinding] = []
@@ -287,8 +286,22 @@ def _check_active_dossier_age(
                 )
             )
             continue
+        if opened_at > as_of:
+            findings.append(
+                _finding(
+                    record,
+                    "error",
+                    str(dossier["id"]),
+                    f"active dossier 的 opened_at {opened_at} 晚于维护审计日期 {as_of}（投影快照 {snapshot_as_of}）；记录晚于维护快照，快照陈旧，不能计算年龄。",
+                    path=str(dossier["path"]),
+                    opened_at=opened_at.isoformat(),
+                    as_of=as_of.isoformat(),
+                    snapshot_as_of=snapshot_as_of.isoformat(),
+                )
+            )
+            continue
         age_days = (as_of - opened_at).days
-        severity = _age_severity(max(age_days, 0), record["parameters"])
+        severity = _age_severity(age_days, record["parameters"])
         findings.append(
             _finding(
                 record,

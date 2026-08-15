@@ -2965,7 +2965,7 @@ def render_backfill_ledger(model: KnowledgeModel, source_digest: str) -> str:
         "## 维护纪律",
         "",
         "- legacy dossier 获得真实语义审阅后，新增 current review，并把它从 triage group 中移除；两步必须在同一变更中完成。",
-        "- 新 dossier 以 open workflow 登记；关闭时必须在同一变更中写 current review 与 typed closure，关闭前不会被伪装成 triage 或 semantic review。",
+        "- 新 dossier 以 open workflow 登记；open workflow 可以已经拥有 current review，但仍保持 active 且不进入 triage。关闭时必须在同一 Git-visible transaction 中新增或更新 current review，并写入 typed closure。",
         "- `availability_and_provenance` 只允许用于缺失的 local-optional 根，结果必须保持 `deferred`，不得计入 semantic review coverage。",
         "- 要断言一个 dossier 没有可复用结论，必须写 `outcome=no_reusable_claim` 的语义 review；不能从 triage disposition 推断。",
         "- 完整 claim、review 与 evidence 详情见 "

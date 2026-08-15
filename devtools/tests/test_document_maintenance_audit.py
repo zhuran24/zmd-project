@@ -17,7 +17,7 @@ from devtools.document_governance_gate import capture_git_visible_state  # noqa:
 from devtools.document_maintenance_audit import run_maintenance_audit  # noqa: E402
 
 
-def _run(system: DocumentSystem, profile: str = "weekly", as_of: str = "2026-08-13"):
+def _run(system: DocumentSystem, profile: str = "weekly", as_of: str = "2026-08-15"):
     return run_maintenance_audit(system, profile=profile, as_of=date.fromisoformat(as_of))
 
 
@@ -84,6 +84,27 @@ def test_phase_close_projection_is_fresh_and_keeps_authority_boundary_explicit()
     assert "不建立第二套 current 状态、claim、review、triage 或 owner authority" in actual
     assert "清单不自动授予 close" in actual
     assert "DOC-AUDIT-PHASE-BOUNDARY-SURFACE" in actual
+
+
+def test_active_dossier_after_audit_clock_reports_stale_snapshot() -> None:
+    system = DocumentSystem(PROJECT_ROOT)
+    system.maintenance_audit_payload = {
+        **system.maintenance_audit_payload,
+        "snapshot_as_of": "2026-08-14",
+    }
+
+    result = _run(system, as_of="2026-08-14")
+    finding = next(
+        item
+        for item in result.findings
+        if item.check_id == "DOC-AUDIT-ACTIVE-DOSSIER-AGE"
+        and item.subject == "DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99"
+    )
+
+    assert finding.severity == "error"
+    assert "记录晚于维护快照，快照陈旧" in finding.message
+    assert "已打开 -" not in finding.message
+    assert "age_days" not in finding.details
 
 
 def test_expired_ephemeral_document_is_a_mechanical_error() -> None:

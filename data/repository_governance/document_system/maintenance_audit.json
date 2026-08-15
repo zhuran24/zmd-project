@@ -1,7 +1,7 @@
 {
   "schema_version": "zmd_document_maintenance_audit_v1",
   "system_version": "2.6.0",
-  "snapshot_as_of": "2026-08-13",
+  "snapshot_as_of": "2026-08-15",
   "projection": {
     "output": "docs/MAINTENANCE_QUEUE.md",
     "generator_action": "docsystem.render_maintenance"

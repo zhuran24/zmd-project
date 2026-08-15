@@ -2,7 +2,7 @@
 
 > **分层效力：** A1–A6、A8–A9 只在推理外环获得 owner 立项裁决后约束该线设计；A7 的 Phase -1 证据协议建议可在立项前由实验设计消费，但始终为 `non_authorizing`，只约束证据可采纳性，不产生立项，也不强制任何人开跑实验。
 > **现行义务边界：** 本登记对现行树零新增义务；“架构假设”一节不是约束。
-> **登记依据：** 归档与 `non_authorizing` 登记动作的许可及其非蕴含边界，只以 [`DECISION-OUTER-LOOP-REVIEW-REGISTRATION-20260815`](../../../data/knowledge/decisions.jsonl) 为准。
+> **登记依据：** 归档与 `non_authorizing` 登记动作的许可及其非蕴含边界，只以 [`DECISION-OUTER-LOOP-REVIEW-REGISTRATION-20260815`](../../../data/knowledge/decisions.jsonl) 为准；证据链为该 decision → [`OWNER_INSTRUCTION_20260815.md`](OWNER_INSTRUCTION_20260815.md) 窄存录 → 存录内所列仓外会话转录。
 > **升格纪律：** 任何一条要从 `non_authorizing` 升为权威，升格动作必须是 owner 显式逐项拍板并留下 ruling；“用了很久没人反对”不构成升格。
 
 ## A1　三账本命题身份统一
@@ -87,11 +87,11 @@
 | 栏 | 登记 |
 |---|---|
 | **稳定概念名** | 双环与三极使用隔离。 |
-| **作用域标签** | 推理外环双向集合逼近与证据消费权限；标签不承载三极本体。 |
-| **canonical 本体指针** | [落地时 `00_master_roadmap.md` 归档](../../history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md) §0b“三极性登记／双 ledger 汇报”；当前说明坐标＝[`REASONING_METHOD.md`](../../项目说明/REASONING_METHOD.md) 同名条目与 [`29_solving_methodology_skill.md`](../../项目说明/29_solving_methodology_skill.md) §五“三极性不可混极／双 ledger／终审归精确本体”。上述正典共同承载 construct-then-verify 的使用边界；具体含义一律回正典读取。 |
-| **使用隔离登记** | 必要投影、充分限制与精确语义保持正交使用权限，不得跨极消费；尤其充分限制可比真规则更严，只能用于构造合法 witness，绝不能 lower 成上界侧必要条件。上下界两账只有在同一命题身份与同一前提根下相遇，才允许报告 optimal。 |
+| **作用域标签** | 推理外环双向集合逼近与证据消费权限；标签不承载 canonical 本体。 |
+| **canonical 本体指针** | [落地时 `00_master_roadmap.md` 归档](../../history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md) §0b“三极性登记／双 ledger 汇报”；当前说明坐标＝[`REASONING_METHOD.md`](../../项目说明/REASONING_METHOD.md) 同名条目与 [`29_solving_methodology_skill.md`](../../项目说明/29_solving_methodology_skill.md) §五。具体内容只从这些正典坐标读取。 |
+| **推理外环绑定** | 未来推理外环的所有 producer/lowerer/constructor/publisher 必须消费 canonical“三极性登记／双 ledger”义务；本条只把该义务绑定到推理外环，不重述其内容。 |
 | **独立重发现** | [`round3_semantic_compression_dual_loop_and_residual_freedom_review.md`](round3_semantic_compression_dual_loop_and_residual_freedom_review.md) 第三轮“双向逼近真实可行域”段独立重发现。 |
-| **效力边界** | `non_authorizing / research_governance`；本条只登记正典已有使用权限的未来线约束、指针、作用域标签与独立重发现关系，不复制三极本体，不改变现行 solver 或 checker。 |
+| **效力边界** | `non_authorizing / research_governance`；本条只登记 canonical 指针、作用域标签、未来线绑定与独立重发现关系，不改变现行 solver 或 checker。 |
 
 ## 架构假设（可证伪，非约束）
 
