@@ -1,7 +1,7 @@
 # 推理结论与知识回填账本
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:3a4b4e9d5298f0647ed57998960ed1c62ea69b89c5c73a27b0d40ac3a78317bd`。
+> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:93ec9fbb2276ca124bcd29718efc2e04d3e246a3756c6ed0e11f23898bbdc7f8`。
 
 本页把推理条件、操作效果、数学推导、选择/验证/消费机制与通用传播证据分开；历史结论为何失效、怎样换代和何时可复用则单列到 VALIDITY_LEDGER。
 `reasoning_profile` 描述操作效果，`derivation_profile` 描述证明角色、数学族和验证方式，`separation_profile` 描述候选来源、选择、验证、完备性和消费落点，`validity_profile` 描述反例、语义更正、实现失效、归因修正与重验；真正的关系图由 claim 的 `dependencies` 与 `supersedes` 连接。分类字段不会把 research-only 结论提升为规则、owner 决定或 production authority。
@@ -18,9 +18,9 @@
 
 ## 回填覆盖
 
-- current backfill review：`42` 个 dossier。
+- current backfill review：`43` 个 dossier。
 - tracked current-evidence dossier：`11/11` 已有 current review。
-- 全 dossier inventory：`42/207` 已有 current review。此分母只表示目录规模，不表示未审包都含有可复用 claim。
+- 全 dossier inventory：`43/208` 已有 current review。此分母只表示目录规模，不表示未审包都含有可复用 claim。
 - 当前优先覆盖承重 current-evidence、高价值数学推导链、选择/分离机制，以及历史反例、语义更正、实现失效和重验边界；术语归一与长尾材料仍待后续批次。
 
 ## 操作分类分布
@@ -227,6 +227,7 @@
 | Review | Dossier | 审阅范围 | 结果 | 提炼 claim | 未决项 |
 |---|---|---|---|---|---|
 | `REVIEW-20260815-SOLVER-REASONING-OUTER-LOOP-GPT-PRO` | [DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>) | `targeted_files` | `deferred` | — | 逐字归档与条件式约束登记是否在 typed closure 时拆成两个 dossier 尚未裁决。<br>语义可压缩性、接口可压缩性与构造可分解性仍是待实验的可证伪假设。 |
+| `REVIEW-20260815-PHASE-MINUS1-LOCAL-EVIDENCE-MECHANICAL-AUDIT` | [DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-20260815-7FA2A0E225](<../.artifacts/solver_reasoning_outer_loop_phase_minus1_20260815/phase-minus1-r1-20260815/BATCH_SUMMARY.md>) | `availability_and_provenance` | `deferred` | — | 原始运行 payload 保持 local_optional；轻量 checkout 可以缺失，恢复或重跑须依照 tracked README 与 manifest。 |
 | `REVIEW-20260812-SMM4-LOCAL-AUTHORITY-AVAILABILITY-BATCH5` | [DOSSIER-TRACK-B-B1-SIDEWISE-MARKED-MEMBRANE-FRESH-AUTHORITY-2026-2C7C3FCD74](<../.artifacts/track_b_b1_sidewise_marked_membrane_fresh_authority_20260727>) | `availability_and_provenance` | `deferred` | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>) | 需在拥有外部 root 的 checkout 中按 tracked hash/manifest 复核 payload 完整性。 |
 | `REVIEW-20260812-P2-REFRESH-BATCH5` | [DOSSIER-P2-0-REFRESH-20260805-627C980F03](<../.artifacts/p2_0_refresh_20260805/AREA_BOUND_UPGRADE_PLAN.md>) | `targeted_files` | `existing_claims_confirmed` | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER`](<CATALOG.md#claim-p2-throughput-research-ledger>) | 本 review 没有逐份复跑本地脚本、receipt 与外部求解器交叉验证。<br>AREA_BOUND_UPGRADE_PLAN 是升格前计划，不得覆盖后续 tracked theorem report 的修订口径。 |
 | `REVIEW-20260812-GHOST-STRICT-FIX-BATCH5` | [DOSSIER-GHOST-STRICT-FIX-20260805-0FBA53DB19](<../.artifacts/ghost_strict_fix_20260805/mutation_manifests_20260806/SUMMARY.md>) | `targeted_files` | `existing_claims_confirmed` | [`CLAIM-EMPTY-RECTANGLE-STRICT`](<CATALOG.md#claim-empty-rectangle-strict>) | M11 的第二次 occupancy digest 比较与 M12 的 owner 身份增量语义在该 mutation batch 中仍是预期 MISSED。<br>本 review 未把本地测试绿灯提升为新的 owner 或 production authority。 |

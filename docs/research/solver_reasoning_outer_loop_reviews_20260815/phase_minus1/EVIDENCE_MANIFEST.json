@@ -39,6 +39,14 @@
       "sha256": "8f7e33ffb477ebea7152f3163b7754eddcc64596fe67949b6f5bdfde8061de91"
     },
     {
+      "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/phase_minus1_harness.py",
+      "sha256": "81e8960738ba2c0b81f86cefb96bc87da9b2e2f81ac9073e2135192b7fb905c2"
+    },
+    {
+      "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/phase_minus1_harness_r2.py",
+      "sha256": "3d3f76b1e543e10cfc905c49c945b471cb078320b527e8a4e6d13d0e1e484d35"
+    },
+    {
       "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/phase_minus1_harness_r3.py",
       "sha256": "8aafe4016bd89649f31d466abab7edbd0f3fbe19c2beacfb4da29a6506221e28"
     },

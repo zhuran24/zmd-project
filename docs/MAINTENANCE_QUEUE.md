@@ -11,7 +11,7 @@
 |---|---:|
 | error | 0 |
 | warning | 0 |
-| info | 72 |
+| info | 74 |
 
 ## Findings
 
@@ -24,6 +24,7 @@
 | `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-P2-0-SPECIALIZED-20260807-C40266E222` | active dossier 已打开 8 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
 | `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-RULE-SYSTEM-REDESIGN-20260807-9B23FA19D2` | active dossier 已打开 8 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
 | `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-RULES-AUDIT-20260718-A447D60E10` | active dossier 已打开 28 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
+| `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-20260815-7FA2A0E225` | active dossier 已打开 0 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
 | `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99` | active dossier 已打开 0 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
 | `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-WITNESS-CONSTRUCTOR-20260717-5F04E123B3` | active dossier 已打开 29 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |
 | `info` | `DOC-AUDIT-DEPRECATED-KNOWLEDGE-REFERENCES` | `deprecated-reference-summary` | 扫描 106 份 current 手写文档，没有发现无语境的失效 claim 引用。 | `docsystem.intake`<br>`knowledge.check` |
@@ -69,6 +70,7 @@
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260812-GHOST-STRICT-FIX-BATCH5` | current review 保留 2 个未决项；重审触发：ghost occupancy、routing digest、blocked-port cut 通道、canonical empty-rectangle 语义或 owner reseal 边界变化时。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260812-P2-REFRESH-BATCH5` | current review 保留 2 个未决项；重审触发：P2.0 area ledger、OB6 条件、route-state 计数或本地 receipt provenance 发生变化时。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260812-SMM4-LOCAL-AUTHORITY-AVAILABILITY-BATCH5` | current review 保留 1 个未决项；重审触发：外部 authority root 可用、其 manifest/hash 变化，或六谓词 research ledger 的 authority 链被重开时。 | `knowledge.build`<br>`knowledge.check` |
+| `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260815-PHASE-MINUS1-LOCAL-EVIDENCE-MECHANICAL-AUDIT` | current review 保留 1 个未决项；重审触发：evidence manifest 或 payload hash 变化、运行包迁移，或 Phase -1 dossier 进入 typed closure 时。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260815-SOLVER-REASONING-OUTER-LOOP-GPT-PRO` | current review 保留 2 个未决项；重审触发：typed closure 决定 dossier 是否拆分，或 Phase -1 tracked 实验协议进入评审时。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-SNAPSHOT-AGE` | `maintenance-snapshot` | 维护投影快照日期为 2026-08-15，距本次审计 0 天。 | `docsystem.render_maintenance`<br>`docsystem.audit` |
 | `info` | `DOC-AUDIT-TERMINOLOGY-COLLISION` | `terminology-summary` | 27 个 term 的 canonical label 与 alias 没有跨 ID 碰撞。 | `knowledge.build`<br>`knowledge.check` |

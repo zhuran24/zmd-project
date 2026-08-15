@@ -727,6 +727,33 @@
       "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
     },
     {
+      "id": "DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-20260815-7FA2A0E225",
+      "path": ".artifacts/solver_reasoning_outer_loop_phase_minus1_20260815",
+      "entry_file": ".artifacts/solver_reasoning_outer_loop_phase_minus1_20260815/phase-minus1-r1-20260815/BATCH_SUMMARY.md",
+      "title": "推理外环 Phase -1 本机运行证据包（2026-08-15）",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-15",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Local-optional evidence registered through docctl; semantic outcome is pending closure review.",
+      "workflow": {
+        "opened_at": "2026-08-15",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/solver_reasoning_outer_loop_phase_minus1_20260815/EVIDENCE_MANIFEST.json",
+        "manifest_sha256": "67bd80984644c333f9cba3a777a7337c107ffcd0253b819d5e7e7aa498220df6",
+        "recovery_instructions": "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/README.md",
+        "source_locator": "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/EVIDENCE_MANIFEST.json"
+      }
+    },
+    {
       "id": "DOSSIER-SOLVER-RETHINK-20260808-47BE0A3C3A",
       "path": ".artifacts/solver_rethink_20260808",
       "entry_file": ".artifacts/solver_rethink_20260808/DESIGN_DOC_v2.md",
