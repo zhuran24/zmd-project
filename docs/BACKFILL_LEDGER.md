@@ -1,7 +1,7 @@
 # 历史知识回填与长尾覆盖
 
 > 本页由 `data/knowledge/backfill_reviews.jsonl`、`backfill_triage.json` 与 dossier registry 自动生成；禁止手工修改。
-> 账本审阅日：`2026-08-15`；源摘要：`sha256:2febe6903faa914ac98bc667a99e8315c5831f322ba741ab0067a006bc5b0409`。
+> 账本审阅日：`2026-08-15`；源摘要：`sha256:753f2c5e89e0a2ec086436e17937029c855ae619dbb6f727abcbfaeba7ce4c62`。
 
 这里把两件经常被混写的事情分开：**semantic review** 表示实际读取了声明路径并提炼知识；**inventory triage** 只保证尚未审阅的 dossier 仍可发现、只落入一个队列，并带有重开条件。分诊从不等价于 `no_reusable_claim`。
 
@@ -165,7 +165,7 @@
 
 - **处置 / 优先级：** `historical_semantic_queue` / `low`
 - **理由：** 这些 tracked 历史设计、文献、smoke、审计、方法论汇编与评审材料尚未逐份语义提炼；保留在显式队列中，不能被“已登记”误读成“已审完”或“无结论”。
-- **重开触发：** 它们被新的 claim、实现路线、外审问题或历史追溯重新引用时。
+- **重开触发：** 它们被新的 claim、实现路线、外审问题或历史追溯重新引用时；落地迁移登记 A12/A13：来源归档 docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/27_status_dashboard.md，SHA-256 2f6df966769372a7f412cbf2ba14ccb2c1f6caae841b1f5366d7d0691d5cce40；A12 触发器为「Chain B/C 批顺走」与「挂 redesign 批 5/6」；A13 交接坐标为「zmd_文档补丁链落地评审交接_20260813」。
 - **Dossier：** `DOSSIER-B1-RABSEP-ROUTING-AWARE-BINDING-20260518-E08AD6BF23；DOSSIER-D-STEP2-HINT-TRIALS-20260516-8794B39D8A；DOSSIER-LITERATURE-REVIEW-PAPERS-20260524-F002A45263；DOSSIER-METHODOLOGY-COMPILATION-20260814-BF49D11CCD；DOSSIER-P1-3-A-BATCH0-20260709-25C725D5B0；DOSSIER-P1-3-BATCH1-DESIGN-20260710-57F92742D0；DOSSIER-P1-3-F5-ORBIT-LIFT-SOUNDNESS-DESIGN-V1-291502415A；DOSSIER-P1-3-F5-ORBIT-LIFT-SOUNDNESS-DESIGN-V2-D1ACE22754；DOSSIER-P1-3-M4-RECON-20260708-3819BDF48B；DOSSIER-P1-3-M6-DIAGNOSIS-20260709-7C9DEFFA5D；DOSSIER-P2-DESIGN-EXTERNAL-REVIEWS-20260704-54F28681D7；DOSSIER-P3-0C-SIDECAR-REVIEWS-20260705-728E34B496；DOSSIER-P3-B-DESIGN-REVIEW-V14-20260521-24BD84A607；DOSSIER-PLANE-MIXING-AUDIT-20260813-176281B3F4；DOSSIER-Q1-INFEASIBILITY-CLASS-TAXONOMY-DESIGN-V1-69B91DF7A9；DOSSIER-TERMINAL-NO-SOLUTION-EVIDENCE-CONTRACT-DESIGN-V1-A9EA1B8AA3；DOSSIER-TERMINAL-NO-SOLUTION-EVIDENCE-CONTRACT-DESIGN-V2-473B668ADD；DOSSIER-V8-ANCHOR-SLICING-SMOKE-20260516-66643824CB`
 
 <a id="triage-p1-2-proof-chain-family"></a>

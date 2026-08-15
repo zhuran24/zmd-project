@@ -1,7 +1,7 @@
 # 文档职责收束验收报告
 
 > 本页由当前 `DOC_POLICY.json`、前门注册表、section registry 与 Markdown 链接图自动生成；禁止手工修改。
-> 文档系统版本：`2.6.0`；验收状态：`BLOCKED`；审计摘要：`sha256:6f39ac0f5a16b8c16503faf744ea1a121c14eb82af8640209bfe3796f810babb`。
+> 文档系统版本：`2.6.0`；验收状态：`PASS`；审计摘要：`sha256:22e3b06d387678af720f22e1eacfd7ab3594dd93d4c638b5bf04f6c647c074b1`。
 
 本页回答第三阶段是否已经消除局部孤岛、重复职责、手写易变状态和经退役入口下钻。它不授予项目 authority，也不把历史证据提升为 current。
 
@@ -13,9 +13,9 @@
 | 显式 section | 14 |
 | 生成式兼容入口 | 14 |
 | 重复 current 职责组 | 0 |
-| 手写易变状态命中 | 1 |
+| 手写易变状态命中 | 0 |
 | current → retired redirect 链接 | 0 |
-| 阻断项 | 1 |
+| 阻断项 | 0 |
 
 ## Section 局部可达性
 
@@ -40,7 +40,7 @@
 
 ## 阻断项
 
-- current document docs/项目说明/ROADMAP.md copies volatile state: pattern '(?<![0-9a-f])[0-9a-f]{64}(?![0-9a-f])' matched '2f6df966769372a7f412cbf2ba14ccb2c1f6caae841b1f5366d7d0691d5cce40'
+- 无。当前职责图满足登记的第三阶段收束不变量。
 
 ## 保留边界
 

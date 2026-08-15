@@ -1,7 +1,7 @@
 # 项目知识目录
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:2febe6903faa914ac98bc667a99e8315c5831f322ba741ab0067a006bc5b0409`。
+> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:753f2c5e89e0a2ec086436e17937029c855ae619dbb6f727abcbfaeba7ce4c62`。
 
 这里登记稳定 ID。claim 回答“我们知道什么”，decision 回答“谁改变了什么规则或门”，
 dossier 回答“原始证据包在哪里”，validity profile 回答“旧结论为何失效、怎样换代、能否复用”。目录不把历史材料自动升级为当前权威。
@@ -4321,7 +4321,7 @@ owner 选择严格解释：空矩形内不得出现任何 occupant。该决定�
 - **外部决定 ID：** `owner-ledger-authority-interfaces-20260813`
 - **外部权威源：** `docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md`
 
-owner 口头拍板通过双线联合结论四条:①decisions.jsonl 为显式非权威 append-only(non_authorizing 声明+指针必填+checker 校验指针真源+预留 ruling_event_id;档案面落地后翻转 GENERATED_PROJECTION 或退役,生成式镜像定为目标形态非现在);②claims authority 准入=knowledge checker 能且确实对当前树 tracked 机器真源核验承重字段,authority_basis 必填,历史执行收据封顶 research_authority,3 条超标条目降级;③表示标签字段名 representation_class(四类值,与 authority 正交,与 document_class 建映射),enum 扩类权留 redesign 档案面批;④四条全并进落地适配批不单开。绿灯≠关门,不产生任何 release closure。
+owner 拍板通过三面防污染架构审计线与文档评审线的联合结论四条：①decisions.jsonl 为显式非权威 append-only（non_authorizing 声明＋指针必填＋checker 校验指针真源＋预留 ruling_event_id；档案面落地后翻转 GENERATED_PROJECTION 或退役，生成式镜像定为目标形态非现在）；②claims authority 准入＝knowledge checker 能且确实对当前树 tracked 机器真源核验承重字段，authority_basis 必填，历史执行收据封顶 research_authority，3 条超标条目降级；③表示标签字段名 representation_class（四类值，与 authority 正交，与 document_class 建映射），enum 扩类权留 redesign 档案面批；④四条全并进已交回 GPT Pro 的落地适配批不单开。操作文本＝交接文档附录（文档评审线持有，owner 点头后并入）。绿灯≠关门，不产生任何 release closure。
 
 - **适用范围：** knowledge_ledger；authority_interfaces；document_governance
 
@@ -4329,7 +4329,7 @@ owner 口头拍板通过双线联合结论四条:①decisions.jsonl 为显式非
 
 - **明确不推出：** decisions.jsonl 可独立承载 owner authority；任何数学结论的 authority 等级被本决定改变；任何 release closure
 
-- **证据：** [docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md](<history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md>)〔owner 口头拍板的落地时字节保真归档(roadmap 文末;sha256 38a5a752342d96e29542f466f3099a9668d4a6b60b04c792265cb539e04f8415)〕；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔编年史事件登记〕
+- **证据：** [docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md](<history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md>)〔owner 拍板的落地时字节保真归档（roadmap 文末；sha256 38a5a752342d96e29542f466f3099a9668d4a6b60b04c792265cb539e04f8415）〕；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔编年史事件登记〕
 
 <a id="decision-p1-2-close-20260707"></a>
 
@@ -4392,7 +4392,7 @@ owner 在严格空地语义修复、三轮外审与 seal batch 后重新关闭 P
 - **外部决定 ID：** `owner-rule-system-redesign-open-20260813`
 - **外部权威源：** `docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md`
 
-owner 口头拍板(主线程 2026-08-13 当日登记):rule_system_redesign_20260807 线获准开工。入批口径未指定(缺省候选=FINAL_DESIGN 批序,批 0 零 freeze 流程批先行);OWNER_DECISION_SUMMARY.md 八项送审决定未逐项裁定,仍逐项上桌。绿灯≠关门,不产生任何 release closure。
+owner 口头拍板（主线程 2026-08-13 当日登记）：rule_system_redesign_20260807 线获准开工。入批口径未指定（缺省候选＝FINAL_DESIGN 批序，批 0 零 freeze 流程批先行）；OWNER_DECISION_SUMMARY.md 八项送审决定未逐项裁定，仍逐项上桌。绿灯≠关门，不产生任何 release closure。
 
 - **适用范围：** rule_system_redesign；research_line_opening
 
@@ -4400,7 +4400,7 @@ owner 口头拍板(主线程 2026-08-13 当日登记):rule_system_redesign_20260
 
 - **明确不推出：** 任何批次已获准执行的具体口径；OWNER_DECISION_SUMMARY 八项中的任何一项已被裁定；任何 release closure
 
-- **证据：** [docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md](<history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md>)〔owner 口头拍板的落地时字节保真归档(roadmap 文末;sha256 38a5a752342d96e29542f466f3099a9668d4a6b60b04c792265cb539e04f8415)〕；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔编年史事件登记〕
+- **证据：** [docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md](<history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md>)〔owner 口头拍板的落地时字节保真归档（roadmap 文末；sha256 38a5a752342d96e29542f466f3099a9668d4a6b60b04c792265cb539e04f8415）〕；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔编年史事件登记〕
 
 <a id="decision-semantics-split-experiment-first-20260813"></a>
 
@@ -4415,7 +4415,7 @@ owner 口头拍板(主线程 2026-08-13 当日登记):rule_system_redesign_20260
 - **外部决定 ID：** `owner-semantics-split-experiment-first-20260813`
 - **外部权威源：** `docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md`
 
-owner 口头拍板认可 semantics 拆分「先实验后拍板」路线(按 fen5 核签 §11 缺省推荐):先落传递依赖根、实测一个 canonical 批的成本,再由 owner 决定拆/不拆/整文件 SHA 进依赖根;实验属已立项 rule_system_redesign 线批 C 范围。绿灯≠关门,不产生任何 release closure。
+owner 拍板认可 semantics 拆分「先实验后拍板」路线（按 fen5 核签 §11 缺省推荐）：先落传递依赖根、实测一个 canonical 批的成本，再由 owner 决定拆/不拆/整文件 SHA 进依赖根；实验属已立项 rule_system_redesign 线批 C 范围。绿灯≠关门，不产生任何 release closure。
 
 - **适用范围：** rule_system_redesign；semantics_split
 
@@ -4423,7 +4423,7 @@ owner 口头拍板认可 semantics 拆分「先实验后拍板」路线(按 fen5
 
 - **明确不推出：** semantics 拆分方案已被选定；canonical 批成本已有实测；任何 release closure
 
-- **证据：** [docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md](<history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md>)〔owner 口头拍板的落地时字节保真归档(roadmap 文末;sha256 38a5a752342d96e29542f466f3099a9668d4a6b60b04c792265cb539e04f8415)〕；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔编年史事件登记〕
+- **证据：** [docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md](<history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md>)〔owner 拍板的落地时字节保真归档（roadmap 文末；sha256 38a5a752342d96e29542f466f3099a9668d4a6b60b04c792265cb539e04f8415）〕；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔编年史事件登记〕
 
 
 ## Backfill review 详情

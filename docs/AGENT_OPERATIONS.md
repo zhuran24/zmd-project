@@ -4,17 +4,8 @@
 
 ## 1. 解释器与环境
 
-所有项目 Python 命令使用：
-
-```bash
-.venv/bin/python
-```
-
-不要用裸 `python`、`python3` 或临时解释器替代。preflight 会先检查解释器能力，能力不满足时 fail closed。环境问题先运行：
-
-```bash
-.venv/bin/python -c "import sys; print(sys.executable); print(sys.version)"
-```
+所有项目 Python 命令使用 `.venv/bin/python`；不要用裸 `python`、`python3` 或临时解释器替代。preflight 会先检查解释器能力，能力不满足时 fail closed。
+环境问题先运行 `.venv/bin/python -c "import sys; print(sys.executable); print(sys.version)"`。
 
 外部大工件可以在轻量 checkout 中缺失。恢复方式、下载来源和完整性要求见 [`.artifacts/README.md`](../.artifacts/README.md) 与相关 dossier；不要为了让测试通过而伪造空文件或占位 hash。
 
@@ -75,7 +66,7 @@ exit "$status"
 
 不要把命令直接管给 `tail`，否则失败上下文和真实退出码可能被裁掉。
 
-预计超过 10 分钟的任务使用独立 wrapper，以 `setsid nohup` 启动并完整重定向 stdout/stderr；wrapper 必须把真实退出码写入单独状态文件，并在所有收尾完成后创建 `.DONE` 标记。终态以状态文件与标记文件联合判定，不用日志哨兵或 `pgrep -f` 猜测进程是否完成。后台任务运行期间不得启动会争用同一输出、临时目录或认证源树的副本。
+后台命令 timeout 被 clamp 到 600s。预计超过 10 分钟的任务使用独立 wrapper，以 `setsid nohup` 启动并完整重定向 stdout/stderr；wrapper 末尾把真实退出码写进日志，并在所有收尾完成后创建 `.DONE` 标记。终态以退出码日志与标记文件联合判定，不用日志哨兵或 `pgrep -f` 猜测进程是否完成。后台任务运行期间不得启动会争用同一输出、临时目录或认证源树的副本。
 
 ### 3.3 Pytest
 
@@ -110,7 +101,7 @@ exit "$status"
 .venv/bin/python devtools/check_repository_code_assets.py check
 ```
 
-checker 只证明它声明的结构没有漂移。仓库内 review receipt 即使标为 PASS，若契约注明 `informational_record_only`，也只保存信息记录，不能换取 clean-review 计数、owner decision 或 release closure。checker 不替代数学证明、外审、owner decision 或 release authority。
+checker 只证明它声明的结构没有漂移。仓库内 review receipt 是 `informational_record_only`，clean-review 计数由 owner 在仓库外维护；receipt 或 PASS 不能换取 clean-review 计数、owner decision 或 release closure。checker 不替代数学证明、外审、owner decision 或 release authority。
 
 ### 3.5 Lint 与类型
 
@@ -213,7 +204,7 @@ git diff --cached --name-status
 ```
 
 - 暂存使用本任务完整一致集的精确 pathspec，不使用 `git add -A`；提交命令同样携带精确 pathspec。裸 `git commit -m` 会把其他会话已经 staged 的文件一并提交。
-- HEAD 可能在任务进行中被其他会话推进。任何 amend、rebase 或纠错前先记录并复核当前 HEAD、目标对象与 diff；禁止用 `git reset --hard` 或 `git clean` 处理共享工作区，也不能只凭 commit message 猜对象身份。
+- HEAD 可能在任务进行中被其他会话推进。任何 amend、rebase 或纠错前先记录并复核当前 HEAD、目标对象与 diff；误 amend 时用 `git reset <对方hash>`（mixed，别 `--hard`）恢复，再按精确 pathspec 重提。禁止用 `git reset --hard` 或 `git clean` 处理共享工作区，也不能只凭 commit message 猜对象身份。
 - untracked 文件可能被并发清理。需要耐久保存的仓库资产应尽快进入精确提交；根 `CLAUDE.md` / `AGENTS.md` 这类 workspace overlay 仍按本地契约处理，不得混入 tracked 提交。
 - `scripts/package_review_snapshot.py` 读取已提交树；外审打包前先完成本任务提交，不能把工作树字节误当成快照内容。
 - 不在认证长测试运行中修改或提交承重文件。仓库没有可依赖的自动 hook 时必须手动运行门禁；hook 存在也只是辅助，不能替代最终机器验收。
@@ -225,8 +216,8 @@ git diff --cached --name-status
 - **环境变量残留**：certified 路径可能 fail closed；先检查当前 shell 和 `.env*` 的作用域。
 - **外部工件缺失**：先恢复真实 payload 和校验，不创建伪造占位物。
 - **预算耗尽**：只能陈述 UNKNOWN、NOT_EXHAUSTIVE、NOT_REACHED 或工具定义的等价状态。
-- **历史路径不存在**：研究日志可能引用已经退役或只在旧工作区存在的 `.codegraph/`、`.claude/`、`.Codex/`、`cc_memory/`、`cc_memory_vnext/` 及旧脚本。先查看当前 `--help`、[`NAV_MAP`](../NAV_MAP.md) 和 Git 历史，不为修复旧引用重建未经 owner 设计的 authority surface。
-- **搜索假阴性**：承重的存在/不存在结论先用 `git grep` 检查全部 tracked 路径；`rg` 默认受 `.rgignore` 影响，完整 hash 还可能被拆成相邻字符串。查集合成员资格时优先导入机器定义或运行对应契约测试。
+- **历史路径不存在**：研究日志可能引用已经退役或只在旧工作区存在的 `.codegraph/`、`.Codex/`、`cc_memory/`、`cc_memory_vnext/` 及旧脚本；`.claude/` 当前包含项目 skill，例如 `.claude/skills/solving-methodology/SKILL.md`，不能整目录按退役处理。先查看当前 `--help`、[`NAV_MAP`](../NAV_MAP.md) 和 Git 历史，不为修复旧引用重建未经 owner 设计的 authority surface。
+- **搜索假阴性**：承重的存在/不存在结论先用 `git grep` 检查全部 tracked 路径；`rg` 默认受 `.rgignore` 影响，完整 hash 还可能被拆成相邻字符串，同一 sha 也可能在不同文件使用不同大小写。查集合成员资格时优先导入机器定义或运行对应契约测试。
 - **生成页漂移**：修改 source 后运行声明的 generator；不要直接编辑输出。
 - **文档结论越权**：report、receipt、solver PASS 和 reviewer prose 只能在各自作用域内提供证据。
 

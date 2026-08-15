@@ -56,17 +56,44 @@
 - **非目标：** 不为了目录整齐而移动或删除仍被证据链引用的历史材料。
 - **坐标：** [文档系统架构](../governance/document-system/ARCHITECTURE.md)、[维护指南](../governance/document-system/MAINTAINING.md)。
 
-## 登记欠账：落地时仪表盘 §9 迁移
+## 开放残余：落地时仪表盘 §9 迁移
 
-以下五项是文档系统落地后仍由路线图承载的登记欠账。落地时来源归档：`docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/27_status_dashboard.md`（SHA-256 `2f6df966769372a7f412cbf2ba14ccb2c1f6caae841b1f5366d7d0691d5cce40`）。
+A10–A14 的原始登记与已发生事件保存在 [HISTORY](HISTORY.md) 和 [落地时仪表盘归档](../history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/27_status_dashboard.md)；本节只保留仍需动作的残余。
 
-| # | 漂移/欠账 | 现行以谁为准 |
-|---|---|---|
-| A10 | ~~文件记忆层每卡两块门牌各自演化~~ **已解（08-08 单门牌化落地）**：82 张卡加 `title` 字段、两块门牌合并压缩成单一 `description`，`MEMORY.md` 改由 `title+description` 编译生成（`devtools/memory_plate_tool.py`）。残留三条**已消两条**（08-08 同日）：~~②「写卡后必跑编译」无机器闸~~ **已解**：`check-index` 纯只读逐字节比对已挂进 preflight 记忆 lane（不一致=`gate.warn` 永不 block），首跑即抓两条真漂移（含并发写方新卡完全不在索引里）；~~①注入水位无泄压手段~~ **已解**：客户端硬编码上限 `eoe` 由二进制补丁 25,000→40,000 JS 字符（`~/patch-cc-memory-index-cap.py`，已登记 cc-patch 自动补打流水线），水位 85.4%→53.4%，警戒线随之 32,000；**归档分层刻意不做**（cand-C 死刑卡是「终局知识三个月后突然要用」的反例）。**仍在**：③门牌与正文的语义现势一致性无机械体检，归判官层。**新增残留**：④`title` 会被 CC auto-memory 从顶层挪进 `metadata`（工具两处都认，但这是随时间蔓延的形态漂移）；⑤`modified` 是「最后修改」不是「首次到达」，用它当到达信号仍有语义缺口（28 张缺字段的已从迁移前 tar 复原真值；**已定修法方向**：卡的 `metadata.originSessionId` 是 CC 建卡时写的、扛得住内容重写，84/85 张卡都有、16 个 sid 里 13 个转录仍在盘上 ⇒ 用「该会话的起讫时刻」当创建区间，比 `modified` 语义正确，转录已轮转的退回 `modified`） | `.artifacts/memsys_meeting_20260808/FINAL_VERDICT.md`；工具 `devtools/memory_plate_tool.py`；坑册 28 号 E2b |
-| A11 | 记忆系统全面复查会议（08-08，4 opus+4 Kimi 异构 8 席+合并/证伪席）判定的**90 项修复欠账**（总台账 75 + 跨层 G-13 + 会务 M-76/77）。**批①'急救四项已落**（`e782d4e`+`54780a2`+hook 重写）；**批③守卫修正六项已落**（zmem verify 挂 preflight/analyze-log/冲突 advisory/C9 序扫描器双修/两扫描器全命名空间，`16a9de9`+pin 换代 `f8f6d11`，门禁 21 门绿）；**批②工具+干跑就绪**（`2f17308`+`plate_v2_dryrun/`，干跑推翻「回写即可」前提：78/80 卡双门牌是两个地层、拼接式合并水位顶 96.1%，迁移=逐卡合并压缩的判断活）——迁移本体与全局 CLAUDE.md 协议改动待 owner 拍板；批⑤内容订正（Kimi 跨层 13 条+61 对冲突 advisory 阅读）与批⑥判官层立项待跑 | `.artifacts/memsys_meeting_20260808/FINAL_VERDICT.md`（终裁+实施追记）+ `MASTER_REGISTER.md` + `plate_v2_dryrun/migrate_plan.md` |
-| A12 | 2026-08-13 三面防污染审计三笔挂账：①三门（obligations checker / strong-status allowlist checker / preflight）PASS 文案不自带「不证什么」限界——**挂下一次触及任一文件的 Chain B/C 批顺走，不单开**；②`EXACT_MASTER_FRONT_CLEAR_LIFT` 定理复证与 full-pool golden 接门禁——**挂 redesign 批 5/6**；③~~零税措辞止血批~~**已落**（`3377083`，2026-08-13；顺带坐实 exit-criteria 陈旧期望 134→136——拐角两 pose 裁决前旧值被静默 PASS 掩盖；存疑两处 theorem/truth 措辞仍挂各自 reseal 批）。明细/触发器/勿动清单 | `docs/research/plane_mixing_audit_20260813/FINDINGS.md`；owner 拍板 `00_master_roadmap.md` 文末（`5191abe`/`b3500cc`） |
-| A14 | 2026-08-14 项目方法论整理收官（owner 令，skill 前置）：方法论地图＋APX_E 全集抢救快照（原件仅存 untracked 外审包，sha `8088f8c1` 复验一致）＋三组六席原始清点（codex/sol AB 对照＋opus 三视角）已落档。挂账三笔：①~~项目级 skill 落地批~~**已落**（08-14 owner 改口径「只放求解面核心」：瘦身版 skill＝§0b 速览＋三公理＋承重不变式，tracked 真本 `docs/项目说明/29_solving_methodology_skill.md`、安装副本 `.claude/skills/solving-methodology/SKILL.md` 逐字同、副本被清从真本重装；地图 §7 的全量三层路由提案按 owner 口径**不做**）；②**§0b 载体病五条**（版本头滞后、:277/279 六问残留、双向保真/派生闭包两公理前指未落本体区、「绿灯≠关门」六处重复陈述、APX_E 原件 untracked）修复待批；③**未愈合缺口五条**（地图 §6：出身故事绑定无维护/拒真防线不对称/无反向 reseal/外发包完备性无机器闸/口述定谳在途期无登记位）候立项 | `docs/research/methodology_compilation_20260814/METHODOLOGY_MAP.md`（§0 载体病/§6 缺口/§7 skill 提案） |
-| A13 | 2026-08-13 文档补丁链已以 20260815 全量合并包（16 批）经 landing planner 落地于本分支。残余待办：①§9 适配作业：`docs/项目说明/29_solving_methodology_skill.md` 补 policy，并登记 `plane_mixing_audit_20260813` 与 `methodology_compilation_20260814` 两个 dossier；②`docs/AGENT_OPERATIONS.md` 补全并与根 `CLAUDE.md` 完成两步调和；③补丁未覆盖的剩余问题在落地后自修。与三面评估线的协调义务已由 owner 于 2026-08-15 撤销；该线文档层前置工作已结束。 | 交接坐标 `zmd_文档补丁链落地评审交接_20260813`；落地来源见本节归档坐标 |
+### A10：记忆元数据与现势一致性
+
+- **目标：** 建立门牌与正文语义现势一致性的机械体检；兼容 `title` 被 CC auto-memory 移入 `metadata` 的形态；用 `metadata.originSessionId` 对应会话的起讫时刻表达创建区间，转录已轮转时才回退到 `modified`。
+- **前提：** 原始问题边界以落地时仪表盘归档的 A10 为准；形态兼容不得把 `modified` 再解释成首次到达时间。
+- **退出证据：** 现势一致性、两种 `title` 形态和创建区间推导均有可重复的 checker、fixture 与 provenance 说明。
+- **非目标：** 不恢复已移除的仓内记忆层，不把归档分层重新设为默认方案，也不从字段存在推出语义新鲜。
+
+### A11：记忆系统后续批
+
+- **目标：** 推进仍待 owner 拍板的迁移本体，并执行批⑤内容订正与批⑥判官层工作。
+- **前提：** 原始任务边界、批序和勿动面以落地时仪表盘归档的 A11 为准；干跑或工具就绪不构成迁移授权。
+- **退出证据：** 迁移本体取得显式 owner 决定；各后续批分别留下输入范围、冲突处置、机械验收和回退边界。
+- **非目标：** 不把历史干跑结果写成已获准的生产迁移，不把不同记忆地层机械拼接成单一门牌。
+
+### A12：三面防污染架构审计挂账
+
+- **目标：** 为 obligations checker、strong-status allowlist checker 与 preflight 的 PASS 文案补齐“不证什么”的限界，按触发器「Chain B/C 批顺走」处理；完成 `EXACT_MASTER_FRONT_CLEAR_LIFT` 定理复证与 full-pool golden 门禁接线，按触发器「挂 redesign 批 5/6」处理。
+- **前提：** 采用 [HISTORY 的 2026-08-13 节](HISTORY.md)、[`DECISION-RULE-SYSTEM-REDESIGN-OPEN-20260813`](../CATALOG.md#decision-rule-system-redesign-open-20260813)、[`DECISION-LEDGER-AUTHORITY-INTERFACES-20260813`](../CATALOG.md#decision-ledger-authority-interfaces-20260813)、[`DECISION-SEMANTICS-SPLIT-EXPERIMENT-FIRST-20260813`](../CATALOG.md#decision-semantics-split-experiment-first-20260813) 与落地时仪表盘归档作为出处；技术范围回到 [`plane_mixing_audit_20260813`](../research/plane_mixing_audit_20260813/FINDINGS.md)。
+- **退出证据：** 三个门的成功输出都明确声明作用域与非蕴含边界；front-clear lift 由独立复证、full-pool golden 和门禁消费共同约束。
+- **非目标：** 不从 checker PASS 推导 soundness、owner close 或 release closure，不在未触发对应批次时单开无宿主改动。
+
+### A13：文档补丁链落地后残余
+
+- **目标：** 完成 `CLAUDE.md` 两步调和的第二步（换轻量版、单独提交）；解决 historical+triage 补登记与“新建 tracked dossier 必须 active 且 closure=null”的 intake 语义冲突；在新的受控 landing 计划中把 00/27 successor 的历史引用改指落地时字节归档；自修补丁未覆盖的问题。
+- **前提：** 以 [HISTORY 的 2026-08-15 节](HISTORY.md)、[`DECISION-LEDGER-AUTHORITY-INTERFACES-20260813`](../CATALOG.md#decision-ledger-authority-interfaces-20260813) 和落地归档为出处；当前 00/27 successor 是 finalized plan 的字节级成品，不能直接重写或绕开 `verify-migration --finalized`。
+- **退出证据：** overlay 调和按确认后的 tracked/本机边界完成；intake 能区分历史补登记与新 dossier workflow；新 landing plan 封存并验证指向落地归档的 successor；其余缺口各有具名 checker 或显式关闭记录。
+- **非目标：** 不放宽新 dossier 的 fail-closed workflow 规则，不手改生成页，不用旧快照替代真正退休时刻的落地归档。
+
+### A14：求解面方法论载体与维护闭环
+
+- **目标：** 修复 §0b 的版本头滞后、`277/279` 行六问残留、双向保真与派生闭包两公理未进入本体区、“绿灯≠关门”重复陈述、APX_E 原件未进入 tracked 真源；补齐出身故事绑定无维护、拒真防线不对称、缺少反向 reseal、外发包完备性无机器闸、口述定谳在途期无登记位。
+- **前提：** 原始问题集以 [方法论地图](../research/methodology_compilation_20260814/METHODOLOGY_MAP.md) 和落地时仪表盘归档的 A14 为准；方法论 skill 继续只覆盖求解面，不接管发布或治理 authority。
+- **退出证据：** 判据本体有明确 canonical successor；公理、操作卡与维护触发器在单一真源闭合；APX_E 与外发包完备性进入可验证的 tracked 路径；反向 reseal 和口述定谳过渡状态有机器可见入口。
+- **非目标：** 不把方法论 skill 扩成全项目默认手册，不把历史判例改写成现态，也不从方法论登记授予数学或发布 authority。
 
 ## 排序原则
 

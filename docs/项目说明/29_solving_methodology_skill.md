@@ -5,7 +5,7 @@ description: 求解面「知识×计算」分解方法论的核心与路由。�
 
 # 求解面方法论
 
-> **本页身份**：项目级 skill 的 tracked 真本；安装副本在 `.claude/skills/solving-methodology/SKILL.md`（`.claude/` 被 gitignore，副本被清则从本页重装，两处保持逐字相同）。**本页零权威**——判据本体＝`docs/项目说明/00_master_roadmap.md`：§0b 版本块（`:90-414`，含七问操作卡与过堂表模板 `:92-129`）＋三条 owner 方法学公理（日志行 `:616` 双向保真、`:618` 派生闭包、`:629` 推理关——owner 定为「§0b 级」、尚未收编进正文块）。起争议回正文仲裁。
+> **本页身份**：项目级 skill 的 tracked 真本；安装副本在 `.claude/skills/solving-methodology/SKILL.md`（`.claude/` 被 gitignore，副本被清则从本页重装，两处保持逐字相同）。**本页零权威**——判据本体＝落地时字节保真归档 `docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md`：§0b 版本块（`:90-414`，含七问操作卡与过堂表模板 `:92-129`）＋三条 owner 方法学公理（日志行 `:616` 双向保真、`:618` 派生闭包、`:629` 推理关——owner 定为「§0b 级」、尚未收编进正文块）。方法论本体的 canonical successor 待 A14 后续批定夺；起争议先回该归档正文仲裁。
 
 ## 一、问题观：只会拒绝的神谕，与被迫性经济
 
@@ -65,6 +65,6 @@ description: 求解面「知识×计算」分解方法论的核心与路由。�
 
 ## 深入索引
 
-- 判据本体、判例库与过堂表模板：`docs/项目说明/00_master_roadmap.md` §0b（`:90-414`；操作卡 `:92-129`）；三条方法学公理在同文件日志行（双向保真 `:616`、派生闭包 `:618`、推理关 `:629`），饱和扫描/塌点上报的落地要求在 `docs/项目说明/26_rules_handbook.md:221`
+- 判据本体、判例库与过堂表模板：`docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md` §0b（`:90-414`；操作卡 `:92-129`）；三条方法学公理在同文件日志行（双向保真 `:616`、派生闭包 `:618`、推理关 `:629`），饱和扫描/塌点上报的落地要求在 `docs/项目说明/26_rules_handbook.md:221`；方法论本体的 canonical successor 待 A14 后续批定夺
 - 全集快照（§0b 本体未收编项：墙审计与消费切片审计；榫眼系与死因谱条目为同源展开版，本体已收、快照更全）：`docs/research/methodology_compilation_20260814/APX_E_pipeline_methodology.snapshot.md`
 - 全项目方法论地图（协作/发布纪律等，**不属本卡范围**）：`docs/research/methodology_compilation_20260814/METHODOLOGY_MAP.md`

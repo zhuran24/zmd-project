@@ -318,7 +318,8 @@
       ],
       "representative_review_ids": [],
       "reopen_triggers": [
-        "它们被新的 claim、实现路线、外审问题或历史追溯重新引用时。"
+        "它们被新的 claim、实现路线、外审问题或历史追溯重新引用时",
+        "落地迁移登记 A12/A13：来源归档 docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/27_status_dashboard.md，SHA-256 2f6df966769372a7f412cbf2ba14ccb2c1f6caae841b1f5366d7d0691d5cce40；A12 触发器为「Chain B/C 批顺走」与「挂 redesign 批 5/6」；A13 交接坐标为「zmd_文档补丁链落地评审交接_20260813」。"
       ],
       "tags": [
         "historical-longtail"

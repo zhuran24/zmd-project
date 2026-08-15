@@ -27,25 +27,27 @@
 - 反例、语义替代、修复与重验：[../VALIDITY_LEDGER.md](../VALIDITY_LEDGER.md)
 - Git 级变更历史：仓库 `git log` / `git blame`
 
-## 2026-08-13:owner 三笔口头拍板
+## 2026-08-13：owner 三笔拍板
 
-原始登记文本见下节落地归档的 `00_master_roadmap.md` 文末;此处为编年史事件,机器登记在 `data/knowledge/decisions.jsonl`(显式非权威 append-only)。
+原始登记文本见下节落地归档的 `00_master_roadmap.md` 文末；此处为编年史事件，机器登记在 `data/knowledge/decisions.jsonl`（显式非权威 append-only）。
 
-- **`rule_system_redesign_20260807` 线允许立项**(口头拍板,主线程当日登记;入批口径未指定,`OWNER_DECISION_SUMMARY.md` 八项送审决定未逐项裁定、仍逐项上桌)→ `DECISION-RULE-SYSTEM-REDESIGN-OPEN-20260813`。
-- **文档补丁链两接口点联合结论四条通过**(三面评估线 × 文档评审线双线收敛、双方过目后呈批):`decisions.jsonl` 显式非权威 append-only(non_authorizing 声明+指针必填+checker 校验指针真源+预留 ruling_event_id,档案面落地后翻转 GENERATED_PROJECTION 或退役);claims authority 准入=「knowledge checker 能且确实对当前树 tracked 机器真源核验承重字段」+ authority_basis 必填,历史执行收据封顶 research_authority,3 条超标条目降级;表示标签字段名 representation_class(四类值,与 authority 正交,与 document_class 建映射),enum 扩类权留 redesign 档案面批;四条全并进落地适配批不单开 → `DECISION-LEDGER-AUTHORITY-INTERFACES-20260813`。
-- **semantics 拆分「先实验后拍板」路线认可**:先落传递依赖根、实测一个 canonical 批的成本,再由 owner 决定拆/不拆/整文件 SHA 进依赖根;实验属已立项 redesign 线批 C 范围 → `DECISION-SEMANTICS-SPLIT-EXPERIMENT-FIRST-20260813`。
+- **`rule_system_redesign_20260807` 线允许立项**（口头拍板，主线程当日登记；入批口径未指定，`OWNER_DECISION_SUMMARY.md` 八项送审决定未逐项裁定、仍逐项上桌）→ `DECISION-RULE-SYSTEM-REDESIGN-OPEN-20260813`。
+- **文档补丁链两接口点联合结论四条通过**（三面防污染架构审计线 × 文档评审线双线收敛、双方过目后呈批）：`decisions.jsonl` 显式非权威 append-only（non_authorizing 声明＋指针必填＋checker 校验指针真源＋预留 ruling_event_id，档案面落地后翻转 GENERATED_PROJECTION 或退役）；claims authority 准入＝「knowledge checker 能且确实对当前树 tracked 机器真源核验承重字段」＋authority_basis 必填，历史执行收据封顶 research_authority，3 条超标条目降级；表示标签字段名 representation_class（四类值，与 authority 正交，与 document_class 建映射），enum 扩类权留 redesign 档案面批；四条全并进已交回 GPT Pro 的落地适配批不单开；操作文本＝交接文档附录（文档评审线持有，`~/下载/zmd_文档补丁链落地评审交接_20260813.md`，owner 点头后并入）→ `DECISION-LEDGER-AUTHORITY-INTERFACES-20260813`。
+- **semantics 拆分「先实验后拍板」路线认可**：先落传递依赖根、实测一个 canonical 批的成本，再由 owner 决定拆/不拆/整文件 SHA 进依赖根；实验属已立项 redesign 线批 C 范围 → `DECISION-SEMANTICS-SPLIT-EXPERIMENT-FIRST-20260813`。
 
-三笔均为绿灯≠关门,不产生任何 release closure。
+三笔均为绿灯≠关门，不产生任何 release closure。
 
-## 2026-08-15:全量文档系统落地与落地时漂移迁移
+## 2026-08-15：全量文档系统落地与落地时漂移迁移
 
-- 16 批正式补丁(phase1 → phase4 batch5)以合并包经 landing planner(状态 READY,动态漂移恰 3 个)落地于分支 `document-system-consolidated-landing`,base commit `31b4ce4`(230 路径)。
-- 漂移源的落地时字节保真归档:
+- 16 批正式补丁（phase1 → phase4 batch5）以合并包经 landing planner（状态 READY，动态漂移恰 3 个）落地于分支 `document-system-consolidated-landing`，base commit `31b4ce4`（230 路径）。
+- 漂移源的落地时字节保真归档：
 
-| 原路径 | 落地归档(仓库根相对) | SHA-256 |
+| 原路径 | 落地归档（仓库根相对） | SHA-256 |
 |---|---|---|
 | `CLAUDE.md` | [`docs/history/status/landing/2026-08-15/document-system-consolidated-landing/CLAUDE.md`](../history/status/landing/2026-08-15/document-system-consolidated-landing/CLAUDE.md) | `0d3888e5c7a293abe9b5058d874f5fbe8739a052183b3d7ef10667fa6df69474` |
 | `docs/项目说明/00_master_roadmap.md` | [`docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md`](../history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md) | `38a5a752342d96e29542f466f3099a9668d4a6b60b04c792265cb539e04f8415` |
 | `docs/项目说明/27_status_dashboard.md` | [`docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/27_status_dashboard.md`](../history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/27_status_dashboard.md) | `2f6df966769372a7f412cbf2ba14ccb2c1f6caae841b1f5366d7d0691d5cce40` |
 
-- 语义迁移:roadmap 文末 owner 拍板 → 上节与 `data/knowledge/decisions.jsonl`;仪表盘 §9 挂账 A10–A14 五行 → [ROADMAP.md](ROADMAP.md) 登记欠账节;`CLAUDE.md` 按 workspace overlay 保留在场版本;耐久操作知识吸收进 [AGENT_OPERATIONS](../AGENT_OPERATIONS.md)。
+- 语义迁移：roadmap 文末 owner 拍板进入上节与 `data/knowledge/decisions.jsonl`；仪表盘 §9 的开放残余进入 [ROADMAP.md](ROADMAP.md)；`CLAUDE.md` 经 manual overlay 调和（补文档系统自举段）后保留，不入 commit；耐久操作知识吸收进 [AGENT_OPERATIONS](../AGENT_OPERATIONS.md)。
+- 仪表盘 §9 的已解叙事与完整原文只保留在上述落地归档；未来路线图只列开放残余。
+- owner 于 2026-08-15 解除与「三面防污染架构审计」线的落地协调义务；该线文档层前置工作已结束。
