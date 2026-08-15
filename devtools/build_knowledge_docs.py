@@ -2867,7 +2867,15 @@ def render_backfill_ledger(model: KnowledgeModel, source_digest: str) -> str:
         key=lambda item: str(item["id"]),
     )
     dossier_count = len(model.dossiers["records"])
-    covered_count = len(current_reviews) + triaged_count + len(open_workflows)
+    reviewed_dossier_ids = {str(review["dossier_id"]) for review in current_reviews}
+    triaged_dossier_ids = {
+        str(dossier_id)
+        for group in model.backfill_triage["groups"]
+        for dossier_id in group["dossier_ids"]
+    }
+    open_workflow_dossier_ids = {str(dossier["id"]) for dossier in open_workflows}
+    covered_count = len(reviewed_dossier_ids | triaged_dossier_ids | open_workflow_dossier_ids)
+    reviewed_open_workflow_count = len(reviewed_dossier_ids & open_workflow_dossier_ids)
 
     lines = [
         "# 历史知识回填与长尾覆盖",
@@ -2882,7 +2890,7 @@ def render_backfill_ledger(model: KnowledgeModel, source_digest: str) -> str:
         f"- dossier 总数：`{dossier_count}`。",
         f"- current review：`{len(current_reviews)}`，其中语义审阅 `{len(semantic_reviews)}`，availability/provenance-only `{len(availability_reviews)}`。",
         f"- 尚无 current review、但已进入唯一 triage group：`{triaged_count}`。",
-        f"- 新写入流程中尚未关闭的 active dossier：`{len(open_workflows)}`；它们既不是 semantic review，也不是历史 triage。",
+        f"- 新写入流程中尚未关闭的 active dossier：`{len(open_workflows)}`；其中已有 current review `{reviewed_open_workflow_count}`；open workflow 不进入历史 triage。",
         f"- inventory coverage：`{covered_count}/{dossier_count}`。",
         f"- semantic review coverage：`{len(semantic_reviews)}/{dossier_count}`。这个比例不会被 triage 人为抬高。",
         "",

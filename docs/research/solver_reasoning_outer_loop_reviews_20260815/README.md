@@ -1,8 +1,9 @@
 # 推理外环三轮外部评审归档（2026-08-15）
 
-> **性质：** owner 的 GPT Pro 项目对话所产三轮外部评审的 tracked 历史存档。
+> **性质：** 本 dossier 同时承担两种 research-only 角色：owner 的 GPT Pro 项目对话所产三轮外部评审的 tracked 逐字归档，以及从评审中提取的条件式设计约束与可证伪架构假设登记。
 > **效力上限：** 本目录及其正文的效力封顶为 `research_authority`；沿用历史执行收据的封顶先例，不构成 owner ruling、项目立项、现行实现义务或发布授权。
-> **史料边界：** 本目录只保存评审时点的原文与从中登记的非授权设计约束，不追随仓库现状改写；当前状态、未来工作与 owner 决定分别以现行状态页、路线图和 owner authority source 为准。
+> **史料边界：** 三份归档正文只保存评审时点原文，不追随仓库现状改写；条件式登记的当前边界见本目录约束文档。当前状态、未来工作与 owner 决定分别以现行状态页、路线图和 owner authority source 为准。
+> **流程状态：** dossier 处于 `active` workflow；逐字归档与条件式登记是否在 typed closure 时拆成两个 dossier 尚待裁决。
 
 ## 三轮来源
 
@@ -22,6 +23,14 @@
 | `round2_mathematical_shape_and_proof_complexity_review.md` | `80d15229cb1a4a591621271498d43cd482fa533315801de5862a305720a6a934` |
 | `round3_semantic_compression_dual_loop_and_residual_freedom_review.md` | `755da5707a26ebfd0d10a2e0be8b74847728675f45d0e1c049f033d4e223938b` |
 
-## 约束登记
+## 条件式登记
 
-[`REASONING_OUTER_LOOP_DESIGN_CONSTRAINTS.md`](REASONING_OUTER_LOOP_DESIGN_CONSTRAINTS.md) 登记三轮评审沉淀出的八条设计约束。该文档只在“推理外环若立线”的条件下约束未来设计，对现行树零新增义务；owner 已同意登记动作，但未逐项批准约束内容。
+[`REASONING_OUTER_LOOP_DESIGN_CONSTRAINTS.md`](REASONING_OUTER_LOOP_DESIGN_CONSTRAINTS.md) 保存条件式设计约束和可证伪架构假设。归档与 `non_authorizing` 登记动作的许可及其非蕴含边界，只以 [`DECISION-OUTER-LOOP-REVIEW-REGISTRATION-20260815`](../../../data/knowledge/decisions.jsonl) 为准。
+
+## 已知字节保真事项
+
+第三轮归档第 502 行的 `=======` 是原文数学分式横线，`git diff --check` 会将其启发式识别为 leftover conflict marker；三份归档正文以逐字保真优先，不改写该行，也不为此增加豁免工程。
+
+## Provenance
+
+执行席位＝GPT-5.6-Sol（CC harness），commit trailer 使用 harness 模板名义；评审席＝GPT Pro（浏览器接入）。

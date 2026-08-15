@@ -52,7 +52,7 @@
 
 - **目标：** 在本阶段完成旧文档职责收束，随后把稳定的 knowledge / document checks 接入正式 preflight 或 CI，并完成两项治理硬化：
   - **B9 gate 检查路径只读化：** 只读检查不得调用写穿生成逻辑。在案事故为外部代理运行 gate 后写穿五个 tracked 文件、随后恢复；范围清点必须包含已知非纯只读的 `scripts/production_readiness_gate.py`，其磁盘检查会创建 `.artifacts`。
-  - **B10 测试快照数字纪律：** 严格区分「随合法数据漂移的快照数」与「身份声明型 pin」。前者应读取机器 fixture；在案例为 dossier 计数 204 已修，以及 exit-criteria 的陈旧期望 134 已由三面线在 `3377083` 修复。后者包括 `FROZEN_ARTIFACTS` 的 SHA 一类身份声明，必须硬编码，mismatch 必须拒绝；“好心”更新 expected 属 Forbidden 方向。本纪律只约束前者。
+  - **B10 测试快照数字纪律：** 严格区分「随合法数据漂移的快照数」与「身份声明型 pin」。既往漂移样本与修复数字只从[三面防污染架构审计](../research/plane_mixing_audit_20260813/FINDINGS.md)及其证据链追溯，不在路线图复制。fixture 化与随数据更新机制仅适用于前者；后者包括 `FROZEN_ARTIFACTS` 的 SHA 一类身份声明，继续由身份 pin 的硬编码与 mismatch 拒绝纪律管辖，“好心”更新 expected 属 Forbidden 方向。
 - **前提：** 先让分类、生成页、迁移和兼容入口在普通文档测试中稳定。若整改范围触及 `scripts/preflight_gate.py`，即入 Chain C reseal，必须并入 Chain B/C 批纪律，届时三面线 A12① 顺走。
 - **退出证据：** 新文档 fail-closed 分类、生成页新鲜度、历史不可改写、职责索引和知识事务在正式门中被一致执行；只读检查的全调用链经副作用测试证明不改 tracked 文件、不生成或改写工作区产物，且覆盖 `scripts/production_readiness_gate.py`；合法数据快照统一从机器 fixture 取值，身份声明型 pin 继续由 mismatch 拒绝语义钉死。
 - **非目标：** 不为了目录整齐而移动或删除仍被证据链引用的历史材料；不把两类数字一刀切为同一种维护机制，不自动改写身份声明型 pin。
@@ -61,7 +61,8 @@
 ## 工作线 G：推理外环（求解器新构想；状态：未立项/概念收敛）
 
 - **目标：** 若本线获得立项，以可复用的命题、上下文、独立 lowering 契约和失败反馈编译能力，逐步压缩反复支付的组合搜索，并让必要条件与充分构造双向生长。
-- **前提：** 两道独立闸依次成立：① Phase -1 实验闸以无删失死因谱、单家族编译、holdout 对照和外部 witness canary 产出 go/no-go 证据；② owner 立项裁决消费该证据并留下显式记录。实验全绿不等于立项。与 rule_system_redesign 线不同,本行尚无 owner 立项裁决记录。
+- **前提：** 两道独立闸依次成立：① Phase -1 实验闸以无删失死因谱、单家族编译、holdout 对照和外部 witness canary 产出 go/no-go 证据；② owner 立项裁决消费该证据并留下显式记录。实验全绿不等于立项。与 rule_system_redesign 线不同，本线尚无 owner 立项裁决记录。
+  - Phase -1 开跑前须先把实验协议 tracked 化，并在开跑前冻结 corpus 与抽样框、cap／seed／worker／timeout、`censorStatus`、三态触达分类 `NOT_REACHED`／`REACHED_NO_EFFECT`／`EFFECT_NO_TERMINAL` 以及 go/no-go 阈值。协议本身为 `non_authorizing`，只规定证据可采纳性，不产生立项或开跑授权；本路线图只登记该要求，不替未来编写协议。
 - **退出证据：** Phase -1 四类实验材料形成可复验的 go/no-go 证据包，随后由 owner 留下明确的立项或不立项裁决；任何工程实现均不得替代第二道闸。
 - **非目标：** 登记不等于立项；[设计约束](../research/solver_reasoning_outer_loop_reviews_20260815/REASONING_OUTER_LOOP_DESIGN_CONSTRAINTS.md) 保持 `non_authorizing`，不对现行树产生新增义务。
 - **坐标：** [三轮外部评审归档](../research/solver_reasoning_outer_loop_reviews_20260815/README.md)、[推理外环设计约束登记](../research/solver_reasoning_outer_loop_reviews_20260815/REASONING_OUTER_LOOP_DESIGN_CONSTRAINTS.md)。

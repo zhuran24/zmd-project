@@ -1,18 +1,18 @@
 # 历史知识回填与长尾覆盖
 
 > 本页由 `data/knowledge/backfill_reviews.jsonl`、`backfill_triage.json` 与 dossier registry 自动生成；禁止手工修改。
-> 账本审阅日：`2026-08-15`；源摘要：`sha256:b1cb229828bacdcb5b14bb3c7153d6c32b3e2384f108d26ca7792785b76bb485`。
+> 账本审阅日：`2026-08-15`；源摘要：`sha256:1dec48b6ae04876fc3443fb12d856b0008fbc8edd60c00c91f5dd654ef68659f`。
 
 这里把两件经常被混写的事情分开：**semantic review** 表示实际读取了声明路径并提炼知识；**inventory triage** 只保证尚未审阅的 dossier 仍可发现、只落入一个队列，并带有重开条件。分诊从不等价于 `no_reusable_claim`。
 
 ## 收口概览
 
 - dossier 总数：`207`。
-- current review：`41`，其中语义审阅 `40`，availability/provenance-only `1`。
-- 尚无 current review、但已进入唯一 triage group：`166`。
-- 新写入流程中尚未关闭的 active dossier：`0`；它们既不是 semantic review，也不是历史 triage。
+- current review：`42`，其中语义审阅 `41`，availability/provenance-only `1`。
+- 尚无 current review、但已进入唯一 triage group：`165`。
+- 新写入流程中尚未关闭的 active dossier：`1`；其中已有 current review `1`；open workflow 不进入历史 triage。
 - inventory coverage：`207/207`。
-- semantic review coverage：`40/207`。这个比例不会被 triage 人为抬高。
+- semantic review coverage：`41/207`。这个比例不会被 triage 人为抬高。
 
 ## Current review
 
@@ -59,6 +59,13 @@
 | [`REVIEW-20260812-GHOST-STRICT-FIX-BATCH5`](<CATALOG.md#review-20260812-ghost-strict-fix-batch5>) | `DOSSIER-GHOST-STRICT-FIX-20260805-0FBA53DB19` | `targeted_files` | `existing_claims_confirmed` | [`CLAIM-EMPTY-RECTANGLE-STRICT`](<CATALOG.md#claim-empty-rectangle-strict>) | M11 的第二次 occupancy digest 比较与 M12 的 owner 身份增量语义在该 mutation batch 中仍是预期 MISSED。<br>本 review 未把本地测试绿灯提升为新的 owner 或 production authority。 |
 | [`REVIEW-20260812-P2-REFRESH-BATCH5`](<CATALOG.md#review-20260812-p2-refresh-batch5>) | `DOSSIER-P2-0-REFRESH-20260805-627C980F03` | `targeted_files` | `existing_claims_confirmed` | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER`](<CATALOG.md#claim-p2-throughput-research-ledger>) | 本 review 没有逐份复跑本地脚本、receipt 与外部求解器交叉验证。<br>AREA_BOUND_UPGRADE_PLAN 是升格前计划，不得覆盖后续 tracked theorem report 的修订口径。 |
 | [`REVIEW-20260812-SMM4-LOCAL-AUTHORITY-AVAILABILITY-BATCH5`](<CATALOG.md#review-20260812-smm4-local-authority-availability-batch5>) | `DOSSIER-TRACK-B-B1-SIDEWISE-MARKED-MEMBRANE-FRESH-AUTHORITY-2026-2C7C3FCD74` | `availability_and_provenance` | `deferred` | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>) | 需在拥有外部 root 的 checkout 中按 tracked hash/manifest 复核 payload 完整性。 |
+| [`REVIEW-20260815-SOLVER-REASONING-OUTER-LOOP-GPT-PRO`](<CATALOG.md#review-20260815-solver-reasoning-outer-loop-gpt-pro>) | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99` | `targeted_files` | `deferred` | — | 逐字归档与条件式约束登记是否在 typed closure 时拆成两个 dossier 尚未裁决。<br>语义可压缩性、接口可压缩性与构造可分解性仍是待实验的可证伪假设。 |
+
+## Open intake workflow
+
+| Dossier | 路径 | 打开日 | 生命周期 |
+|---|---|---|---|
+| `DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99` | `docs/research/solver_reasoning_outer_loop_reviews_20260815` | `2026-08-15` | `active` |
 
 ## Triage group
 
@@ -74,7 +81,7 @@
 | [`TRIAGE-LOCAL-RULES-SEMANTICS`](#triage-local-rules-semantics) | `local_optional_queue` | `normal` | 3 | [`CLAIM-EMPTY-RECTANGLE-STRICT`](<CATALOG.md#claim-empty-rectangle-strict>)<br>[`CLAIM-MIXED-TERMINAL-TRIPARTITION`](<CATALOG.md#claim-mixed-terminal-tripartition>)<br>[`REVIEW-20260811-RULES-AUDIT-BATCH4`](<CATALOG.md#review-20260811-rules-audit-batch4>) |
 | [`TRIAGE-LOCAL-UPPER-BOUND-AND-BAND22`](#triage-local-upper-bound-and-band22) | `local_optional_queue` | `normal` | 10 | [`CLAIM-BAND22-V0A-STRICT-HOLE-INCOMPATIBLE`](<CATALOG.md#claim-band22-v0a-strict-hole-incompatible>)<br>[`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>)<br>[`REVIEW-20260811-BAND22-STRICT-HOLE-PROBE-BATCH2`](<CATALOG.md#review-20260811-band22-strict-hole-probe-batch2>)<br>[`REVIEW-20260811-SMM-FRESH-AUTHORITY-BATCH2`](<CATALOG.md#review-20260811-smm-fresh-authority-batch2>) |
 | [`TRIAGE-LOCAL-WITNESS`](#triage-local-witness) | `local_optional_queue` | `normal` | 6 | [`CLAIM-CERTIFIED-EXISTENCE-OPEN`](<CATALOG.md#claim-certified-existence-open>)<br>[`CLAIM-W0-POWER-OBSTRUCTION-REQUIRES-DECLARED-HEIGHT-PURITY`](<CATALOG.md#claim-w0-power-obstruction-requires-declared-height-purity>)<br>[`REVIEW-20260811-WITNESS-CONSTRUCTOR-BATCH4`](<CATALOG.md#review-20260811-witness-constructor-batch4>)<br>[`REVIEW-20260811-W0-POWER-COUNTEREXAMPLE-BATCH4`](<CATALOG.md#review-20260811-w0-power-counterexample-batch4>) |
-| [`TRIAGE-OTHER-TRACKED-LONGTAIL`](#triage-other-tracked-longtail) | `historical_semantic_queue` | `low` | 19 | [`CLAIM-LEVER-VERDICTS-ARE-ITEM-AND-REVISION-BOUNDED`](<CATALOG.md#claim-lever-verdicts-are-item-and-revision-bounded>) |
+| [`TRIAGE-OTHER-TRACKED-LONGTAIL`](#triage-other-tracked-longtail) | `historical_semantic_queue` | `low` | 18 | [`CLAIM-LEVER-VERDICTS-ARE-ITEM-AND-REVISION-BOUNDED`](<CATALOG.md#claim-lever-verdicts-are-item-and-revision-bounded>) |
 | [`TRIAGE-P1-2-PROOF-CHAIN-FAMILY`](#triage-p1-2-proof-chain-family) | `family_context_only` | `normal` | 67 | [`CLAIM-CERTIFIED-THEOREM-SCOPE`](<CATALOG.md#claim-certified-theorem-scope>)<br>[`CLAIM-CUT-FRAMEWORK-PRODUCTION-STATUS`](<CATALOG.md#claim-cut-framework-production-status>)<br>[`CLAIM-BUDGET-EXHAUSTION-IS-UNKNOWN-NOT-FIXED-POINT`](<CATALOG.md#claim-budget-exhaustion-is-unknown-not-fixed-point>)<br>[`REVIEW-20260811-P1-2-V99-CLOSE-KERNEL`](<CATALOG.md#review-20260811-p1-2-v99-close-kernel>) |
 | [`TRIAGE-P2-THROUGHPUT-TRACKED-LONGTAIL`](#triage-p2-throughput-tracked-longtail) | `historical_semantic_queue` | `normal` | 2 | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER`](<CATALOG.md#claim-p2-throughput-research-ledger>)<br>[`CLAIM-P2-MIN-SIDE-UPPER-OPEN`](<CATALOG.md#claim-p2-min-side-upper-open>)<br>[`REVIEW-20260811-P2-AREA-BOUND-BATCH2`](<CATALOG.md#review-20260811-p2-area-bound-batch2>)<br>[`REVIEW-20260811-P2-SPECIALIZED-BATCH4`](<CATALOG.md#review-20260811-p2-specialized-batch4>) |
 | [`TRIAGE-UPPER-BOUND-TRACKED-LONGTAIL`](#triage-upper-bound-tracked-longtail) | `family_context_only` | `normal` | 5 | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>)<br>[`CLAIM-R4-NECESSARY-DIMENSION-INEQUALITY`](<CATALOG.md#claim-r4-necessary-dimension-inequality>)<br>[`CLAIM-SMM-209-EXCLUDES-22X54`](<CATALOG.md#claim-smm-209-excludes-22x54>)<br>[`REVIEW-20260811-R4-RESPONSE-BATCH2`](<CATALOG.md#review-20260811-r4-response-batch2>)<br>[`REVIEW-20260811-SMM-STRICT-BATCH2`](<CATALOG.md#review-20260811-smm-strict-batch2>)<br>[`REVIEW-20260811-SMM-FRESH-AUTHORITY-BATCH2`](<CATALOG.md#review-20260811-smm-fresh-authority-batch2>) |
@@ -166,7 +173,7 @@
 - **处置 / 优先级：** `historical_semantic_queue` / `low`
 - **理由：** 这些 tracked 历史设计、文献、smoke、审计、方法论汇编与评审材料尚未逐份语义提炼；保留在显式队列中，不能被“已登记”误读成“已审完”或“无结论”。
 - **重开触发：** 它们被新的 claim、实现路线、外审问题或历史追溯重新引用时；落地迁移登记 A12/A13：来源归档 docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/27_status_dashboard.md，SHA-256 2f6df966769372a7f412cbf2ba14ccb2c1f6caae841b1f5366d7d0691d5cce40；A12 触发器为「Chain B/C 批顺走」与「挂 redesign 批 5/6」；A13 交接坐标为「zmd_文档补丁链落地评审交接_20260813」。
-- **Dossier：** `DOSSIER-B1-RABSEP-ROUTING-AWARE-BINDING-20260518-E08AD6BF23；DOSSIER-D-STEP2-HINT-TRIALS-20260516-8794B39D8A；DOSSIER-LITERATURE-REVIEW-PAPERS-20260524-F002A45263；DOSSIER-METHODOLOGY-COMPILATION-20260814-BF49D11CCD；DOSSIER-P1-3-A-BATCH0-20260709-25C725D5B0；DOSSIER-P1-3-BATCH1-DESIGN-20260710-57F92742D0；DOSSIER-P1-3-F5-ORBIT-LIFT-SOUNDNESS-DESIGN-V1-291502415A；DOSSIER-P1-3-F5-ORBIT-LIFT-SOUNDNESS-DESIGN-V2-D1ACE22754；DOSSIER-P1-3-M4-RECON-20260708-3819BDF48B；DOSSIER-P1-3-M6-DIAGNOSIS-20260709-7C9DEFFA5D；DOSSIER-P2-DESIGN-EXTERNAL-REVIEWS-20260704-54F28681D7；DOSSIER-P3-0C-SIDECAR-REVIEWS-20260705-728E34B496；DOSSIER-P3-B-DESIGN-REVIEW-V14-20260521-24BD84A607；DOSSIER-PLANE-MIXING-AUDIT-20260813-176281B3F4；DOSSIER-Q1-INFEASIBILITY-CLASS-TAXONOMY-DESIGN-V1-69B91DF7A9；DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99；DOSSIER-TERMINAL-NO-SOLUTION-EVIDENCE-CONTRACT-DESIGN-V1-A9EA1B8AA3；DOSSIER-TERMINAL-NO-SOLUTION-EVIDENCE-CONTRACT-DESIGN-V2-473B668ADD；DOSSIER-V8-ANCHOR-SLICING-SMOKE-20260516-66643824CB`
+- **Dossier：** `DOSSIER-B1-RABSEP-ROUTING-AWARE-BINDING-20260518-E08AD6BF23；DOSSIER-D-STEP2-HINT-TRIALS-20260516-8794B39D8A；DOSSIER-LITERATURE-REVIEW-PAPERS-20260524-F002A45263；DOSSIER-METHODOLOGY-COMPILATION-20260814-BF49D11CCD；DOSSIER-P1-3-A-BATCH0-20260709-25C725D5B0；DOSSIER-P1-3-BATCH1-DESIGN-20260710-57F92742D0；DOSSIER-P1-3-F5-ORBIT-LIFT-SOUNDNESS-DESIGN-V1-291502415A；DOSSIER-P1-3-F5-ORBIT-LIFT-SOUNDNESS-DESIGN-V2-D1ACE22754；DOSSIER-P1-3-M4-RECON-20260708-3819BDF48B；DOSSIER-P1-3-M6-DIAGNOSIS-20260709-7C9DEFFA5D；DOSSIER-P2-DESIGN-EXTERNAL-REVIEWS-20260704-54F28681D7；DOSSIER-P3-0C-SIDECAR-REVIEWS-20260705-728E34B496；DOSSIER-P3-B-DESIGN-REVIEW-V14-20260521-24BD84A607；DOSSIER-PLANE-MIXING-AUDIT-20260813-176281B3F4；DOSSIER-Q1-INFEASIBILITY-CLASS-TAXONOMY-DESIGN-V1-69B91DF7A9；DOSSIER-TERMINAL-NO-SOLUTION-EVIDENCE-CONTRACT-DESIGN-V1-A9EA1B8AA3；DOSSIER-TERMINAL-NO-SOLUTION-EVIDENCE-CONTRACT-DESIGN-V2-473B668ADD；DOSSIER-V8-ANCHOR-SLICING-SMOKE-20260516-66643824CB`
 
 <a id="triage-p1-2-proof-chain-family"></a>
 ### TRIAGE-P1-2-PROOF-CHAIN-FAMILY

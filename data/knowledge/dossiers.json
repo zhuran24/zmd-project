@@ -3235,15 +3235,21 @@
       "entry_file": "docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md",
       "title": "推理外环三轮外部评审归档（2026-08-15）",
       "kind": "directory",
-      "lifecycle": "historical",
+      "lifecycle": "active",
       "relevance": "historical",
-      "curation": "auto_indexed",
+      "curation": "curated",
       "tracked_state": "tracked",
       "date": "2026-08-15",
       "topics": [
-        "other"
+        "reasoning-system",
+        "solver-architecture",
+        "solver-rethink"
       ],
-      "summary": "三份归档正文均为仓外原件的逐字节副本，不含修订、批注或归档头。"
+      "summary": "三份外部评审正文逐字归档；同一 dossier 另登记仅在声明条件下可消费的 non_authorizing 设计约束与可证伪架构假设，二者均不构成立项或现行实现义务。",
+      "workflow": {
+        "opened_at": "2026-08-15",
+        "closure": null
+      }
     },
     {
       "id": "DOSSIER-TERMINAL-NO-SOLUTION-EVIDENCE-CONTRACT-DESIGN-V1-A9EA1B8AA3",
