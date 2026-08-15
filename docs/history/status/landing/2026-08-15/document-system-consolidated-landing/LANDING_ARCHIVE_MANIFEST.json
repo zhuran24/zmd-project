@@ -1,0 +1,28 @@
+{
+  "schema_version": "zmd_document_landing_archive_manifest_v1",
+  "landing_id": "document-system-consolidated-landing",
+  "created_at": "2026-08-15T09:42:52Z",
+  "records": [
+    {
+      "source_path": "CLAUDE.md",
+      "source_sha256": "0d3888e5c7a293abe9b5058d874f5fbe8739a052183b3d7ef10667fa6df69474",
+      "source_size": 17546,
+      "archive_path": "docs/history/status/landing/2026-08-15/document-system-consolidated-landing/CLAUDE.md",
+      "archive_sha256": "0d3888e5c7a293abe9b5058d874f5fbe8739a052183b3d7ef10667fa6df69474"
+    },
+    {
+      "source_path": "docs/项目说明/00_master_roadmap.md",
+      "source_sha256": "38a5a752342d96e29542f466f3099a9668d4a6b60b04c792265cb539e04f8415",
+      "source_size": 181897,
+      "archive_path": "docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/00_master_roadmap.md",
+      "archive_sha256": "38a5a752342d96e29542f466f3099a9668d4a6b60b04c792265cb539e04f8415"
+    },
+    {
+      "source_path": "docs/项目说明/27_status_dashboard.md",
+      "source_sha256": "2f6df966769372a7f412cbf2ba14ccb2c1f6caae841b1f5366d7d0691d5cce40",
+      "source_size": 24037,
+      "archive_path": "docs/history/status/landing/2026-08-15/document-system-consolidated-landing/docs/项目说明/27_status_dashboard.md",
+      "archive_sha256": "2f6df966769372a7f412cbf2ba14ccb2c1f6caae841b1f5366d7d0691d5cce40"
+    }
+  ]
+}
