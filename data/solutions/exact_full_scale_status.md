@@ -4,7 +4,7 @@
 > below were produced in a different checkout and are not a live inspection of this worktree. Do not
 > use this file as current campaign or release authority.
 
-Current human-readable status is maintained in `docs/项目说明/06_current_status.md`; machine
+Current human-readable status is maintained in `docs/CURRENT.md`; machine
 publication authority is determined by `evaluate_certified_delivery_surface()` plus
 `data/review_gates/phase_1_2_spike_close.json`.
 

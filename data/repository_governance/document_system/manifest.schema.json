@@ -1,0 +1,639 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-document-system-manifest-v7",
+  "title": "ZMD document-system bootstrap manifest v7",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "system_version",
+    "policy_filename",
+    "root_policy",
+    "architecture_guide",
+    "maintenance_guide",
+    "steady_state_guide",
+    "recovery_guide",
+    "decision_directory",
+    "manifest_schema",
+    "policy_schema",
+    "invariants",
+    "invariants_schema",
+    "legacy_projection",
+    "guidance_projection",
+    "entrypoint_registry",
+    "section_registry",
+    "section_projection",
+    "convergence_projection",
+    "governance_gate",
+    "test_timing_receipt",
+    "intake_protocol",
+    "maintenance_audit",
+    "landing_protocol",
+    "knowledge_sources",
+    "workspace_overlays",
+    "governed_markdown_globs",
+    "actions",
+    "adrs",
+    "framework_core"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "zmd_document_system_manifest_v7"
+    },
+    "system_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "policy_filename": {
+      "const": "DOC_POLICY.json"
+    },
+    "root_policy": {
+      "$ref": "#/$defs/relpath"
+    },
+    "architecture_guide": {
+      "$ref": "#/$defs/relpath"
+    },
+    "maintenance_guide": {
+      "$ref": "#/$defs/relpath"
+    },
+    "steady_state_guide": {
+      "$ref": "#/$defs/relpath"
+    },
+    "recovery_guide": {
+      "$ref": "#/$defs/relpath"
+    },
+    "decision_directory": {
+      "$ref": "#/$defs/relpath"
+    },
+    "manifest_schema": {
+      "$ref": "#/$defs/relpath"
+    },
+    "policy_schema": {
+      "$ref": "#/$defs/relpath"
+    },
+    "invariants": {
+      "$ref": "#/$defs/relpath"
+    },
+    "invariants_schema": {
+      "$ref": "#/$defs/relpath"
+    },
+    "legacy_projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base",
+        "base_schema",
+        "output"
+      ],
+      "properties": {
+        "base": {
+          "$ref": "#/$defs/relpath"
+        },
+        "base_schema": {
+          "$ref": "#/$defs/relpath"
+        },
+        "output": {
+          "$ref": "#/$defs/relpath"
+        }
+      }
+    },
+    "maintenance_audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "schema",
+        "projection"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/relpath"
+        },
+        "schema": {
+          "$ref": "#/$defs/relpath"
+        },
+        "projection": {
+          "$ref": "#/$defs/relpath"
+        }
+      }
+    },
+    "knowledge_sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claims",
+        "decisions",
+        "dossiers",
+        "backfill_reviews",
+        "backfill_triage",
+        "terminology",
+        "topics"
+      ],
+      "properties": {
+        "claims": {
+          "$ref": "#/$defs/relpath"
+        },
+        "decisions": {
+          "$ref": "#/$defs/relpath"
+        },
+        "dossiers": {
+          "$ref": "#/$defs/relpath"
+        },
+        "backfill_reviews": {
+          "$ref": "#/$defs/relpath"
+        },
+        "backfill_triage": {
+          "$ref": "#/$defs/relpath"
+        },
+        "terminology": {
+          "$ref": "#/$defs/relpath"
+        },
+        "topics": {
+          "$ref": "#/$defs/relpath"
+        }
+      }
+    },
+    "governed_markdown_globs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/relpath"
+      }
+    },
+    "actions": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^[a-z0-9][a-z0-9_.-]*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "description",
+          "command"
+        ],
+        "properties": {
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "command": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "adrs": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^DOC-ADR-[0-9]{3}$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/relpath"
+      }
+    },
+    "framework_core": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "match",
+          "context_level",
+          "rationale",
+          "invariant_refs",
+          "adr_refs"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_]*$"
+          },
+          "match": {
+            "$ref": "#/$defs/match"
+          },
+          "context_level": {
+            "enum": [
+              "L2",
+              "L3"
+            ]
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1
+          },
+          "invariant_refs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^DOC-INV-[0-9]{3}$"
+            }
+          },
+          "adr_refs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^DOC-ADR-[0-9]{3}$"
+            }
+          }
+        }
+      }
+    },
+    "guidance_projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "output",
+        "include_document_classes",
+        "exclude_paths"
+      ],
+      "properties": {
+        "output": {
+          "$ref": "#/$defs/relpath"
+        },
+        "include_document_classes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "locked_authority",
+              "generated_projection",
+              "normative",
+              "living",
+              "structured_knowledge",
+              "governance_control",
+              "framework_core"
+            ]
+          }
+        },
+        "exclude_paths": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/relpath"
+          }
+        }
+      }
+    },
+    "entrypoint_registry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "schema"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/relpath"
+        },
+        "schema": {
+          "$ref": "#/$defs/relpath"
+        }
+      }
+    },
+    "section_registry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "schema"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/relpath"
+        },
+        "schema": {
+          "$ref": "#/$defs/relpath"
+        }
+      }
+    },
+    "section_projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "output"
+      ],
+      "properties": {
+        "output": {
+          "$ref": "#/$defs/relpath"
+        }
+      }
+    },
+    "convergence_projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "output"
+      ],
+      "properties": {
+        "output": {
+          "$ref": "#/$defs/relpath"
+        }
+      }
+    },
+    "governance_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "schema",
+        "runner",
+        "ci_workflow"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/relpath"
+        },
+        "schema": {
+          "$ref": "#/$defs/relpath"
+        },
+        "runner": {
+          "$ref": "#/$defs/relpath"
+        },
+        "ci_workflow": {
+          "$ref": "#/$defs/relpath"
+        }
+      }
+    },
+    "test_timing_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "measured_at",
+        "threshold_call_seconds",
+        "execution_mode",
+        "python_requirement",
+        "command",
+        "measured_inputs",
+        "collected_tests",
+        "maximum_call",
+        "nodes_at_or_above_threshold",
+        "slow_registry_action",
+        "raw_output_sha256"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "zmd_document_test_timing_receipt_v1"
+        },
+        "measured_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "threshold_call_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "execution_mode": {
+          "const": "serial_no_concurrent_pytest"
+        },
+        "python_requirement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "command": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "measured_inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "sha256"
+            ],
+            "properties": {
+              "path": {
+                "$ref": "#/$defs/relpath"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        },
+        "collected_tests": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximum_call": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "nodeid",
+            "seconds"
+          ],
+          "properties": {
+            "nodeid": {
+              "type": "string",
+              "minLength": 1
+            },
+            "seconds": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "nodes_at_or_above_threshold": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "slow_registry_action": {
+          "enum": [
+            "no_new_entries_required",
+            "entries_registered"
+          ]
+        },
+        "raw_output_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "intake_protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "schema"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/relpath"
+        },
+        "schema": {
+          "$ref": "#/$defs/relpath"
+        }
+      }
+    },
+    "workspace_overlays": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "projection_input_policy",
+        "records"
+      ],
+      "properties": {
+        "projection_input_policy": {
+          "const": "excluded"
+        },
+        "records": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "path",
+              "presence",
+              "durability",
+              "canonical_target",
+              "validate_policy_when_present"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*$"
+              },
+              "path": {
+                "$ref": "#/$defs/relpath"
+              },
+              "presence": {
+                "const": "optional"
+              },
+              "durability": {
+                "const": "workspace_untracked"
+              },
+              "canonical_target": {
+                "$ref": "#/$defs/relpath"
+              },
+              "validate_policy_when_present": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "landing_protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "schema",
+        "ack_schema",
+        "runner",
+        "guide"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/relpath"
+        },
+        "schema": {
+          "$ref": "#/$defs/relpath"
+        },
+        "ack_schema": {
+          "$ref": "#/$defs/relpath"
+        },
+        "runner": {
+          "$ref": "#/$defs/relpath"
+        },
+        "guide": {
+          "$ref": "#/$defs/relpath"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?!.*\\u0000).+$"
+    },
+    "match": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "oneOf": [
+        {
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/relpath"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": [
+            "prefix"
+          ],
+          "properties": {
+            "prefix": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/relpath"
+                },
+                {
+                  "pattern": "/$"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": [
+            "glob"
+          ],
+          "properties": {
+            "glob": {
+              "$ref": "#/$defs/relpath"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": [
+            "paths"
+          ],
+          "properties": {
+            "paths": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/relpath"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

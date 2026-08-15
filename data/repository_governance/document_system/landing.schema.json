@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-document-patch-landing-v1",
+  "title": "ZMD non-destructive real-repository landing protocol",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "system_version",
+    "archive_root",
+    "workspace_overlays",
+    "forbidden_branches",
+    "append_only_targets",
+    "known_migrations",
+    "forbidden_operations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "zmd_document_patch_landing_v1"
+    },
+    "system_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "archive_root": {
+      "$ref": "#/$defs/relpath"
+    },
+    "workspace_overlays": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/relpath"
+      }
+    },
+    "forbidden_branches": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "append_only_targets": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/relpath"
+      }
+    },
+    "known_migrations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/migration"
+      }
+    },
+    "forbidden_operations": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?!.*\\u0000).+$"
+    },
+    "obligation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "allowed_targets",
+        "target_formats",
+        "required_markers",
+        "require_archive_reference",
+        "require_record_id",
+        "require_ack_strings"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_-]*$"
+        },
+        "allowed_targets": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/relpath"
+          }
+        },
+        "required_markers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "require_archive_reference": {
+          "type": "boolean"
+        },
+        "require_record_id": {
+          "type": "boolean"
+        },
+        "target_formats": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "enum": [
+              "text",
+              "json",
+              "jsonl"
+            ]
+          }
+        },
+        "require_ack_strings": {
+          "type": "boolean"
+        }
+      }
+    },
+    "migration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_path",
+        "kind",
+        "archive_required",
+        "replacement_mode",
+        "require_source_change",
+        "source_markers_after_migration",
+        "obligations"
+      ],
+      "properties": {
+        "source_path": {
+          "$ref": "#/$defs/relpath"
+        },
+        "kind": {
+          "enum": [
+            "workspace_overlay_reconcile",
+            "owner_record_migration",
+            "debt_migration"
+          ]
+        },
+        "archive_required": {
+          "const": true
+        },
+        "replacement_mode": {
+          "enum": [
+            "manual_overlay",
+            "package_successor"
+          ]
+        },
+        "require_source_change": {
+          "type": "boolean"
+        },
+        "source_markers_after_migration": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "obligations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/obligation"
+          }
+        }
+      }
+    }
+  }
+}

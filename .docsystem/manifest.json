@@ -1,0 +1,699 @@
+{
+  "schema_version": "zmd_document_system_manifest_v7",
+  "system_version": "2.6.0",
+  "policy_filename": "DOC_POLICY.json",
+  "root_policy": "DOC_POLICY.json",
+  "architecture_guide": "docs/governance/document-system/ARCHITECTURE.md",
+  "maintenance_guide": "docs/governance/document-system/MAINTAINING.md",
+  "steady_state_guide": "docs/governance/document-system/STEADY_STATE.md",
+  "recovery_guide": ".docsystem/RECOVERY.md",
+  "decision_directory": "docs/governance/document-system/ADR",
+  "manifest_schema": "data/repository_governance/document_system/manifest.schema.json",
+  "policy_schema": "data/repository_governance/document_system/doc_policy.schema.json",
+  "invariants": "data/repository_governance/document_system/invariants.json",
+  "invariants_schema": "data/repository_governance/document_system/invariants.schema.json",
+  "legacy_projection": {
+    "base": "data/repository_governance/document_system/legacy_doc_scan_base.json",
+    "base_schema": "data/repository_governance/document_system/legacy_doc_scan_base.schema.json",
+    "output": "data/repository_governance/doc_classes.json"
+  },
+  "guidance_projection": {
+    "output": "docs/GUIDANCE_INDEX.md",
+    "include_document_classes": [
+      "locked_authority",
+      "generated_projection",
+      "normative",
+      "living",
+      "structured_knowledge",
+      "governance_control",
+      "framework_core"
+    ],
+    "exclude_paths": [
+      "AGENTS.md",
+      "CLAUDE.md"
+    ]
+  },
+  "entrypoint_registry": {
+    "source": "data/repository_governance/document_system/entrypoints.json",
+    "schema": "data/repository_governance/document_system/entrypoints.schema.json"
+  },
+  "section_registry": {
+    "source": "data/repository_governance/document_system/sections.json",
+    "schema": "data/repository_governance/document_system/sections.schema.json"
+  },
+  "section_projection": {
+    "output": "docs/SECTION_INDEX.md"
+  },
+  "convergence_projection": {
+    "output": "docs/CONVERGENCE_REPORT.md"
+  },
+  "governance_gate": {
+    "source": "data/repository_governance/document_system/governance_gate.json",
+    "schema": "data/repository_governance/document_system/governance_gate.schema.json",
+    "runner": "devtools/document_governance_gate.py",
+    "ci_workflow": ".github/workflows/document-governance.yml"
+  },
+  "test_timing_receipt": {
+    "schema_version": "zmd_document_test_timing_receipt_v1",
+    "measured_at": "2026-08-15",
+    "threshold_call_seconds": 8.0,
+    "execution_mode": "serial_no_concurrent_pytest",
+    "python_requirement": ">=3.13",
+    "command": [
+      "{python}",
+      "-m",
+      "pytest",
+      "-p",
+      "no:randomly",
+      "-p",
+      "no:cacheprovider",
+      "-q",
+      "--basetemp={temp}/pytest",
+      "src/tests/test_document_system.py",
+      "src/tests/test_knowledge_docs.py",
+      "--durations=0",
+      "--durations-min=0"
+    ],
+    "measured_inputs": [
+      {
+        "path": "src/tests/test_document_system.py",
+        "sha256": "4b8aeaadf11e9633bc7df82a0af114f72208c136d0a301d8fc8fa0f65934d7c5"
+      },
+      {
+        "path": "src/tests/test_knowledge_docs.py",
+        "sha256": "ff9d0cd182d57cb7e4825b2a75bea91fcf170d0b3b80e0a38a498ba3fce7bca5"
+      },
+      {
+        "path": "src/tests/conftest.py",
+        "sha256": "8205855b6bc4b4209a1f0d478d236cdb0c711e700cd3050f051805a220712657"
+      }
+    ],
+    "collected_tests": 86,
+    "maximum_call": {
+      "nodeid": "src/tests/test_document_system.py::test_real_repository_document_system_is_self_consistent",
+      "seconds": 4.63
+    },
+    "nodes_at_or_above_threshold": [],
+    "slow_registry_action": "no_new_entries_required",
+    "raw_output_sha256": "52b24bc3afd030cd889e3a20c6205891265ad6c2ca012a1ce3da676ae71ae26c"
+  },
+  "intake_protocol": {
+    "source": "data/repository_governance/document_system/intake.json",
+    "schema": "data/repository_governance/document_system/intake.schema.json"
+  },
+  "maintenance_audit": {
+    "source": "data/repository_governance/document_system/maintenance_audit.json",
+    "schema": "data/repository_governance/document_system/maintenance_audit.schema.json",
+    "projection": "docs/MAINTENANCE_QUEUE.md"
+  },
+  "landing_protocol": {
+    "source": "data/repository_governance/document_system/landing.json",
+    "schema": "data/repository_governance/document_system/landing.schema.json",
+    "ack_schema": "data/repository_governance/document_system/landing_ack.schema.json",
+    "runner": "devtools/document_patch_landing.py",
+    "guide": "docs/governance/document-system/REAL_REPOSITORY_LANDING.md"
+  },
+  "knowledge_sources": {
+    "claims": "data/knowledge/claims.jsonl",
+    "decisions": "data/knowledge/decisions.jsonl",
+    "dossiers": "data/knowledge/dossiers.json",
+    "backfill_reviews": "data/knowledge/backfill_reviews.jsonl",
+    "backfill_triage": "data/knowledge/backfill_triage.json",
+    "terminology": "data/knowledge/terminology.json",
+    "topics": "data/knowledge/topics.json"
+  },
+  "governed_markdown_globs": [
+    "*.md",
+    "**/*.md"
+  ],
+  "actions": {
+    "code_assets.check": {
+      "description": "校验代码资产分类和计数投影。",
+      "command": ".venv/bin/python devtools/check_repository_code_assets.py check"
+    },
+    "docs.reference.validate": {
+      "description": "校验 legacy 文档引用扫描注册表的覆盖与结构。",
+      "command": ".venv/bin/python devtools/docs_reference_scan.py validate-registry"
+    },
+    "docsystem.check_changed": {
+      "description": "按 Git diff 检查本次文档和框架变更。",
+      "command": ".venv/bin/python devtools/docctl.py check --changed"
+    },
+    "docsystem.doctor": {
+      "description": "校验自描述文档框架、policy 继承和兼容投影。",
+      "command": ".venv/bin/python devtools/docctl.py doctor"
+    },
+    "docsystem.render_legacy": {
+      "description": "从分布式 policy 重建 legacy doc_classes 兼容投影。",
+      "command": ".venv/bin/python devtools/docctl.py render-legacy --write"
+    },
+    "docsystem.tests": {
+      "description": "通过统一治理门运行文档框架定点回归 profile。",
+      "command": ".venv/bin/python devtools/document_governance_gate.py run --profile framework"
+    },
+    "knowledge.build": {
+      "description": "从结构化知识源重建 CURRENT、CATALOG、REASONING_LEDGER、VALIDITY_LEDGER、BACKFILL_LEDGER、TOPIC_INDEX、TERMINOLOGY 与 OPEN_QUESTIONS。",
+      "command": ".venv/bin/python devtools/build_knowledge_docs.py --write"
+    },
+    "knowledge.check": {
+      "description": "校验知识账本、START_HERE 链接和八份知识生成页。",
+      "command": ".venv/bin/python devtools/check_knowledge_docs.py"
+    },
+    "knowledge.refresh_dossiers": {
+      "description": "发现新增一级研究包并重建知识投影。",
+      "command": ".venv/bin/python devtools/build_knowledge_docs.py --refresh-dossiers --write"
+    },
+    "docsystem.render_guidance": {
+      "description": "从有效文档 policy 生成当前职责索引。",
+      "command": ".venv/bin/python devtools/docctl.py render-guidance --write"
+    },
+    "docsystem.render_entrypoints": {
+      "description": "从结构化前门注册表重建历史兼容跳转页。",
+      "command": ".venv/bin/python devtools/docctl.py render-entrypoints --write"
+    },
+    "docsystem.render_sections": {
+      "description": "从 section registry 与有效 policy 重建当前文档分区索引。",
+      "command": ".venv/bin/python devtools/docctl.py render-sections --write"
+    },
+    "docsystem.render_convergence": {
+      "description": "从当前 policy、section 与前门图生成职责收束验收报告。",
+      "command": ".venv/bin/python devtools/docctl.py render-convergence --write"
+    },
+    "artifact_evidence.render": {
+      "description": "从 dossier ledger 与显式根文件输入重建 frozen artifact-boundary 兼容投影。",
+      "command": ".venv/bin/python devtools/artifact_evidence.py render --write"
+    },
+    "artifact_evidence.check": {
+      "description": "校验 tracked artifact evidence 的语义边界、兼容投影与 runtime 排除。",
+      "command": ".venv/bin/python devtools/artifact_evidence.py check"
+    },
+    "code_assets.current": {
+      "description": "校验当前工作树的代码资产分类、逻辑隔离和 enforcement-control 计数；不宣称历史 baseline replay。",
+      "command": ".venv/bin/python devtools/check_repository_code_assets.py check-current"
+    },
+    "docsystem.gate": {
+      "description": "运行 manifest 注册的非变异文档治理门 changed profile。",
+      "command": ".venv/bin/python devtools/document_governance_gate.py run --profile changed"
+    },
+    "docsystem.gate_full": {
+      "description": "运行含完整历史 code-assets replay 的阶段边界文档治理门。",
+      "command": ".venv/bin/python devtools/document_governance_gate.py run --profile full"
+    },
+    "docsystem.intake": {
+      "description": "按 Git diff 校验新文档、dossier 生命周期、owner authority companion 与稳定知识身份。",
+      "command": ".venv/bin/python devtools/docctl.py intake --changed"
+    },
+    "docsystem.render_maintenance": {
+      "description": "从周期审计注册表与现有真源重建维护队列投影。",
+      "command": ".venv/bin/python devtools/docctl.py render-maintenance --write"
+    },
+    "docsystem.audit": {
+      "description": "运行只读 weekly 文档维护审计；机械错误阻断，语义欠账保持可见。",
+      "command": ".venv/bin/python devtools/docctl.py audit --profile weekly"
+    },
+    "docsystem.audit_deep": {
+      "description": "运行只读 deep 文档维护审计；逾期 warning 与 error 都阻断。",
+      "command": ".venv/bin/python devtools/docctl.py audit --profile deep"
+    },
+    "docsystem.landing": {
+      "description": "查询非破坏性真实仓库落地事务的动态规划、归档、迁移与验收命令。",
+      "command": ".venv/bin/python devtools/document_patch_landing.py --help"
+    }
+  },
+  "adrs": {
+    "DOC-ADR-001": "docs/governance/document-system/ADR/001-inherited-policy-and-progressive-disclosure.md",
+    "DOC-ADR-002": "docs/governance/document-system/ADR/002-self-governing-framework-core.md",
+    "DOC-ADR-003": "docs/governance/document-system/ADR/003-legacy-doc-classes-as-generated-projection.md",
+    "DOC-ADR-004": "docs/governance/document-system/ADR/004-backfill-review-and-reasoning-projection.md",
+    "DOC-ADR-005": "docs/governance/document-system/ADR/005-derivation-graph-and-mathematical-families.md",
+    "DOC-ADR-006": "docs/governance/document-system/ADR/006-selection-separation-and-consumption-profile.md",
+    "DOC-ADR-007": "docs/governance/document-system/ADR/007-validity-events-and-explicit-supersession.md",
+    "DOC-ADR-008": "docs/governance/document-system/ADR/008-semantic-review-and-inventory-triage.md",
+    "DOC-ADR-009": "docs/governance/document-system/ADR/009-explicit-current-guidance-surface.md",
+    "DOC-ADR-010": "docs/governance/document-system/ADR/010-bounded-entrypoints-and-on-demand-agent-guide.md",
+    "DOC-ADR-011": "docs/governance/document-system/ADR/011-explicit-sections-and-retired-local-indexes.md",
+    "DOC-ADR-012": "docs/governance/document-system/ADR/012-current-graph-convergence-audit.md",
+    "DOC-ADR-013": "docs/governance/document-system/ADR/013-non-mutating-governance-gate.md",
+    "DOC-ADR-014": "docs/governance/document-system/ADR/014-event-driven-document-intake.md",
+    "DOC-ADR-015": "docs/governance/document-system/ADR/015-periodic-semantic-maintenance-audit.md",
+    "DOC-ADR-016": "docs/governance/document-system/ADR/016-real-repository-topology-and-workspace-overlays.md",
+    "DOC-ADR-017": "docs/governance/document-system/ADR/017-executable-knowledge-authority-and-nonauthorizing-decisions.md",
+    "DOC-ADR-018": "docs/governance/document-system/ADR/018-nondestructive-real-repository-landing.md",
+    "DOC-ADR-019": "docs/governance/document-system/ADR/019-bounded-governance-concurrency-and-slow-test-evidence.md",
+    "DOC-ADR-020": "docs/governance/document-system/ADR/020-steady-state-transition-and-maintenance-handoff.md"
+  },
+  "framework_core": [
+    {
+      "id": "bootstrap_surface",
+      "match": {
+        "glob": ".docsystem/**"
+      },
+      "context_level": "L3",
+      "rationale": "固定自举入口和恢复说明决定整个文档系统如何被找到。",
+      "invariant_refs": [
+        "DOC-INV-006",
+        "DOC-INV-007",
+        "DOC-INV-008",
+        "DOC-INV-013",
+        "DOC-INV-014",
+        "DOC-INV-015",
+        "DOC-INV-016",
+        "DOC-INV-017",
+        "DOC-INV-018",
+        "DOC-INV-019",
+        "DOC-INV-020",
+        "DOC-INV-023"
+      ],
+      "adr_refs": [
+        "DOC-ADR-002",
+        "DOC-ADR-010",
+        "DOC-ADR-011",
+        "DOC-ADR-012",
+        "DOC-ADR-013",
+        "DOC-ADR-014",
+        "DOC-ADR-015",
+        "DOC-ADR-016",
+        "DOC-ADR-019",
+        "DOC-ADR-020"
+      ]
+    },
+    {
+      "id": "root_policy",
+      "match": {
+        "path": "DOC_POLICY.json"
+      },
+      "context_level": "L3",
+      "rationale": "根 policy 是所有局部策略的继承起点。",
+      "invariant_refs": [
+        "DOC-INV-005",
+        "DOC-INV-006",
+        "DOC-INV-007",
+        "DOC-INV-013",
+        "DOC-INV-014",
+        "DOC-INV-015",
+        "DOC-INV-016",
+        "DOC-INV-018",
+        "DOC-INV-020",
+        "DOC-INV-023"
+      ],
+      "adr_refs": [
+        "DOC-ADR-001",
+        "DOC-ADR-002",
+        "DOC-ADR-010",
+        "DOC-ADR-011",
+        "DOC-ADR-012",
+        "DOC-ADR-014",
+        "DOC-ADR-016",
+        "DOC-ADR-020"
+      ]
+    },
+    {
+      "id": "local_policies",
+      "match": {
+        "glob": "**/DOC_POLICY.json"
+      },
+      "context_level": "L2",
+      "rationale": "局部 policy 直接改变目标目录的有效操作协议。",
+      "invariant_refs": [
+        "DOC-INV-005",
+        "DOC-INV-007",
+        "DOC-INV-008",
+        "DOC-INV-012",
+        "DOC-INV-013",
+        "DOC-INV-014",
+        "DOC-INV-015",
+        "DOC-INV-016",
+        "DOC-INV-018",
+        "DOC-INV-020",
+        "DOC-INV-023"
+      ],
+      "adr_refs": [
+        "DOC-ADR-001",
+        "DOC-ADR-009",
+        "DOC-ADR-010",
+        "DOC-ADR-011",
+        "DOC-ADR-012",
+        "DOC-ADR-014",
+        "DOC-ADR-016",
+        "DOC-ADR-020"
+      ]
+    },
+    {
+      "id": "framework_machine_sources",
+      "match": {
+        "glob": "data/repository_governance/document_system/**"
+      },
+      "context_level": "L3",
+      "rationale": "schema、不变量和兼容投影基座定义框架机器语义。",
+      "invariant_refs": [
+        "DOC-INV-005",
+        "DOC-INV-006",
+        "DOC-INV-007",
+        "DOC-INV-010",
+        "DOC-INV-011",
+        "DOC-INV-012",
+        "DOC-INV-013",
+        "DOC-INV-014",
+        "DOC-INV-015",
+        "DOC-INV-016",
+        "DOC-INV-017",
+        "DOC-INV-018",
+        "DOC-INV-019",
+        "DOC-INV-020",
+        "DOC-INV-023"
+      ],
+      "adr_refs": [
+        "DOC-ADR-001",
+        "DOC-ADR-002",
+        "DOC-ADR-003",
+        "DOC-ADR-004",
+        "DOC-ADR-005",
+        "DOC-ADR-006",
+        "DOC-ADR-007",
+        "DOC-ADR-008",
+        "DOC-ADR-009",
+        "DOC-ADR-010",
+        "DOC-ADR-011",
+        "DOC-ADR-012",
+        "DOC-ADR-013",
+        "DOC-ADR-014",
+        "DOC-ADR-015",
+        "DOC-ADR-016",
+        "DOC-ADR-019",
+        "DOC-ADR-020"
+      ]
+    },
+    {
+      "id": "knowledge_schemas",
+      "match": {
+        "glob": "data/knowledge/schemas/**"
+      },
+      "context_level": "L3",
+      "rationale": "Claim、decision、dossier、review、triage、topic 与 terminology schema 会重新解释知识账本，属于完整框架语义。",
+      "invariant_refs": [
+        "DOC-INV-001",
+        "DOC-INV-003",
+        "DOC-INV-006",
+        "DOC-INV-009",
+        "DOC-INV-010",
+        "DOC-INV-011",
+        "DOC-INV-013",
+        "DOC-INV-015",
+        "DOC-INV-016",
+        "DOC-INV-018",
+        "DOC-INV-020",
+        "DOC-INV-023"
+      ],
+      "adr_refs": [
+        "DOC-ADR-002",
+        "DOC-ADR-004",
+        "DOC-ADR-005",
+        "DOC-ADR-006",
+        "DOC-ADR-007",
+        "DOC-ADR-008",
+        "DOC-ADR-010",
+        "DOC-ADR-012",
+        "DOC-ADR-014",
+        "DOC-ADR-016",
+        "DOC-ADR-020"
+      ]
+    },
+    {
+      "id": "framework_guides",
+      "match": {
+        "glob": "docs/governance/document-system/**"
+      },
+      "context_level": "L3",
+      "rationale": "架构、维护协议与 ADR 是框架的人类可读定义和设计历史。",
+      "invariant_refs": [
+        "DOC-INV-006",
+        "DOC-INV-007",
+        "DOC-INV-008",
+        "DOC-INV-010",
+        "DOC-INV-011",
+        "DOC-INV-012",
+        "DOC-INV-013",
+        "DOC-INV-014",
+        "DOC-INV-015",
+        "DOC-INV-016",
+        "DOC-INV-017",
+        "DOC-INV-018",
+        "DOC-INV-019",
+        "DOC-INV-020",
+        "DOC-INV-023"
+      ],
+      "adr_refs": [
+        "DOC-ADR-001",
+        "DOC-ADR-002",
+        "DOC-ADR-003",
+        "DOC-ADR-004",
+        "DOC-ADR-005",
+        "DOC-ADR-006",
+        "DOC-ADR-007",
+        "DOC-ADR-008",
+        "DOC-ADR-009",
+        "DOC-ADR-010",
+        "DOC-ADR-011",
+        "DOC-ADR-012",
+        "DOC-ADR-013",
+        "DOC-ADR-014",
+        "DOC-ADR-015",
+        "DOC-ADR-016",
+        "DOC-ADR-019",
+        "DOC-ADR-020"
+      ]
+    },
+    {
+      "id": "framework_resolver",
+      "match": {
+        "paths": [
+          "devtools/docctl.py",
+          "devtools/tests/test_document_intake.py",
+          "src/tests/test_document_system.py",
+          "src/tests/test_knowledge_docs.py"
+        ]
+      },
+      "context_level": "L3",
+      "rationale": "解析器和其回归测试共同定义有效 policy 的实际行为。",
+      "invariant_refs": [
+        "DOC-INV-005",
+        "DOC-INV-006",
+        "DOC-INV-007",
+        "DOC-INV-008",
+        "DOC-INV-010",
+        "DOC-INV-011",
+        "DOC-INV-012",
+        "DOC-INV-013",
+        "DOC-INV-014",
+        "DOC-INV-015",
+        "DOC-INV-016",
+        "DOC-INV-017",
+        "DOC-INV-018",
+        "DOC-INV-019",
+        "DOC-INV-020",
+        "DOC-INV-023"
+      ],
+      "adr_refs": [
+        "DOC-ADR-001",
+        "DOC-ADR-002",
+        "DOC-ADR-003",
+        "DOC-ADR-004",
+        "DOC-ADR-005",
+        "DOC-ADR-006",
+        "DOC-ADR-007",
+        "DOC-ADR-008",
+        "DOC-ADR-009",
+        "DOC-ADR-010",
+        "DOC-ADR-011",
+        "DOC-ADR-012",
+        "DOC-ADR-013",
+        "DOC-ADR-014",
+        "DOC-ADR-015",
+        "DOC-ADR-016",
+        "DOC-ADR-019",
+        "DOC-ADR-020"
+      ]
+    },
+    {
+      "id": "knowledge_projection_tools",
+      "match": {
+        "paths": [
+          "devtools/build_knowledge_docs.py",
+          "devtools/check_knowledge_docs.py",
+          "src/tests/test_knowledge_docs.py"
+        ]
+      },
+      "context_level": "L3",
+      "rationale": "知识真源到八份生成页的投影，以及回填审阅、长尾分诊、主题、术语、推导、分离和有效性检查，属于文档框架承重部件。",
+      "invariant_refs": [
+        "DOC-INV-001",
+        "DOC-INV-003",
+        "DOC-INV-004",
+        "DOC-INV-006",
+        "DOC-INV-010",
+        "DOC-INV-011",
+        "DOC-INV-012",
+        "DOC-INV-013",
+        "DOC-INV-014",
+        "DOC-INV-015",
+        "DOC-INV-016",
+        "DOC-INV-018",
+        "DOC-INV-020",
+        "DOC-INV-023"
+      ],
+      "adr_refs": [
+        "DOC-ADR-001",
+        "DOC-ADR-002",
+        "DOC-ADR-004",
+        "DOC-ADR-005",
+        "DOC-ADR-006",
+        "DOC-ADR-007",
+        "DOC-ADR-008",
+        "DOC-ADR-009",
+        "DOC-ADR-010",
+        "DOC-ADR-011",
+        "DOC-ADR-012",
+        "DOC-ADR-014",
+        "DOC-ADR-016",
+        "DOC-ADR-020"
+      ]
+    },
+    {
+      "id": "legacy_projection_output",
+      "match": {
+        "path": "data/repository_governance/doc_classes.json"
+      },
+      "context_level": "L3",
+      "rationale": "这是由局部 policy 生成、供旧引用扫描器消费的兼容投影。",
+      "invariant_refs": [
+        "DOC-INV-004",
+        "DOC-INV-006",
+        "DOC-INV-015",
+        "DOC-INV-016",
+        "DOC-INV-018",
+        "DOC-INV-020",
+        "DOC-INV-023"
+      ],
+      "adr_refs": [
+        "DOC-ADR-003",
+        "DOC-ADR-012",
+        "DOC-ADR-014",
+        "DOC-ADR-016",
+        "DOC-ADR-020"
+      ]
+    },
+    {
+      "id": "document_governance_gate",
+      "match": {
+        "paths": [
+          ".github/workflows/document-governance.yml",
+          "data/repository_governance/document_system/governance_gate.json",
+          "data/repository_governance/document_system/governance_gate.schema.json",
+          "devtools/document_governance_gate.py",
+          "devtools/tests/test_document_governance_gate.py"
+        ]
+      },
+      "context_level": "L3",
+      "rationale": "统一治理门、Git 可见状态指纹、CI 触发面和红测共同定义检查是否真正只读且可重复。",
+      "invariant_refs": [
+        "DOC-INV-006",
+        "DOC-INV-007",
+        "DOC-INV-008",
+        "DOC-INV-017",
+        "DOC-INV-018",
+        "DOC-INV-019",
+        "DOC-INV-020",
+        "DOC-INV-023"
+      ],
+      "adr_refs": [
+        "DOC-ADR-002",
+        "DOC-ADR-013",
+        "DOC-ADR-014",
+        "DOC-ADR-015",
+        "DOC-ADR-016",
+        "DOC-ADR-019",
+        "DOC-ADR-020"
+      ]
+    },
+    {
+      "id": "maintenance_audit_framework",
+      "match": {
+        "paths": [
+          "data/repository_governance/document_system/maintenance_audit.json",
+          "data/repository_governance/document_system/maintenance_audit.schema.json",
+          "devtools/document_maintenance_audit.py",
+          "devtools/tests/test_document_maintenance_audit.py"
+        ]
+      },
+      "context_level": "L3",
+      "rationale": "周期审计注册表、只读 runner 与红测共同定义语义盘库机制，不能演化成第二套状态权威。",
+      "invariant_refs": [
+        "DOC-INV-006",
+        "DOC-INV-007",
+        "DOC-INV-017",
+        "DOC-INV-018",
+        "DOC-INV-019",
+        "DOC-INV-020",
+        "DOC-INV-023"
+      ],
+      "adr_refs": [
+        "DOC-ADR-002",
+        "DOC-ADR-013",
+        "DOC-ADR-014",
+        "DOC-ADR-015",
+        "DOC-ADR-016",
+        "DOC-ADR-020"
+      ]
+    },
+    {
+      "id": "real_repository_landing",
+      "match": {
+        "paths": [
+          "data/repository_governance/document_system/landing.json",
+          "data/repository_governance/document_system/landing.schema.json",
+          "data/repository_governance/document_system/landing_ack.schema.json",
+          "devtools/document_patch_landing.py",
+          "devtools/tests/test_document_patch_landing.py",
+          "docs/governance/document-system/REAL_REPOSITORY_LANDING.md"
+        ]
+      },
+      "context_level": "L3",
+      "rationale": "动态冲突发现、落地时字节归档、语义迁移 ACK 与非破坏性 successor 安装共同定义共享工作区的安全落地边界。",
+      "invariant_refs": [
+        "DOC-INV-002",
+        "DOC-INV-006",
+        "DOC-INV-020",
+        "DOC-INV-021",
+        "DOC-INV-022",
+        "DOC-INV-023"
+      ],
+      "adr_refs": [
+        "DOC-ADR-016",
+        "DOC-ADR-017",
+        "DOC-ADR-018",
+        "DOC-ADR-020"
+      ]
+    }
+  ],
+  "workspace_overlays": {
+    "projection_input_policy": "excluded",
+    "records": [
+      {
+        "id": "claude_workspace_overlay",
+        "path": "CLAUDE.md",
+        "presence": "optional",
+        "durability": "workspace_untracked",
+        "canonical_target": "docs/AGENT_OPERATIONS.md",
+        "validate_policy_when_present": true
+      },
+      {
+        "id": "agents_workspace_overlay",
+        "path": "AGENTS.md",
+        "presence": "optional",
+        "durability": "workspace_untracked",
+        "canonical_target": "docs/AGENT_OPERATIONS.md",
+        "validate_policy_when_present": true
+      }
+    ]
+  }
+}

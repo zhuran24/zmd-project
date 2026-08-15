@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-document-invariants-v1",
+  "title": "ZMD document-system invariants",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "system_version",
+    "records"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "zmd_document_invariants_v1"
+    },
+    "system_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    }
+  },
+  "$defs": {
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?!.*\\u0000).+$"
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "statement",
+        "short_reason",
+        "failure_mode",
+        "enforced_by",
+        "adr_refs"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^DOC-INV-[0-9]{3}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "short_reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "failure_mode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "enforced_by": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/relpath"
+          }
+        },
+        "adr_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^DOC-ADR-[0-9]{3}$"
+          }
+        }
+      }
+    }
+  }
+}

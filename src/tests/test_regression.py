@@ -209,10 +209,12 @@ def test_governance_docs_point_to_changelog() -> None:
 def test_problem_statement_is_current_code_aligned_and_problem_scoped() -> None:
     project_root = Path(__file__).resolve().parent.parent.parent
     problem_statement = (project_root / "specs" / "01_problem_statement.md").read_text(encoding="utf-8")
+    start_here = (project_root / "docs" / "START_HERE.md").read_text(encoding="utf-8")
     file_status = (project_root / "FILE_STATUS.md").read_text(encoding="utf-8")
 
     assert "status: CURRENT_CODE_ALIGNED" in problem_statement
-    assert "| `specs/01_problem_statement.md` | CURRENT_CODE_ALIGNED |" in file_status
+    assert "../specs/01_problem_statement.md" in start_here
+    assert "docs/CURRENT.md" in file_status
     assert "\\max_{\\text{lex}} (\\text{area}, \\text{min\\_side})" in problem_statement
     assert "min_side" in problem_statement and "\\min(w, h) \\ge 6" in problem_statement
     assert "与外部存在连通路径" in problem_statement

@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-backfill-review-v1",
+  "title": "ZMD dossier knowledge-backfill review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "status",
+    "dossier_id",
+    "reviewed_at",
+    "review_scope",
+    "reviewed_paths",
+    "outcome",
+    "claim_ids",
+    "summary",
+    "unresolved",
+    "next_review_trigger",
+    "supersedes",
+    "tags"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "zmd_backfill_review_v1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^REVIEW-[A-Z0-9][A-Z0-9-]*$"
+    },
+    "status": {
+      "enum": [
+        "current",
+        "superseded"
+      ]
+    },
+    "dossier_id": {
+      "type": "string",
+      "pattern": "^DOSSIER-[A-Z0-9][A-Z0-9-]*$"
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "review_scope": {
+      "enum": [
+        "full_dossier",
+        "entry_and_references",
+        "targeted_files",
+        "availability_and_provenance"
+      ]
+    },
+    "reviewed_paths": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "outcome": {
+      "enum": [
+        "claims_promoted",
+        "existing_claims_confirmed",
+        "no_reusable_claim",
+        "inconclusive",
+        "deferred"
+      ]
+    },
+    "claim_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^CLAIM-[A-Z0-9][A-Z0-9-]*$"
+      }
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "unresolved": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "next_review_trigger": {
+      "type": "string",
+      "minLength": 1
+    },
+    "supersedes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^REVIEW-[A-Z0-9][A-Z0-9-]*$"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9_-]*$"
+      }
+    }
+  }
+}

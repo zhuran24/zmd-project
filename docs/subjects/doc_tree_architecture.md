@@ -1,11 +1,22 @@
-# 文档树架构
+# 旧文档树架构主题兼容入口
 
-当前文档树采用“多文件、显式 authority、人工同步”的简单模型：
+> 本页由文档系统的前门注册表自动生成；禁止手工修改。
+> 真源：[`data/repository_governance/document_system/entrypoints.json`](../../data/repository_governance/document_system/entrypoints.json)。
 
-- `PROJECT_LOCK.md` 约束 exactness 与发布边界。
-- JSON 机器义务和 phase gate 约束可执行状态。
-- living docs 解释当前实现。
-- `docs/research/` 保存带日期的历史证据。
-- `cc_memory/memory.db` 保存协作记忆图，但不自动投影到文档。
+文档框架的完整现行定义已进入 framework architecture；本主题路径只保留稳定跳转。
 
-历史上曾设计 subject/projection transclusion，并在若干文件中留下 `DOC-SUBJECT` 注释。当前仓库没有 registry、sync tool 或 preflight enforcement，所以这些注释不能被描述成自动一致性保证。任何状态变更都必须直接更新所有实际消费文档和相关 memory node/edge。
+## 当前入口
+
+- [文档系统架构](../governance/document-system/ARCHITECTURE.md)：当前类型系统、策略继承、分区与生成投影。
+- [维护协议](../governance/document-system/MAINTAINING.md)：安全改变框架、schema、policy 和迁移的方法。
+
+## 维护边界
+
+- 不要在主题页复制第二份架构定义。
+- 退出当前职责前的正文见 [历史快照](../history/navigation/subjects_doc_tree_architecture_pre_phase3_batch3_20260812.md)；它只保留当时叙述。
+
+需要改变本页时，修改前门注册表后运行：
+
+```bash
+.venv/bin/python devtools/docctl.py render-entrypoints --write
+```

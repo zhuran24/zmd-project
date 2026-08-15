@@ -1,0 +1,478 @@
+{
+  "schema_version": "zmd_topics_v1",
+  "ledger_reviewed_at": "2026-08-14",
+  "records": [
+    {
+      "id": "TOPIC-AUTHORITY-AND-CURRENT-STATE",
+      "title": "权威与当前状态",
+      "summary": "从 machine/owner authority、current ledger 与 OPEN 边界进入项目，不把证据存在误读为现态。",
+      "claim_ids": [
+        "CLAIM-BAND22-V0A-STRICT-HOLE-INCOMPATIBLE",
+        "CLAIM-BOUNDARY-LOADER-EXCLUDED-FROZEN-INSTANCE",
+        "CLAIM-CERTIFIED-EXISTENCE-OPEN",
+        "CLAIM-CUT-FRAMEWORK-PRODUCTION-STATUS",
+        "CLAIM-DURABLE-CERTIFIED-RESULT-ABSENT",
+        "CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814",
+        "CLAIM-R4-BOUNDARY-23-23-FULL-SPAN-EXCLUSION",
+        "CLAIM-R4-MARKED-INCIDENCE-TOTAL-110",
+        "CLAIM-SIX-PREDICATE-RESEARCH-LEDGER"
+      ],
+      "dossier_topic_labels": [
+        "p1_2-proof-chain"
+      ],
+      "term_ids": [
+        "TERM-AUTHORITY",
+        "TERM-EVIDENCE",
+        "TERM-CURRENT",
+        "TERM-CERTIFIED",
+        "TERM-RESEARCH-UPPER-LEDGER"
+      ],
+      "entry_paths": [
+        "docs/CURRENT.md",
+        "docs/START_HERE.md"
+      ],
+      "open_question_claim_ids": [
+        "CLAIM-CERTIFIED-EXISTENCE-OPEN"
+      ],
+      "tags": [
+        "governance",
+        "current-state"
+      ]
+    },
+    {
+      "id": "TOPIC-CERTIFIED-SCOPE-AND-SEMANTICS",
+      "title": "认证作用域与规则语义",
+      "summary": "六谓词、严格空地、model-stricter face 与 terminal/routing 作用域的当前边界。",
+      "claim_ids": [
+        "CLAIM-ACTIVE-SCOPE-SINGLE-BASE",
+        "CLAIM-ADMISSION-PORT-OMISSION-SCOPE-RESTRICTION",
+        "CLAIM-BINDING-SLOT-SINGLE-COMMODITY-SCOPE",
+        "CLAIM-CERTIFIED-THEOREM-SCOPE",
+        "CLAIM-CONNECTIVITY-QUANTIFIER-PER-COMMODITY-SOURCE-SINK",
+        "CLAIM-DESTINATION-FRONT-EXCLUSIVITY-TERMINAL-SENSITIVE",
+        "CLAIM-EMPTY-RECTANGLE-MIN-SIDE-ADMISSIBILITY-SIX",
+        "CLAIM-EMPTY-RECTANGLE-STRICT",
+        "CLAIM-MODEL-STRICTER-FACES-SCOPE-DEBT",
+        "CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT-BOUNDARY",
+        "CLAIM-SOLVER-RETHINK-PHASE1-OMITS-CONSTRUCTION-HALF",
+        "CLAIM-SOURCE-FRONT-EXCLUSIVITY-OVERSTRICT",
+        "CLAIM-WAREHOUSE-BRIDGE-EXCLUSION-TARGET-CONDITIONAL"
+      ],
+      "dossier_topic_labels": [
+        "rules-semantics"
+      ],
+      "term_ids": [
+        "TERM-CERTIFIED",
+        "TERM-STRICT-EMPTY-RECTANGLE",
+        "TERM-BODY-EMPTY-RECTANGLE",
+        "TERM-PHYSICAL-PORT",
+        "TERM-FRONT-CELL"
+      ],
+      "entry_paths": [
+        "PROJECT_LOCK.md",
+        "docs/项目说明/01_overview.md",
+        "rules/canonical_rules.json"
+      ],
+      "open_question_claim_ids": [],
+      "tags": [
+        "certified",
+        "semantics"
+      ]
+    },
+    {
+      "id": "TOPIC-SIX-PREDICATE-UPPER-BOUND",
+      "title": "六谓词上界与领域不等式",
+      "summary": "R3/R4、membrane、zero-slack、SMM 与 SMM4 的结构引理、有限 band 与研究账本。",
+      "claim_ids": [
+        "CLAIM-B1-CEILING-EXACT-NINE-POLES",
+        "CLAIM-B1-CONDITIONAL-HALO-CAPACITY-6650",
+        "CLAIM-B1-QMH-REFINED-MEMBRANE-INEQUALITY",
+        "CLAIM-BODY-ACCESS-BUDGET-1320",
+        "CLAIM-BOUNDARY-GENERIC-OUTPUT-SLOTS-SATURATED",
+        "CLAIM-ORDINARY-MEMBRANE-TERMINAL-BOUND-S48",
+        "CLAIM-POWER-HALO-POLE-LOWER-BOUND-NINE",
+        "CLAIM-R3-LEX-BAND-2074-UNSAT-GIVEN-GEOMETRY",
+        "CLAIM-R4-LEX-BAND-2084-UNSAT",
+        "CLAIM-R4-LOCAL-WEIGHTED-ACCESS-CAPACITY-4",
+        "CLAIM-R4-MARKED-MEMBRANE-BOUND-S12",
+        "CLAIM-R4-NECESSARY-DIMENSION-INEQUALITY",
+        "CLAIM-SIX-PREDICATE-RESEARCH-LEDGER",
+        "CLAIM-SMM-209-EXCLUDES-22X54",
+        "CLAIM-SMM-COMBINED-CAP-209",
+        "CLAIM-SMM-ENDPOINT-TOP-EIGHT-BUDGET-19",
+        "CLAIM-SMM-MARKED-MEMBRANE-BOUND-85",
+        "CLAIM-SMM-OUTSIDE-ACCESS-LOWER-133",
+        "CLAIM-SMM4-LEX-BAND-COMPOSITION-2086",
+        "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1",
+        "CLAIM-ZERO-SLACK-AUDIT-METHOD"
+      ],
+      "dossier_topic_labels": [
+        "upper-bound"
+      ],
+      "term_ids": [
+        "TERM-RESEARCH-UPPER-LEDGER",
+        "TERM-STRICT-EMPTY-RECTANGLE",
+        "TERM-BODY-EMPTY-RECTANGLE"
+      ],
+      "entry_paths": [
+        "docs/REASONING_LEDGER.md",
+        "docs/CURRENT.md"
+      ],
+      "open_question_claim_ids": [],
+      "tags": [
+        "upper-bound"
+      ]
+    },
+    {
+      "id": "TOPIC-P2-THROUGHPUT",
+      "title": "P2.0 吞吐与面积账本",
+      "summary": "P2.0 第七谓词下的流量、route-state、面积界、条件界、反例与未闭 min_side。",
+      "claim_ids": [
+        "CLAIM-P2-AREA-ACCOUNTING-1356",
+        "CLAIM-P2-AREA-BOUND-1167",
+        "CLAIM-P2-BUCKWHEAT-SANDLEAF-MANDATORY-BRANCH",
+        "CLAIM-P2-FIVE-FULL-ONE-HALF-CONDITIONAL",
+        "CLAIM-P2-MIN-SIDE-UPPER-OPEN",
+        "CLAIM-P2-ROUTE-FOOTPRINT-LOWER-153",
+        "CLAIM-P2-ROUTE-STATE-LOWER-BOUND-305",
+        "CLAIM-P2-ROUTED-FLOW-LOWER-9135",
+        "CLAIM-P2-SINGLE-LAYER-AREA-BOUND-1015",
+        "CLAIM-P2-STEEL-BLOCK-17-LT-18-REFUTED",
+        "CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814"
+      ],
+      "dossier_topic_labels": [
+        "p2-throughput"
+      ],
+      "term_ids": [
+        "TERM-RESEARCH-UPPER-LEDGER",
+        "TERM-UNKNOWN",
+        "TERM-INFEASIBLE"
+      ],
+      "entry_paths": [
+        "docs/CURRENT.md",
+        "docs/REASONING_LEDGER.md"
+      ],
+      "open_question_claim_ids": [
+        "CLAIM-P2-MIN-SIDE-UPPER-OPEN"
+      ],
+      "tags": [
+        "p2_0",
+        "throughput"
+      ]
+    },
+    {
+      "id": "TOPIC-SELECTION-SEPARATION-AND-CUTS",
+      "title": "选择、分离、验证与 cut 消费",
+      "summary": "区分候选发现、soundness 验证、主动 separation、模型前排除和 solver 消费，并保留 generic CP-SAT 不可能性仍 OPEN 的边界。",
+      "claim_ids": [
+        "CLAIM-AB16-CAMPAIGN-CLOSEOUT-NO-ATTRIBUTABLE-CUT-RESULT",
+        "CLAIM-ATTACH-SPIKES-ENGINEERING-NOT-CUT-EFFICACY",
+        "CLAIM-CUT-FRAMEWORK-PRODUCTION-STATUS",
+        "CLAIM-DISCOVERY-AND-VALIDATION-SEPARATE-OBLIGATIONS",
+        "CLAIM-FORWARD-COMPLETENESS-RELATIVE-TO-DECLARED-FRAGMENT",
+        "CLAIM-GENERIC-CP-SAT-SEPARATION-IMPOSSIBILITY-OPEN",
+        "CLAIM-PAIRWISE-CLOSURE-INCOMPLETE",
+        "CLAIM-PROVED-PREMODEL-EXCLUSION-PERMITS-MODEL-OMISSION",
+        "CLAIM-RAW-ELIGIBLE-EVENTS-REQUIRED-FOR-SEPARATION-EVALUATION",
+        "CLAIM-TYPED-CUT-PIPELINE-CONSUMES-KNOWN-CUTS-NOT-DISCOVERS-THEM"
+      ],
+      "dossier_topic_labels": [
+        "cut-framework",
+        "separation-method",
+        "separation-telemetry",
+        "solver-architecture",
+        "solver-rethink"
+      ],
+      "term_ids": [
+        "TERM-CANDIDATE-DISCOVERY",
+        "TERM-CANDIDATE-VALIDATION",
+        "TERM-SEPARATION",
+        "TERM-SOLVER-CONSUMPTION",
+        "TERM-PREMODEL-EXCLUSION",
+        "TERM-MODEL-OMISSION",
+        "TERM-FIXED-POINT"
+      ],
+      "entry_paths": [
+        "docs/REASONING_LEDGER.md"
+      ],
+      "open_question_claim_ids": [
+        "CLAIM-GENERIC-CP-SAT-SEPARATION-IMPOSSIBILITY-OPEN"
+      ],
+      "tags": [
+        "cut-framework",
+        "separation"
+      ]
+    },
+    {
+      "id": "TOPIC-ROUTING-TERMINALS-AND-MIXFLOW",
+      "title": "路由终端、front 与混流语义",
+      "summary": "物理 port、front/access、source/destination 排他、storage box、mixflow 与 front-offset 历史修正。",
+      "claim_ids": [
+        "CLAIM-ADMISSION-PORT-OMISSION-SCOPE-RESTRICTION",
+        "CLAIM-BINDING-SLOT-SINGLE-COMMODITY-SCOPE",
+        "CLAIM-DESTINATION-FRONT-EXCLUSIVITY-TERMINAL-SENSITIVE",
+        "CLAIM-FRONT-OFFSET-DOUBLE-STEP-SEMANTICS-SUPERSEDED",
+        "CLAIM-FRONT-OFFSET-HISTORICAL-REJUDGMENT-40",
+        "CLAIM-FRONT-OFFSET-PRE-0718-SUPERSEDED",
+        "CLAIM-MIXED-TERMINAL-TRIPARTITION",
+        "CLAIM-MIXFLOW-DEMIX-CONCLUSION-SURVIVES-FIXTURE-CORRECTION",
+        "CLAIM-MIXFLOW-U01-GUARD-FORK-BENEFIT-REFUTED",
+        "CLAIM-RAB-FCL-FRONT-DEPENDENT-PERFORMANCE-WITHDRAWN",
+        "CLAIM-RATE-LEMMA-CONDITIONAL-PROFILE",
+        "CLAIM-ROUND45-CORRECTED-PROFILE-UNKNOWN-NOT-STRUCTURAL-WALL",
+        "CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT-BOUNDARY",
+        "CLAIM-SOURCE-FRONT-EXCLUSIVITY-OVERSTRICT",
+        "CLAIM-STORAGE-BOX-ACCEPTANCE-INVARIANT-FROZEN",
+        "CLAIM-WAREHOUSE-BRIDGE-EXCLUSION-TARGET-CONDITIONAL"
+      ],
+      "dossier_topic_labels": [
+        "rules-semantics",
+        "p2-throughput"
+      ],
+      "term_ids": [
+        "TERM-PHYSICAL-PORT",
+        "TERM-FRONT-CELL",
+        "TERM-HISTORICAL",
+        "TERM-SUPERSEDED"
+      ],
+      "entry_paths": [
+        "docs/VALIDITY_LEDGER.md",
+        "docs/CURRENT.md"
+      ],
+      "open_question_claim_ids": [],
+      "tags": [
+        "routing",
+        "semantics"
+      ]
+    },
+    {
+      "id": "TOPIC-WITNESS-AND-LOWER-BOUND",
+      "title": "见证构造与下界开放边界",
+      "summary": "whole-layout existence、受限候选域、W0 反例与局部构造证据的可复用边界。",
+      "claim_ids": [
+        "CLAIM-CERTIFIED-EXISTENCE-OPEN",
+        "CLAIM-SIX-PREDICATE-RESEARCH-LEDGER",
+        "CLAIM-W0-ADJACENT-4X4-POWER-IMPOSSIBILITY-REFUTED",
+        "CLAIM-W0-POWER-OBSTRUCTION-REQUIRES-DECLARED-HEIGHT-PURITY",
+        "CLAIM-WITNESS-RESTRICTED-POLE-DOMAINS-INFEASIBLE-FULL-DOMAIN-OPEN"
+      ],
+      "dossier_topic_labels": [
+        "witness-lower-bound"
+      ],
+      "term_ids": [
+        "TERM-CERTIFIED",
+        "TERM-UNKNOWN",
+        "TERM-INFEASIBLE",
+        "TERM-ROUTE-NO-GO"
+      ],
+      "entry_paths": [
+        "docs/CURRENT.md",
+        "docs/VALIDITY_LEDGER.md"
+      ],
+      "open_question_claim_ids": [
+        "CLAIM-CERTIFIED-EXISTENCE-OPEN"
+      ],
+      "tags": [
+        "lower-bound",
+        "witness"
+      ]
+    },
+    {
+      "id": "TOPIC-SOLVER-EXPERIMENTS-AND-NO-GO",
+      "title": "求解器实验、预算与路线 NO-GO",
+      "summary": "保留 cheap gate、fixture、资源/参数归因和路线撤回的具体 scope，避免方法家族级过度外推。",
+      "claim_ids": [
+        "CLAIM-AB16-CAMPAIGN-CLOSEOUT-NO-ATTRIBUTABLE-CUT-RESULT",
+        "CLAIM-ATTACH-SPIKES-ENGINEERING-NOT-CUT-EFFICACY",
+        "CLAIM-BUDGET-EXHAUSTION-IS-UNKNOWN-NOT-FIXED-POINT",
+        "CLAIM-COLUMN-GENERATION-PHASE2-SCALE-ROUTE-NO-GO",
+        "CLAIM-FORWARD-COMPLETENESS-RELATIVE-TO-DECLARED-FRAGMENT",
+        "CLAIM-IHS-SINGLETON-CORE-COMPRESSION-PHASE0-NO-GO",
+        "CLAIM-LAZY-POWER-INSTANCE-POSE-CUT-ROUTE-NO-GO",
+        "CLAIM-M5-DEATHS-REQUIRE-RESOURCE-BUILD-AND-PARAMETER-SEPARATION",
+        "CLAIM-M5-DEFAULT-SOLVE-PARAMETERS-PATHOLOGICAL-REFUTED",
+        "CLAIM-MIXFLOW-DEMIX-CONCLUSION-SURVIVES-FIXTURE-CORRECTION",
+        "CLAIM-SMT-MT-SYNTHETIC-GO-NOT-TRANSFERABLE-TO-REAL-INNER",
+        "CLAIM-SOLVER-RETHINK-G03-LACKS-SEPARATION-ORACLE",
+        "CLAIM-SOLVER-RETHINK-PHASE1-OMITS-CONSTRUCTION-HALF"
+      ],
+      "dossier_topic_labels": [
+        "solver-experiment"
+      ],
+      "term_ids": [
+        "TERM-UNKNOWN",
+        "TERM-INFEASIBLE",
+        "TERM-FIXED-POINT",
+        "TERM-ROUTE-NO-GO"
+      ],
+      "entry_paths": [
+        "docs/VALIDITY_LEDGER.md",
+        "docs/REASONING_LEDGER.md"
+      ],
+      "open_question_claim_ids": [],
+      "tags": [
+        "solver-experiment",
+        "validity"
+      ]
+    },
+    {
+      "id": "TOPIC-FORMAL-VERIFICATION",
+      "title": "形式化验证与独立复核",
+      "summary": "PB/VeriPB band、共享编码 common-mode 风险与 proof-producing sidecar 的证据坐标。",
+      "claim_ids": [
+        "CLAIM-R1-1326-34-STRICT-UPPER-REVALIDATED",
+        "CLAIM-R3-LEX-BAND-2074-UNSAT-GIVEN-GEOMETRY",
+        "CLAIM-R4-LEX-BAND-2084-UNSAT",
+        "CLAIM-SHARED-ENCODING-AGREEMENT-NOT-INDEPENDENT-VALIDATION",
+        "CLAIM-SMM4-LEX-BAND-COMPOSITION-2086"
+      ],
+      "dossier_topic_labels": [
+        "formal-verification"
+      ],
+      "term_ids": [
+        "TERM-EVIDENCE",
+        "TERM-CANDIDATE-VALIDATION"
+      ],
+      "entry_paths": [
+        "docs/REASONING_LEDGER.md",
+        "docs/VALIDITY_LEDGER.md"
+      ],
+      "open_question_claim_ids": [],
+      "tags": [
+        "formal-verification"
+      ]
+    },
+    {
+      "id": "TOPIC-DISCOVERY-METHODS",
+      "title": "系统发现与审计方法",
+      "summary": "zero-slack、pairwise closure 反例、独立验证与发现/验证拆分等可复用方法层。",
+      "claim_ids": [
+        "CLAIM-FORWARD-COMPLETENESS-RELATIVE-TO-DECLARED-FRAGMENT",
+        "CLAIM-PAIRWISE-CLOSURE-INCOMPLETE",
+        "CLAIM-RAW-ELIGIBLE-EVENTS-REQUIRED-FOR-SEPARATION-EVALUATION",
+        "CLAIM-SHARED-ENCODING-AGREEMENT-NOT-INDEPENDENT-VALIDATION",
+        "CLAIM-ZERO-SLACK-AUDIT-METHOD"
+      ],
+      "dossier_topic_labels": [
+        "other",
+        "reasoning-system"
+      ],
+      "term_ids": [
+        "TERM-CANDIDATE-DISCOVERY",
+        "TERM-CANDIDATE-VALIDATION",
+        "TERM-SEPARATION",
+        "TERM-FIXED-POINT"
+      ],
+      "entry_paths": [
+        "docs/REASONING_LEDGER.md"
+      ],
+      "open_question_claim_ids": [],
+      "tags": [
+        "method"
+      ]
+    },
+    {
+      "id": "TOPIC-HISTORICAL-VALIDITY",
+      "title": "历史有效性、反例与换代",
+      "summary": "统一查询 refutation、semantic replacement、scope correction、implementation/experiment invalidation、route retirement 与 revalidation。",
+      "claim_ids": [
+        "CLAIM-24-LEVER-FRAMEWORK-EXHAUSTED-SUPERSEDED",
+        "CLAIM-AB16-NO-SCIENTIFIC-CUT-RESULT",
+        "CLAIM-COLUMN-GENERATION-PHASE2-SCALE-ROUTE-NO-GO",
+        "CLAIM-EMPTY-RECTANGLE-ROUTING-ALLOWED-SUPERSEDED",
+        "CLAIM-EMPTY-RECTANGLE-STRICT",
+        "CLAIM-F7-FACILITY-MASK-VALIDATOR-BUG-REPAIRED",
+        "CLAIM-FRONT-OFFSET-DOUBLE-STEP-SEMANTICS-SUPERSEDED",
+        "CLAIM-FRONT-OFFSET-HISTORICAL-REJUDGMENT-40",
+        "CLAIM-FRONT-OFFSET-PRE-0718-SUPERSEDED",
+        "CLAIM-IHS-SINGLETON-CORE-COMPRESSION-PHASE0-NO-GO",
+        "CLAIM-LAZY-POWER-INSTANCE-POSE-CUT-ROUTE-NO-GO",
+        "CLAIM-LEVER-VERDICTS-ARE-ITEM-AND-REVISION-BOUNDED",
+        "CLAIM-M5-DEATHS-REQUIRE-RESOURCE-BUILD-AND-PARAMETER-SEPARATION",
+        "CLAIM-M5-DEFAULT-SOLVE-PARAMETERS-PATHOLOGICAL-REFUTED",
+        "CLAIM-MIXFLOW-DEMIX-CONCLUSION-SURVIVES-FIXTURE-CORRECTION",
+        "CLAIM-MIXFLOW-U01-GUARD-FORK-BENEFIT-REFUTED",
+        "CLAIM-P2-FIVE-FULL-ONE-HALF-CONDITIONAL",
+        "CLAIM-P2-STEEL-BLOCK-17-LT-18-REFUTED",
+        "CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER",
+        "CLAIM-R1-1326-34-STRICT-UPPER-REVALIDATED",
+        "CLAIM-R3-LEX-BAND-2074-UNSAT-GIVEN-GEOMETRY",
+        "CLAIM-RAB-FCL-FRONT-DEPENDENT-PERFORMANCE-WITHDRAWN",
+        "CLAIM-ROUND45-CORRECTED-PROFILE-UNKNOWN-NOT-STRUCTURAL-WALL",
+        "CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT",
+        "CLAIM-SHARED-ENCODING-AGREEMENT-NOT-INDEPENDENT-VALIDATION",
+        "CLAIM-SMT-MT-SYNTHETIC-GO-NOT-TRANSFERABLE-TO-REAL-INNER",
+        "CLAIM-SOLVER-RETHINK-G03-LACKS-SEPARATION-ORACLE",
+        "CLAIM-SOLVER-RETHINK-PHASE1-OMITS-CONSTRUCTION-HALF",
+        "CLAIM-STRICTER-FEASIBLE-SET-PRESERVES-NEGATIVE-NOT-POSITIVE",
+        "CLAIM-W0-ADJACENT-4X4-POWER-IMPOSSIBILITY-REFUTED",
+        "CLAIM-W0-POWER-OBSTRUCTION-REQUIRES-DECLARED-HEIGHT-PURITY",
+        "CLAIM-WITNESS-RESTRICTED-POLE-DOMAINS-INFEASIBLE-FULL-DOMAIN-OPEN"
+      ],
+      "dossier_topic_labels": [
+        "other"
+      ],
+      "term_ids": [
+        "TERM-HISTORICAL",
+        "TERM-SUPERSEDED",
+        "TERM-ROUTE-NO-GO",
+        "TERM-UNKNOWN"
+      ],
+      "entry_paths": [
+        "docs/VALIDITY_LEDGER.md"
+      ],
+      "open_question_claim_ids": [],
+      "tags": [
+        "historical-validity"
+      ]
+    },
+    {
+      "id": "TOPIC-DOCUMENTATION-GOVERNANCE",
+      "title": "文档系统与知识维护",
+      "summary": "文档类型、继承 policy、current review、长尾 triage、生成页和 framework-core 自维护入口。",
+      "claim_ids": [],
+      "dossier_topic_labels": [
+        "documentation-governance"
+      ],
+      "term_ids": [
+        "TERM-CLAIM",
+        "TERM-DOSSIER",
+        "TERM-CURRENT-REVIEW",
+        "TERM-BACKFILL-TRIAGE",
+        "TERM-SEMANTIC-REVIEW",
+        "TERM-INVENTORY-COVERAGE"
+      ],
+      "entry_paths": [
+        "docs/governance/document-system/ARCHITECTURE.md",
+        "docs/governance/document-system/MAINTAINING.md",
+        "docs/BACKFILL_LEDGER.md"
+      ],
+      "open_question_claim_ids": [],
+      "tags": [
+        "documentation-governance"
+      ]
+    },
+    {
+      "id": "TOPIC-INDUSTRIAL-DELIVERY",
+      "title": "交付、导出与工件边界",
+      "summary": "把蓝图导出、manifest、local artifact 与 release authority 分开，供追溯而不抬升语义。",
+      "claim_ids": [],
+      "dossier_topic_labels": [
+        "industrial-delivery"
+      ],
+      "term_ids": [
+        "TERM-AUTHORITY",
+        "TERM-EVIDENCE",
+        "TERM-DOSSIER"
+      ],
+      "entry_paths": [
+        ".artifacts/README.md",
+        "docs/CATALOG.md"
+      ],
+      "open_question_claim_ids": [],
+      "tags": [
+        "delivery"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-dossiers-v1",
+  "title": "ZMD research dossier registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "ledger_reviewed_at",
+    "records"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "zmd_dossiers_v1"
+    },
+    "ledger_reviewed_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    }
+  },
+  "$defs": {
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "path",
+        "entry_file",
+        "title",
+        "kind",
+        "lifecycle",
+        "relevance",
+        "curation",
+        "tracked_state",
+        "date",
+        "topics",
+        "summary"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^DOSSIER-[A-Z0-9][A-Z0-9-]*$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entry_file": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "directory",
+            "note"
+          ]
+        },
+        "lifecycle": {
+          "enum": [
+            "active",
+            "historical",
+            "superseded"
+          ]
+        },
+        "relevance": {
+          "enum": [
+            "background",
+            "current_evidence",
+            "historical",
+            "unreviewed"
+          ]
+        },
+        "curation": {
+          "enum": [
+            "auto_indexed",
+            "curated"
+          ]
+        },
+        "tracked_state": {
+          "enum": [
+            "tracked",
+            "local_optional"
+          ]
+        },
+        "date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "topics": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]*$"
+          },
+          "uniqueItems": true
+        },
+        "summary": {
+          "type": "string"
+        },
+        "workflow": {
+          "$ref": "#/$defs/workflow"
+        },
+        "portability": {
+          "$ref": "#/$defs/portability"
+        }
+      }
+    },
+    "workflow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "opened_at",
+        "closure"
+      ],
+      "properties": {
+        "opened_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "closure": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/closure"
+            }
+          ]
+        }
+      }
+    },
+    "closure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "closed_at",
+        "outcome",
+        "review_id",
+        "claim_ids",
+        "decision_ids",
+        "successor_dossier_ids",
+        "no_reusable_claim_reason"
+      ],
+      "properties": {
+        "closed_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "outcome": {
+          "enum": [
+            "knowledge_promoted",
+            "negative_results_promoted",
+            "decision_recorded",
+            "no_reusable_claim",
+            "superseded_by_dossier"
+          ]
+        },
+        "review_id": {
+          "type": "string",
+          "pattern": "^REVIEW-[A-Z0-9][A-Z0-9-]*$"
+        },
+        "claim_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^CLAIM-[A-Z0-9][A-Z0-9-]*$"
+          }
+        },
+        "decision_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^DECISION-[A-Z0-9][A-Z0-9-]*$"
+          }
+        },
+        "successor_dossier_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^DOSSIER-[A-Z0-9][A-Z0-9-]*$"
+          }
+        },
+        "no_reusable_claim_reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      }
+    },
+    "portability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest_path",
+        "manifest_sha256",
+        "recovery_instructions"
+      ],
+      "properties": {
+        "manifest_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "manifest_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "recovery_instructions": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_locator": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

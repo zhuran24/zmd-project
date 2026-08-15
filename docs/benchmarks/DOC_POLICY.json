@@ -1,0 +1,33 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "docs.benchmarks",
+  "description": "Benchmark records and retained measurements.",
+  "defaults": {
+    "document_class": "historical_evidence",
+    "authority_role": "evidence_only",
+    "mutation": "append_only",
+    "context_level": "L0",
+    "purpose": "Retained benchmark records; new runs append rather than rewrite prior measurements.",
+    "volatile_facts": "source_allowed",
+    "invariant_refs": [
+      "DOC-INV-002"
+    ],
+    "after_change": [
+      "docsystem.doctor"
+    ],
+    "review_policy": {
+      "at_phase_boundary": false,
+      "max_interval_days": null
+    }
+  },
+  "rules": [],
+  "legacy_projection": {
+    "rules": [],
+    "out_of_scope_notes": [
+      {
+        "pattern": "docs/benchmarks/**",
+        "rationale": "Benchmark records retained as evidence; legacy reference classification remains outside the prune scanner."
+      }
+    ]
+  }
+}

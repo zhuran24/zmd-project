@@ -1,0 +1,124 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "scripts",
+  "description": "Tooling documentation co-located with scripts.",
+  "defaults": {},
+  "rules": [
+    {
+      "id": "script_docs",
+      "match": {
+        "glob": "**/*.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Operator guidance for scripts and tooling.",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-007",
+          "DOC-INV-014"
+        ],
+        "after_change": [
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        },
+        "section_refs": [
+          "operations"
+        ]
+      },
+      "rationale": "Script READMEs should track current invocation contracts without copying unrelated project state."
+    },
+    {
+      "id": "script_guide_purpose_01",
+      "match": {
+        "path": "README.md"
+      },
+      "set": {
+        "purpose": "Stable operator map for active, governance, packaging, preprocess and historical script roles.",
+        "invariant_refs": [
+          "DOC-INV-007",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Script documentation requires one role per local entrypoint."
+    },
+    {
+      "id": "script_guide_purpose_02",
+      "match": {
+        "path": "pumpkin_poc/README.md"
+      },
+      "set": {
+        "purpose": "Bounded operator and reproduction guide for the Pumpkin proof-of-concept scripts.",
+        "invariant_refs": [
+          "DOC-INV-007",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Script documentation requires one role per local entrypoint."
+    },
+    {
+      "id": "frozen_artifact_boundary_checker",
+      "match": {
+        "path": "check_artifact_boundaries.py"
+      },
+      "set": {
+        "document_class": "locked_authority",
+        "authority_role": "governance_control",
+        "mutation": "owner_only",
+        "context_level": "L2",
+        "purpose": "Frozen certified schema-v1 consumer for tracked artifact-boundary declarations; adapt its generated input rather than editing this checker.",
+        "volatile_facts": "forbidden",
+        "invariant_refs": [
+          "DOC-INV-004",
+          "DOC-INV-006",
+          "DOC-INV-009",
+          "DOC-INV-018"
+        ],
+        "required_reads": [
+          "PROJECT_LOCK.md",
+          "docs/项目说明/24_repository_asset_governance.md"
+        ],
+        "after_change": [
+          "docsystem.intake",
+          "artifact_evidence.render",
+          "artifact_evidence.check",
+          "code_assets.check",
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": null
+        },
+        "section_refs": [
+          "repository-governance"
+        ],
+        "adr_refs": [
+          "DOC-ADR-014"
+        ]
+      },
+      "rationale": "The checker belongs to the certified exact-source identity. Compatibility changes belong in the generated projection unless an owner-authorized source reset and replay occurs."
+    }
+  ],
+  "legacy_projection": {
+    "rules": [],
+    "out_of_scope_notes": [
+      {
+        "pattern": "scripts/**",
+        "rationale": "Tooling directory READMEs; governed outside the legacy prune scanner."
+      }
+    ]
+  }
+}

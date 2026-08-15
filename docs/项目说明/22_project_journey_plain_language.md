@@ -171,3 +171,7 @@ RAB-SEP 转正走了三段批（soundness 十一席对抗审查存活 → 开关
 ## 续记：站在 08-01 回看
 
 双账现状：**U=(1188,18)**（条件性，SMM4 授权），**L=absent**。钳子的上臂这十天又往下压了两毫米，下臂还悬着——但排除法给了它一条新路径。ab16 的去向 owner 已给方向：不封顶、做减法——把防御自建威胁的堡垒拆掉，留下预注册实验的科学本体。十天自治期证明了两件事：这套纪律体系可以在无人值守时自我维持；但"往哪使劲"这件事，目前还替代不了人。
+
+## 2026-08-12 文档导航迁移追注
+
+本文开头保留的是当时的导航口径，不回溯改写。自文档知识脊柱与 Phase 3 职责收束启用后，当前状态只看 [`../CURRENT.md`](../CURRENT.md)，未来计划看 [`ROADMAP.md`](ROADMAP.md)，带日期编年史看 [`HISTORY.md`](HISTORY.md)，旧 `00_master_roadmap.md` 行号与章节从 [`../history/status/00_master_roadmap_pre_phase3_20260812.md`](../history/status/00_master_roadmap_pre_phase3_20260812.md) 考古。

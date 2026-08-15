@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-document-maintenance-audit-v1",
+  "title": "ZMD periodic document maintenance audit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "system_version",
+    "snapshot_as_of",
+    "projection",
+    "profiles",
+    "checks"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "zmd_document_maintenance_audit_v1"
+    },
+    "system_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "snapshot_as_of": {
+      "type": "string",
+      "format": "date"
+    },
+    "projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["output", "generator_action"],
+      "properties": {
+        "output": {"$ref": "#/$defs/relpath"},
+        "generator_action": {"const": "docsystem.render_maintenance"}
+      }
+    },
+    "profiles": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {"pattern": "^[a-z0-9][a-z0-9_-]*$"},
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["description", "check_ids", "fail_on"],
+        "properties": {
+          "description": {"type": "string", "minLength": 1},
+          "check_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"$ref": "#/$defs/check_id"}
+          },
+          "fail_on": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {"enum": ["warning", "error"]}
+          }
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/check"}
+    }
+  },
+  "$defs": {
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?!.*\\u0000).+$"
+    },
+    "check_id": {
+      "type": "string",
+      "pattern": "^DOC-AUDIT-[A-Z0-9][A-Z0-9-]*$"
+    },
+    "action_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]*$"
+    },
+    "positive_days": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3650
+    },
+    "parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "warning_days": {"$ref": "#/$defs/positive_days"},
+        "error_days": {"$ref": "#/$defs/positive_days"},
+        "warning_multiplier": {"type": "number", "exclusiveMinimum": 0, "maximum": 10},
+        "error_multiplier": {"type": "number", "exclusiveMinimum": 0, "maximum": 20},
+        "deprecated_statuses": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"enum": ["refuted", "superseded"]}
+        },
+        "allowed_context_tokens": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "document_classes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "kind", "description", "action_ids", "parameters"],
+      "properties": {
+        "id": {"$ref": "#/$defs/check_id"},
+        "title": {"type": "string", "minLength": 1},
+        "kind": {
+          "enum": [
+            "audit_snapshot_age",
+            "ephemeral_expiry",
+            "active_dossier_age",
+            "triage_backlog",
+            "review_followups",
+            "living_freshness",
+            "deprecated_knowledge_references",
+            "terminology_collision",
+            "topic_coverage",
+            "open_claim_queue",
+            "phase_boundary_surface"
+          ]
+        },
+        "description": {"type": "string", "minLength": 1},
+        "action_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/action_id"}
+        },
+        "parameters": {"$ref": "#/$defs/parameters"}
+      }
+    }
+  }
+}

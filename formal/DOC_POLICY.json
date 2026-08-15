@@ -1,0 +1,67 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "formal",
+  "description": "Formal verification workspace documentation.",
+  "defaults": {
+    "document_class": "normative",
+    "authority_role": "normative_input",
+    "mutation": "governed",
+    "context_level": "L1",
+    "purpose": "Formal verification workspace and replay guidance.",
+    "volatile_facts": "reference_only",
+    "invariant_refs": [
+      "DOC-INV-006",
+      "DOC-INV-009",
+      "DOC-INV-014"
+    ],
+    "after_change": [
+      "docsystem.doctor"
+    ],
+    "review_policy": {
+      "at_phase_boundary": true,
+      "max_interval_days": 90
+    },
+    "section_refs": [
+      "formal-verification"
+    ]
+  },
+  "rules": [
+    {
+      "id": "formal_front_door",
+      "match": {
+        "path": "README.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "governed",
+        "context_level": "L1",
+        "purpose": "Bounded local entrypoint for Lean replay, statement scope, axiom audit and certification boundaries.",
+        "volatile_facts": "reference_only",
+        "section_refs": [
+          "formal-verification"
+        ],
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-009",
+          "DOC-INV-014"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        }
+      },
+      "rationale": "The current formal entrypoint stays compact while the pre-convergence theorem inventory remains immutable history."
+    }
+  ],
+  "legacy_projection": {
+    "rules": [],
+    "out_of_scope_notes": [
+      {
+        "pattern": "formal/**",
+        "rationale": "Formal verification workspace; governed outside the legacy prune scanner."
+      }
+    ]
+  }
+}

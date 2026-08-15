@@ -1,0 +1,413 @@
+{
+  "schema_version": "zmd_document_invariants_v1",
+  "system_version": "2.6.0",
+  "records": [
+    {
+      "id": "DOC-INV-001",
+      "title": "单一可变真源",
+      "statement": "会变化的事实只能有一个可写源；其他文档只能引用该源，或由该源自动生成。",
+      "short_reason": "同一现态被人工抄到多处后，更新顺序会把仓库撕成多个互不一致的“现在”。",
+      "failure_mode": "gate、上下界、hash、开关或阶段状态在多个 living 文档中产生互相冲突的副本。",
+      "enforced_by": [
+        "devtools/build_knowledge_docs.py",
+        "devtools/check_knowledge_docs.py",
+        "devtools/docctl.py"
+      ],
+      "adr_refs": [
+        "DOC-ADR-001",
+        "DOC-ADR-004"
+      ]
+    },
+    {
+      "id": "DOC-INV-002",
+      "title": "历史证据不追随现态重写",
+      "statement": "关闭后的研究、外审、实验和历史快照保存当时发生过什么；更正通过 erratum、反例、superseding claim 或新 decision 表达。",
+      "short_reason": "静默把旧报告改成今天的答案，会抹掉证据的时间含义和认知演化链。",
+      "failure_mode": "历史报告看起来始终正确，但无法重建当时的前提、错误、复核与裁决过程。",
+      "enforced_by": [
+        "devtools/docctl.py",
+        "devtools/build_knowledge_docs.py",
+        "data/knowledge/dossiers.json"
+      ],
+      "adr_refs": [
+        "DOC-ADR-001",
+        "DOC-ADR-007"
+      ]
+    },
+    {
+      "id": "DOC-INV-003",
+      "title": "语义变化必须显式换代",
+      "statement": "claim 或 decision 的命题、作用域、前提或权威效果发生实质变化时，创建新稳定 ID；语义替代必须用 supersedes 边连接，validity_profile 只描述有效性事件，dependencies 只描述证明依赖，二者都不能代替换代边。",
+      "short_reason": "稳定 ID 若能在原地悄悄换掉含义，引用者将无法判断自己依赖的是哪一个命题。",
+      "failure_mode": "相同 ID 在不同时间代表不同结论，旧引用被无声重新解释。",
+      "enforced_by": [
+        "devtools/build_knowledge_docs.py",
+        "devtools/check_knowledge_docs.py",
+        "data/knowledge/schemas/claim.schema.json",
+        "data/knowledge/schemas/decision.schema.json"
+      ],
+      "adr_refs": [
+        "DOC-ADR-001",
+        "DOC-ADR-004",
+        "DOC-ADR-005",
+        "DOC-ADR-006",
+        "DOC-ADR-007",
+        "DOC-ADR-017"
+      ]
+    },
+    {
+      "id": "DOC-INV-004",
+      "title": "生成内容只能穿透真源更新",
+      "statement": "generated projection 不接受直接编辑；必须修改它声明的结构化源，再由登记的 generator 重建。",
+      "short_reason": "直接修生成结果只会得到一张暂时好看的纸，下一次生成就会把修补冲走。",
+      "failure_mode": "CURRENT、CATALOG、REASONING_LEDGER、VALIDITY_LEDGER 或兼容投影与其结构化源不一致，且无法重复生成。",
+      "enforced_by": [
+        "devtools/build_knowledge_docs.py",
+        "devtools/check_knowledge_docs.py",
+        "devtools/docctl.py"
+      ],
+      "adr_refs": [
+        "DOC-ADR-001",
+        "DOC-ADR-003",
+        "DOC-ADR-004",
+        "DOC-ADR-005",
+        "DOC-ADR-006",
+        "DOC-ADR-007"
+      ]
+    },
+    {
+      "id": "DOC-INV-005",
+      "title": "局部策略只能静默收紧",
+      "statement": "子目录或更具体规则可以增加保护，但不能在没有有效 owner decision 的情况下解除父级的 immutable、owner-only、generator-only 或 governed 约束。",
+      "short_reason": "否则任意子目录都能放一张更宽松的门票，绕过整棵文档树的保护。",
+      "failure_mode": "历史包、生成页或框架核心被局部 policy 重新分类为可随意直接编辑。",
+      "enforced_by": [
+        "devtools/docctl.py",
+        "data/repository_governance/document_system/doc_policy.schema.json"
+      ],
+      "adr_refs": [
+        "DOC-ADR-001",
+        "DOC-ADR-002"
+      ]
+    },
+    {
+      "id": "DOC-INV-006",
+      "title": "框架变化原子完成",
+      "statement": "改变不变量、schema、policy 继承、解析器或框架边界时，说明、ADR、迁移、投影和测试必须在同一变更中保持一致。",
+      "short_reason": "管理文档的框架若自己分叉，所有下游操作卡都会精确地执行一套过期制度。",
+      "failure_mode": "工具接受一种结构，指南描述另一种结构，旧 policy 无迁移地失效。",
+      "enforced_by": [
+        "devtools/docctl.py",
+        "src/tests/test_document_system.py",
+        "docs/governance/document-system/MAINTAINING.md"
+      ],
+      "adr_refs": [
+        "DOC-ADR-002",
+        "DOC-ADR-003",
+        "DOC-ADR-004",
+        "DOC-ADR-005",
+        "DOC-ADR-006"
+      ]
+    },
+    {
+      "id": "DOC-INV-007",
+      "title": "治理入口必须可发现并可恢复",
+      "statement": "每个受治理文档都必须解析到有效 policy；manifest、完整架构指南、维护指南和失效恢复路径必须从固定自举入口可达。",
+      "short_reason": "只有局部规则而没有框架入口，能维护文档，却无法维护产生这些规则的系统。",
+      "failure_mode": "agent 知道某文件不能改，却不知道规则来自哪里、如何安全改变规则，或 docctl 损坏后无恢复路径。",
+      "enforced_by": [
+        ".docsystem/manifest.json",
+        ".docsystem/RECOVERY.md",
+        "devtools/docctl.py"
+      ],
+      "adr_refs": [
+        "DOC-ADR-002"
+      ]
+    },
+    {
+      "id": "DOC-INV-008",
+      "title": "按需揭示而非全量灌输",
+      "statement": "普通操作只加载有效操作卡、相关原则短因和必要知识摘要；触及 policy 或 framework core 时才升级到完整架构包。",
+      "short_reason": "把全部治理手册长期塞进 agent 上下文，会挤掉任务本身；只给裸命令又失去类推能力。",
+      "failure_mode": "agent 要么被制度文本拖慢，要么只会机械执行一条规则，遇到新情况便越过设计边界。",
+      "enforced_by": [
+        "devtools/docctl.py",
+        ".docsystem/manifest.json"
+      ],
+      "adr_refs": [
+        "DOC-ADR-001",
+        "DOC-ADR-002"
+      ]
+    },
+    {
+      "id": "DOC-INV-009",
+      "title": "证据、解释与权威分离",
+      "statement": "历史材料提供证据，living 文档提供解释，结构化账本提供稳定知识坐标，各机器或 owner authority 只在自己的管辖域内授予当前效力。",
+      "short_reason": "文件存在、证明写完或测试通过，都不能自动升级为 owner 裁决、release closure 或跨作用域结论。",
+      "failure_mode": "dated report、local artifact 或 solver PASS 被当作当前 authority，或研究结论被无条件外推到 production。",
+      "enforced_by": [
+        "docs/AGENT_OPERATIONS.md",
+        "devtools/check_knowledge_docs.py",
+        "devtools/docctl.py"
+      ],
+      "adr_refs": [
+        "DOC-ADR-001",
+        "DOC-ADR-004",
+        "DOC-ADR-005",
+        "DOC-ADR-006",
+        "DOC-ADR-007"
+      ]
+    },
+    {
+      "id": "DOC-INV-010",
+      "title": "失效与修复必须保留方向性",
+      "statement": "反例、语义替代、作用域修正、实现或实验失效、归因更正和重验必须显式记录受影响层、判定依据、复用策略、修复状态与时间作用域；局部修复不能自动恢复更广的旧结论。",
+      "short_reason": "“修好了”若不说明修了哪一层、重新验证到哪里，就会把一块补丁误写成整条证据链复活。",
+      "failure_mode": "被反驳或失效的结论继续被复用，或局部 replay 被外推为旧证书、旧性能归因和全称路线判断全部恢复。",
+      "enforced_by": [
+        "devtools/build_knowledge_docs.py",
+        "data/knowledge/schemas/claim.schema.json",
+        "docs/VALIDITY_LEDGER.md",
+        "src/tests/test_knowledge_docs.py"
+      ],
+      "adr_refs": [
+        "DOC-ADR-007"
+      ]
+    },
+    {
+      "id": "DOC-INV-011",
+      "title": "语义审阅与目录覆盖分离",
+      "statement": "dossier 登记、inventory 覆盖和长尾 triage 只说明材料可发现且已分流，不能冒充语义审阅；每个 dossier 必须恰好拥有一条 current review，或恰好落入一个显式 triage 组。",
+      "short_reason": "把“看见目录”写成“读懂内容”，会制造虚假的知识完成度，并让未审材料从待办队列中消失。",
+      "failure_mode": "项目声称 100% 回填，但大量 dossier 只有路径登记；或者同一 dossier 同时被 review 和 triage、落入多个 triage 组，导致覆盖统计不可解释。",
+      "enforced_by": [
+        "devtools/build_knowledge_docs.py",
+        "devtools/docctl.py",
+        "data/knowledge/backfill_triage.json",
+        "docs/BACKFILL_LEDGER.md",
+        "src/tests/test_knowledge_docs.py"
+      ],
+      "adr_refs": [
+        "DOC-ADR-008"
+      ]
+    },
+    {
+      "id": "DOC-INV-012",
+      "title": "当前职责表面必须显式可导航",
+      "statement": "承担当前说明、规范、权威、生成查询或框架职责的文档必须由精确 policy 显式分类，并从自动职责索引可发现；广域默认不能把历史材料静默提升为 living。",
+      "short_reason": "目录位置和文件名不能可靠表达生命周期；宽泛 living 默认会让旧计划继续伪装成当前维护面。",
+      "failure_mode": "历史计划、旧实验说明或冻结交付稿被当作活文档继续同步，或者新当前入口存在却没有进入任何职责地图。",
+      "enforced_by": [
+        "devtools/docctl.py",
+        "docs/GUIDANCE_INDEX.md",
+        "docs/DOC_POLICY.json",
+        "docs/项目说明/DOC_POLICY.json",
+        "src/tests/test_document_system.py"
+      ],
+      "adr_refs": [
+        "DOC-ADR-009"
+      ]
+    },
+    {
+      "id": "DOC-INV-013",
+      "title": "前门职责唯一且入口有界",
+      "statement": "仓库前门、agent 自举、任务路由、当前状态投影和兼容跳转必须由 manifest 可发现的结构化前门注册表显式登记；canonical 路径必须唯一，兼容跳转只能由真源生成，默认入口必须保持在声明的注意力预算内。",
+      "short_reason": "入口若没有唯一角色和体积边界，会重新长成多套状态页或把整本操作手册塞回 agent 默认上下文。",
+      "failure_mode": "多个页面同时宣称代表当前状态，旧跳转重新承载正文，或 CLAUDE/README 持续膨胀为无法按需加载的总手册。",
+      "enforced_by": [
+        ".docsystem/manifest.json",
+        "data/repository_governance/document_system/entrypoints.json",
+        "devtools/docctl.py",
+        "docs/GUIDANCE_INDEX.md",
+        "src/tests/test_document_system.py"
+      ],
+      "adr_refs": [
+        "DOC-ADR-010"
+      ]
+    },
+    {
+      "id": "DOC-INV-014",
+      "title": "当前文档必须归属显式分区",
+      "statement": "承担当前 authority、规范、说明、生成或框架职责的 Markdown 必须通过有效 DOC_POLICY 声明至少一个稳定 section ID；每个 section 必须有唯一、可发现且受检查的局部入口，历史局部索引退出职责时保留兼容跳转或明确命名的历史载荷。",
+      "short_reason": "全局职责表能证明文件存在，却不能替代按问题组织的局部入口；分区若只靠目录名和手写索引，会再次出现隐藏地图、孤儿文档和含混 master index。",
+      "failure_mode": "当前规范或 runbook 零入链，旧 INDEX 继续冒充全区目录，或 agent 只能通过全仓搜索猜测某份文档属于哪个操作域。",
+      "enforced_by": [
+        ".docsystem/manifest.json",
+        "data/repository_governance/document_system/sections.json",
+        "DOC_POLICY.json",
+        "devtools/docctl.py",
+        "docs/GUIDANCE_INDEX.md",
+        "src/tests/test_document_system.py"
+      ],
+      "adr_refs": [
+        "DOC-ADR-011"
+      ]
+    },
+    {
+      "id": "DOC-INV-015",
+      "title": "局部入口必须覆盖当前分区成员",
+      "statement": "每个 current 非兼容跳转文档，必须能从其声明 section 的唯一局部入口，沿同一 section 内 current Markdown 链接到达。",
+      "short_reason": "只把文件列进全局索引仍会留下局部孤岛；agent 从问题入口进入时应能自然下钻，而不是重新做全仓搜索。",
+      "failure_mode": "文档拥有 section 标签却没有从局部前门可达，或唯一入口只链接一个范围写法而遗漏真实成员。",
+      "enforced_by": [
+        "devtools/docctl.py",
+        "data/repository_governance/document_system/sections.json",
+        "docs/CONVERGENCE_REPORT.md",
+        "src/tests/test_document_system.py"
+      ],
+      "adr_refs": [
+        "DOC-ADR-012"
+      ]
+    },
+    {
+      "id": "DOC-INV-016",
+      "title": "当前职责必须唯一且不经退役入口传播",
+      "statement": "可变 current 文档必须拥有可区分的唯一职责；reference-only 或 forbidden 文档不得复制登记的易变状态模式；current 正文不得把生成式兼容跳转当作下钻路径。",
+      "short_reason": "共享含糊职责会让维护边界重新重叠，复制状态会重新制造多个“现在”，经旧入口导航会让兼容层重新长回承重正文。",
+      "failure_mode": "两个 living 文档声称相同职责、手写 current guide 固化 gate/hash/测试收据，或新前门继续链接已退役的 status/index 路径。",
+      "enforced_by": [
+        "devtools/docctl.py",
+        "data/repository_governance/document_system/entrypoints.json",
+        "docs/CONVERGENCE_REPORT.md",
+        "src/tests/test_document_system.py"
+      ],
+      "adr_refs": [
+        "DOC-ADR-012"
+      ]
+    },
+    {
+      "id": "DOC-INV-017",
+      "title": "治理验收必须只读且对应同一输入树",
+      "statement": "文档与知识治理验收必须经 manifest 注册的统一门运行；每个 lane 使用独立进程和仓外临时目录，执行前后的 Git index、tracked worktree 与非忽略 untracked 状态必须具有完全相同的指纹。",
+      "short_reason": "会在检查途中改写源树的 checker 让绿色结果失去对象；并行 lane 共享缓存或 basetemp 也会把顺序偶然性伪装成仓库事实。",
+      "failure_mode": "检查器静默修复生成页、测试互删临时目录、CI 与本地运行不同命令，或 gate 对被自己改写后的树报绿。",
+      "enforced_by": [
+        ".docsystem/manifest.json",
+        "data/repository_governance/document_system/governance_gate.json",
+        "data/repository_governance/document_system/governance_gate.schema.json",
+        "devtools/document_governance_gate.py",
+        "devtools/docctl.py",
+        ".github/workflows/document-governance.yml",
+        "devtools/tests/test_document_governance_gate.py"
+      ],
+      "adr_refs": [
+        "DOC-ADR-013"
+      ]
+    },
+    {
+      "id": "DOC-INV-018",
+      "title": "变化发生时必须完成同一知识事务",
+      "statement": "新文档、新 dossier、dossier 关闭以及稳定 claim/decision 的语义换代，必须在同一 Git-visible 变更中完成分类、结构化登记、显式 successor 或必要投影。owner authority 变化必须由 intake 识别并检查 companion；在 OWNER_RULING_EVENT 过渡期，缺失 companion 只产生 default-off warning。",
+      "short_reason": "事件与补账之间的时间差会制造无人负责、不可可靠查询的灰区。",
+      "failure_mode": "新 Markdown 无有效 policy，新研究包未登记，关闭 dossier 没有 typed outcome，owner authority 改动未被检测或 companion warning 消失，临时文档无退出条件，或稳定 ID 原地改写命题。",
+      "enforced_by": [
+        "devtools/docctl.py",
+        "devtools/build_knowledge_docs.py",
+        "devtools/tests/test_document_intake.py",
+        "data/repository_governance/document_system/intake.json",
+        "data/repository_governance/document_system/governance_gate.json",
+        "data/repository_governance/document_system/ephemeral_documents.json",
+        "data/repository_governance/document_system/ephemeral_documents.schema.json",
+        "data/knowledge/schemas/dossiers.schema.json"
+      ],
+      "adr_refs": [
+        "DOC-ADR-014",
+        "DOC-ADR-017"
+      ]
+    },
+    {
+      "id": "DOC-INV-019",
+      "title": "周期审计只发现欠账，不建立平行真相",
+      "statement": "周期维护审计只读取现有 policy、知识账本、生命周期与 Git 可见状态，输出可重建 finding 队列；它不能创建第二套 claim、review、triage、current 状态或 authority。接受 finding 后，修复必须回到原有 intake、knowledge 或 policy 事务。",
+      "short_reason": "盘库若自己拥有一套可写状态，日常写入与周期维护会迅速分叉成两套互相追赶的真相。",
+      "failure_mode": "审计报告被手工维护、finding 被当成新 authority、Git 日期被误写成语义复核证明，或维护欠账在独立 dashboard 中关闭却没有更新原真源。",
+      "enforced_by": [
+        ".docsystem/manifest.json",
+        "data/repository_governance/document_system/maintenance_audit.json",
+        "data/repository_governance/document_system/maintenance_audit.schema.json",
+        "devtools/document_maintenance_audit.py",
+        "devtools/docctl.py",
+        "docs/MAINTENANCE_QUEUE.md",
+        "devtools/tests/test_document_maintenance_audit.py",
+        "data/repository_governance/document_system/governance_gate.json"
+      ],
+      "adr_refs": [
+        "DOC-ADR-015"
+      ]
+    },
+    {
+      "id": "DOC-INV-020",
+      "title": "存在方式必须显式建模",
+      "statement": "Git tracked、共享工作区 untracked 与仓外恢复根是不同的耐久性状态；任何生成投影或门禁不得把当前可见性推断成 Git 权威。",
+      "short_reason": "文件今天看得见，不代表它进入了版本历史；混淆二者会让沙盒通过而真实仓库开箱失败。",
+      "enforced_by": [
+        "devtools/artifact_evidence.py",
+        "devtools/docctl.py",
+        "devtools/document_governance_gate.py",
+        "devtools/tests/test_repository_code_assets.py",
+        "src/tests/test_document_system.py"
+      ],
+      "failure_mode": "把工作区当前存在的 untracked 文件计作 Git-tracked 权威输入，或让 tracked 生成页依赖可被并发清理的 workspace overlay。",
+      "adr_refs": [
+        "DOC-ADR-016"
+      ]
+    },
+    {
+      "id": "DOC-INV-021",
+      "title": "知识表示位置、认识论权威与 owner 真源必须分离",
+      "statement": "claim 的 representation_class 只描述记录在表示系统中的位置，authority 只描述认识论等级；machine authority 必须由 checker 对当前 tracked 机器真源执行具名验证。decisions.jsonl 是 non_authorizing 的追加登记册，只有外部 owner 真源能够授予裁决效力。",
+      "short_reason": "把当前表示、机器可核验性与 owner 裁决混成一个标签，会让历史收据或查询登记册越权污染下游判断。",
+      "failure_mode": "历史研究收据被标为 machine、decision register 被当作第二个 owner 账本、workspace evidence 被误写成耐久真源，或 claim 只自报 authority 而 checker 没有验证承重字段。",
+      "enforced_by": [
+        "data/knowledge/schemas/claim.schema.json",
+        "data/knowledge/schemas/decision.schema.json",
+        "data/knowledge/schemas/current_state.schema.json",
+        "data/knowledge/current_state.json",
+        "devtools/build_knowledge_docs.py",
+        "devtools/check_knowledge_docs.py",
+        "src/tests/test_knowledge_docs.py"
+      ],
+      "adr_refs": [
+        "DOC-ADR-017"
+      ]
+    },
+    {
+      "id": "DOC-INV-022",
+      "title": "真实仓库落地必须保留漂移字节并显式迁移语义",
+      "statement": "累计补丁在共享工作区发现冲突时必须重新测量并区分已登记漂移与未知漂移；未知漂移 fail closed。已登记漂移只能在保存落地时点原始字节和 SHA-256、完成结构化迁移 ACK、验证 append-only 目标未改写后，才可安装规范 successor。落地工具不得自动 reset、clean、add、commit 或 amend。",
+      "short_reason": "静态排除清单只能让补丁越过冲突，不能证明快照后新增的 owner 记录、欠账和 agent 知识已经迁移；破坏性回滚还会清掉共享工作区证据。",
+      "failure_mode": "使用过期的三文件排除清单、未知漂移被静默跳过、旧页直接被 successor 覆盖、归档不是落地时点原字节、append-only 登记被重写，或失败路径执行整树清理。",
+      "enforced_by": [
+        ".docsystem/manifest.json",
+        "data/repository_governance/document_system/landing.json",
+        "data/repository_governance/document_system/landing.schema.json",
+        "data/repository_governance/document_system/landing_ack.schema.json",
+        "devtools/document_patch_landing.py",
+        "devtools/tests/test_document_patch_landing.py",
+        "docs/governance/document-system/REAL_REPOSITORY_LANDING.md",
+        "data/repository_governance/document_system/governance_gate.json"
+      ],
+      "adr_refs": [
+        "DOC-ADR-018"
+      ]
+    },
+    {
+      "id": "DOC-INV-023",
+      "title": "收口后维护必须回到统一事务",
+      "statement": "阶段性文档重构收口后，普通变化必须通过事件驱动 intake 并由周期审计兜底；只有改变核心不变量、schema、resolver、authority 或 landing 语义时才开启新的独立框架迁移。缺失外部证据前置条件时必须保持显式 fail-closed。",
+      "short_reason": "持续编号不能替代维护机制；把常规变化送回同一写入与审计回路，才能避免框架无人维护或重新长出平行真相。",
+      "failure_mode": "用新的 Batch 编号代替日常 intake、用手写完成页复制现态、在没有 ADR/迁移/红测时改变框架，或为宣布收口而跳过外部前置条件。",
+      "enforced_by": [
+        ".docsystem/manifest.json",
+        "devtools/docctl.py",
+        "devtools/document_governance_gate.py",
+        "devtools/document_maintenance_audit.py",
+        "docs/governance/document-system/STEADY_STATE.md",
+        "src/tests/test_document_system.py"
+      ],
+      "adr_refs": [
+        "DOC-ADR-020"
+      ]
+    }
+  ]
+}

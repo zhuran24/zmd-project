@@ -1,0 +1,437 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "docs.history",
+  "description": "Explicit current indexes over immutable historical payloads.",
+  "defaults": {
+    "document_class": "unmanaged",
+    "authority_role": "none",
+    "mutation": "direct",
+    "context_level": "L0",
+    "purpose": "No history-layer responsibility has been declared. Register new archive payloads explicitly.",
+    "volatile_facts": "not_applicable",
+    "invariant_refs": [
+      "DOC-INV-012"
+    ],
+    "after_change": [
+      "docsystem.doctor"
+    ],
+    "review_policy": {
+      "at_phase_boundary": false,
+      "max_interval_days": null
+    },
+    "section_refs": []
+  },
+  "rules": [
+    {
+      "id": "history_navigation_indexes",
+      "match": {
+        "paths": [
+          "README.md",
+          "status/README.md",
+          "subjects/README.md",
+          "navigation/README.md",
+          "deliveries/README.md",
+          "formal/README.md"
+        ]
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Current navigation over immutable historical snapshots; no historical claim is promoted by this index.",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-002",
+          "DOC-INV-007",
+          "DOC-INV-012",
+          "DOC-INV-014"
+        ],
+        "after_change": [
+          "docs.reference.validate",
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        },
+        "section_refs": [
+          "history-archive"
+        ]
+      },
+      "rationale": "Archive indexes must accept newly registered snapshots while the payloads they point to remain immutable."
+    },
+    {
+      "id": "history_snapshot_payloads",
+      "match": {
+        "paths": [
+          "status/00_master_roadmap_pre_phase3_20260812.md",
+          "status/01_overview_pre_knowledge_spine_20260811.md",
+          "status/05_open_questions_pre_phase3_20260812.md",
+          "status/06_current_status_20260803.md",
+          "status/11_dependency_graph_pre_knowledge_spine_20260811.md",
+          "status/12_go_criteria_pre_phase3_20260812.md",
+          "status/21_glossary_20260802.md",
+          "status/21_glossary_pre_phase3_20260812.md",
+          "status/27_status_dashboard_20260803.md",
+          "status/CLAUDE_pre_phase3_batch2_20260812.md",
+          "status/FILE_STATUS_20260803.md",
+          "status/PHASE_1_2_CLOSE_GATE_pre_knowledge_spine_20260811.md",
+          "status/docs_README_pre_knowledge_spine_20260811.md",
+          "status/project_manual_README_pre_knowledge_spine_20260811.md",
+          "status/root_README_pre_knowledge_spine_20260811.md",
+          "status/specs_11_pipeline_orchestration_pre_knowledge_spine_20260811.md",
+          "subjects/pre_knowledge_spine_20260811/DOC_TREE_COMPLETENESS.json",
+          "subjects/pre_knowledge_spine_20260811/DOC_TREE_COMPLETENESS.md",
+          "subjects/pre_knowledge_spine_20260811/README.md",
+          "subjects/pre_knowledge_spine_20260811/SUBJECT_TREE.md",
+          "subjects/pre_knowledge_spine_20260811/authoritative_numbers.md",
+          "subjects/pre_knowledge_spine_20260811/certification_taxonomy.md",
+          "subjects/pre_knowledge_spine_20260811/certified_exact_contract.md",
+          "subjects/pre_knowledge_spine_20260811/current_project_state.md",
+          "subjects/pre_knowledge_spine_20260811/doc_tree_architecture.md",
+          "subjects/pre_knowledge_spine_20260811/doc_tree_completeness.md",
+          "subjects/pre_knowledge_spine_20260811/project_knowledge_tree.md",
+          "navigation/docs_specs_index_pre_phase3_batch3_20260812.md",
+          "navigation/subjects_doc_tree_architecture_pre_phase3_batch3_20260812.md",
+          "navigation/subjects_doc_tree_completeness_pre_phase3_batch3_20260812.md",
+          "navigation/subjects_project_knowledge_tree_pre_phase3_batch3_20260812.md",
+          "formal/formal_readme_pre_phase3_batch3_20260812.md",
+          "navigation/research_phase3c_agent_transcript_index_20260507_08.md"
+        ]
+      },
+      "set": {
+        "document_class": "historical_evidence",
+        "authority_role": "evidence_only",
+        "mutation": "immutable",
+        "context_level": "L0",
+        "purpose": "Byte-preserved snapshot or retired projection retained only for provenance and historical reconstruction.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-012"
+        ],
+        "required_reads": [
+          "docs/history/README.md"
+        ],
+        "after_change": [
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": false,
+          "max_interval_days": null
+        },
+        "section_refs": [
+          "history-archive"
+        ]
+      },
+      "rationale": "Historical payloads preserve the old record and must never be synchronized to current state."
+    },
+    {
+      "id": "history_index_purpose_01",
+      "match": {
+        "path": "README.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Current navigation across all immutable historical snapshot families.",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-009",
+          "DOC-ADR-011",
+          "DOC-ADR-012"
+        ],
+        "after_change": [
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        },
+        "section_refs": [
+          "history-archive"
+        ]
+      },
+      "rationale": "Historical navigation pages remain current but each indexes one explicit archive family."
+    },
+    {
+      "id": "history_index_purpose_02",
+      "match": {
+        "path": "status/README.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Current navigation for retired status, roadmap and project-state snapshots.",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-009",
+          "DOC-ADR-011",
+          "DOC-ADR-012"
+        ],
+        "after_change": [
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        },
+        "section_refs": [
+          "history-archive"
+        ]
+      },
+      "rationale": "Historical navigation pages remain current but each indexes one explicit archive family."
+    },
+    {
+      "id": "history_index_purpose_03",
+      "match": {
+        "path": "subjects/README.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Current navigation for pre-knowledge-spine subject projections.",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-009",
+          "DOC-ADR-011",
+          "DOC-ADR-012"
+        ],
+        "after_change": [
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        },
+        "section_refs": [
+          "history-archive"
+        ]
+      },
+      "rationale": "Historical navigation pages remain current but each indexes one explicit archive family."
+    },
+    {
+      "id": "history_index_purpose_04",
+      "match": {
+        "path": "navigation/README.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Current navigation for retired indexes, maps and knowledge-tree surfaces.",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-009",
+          "DOC-ADR-011",
+          "DOC-ADR-012"
+        ],
+        "after_change": [
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        },
+        "section_refs": [
+          "history-archive"
+        ]
+      },
+      "rationale": "Historical navigation pages remain current but each indexes one explicit archive family."
+    },
+    {
+      "id": "history_index_purpose_05",
+      "match": {
+        "path": "deliveries/README.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Current navigation for frozen adapter and delivery documentation.",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-009",
+          "DOC-ADR-011",
+          "DOC-ADR-012"
+        ],
+        "after_change": [
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        },
+        "section_refs": [
+          "history-archive"
+        ]
+      },
+      "rationale": "Historical navigation pages remain current but each indexes one explicit archive family."
+    },
+    {
+      "id": "history_index_purpose_06",
+      "match": {
+        "path": "formal/README.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Current navigation for retired formal-verification explanatory snapshots.",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-009",
+          "DOC-ADR-011",
+          "DOC-ADR-012"
+        ],
+        "after_change": [
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        },
+        "section_refs": [
+          "history-archive"
+        ]
+      },
+      "rationale": "Historical navigation pages remain current but each indexes one explicit archive family."
+    },
+    {
+      "id": "history_index_purpose_07",
+      "match": {
+        "path": "convergence/README.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Current navigation for Phase 3 responsibility-convergence source snapshots.",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-009",
+          "DOC-ADR-011",
+          "DOC-ADR-012"
+        ],
+        "after_change": [
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        },
+        "section_refs": [
+          "history-archive"
+        ]
+      },
+      "rationale": "Historical navigation pages remain current but each indexes one explicit archive family."
+    },
+    {
+      "id": "phase3_batch4_convergence_snapshots",
+      "match": {
+        "paths": [
+          "convergence/exact_campaign_operations_pre_phase3_batch4_20260812.md",
+          "convergence/parallel_configuration_pre_phase3_batch4_20260812.md",
+          "convergence/scripts_readme_pre_phase3_batch4_20260812.md",
+          "convergence/workflow_testing_pre_phase3_batch4_20260812.md",
+          "convergence/spec06_candidate_placement_pre_phase3_batch4_20260812.md",
+          "convergence/23_rule_cut_evolution_protocol_pre_phase3_batch4_20260812.md",
+          "convergence/24_repository_asset_governance_pre_phase3_batch4_20260812.md"
+        ]
+      },
+      "set": {
+        "document_class": "historical_evidence",
+        "authority_role": "evidence_only",
+        "mutation": "immutable",
+        "context_level": "L0",
+        "purpose": "Byte-preserved pre-convergence current-document source retained for provenance and responsibility migration review.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-012",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ],
+        "required_reads": [
+          "docs/history/convergence/README.md"
+        ],
+        "after_change": [
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": false,
+          "max_interval_days": null
+        },
+        "section_refs": [
+          "history-archive"
+        ]
+      },
+      "rationale": "The retired current copies preserve exact prior bytes and are never synchronized to present state."
+    }
+  ],
+  "legacy_projection": {
+    "rules": [],
+    "out_of_scope_notes": [
+      {
+        "pattern": "docs/history/**",
+        "rationale": "Immutable pre-knowledge-spine snapshots retained for provenance; never current-state projections or prune candidates."
+      }
+    ]
+  }
+}

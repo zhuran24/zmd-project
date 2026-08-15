@@ -1,12 +1,23 @@
-# Subject 文本状态
+# 主题说明兼容入口
 
-`docs/subjects/` 目前是便于集中阅读的主题说明集合，不是自动 transclusion 的 source registry。文件中的 `DOC-SUBJECT` 注释只保留来源追踪价值，不会被脚本同步，也不会被 preflight 校验。
+> 本页由文档系统的前门注册表自动生成；禁止手工修改。
+> 真源：[`data/repository_governance/document_system/entrypoints.json`](../data/repository_governance/document_system/entrypoints.json)。
 
-当前维护规则：
+旧 subject/projection 机制不再承担当前同步职责。
 
-- `PROJECT_LOCK.md`、机器义务和 phase gate 优先于 subject 文本。
-- 修改 subject 文件不会自动修改 README、项目说明或 cc_memory；需要逐个更新实际消费面。
-- `cc_memory/memory.db` 是独立的协作记忆图，只能通过 `cc_memory/mem.py` 操作；不存在 `cc_context` 第二投影。
-- 发现相互冲突时，以当前工作树代码行为和上述权威文件为准，并直接修正所有现行文本副本。
+## 当前入口
 
-当前主题入口见 `docs/subjects/README.md`。
+- [稳定主题索引](TOPIC_INDEX.md)：按主题连接 claim、术语、dossier label 与开放问题。
+- [主题阅读辅助](subjects/README.md)：人工维护的轻量阅读入口。
+- [唯一当前状态](CURRENT.md)：当前机器与知识状态。
+
+## 维护边界
+
+- 旧 subject 文件不能覆盖结构化 topic 或 CURRENT。
+- 退出当前职责前的正文见 [历史快照](history/subjects/pre_knowledge_spine_20260811/SUBJECT_TREE.md)；它只保留当时叙述。
+
+需要改变本页时，修改前门注册表后运行：
+
+```bash
+.venv/bin/python devtools/docctl.py render-entrypoints --write
+```

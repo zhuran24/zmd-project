@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-artifact-boundaries-v1-projection",
+  "title": "ZMD tracked artifact evidence compatibility projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "description",
+    "root_prefix",
+    "projection_source",
+    "tracked_root_files",
+    "tracked_historical_evidence",
+    "ignored_runtime_artifact_prefixes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "root_prefix": {
+      "const": ".artifacts/"
+    },
+    "projection_source": {
+      "const": "data/repository_governance/artifact_evidence_inputs.json"
+    },
+    "tracked_root_files": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^\\.artifacts/[^/]+$"
+      }
+    },
+    "tracked_historical_evidence": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path_prefix",
+          "reason"
+        ],
+        "properties": {
+          "path_prefix": {
+            "type": "string",
+            "pattern": "^\"?\\.artifacts/.+"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "ignored_runtime_artifact_prefixes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "pattern": "/$"
+      }
+    }
+  }
+}

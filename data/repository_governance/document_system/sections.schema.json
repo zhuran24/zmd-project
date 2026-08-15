@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-document-sections-v1",
+  "title": "ZMD current document sections and local front doors",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "system_version",
+    "covered_document_classes",
+    "exempt_paths",
+    "records"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "zmd_document_sections_v1"
+    },
+    "system_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "covered_document_classes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "locked_authority",
+          "generated_projection",
+          "normative",
+          "living",
+          "structured_knowledge",
+          "governance_control",
+          "framework_core"
+        ]
+      }
+    },
+    "exempt_paths": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/relpath"
+      }
+    },
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/section"
+      }
+    }
+  },
+  "$defs": {
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?!.*\\u0000).+$"
+    },
+    "section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "entry_path",
+        "entry_kind",
+        "purpose",
+        "required_targets",
+        "related_section_ids"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entry_path": {
+          "$ref": "#/$defs/relpath"
+        },
+        "entry_kind": {
+          "enum": [
+            "manual",
+            "generated",
+            "authority"
+          ]
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required_targets": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/relpath"
+          }
+        },
+        "related_section_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          }
+        },
+        "max_lines": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_bytes": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["max_lines"]
+          },
+          "then": {
+            "required": ["max_bytes"]
+          }
+        },
+        {
+          "if": {
+            "required": ["max_bytes"]
+          },
+          "then": {
+            "required": ["max_lines"]
+          }
+        }
+      ]
+    }
+  }
+}

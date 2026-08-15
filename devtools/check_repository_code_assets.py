@@ -25,6 +25,17 @@ import jsonschema
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from devtools.artifact_evidence import (  # noqa: E402
+    ArtifactEvidenceBoundary,
+    ArtifactEvidenceError,
+    load_boundary as load_artifact_evidence_boundary,
+    validate_tracked_paths as validate_tracked_artifact_paths,
+    validate_workspace_paths as validate_workspace_artifact_paths,
+)
+
 MANIFEST_PATH = ROOT / "data" / "repository_governance" / "code_assets.json"
 SCHEMA_PATH = ROOT / "data" / "repository_governance" / "code_assets.schema.json"
 
@@ -38,18 +49,6 @@ PRIMARY_CLASSES = (
     "retirement_candidate",
 )
 PYTEST_LANES = frozenset({"developer", "evidence", "replay"})
-READ_ONLY_HISTORICAL_EVIDENCE_NATURES = frozenset(
-    {"research_evidence", "failed_campaign_history"}
-)
-READ_ONLY_HISTORICAL_EVIDENCE_FIELDS = frozenset(
-    {
-        "path",
-        "nature",
-        "content_treatment",
-        "mutation_expectation",
-        "rationale",
-    }
-)
 AUTHORITY_ASSET_ROLES = frozenset(
     {
         "certified_source_of_truth",
@@ -167,74 +166,101 @@ def _validate_path_set(paths: Sequence[str]) -> None:
             raise GovernanceError(f"unsafe repository path: {path!r}")
 
 
-def _read_only_historical_evidence_roots(manifest: Mapping[str, Any]) -> tuple[str, ...]:
-    records = manifest.get("read_only_historical_evidence_roots")
-    if not isinstance(records, list) or not records:
-        raise GovernanceError("read_only_historical_evidence_roots must be a non-empty list")
+def _production_devtools_reference_exceptions(
+    manifest: Mapping[str, Any],
+) -> tuple[tuple[str, str, str], ...]:
+    records = manifest.get("production_devtools_reference_exceptions")
+    if not isinstance(records, list):
+        raise GovernanceError("production_devtools_reference_exceptions must be a list")
 
-    roots: list[str] = []
+    parsed: list[tuple[str, str, str]] = []
+    expected_fields = {"path", "kind", "literal", "symbol", "lifecycle", "rationale"}
     for index, record in enumerate(records):
-        label = f"read_only_historical_evidence_roots[{index}]"
-        if not isinstance(record, dict) or set(record) != READ_ONLY_HISTORICAL_EVIDENCE_FIELDS:
+        label = f"production_devtools_reference_exceptions[{index}]"
+        if not isinstance(record, dict) or set(record) != expected_fields:
             raise GovernanceError(f"{label} has invalid fields")
-        path = record["path"]
-        if not isinstance(path, str):
-            raise GovernanceError(f"{label}.path must be a string")
-        _validate_repository_pattern(path, f"{label}.path")
-        parts = PurePosixPath(path).parts
-        if (
-            len(parts) != 2
-            or parts[0] != ".artifacts"
-            or path != f".artifacts/{parts[1]}/"
-            or any(character in parts[1] for character in "*?[")
-        ):
-            raise GovernanceError(
-                f"{label}.path must be an exact top-level .artifacts root with a trailing slash"
-            )
-        if record["nature"] not in READ_ONLY_HISTORICAL_EVIDENCE_NATURES:
-            raise GovernanceError(f"{label}.nature is invalid")
-        if record["content_treatment"] != "non_code_asset":
-            raise GovernanceError(f"{label}.content_treatment must remain non_code_asset")
-        if record["mutation_expectation"] != "read_only_preserve_in_place":
-            raise GovernanceError(
-                f"{label}.mutation_expectation must remain read_only_preserve_in_place"
-            )
+        path = _validate_repository_pattern(record["path"], f"{label}.path")
+        literal = record["literal"]
+        symbol = record["symbol"]
+        if record["kind"] != "literal_only":
+            raise GovernanceError(f"{label}.kind must remain literal_only")
+        if not isinstance(literal, str) or not literal.startswith("devtools/"):
+            raise GovernanceError(f"{label}.literal must name a devtools path")
+        if not isinstance(symbol, str) or not symbol or not symbol.replace("_", "A").isalnum():
+            raise GovernanceError(f"{label}.symbol is invalid")
+        if record["lifecycle"] != "dormant_advisory_pointer":
+            raise GovernanceError(f"{label}.lifecycle must remain dormant_advisory_pointer")
         if not isinstance(record["rationale"], str) or not record["rationale"].strip():
-            raise GovernanceError(f"{label}.rationale must be a non-empty string")
-        roots.append(path)
+            raise GovernanceError(f"{label}.rationale must be non-empty")
+        if not (ROOT / path).is_file():
+            raise GovernanceError(f"{label}.path is missing: {path}")
+        parsed.append((path, symbol, literal))
 
-    if roots != sorted(roots):
-        raise GovernanceError("read-only historical evidence roots must be sorted by path")
-    if len(roots) != len(set(roots)):
-        raise GovernanceError("read-only historical evidence roots contain duplicate paths")
-    for index, root in enumerate(roots):
-        for other in roots[index + 1 :]:
-            if root.startswith(other) or other.startswith(root):
-                raise GovernanceError(
-                    "read-only historical evidence roots must not overlap: "
-                    f"{root!r} and {other!r}"
-                )
-    return tuple(roots)
+    if parsed != sorted(parsed):
+        raise GovernanceError("production_devtools_reference_exceptions must be sorted")
+    if len(parsed) != len(set(parsed)):
+        raise GovernanceError("production_devtools_reference_exceptions contains duplicates")
+    return tuple(parsed)
 
 
-def _is_read_only_historical_evidence_path(
-    path: str,
-    roots: Sequence[str],
-) -> bool:
-    return any(path.startswith(root) for root in roots)
-
-
-def _validate_read_only_historical_evidence_roots(manifest: Mapping[str, Any]) -> None:
-    roots = _read_only_historical_evidence_roots(manifest)
-    tracked = _parse_nul_paths(_run_git(["ls-files", "--cached", "-z"]))
-    covered_tracked = sorted(
-        path for path in tracked if _is_read_only_historical_evidence_path(path, roots)
-    )
-    if covered_tracked:
+def _artifact_evidence_boundary(manifest: Mapping[str, Any]) -> ArtifactEvidenceBoundary:
+    descriptor = manifest.get("artifact_evidence_boundary")
+    if not isinstance(descriptor, dict):
+        raise GovernanceError("artifact_evidence_boundary must be an object")
+    expected_fields = {
+        "manifest",
+        "schema",
+        "inputs",
+        "inputs_schema",
+        "content_treatment",
+        "mutation_expectation",
+    }
+    if set(descriptor) != expected_fields:
+        raise GovernanceError("artifact_evidence_boundary has invalid fields")
+    if descriptor["content_treatment"] != "non_code_asset":
+        raise GovernanceError("artifact evidence content_treatment must remain non_code_asset")
+    if descriptor["mutation_expectation"] != "read_only_preserve_in_place":
         raise GovernanceError(
-            "read-only historical evidence roots must not cover tracked paths: "
-            f"{covered_tracked!r}"
+            "artifact evidence mutation_expectation must remain read_only_preserve_in_place"
         )
+    try:
+        return load_artifact_evidence_boundary(
+            ROOT,
+            manifest_relpath=str(descriptor["manifest"]),
+            schema_relpath=str(descriptor["schema"]),
+            inputs_relpath=str(descriptor["inputs"]),
+            inputs_schema_relpath=str(descriptor["inputs_schema"]),
+        )
+    except ArtifactEvidenceError as exc:
+        raise GovernanceError(f"artifact evidence boundary is invalid: {exc}") from exc
+
+
+def _validate_artifact_evidence_boundary(
+    manifest: Mapping[str, Any],
+) -> ArtifactEvidenceBoundary:
+    boundary = _artifact_evidence_boundary(manifest)
+    artifact_root = boundary.root_prefix.rstrip("/")
+    tracked = _parse_nul_paths(
+        _run_git(["ls-files", "--cached", "-z", "--", artifact_root])
+    )
+    workspace = _parse_nul_paths(
+        _run_git(
+            [
+                "ls-files",
+                "--others",
+                "--exclude-standard",
+                "-z",
+                "--",
+                artifact_root,
+            ]
+        )
+    )
+    try:
+        validate_tracked_artifact_paths(boundary, tracked)
+        validate_workspace_artifact_paths(boundary, workspace)
+    except ArtifactEvidenceError as exc:
+        raise GovernanceError(f"artifact evidence boundary is invalid: {exc}") from exc
+    return boundary
 
 
 def _current_bytes(path: str) -> bytes:
@@ -363,20 +389,16 @@ def _measurement(
     *,
     include_assets: bool,
     git_visible_count: int | None = None,
-    exclude_read_only_historical_evidence: bool = True,
+    exclude_artifact_evidence: bool = True,
 ) -> dict[str, Any]:
     selector = manifest["code_selector"]
-    read_only_roots = (
-        _read_only_historical_evidence_roots(manifest)
-        if exclude_read_only_historical_evidence
-        else ()
-    )
+    artifact_boundary = _artifact_evidence_boundary(manifest) if exclude_artifact_evidence else None
     class_counts = {name: 0 for name in PRIMARY_CLASSES}
     raw_bytes = 0
     lf_count = 0
     assets: list[dict[str, Any]] = []
     for path in sorted(paths_and_bytes):
-        if _is_read_only_historical_evidence_path(path, read_only_roots):
+        if artifact_boundary is not None and artifact_boundary.covers(path):
             continue
         raw = paths_and_bytes[path]
         if not _is_code_asset(path, raw, selector):
@@ -417,13 +439,13 @@ def _measurement(
 
 def inventory(*, commit: str | None = None, include_assets: bool = True) -> dict[str, Any]:
     manifest = load_manifest()
-    read_only_roots = _read_only_historical_evidence_roots(manifest)
+    artifact_boundary = _artifact_evidence_boundary(manifest)
     if commit is None:
         paths = git_visible_paths()
         blobs = {
             path: _current_bytes(path)
             for path in paths
-            if not _is_read_only_historical_evidence_path(path, read_only_roots)
+            if not artifact_boundary.covers(path)
         }
         git_visible_count = len(paths)
         revision = "WORKTREE"
@@ -436,7 +458,7 @@ def inventory(*, commit: str | None = None, include_assets: bool = True) -> dict
         manifest,
         include_assets=include_assets,
         git_visible_count=git_visible_count,
-        exclude_read_only_historical_evidence=commit is None,
+        exclude_artifact_evidence=commit is None,
     )
     result["revision"] = revision
     return result
@@ -496,7 +518,8 @@ def _validate_manifest_shape(manifest: Mapping[str, Any]) -> None:
         ):
             _validate_repository_pattern(value, f"code_selector.{field}[{index}]")
 
-    _read_only_historical_evidence_roots(manifest)
+    _artifact_evidence_boundary(manifest)
+    _production_devtools_reference_exceptions(manifest)
 
     classification = manifest.get("classification")
     if not isinstance(classification, dict):
@@ -863,7 +886,9 @@ def _source_discovery_receipt(manifest: Mapping[str, Any] | None = None) -> dict
     return receipt
 
 
-def _validate_no_production_devtools_import() -> None:
+def _production_source_candidates() -> tuple[Path, ...]:
+    """Return the exact current production scan surface in stable order."""
+
     candidates = sorted(ROOT.glob("*.py"))
     candidates.extend(
         path
@@ -871,28 +896,118 @@ def _validate_no_production_devtools_import() -> None:
         if not path.relative_to(ROOT).as_posix().startswith("src/tests/")
     )
     candidates.extend((ROOT / "scripts").rglob("*.py"))
-    violations: list[str] = []
-    for path in candidates:
+    return tuple(candidates)
+
+
+# Re-validating several exception variants in one process must not re-parse the
+# entire 804-file production surface each time.  The cache key is a digest of
+# the actual bytes and paths, so uncommitted source changes still invalidate it.
+_PRODUCTION_DEVTOOLS_SCAN_CACHE: tuple[
+    str,
+    tuple[str, ...],
+    tuple[tuple[str, str, str, int], ...],
+] | None = None
+
+
+def _scan_production_devtools_references() -> tuple[
+    tuple[str, ...],
+    tuple[tuple[str, str, str, int], ...],
+]:
+    global _PRODUCTION_DEVTOOLS_SCAN_CACHE
+
+    blobs: list[tuple[str, bytes]] = []
+    digest = hashlib.sha256()
+    for path in _production_source_candidates():
         relative = path.relative_to(ROOT).as_posix()
         try:
-            tree = ast.parse(path.read_bytes(), filename=relative)
+            payload = path.read_bytes()
+        except OSError as exc:
+            raise GovernanceError(
+                f"cannot read production source {relative}: {exc}"
+            ) from exc
+        encoded = relative.encode("utf-8")
+        digest.update(len(encoded).to_bytes(8, "big"))
+        digest.update(encoded)
+        digest.update(len(payload).to_bytes(8, "big"))
+        digest.update(payload)
+        blobs.append((relative, payload))
+
+    source_digest = digest.hexdigest()
+    cached = _PRODUCTION_DEVTOOLS_SCAN_CACHE
+    if cached is not None and cached[0] == source_digest:
+        return cached[1], cached[2]
+
+    import_violations: list[str] = []
+    literal_references: list[tuple[str, str, str, int]] = []
+    for relative, payload in blobs:
+        try:
+            tree = ast.parse(payload, filename=relative)
         except (OSError, SyntaxError) as exc:
-            raise GovernanceError(f"cannot AST-parse production source {relative}: {exc}") from exc
+            raise GovernanceError(
+                f"cannot AST-parse production source {relative}: {exc}"
+            ) from exc
+
+        parents = {
+            child: parent
+            for parent in ast.walk(tree)
+            for child in ast.iter_child_nodes(parent)
+        }
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
-                if any(alias.name == "devtools" or alias.name.startswith("devtools.") for alias in node.names):
-                    violations.append(f"{relative}:{node.lineno}:import")
+                if any(
+                    alias.name == "devtools" or alias.name.startswith("devtools.")
+                    for alias in node.names
+                ):
+                    import_violations.append(f"{relative}:{node.lineno}:import")
             elif isinstance(node, ast.ImportFrom):
                 if node.module == "devtools" or (
-                    isinstance(node.module, str) and node.module.startswith("devtools.")
+                    isinstance(node.module, str)
+                    and node.module.startswith("devtools.")
                 ):
-                    violations.append(f"{relative}:{node.lineno}:from")
+                    import_violations.append(f"{relative}:{node.lineno}:from")
             elif isinstance(node, ast.Constant) and isinstance(node.value, str):
                 normalized = node.value.replace("\\", "/")
-                if normalized == "devtools" or normalized.startswith("devtools/"):
-                    violations.append(f"{relative}:{getattr(node, 'lineno', 0)}:literal")
+                if normalized != "devtools" and not normalized.startswith("devtools/"):
+                    continue
+
+                parent = parents.get(node)
+                symbol: str | None = None
+                if isinstance(parent, ast.Assign) and len(parent.targets) == 1:
+                    target = parent.targets[0]
+                    if isinstance(target, ast.Name) and parent.value is node:
+                        symbol = target.id
+                elif isinstance(parent, ast.AnnAssign):
+                    if isinstance(parent.target, ast.Name) and parent.value is node:
+                        symbol = parent.target.id
+                literal_references.append(
+                    (relative, symbol or "", normalized, getattr(node, "lineno", 0))
+                )
+
+    result = (tuple(import_violations), tuple(literal_references))
+    _PRODUCTION_DEVTOOLS_SCAN_CACHE = (source_digest, result[0], result[1])
+    return result
+
+
+def _validate_no_production_devtools_import(manifest: Mapping[str, Any]) -> None:
+    allowed = set(_production_devtools_reference_exceptions(manifest))
+    used: set[tuple[str, str, str]] = set()
+    import_violations, literal_references = _scan_production_devtools_references()
+    violations = list(import_violations)
+    for relative, symbol, normalized, lineno in literal_references:
+        exception = (relative, symbol, normalized)
+        if exception in allowed:
+            used.add(exception)
+        else:
+            violations.append(f"{relative}:{lineno}:literal")
     if violations:
-        raise GovernanceError(f"production source references developer governance tooling: {violations!r}")
+        raise GovernanceError(
+            f"production source references developer governance tooling: {violations!r}"
+        )
+    stale = sorted(allowed - used)
+    if stale:
+        raise GovernanceError(
+            f"production devtools reference exception is stale or no longer exact: {stale!r}"
+        )
 
 
 def _validate_developer_import_boundary(manifest: Mapping[str, Any]) -> None:
@@ -931,8 +1046,56 @@ def _validate_developer_import_boundary(manifest: Mapping[str, Any]) -> None:
                 ):
                     raise GovernanceError(
                         "developer import surface reaches an isolated historical module: "
-                        f"{record['path']}:{node.lineno}:{module}"
+                        f"{record['path']}:{getattr(node, 'lineno', 0)}:{module}"
                     )
+
+
+def check_current() -> dict[str, Any]:
+    """Validate only current-worktree governance without historical replay.
+
+    This lane exists for the document-governance gate and lightweight supplied
+    snapshots.  It deliberately does *not* validate the frozen baseline commit
+    or certified-source receipt.  The full ``check`` command remains the only
+    authority for those historical comparisons.
+    """
+
+    schema = _load_json_object(SCHEMA_PATH)
+    if schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
+        raise GovernanceError("code asset schema must use JSON Schema 2020-12")
+    manifest = load_manifest()
+    _validate_against_schema(schema, manifest)
+    _validate_manifest_shape(manifest)
+    _validate_artifact_evidence_boundary(manifest)
+    current = _validate_current(manifest)
+    _validate_pytest_lanes(manifest)
+    _validate_capability_index(manifest)
+    _validate_enabled_projections(manifest)
+    _validate_no_production_devtools_import(manifest)
+    _validate_developer_import_boundary(manifest)
+    return {
+        "status": "PASS",
+        "scope": "current_worktree_only",
+        "manifest": MANIFEST_PATH.relative_to(ROOT).as_posix(),
+        "current": {
+            key: current[key]
+            for key in (
+                "revision",
+                "git_visible_count",
+                "code_asset_count",
+                "raw_bytes",
+                "lf_count",
+                "class_counts",
+            )
+        },
+        "logical_isolation": {
+            name: manifest["logical_isolation"][name]["enabled"]
+            for name in ("search", "lint", "pytest")
+        },
+        "not_checked": [
+            "frozen_code_asset_baseline_commit",
+            "certified_exact_source_baseline_receipt",
+        ],
+    }
 
 
 def check() -> dict[str, Any]:
@@ -944,14 +1107,14 @@ def check() -> dict[str, Any]:
     manifest = load_manifest()
     _validate_against_schema(schema, manifest)
     _validate_manifest_shape(manifest)
-    _validate_read_only_historical_evidence_roots(manifest)
+    _validate_artifact_evidence_boundary(manifest)
     baseline = _validate_baseline(manifest)
     current = _validate_current(manifest)
     _validate_pytest_lanes(manifest)
     _validate_capability_index(manifest)
     _validate_enabled_projections(manifest)
     source_receipt = _source_discovery_receipt(manifest)
-    _validate_no_production_devtools_import()
+    _validate_no_production_devtools_import(manifest)
     _validate_developer_import_boundary(manifest)
     return {
         "status": "PASS",
@@ -1058,6 +1221,12 @@ def _build_parser() -> argparse.ArgumentParser:
     check_parser = subparsers.add_parser("check", help="run fail-closed governance validation")
     check_parser.add_argument("--format", choices=("text", "json"), default="text")
 
+    current_parser = subparsers.add_parser(
+        "check-current",
+        help="validate current-worktree governance without claiming historical replay",
+    )
+    current_parser.add_argument("--format", choices=("text", "json"), default="text")
+
     lint_parser = subparsers.add_parser("lint", help="emit the requested lint path projection")
     lint_parser.add_argument("--profile", choices=("developer", "full"), required=True)
     lint_parser.add_argument("--format", choices=("text", "json", "nul"), default="text")
@@ -1078,6 +1247,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             result = inventory(commit=args.commit, include_assets=True)
         elif args.command == "check":
             result = check()
+        elif args.command == "check-current":
+            result = check_current()
         elif args.command == "lint":
             result = _projected_lint_paths(args.profile)
         elif args.command == "pytest-entrypoints":

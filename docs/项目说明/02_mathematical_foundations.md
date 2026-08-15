@@ -1,9 +1,9 @@
 # 02 — 核心数学原理（active 8 family + retired F8 history + sound deduction/scope/replay）
 
-> **阅读边界（2026-07-27）**：本文保留九族设计史；当前 registry 为 F1-F7+F9，
-> F8 已退役。typed lowering 仅 F1/F6/F7；F5 为 shadow-only、无 apply/lowering；
-> attach 仍 unsafe/default-off。默认 certified 路径、发布 authority 和 phase 状态以
-> `01_overview.md`、`06_current_status.md`、`11_dependency_graph.md` 与 `PROJECT_LOCK.md` 为准。
+> **阅读边界（2026-08-11）**：本文保留九族数学与工程设计史；文内所有
+> “Current status (日期)” 都只是该日期的历史快照。稳定命题边界见
+> [`01_overview.md`](01_overview.md)，当前 registry、lowering、attach、phase 与 owner
+> 决定只读 [`../CURRENT.md`](../CURRENT.md) 和 [`../CATALOG.md`](../CATALOG.md)。
 
 
 ### 2.1 paradigm 选择 — LBBD + cut framework 累积外部知识

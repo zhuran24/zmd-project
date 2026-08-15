@@ -1,0 +1,504 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "specs",
+  "description": "Normative and governing specification family.",
+  "defaults": {
+    "document_class": "normative",
+    "authority_role": "normative_input",
+    "mutation": "governed",
+    "context_level": "L1",
+    "purpose": "Current specifications and ecosystem compatibility notes.",
+    "volatile_facts": "reference_only",
+    "invariant_refs": [
+      "DOC-INV-006",
+      "DOC-INV-009",
+      "DOC-INV-014"
+    ],
+    "after_change": [
+      "docsystem.doctor",
+      "knowledge.check"
+    ],
+    "review_policy": {
+      "at_phase_boundary": true,
+      "max_interval_days": 60
+    },
+    "section_refs": [
+      "specifications"
+    ]
+  },
+  "rules": [
+    {
+      "id": "specifications_front_door",
+      "match": {
+        "path": "README.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "governed",
+        "context_level": "L0",
+        "purpose": "Bounded local front door for numbered specifications and ecosystem-note boundaries.",
+        "volatile_facts": "reference_only",
+        "section_refs": [
+          "specifications"
+        ],
+        "invariant_refs": [
+          "DOC-INV-007",
+          "DOC-INV-009",
+          "DOC-INV-014"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        }
+      },
+      "rationale": "A co-located section front door replaces the detached docs/specs_index.md map."
+    },
+    {
+      "id": "precise_spec_purpose_01",
+      "match": {
+        "path": "01_problem_statement.md"
+      },
+      "set": {
+        "purpose": "Normative problem statement, objective and certified/exploratory proposition boundary.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_02",
+      "match": {
+        "path": "02_global_notation_and_units.md"
+      },
+      "set": {
+        "purpose": "Normative global notation, coordinates, units and indexing conventions.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_03",
+      "match": {
+        "path": "03_rule_canonicalization.md"
+      },
+      "set": {
+        "purpose": "Normative canonical-rule ingestion, normalization and conflict handling contract.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_04",
+      "match": {
+        "path": "04_recipe_and_demand_expansion.md"
+      },
+      "set": {
+        "purpose": "Normative recipe graph and demand-expansion contract.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_05",
+      "match": {
+        "path": "05_facility_instance_definition.md"
+      },
+      "set": {
+        "purpose": "Normative facility-template and instance-construction contract.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_06",
+      "match": {
+        "path": "06_candidate_placement_enumeration.md"
+      },
+      "set": {
+        "purpose": "Normative candidate-placement enumeration, sound domain reduction and artifact schema contract.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_07",
+      "match": {
+        "path": "07_master_placement_model.md"
+      },
+      "set": {
+        "purpose": "Normative master placement variables, constraints and objective contract.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_08",
+      "match": {
+        "path": "08_topological_flow_subproblem.md"
+      },
+      "set": {
+        "purpose": "Normative topological flow diagnostic subproblem and interpretation boundary.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_09",
+      "match": {
+        "path": "09_exact_grid_routing_subproblem.md"
+      },
+      "set": {
+        "purpose": "Normative exact grid-routing subproblem and feasibility contract.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_10",
+      "match": {
+        "path": "10_benders_decomposition_and_cut_design.md"
+      },
+      "set": {
+        "purpose": "Normative decomposition, cut validity and lifecycle design contract.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_11",
+      "match": {
+        "path": "11_pipeline_orchestration.md"
+      },
+      "set": {
+        "purpose": "Normative pipeline orchestration and cross-stage obligation contract.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_12",
+      "match": {
+        "path": "12_output_blueprint_schema.md"
+      },
+      "set": {
+        "purpose": "Normative output blueprint schema and serialization boundary.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_13",
+      "match": {
+        "path": "13_ecosystem_borrowing_and_compatibility_plan.md"
+      },
+      "set": {
+        "purpose": "Normative borrowing and compatibility boundary for external ecosystems.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_14",
+      "match": {
+        "path": "14_normalized_catalog_contract.md"
+      },
+      "set": {
+        "purpose": "Normative normalized catalog schema and identity contract.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_15",
+      "match": {
+        "path": "15_target_export_and_compatibility_manifest.md"
+      },
+      "set": {
+        "purpose": "Normative target-export manifest and compatibility declaration contract.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_16",
+      "match": {
+        "path": "16_industrial_planner_export_contract.md"
+      },
+      "set": {
+        "purpose": "Normative IndustrialPlanner export contract and non-authoritative adapter boundary.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_17",
+      "match": {
+        "path": "17_endfield_calc_ingest_contract.md"
+      },
+      "set": {
+        "purpose": "Normative Endfield calculator ingest and normalization contract.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_18",
+      "match": {
+        "path": "18_preprocess_context_contract.md"
+      },
+      "set": {
+        "purpose": "Normative preprocess-context identity and reproducibility contract.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_19",
+      "match": {
+        "path": "19_phase3_frozen_compatible_preprocess_regeneration.md"
+      },
+      "set": {
+        "purpose": "Normative frozen-compatible preprocess regeneration and equivalence contract.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_20",
+      "match": {
+        "path": "20_canonical_rules_consolidation.md"
+      },
+      "set": {
+        "purpose": "Normative canonical-rule consolidation, provenance and conflict-resolution contract.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_21",
+      "match": {
+        "path": "21_frontier_probe_and_campaign_telemetry.md"
+      },
+      "set": {
+        "purpose": "Normative frontier-probe, campaign telemetry and interpretation contract.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_22",
+      "match": {
+        "path": "22_industrial_planner_precision_export_and_validator_spec.md"
+      },
+      "set": {
+        "purpose": "Normative precision export and validator contract for IndustrialPlanner derivatives.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    },
+    {
+      "id": "precise_spec_purpose_23",
+      "match": {
+        "path": "23_industrial_planner_outer_base_planning_representation.md"
+      },
+      "set": {
+        "purpose": "Normative outer-base planning representation and adapter boundary.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Numbered specifications must expose distinct stable responsibilities rather than a shared generic label."
+    }
+  ],
+  "legacy_projection": {
+    "rules": [],
+    "out_of_scope_notes": [
+      {
+        "pattern": "specs/**",
+        "rationale": "Normative specification family; governed outside the legacy prune scanner."
+      }
+    ]
+  }
+}

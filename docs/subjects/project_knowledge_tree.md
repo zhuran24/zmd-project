@@ -1,10 +1,23 @@
-# 项目知识面
+# 旧项目知识树主题兼容入口
 
-项目有两个相互引用但物理独立的知识面：
+> 本页由文档系统的前门注册表自动生成；禁止手工修改。
+> 真源：[`data/repository_governance/document_system/entrypoints.json`](../../data/repository_governance/document_system/entrypoints.json)。
 
-1. Git 工作树中的代码、锁文件、机器 JSON、规格和文档。
-2. `cc_memory/memory.db` 中的协作记忆节点、事实和边。
+项目知识对象和写入方式已经由知识层指南、CATALOG 与 topic projection 统一表达。
 
-它们之间没有自动 projection。文档修改不会自动写入 memory，memory 修改也不会自动改文档。需要变更状态时，应分别按各自工具和约束更新，并保留 supersede/dependency 边，使旧判断与新判断的关系可追踪。
+## 当前入口
 
-禁止复活 `cc_context`、`_cc_live_memory` 或第二套 memory graph。
+- [结构化知识维护](../../data/knowledge/README.md)：claim、decision、dossier、review、topic 与 terminology 的写入协议。
+- [知识与证据目录](../CATALOG.md)：稳定知识身份与证据坐标。
+- [主题入口](../TOPIC_INDEX.md)：跨目录主题与开放问题入口。
+
+## 维护边界
+
+- 聊天记录和个人记忆不会自动成为项目知识。
+- 退出当前职责前的正文见 [历史快照](../history/navigation/subjects_project_knowledge_tree_pre_phase3_batch3_20260812.md)；它只保留当时叙述。
+
+需要改变本页时，修改前门注册表后运行：
+
+```bash
+.venv/bin/python devtools/docctl.py render-entrypoints --write
+```

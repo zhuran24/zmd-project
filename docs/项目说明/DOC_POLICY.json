@@ -1,0 +1,698 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "docs.project_manual",
+  "description": "Explicit lifecycle and responsibility contracts for every depth-1 project-manual page.",
+  "defaults": {
+    "document_class": "unmanaged",
+    "authority_role": "none",
+    "mutation": "direct",
+    "context_level": "L0",
+    "purpose": "No project-manual responsibility has been declared. Add an explicit rule before adding Markdown here.",
+    "volatile_facts": "not_applicable",
+    "invariant_refs": [
+      "DOC-INV-012"
+    ],
+    "after_change": [
+      "docsystem.doctor"
+    ],
+    "review_policy": {
+      "at_phase_boundary": false,
+      "max_interval_days": null
+    },
+    "section_refs": []
+  },
+  "rules": [
+    {
+      "id": "manual_historical_snapshots",
+      "match": {
+        "paths": [
+          "03_paradigm_death_baseline.md",
+          "07_historical_review.md",
+          "08_phase_1_2_plan.md",
+          "09_phase_1_3_plan.md",
+          "10_phase_1_5_plan.md",
+          "13_schedule_estimate.md",
+          "20_skip_directions.md",
+          "25_autonomy_campaign_plan_20260720.md",
+          "p1_2_supervisor_detailed_design.md",
+          "p1_2_supervisor_redesign_draft.md",
+          "soundness_gap_roadmap.md"
+        ]
+      },
+      "set": {
+        "document_class": "historical_evidence",
+        "authority_role": "evidence_only",
+        "mutation": "immutable",
+        "context_level": "L0",
+        "purpose": "Closed phase plan, dated design, retired-direction baseline or historical snapshot retained as evidence.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-012"
+        ],
+        "review_policy": {
+          "at_phase_boundary": false,
+          "max_interval_days": null
+        },
+        "section_refs": [
+          "project-manual"
+        ]
+      },
+      "rationale": "These documents record an earlier state and must not be synchronized to CURRENT."
+    },
+    {
+      "id": "manual_chronology",
+      "match": {
+        "paths": [
+          "22_project_journey_plain_language.md",
+          "HISTORY.md"
+        ]
+      },
+      "set": {
+        "document_class": "historical_evidence",
+        "authority_role": "evidence_only",
+        "mutation": "append_only",
+        "context_level": "L0",
+        "purpose": "Append-only chronology and historical navigation; old entries retain their time meaning.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-012"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": null
+        },
+        "section_refs": [
+          "project-manual",
+          "history-archive"
+        ]
+      },
+      "rationale": "Chronology grows by dated append, never by rewriting earlier narrative to match the present."
+    },
+    {
+      "id": "manual_compatibility_redirects",
+      "match": {
+        "paths": [
+          "00_master_roadmap.md",
+          "05_open_questions.md",
+          "06_current_status.md",
+          "21_glossary.md",
+          "27_status_dashboard.md"
+        ]
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L0",
+        "purpose": "Generated compatibility redirects to unique current, future, terminology or open-question successors.",
+        "volatile_facts": "forbidden",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-004",
+          "DOC-INV-013",
+          "DOC-INV-014"
+        ],
+        "after_change": [
+          "docsystem.render_guidance",
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": null
+        },
+        "source_paths": [
+          "data/repository_governance/document_system/entrypoints.json",
+          "devtools/docctl.py"
+        ],
+        "generator_action": "docsystem.render_entrypoints",
+        "adr_refs": [
+          "DOC-ADR-010"
+        ],
+        "section_refs": [
+          "project-manual"
+        ]
+      },
+      "rationale": "Old numbered paths remain stable, but their bodies are generated from the single entrypoint registry."
+    },
+    {
+      "id": "future_only_roadmap",
+      "match": {
+        "path": "ROADMAP.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Future-only roadmap with dependencies and exit evidence, excluding current-state copies.",
+        "volatile_facts": "forbidden",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-012",
+          "DOC-INV-014"
+        ],
+        "required_reads": [
+          "docs/CURRENT.md",
+          "docs/OPEN_QUESTIONS.md"
+        ],
+        "after_change": [
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 60
+        },
+        "section_refs": [
+          "project-manual"
+        ]
+      },
+      "rationale": "Roadmap says what remains and how it exits; CURRENT and ledgers say what is true now."
+    },
+    {
+      "id": "stable_go_contract",
+      "match": {
+        "path": "12_go_criteria.md"
+      },
+      "set": {
+        "document_class": "normative",
+        "authority_role": "normative_input",
+        "mutation": "governed",
+        "context_level": "L1",
+        "purpose": "Stable vocabulary and evidence contract for GO, close and release judgments.",
+        "volatile_facts": "forbidden",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-006",
+          "DOC-INV-009",
+          "DOC-INV-012",
+          "DOC-INV-014"
+        ],
+        "required_reads": [
+          "docs/CURRENT.md",
+          "PROJECT_LOCK.md"
+        ],
+        "after_change": [
+          "knowledge.check",
+          "docsystem.doctor",
+          "docsystem.tests"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 60
+        },
+        "section_refs": [
+          "project-manual",
+          "certification"
+        ]
+      },
+      "rationale": "The criteria remain normative while dated status and test counts live in their unique sources."
+    },
+    {
+      "id": "manual_normative_contracts",
+      "match": {
+        "paths": [
+          "01_overview.md",
+          "23_rule_cut_evolution_protocol.md",
+          "24_repository_asset_governance.md",
+          "26_rules_handbook.md",
+          "REASONING_METHOD.md"
+        ]
+      },
+      "set": {
+        "document_class": "normative",
+        "authority_role": "normative_input",
+        "mutation": "governed",
+        "context_level": "L1",
+        "purpose": "Current semantic, rule, asset-governance or reasoning-method contract.",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-006",
+          "DOC-INV-009",
+          "DOC-INV-012",
+          "DOC-INV-014"
+        ],
+        "required_reads": [
+          "docs/CURRENT.md"
+        ],
+        "after_change": [
+          "knowledge.check",
+          "docsystem.doctor",
+          "docsystem.tests"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        },
+        "section_refs": [
+          "project-manual"
+        ]
+      },
+      "rationale": "These documents carry current normative meaning and require governed, atomic updates."
+    },
+    {
+      "id": "manual_current_guides",
+      "match": {
+        "paths": [
+          "02_mathematical_foundations.md",
+          "04_design_invariants.md",
+          "11_dependency_graph.md",
+          "14_risk_rollout.md",
+          "15_workflow_testing.md",
+          "16_workflow_review.md",
+          "17_workflow_telemetry.md",
+          "18_workflow_env_config.md",
+          "19_implementation_rhythm.md",
+          "28_pitfalls_and_sop.md"
+        ]
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "explanatory",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Current explanatory, workflow, risk or SOP guide; volatile state is referenced.",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-009",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-017"
+        ],
+        "after_change": [
+          "knowledge.check",
+          "docsystem.doctor",
+          "docsystem.gate"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 60
+        },
+        "section_refs": [
+          "project-manual"
+        ],
+        "adr_refs": [
+          "DOC-ADR-013"
+        ]
+      },
+      "rationale": "These named guides remain active; no other manual file becomes living merely by directory placement."
+    },
+    {
+      "id": "manual_front_door",
+      "match": {
+        "path": "README.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Bounded project-manual front door for current guides, normative contracts, future work and history.",
+        "volatile_facts": "forbidden",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-009",
+          "DOC-INV-012",
+          "DOC-INV-013",
+          "DOC-INV-014"
+        ],
+        "adr_refs": [
+          "DOC-ADR-009",
+          "DOC-ADR-010"
+        ],
+        "required_reads": [
+          "docs/CURRENT.md",
+          "docs/GUIDANCE_INDEX.md"
+        ],
+        "after_change": [
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 60
+        },
+        "section_refs": [
+          "project-manual"
+        ]
+      },
+      "rationale": "The manual front door remains compact and delegates current values and global responsibility discovery to generated surfaces."
+    },
+    {
+      "id": "precise_purpose_01",
+      "match": {
+        "path": "01_overview.md"
+      },
+      "set": {
+        "purpose": "Stable project proposition, semantic layers and authority boundaries.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Each current project-manual surface owns one mechanically distinguishable responsibility."
+    },
+    {
+      "id": "precise_purpose_02",
+      "match": {
+        "path": "02_mathematical_foundations.md"
+      },
+      "set": {
+        "purpose": "Mathematical objects, notation and proof obligations used by the project.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Each current project-manual surface owns one mechanically distinguishable responsibility."
+    },
+    {
+      "id": "precise_purpose_03",
+      "match": {
+        "path": "04_design_invariants.md"
+      },
+      "set": {
+        "purpose": "Cross-layer design invariants that implementation and evidence must preserve.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Each current project-manual surface owns one mechanically distinguishable responsibility."
+    },
+    {
+      "id": "precise_purpose_04",
+      "match": {
+        "path": "11_dependency_graph.md"
+      },
+      "set": {
+        "purpose": "Dependency graph between authorities, models, solvers, evidence and publication surfaces.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Each current project-manual surface owns one mechanically distinguishable responsibility."
+    },
+    {
+      "id": "precise_purpose_05",
+      "match": {
+        "path": "14_risk_rollout.md"
+      },
+      "set": {
+        "purpose": "Risk classification, rollout order and rollback evidence for current engineering work.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Each current project-manual surface owns one mechanically distinguishable responsibility."
+    },
+    {
+      "id": "precise_purpose_06",
+      "match": {
+        "path": "15_workflow_testing.md"
+      },
+      "set": {
+        "purpose": "Stable testing-layer, fixture and evidence-interpretation protocol without current receipts.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016",
+          "DOC-INV-017"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012",
+          "DOC-ADR-013"
+        ],
+        "after_change": [
+          "docsystem.gate"
+        ]
+      },
+      "rationale": "Each current project-manual surface owns one mechanically distinguishable responsibility."
+    },
+    {
+      "id": "precise_purpose_07",
+      "match": {
+        "path": "16_workflow_review.md"
+      },
+      "set": {
+        "purpose": "Review roles, adversarial checks and acceptance boundaries for project changes.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Each current project-manual surface owns one mechanically distinguishable responsibility."
+    },
+    {
+      "id": "precise_purpose_08",
+      "match": {
+        "path": "17_workflow_telemetry.md"
+      },
+      "set": {
+        "purpose": "Telemetry schema, interpretation limits and non-authorizing observability contract.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Each current project-manual surface owns one mechanically distinguishable responsibility."
+    },
+    {
+      "id": "precise_purpose_09",
+      "match": {
+        "path": "18_workflow_env_config.md"
+      },
+      "set": {
+        "purpose": "Environment configuration ownership, precedence and reproducibility discipline.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Each current project-manual surface owns one mechanically distinguishable responsibility."
+    },
+    {
+      "id": "precise_purpose_10",
+      "match": {
+        "path": "19_implementation_rhythm.md"
+      },
+      "set": {
+        "purpose": "Iteration rhythm, handoff discipline and phase-boundary maintenance protocol.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Each current project-manual surface owns one mechanically distinguishable responsibility."
+    },
+    {
+      "id": "precise_purpose_11",
+      "match": {
+        "path": "23_rule_cut_evolution_protocol.md"
+      },
+      "set": {
+        "purpose": "Stable governance protocol for rule semantics, cut-family evolution, validation and production admission.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Each current project-manual surface owns one mechanically distinguishable responsibility."
+    },
+    {
+      "id": "precise_purpose_12",
+      "match": {
+        "path": "24_repository_asset_governance.md"
+      },
+      "set": {
+        "purpose": "Stable code-asset classification, workflow isolation and retirement governance contract.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Each current project-manual surface owns one mechanically distinguishable responsibility."
+    },
+    {
+      "id": "precise_purpose_13",
+      "match": {
+        "path": "26_rules_handbook.md"
+      },
+      "set": {
+        "purpose": "Human-readable canonical-rule interpretation and source-of-authority guide.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Each current project-manual surface owns one mechanically distinguishable responsibility."
+    },
+    {
+      "id": "precise_purpose_14",
+      "match": {
+        "path": "28_pitfalls_and_sop.md"
+      },
+      "set": {
+        "purpose": "Operational pitfalls, fail-closed recovery patterns and recurring SOPs.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Each current project-manual surface owns one mechanically distinguishable responsibility."
+    },
+    {
+      "id": "precise_purpose_15",
+      "match": {
+        "path": "REASONING_METHOD.md"
+      },
+      "set": {
+        "purpose": "Reusable mathematical reasoning and separation-method design principles.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Each current project-manual surface owns one mechanically distinguishable responsibility."
+    }
+  ],
+  "legacy_projection": {
+    "rules": [
+      {
+        "id": "project_manual_historical",
+        "match": {
+          "paths": [
+            "docs/项目说明/03_paradigm_death_baseline.md",
+            "docs/项目说明/07_historical_review.md",
+            "docs/项目说明/08_phase_1_2_plan.md",
+            "docs/项目说明/09_phase_1_3_plan.md",
+            "docs/项目说明/10_phase_1_5_plan.md",
+            "docs/项目说明/13_schedule_estimate.md",
+            "docs/项目说明/20_skip_directions.md",
+            "docs/项目说明/22_project_journey_plain_language.md",
+            "docs/项目说明/25_autonomy_campaign_plan_20260720.md",
+            "docs/项目说明/HISTORY.md",
+            "docs/项目说明/p1_2_supervisor_detailed_design.md",
+            "docs/项目说明/p1_2_supervisor_redesign_draft.md",
+            "docs/项目说明/soundness_gap_roadmap.md"
+          ]
+        },
+        "document_class": "historical",
+        "rationale": "Closed plans, snapshots and append-only chronology retained as evidence."
+      },
+      {
+        "id": "project_manual_current",
+        "match": {
+          "paths": [
+            "docs/项目说明/00_master_roadmap.md",
+            "docs/项目说明/01_overview.md",
+            "docs/项目说明/02_mathematical_foundations.md",
+            "docs/项目说明/04_design_invariants.md",
+            "docs/项目说明/05_open_questions.md",
+            "docs/项目说明/06_current_status.md",
+            "docs/项目说明/11_dependency_graph.md",
+            "docs/项目说明/12_go_criteria.md",
+            "docs/项目说明/14_risk_rollout.md",
+            "docs/项目说明/15_workflow_testing.md",
+            "docs/项目说明/16_workflow_review.md",
+            "docs/项目说明/17_workflow_telemetry.md",
+            "docs/项目说明/18_workflow_env_config.md",
+            "docs/项目说明/19_implementation_rhythm.md",
+            "docs/项目说明/21_glossary.md",
+            "docs/项目说明/23_rule_cut_evolution_protocol.md",
+            "docs/项目说明/24_repository_asset_governance.md",
+            "docs/项目说明/26_rules_handbook.md",
+            "docs/项目说明/27_status_dashboard.md",
+            "docs/项目说明/28_pitfalls_and_sop.md",
+            "docs/项目说明/README.md",
+            "docs/项目说明/REASONING_METHOD.md",
+            "docs/项目说明/ROADMAP.md"
+          ]
+        },
+        "document_class": "living",
+        "rationale": "Explicit compatibility, future-only, normative and current explanatory manual pages."
+      }
+    ],
+    "out_of_scope_notes": []
+  }
+}

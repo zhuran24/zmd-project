@@ -1,0 +1,159 @@
+{
+  "schema_version": "zmd_document_patch_landing_v1",
+  "system_version": "2.6.0",
+  "archive_root": "docs/history/status/landing",
+  "workspace_overlays": [
+    "AGENTS.md",
+    "CLAUDE.md"
+  ],
+  "forbidden_branches": [
+    "main",
+    "master"
+  ],
+  "append_only_targets": [
+    "data/knowledge/decisions.jsonl",
+    "docs/项目说明/HISTORY.md"
+  ],
+  "known_migrations": [
+    {
+      "source_path": "CLAUDE.md",
+      "kind": "workspace_overlay_reconcile",
+      "archive_required": true,
+      "replacement_mode": "manual_overlay",
+      "require_source_change": true,
+      "source_markers_after_migration": [
+        "2026-08-09",
+        "/home/zhuran24/zmd-pj-cc-backup-20260809/",
+        "AGENTS.md",
+        "untracked"
+      ],
+      "obligations": [
+        {
+          "id": "overlay-bootstrap",
+          "allowed_targets": [
+            "CLAUDE.md"
+          ],
+          "required_markers": [
+            "2026-08-09",
+            "/home/zhuran24/zmd-pj-cc-backup-20260809/",
+            "AGENTS.md",
+            "untracked"
+          ],
+          "require_archive_reference": false,
+          "require_record_id": false,
+          "target_formats": {
+            "CLAUDE.md": "text"
+          },
+          "require_ack_strings": false
+        },
+        {
+          "id": "operations-absorption",
+          "allowed_targets": [
+            "docs/AGENT_OPERATIONS.md"
+          ],
+          "required_markers": [
+            "informational_record_only",
+            ".Codex/"
+          ],
+          "require_archive_reference": false,
+          "require_record_id": false,
+          "target_formats": {
+            "docs/AGENT_OPERATIONS.md": "text"
+          },
+          "require_ack_strings": false
+        }
+      ]
+    },
+    {
+      "source_path": "docs/项目说明/00_master_roadmap.md",
+      "kind": "owner_record_migration",
+      "archive_required": true,
+      "replacement_mode": "package_successor",
+      "require_source_change": true,
+      "source_markers_after_migration": [],
+      "obligations": [
+        {
+          "id": "owner-decision-register",
+          "allowed_targets": [
+            "data/knowledge/decisions.jsonl"
+          ],
+          "required_markers": [],
+          "require_archive_reference": true,
+          "require_record_id": true,
+          "target_formats": {
+            "data/knowledge/decisions.jsonl": "jsonl"
+          },
+          "require_ack_strings": true
+        },
+        {
+          "id": "owner-history-event",
+          "allowed_targets": [
+            "docs/项目说明/HISTORY.md"
+          ],
+          "required_markers": [],
+          "require_archive_reference": true,
+          "require_record_id": false,
+          "target_formats": {
+            "docs/项目说明/HISTORY.md": "text"
+          },
+          "require_ack_strings": true
+        }
+      ]
+    },
+    {
+      "source_path": "docs/项目说明/27_status_dashboard.md",
+      "kind": "debt_migration",
+      "archive_required": true,
+      "replacement_mode": "package_successor",
+      "require_source_change": true,
+      "source_markers_after_migration": [],
+      "obligations": [
+        {
+          "id": "a12-debt",
+          "allowed_targets": [
+            "docs/项目说明/ROADMAP.md",
+            "data/knowledge/claims.jsonl",
+            "data/knowledge/backfill_triage.json"
+          ],
+          "required_markers": [
+            "A12"
+          ],
+          "require_archive_reference": true,
+          "require_record_id": false,
+          "target_formats": {
+            "docs/项目说明/ROADMAP.md": "text",
+            "data/knowledge/claims.jsonl": "jsonl",
+            "data/knowledge/backfill_triage.json": "json"
+          },
+          "require_ack_strings": true
+        },
+        {
+          "id": "a13-debt",
+          "allowed_targets": [
+            "docs/项目说明/ROADMAP.md",
+            "data/knowledge/claims.jsonl",
+            "data/knowledge/backfill_triage.json"
+          ],
+          "required_markers": [
+            "A13"
+          ],
+          "require_archive_reference": true,
+          "require_record_id": false,
+          "target_formats": {
+            "docs/项目说明/ROADMAP.md": "text",
+            "data/knowledge/claims.jsonl": "jsonl",
+            "data/knowledge/backfill_triage.json": "json"
+          },
+          "require_ack_strings": true
+        }
+      ]
+    }
+  ],
+  "forbidden_operations": [
+    "git reset --hard",
+    "git clean",
+    "git add -A",
+    "git commit",
+    "git commit --amend"
+  ]
+}

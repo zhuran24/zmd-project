@@ -1,0 +1,301 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-decision-v2",
+  "title": "ZMD non-authorizing append-only decision register record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "title",
+    "status",
+    "authority_effect",
+    "non_authorizing",
+    "external_decision_id",
+    "ruling_event_id",
+    "authority_source",
+    "decided_at",
+    "decided_by",
+    "statement",
+    "scope",
+    "consequences",
+    "does_not_imply",
+    "supersedes",
+    "evidence",
+    "dossier_ids",
+    "tags"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "zmd_decision_v2"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^DECISION-[A-Z0-9][A-Z0-9-]*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "current",
+        "historical",
+        "superseded"
+      ]
+    },
+    "authority_effect": {
+      "enum": [
+        "phase_gate",
+        "project_semantics",
+        "research_governance",
+        "scope_boundary"
+      ]
+    },
+    "external_decision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decided_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "decided_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "statement": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "consequences": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "does_not_imply": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "supersedes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^DECISION-[A-Z0-9][A-Z0-9-]*$"
+      },
+      "uniqueItems": true
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "dossier_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^DOSSIER-[A-Z0-9][A-Z0-9-]*$"
+      },
+      "uniqueItems": true
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9_-]*$"
+      },
+      "uniqueItems": true
+    },
+    "non_authorizing": {
+      "const": true,
+      "description": "This register cannot grant authority. The referenced external owner source remains authoritative."
+    },
+    "ruling_event_id": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ],
+      "description": "Reserved for the future immutable OWNER_RULING_EVENT archive surface."
+    },
+    "authority_source": {
+      "$ref": "#/$defs/authority_source"
+    }
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "role",
+        "storage"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "optional": {
+          "type": "boolean"
+        },
+        "note": {
+          "type": "string"
+        },
+        "storage": {
+          "enum": [
+            "git_tracked",
+            "workspace_untracked",
+            "external_root"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "storage": {
+                "const": "git_tracked"
+              }
+            },
+            "required": [
+              "storage"
+            ]
+          },
+          "then": {
+            "properties": {
+              "optional": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "storage": {
+                "const": "workspace_untracked"
+              }
+            },
+            "required": [
+              "storage"
+            ]
+          },
+          "then": {
+            "required": [
+              "optional"
+            ],
+            "properties": {
+              "optional": {
+                "const": true
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "storage": {
+                "const": "external_root"
+              }
+            },
+            "required": [
+              "storage"
+            ]
+          },
+          "then": {
+            "required": [
+              "optional",
+              "note"
+            ],
+            "properties": {
+              "optional": {
+                "const": true
+              },
+              "note": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "authority_source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "format",
+        "assertions"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "format": {
+          "enum": [
+            "json",
+            "text"
+          ]
+        },
+        "assertions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "operator",
+              "expected"
+            ],
+            "properties": {
+              "operator": {
+                "enum": [
+                  "equals",
+                  "contains"
+                ]
+              },
+              "pointer": {
+                "type": "string",
+                "minLength": 1
+              },
+              "expected": {},
+              "record_field": {
+                "type": "string",
+                "minLength": 1
+              },
+              "note": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

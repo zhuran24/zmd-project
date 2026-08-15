@@ -1,0 +1,713 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-claim-v2",
+  "title": "ZMD knowledge claim v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "title",
+    "kind",
+    "status",
+    "authority",
+    "authority_basis",
+    "representation_class",
+    "authority_effect",
+    "statement",
+    "updated_at",
+    "scope",
+    "premises",
+    "consequences",
+    "does_not_imply",
+    "dependencies",
+    "supersedes",
+    "evidence",
+    "decision_ids",
+    "dossier_ids",
+    "tags"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "zmd_claim_v2"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^CLAIM-[A-Z0-9][A-Z0-9-]*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": [
+        "boundary",
+        "constraint",
+        "definition",
+        "decision_projection",
+        "ledger",
+        "method",
+        "negative_result",
+        "open_problem",
+        "state",
+        "theorem"
+      ]
+    },
+    "status": {
+      "enum": [
+        "candidate",
+        "current",
+        "historical",
+        "open",
+        "refuted",
+        "superseded"
+      ]
+    },
+    "authority": {
+      "enum": [
+        "descriptive",
+        "machine",
+        "owner_decision",
+        "research_authority",
+        "research_only",
+        "rules_authority"
+      ]
+    },
+    "authority_effect": {
+      "enum": [
+        "conditional_model_exclusion",
+        "defines_certified_scope",
+        "descriptive_only",
+        "negative_research_result",
+        "none",
+        "production_gate",
+        "research_ledger_state",
+        "research_upper_update",
+        "rules_semantics"
+      ]
+    },
+    "slot": {
+      "type": "string",
+      "minLength": 1
+    },
+    "statement": {
+      "type": "string",
+      "minLength": 1
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of the latest semantic, status, scope, or authority change to this ledger record; not merely the date of an evidence artifact."
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "premises": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "consequences": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "does_not_imply": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^CLAIM-[A-Z0-9][A-Z0-9-]*$"
+      },
+      "uniqueItems": true
+    },
+    "supersedes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^CLAIM-[A-Z0-9][A-Z0-9-]*$"
+      },
+      "uniqueItems": true
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "dossier_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^DOSSIER-[A-Z0-9][A-Z0-9-]*$"
+      },
+      "uniqueItems": true
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9_-]*$"
+      },
+      "uniqueItems": true
+    },
+    "reasoning_profile": {
+      "$ref": "#/$defs/reasoning_profile"
+    },
+    "derivation_profile": {
+      "$ref": "#/$defs/derivation_profile"
+    },
+    "separation_profile": {
+      "$ref": "#/$defs/separation_profile"
+    },
+    "validity_profile": {
+      "$ref": "#/$defs/validity_profile"
+    },
+    "representation_class": {
+      "enum": [
+        "AUTHORITATIVE_CURRENT",
+        "GENERATED_PROJECTION",
+        "IMMUTABLE_HISTORICAL_SNAPSHOT",
+        "QUOTATION_FOR_EVIDENCE"
+      ],
+      "description": "Representation position in the document system. Orthogonal to epistemic authority."
+    },
+    "authority_basis": {
+      "$ref": "#/$defs/authority_basis"
+    },
+    "decision_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^DECISION-[A-Z0-9][A-Z0-9-]*$"
+      },
+      "uniqueItems": true,
+      "description": "Field-level links to non-authorizing decision-register records; authority remains at each external source."
+    }
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "role",
+        "storage"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "optional": {
+          "type": "boolean"
+        },
+        "note": {
+          "type": "string"
+        },
+        "storage": {
+          "enum": [
+            "git_tracked",
+            "workspace_untracked",
+            "external_root"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "storage": {
+                "const": "git_tracked"
+              }
+            },
+            "required": [
+              "storage"
+            ]
+          },
+          "then": {
+            "properties": {
+              "optional": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "storage": {
+                "const": "workspace_untracked"
+              }
+            },
+            "required": [
+              "storage"
+            ]
+          },
+          "then": {
+            "required": [
+              "optional"
+            ],
+            "properties": {
+              "optional": {
+                "const": true
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "storage": {
+                "const": "external_root"
+              }
+            },
+            "required": [
+              "storage"
+            ]
+          },
+          "then": {
+            "required": [
+              "optional",
+              "note"
+            ],
+            "properties": {
+              "optional": {
+                "const": true
+              },
+              "note": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "reasoning_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "condition_disposition",
+        "operational_effects",
+        "generality",
+        "solver_relation",
+        "generic_propagation_evidence",
+        "discovery_modes"
+      ],
+      "properties": {
+        "condition_disposition": {
+          "enum": [
+            "discharged",
+            "conditional",
+            "scope_shifted",
+            "refuted",
+            "inconclusive",
+            "method_only"
+          ]
+        },
+        "operational_effects": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "pre_model_exclusion",
+              "candidate_pruning",
+              "constraint_selection",
+              "constraint_strengthening",
+              "bound_tightening",
+              "scope_boundary",
+              "semantic_partition",
+              "semantic_permission",
+              "counterexample",
+              "discovery_method",
+              "experiment_boundary"
+            ]
+          }
+        },
+        "generality": {
+          "enum": [
+            "frozen_instance",
+            "parameterized_family",
+            "model_domain",
+            "game_semantics",
+            "research_process"
+          ]
+        },
+        "solver_relation": {
+          "enum": [
+            "pre_model_reduction",
+            "candidate_filter",
+            "model_constraint",
+            "experimental_cut",
+            "not_applicable"
+          ]
+        },
+        "generic_propagation_evidence": {
+          "enum": [
+            "none",
+            "experimental_only",
+            "formal"
+          ]
+        },
+        "discovery_modes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "targeted_derivation",
+              "zero_slack_audit",
+              "adversarial_review",
+              "incident_review",
+              "solver_experiment",
+              "owner_adjudication",
+              "systematic_rules_audit",
+              "formal_proof",
+              "unknown"
+            ]
+          }
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "derivation_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "families",
+        "verification_modes"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "definition",
+            "atomic_lemma",
+            "composite_theorem",
+            "ledger_projection",
+            "method",
+            "counterexample",
+            "open_obligation"
+          ]
+        },
+        "families": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "area_accounting",
+              "throughput_capacity",
+              "route_footprint",
+              "power_coverage",
+              "slot_saturation",
+              "empty_rectangle_geometry",
+              "boundary_packing",
+              "ordinary_membrane",
+              "conditional_halo",
+              "marked_membrane",
+              "endpoint_budget",
+              "entity_census",
+              "local_access_capacity",
+              "budget_composition",
+              "crossing_counting",
+              "branch_counting",
+              "slack_audit",
+              "lex_band_enumeration",
+              "integer_rounding",
+              "finite_pb_proof",
+              "research_ledger",
+              "closure_search",
+              "feasible_set_monotonicity"
+            ]
+          }
+        },
+        "verification_modes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "paper_derivation",
+              "source_recomputation",
+              "exact_enumeration",
+              "optimization_certificate",
+              "independent_recomputation",
+              "adversarial_review",
+              "authority_admission",
+              "counterexample",
+              "roundingsat_veripb",
+              "machine_source_projection"
+            ]
+          }
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "separation_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_stage",
+        "candidate_source",
+        "selection_modes",
+        "validation_modes",
+        "completeness",
+        "consumption_modes",
+        "baseline_comparison"
+      ],
+      "properties": {
+        "target_stage": {
+          "enum": [
+            "pre_model",
+            "candidate_generation",
+            "model_build",
+            "search_loop",
+            "post_solve",
+            "knowledge_only"
+          ]
+        },
+        "candidate_source": {
+          "enum": [
+            "declared_inventory",
+            "explicit_finite",
+            "implicit_combinatorial",
+            "solver_events",
+            "supplied_candidate",
+            "not_applicable"
+          ]
+        },
+        "selection_modes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "manual_targeting",
+              "zero_slack_ranking",
+              "goal_backward_search",
+              "pairwise_closure",
+              "finite_enumeration",
+              "complete_theory_solver",
+              "cut_registry_replay",
+              "raw_event_separation",
+              "proof_obligation_queue",
+              "not_applicable"
+            ]
+          }
+        },
+        "validation_modes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "none",
+              "direct_arithmetic",
+              "exact_enumeration",
+              "independent_validator",
+              "proof_object",
+              "complete_theory_solver",
+              "terminal_replay",
+              "counterexample"
+            ]
+          }
+        },
+        "completeness": {
+          "enum": [
+            "proved_for_declared_domain",
+            "relative_to_declared_fragment",
+            "heuristic",
+            "disproved",
+            "open",
+            "not_applicable"
+          ]
+        },
+        "consumption_modes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "model_omission",
+              "pre_model_filter",
+              "candidate_filter",
+              "model_constraint",
+              "objective_bound",
+              "diagnostic_only",
+              "knowledge_only"
+            ]
+          }
+        },
+        "baseline_comparison": {
+          "enum": [
+            "none",
+            "non_identifying",
+            "controlled",
+            "formal"
+          ]
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "validity_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_type",
+        "affected_layers",
+        "basis",
+        "reuse_policy",
+        "repair_state",
+        "temporal_scope"
+      ],
+      "properties": {
+        "event_type": {
+          "enum": [
+            "refutation",
+            "semantic_replacement",
+            "scope_correction",
+            "implementation_invalidation",
+            "experiment_invalidation",
+            "attribution_correction",
+            "route_retirement",
+            "revalidation"
+          ]
+        },
+        "affected_layers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "canonical_semantics",
+              "model_encoding",
+              "candidate_inventory",
+              "validator",
+              "solver_runtime",
+              "experiment_design",
+              "proof_argument",
+              "documentation",
+              "research_strategy"
+            ]
+          }
+        },
+        "basis": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "counterexample",
+              "owner_adjudication",
+              "incident_replay",
+              "differential_test",
+              "controlled_experiment",
+              "independent_recomputation",
+              "proof_replay",
+              "evidence_gap"
+            ]
+          }
+        },
+        "reuse_policy": {
+          "enum": [
+            "do_not_reuse",
+            "historical_only",
+            "revalidate_before_use",
+            "method_only",
+            "unaffected_under_premises",
+            "current_after_repair"
+          ]
+        },
+        "repair_state": {
+          "enum": [
+            "not_applicable",
+            "pending",
+            "repaired_unverified",
+            "revalidated"
+          ]
+        },
+        "temporal_scope": {
+          "enum": [
+            "specific_artifact",
+            "run_family",
+            "pre_fix_history",
+            "design_version",
+            "universal_claim"
+          ]
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "authority_basis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "basis_type",
+        "source_paths"
+      ],
+      "properties": {
+        "basis_type": {
+          "enum": [
+            "machine_verified",
+            "rules_source",
+            "owner_decision",
+            "research_authority",
+            "research_only",
+            "descriptive"
+          ]
+        },
+        "source_paths": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "verification_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_]*$"
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

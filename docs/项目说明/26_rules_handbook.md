@@ -1,6 +1,6 @@
 # 26 — 规则手册：游戏规则的现行理解
 
-> **本页为无时态文档**：全篇现在时、就地更新。历史考古走 `git log` / `git blame` 与台账 `docs/项目说明/00_master_roadmap.md`；**凡改动本页所述状态的批，必须同批更新本页**。
+> **本页为无时态文档**：全篇现在时、就地更新。历史考古走 `git log` / `git blame`、[HISTORY](HISTORY.md) 与冻结快照；**凡改动本页所述稳定规则解释的批，必须同批更新本页**。
 > 本页**零权威**——只做总结、指路与交叉引用。任何承重用途（外审、放开语义、写守卫、下结论）都必须回到本页指出的权威物读原文。
 
 ---
@@ -12,10 +12,10 @@
 | 层 | 权威物 | 管什么 |
 |---|---|---|
 | 1 | `PROJECT_LOCK.md` | release 边界、scope 注解、`F-*`/`PCR-*`/`CUT-*` fail-closed 条款 |
-| 1' | `docs/项目说明/01_overview.md` §1.1（六谓词外延）、§1.2（`CERTIFIED` 证什么） | **谓词外延本身**。`PROJECT_LOCK.md` §1A 自己写明：若与 `01_overview` 的谓词外延冲突，以那两节为准、§1A 须 re-sync（§1A 引的节号是「§1.1/§1.3」，本仓 §1.3 实为发布链图——指称漂移登记见 `docs/项目说明/27_status_dashboard.md` §9） |
+| 1' | `docs/项目说明/01_overview.md` §1.1（六谓词外延）、§1.2（`CERTIFIED` 证什么） | **谓词外延本身**。`PROJECT_LOCK.md` §1A 自己写明：若与 `01_overview` 的谓词外延冲突，以那两节为准、§1A 须 re-sync（旧节号漂移的审计记录见 [`../history/status/27_status_dashboard_20260803.md`](../history/status/27_status_dashboard_20260803.md) §9；现行 §1.3 已收束为 soundness 与 authority 链） |
 | 2 | `rules/canonical_rules.json`（字节级冻结件） | admissibility、游戏语义裁决条款、`semantics.axiom_kernel` 公理系 |
 | 3 | `rules/preprocess_plan.json`（冻结件） | generic-input 合同的槽位声明（`utility_operations`） |
-| 4 | `docs/项目说明/00_master_roadmap.md` §0b | 归属判据 / 方法论操作卡。台账是**追加式账本**；§0b 持续演进，引用时不钉版本号。**改动本页所述状态的批，同样要在台账 §0a 留行** |
+| 4 | [`REASONING_METHOD.md`](REASONING_METHOD.md) | 归属判据 / 方法论操作卡。稳定方法就地维护；历史版本与 owner 台账从 [HISTORY](HISTORY.md) 和冻结快照考古 |
 | — | 本页 | 索引 |
 
 ### 0.2 三条引用纪律（违反过、都留了病例）
@@ -155,7 +155,7 @@
 
 同段还挂着四条派生义务（`R3-A` 残余池仍须构造、`R4-A` 固定槽须带模板全角色语义、`R5-A` 空家族表须整体跳过而非发空表）与 V94 终端箱最小性支配义务，**本页不复述**，改这块之前逐条读原文。
 
-**exact session 纪律**：从**同一份 hash-bound 的 `preprocess_plan.json` snapshot** 解析、传递、比较完整的 `generic_input_slots_by_operation` map；禁止退回 box-only 标量，禁止中途重读（`CLAUDE.md` 大图架构 §1）。
+**exact session 纪律**：从**同一份 hash-bound 的 `preprocess_plan.json` snapshot** 解析、传递、比较完整的 `generic_input_slots_by_operation` map；禁止退回 box-only 标量，禁止中途重读。权威边界见 `PROJECT_LOCK.md` 的 `F-GM-Q3-01`，操作入口见 [`../AGENT_OPERATIONS.md`](../AGENT_OPERATIONS.md) §5。
 
 ---
 
@@ -212,7 +212,7 @@ python3 -c "import json;print(json.load(open('rules/canonical_rules.json'))['sem
 
 守卫文化的报警通道天然只装在纳伪侧——过严限制只产生"缺失的答案"、不产生"错误的答案"，**永不自曝**，必须主动审计。**"墙审计" = "孔审计"的对偶**：周期性从公理系枚举游戏合法能力、逐条核模型的可表达性。
 
-出处：文件记忆卡 `bidirectional-fidelity-axiom`；台账登记见 `docs/项目说明/00_master_roadmap.md` §0a 对应行。
+出处：文件记忆卡 `bidirectional-fidelity-axiom`；迁移前台账登记见 [冻结 roadmap 快照](../history/status/00_master_roadmap_pre_phase3_20260812.md) 的 `§0a`。
 
 ### 9.2 规则派生闭包公理
 
@@ -228,7 +228,7 @@ python3 -c "import json;print(json.load(open('rules/canonical_rules.json'))['sem
 
 ### 9.3 判据体系指路
 
-科学 / 求解 / 数学面的**任何**"知识 × 计算"分解边界（住址、切分、管线门序、cut 打包），走 `docs/项目说明/00_master_roadmap.md` **§0b 操作卡的七问（⓪–⑥）**——⓪ 是押任何结构性预设之前最先问的**锚点问**。**该节是主席文件、持续演进，本页不钉版本号也不抄操作卡与过堂表**；起争议回 §0b 正文仲裁。
+科学 / 求解 / 数学面的**任何**“知识 × 计算”分解边界（住址、切分、管线门序、cut 打包），走 [`REASONING_METHOD.md`](REASONING_METHOD.md) **操作卡的七问（⓪–⑥）**，其中 ⓪ 是押任何结构性预设之前最先问的锚点问。本页不复制操作卡与过堂表；起争议回方法正文仲裁。
 
 ---
 

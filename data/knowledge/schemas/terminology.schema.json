@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-terminology-v1",
+  "title": "ZMD canonical terminology registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "ledger_reviewed_at", "records"],
+  "properties": {
+    "schema_version": {"const": "zmd_terminology_v1"},
+    "ledger_reviewed_at": {"type": "string", "format": "date"},
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/record"}
+    }
+  },
+  "$defs": {
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "canonical_label",
+        "aliases",
+        "definition",
+        "distinctions",
+        "related_claim_ids",
+        "source_paths",
+        "tags"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^TERM-[A-Z0-9][A-Z0-9-]*$"
+        },
+        "canonical_label": {"type": "string", "minLength": 1},
+        "aliases": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "definition": {"type": "string", "minLength": 1},
+        "distinctions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "related_claim_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^CLAIM-[A-Z0-9][A-Z0-9-]*$"
+          }
+        },
+        "source_paths": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "tags": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]*$"
+          }
+        }
+      }
+    }
+  }
+}

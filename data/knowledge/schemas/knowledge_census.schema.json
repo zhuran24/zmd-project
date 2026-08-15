@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-knowledge-census-v1",
+  "title": "ZMD knowledge-layer maintained acceptance census",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "observed_at",
+    "purpose",
+    "counts",
+    "note"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "zmd_knowledge_census_v1"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "purpose": {
+      "const": "maintained_acceptance_census"
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claims_total",
+        "decisions_total",
+        "backfill_reviews_total",
+        "current_reviews",
+        "current_evidence_dossiers",
+        "reasoning_profiles",
+        "derivation_profiles",
+        "separation_profiles",
+        "validity_profiles",
+        "supersession_edges",
+        "refuted_claims",
+        "superseded_claims",
+        "dossiers_total",
+        "semantic_review_dossiers",
+        "availability_review_dossiers",
+        "triaged_dossiers",
+        "topics_total",
+        "terms_total",
+        "current_validity_review_dossiers"
+      ],
+      "properties": {
+        "claims_total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "backfill_reviews_total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "current_reviews": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "current_evidence_dossiers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reasoning_profiles": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "derivation_profiles": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "separation_profiles": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "validity_profiles": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "supersession_edges": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "refuted_claims": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "superseded_claims": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "dossiers_total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "semantic_review_dossiers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "availability_review_dossiers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "triaged_dossiers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "topics_total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "terms_total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "current_validity_review_dossiers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "decisions_total": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "note": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

@@ -1,0 +1,1148 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "docs",
+  "description": "Explicit contracts for depth-1 documentation; subdirectories provide their own policies.",
+  "defaults": {
+    "document_class": "unmanaged",
+    "authority_role": "none",
+    "mutation": "direct",
+    "context_level": "L0",
+    "purpose": "No depth-1 docs responsibility has been declared. Add an explicit rule before adding Markdown here.",
+    "volatile_facts": "not_applicable",
+    "invariant_refs": [
+      "DOC-INV-012"
+    ],
+    "after_change": [
+      "docsystem.doctor"
+    ],
+    "review_policy": {
+      "at_phase_boundary": false,
+      "max_interval_days": null
+    },
+    "section_refs": []
+  },
+  "rules": [
+    {
+      "id": "current_projection",
+      "match": {
+        "path": "CURRENT.md"
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L1",
+        "purpose": "Unique human-readable current-state projection.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-004",
+          "DOC-INV-014"
+        ],
+        "source_paths": [
+          "data/knowledge/current_state.json",
+          "data/knowledge/claims.jsonl",
+          "data/knowledge/decisions.jsonl",
+          "devtools/build_knowledge_docs.py"
+        ],
+        "generator_action": "knowledge.build",
+        "after_change": [
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "section_refs": [
+          "knowledge"
+        ]
+      },
+      "rationale": "CURRENT is rebuilt from machine authorities and stable ledgers; direct edits create a second mutable truth."
+    },
+    {
+      "id": "catalog_projection",
+      "match": {
+        "path": "CATALOG.md"
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L1",
+        "purpose": "Generated catalog of claims, decisions, dossier inventory, semantic reviews and validity coordinates.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-004",
+          "DOC-INV-010",
+          "DOC-INV-014"
+        ],
+        "source_paths": [
+          "data/knowledge/claims.jsonl",
+          "data/knowledge/decisions.jsonl",
+          "data/knowledge/dossiers.json",
+          "data/knowledge/backfill_reviews.jsonl",
+          "devtools/build_knowledge_docs.py"
+        ],
+        "generator_action": "knowledge.build",
+        "after_change": [
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "section_refs": [
+          "knowledge"
+        ]
+      },
+      "rationale": "CATALOG is a projection of structured ledgers."
+    },
+    {
+      "id": "reasoning_projection",
+      "match": {
+        "path": "REASONING_LEDGER.md"
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L1",
+        "purpose": "Generated reasoning classification, derivation graph, selection/separation/consumption profile, propagation-evidence boundary and historical backfill coverage.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-003",
+          "DOC-INV-004",
+          "DOC-INV-009",
+          "DOC-INV-010",
+          "DOC-INV-014"
+        ],
+        "adr_refs": [
+          "DOC-ADR-004",
+          "DOC-ADR-005",
+          "DOC-ADR-006"
+        ],
+        "source_paths": [
+          "data/knowledge/claims.jsonl",
+          "data/knowledge/dossiers.json",
+          "data/knowledge/backfill_reviews.jsonl",
+          "devtools/build_knowledge_docs.py"
+        ],
+        "generator_action": "knowledge.build",
+        "after_change": [
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "section_refs": [
+          "knowledge"
+        ]
+      },
+      "rationale": "Reasoning, derivation, separation classification and review coverage are structured projections; direct edits would hide ledger gaps."
+    },
+    {
+      "id": "validity_projection",
+      "match": {
+        "path": "VALIDITY_LEDGER.md"
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L1",
+        "purpose": "Generated refutation, semantic replacement, implementation/experiment invalidation, attribution correction, revalidation and supersession ledger.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-003",
+          "DOC-INV-004",
+          "DOC-INV-009",
+          "DOC-INV-010",
+          "DOC-INV-014"
+        ],
+        "adr_refs": [
+          "DOC-ADR-004",
+          "DOC-ADR-007"
+        ],
+        "source_paths": [
+          "data/knowledge/claims.jsonl",
+          "data/knowledge/dossiers.json",
+          "data/knowledge/backfill_reviews.jsonl",
+          "devtools/build_knowledge_docs.py"
+        ],
+        "generator_action": "knowledge.build",
+        "after_change": [
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "section_refs": [
+          "knowledge"
+        ]
+      },
+      "rationale": "Validity events and supersession edges are structured projections; direct edits would conceal why a historical claim is unsafe or reusable."
+    },
+    {
+      "id": "backfill_projection",
+      "match": {
+        "path": "BACKFILL_LEDGER.md"
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L1",
+        "purpose": "Generated separation of semantic reviews, availability-only reviews and exhaustive long-tail dossier triage.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-004",
+          "DOC-INV-009",
+          "DOC-INV-011",
+          "DOC-INV-014"
+        ],
+        "adr_refs": [
+          "DOC-ADR-004",
+          "DOC-ADR-008"
+        ],
+        "source_paths": [
+          "data/knowledge/dossiers.json",
+          "data/knowledge/backfill_reviews.jsonl",
+          "data/knowledge/backfill_triage.json",
+          "devtools/build_knowledge_docs.py"
+        ],
+        "generator_action": "knowledge.build",
+        "after_change": [
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "section_refs": [
+          "knowledge"
+        ]
+      },
+      "rationale": "Coverage is generated from reviews and triage; direct edits would let inventory masquerade as semantic completion."
+    },
+    {
+      "id": "topic_projection",
+      "match": {
+        "path": "TOPIC_INDEX.md"
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L1",
+        "purpose": "Generated stable topic entry points over claims, dossier labels, terms and open questions.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-004",
+          "DOC-INV-009",
+          "DOC-INV-014"
+        ],
+        "adr_refs": [
+          "DOC-ADR-008"
+        ],
+        "source_paths": [
+          "data/knowledge/claims.jsonl",
+          "data/knowledge/dossiers.json",
+          "data/knowledge/topics.json",
+          "data/knowledge/terminology.json",
+          "devtools/build_knowledge_docs.py"
+        ],
+        "generator_action": "knowledge.build",
+        "after_change": [
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "section_refs": [
+          "knowledge"
+        ]
+      },
+      "rationale": "Topic navigation is a structured projection and must not become another hand-maintained index."
+    },
+    {
+      "id": "terminology_projection",
+      "match": {
+        "path": "TERMINOLOGY.md"
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L1",
+        "purpose": "Generated canonical terminology, aliases, distinctions and source coordinates.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-004",
+          "DOC-INV-009",
+          "DOC-INV-014"
+        ],
+        "adr_refs": [
+          "DOC-ADR-008"
+        ],
+        "source_paths": [
+          "data/knowledge/terminology.json",
+          "data/knowledge/claims.jsonl",
+          "devtools/build_knowledge_docs.py"
+        ],
+        "generator_action": "knowledge.build",
+        "after_change": [
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "section_refs": [
+          "knowledge"
+        ]
+      },
+      "rationale": "Canonical vocabulary and aliases are generated from one registry rather than copied into competing glossaries."
+    },
+    {
+      "id": "open_questions_projection",
+      "match": {
+        "path": "OPEN_QUESTIONS.md"
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L1",
+        "purpose": "Generated exact set of status=open claims, deduplicated across topic memberships.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-003",
+          "DOC-INV-004",
+          "DOC-INV-009",
+          "DOC-INV-012",
+          "DOC-INV-014"
+        ],
+        "adr_refs": [
+          "DOC-ADR-004",
+          "DOC-ADR-008",
+          "DOC-ADR-009"
+        ],
+        "source_paths": [
+          "data/knowledge/claims.jsonl",
+          "data/knowledge/topics.json",
+          "data/knowledge/current_state.json",
+          "devtools/build_knowledge_docs.py"
+        ],
+        "generator_action": "knowledge.build",
+        "after_change": [
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "section_refs": [
+          "knowledge"
+        ]
+      },
+      "rationale": "This page is a generated projection; direct edits would create a second mutable truth source."
+    },
+    {
+      "id": "guidance_projection",
+      "match": {
+        "path": "GUIDANCE_INDEX.md"
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L1",
+        "purpose": "Generated inventory of documents that still carry current authority, normative, explanatory, generated or framework responsibilities.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-004",
+          "DOC-INV-007",
+          "DOC-INV-012",
+          "DOC-INV-013",
+          "DOC-INV-014"
+        ],
+        "adr_refs": [
+          "DOC-ADR-009",
+          "DOC-ADR-010"
+        ],
+        "source_paths": [
+          ".docsystem/manifest.json",
+          "**/DOC_POLICY.json",
+          "data/repository_governance/document_system/entrypoints.json",
+          "data/repository_governance/document_system/sections.json"
+        ],
+        "generator_action": "docsystem.render_guidance",
+        "after_change": [
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "section_refs": [
+          "documentation-framework",
+          "repository-navigation"
+        ]
+      },
+      "rationale": "This page is a generated projection; direct edits would create a second mutable truth source."
+    },
+    {
+      "id": "section_projection",
+      "match": {
+        "path": "SECTION_INDEX.md"
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L0",
+        "purpose": "Generated current document-section map from section registry and effective policy membership.",
+        "volatile_facts": "forbidden",
+        "invariant_refs": [
+          "DOC-INV-004",
+          "DOC-INV-007",
+          "DOC-INV-012",
+          "DOC-INV-013",
+          "DOC-INV-014"
+        ],
+        "adr_refs": [
+          "DOC-ADR-011"
+        ],
+        "section_refs": [
+          "documentation-framework",
+          "repository-navigation"
+        ],
+        "source_paths": [
+          "data/repository_governance/document_system/sections.json",
+          "**/DOC_POLICY.json",
+          "devtools/docctl.py"
+        ],
+        "generator_action": "docsystem.render_sections",
+        "after_change": [
+          "docsystem.render_guidance",
+          "docsystem.doctor",
+          "docs.reference.validate"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": null
+        }
+      },
+      "rationale": "The section map is a generated projection; local indexes cannot become parallel handwritten maps."
+    },
+    {
+      "id": "stable_start_here",
+      "match": {
+        "path": "START_HERE.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "purpose": "Stable task-oriented navigation that avoids volatile values.",
+        "volatile_facts": "forbidden",
+        "required_reads": [
+          "docs/CURRENT.md",
+          "docs/CATALOG.md",
+          "docs/REASONING_LEDGER.md",
+          "docs/VALIDITY_LEDGER.md",
+          "docs/BACKFILL_LEDGER.md",
+          "docs/TOPIC_INDEX.md",
+          "docs/TERMINOLOGY.md",
+          "docs/AGENT_OPERATIONS.md",
+          "docs/MAINTENANCE_QUEUE.md"
+        ],
+        "invariant_refs": [
+          "DOC-INV-013",
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-012",
+          "DOC-INV-019"
+        ],
+        "adr_refs": [
+          "DOC-ADR-010",
+          "DOC-ADR-009",
+          "DOC-ADR-015"
+        ],
+        "after_change": [
+          "docsystem.doctor",
+          "knowledge.check"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 60
+        },
+        "section_refs": [
+          "repository-navigation"
+        ]
+      },
+      "rationale": "The front door should remain useful without becoming another current-status copy."
+    },
+    {
+      "id": "docs_current_frontdoors",
+      "match": {
+        "path": "README.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "文档层稳定前门；按问题路由到唯一当前状态、知识投影、职责索引和框架说明。",
+        "volatile_facts": "forbidden",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-012",
+          "DOC-INV-013"
+        ],
+        "required_reads": [
+          "docs/CURRENT.md",
+          "docs/GUIDANCE_INDEX.md"
+        ],
+        "after_change": [
+          "docsystem.doctor",
+          "knowledge.check"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 60
+        },
+        "adr_refs": [
+          "DOC-ADR-010"
+        ],
+        "section_refs": [
+          "repository-navigation"
+        ]
+      },
+      "rationale": "Front doors remain current but carry only navigation and stable lifecycle boundaries."
+    },
+    {
+      "id": "docs_generated_compatibility_redirects",
+      "match": {
+        "paths": [
+          "DOC_TREE_COMPLETENESS.md",
+          "SUBJECT_TREE.md"
+        ]
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L0",
+        "purpose": "Generated compatibility redirect from retired document-tree or subject-tree surfaces.",
+        "volatile_facts": "forbidden",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-004",
+          "DOC-INV-007",
+          "DOC-INV-012",
+          "DOC-INV-013"
+        ],
+        "adr_refs": [
+          "DOC-ADR-009",
+          "DOC-ADR-010"
+        ],
+        "source_paths": [
+          "data/repository_governance/document_system/entrypoints.json",
+          "devtools/docctl.py"
+        ],
+        "generator_action": "docsystem.render_entrypoints",
+        "after_change": [
+          "docs.reference.validate",
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": null
+        },
+        "section_refs": [
+          "documentation-framework",
+          "topic-guides"
+        ]
+      },
+      "rationale": "Retired map paths are generated from the entrypoint registry and cannot become a second handwritten navigation system."
+    },
+    {
+      "id": "operations_front_door",
+      "match": {
+        "path": "OPERATIONS.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Bounded local entrypoint for campaign, parallelism, scripts, agent operations and failure handling.",
+        "volatile_facts": "reference_only",
+        "section_refs": [
+          "operations"
+        ],
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-009",
+          "DOC-INV-012",
+          "DOC-INV-014"
+        ],
+        "after_change": [
+          "docsystem.doctor",
+          "knowledge.check"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        }
+      },
+      "rationale": "Operational guides need one local section entry instead of multiple hidden runbook maps."
+    },
+    {
+      "id": "agent_operations_guide",
+      "match": {
+        "path": "AGENT_OPERATIONS.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L1",
+        "purpose": "按需加载的详细 agent 运行、测试、冻结、发布和故障处理手册。",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-008",
+          "DOC-INV-009",
+          "DOC-INV-013"
+        ],
+        "adr_refs": [
+          "DOC-ADR-010"
+        ],
+        "required_reads": [
+          "CLAUDE.md",
+          "PROJECT_LOCK.md",
+          "docs/CURRENT.md"
+        ],
+        "after_change": [
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 60
+        },
+        "section_refs": [
+          "operations"
+        ]
+      },
+      "rationale": "Detailed operations remain discoverable but are kept outside the default agent bootstrap attention budget."
+    },
+    {
+      "id": "docs_current_guides",
+      "match": {
+        "paths": [
+          "env_variable_index.md",
+          "exact_campaign_operations.md",
+          "frontier_probe_strategy.md",
+          "parallel_configuration.md"
+        ]
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "explanatory",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Current operational or navigation guide with volatile values delegated to machine sources and CURRENT.",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-012"
+        ],
+        "after_change": [
+          "docsystem.doctor",
+          "knowledge.check"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        },
+        "section_refs": [
+          "operations"
+        ]
+      },
+      "rationale": "These guides retain an active operational role and are explicitly named rather than inherited from a broad living default."
+    },
+    {
+      "id": "compatibility_guide",
+      "match": {
+        "path": "compatibility_matrix.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "context_level": "L0",
+        "purpose": "Current compatibility and adapter boundary; target exports never become certified proof sinks.",
+        "volatile_facts": "reference_only",
+        "section_refs": [
+          "compatibility-adapters"
+        ],
+        "invariant_refs": [
+          "DOC-INV-007",
+          "DOC-INV-009",
+          "DOC-INV-014"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        }
+      },
+      "rationale": "Compatibility guidance has its own local section entry rather than sharing an operational bucket."
+    },
+    {
+      "id": "legacy_specs_index_redirect",
+      "match": {
+        "path": "specs_index.md"
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L0",
+        "purpose": "Generated compatibility redirect from the retired docs/specs_index.md map to specs/README.md.",
+        "volatile_facts": "forbidden",
+        "section_refs": [
+          "specifications"
+        ],
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-004",
+          "DOC-INV-007",
+          "DOC-INV-012",
+          "DOC-INV-013",
+          "DOC-INV-014"
+        ],
+        "adr_refs": [
+          "DOC-ADR-009",
+          "DOC-ADR-010",
+          "DOC-ADR-011"
+        ],
+        "source_paths": [
+          "data/repository_governance/document_system/entrypoints.json",
+          "devtools/docctl.py"
+        ],
+        "generator_action": "docsystem.render_entrypoints",
+        "after_change": [
+          "docs.reference.validate",
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": null
+        }
+      },
+      "rationale": "The old specs map stays link-stable but cannot compete with the co-located section front door."
+    },
+    {
+      "id": "phase_gate_contract",
+      "match": {
+        "path": "PHASE_1_2_CLOSE_GATE.md"
+      },
+      "set": {
+        "document_class": "normative",
+        "authority_role": "normative_input",
+        "mutation": "governed",
+        "context_level": "L1",
+        "purpose": "Stable human-readable phase-gate contract; live values come from CURRENT and gate JSON.",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-006",
+          "DOC-INV-009",
+          "DOC-INV-012",
+          "DOC-INV-014"
+        ],
+        "required_reads": [
+          "docs/CURRENT.md",
+          "PROJECT_LOCK.md"
+        ],
+        "after_change": [
+          "knowledge.check",
+          "docsystem.doctor",
+          "docsystem.tests"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 60
+        },
+        "section_refs": [
+          "certification"
+        ]
+      },
+      "rationale": "The contract remains normative, but current gate state must not be copied into it."
+    },
+    {
+      "id": "frozen_industrial_delivery_contracts",
+      "match": {
+        "paths": [
+          "industrial_planner_recipe_capacity_audit.md",
+          "industrial_planner_single_base_delivery_entrypoints.md",
+          "industrial_planner_single_base_delivery_frontdoor.md",
+          "industrial_planner_single_base_delivery_landing.md",
+          "industrial_planner_single_base_delivery_release.md",
+          "industrial_planner_single_base_delivery_surface_alignment.md",
+          "industrial_planner_single_base_delivery_surface_health.md",
+          "industrial_planner_single_base_delivery_viewer.md",
+          "industrial_planner_single_base_runbook.md"
+        ]
+      },
+      "set": {
+        "document_class": "historical_evidence",
+        "authority_role": "evidence_only",
+        "mutation": "immutable",
+        "context_level": "L0",
+        "purpose": "Frozen r20260416 IndustrialPlanner adapter/delivery guides retained as historical evidence; current adapter boundaries enter through the compatibility section.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-009",
+          "DOC-INV-014"
+        ],
+        "review_policy": {
+          "at_phase_boundary": false,
+          "max_interval_days": null
+        },
+        "section_refs": [
+          "history-archive",
+          "compatibility-adapters"
+        ],
+        "required_reads": [
+          "docs/history/deliveries/README.md"
+        ],
+        "after_change": [
+          "docsystem.doctor"
+        ]
+      },
+      "rationale": "These documents describe a frozen delivery line. Their local use of “current” is scoped to that release and must not follow solver state."
+    },
+    {
+      "id": "docs_depth1_historical",
+      "match": {
+        "paths": [
+          "certified_proof_chain_analysis.md",
+          "cleanup_session_20260516.md",
+          "lever_verdicts.md",
+          "phase3b_exact_endgame_execution_plan.md",
+          "phase3b_gpt54pro_help_request_20260422.md",
+          "phase3b_module_index.md",
+          "phase3b_operating_profile.md",
+          "phase3b_repair5_acceleration_tuning_ai_plan.md",
+          "phase3c_master_ram_findings_20260515.md",
+          "phase3c_optimization_full_stack_roadmap_DRAFT_v0.md",
+          "phase3c_optimization_roadmap_v1.md"
+        ]
+      },
+      "set": {
+        "document_class": "historical_evidence",
+        "authority_role": "evidence_only",
+        "mutation": "immutable",
+        "context_level": "L0",
+        "purpose": "Closed analysis, request, plan, inventory or findings document retained as historical evidence.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-012"
+        ],
+        "review_policy": {
+          "at_phase_boundary": false,
+          "max_interval_days": null
+        }
+      },
+      "rationale": "Dated or closed Phase 3B/3C material is evidence, not part of the current maintenance surface."
+    },
+    {
+      "id": "certification_front_door",
+      "match": {
+        "path": "CERTIFICATION.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Bounded navigation from certification questions to the owner authority, phase-gate contract, current projection and certside semantics.",
+        "volatile_facts": "forbidden",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-009",
+          "DOC-INV-013",
+          "DOC-INV-014",
+          "DOC-INV-015",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-010",
+          "DOC-ADR-011",
+          "DOC-ADR-012"
+        ],
+        "required_reads": [
+          "PROJECT_LOCK.md",
+          "docs/CURRENT.md"
+        ],
+        "after_change": [
+          "docsystem.doctor",
+          "knowledge.check"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 60
+        },
+        "section_refs": [
+          "certification"
+        ]
+      },
+      "rationale": "Certification needs a bounded manual front door while PROJECT_LOCK remains the owner-only authority."
+    },
+    {
+      "id": "convergence_projection",
+      "match": {
+        "path": "CONVERGENCE_REPORT.md"
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L0",
+        "purpose": "Generated acceptance report for current-document reachability, unique responsibilities, volatile-state discipline and retired-entrypoint isolation.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-004",
+          "DOC-INV-012",
+          "DOC-INV-013",
+          "DOC-INV-014",
+          "DOC-INV-015",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ],
+        "source_paths": [
+          ".docsystem/manifest.json",
+          "**/DOC_POLICY.json",
+          "*.md",
+          "**/*.md",
+          "data/repository_governance/document_system/entrypoints.json",
+          "data/repository_governance/document_system/sections.json",
+          "devtools/docctl.py"
+        ],
+        "generator_action": "docsystem.render_convergence",
+        "after_change": [
+          "docsystem.doctor",
+          "docsystem.tests"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": null
+        },
+        "section_refs": [
+          "documentation-framework"
+        ]
+      },
+      "rationale": "Phase convergence is computed from current contracts and graph structure rather than maintained as another dashboard."
+    },
+    {
+      "id": "maintenance_queue_projection",
+      "match": {
+        "path": "MAINTENANCE_QUEUE.md"
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L1",
+        "purpose": "Generated periodic maintenance findings over existing policy, knowledge, lifecycle and Git-visible truth sources.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-004",
+          "DOC-INV-009",
+          "DOC-INV-011",
+          "DOC-INV-014",
+          "DOC-INV-017",
+          "DOC-INV-018",
+          "DOC-INV-019"
+        ],
+        "adr_refs": [
+          "DOC-ADR-008",
+          "DOC-ADR-013",
+          "DOC-ADR-014",
+          "DOC-ADR-015"
+        ],
+        "source_paths": [
+          "data/repository_governance/document_system/maintenance_audit.json",
+          "data/repository_governance/document_system/maintenance_audit.schema.json",
+          "data/repository_governance/document_system/ephemeral_documents.json",
+          "data/knowledge/claims.jsonl",
+          "data/knowledge/dossiers.json",
+          "data/knowledge/backfill_reviews.jsonl",
+          "data/knowledge/backfill_triage.json",
+          "data/knowledge/terminology.json",
+          "data/knowledge/topics.json",
+          "**/DOC_POLICY.json",
+          "devtools/document_maintenance_audit.py",
+          "devtools/docctl.py"
+        ],
+        "generator_action": "docsystem.render_maintenance",
+        "after_change": [
+          "docsystem.audit",
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": null
+        },
+        "section_refs": [
+          "documentation-framework"
+        ]
+      },
+      "rationale": "The queue is a deterministic read-only projection; findings must be resolved through existing truth-source transactions."
+    },
+    {
+      "id": "env_variable_index_purpose",
+      "match": {
+        "path": "env_variable_index.md"
+      },
+      "set": {
+        "purpose": "Stable index of runtime environment variables, precedence and validation boundaries.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Operational guides require distinct responsibilities and repository-wide volatile-state protection."
+    },
+    {
+      "id": "exact_campaign_operations_purpose",
+      "match": {
+        "path": "exact_campaign_operations.md"
+      },
+      "set": {
+        "purpose": "Stable operator procedure for campaign inspection, resume, supervisor seal and canonical publication boundaries.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Operational guides require distinct responsibilities and repository-wide volatile-state protection."
+    },
+    {
+      "id": "frontier_probe_strategy_purpose",
+      "match": {
+        "path": "frontier_probe_strategy.md"
+      },
+      "set": {
+        "purpose": "Stable strategy guide for frontier probing, fallback interpretation and evidence boundaries.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Operational guides require distinct responsibilities and repository-wide volatile-state protection."
+    },
+    {
+      "id": "parallel_configuration_purpose",
+      "match": {
+        "path": "parallel_configuration.md"
+      },
+      "set": {
+        "purpose": "Stable method for selecting and validating process and solver-worker resource settings.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Operational guides require distinct responsibilities and repository-wide volatile-state protection."
+    }
+  ],
+  "legacy_projection": {
+    "rules": [
+      {
+        "id": "docs_depth1_historical",
+        "match": {
+          "paths": [
+            "docs/certified_proof_chain_analysis.md",
+            "docs/cleanup_session_20260516.md",
+            "docs/lever_verdicts.md",
+            "docs/phase3b_exact_endgame_execution_plan.md",
+            "docs/phase3b_gpt54pro_help_request_20260422.md",
+            "docs/phase3b_module_index.md",
+            "docs/phase3b_operating_profile.md",
+            "docs/phase3b_repair5_acceleration_tuning_ai_plan.md",
+            "docs/phase3c_master_ram_findings_20260515.md",
+            "docs/phase3c_optimization_full_stack_roadmap_DRAFT_v0.md",
+            "docs/phase3c_optimization_roadmap_v1.md"
+          ]
+        },
+        "document_class": "historical",
+        "rationale": "Closed analyses, requests, plans and findings retained as evidence."
+      },
+      {
+        "id": "docs_depth1_frozen_industrial",
+        "match": {
+          "paths": [
+            "docs/industrial_planner_recipe_capacity_audit.md",
+            "docs/industrial_planner_single_base_delivery_entrypoints.md",
+            "docs/industrial_planner_single_base_delivery_frontdoor.md",
+            "docs/industrial_planner_single_base_delivery_landing.md",
+            "docs/industrial_planner_single_base_delivery_release.md",
+            "docs/industrial_planner_single_base_delivery_surface_alignment.md",
+            "docs/industrial_planner_single_base_delivery_surface_health.md",
+            "docs/industrial_planner_single_base_delivery_viewer.md",
+            "docs/industrial_planner_single_base_runbook.md"
+          ]
+        },
+        "document_class": "locked",
+        "rationale": "Frozen IndustrialPlanner delivery contracts; immutable and not solver-state copies."
+      },
+      {
+        "id": "docs_depth1_current",
+        "match": {
+          "paths": [
+            "docs/BACKFILL_LEDGER.md",
+            "docs/CATALOG.md",
+            "docs/CURRENT.md",
+            "docs/DOC_TREE_COMPLETENESS.md",
+            "docs/GUIDANCE_INDEX.md",
+            "docs/OPEN_QUESTIONS.md",
+            "docs/PHASE_1_2_CLOSE_GATE.md",
+            "docs/README.md",
+            "docs/REASONING_LEDGER.md",
+            "docs/START_HERE.md",
+            "docs/SUBJECT_TREE.md",
+            "docs/TERMINOLOGY.md",
+            "docs/TOPIC_INDEX.md",
+            "docs/VALIDITY_LEDGER.md",
+            "docs/compatibility_matrix.md",
+            "docs/env_variable_index.md",
+            "docs/exact_campaign_operations.md",
+            "docs/frontier_probe_strategy.md",
+            "docs/parallel_configuration.md",
+            "docs/specs_index.md"
+          ]
+        },
+        "document_class": "living",
+        "rationale": "Explicit current front doors, generated projections, contracts and active guides."
+      }
+    ],
+    "out_of_scope_notes": [
+      {
+        "pattern": "docs/*.md",
+        "rationale": "Depth-1 docs are explicitly classified here; generation and lifecycle are checked by docctl and knowledge checkers."
+      }
+    ]
+  }
+}

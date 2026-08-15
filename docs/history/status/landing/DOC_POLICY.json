@@ -1,0 +1,21 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "docs.history.status.landing",
+  "description": "Landing-time byte-faithful snapshots created before drifted legacy pages are replaced.",
+  "defaults": {
+    "document_class": "historical_evidence",
+    "authority_role": "evidence_only",
+    "mutation": "immutable",
+    "context_level": "L0",
+    "purpose": "Byte-faithful real-repository landing snapshot retained for provenance and semantic migration audit.",
+    "volatile_facts": "source_allowed",
+    "invariant_refs": ["DOC-INV-002", "DOC-INV-020", "DOC-INV-022"],
+    "adr_refs": ["DOC-ADR-018"],
+    "required_reads": ["docs/governance/document-system/REAL_REPOSITORY_LANDING.md"],
+    "after_change": ["docsystem.doctor", "docsystem.gate"],
+    "review_policy": {"at_phase_boundary": false, "max_interval_days": null},
+    "section_refs": ["history-archive"]
+  },
+  "rules": [],
+  "legacy_projection": {"rules": [], "out_of_scope_notes": []}
+}

@@ -1,0 +1,113 @@
+{
+  "schema_version": "zmd_legacy_doc_scan_base_v1",
+  "output_schema_version": "repository_doc_classes_v1",
+  "authority": {
+    "role": "descriptive_governance_projection",
+    "higher_authorities": [
+      "PROJECT_LOCK.md",
+      "rules/canonical_rules.json",
+      "data/preprocessed/mandatory_exact_instances.json",
+      "data/proof_obligations/p1_2_proof_obligations.json",
+      "data/review_gates/phase_1_2_spike_close.json",
+      "data/solutions/exact_full_scale_status.json"
+    ],
+    "cannot_grant": [
+      "permission to edit, delete, rewrite or historicize any registered document",
+      "release closure, owner manual gate satisfaction, or any certification claim",
+      "promotion of an advisory scan finding into an applied change"
+    ]
+  },
+  "document_classes": [
+    "locked",
+    "historical",
+    "living"
+  ],
+  "scan_scope": {
+    "include_globs": [
+      ".docsystem/*.md",
+      "*.md",
+      "data/repository_governance/*.md",
+      "docs/governance/document-system/**/*.md",
+      "docs/research/**/*.md",
+      "docs/项目说明/*.md"
+    ],
+    "exclude_globs": []
+  },
+  "reference_scan": {
+    "symbol_source_globs": [
+      "devtools/**/*.py",
+      "main.py",
+      "scripts/**/*.py",
+      "src/**/*.py"
+    ],
+    "context_suppression_markers": [
+      "CLOSED",
+      "DONE",
+      "deleted",
+      "deprecated",
+      "former",
+      "historical",
+      "history",
+      "obsolete",
+      "removed",
+      "retired",
+      "superseded",
+      "不可解析",
+      "不存在",
+      "历史",
+      "史料",
+      "已修复",
+      "已删",
+      "废弃",
+      "旧名",
+      "曾经",
+      "移除",
+      "退役"
+    ],
+    "external_artifact_manifest": "data/external_artifacts.json",
+    "absent_by_design_prefixes": [
+      {
+        "prefix": ".artifacts/",
+        "rationale": "Read-only historical evidence roots are untracked; whether a given run directory is present in a given checkout is a property of that machine, not of the document citing it."
+      },
+      {
+        "prefix": ".prune/",
+        "rationale": "Generated prune scan reports; git-ignored, absent on a clean checkout."
+      },
+      {
+        "prefix": "data/blueprints/",
+        "rationale": "Generated proof output; docs/AGENT_OPERATIONS.md forbids committing it."
+      },
+      {
+        "prefix": "data/checkpoints/",
+        "rationale": "Generated campaign checkpoints; docs/AGENT_OPERATIONS.md forbids committing them."
+      },
+      {
+        "prefix": "data/solutions/certified_delivery_manifest.json",
+        "rationale": "Generated delivery manifest; docs/AGENT_OPERATIONS.md forbids committing it."
+      },
+      {
+        "prefix": "data/solutions/final_solution.json",
+        "rationale": "Generated solver output; docs/AGENT_OPERATIONS.md forbids committing it."
+      }
+    ],
+    "symbol_reference_ignore": [],
+    "known_historical_commit_hashes": [
+      {
+        "hash": "099f5a3",
+        "cited_in": "docs/research/project_bottleneck_audit_20260702/bottlenecks.md",
+        "rationale": "Delivery-copy history was rebuilt, so this hash is unresolvable by design. Cited by the 2026-07-02 bottleneck audit (bottlenecks.md and dims.md); it was also cited by the old handoff README until that file was replaced on 2026-08-09."
+      },
+      {
+        "hash": "9bbb3a6",
+        "cited_in": "docs/research/project_bottleneck_audit_20260702/bottlenecks.md",
+        "rationale": "Delivery-copy history was rebuilt, so this hash is unresolvable by design. Cited by the 2026-07-02 bottleneck audit (bottlenecks.md and dims.md); it was also cited by the old handoff README until that file was replaced on 2026-08-09."
+      },
+      {
+        "hash": "b35e5f9",
+        "cited_in": "docs/research/project_bottleneck_audit_20260702/bottlenecks.md",
+        "rationale": "Delivery-copy history was rebuilt, so this hash is unresolvable by design. Cited by the 2026-07-02 bottleneck audit (bottlenecks.md and dims.md); it was also cited by the old handoff README until that file was replaced on 2026-08-09."
+      }
+    ]
+  }
+}

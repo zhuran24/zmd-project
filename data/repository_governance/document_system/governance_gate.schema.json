@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-document-governance-gate-v2",
+  "title": "ZMD non-mutating document-governance gate v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "system_version",
+    "fingerprint",
+    "runner",
+    "profiles",
+    "lanes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "zmd_document_governance_gate_v2"
+    },
+    "system_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "fingerprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "hash_algorithm",
+        "index",
+        "tracked_worktree",
+        "workspace_inputs",
+        "arbitrary_untracked",
+        "ignored"
+      ],
+      "properties": {
+        "version": {
+          "const": "git_declared_state_v2"
+        },
+        "hash_algorithm": {
+          "const": "sha256"
+        },
+        "index": {
+          "const": "included"
+        },
+        "tracked_worktree": {
+          "const": "modified_deleted_and_mode_state"
+        },
+        "workspace_inputs": {
+          "const": "manifest_declared_overlays_only"
+        },
+        "arbitrary_untracked": {
+          "const": "excluded"
+        },
+        "ignored": {
+          "const": "excluded"
+        }
+      }
+    },
+    "runner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "default_profile",
+        "max_parallel_lanes",
+        "lane_isolation",
+        "mutation_policy"
+      ],
+      "properties": {
+        "default_profile": {
+          "$ref": "#/$defs/id"
+        },
+        "max_parallel_lanes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "lane_isolation": {
+          "const": "process_plus_unique_external_tempdir"
+        },
+        "mutation_policy": {
+          "const": "git_visible_state_must_be_identical"
+        }
+      }
+    },
+    "profiles": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^[a-z0-9][a-z0-9_-]*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "description",
+          "requires_base",
+          "lane_ids"
+        ],
+        "properties": {
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requires_base": {
+            "type": "boolean"
+          },
+          "lane_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/id"
+            }
+          }
+        }
+      }
+    },
+    "lanes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "description",
+          "command",
+          "timeout_seconds",
+          "base_argument",
+          "required_paths",
+          "environment",
+          "isolation",
+          "mutation_policy"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/id"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "command": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[^\\u0000]+$"
+            }
+          },
+          "timeout_seconds": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 7200
+          },
+          "base_argument": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "pattern": "^--[a-z0-9][a-z0-9-]*$"
+              }
+            ]
+          },
+          "required_paths": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/relpath"
+            }
+          },
+          "environment": {
+            "type": "object",
+            "propertyNames": {
+              "pattern": "^[A-Z_][A-Z0-9_]*$"
+            },
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "isolation": {
+            "const": "process_tempdir"
+          },
+          "mutation_policy": {
+            "const": "read_only"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_]*$"
+    },
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?!.*\\u0000).+$"
+    }
+  }
+}

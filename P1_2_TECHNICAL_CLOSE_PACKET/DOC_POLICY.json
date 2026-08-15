@@ -1,0 +1,34 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "p1_2_close_packet",
+  "description": "Sealed P1.2 technical-close evidence packet.",
+  "defaults": {
+    "document_class": "historical_evidence",
+    "authority_role": "evidence_only",
+    "mutation": "immutable",
+    "context_level": "L1",
+    "purpose": "Sealed close packet retained for review provenance.",
+    "volatile_facts": "source_allowed",
+    "invariant_refs": [
+      "DOC-INV-002",
+      "DOC-INV-009"
+    ],
+    "after_change": [
+      "docsystem.doctor"
+    ],
+    "review_policy": {
+      "at_phase_boundary": false,
+      "max_interval_days": null
+    }
+  },
+  "rules": [],
+  "legacy_projection": {
+    "rules": [],
+    "out_of_scope_notes": [
+      {
+        "pattern": "P1_2_TECHNICAL_CLOSE_PACKET/**",
+        "rationale": "Sealed P1.2 close packet; not a legacy prune-scan subject."
+      }
+    ]
+  }
+}

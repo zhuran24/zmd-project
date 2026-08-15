@@ -1,12 +1,24 @@
-# 文档树完整性说明
+# 文档树完整性兼容入口
 
-`docs/DOC_TREE_COMPLETENESS.json` 是信息性 first-level 文件清单，用于帮助审计者发现新增、移动或删除的文档面。它不是 proof gate，也没有配套 checker；本次审计已把 2026-06-26 后新增的 roadmap、research package 与 subject 入口补入清单。
+> 本页由文档系统的前门注册表自动生成；禁止手工修改。
+> 真源：[`data/repository_governance/document_system/entrypoints.json`](../data/repository_governance/document_system/entrypoints.json)。
 
-截至 2026-07-11，仓库中没有 `scripts/check_doc_tree_completeness.py`，preflight 不检查 subject/projection 同步或文档树清单完整性。因此：
+旧的一次性完整性快照已由 dossier inventory、policy coverage 和自动 checker 取代。
 
-- 清单中的 `present` 只表示生成清单时文件存在。
-- 清单不证明文档内容与代码一致。
-- 清单不影响 P1.2 close、`CERTIFIED` mint、公开发布或 P1.3 entry。
-- 新增或删除文档时应更新清单，但漏更属于文档维护债，不得被写成机器 gate 已通过或失败。
+## 当前入口
 
-当前状态由 `PROJECT_LOCK.md`、`data/proof_obligations/p1_2_proof_obligations.json`、`data/review_gates/phase_1_2_spike_close.json` 和 `docs/项目说明/06_current_status.md` 共同约束。
+- [知识与 dossier 目录](CATALOG.md)：research 与 artifact 一级包 inventory。
+- [当前文档职责](GUIDANCE_INDEX.md)：有效 policy 所声明的当前维护面。
+- [按问题导航](START_HERE.md)：从任务而不是目录进入。
+
+## 维护边界
+
+- inventory coverage 不等于 semantic review。
+- checker PASS 不授予 soundness、owner close 或 production CERTIFIED。
+- 退出当前职责前的正文见 [历史快照](history/subjects/pre_knowledge_spine_20260811/DOC_TREE_COMPLETENESS.md)；它只保留当时叙述。
+
+需要改变本页时，修改前门注册表后运行：
+
+```bash
+.venv/bin/python devtools/docctl.py render-entrypoints --write
+```

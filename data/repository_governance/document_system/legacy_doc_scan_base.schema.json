@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-legacy-doc-scan-base-v1",
+  "title": "Static base for the legacy docs reference-scan projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "output_schema_version",
+    "authority",
+    "document_classes",
+    "scan_scope",
+    "reference_scan"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "zmd_legacy_doc_scan_base_v1"
+    },
+    "output_schema_version": {
+      "const": "repository_doc_classes_v1"
+    },
+    "authority": {
+      "type": "object"
+    },
+    "document_classes": {
+      "const": [
+        "locked",
+        "historical",
+        "living"
+      ]
+    },
+    "scan_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "include_globs",
+        "exclude_globs"
+      ],
+      "properties": {
+        "include_globs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "exclude_globs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "reference_scan": {
+      "type": "object"
+    }
+  }
+}

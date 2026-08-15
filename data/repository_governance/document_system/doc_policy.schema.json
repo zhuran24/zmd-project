@@ -1,0 +1,352 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-doc-policy-v1",
+  "title": "ZMD inherited document policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "policy_id",
+    "description",
+    "defaults",
+    "rules"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "zmd_doc_policy_v1"
+    },
+    "policy_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]*$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "defaults": {
+      "$ref": "#/$defs/contract"
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "match",
+          "set",
+          "rationale"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_]*$"
+          },
+          "match": {
+            "$ref": "#/$defs/match"
+          },
+          "set": {
+            "$ref": "#/$defs/contract"
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "legacy_projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rules",
+        "out_of_scope_notes"
+      ],
+      "properties": {
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/legacy_rule"
+          }
+        },
+        "out_of_scope_notes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/out_of_scope_note"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?!.*\\u0000).+$"
+    },
+    "match": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "oneOf": [
+        {
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/relpath"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": [
+            "prefix"
+          ],
+          "properties": {
+            "prefix": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/relpath"
+                },
+                {
+                  "pattern": "/$"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": [
+            "glob"
+          ],
+          "properties": {
+            "glob": {
+              "$ref": "#/$defs/relpath"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": [
+            "paths"
+          ],
+          "properties": {
+            "paths": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/relpath"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "document_class": {
+          "enum": [
+            "unmanaged",
+            "locked_authority",
+            "living",
+            "normative",
+            "historical_evidence",
+            "generated_projection",
+            "structured_knowledge",
+            "governance_control",
+            "framework_core",
+            "ephemeral",
+            "vendored_snapshot"
+          ]
+        },
+        "authority_role": {
+          "enum": [
+            "none",
+            "explanatory",
+            "current_guidance",
+            "normative_input",
+            "machine_authority",
+            "evidence_only",
+            "projection_only",
+            "structured_knowledge",
+            "governance_control",
+            "framework_definition",
+            "vendored_upstream"
+          ]
+        },
+        "mutation": {
+          "enum": [
+            "direct",
+            "append_only",
+            "governed",
+            "generator_only",
+            "owner_only",
+            "immutable"
+          ]
+        },
+        "context_level": {
+          "enum": [
+            "L0",
+            "L1",
+            "L2",
+            "L3"
+          ]
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        },
+        "volatile_facts": {
+          "enum": [
+            "not_applicable",
+            "source_allowed",
+            "reference_only",
+            "forbidden"
+          ]
+        },
+        "section_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          }
+        },
+        "invariant_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^DOC-INV-[0-9]{3}$"
+          }
+        },
+        "knowledge_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^(CLAIM|DECISION)-[A-Z0-9][A-Z0-9-]*$"
+          }
+        },
+        "adr_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^DOC-ADR-[0-9]{3}$"
+          }
+        },
+        "source_paths": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/relpath"
+          }
+        },
+        "required_reads": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/relpath"
+          }
+        },
+        "after_change": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_.-]*$"
+          }
+        },
+        "generator_action": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-z0-9][a-z0-9_.-]*$"
+        },
+        "review_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "at_phase_boundary",
+            "max_interval_days"
+          ],
+          "properties": {
+            "at_phase_boundary": {
+              "type": "boolean"
+            },
+            "max_interval_days": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1
+            }
+          }
+        },
+        "relaxation_decision_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^DECISION-[A-Z0-9][A-Z0-9-]*$"
+        }
+      }
+    },
+    "legacy_rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "match",
+        "document_class",
+        "rationale"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "match": {
+          "$ref": "#/$defs/match"
+        },
+        "document_class": {
+          "enum": [
+            "locked",
+            "historical",
+            "living"
+          ]
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "out_of_scope_note": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pattern",
+        "rationale"
+      ],
+      "properties": {
+        "pattern": {
+          "$ref": "#/$defs/relpath"
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

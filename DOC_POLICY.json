@@ -1,0 +1,451 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "root",
+  "description": "Repository-wide fallback plus root document contracts.",
+  "defaults": {
+    "document_class": "unmanaged",
+    "authority_role": "none",
+    "mutation": "direct",
+    "context_level": "L0",
+    "purpose": "尚未由文档系统声明用途的仓库资产。Markdown 进入此状态会被 doctor 阻断。",
+    "volatile_facts": "not_applicable",
+    "invariant_refs": [],
+    "knowledge_refs": [],
+    "adr_refs": [],
+    "source_paths": [],
+    "required_reads": [],
+    "after_change": [
+      "docsystem.intake",
+      "docsystem.doctor"
+    ],
+    "generator_action": null,
+    "review_policy": {
+      "at_phase_boundary": false,
+      "max_interval_days": null
+    },
+    "relaxation_decision_id": null,
+    "section_refs": []
+  },
+  "rules": [
+    {
+      "id": "docsystem_recovery_guide",
+      "match": {
+        "path": ".docsystem/RECOVERY.md"
+      },
+      "set": {
+        "purpose": "Fail-closed bootstrap recovery procedure for manifest or resolver failure.",
+        "required_reads": [
+          ".docsystem/manifest.json"
+        ],
+        "section_refs": [
+          "documentation-framework"
+        ]
+      },
+      "rationale": "The bootstrap recovery page must remain discoverable as a framework responsibility, never inherit the unmanaged fallback purpose."
+    },
+    {
+      "id": "document_governance_ci_workflow",
+      "match": {
+        "path": ".github/workflows/document-governance.yml"
+      },
+      "set": {
+        "document_class": "framework_core",
+        "authority_role": "framework_definition",
+        "mutation": "governed",
+        "context_level": "L3",
+        "purpose": "Shared pull-request, push and scheduled trigger for the manifest-owned non-mutating document governance gate.",
+        "volatile_facts": "forbidden",
+        "invariant_refs": [
+          "DOC-INV-006",
+          "DOC-INV-007",
+          "DOC-INV-017"
+        ],
+        "adr_refs": [
+          "DOC-ADR-013"
+        ],
+        "required_reads": [
+          "docs/governance/document-system/ARCHITECTURE.md",
+          "docs/governance/document-system/MAINTAINING.md"
+        ],
+        "after_change": [
+          "docsystem.doctor",
+          "docsystem.tests",
+          "docsystem.gate"
+        ],
+        "section_refs": [
+          "documentation-framework"
+        ]
+      },
+      "rationale": "CI must invoke the same registry-backed gate as local agents instead of carrying a second handwritten lane list."
+    },
+    {
+      "id": "root_front_door",
+      "match": {
+        "path": "README.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "context_level": "L0",
+        "purpose": "稳定仓库前门，只链接当前状态、知识目录、权威边界和开发入口。",
+        "volatile_facts": "forbidden",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-009",
+          "DOC-INV-013",
+          "DOC-INV-014"
+        ],
+        "required_reads": [
+          "docs/START_HERE.md",
+          "data/repository_governance/document_system/entrypoints.json"
+        ],
+        "after_change": [
+          "docsystem.doctor",
+          "knowledge.check"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 60
+        },
+        "adr_refs": [
+          "DOC-ADR-010"
+        ],
+        "section_refs": [
+          "repository-navigation"
+        ]
+      },
+      "rationale": "根 README 只能做稳定前门，不能重新复制 CURRENT 中的易变状态。"
+    },
+    {
+      "id": "workspace_agent_overlays",
+      "match": {
+        "paths": [
+          "AGENTS.md",
+          "CLAUDE.md"
+        ]
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "context_level": "L1",
+        "purpose": "可选的本机 agent 自举 overlay；耐久维护知识以 docs/AGENT_OPERATIONS.md 为准。",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-007",
+          "DOC-INV-008",
+          "DOC-INV-014",
+          "DOC-INV-017",
+          "DOC-INV-018",
+          "DOC-INV-020"
+        ],
+        "required_reads": [
+          ".docsystem/manifest.json",
+          "docs/AGENT_OPERATIONS.md",
+          "docs/CURRENT.md",
+          "PROJECT_LOCK.md"
+        ],
+        "after_change": [
+          "docsystem.intake",
+          "docsystem.doctor",
+          "docsystem.gate"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 60
+        },
+        "adr_refs": [
+          "DOC-ADR-010",
+          "DOC-ADR-013",
+          "DOC-ADR-014",
+          "DOC-ADR-016"
+        ],
+        "section_refs": []
+      },
+      "rationale": "overlay 与 tracked 指南分离；存在时受 policy 约束，缺失时不能破坏 tracked 投影。"
+    },
+    {
+      "id": "root_living_guides",
+      "match": {
+        "paths": [
+          "BORROWED_COMPONENTS.md",
+          "NAV_MAP.md"
+        ]
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "context_level": "L0",
+        "purpose": "稳定的兼容入口、组件说明或代码导航。",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-014"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        },
+        "section_refs": [
+          "repository-navigation"
+        ]
+      },
+      "rationale": "这些文件是当前操作入口，但易变状态必须引用 CURRENT 或机器源。"
+    },
+    {
+      "id": "borrowed_components_section",
+      "match": {
+        "path": "BORROWED_COMPONENTS.md"
+      },
+      "set": {
+        "section_refs": [
+          "compatibility-adapters"
+        ]
+      },
+      "rationale": "The borrowed-component ledger belongs to the compatibility boundary as well as the repository front door."
+    },
+    {
+      "id": "implementation_map_section",
+      "match": {
+        "path": "NAV_MAP.md"
+      },
+      "set": {
+        "section_refs": [
+          "implementation-navigation"
+        ]
+      },
+      "rationale": "The code map is the local entrypoint for implementation navigation."
+    },
+    {
+      "id": "root_generated_compatibility_redirects",
+      "match": {
+        "path": "FILE_STATUS.md"
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L0",
+        "purpose": "Generated compatibility redirect from the retired file-status page to current surfaces.",
+        "volatile_facts": "forbidden",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-004",
+          "DOC-INV-007",
+          "DOC-INV-012",
+          "DOC-INV-013",
+          "DOC-INV-014"
+        ],
+        "adr_refs": [
+          "DOC-ADR-009",
+          "DOC-ADR-010"
+        ],
+        "source_paths": [
+          "data/repository_governance/document_system/entrypoints.json",
+          "devtools/docctl.py"
+        ],
+        "generator_action": "docsystem.render_entrypoints",
+        "after_change": [
+          "docs.reference.validate",
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": null
+        },
+        "section_refs": [
+          "repository-navigation"
+        ]
+      },
+      "rationale": "The retired status page is generated from the front-door registry so it cannot regrow a handwritten current-state copy."
+    },
+    {
+      "id": "project_lock",
+      "match": {
+        "path": "PROJECT_LOCK.md"
+      },
+      "set": {
+        "document_class": "locked_authority",
+        "authority_role": "machine_authority",
+        "mutation": "owner_only",
+        "context_level": "L1",
+        "purpose": "certified exactness、命题边界、发布纪律与禁止改动的最高仓内权威。",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-018"
+        ],
+        "required_reads": [
+          "docs/CURRENT.md"
+        ],
+        "after_change": [
+          "docsystem.intake",
+          "knowledge.build",
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": null
+        },
+        "section_refs": [
+          "certification"
+        ],
+        "adr_refs": [
+          "DOC-ADR-014"
+        ]
+      },
+      "rationale": "普通文档维护不得把 owner authority 当作可随手同步的说明页。"
+    },
+    {
+      "id": "canonical_rules_authority",
+      "match": {
+        "prefix": "rules/"
+      },
+      "set": {
+        "document_class": "locked_authority",
+        "authority_role": "machine_authority",
+        "mutation": "owner_only",
+        "context_level": "L1",
+        "purpose": "Frozen canonical game semantics and preprocessing inputs governed by the project lock.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-018"
+        ],
+        "required_reads": [
+          "PROJECT_LOCK.md",
+          "docs/CURRENT.md"
+        ],
+        "after_change": [
+          "docsystem.intake",
+          "knowledge.build",
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": null
+        },
+        "section_refs": [
+          "certification"
+        ],
+        "adr_refs": [
+          "DOC-ADR-014"
+        ]
+      },
+      "rationale": "Canonical rule files are machine authorities; ordinary documentation maintenance cannot rewrite them."
+    },
+    {
+      "id": "append_only_changelog",
+      "match": {
+        "path": "CHANGELOG.md"
+      },
+      "set": {
+        "document_class": "historical_evidence",
+        "authority_role": "evidence_only",
+        "mutation": "append_only",
+        "context_level": "L0",
+        "purpose": "append-only 工程变更账本。",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-002"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": null
+        },
+        "section_refs": [
+          "history-archive"
+        ]
+      },
+      "rationale": "旧条目保存当时记录，只能追加更正而不能追随现态重写。"
+    },
+    {
+      "id": "borrowed_components_purpose",
+      "match": {
+        "path": "BORROWED_COMPONENTS.md"
+      },
+      "set": {
+        "purpose": "External component borrowing ledger and compatibility boundary; it records provenance without granting certification authority."
+      },
+      "rationale": "A current document needs one precise responsibility so role collisions can be checked mechanically."
+    },
+    {
+      "id": "implementation_map_purpose",
+      "match": {
+        "path": "NAV_MAP.md"
+      },
+      "set": {
+        "purpose": "Stable map of active code, data, script and adapter entrypoints; it never carries current project state."
+      },
+      "rationale": "A current document needs one precise responsibility so role collisions can be checked mechanically."
+    }
+  ],
+  "legacy_projection": {
+    "rules": [
+      {
+        "id": "project_lock",
+        "match": {
+          "path": "PROJECT_LOCK.md"
+        },
+        "document_class": "locked",
+        "rationale": "Highest release-boundary authority; owner-governed and never a prune subject."
+      },
+      {
+        "id": "changelog",
+        "match": {
+          "path": "CHANGELOG.md"
+        },
+        "document_class": "locked",
+        "rationale": "Append-only release ledger; stale-looking entries are the record, not drift."
+      },
+      {
+        "id": "project_status_report",
+        "match": {
+          "path": "README.md"
+        },
+        "document_class": "living",
+        "rationale": "Stable repository front door; volatile state is linked rather than copied."
+      },
+      {
+        "id": "root_living_guides",
+        "match": {
+          "paths": [
+            "BORROWED_COMPONENTS.md",
+            "FILE_STATUS.md",
+            "NAV_MAP.md"
+          ]
+        },
+        "document_class": "living",
+        "rationale": "Current operating guidance and compatibility entrypoints."
+      },
+      {
+        "id": "canonical_rules_registry",
+        "match": {
+          "prefix": "rules/"
+        },
+        "document_class": "locked",
+        "rationale": "Frozen canonical proof inputs; any change is a freeze ritual, never a prune suggestion."
+      },
+      {
+        "id": "docsystem_bootstrap",
+        "match": {
+          "prefix": ".docsystem/"
+        },
+        "document_class": "locked",
+        "rationale": "Document-system bootstrap and recovery surface; governed by the framework protocol."
+      }
+    ],
+    "out_of_scope_notes": [
+      {
+        "pattern": ".artifacts/**",
+        "rationale": "Read-only or local historical evidence roots; never a prune subject."
+      }
+    ]
+  }
+}

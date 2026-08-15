@@ -1,0 +1,58 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "src",
+  "description": "In-tree module documentation.",
+  "defaults": {},
+  "rules": [
+    {
+      "id": "source_docs",
+      "match": {
+        "glob": "**/*.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Module-local implementation guidance.",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-007",
+          "DOC-INV-014"
+        ],
+        "after_change": [
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        },
+        "section_refs": [
+          "implementation-navigation"
+        ]
+      },
+      "rationale": "Module READMEs explain current code contracts."
+    },
+    {
+      "id": "adapter_docs_section",
+      "match": {
+        "glob": "adapters/**/*.md"
+      },
+      "set": {
+        "section_refs": [
+          "compatibility-adapters"
+        ]
+      },
+      "rationale": "Adapter module documentation is implementation guidance inside the compatibility section."
+    }
+  ],
+  "legacy_projection": {
+    "rules": [],
+    "out_of_scope_notes": [
+      {
+        "pattern": "src/**",
+        "rationale": "In-tree module READMEs; governed outside the legacy prune scanner."
+      }
+    ]
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "docs.subjects",
+  "description": "Manually maintained thematic reading aids.",
+  "defaults": {
+    "document_class": "living",
+    "authority_role": "explanatory",
+    "mutation": "direct",
+    "context_level": "L0",
+    "purpose": "Thematic reading aids that point into the knowledge spine without claiming automatic synchronization.",
+    "volatile_facts": "forbidden",
+    "invariant_refs": [
+      "DOC-INV-001",
+      "DOC-INV-007",
+      "DOC-INV-014"
+    ],
+    "after_change": [
+      "docsystem.doctor",
+      "knowledge.check"
+    ],
+    "review_policy": {
+      "at_phase_boundary": true,
+      "max_interval_days": 90
+    },
+    "section_refs": [
+      "topic-guides"
+    ]
+  },
+  "rules": [
+    {
+      "id": "generated_subject_redirects",
+      "match": {
+        "paths": [
+          "current_project_state.md",
+          "doc_tree_architecture.md",
+          "doc_tree_completeness.md",
+          "project_knowledge_tree.md"
+        ]
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L0",
+        "purpose": "Generated compatibility redirects from retired subject-level state, architecture, completeness and knowledge-tree copies.",
+        "volatile_facts": "forbidden",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-004",
+          "DOC-INV-007",
+          "DOC-INV-012",
+          "DOC-INV-013",
+          "DOC-INV-014"
+        ],
+        "adr_refs": [
+          "DOC-ADR-009",
+          "DOC-ADR-010",
+          "DOC-ADR-011"
+        ],
+        "source_paths": [
+          "data/repository_governance/document_system/entrypoints.json",
+          "devtools/docctl.py"
+        ],
+        "generator_action": "docsystem.render_entrypoints",
+        "after_change": [
+          "docs.reference.validate",
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": null
+        },
+        "section_refs": [
+          "documentation-framework"
+        ]
+      },
+      "rationale": "The historical subject path remains link-stable but is generated and cannot carry a second current state."
+    },
+    {
+      "id": "subject_purpose_01",
+      "match": {
+        "path": "README.md"
+      },
+      "set": {
+        "purpose": "Bounded entrypoint for stable thematic reading aids.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Thematic guides need distinct responsibilities and must remain subordinate to machine and owner authorities."
+    },
+    {
+      "id": "subject_purpose_02",
+      "match": {
+        "path": "authoritative_numbers.md"
+      },
+      "set": {
+        "purpose": "Guide for locating and citing machine-authoritative numeric values without copying them.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Thematic guides need distinct responsibilities and must remain subordinate to machine and owner authorities."
+    },
+    {
+      "id": "subject_purpose_03",
+      "match": {
+        "path": "certification_taxonomy.md"
+      },
+      "set": {
+        "purpose": "Concept guide separating verification, acceptance, sealing and publication.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Thematic guides need distinct responsibilities and must remain subordinate to machine and owner authorities."
+    },
+    {
+      "id": "subject_purpose_04",
+      "match": {
+        "path": "certified_exact_contract.md"
+      },
+      "set": {
+        "purpose": "Concept guide for certified-exact scope, exclusions and authority boundaries.",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Thematic guides need distinct responsibilities and must remain subordinate to machine and owner authorities."
+    }
+  ],
+  "legacy_projection": {
+    "rules": [],
+    "out_of_scope_notes": [
+      {
+        "pattern": "docs/subjects/**",
+        "rationale": "Manually maintained thematic reading aids; current state must come from the knowledge spine and machine authorities."
+      }
+    ]
+  }
+}

@@ -1,86 +1,55 @@
-# 12 — 当前 GO / close 标准
+# 12：GO、close 与证据词的稳定判读契约
 
-> 基线：2026-07-11 工作树。本文不把历史测试数字、review receipt 或结构 checker 的 PASS
-> 升格为 release certification。机器状态以 `data/review_gates/phase_1_2_spike_close.json` 为准。
+> 本页定义状态词和判读边界，不陈述某个阶段当前是否已经关闭。当前 gate、义务与 owner decision 只看 [CURRENT](../CURRENT.md) 及其机器源。
 
-## 12.1 状态词
+## 1. 状态词不能互换
 
-- **IMPLEMENTED**：代码路径已存在，并有相应测试或结构义务。
-- **VERIFIED IN THIS WORKTREE**：列明命令在当前 bytes 上实际完成且通过。
-- **OWNER-CLOSED**：owner gate 显式记录关闭。
-- **P1.2 CLOSED**：技术边界、要求的验证、包材边界与 owner gate 同时满足。
-- **SUPERVISOR OPERABLE**：存在受支持、可审计的生产 supervisor invocation surface；当前由独立命令 `scripts/run_supervisor_seal.py` 提供。该事实不等于真实生产 campaign→seal 已实跑，也不单独推导 release。
+- **IMPLEMENTED**：代码路径已存在。
+- **TESTED / VERIFIED IN THIS WORKTREE**：给定命令在给定 bytes 上运行并有退出码、日志和工作树身份。
+- **MACHINE-CHECKED**：登记的 schema、guard、allowlist 或 obligation 与当前输入一致。
+- **REVIEWED**：某个明确范围被 reviewer 阅读或复核。
+- **OWNER-CLOSED**：owner authority 显式记录关闭。
+- **CERTIFIED**：满足 `PROJECT_LOCK.md` 定义的完整终端铸造与发布链。
 
-这些词不能互换。当前状态是 **P1.2 CLOSED / P1.3 IN PROGRESS**：partial attach 与 Stage B B0/B1 已落地，certified promotion 未完成。
+前四种证据都不能自动推出后两种。反过来，owner close 也不能抹掉仍存在的 soundness finding。
 
-## 12.2 技术 close 必要条件
+## 2. GO / close 的最小构成
 
-P1.2 close 至少要求：
+一次阶段 GO 或 close 至少需要同时回答：
 
-1. producer 只提交 `CANDIDATE_PROPOSED`，无旁路 durable/public `CERTIFIED` mint；
-2. supervisor 从 canonical disk authority 重读并验证 proposal、sink replay、terminal frontier、
-   fixed witness、current hashes 与 pre/post disk state；
-3. whole-layout proof-bearing elimination 通过独立 reverify；
-4. canonical public writer 只有 central verified publisher，且失败清理三件套；
-5. public surface 绑定同一 sealed campaign、两份 payload、manifest 与 file hashes；
-6. P1.2 publish-open gate 只有 owner 明确关闭时才通过；
-7. proof-obligation/allowlist/checker 对当前工作树重新封存并通过；
-8. owner 要求的 targeted/full/slow 验证在同一工作树实际完成，日志不混用历史结果；
-9. review snapshot 从 resolved immutable commit 物化，并满足发布/归档策略；
-10. PR2 规定的 controlled-loader/read-once/TCB 收缩完成，或 owner 明确修改 close scope。
+1. 被关闭的命题与 scope 是什么；
+2. 哪些技术义务是必要条件；
+3. 哪些验证在同一工作树实际运行；
+4. 哪些 finding 仍开放，是否被明确排除在 scope 外；
+5. 哪个 owner 或机器 authority 有权作出最终决定；
+6. 后继阶段能做什么，不能把什么解释成已获授权。
 
-> **owner 2026-07-06 已行使后者（close-scope 修改）**：所有「仅防能执行 reseal 仪式的蓄意内鬼」的硬化——#8 深化、#3 fd-held read-once/TOCTOU、#9b OS 写隔离、#9c 原生 .pyd/.so TOCTOU、#5-F import-time 完整性、#5 Option B、#2——**暂缓到发布时点、明确不作为本条件（及 P1.2 close）的必要项**。判据：手滑/无心之失与外部篡改已被第一层字节 sha floor 常开拦死（不在此列），这些锚只对「忠实 reseal 之后的蓄意内鬼」有意义，真正变现实＝发布／把 CERTIFIED 交给不信任维护者本人的第三方那一刻。提取全集＋判据＋何时翻转见记忆卡 `deliberate-insider-hardening-deferred-to-release`。此修改已被 2026-07-07 `owner_manual_decision` 消费为 close scope：P1.2 已 CLOSED，但硬化桶仍属发布时点延期项。
+具体清单属于相应 proof obligations、phase gate、spec 或 owner decision。本页不复制它们的当前值。
 
-当前 1–10 已由 owner 判定满足并于 2026-07-07 关门；该判断不来自测试、receipt、seal
-或 checker 绿灯自动推导，而是 `owner_manual_decision`。
+## 3. 常见 PASS 的正确含义
 
-## 12.3 Machine gate 的正确解释
+- obligation checker PASS：只证明登记义务与当前输入相符，不是全程序 theorem prover。
+- allowlist checker PASS：只证明扫描到的点均有登记解释，不证明扫描范围外绝无路径。
+- phase-gate checker PASS：可能只证明 fail-closed 状态自洽；是否允许进入下一阶段仍由 gate 字段与 owner decision 决定。
+- pytest 或定点回归 PASS：证明相应测试在声明环境通过，不自动授予 release、数学结论或 production authority。
+- review receipt / package seal：证明材料身份或审阅过程，不自动修改 owner gate。
 
-`scripts/check_p1_2_proof_obligations.py` PASS 只表示当前登记的 obligation、sink、hash、guard
-与 close-kernel contract 一致。它不是全程序 theorem prover，也不证明 full pytest、人工审查
-或 owner close。
+## 4. 报告纪律
 
-`check_strong_status_write_allowlist.py` PASS 表示扫描到的强状态/写入点均有登记理由；它不证明
-扫描范围外绝无 writer，也不允许把“allowlisted”解释成“soundness 已证明”。
+任何测试数、耗时、hash、gate 值、上下界或开关都必须引用机器源或 [CURRENT](../CURRENT.md)，不能作为本页的手写“当前值”。一次结果报告至少附：
 
-`check_phase_review_gate.py` 在 gate blocked 时仍应 PASS，因为它验证的是 fail-closed 状态
-一致性。只有 `--require-ready` 且 owner-closed 才能作为下一阶段入口检查。
+- 命令；
+- 工作树或输入身份；
+- 退出码；
+- 日志或收据路径；
+- 未运行、超时和被排除的范围；
+- 它明确不推出什么。
 
-## 12.4 测试报告规则
+## 5. 权威坐标
 
-当前 collect-only 盘点为 **450 个 `test*.py` 文件、4182 tests**；`src/tests/cuts` 为 **594 tests**。这是收集结果，不是通过结果。
-任何 pass 数必须附：命令、工作树标识、退出码与日志。历史 189、442、2211、3316 等数字
-只属于各自时间点，不能描述当前全套状态。
+- certified 与 release 边界：[`PROJECT_LOCK.md`](../../PROJECT_LOCK.md)
+- 当前 gate 与 proof obligations：[CURRENT](../CURRENT.md)
+- 稳定 claim / decision： [CATALOG](../CATALOG.md)
+- 阶段未来工作与退出证据：[ROADMAP](ROADMAP.md)
 
-本轮已知完成的局部结果应在最终变更报告中逐项列出；超时或未运行的组合必须明确写为
-“未完成”，不能用已出现的绿点外推。
-
-## 12.5 Review 与 owner gate
-
-外部 reviewer 可发现技术 finding，但 review receipt、clean 计数与 package seal 不会自动修改
-owner gate。反过来，owner gate 关闭也不能掩盖未修复的 false-CERTIFIED / false-INFEASIBLE
-路径。
-
-> **（2026-07-06 owner 澄清）**「连续 3 次 clean review」的字面数字是历史方便说法，不是
-> 现行判据：收口外审进行到 owner 判定足够为止（轮数可多可少），唯一权威关门动作是 gate
-> JSON 的 `owner_manual_decision`。机器字段 `required_consecutive_clean_full_reviews=3` 与
-> 关门确认字段中的 "three clean reviews" 字样保留为 checker 兼容值（同 `p1_3b_*` 模式）。
-> 该 owner 判定已于 2026-07-07 作出，clean 计数仍保存在仓库外。
-> 同日 owner 对收口前提两次定界、**以晚间为准**：早间曾扩为整条 PR2 TCB backlog 编码项；
-> 晚间厘清「内鬼=故意而非手滑」后收窄——所有「仅防蓄意内鬼」硬化（#8 深化/#2/#3/#5-F/
-> #9b/#9c/Option B）延期到发布时点、非 P1.2 收口前提，**编码前提实质清空**（即行使
-> §12.2 第 10 条「或 owner 明确修改 close scope」活口；详见记忆卡
-> `deliberate-insider-hardening-deferred-to-release`）。
-
-当前 gate：
-
-```text
-status = closed_manual_owner_decision
-p1_3b_entry_allowed = true
-```
-
-`p1_3b_*` 是机器兼容字段；面向人的后续阶段名称统一写 **P1.3**。
-
-## 12.6 后续 P1.3 GO
-
-P1.3 已进入分批实施：F1/F5/F6/F7 direct Step-8 与 Stage B B0/B1 已落地。后续仍须单独证明 typed-platform/vertical-slice、replay/currentness、生产宿主演进、独立 F5 verifier、ledger/dedup/epoch、性能与 rollback；在 B6 owner promotion 前不得写成默认 certified path 已使用。
+迁移前包含旧阶段现态和历史测试数的正文已冻结为 [12_go_criteria_pre_phase3_20260812.md](../history/status/12_go_criteria_pre_phase3_20260812.md)。旧行号引用只解释为该快照；字节校验坐标见 [HISTORY](HISTORY.md)。

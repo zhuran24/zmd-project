@@ -1,6 +1,6 @@
 # Compatibility Matrix
 
-**Status**: Working reference for Phase 2 additive compatibility work.
+**Role**: current compatibility/adapter boundary. Borrowing inventory is tracked in [`BORROWED_COMPONENTS.md`](../BORROWED_COMPONENTS.md); implementation guidance starts at [`src/adapters/README.md`](../src/adapters/README.md). External research notes live under [`specs/ecosystem_notes/`](../specs/ecosystem_notes/README.md), while the frozen April 2026 delivery guides are indexed as historical evidence in [`docs/history/deliveries/`](history/deliveries/README.md).
 
 | Target / Source | Direction | Status | Boundary | Notes |
 |---|---|---|---|---|

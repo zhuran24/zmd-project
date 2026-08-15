@@ -1,0 +1,74 @@
+{
+  "schema_version": "artifact_evidence_inputs_v2",
+  "description": "Repository evidence topology. Presence, Git durability and external restorability are represented separately; a workspace dossier never implies that its bytes are tracked.",
+  "root_prefix": ".artifacts/",
+  "git_tracked": {
+    "root_files": [
+      ".artifacts/DOC_POLICY.json",
+      ".artifacts/README.md",
+      ".artifacts/_v28_dist.py",
+      ".artifacts/_v28_hygiene_cmp.py",
+      ".artifacts/_v28_scrub_audit.py",
+      ".artifacts/_v28_secret_scan.py",
+      ".artifacts/_v28_transcript_scan.py"
+    ],
+    "path_prefixes": [
+      ".artifacts/axiom_analysis_20260806/",
+      ".artifacts/band22_r4_prep_20260806/",
+      ".artifacts/band22_registration_20260805/coupling_verdict_20260806/",
+      ".artifacts/mixflow_review_pack_20260806/",
+      ".artifacts/p2_0_refresh_20260805/",
+      ".artifacts/phase3b_accel_tuning/",
+      ".artifacts/phase3b_ai_accel_20260429/",
+      ".artifacts/v28_gpt_review/",
+      ".artifacts/v46_validation/"
+    ],
+    "files": [
+      ".artifacts/band22_strict_redesign_pack_20260805/ERRATA_20260805.md"
+    ],
+    "expected_path_count": 117
+  },
+  "workspace_untracked": {
+    "dossier_registry": "data/knowledge/dossiers.json",
+    "required_dossier_tracked_state": "local_optional",
+    "root_files": [
+      ".artifacts/canonical_merge_gate_20260807.DONE",
+      ".artifacts/canonical_merge_gate_20260807_full.exit",
+      ".artifacts/canonical_merge_gate_20260807_full.log",
+      ".artifacts/canonical_merge_gate_20260807_r2.DONE",
+      ".artifacts/canonical_merge_gate_20260807_r2_full.exit",
+      ".artifacts/canonical_merge_gate_20260807_r2_full.log",
+      ".artifacts/canonical_merge_gate_20260807_r2_slow.exit",
+      ".artifacts/canonical_merge_gate_20260807_r2_slow.log",
+      ".artifacts/canonical_merge_gate_20260807_slow.exit",
+      ".artifacts/canonical_merge_gate_20260807_slow.log",
+      ".artifacts/full_fail_nodeids.txt",
+      ".artifacts/full_rerun_20260725.log",
+      ".artifacts/merge_rulecut_20260725T104539Z.log",
+      ".artifacts/merge_trackb_20260725T104829Z.log",
+      ".artifacts/preflight_consultfix_20260804.log",
+      ".artifacts/preflight_full_20260801_after_parity_fix.DONE",
+      ".artifacts/preflight_full_20260801_after_parity_fix.log",
+      ".artifacts/preflight_full_green_attempt_20260805.DONE",
+      ".artifacts/preflight_full_green_attempt_20260805.log",
+      ".artifacts/preflight_full_green_attempt_20260805.status",
+      ".artifacts/preflight_full_sealbatch_20260806.log",
+      ".artifacts/preflight_merge_final_20260725T201740Z.log",
+      ".artifacts/preflight_merge_final_LAST.log",
+      ".artifacts/preflight_slow_sealbatch_20260806.log"
+    ]
+  },
+  "external_root": {
+    "registry": "data/external_artifacts.json"
+  },
+  "ignored_runtime_artifact_prefixes": [
+    ".artifacts/industrial_planner_checked_artifacts/",
+    ".artifacts/industrial_planner_single_base_delivery_surface_alignment/",
+    ".artifacts/research_runs/",
+    ".artifacts/takeover_read_20260607/",
+    ".mypy_cache/",
+    ".pytest_cache/",
+    ".pytest_tmp/",
+    ".ruff_cache/"
+  ]
+}

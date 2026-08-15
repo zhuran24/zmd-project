@@ -1,0 +1,636 @@
+{
+  "schema_version": "zmd_document_entrypoints_v1",
+  "system_version": "2.6.0",
+  "common_forbidden_patterns": [
+    "owner-p1-2-(?:close|reclose)-[0-9]{8}",
+    "(?<![0-9a-f])[0-9a-f]{64}(?![0-9a-f])",
+    "U\\s*=\\s*\\(",
+    "L\\s*=\\s*(?:absent|\\()",
+    "(?<![0-9])0/16(?![0-9])",
+    "(?<![0-9])[0-9]+\\s+passed(?![A-Za-z])",
+    "(?<![0-9])[0-9]+\\s+tests?(?![A-Za-z])",
+    "(?<![0-9])[0-9]+\\s*道\\s*gate(?![A-Za-z])",
+    "closed_manual_owner_decision"
+  ],
+  "surfaces": [
+    {
+      "id": "repository_front_door",
+      "path": "README.md",
+      "mode": "manual",
+      "purpose": "仓库级稳定前门，只负责身份、分层导航、最小操作面和权威入口。",
+      "required_targets": [
+        "docs/START_HERE.md",
+        "docs/CURRENT.md",
+        "docs/GUIDANCE_INDEX.md",
+        "PROJECT_LOCK.md",
+        "docs/CATALOG.md",
+        "docs/AGENT_OPERATIONS.md",
+        "docs/SECTION_INDEX.md"
+      ],
+      "enforce_common_forbidden_patterns": true,
+      "max_lines": 48,
+      "max_bytes": 14000
+    },
+    {
+      "id": "documentation_front_door",
+      "path": "docs/README.md",
+      "mode": "manual",
+      "purpose": "文档层稳定前门，解释知识投影、authority 分工和生命周期。",
+      "required_targets": [
+        "docs/START_HERE.md",
+        "docs/CURRENT.md",
+        "docs/GUIDANCE_INDEX.md",
+        "docs/governance/document-system/ARCHITECTURE.md",
+        "docs/AGENT_OPERATIONS.md",
+        "docs/governance/document-system/MAINTAINING.md",
+        "docs/SECTION_INDEX.md"
+      ],
+      "enforce_common_forbidden_patterns": true,
+      "max_lines": 42,
+      "max_bytes": 14000
+    },
+    {
+      "id": "task_router",
+      "path": "docs/START_HERE.md",
+      "mode": "manual",
+      "purpose": "按用户问题选择当前状态、知识、主题、历史或操作入口。",
+      "required_targets": [
+        "docs/CURRENT.md",
+        "docs/CATALOG.md",
+        "docs/GUIDANCE_INDEX.md",
+        "docs/AGENT_OPERATIONS.md",
+        "PROJECT_LOCK.md",
+        "NAV_MAP.md",
+        "docs/SECTION_INDEX.md"
+      ],
+      "enforce_common_forbidden_patterns": true,
+      "max_lines": 70,
+      "max_bytes": 24000
+    },
+    {
+      "id": "project_manual_front_door",
+      "path": "docs/项目说明/README.md",
+      "mode": "manual",
+      "purpose": "项目手册分区入口，只列现行手册、规范、未来、方法与历史。",
+      "required_targets": [
+        "docs/CURRENT.md",
+        "docs/START_HERE.md",
+        "docs/GUIDANCE_INDEX.md",
+        "docs/项目说明/ROADMAP.md",
+        "docs/项目说明/HISTORY.md",
+        "docs/SECTION_INDEX.md"
+      ],
+      "enforce_common_forbidden_patterns": true,
+      "max_lines": 35,
+      "max_bytes": 14000
+    },
+    {
+      "id": "agent_operations",
+      "path": "docs/AGENT_OPERATIONS.md",
+      "mode": "manual",
+      "purpose": "tracked 的耐久 agent 操作与维护指南；可选根 overlay 只作本机会话入口。",
+      "required_targets": [
+        "PROJECT_LOCK.md",
+        "docs/CURRENT.md",
+        "docs/项目说明/28_pitfalls_and_sop.md",
+        "scripts/preflight_gate.py"
+      ],
+      "enforce_common_forbidden_patterns": true,
+      "max_lines": 240,
+      "max_bytes": 42000
+    },
+    {
+      "id": "current_state",
+      "path": "docs/CURRENT.md",
+      "mode": "generated",
+      "purpose": "唯一人类可读现态投影。",
+      "required_targets": [
+        "PROJECT_LOCK.md",
+        "data/review_gates/phase_1_2_spike_close.json"
+      ],
+      "enforce_common_forbidden_patterns": false
+    },
+    {
+      "id": "current_guidance_surface",
+      "path": "docs/GUIDANCE_INDEX.md",
+      "mode": "generated",
+      "purpose": "当前仍承担职责的文档表面投影。",
+      "required_targets": [
+        "docs/CURRENT.md",
+        "docs/START_HERE.md"
+      ],
+      "enforce_common_forbidden_patterns": false
+    },
+    {
+      "id": "document_sections",
+      "path": "docs/SECTION_INDEX.md",
+      "mode": "generated",
+      "purpose": "按稳定 section ID 投影局部前门、当前成员和跨分区关系。",
+      "required_targets": [
+        "docs/START_HERE.md",
+        "docs/GUIDANCE_INDEX.md",
+        "specs/README.md",
+        "docs/research/README.md",
+        "docs/OPERATIONS.md"
+      ],
+      "enforce_common_forbidden_patterns": false
+    },
+    {
+      "id": "certified_authority",
+      "path": "PROJECT_LOCK.md",
+      "mode": "authority",
+      "purpose": "certified exactness、命题边界与发布纪律的仓内最高权威。",
+      "required_targets": [],
+      "enforce_common_forbidden_patterns": false
+    }
+  ],
+  "guarded_documents": [
+    {
+      "id": "code_map",
+      "path": "NAV_MAP.md",
+      "purpose": "Stable code and data navigation that must not become a current-state ledger.",
+      "required_targets": [],
+      "enforce_common_forbidden_patterns": true
+    },
+    {
+      "id": "phase_gate_contract",
+      "path": "docs/PHASE_1_2_CLOSE_GATE.md",
+      "purpose": "Stable human-readable gate contract that points to CURRENT for live values.",
+      "required_targets": [
+        "docs/CURRENT.md"
+      ],
+      "enforce_common_forbidden_patterns": true
+    },
+    {
+      "id": "research_archive_front_door",
+      "path": "docs/research/README.md",
+      "purpose": "Research archive entrypoint that distinguishes historical evidence from current state.",
+      "required_targets": [
+        "docs/CURRENT.md"
+      ],
+      "enforce_common_forbidden_patterns": false
+    },
+    {
+      "id": "subjects_front_door",
+      "path": "docs/subjects/README.md",
+      "purpose": "Manual thematic-reading entrypoint that delegates current facts to CURRENT.",
+      "required_targets": [
+        "docs/CURRENT.md"
+      ],
+      "enforce_common_forbidden_patterns": true
+    },
+    {
+      "id": "subject_authoritative_numbers",
+      "path": "docs/subjects/authoritative_numbers.md",
+      "purpose": "Thematic guide to authority-bearing numbers without copying their current values.",
+      "required_targets": [],
+      "enforce_common_forbidden_patterns": true
+    },
+    {
+      "id": "subject_certification_taxonomy",
+      "path": "docs/subjects/certification_taxonomy.md",
+      "purpose": "Stable certification vocabulary guide without copied current gate or count values.",
+      "required_targets": [],
+      "enforce_common_forbidden_patterns": true
+    },
+    {
+      "id": "subject_certified_exact_contract",
+      "path": "docs/subjects/certified_exact_contract.md",
+      "purpose": "Stable thematic explanation of the exactness contract without copied current state.",
+      "required_targets": [],
+      "enforce_common_forbidden_patterns": true
+    },
+    {
+      "id": "project_overview",
+      "path": "docs/项目说明/01_overview.md",
+      "purpose": "Stable project overview that points to CURRENT for all live status.",
+      "required_targets": [
+        "docs/CURRENT.md"
+      ],
+      "enforce_common_forbidden_patterns": true
+    },
+    {
+      "id": "project_dependency_graph",
+      "path": "docs/项目说明/11_dependency_graph.md",
+      "purpose": "Stable dependency explanation that points to CURRENT for live phase state.",
+      "required_targets": [
+        "docs/CURRENT.md"
+      ],
+      "enforce_common_forbidden_patterns": true
+    },
+    {
+      "id": "project_go_criteria",
+      "path": "docs/项目说明/12_go_criteria.md",
+      "purpose": "Stable GO/close evidence vocabulary that points to CURRENT for current decisions.",
+      "required_targets": [
+        "docs/CURRENT.md"
+      ],
+      "enforce_common_forbidden_patterns": true
+    },
+    {
+      "id": "project_roadmap",
+      "path": "docs/项目说明/ROADMAP.md",
+      "purpose": "Future-only roadmap that must not silently become a current-state dashboard.",
+      "required_targets": [],
+      "enforce_common_forbidden_patterns": true
+    },
+    {
+      "id": "pipeline_orchestration_spec",
+      "path": "specs/11_pipeline_orchestration.md",
+      "purpose": "Stable orchestration contract that points to CURRENT for live phase and gate state.",
+      "required_targets": [
+        "docs/CURRENT.md"
+      ],
+      "enforce_common_forbidden_patterns": true
+    }
+  ],
+  "generated_redirects": [
+    {
+      "id": "legacy_file_status",
+      "path": "FILE_STATUS.md",
+      "title": "FILE_STATUS.md 兼容入口",
+      "summary": "本路径不再维护独立的文件状态表，只保留到现行查询面的稳定跳转。",
+      "targets": [
+        {
+          "label": "唯一当前状态",
+          "path": "docs/CURRENT.md",
+          "description": "机器状态、owner gate、研究账本和开放边界。"
+        },
+        {
+          "label": "按问题导航",
+          "path": "docs/START_HERE.md",
+          "description": "从当前问题选择知识、规范、历史或操作入口。"
+        },
+        {
+          "label": "知识与证据目录",
+          "path": "docs/CATALOG.md",
+          "description": "claim、decision、dossier 与 evidence 坐标。"
+        },
+        {
+          "label": "当前文档职责",
+          "path": "docs/GUIDANCE_INDEX.md",
+          "description": "现行 living、normative、generated 与 framework surface。"
+        },
+        {
+          "label": "代码地图",
+          "path": "NAV_MAP.md",
+          "description": "模块与代码职责入口。"
+        },
+        {
+          "label": "工程变更账本",
+          "path": "CHANGELOG.md",
+          "description": "append-only 工程历史。"
+        },
+        {
+          "label": "frontier probe 规范",
+          "path": "specs/21_frontier_probe_and_campaign_telemetry.md",
+          "description": "保留旧 FILE_STATUS 使用者依赖的规范入口。"
+        }
+      ],
+      "archive_path": "docs/history/status/FILE_STATUS_20260803.md",
+      "boundary_notes": [
+        "不得在本页复制 gate、phase、上下界、hash、测试数量或开关值。",
+        "规范状态由规范自身元数据和上级 authority 决定。"
+      ]
+    },
+    {
+      "id": "legacy_document_tree_completeness",
+      "path": "docs/DOC_TREE_COMPLETENESS.md",
+      "title": "文档树完整性兼容入口",
+      "summary": "旧的一次性完整性快照已由 dossier inventory、policy coverage 和自动 checker 取代。",
+      "targets": [
+        {
+          "label": "知识与 dossier 目录",
+          "path": "docs/CATALOG.md",
+          "description": "research 与 artifact 一级包 inventory。"
+        },
+        {
+          "label": "当前文档职责",
+          "path": "docs/GUIDANCE_INDEX.md",
+          "description": "有效 policy 所声明的当前维护面。"
+        },
+        {
+          "label": "按问题导航",
+          "path": "docs/START_HERE.md",
+          "description": "从任务而不是目录进入。"
+        }
+      ],
+      "archive_path": "docs/history/subjects/pre_knowledge_spine_20260811/DOC_TREE_COMPLETENESS.md",
+      "boundary_notes": [
+        "inventory coverage 不等于 semantic review。",
+        "checker PASS 不授予 soundness、owner close 或 production CERTIFIED。"
+      ]
+    },
+    {
+      "id": "legacy_subject_tree",
+      "path": "docs/SUBJECT_TREE.md",
+      "title": "主题说明兼容入口",
+      "summary": "旧 subject/projection 机制不再承担当前同步职责。",
+      "targets": [
+        {
+          "label": "稳定主题索引",
+          "path": "docs/TOPIC_INDEX.md",
+          "description": "按主题连接 claim、术语、dossier label 与开放问题。"
+        },
+        {
+          "label": "主题阅读辅助",
+          "path": "docs/subjects/README.md",
+          "description": "人工维护的轻量阅读入口。"
+        },
+        {
+          "label": "唯一当前状态",
+          "path": "docs/CURRENT.md",
+          "description": "当前机器与知识状态。"
+        }
+      ],
+      "archive_path": "docs/history/subjects/pre_knowledge_spine_20260811/SUBJECT_TREE.md",
+      "boundary_notes": [
+        "旧 subject 文件不能覆盖结构化 topic 或 CURRENT。"
+      ]
+    },
+    {
+      "id": "legacy_research_index",
+      "path": "docs/research/INDEX.md",
+      "title": "旧 research INDEX 兼容入口",
+      "summary": "该路径曾只覆盖 2026-05-07/08 Phase 3C agent transcript，却容易被误读为全研究目录。",
+      "targets": [
+        {
+          "label": "研究档案入口",
+          "path": "docs/research/README.md",
+          "description": "研究 dossier、知识晋升与历史边界。"
+        },
+        {
+          "label": "Phase 3C transcript 历史索引",
+          "path": "docs/history/navigation/research_phase3c_agent_transcript_index_20260507_08.md",
+          "description": "旧 INDEX 的字节保真、明确命名历史载荷。"
+        },
+        {
+          "label": "全部 dossier 目录",
+          "path": "docs/CATALOG.md",
+          "description": "由结构化 dossier registry 生成的全量目录。"
+        }
+      ],
+      "archive_path": "docs/history/navigation/research_phase3c_agent_transcript_index_20260507_08.md",
+      "boundary_notes": [
+        "本页不得再次宣称自己是 docs/research 的 master index。",
+        "inventory coverage 与 semantic review coverage 必须继续分离。"
+      ]
+    },
+    {
+      "id": "legacy_specs_index",
+      "path": "docs/specs_index.md",
+      "title": "旧 specs 索引兼容入口",
+      "summary": "编号规范的现行分区入口已经迁到 specs/README.md；本路径不再维护第二份规格地图。",
+      "targets": [
+        {
+          "label": "规范分区入口",
+          "path": "specs/README.md",
+          "description": "编号规范的阅读顺序、职责边界和生态注记分流。"
+        },
+        {
+          "label": "当前文档职责",
+          "path": "docs/GUIDANCE_INDEX.md",
+          "description": "按有效 policy 查询当前规范与入口。"
+        }
+      ],
+      "archive_path": "docs/history/navigation/docs_specs_index_pre_phase3_batch3_20260812.md",
+      "boundary_notes": [
+        "不得在旧路径重新维护规范分组或当前实现状态。",
+        "生态注记不是认证 authority；其边界见 specs/ecosystem_notes/README.md。"
+      ]
+    },
+    {
+      "id": "legacy_subject_current_state",
+      "path": "docs/subjects/current_project_state.md",
+      "title": "当前项目状态主题兼容入口",
+      "summary": "本主题路径不再维护独立现态副本。",
+      "targets": [
+        {
+          "label": "唯一当前状态",
+          "path": "docs/CURRENT.md",
+          "description": "机器状态、权威决定与当前 claim 投影。"
+        },
+        {
+          "label": "知识与证据目录",
+          "path": "docs/CATALOG.md",
+          "description": "稳定 ID、作用域、依赖与证据。"
+        }
+      ],
+      "archive_path": "docs/history/subjects/pre_knowledge_spine_20260811/current_project_state.md",
+      "boundary_notes": [
+        "不得按日期在此路径重新建立第二份当前状态。"
+      ]
+    },
+    {
+      "id": "legacy_subject_doc_tree_architecture",
+      "path": "docs/subjects/doc_tree_architecture.md",
+      "title": "旧文档树架构主题兼容入口",
+      "summary": "文档框架的完整现行定义已进入 framework architecture；本主题路径只保留稳定跳转。",
+      "targets": [
+        {
+          "label": "文档系统架构",
+          "path": "docs/governance/document-system/ARCHITECTURE.md",
+          "description": "当前类型系统、策略继承、分区与生成投影。"
+        },
+        {
+          "label": "维护协议",
+          "path": "docs/governance/document-system/MAINTAINING.md",
+          "description": "安全改变框架、schema、policy 和迁移的方法。"
+        }
+      ],
+      "archive_path": "docs/history/navigation/subjects_doc_tree_architecture_pre_phase3_batch3_20260812.md",
+      "boundary_notes": [
+        "不要在主题页复制第二份架构定义。"
+      ]
+    },
+    {
+      "id": "legacy_subject_doc_tree_completeness",
+      "path": "docs/subjects/doc_tree_completeness.md",
+      "title": "旧文档完整性主题兼容入口",
+      "summary": "目录覆盖、当前职责和语义回填已分别由机器投影承担。",
+      "targets": [
+        {
+          "label": "当前文档职责",
+          "path": "docs/GUIDANCE_INDEX.md",
+          "description": "有效 policy 的当前职责和分区投影。"
+        },
+        {
+          "label": "知识回填覆盖",
+          "path": "docs/BACKFILL_LEDGER.md",
+          "description": "semantic review、availability review 与 inventory triage。"
+        },
+        {
+          "label": "知识与证据目录",
+          "path": "docs/CATALOG.md",
+          "description": "claim、decision 和 dossier inventory。"
+        }
+      ],
+      "archive_path": "docs/history/navigation/subjects_doc_tree_completeness_pre_phase3_batch3_20260812.md",
+      "boundary_notes": [
+        "完整性检查不等于 soundness、owner closure 或 certification。"
+      ]
+    },
+    {
+      "id": "legacy_subject_project_knowledge_tree",
+      "path": "docs/subjects/project_knowledge_tree.md",
+      "title": "旧项目知识树主题兼容入口",
+      "summary": "项目知识对象和写入方式已经由知识层指南、CATALOG 与 topic projection 统一表达。",
+      "targets": [
+        {
+          "label": "结构化知识维护",
+          "path": "data/knowledge/README.md",
+          "description": "claim、decision、dossier、review、topic 与 terminology 的写入协议。"
+        },
+        {
+          "label": "知识与证据目录",
+          "path": "docs/CATALOG.md",
+          "description": "稳定知识身份与证据坐标。"
+        },
+        {
+          "label": "主题入口",
+          "path": "docs/TOPIC_INDEX.md",
+          "description": "跨目录主题与开放问题入口。"
+        }
+      ],
+      "archive_path": "docs/history/navigation/subjects_project_knowledge_tree_pre_phase3_batch3_20260812.md",
+      "boundary_notes": [
+        "聊天记录和个人记忆不会自动成为项目知识。"
+      ]
+    },
+    {
+      "id": "legacy_master_roadmap",
+      "path": "docs/项目说明/00_master_roadmap.md",
+      "title": "00：总路线图兼容入口",
+      "summary": "旧混合路线图已按当前、未来和历史三种职责拆分。",
+      "targets": [
+        {
+          "label": "唯一当前状态",
+          "path": "docs/CURRENT.md",
+          "description": "现在已经成立什么。"
+        },
+        {
+          "label": "未来路线图",
+          "path": "docs/项目说明/ROADMAP.md",
+          "description": "接下来做什么、依赖什么、用什么证据退出。"
+        },
+        {
+          "label": "项目编年史",
+          "path": "docs/项目说明/HISTORY.md",
+          "description": "过去何时发生过什么。"
+        }
+      ],
+      "archive_path": "docs/history/status/00_master_roadmap_pre_phase3_20260812.md",
+      "boundary_notes": [
+        "本页不能重新混合当前状态、未来计划和历史正文。"
+      ]
+    },
+    {
+      "id": "legacy_open_questions",
+      "path": "docs/项目说明/05_open_questions.md",
+      "title": "05：开放问题兼容入口",
+      "summary": "开放问题由 claim 账本中 status=open 的集合自动投影。",
+      "targets": [
+        {
+          "label": "当前开放问题",
+          "path": "docs/OPEN_QUESTIONS.md",
+          "description": "去重后的开放 claim、作用域和 does-not-imply。"
+        },
+        {
+          "label": "主题索引",
+          "path": "docs/TOPIC_INDEX.md",
+          "description": "按稳定主题进入相关 claim。"
+        }
+      ],
+      "archive_path": "docs/history/status/05_open_questions_pre_phase3_20260812.md",
+      "boundary_notes": [
+        "不得在本页手工维护第二份开放问题清单。"
+      ]
+    },
+    {
+      "id": "legacy_current_status",
+      "path": "docs/项目说明/06_current_status.md",
+      "title": "06：当前状态兼容入口",
+      "summary": "本路径不再维护独立状态正文。",
+      "targets": [
+        {
+          "label": "唯一当前状态",
+          "path": "docs/CURRENT.md",
+          "description": "机器状态、claim 与 owner decision 的当前投影。"
+        },
+        {
+          "label": "按问题导航",
+          "path": "docs/START_HERE.md",
+          "description": "选择规范、知识、历史或操作入口。"
+        },
+        {
+          "label": "知识与证据目录",
+          "path": "docs/CATALOG.md",
+          "description": "稳定 ID、证据和 supersession。"
+        },
+        {
+          "label": "规则与 cut 演化协议",
+          "path": "docs/项目说明/23_rule_cut_evolution_protocol.md",
+          "description": "局部协议状态由其规范自身维护，本页不复制。"
+        }
+      ],
+      "archive_path": "docs/history/status/06_current_status_20260803.md",
+      "boundary_notes": [
+        "局部协议状态由其机器源或规范自身维护，不能回流成本页现态副本。"
+      ]
+    },
+    {
+      "id": "legacy_glossary",
+      "path": "docs/项目说明/21_glossary.md",
+      "title": "21：术语表兼容入口",
+      "summary": "规范术语、alias、区别与来源已迁入结构化 terminology registry。",
+      "targets": [
+        {
+          "label": "规范术语表",
+          "path": "docs/TERMINOLOGY.md",
+          "description": "自动生成的 canonical label、alias 与禁止混同边界。"
+        },
+        {
+          "label": "主题索引",
+          "path": "docs/TOPIC_INDEX.md",
+          "description": "从术语进入相关 claim 与开放问题。"
+        }
+      ],
+      "archive_path": "docs/history/status/21_glossary_pre_phase3_20260812.md",
+      "boundary_notes": [
+        "不得在本页手工复制第二份术语定义。"
+      ]
+    },
+    {
+      "id": "legacy_status_dashboard",
+      "path": "docs/项目说明/27_status_dashboard.md",
+      "title": "27：状态仪表盘兼容入口",
+      "summary": "旧手写仪表盘已由唯一当前状态和结构化查询页取代。",
+      "targets": [
+        {
+          "label": "唯一当前状态",
+          "path": "docs/CURRENT.md",
+          "description": "gate、义务、研究 ledger、production 与开放边界。"
+        },
+        {
+          "label": "按问题导航",
+          "path": "docs/START_HERE.md",
+          "description": "从任务进入现行状态、知识或历史。"
+        },
+        {
+          "label": "当前开放问题",
+          "path": "docs/OPEN_QUESTIONS.md",
+          "description": "仍为 status=open 的稳定 claim。"
+        },
+        {
+          "label": "当前文档职责",
+          "path": "docs/GUIDANCE_INDEX.md",
+          "description": "现行维护入口和各自唯一职责。"
+        }
+      ],
+      "archive_path": "docs/history/status/27_status_dashboard_20260803.md",
+      "boundary_notes": [
+        "不得在本页复制 gate、上下界、在飞任务、hash、测试数或 owner-only 计数。"
+      ]
+    }
+  ]
+}

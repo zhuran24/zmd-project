@@ -1,0 +1,33 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "paths",
+  "description": "Frozen candidate-path phase verdicts.",
+  "defaults": {
+    "document_class": "historical_evidence",
+    "authority_role": "evidence_only",
+    "mutation": "immutable",
+    "context_level": "L0",
+    "purpose": "Frozen path verdicts and evidence.",
+    "volatile_facts": "source_allowed",
+    "invariant_refs": [
+      "DOC-INV-002"
+    ],
+    "after_change": [
+      "docsystem.doctor"
+    ],
+    "review_policy": {
+      "at_phase_boundary": false,
+      "max_interval_days": null
+    }
+  },
+  "rules": [],
+  "legacy_projection": {
+    "rules": [],
+    "out_of_scope_notes": [
+      {
+        "pattern": "paths/**",
+        "rationale": "Frozen candidate-path phase verdicts; retained outside the legacy prune scanner."
+      }
+    ]
+  }
+}

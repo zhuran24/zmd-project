@@ -494,7 +494,7 @@ _RULE_ROWS: Final = (
         checker=_unavailable("protocol_assertion_only"),
         protocols=(),
         state=RuleDeploymentState.SHARED_PROTOCOL,
-        source_ref="docs/项目说明/00_master_roadmap.md#0b",
+        source_ref="docs/项目说明/REASONING_METHOD.md",
     ),
     _rule(
         rule_id="master_domain_projection_binding",

@@ -1,0 +1,76 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "artifacts",
+  "description": "Local or restored research evidence roots governed by dossier lifecycle.",
+  "defaults": {
+    "document_class": "historical_evidence",
+    "authority_role": "evidence_only",
+    "mutation": "direct",
+    "context_level": "L1",
+    "purpose": "Local research, review or replay evidence. Active dossiers may be corrected; closed or superseded dossiers are tightened to immutable by the dossier registry.",
+    "volatile_facts": "source_allowed",
+    "invariant_refs": [
+      "DOC-INV-002",
+      "DOC-INV-003",
+      "DOC-INV-009",
+      "DOC-INV-014",
+      "DOC-INV-018"
+    ],
+    "after_change": [
+      "docsystem.intake",
+      "knowledge.refresh_dossiers",
+      "knowledge.check",
+      "docsystem.doctor"
+    ],
+    "review_policy": {
+      "at_phase_boundary": true,
+      "max_interval_days": null
+    },
+    "section_refs": [
+      "research-archive"
+    ],
+    "adr_refs": [
+      "DOC-ADR-014"
+    ]
+  },
+  "rules": [
+    {
+      "id": "artifact_package_payloads",
+      "match": {
+        "glob": "?*/**"
+      },
+      "set": {
+        "required_reads": [
+          ".artifacts/README.md"
+        ]
+      },
+      "rationale": "Nested artifact payloads inherit the local evidence-boundary guide without making the guide read itself."
+    },
+    {
+      "id": "artifact_boundary_readme",
+      "match": {
+        "path": "README.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Current boundary, portability and retention guidance for local evidence roots.",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-007"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        }
+      },
+      "rationale": "The boundary guide remains current even though the evidence packages below it follow dossier lifecycle."
+    }
+  ],
+  "legacy_projection": {
+    "rules": [],
+    "out_of_scope_notes": []
+  }
+}

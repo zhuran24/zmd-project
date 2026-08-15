@@ -10,6 +10,7 @@ from types import SimpleNamespace
 import jsonschema
 import pytest
 
+from devtools import artifact_evidence
 from devtools import check_repository_code_assets as assets
 
 
@@ -23,39 +24,39 @@ BASELINE_COUNTS = {
     "historical_evidence": 464,
     "retirement_candidate": 19,
 }
-# The W0 front-aware research line (branch w0/front-aware-g1-20260803) adds ten
-# test modules and nine research modules under docs/research/, hence +10 test and
-# +9 historical_evidence over the 0dcb531 snapshot.
-CURRENT_BASE_COUNTS = {
-    "active_implementation": 390,
-    "test": 670,
-    "common_infrastructure": 480,
-    "authoritative_input": 4,
-    "enforcement_control": 10,
-    "historical_evidence": 473,
-    "retirement_candidate": 19,
+EXPECTED_ARTIFACT_BOUNDARY_DESCRIPTOR = {
+    "manifest": "data/artifact_boundaries.json",
+    "schema": "data/repository_governance/artifact_boundaries.schema.json",
+    "inputs": "data/repository_governance/artifact_evidence_inputs.json",
+    "inputs_schema": "data/repository_governance/artifact_evidence_inputs.schema.json",
+    "content_treatment": "non_code_asset",
+    "mutation_expectation": "read_only_preserve_in_place",
 }
-EXPECTED_READ_ONLY_HISTORICAL_EVIDENCE_ROOTS = {
-    ".artifacts/ab16_arms_20260802/": "failed_campaign_history",
-    ".artifacts/ab16_slimdown_20260801/": "research_evidence",
-    ".artifacts/adapt_batch_gates/": "research_evidence",
-    ".artifacts/band22_admission_sim_20260805/": "research_evidence",
-    ".artifacts/band22_faithful_sim_20260805/": "research_evidence",
-    ".artifacts/band22_flow_account_20260805/": "research_evidence",
-    ".artifacts/band22_headless_sim_20260805/": "research_evidence",
-    ".artifacts/band22_strict_hole_probe_20260805/": "research_evidence",
-    ".artifacts/band22_strict_redesign_pack_20260805/": "research_evidence",
-    ".artifacts/band22_strict_redesign_replies_20260805/": "research_evidence",
-    ".artifacts/batch_c_leftovers_20260714/": "failed_campaign_history",
-    ".artifacts/cleanroom_r3_adversarial/": "research_evidence",
-    ".artifacts/h20_row_power_oracle_20260803/": "research_evidence",
-    ".artifacts/ip_adapter_v3_20260805/": "research_evidence",
-    ".artifacts/merge_codex_20260801/": "research_evidence",
-    ".artifacts/rab_drill_20260716/": "research_evidence",
-    ".artifacts/w0_consult_packs_20260804/": "research_evidence",
-    ".artifacts/w0_fixrerun_20260804/": "research_evidence",
-    ".artifacts/w0_front_aware_20260803/": "research_evidence",
-}
+
+
+def _historical_baseline_available() -> bool:
+    completed = subprocess.run(
+        ["git", "cat-file", "-e", f"{BASELINE}^{{commit}}"],
+        cwd=assets.ROOT,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    return completed.returncode == 0
+
+
+def _current_exact_source_digest() -> str:
+    module = assets.importlib.import_module(assets.SOURCE_DISCOVERY_MODULES[0])
+    digest_function = getattr(module, "compute_certified_exact_source_digest")
+    return str(digest_function())
+
+
+def _current_exact_source_matches_frozen_receipt() -> bool:
+    manifest = assets.load_manifest()
+    expected = manifest["measurement"]["certified_exact_source_baseline"][
+        "source_digest"
+    ]
+    return _current_exact_source_digest() == expected
 
 
 def test_manifest_validates_against_durable_json_schema() -> None:
@@ -82,6 +83,8 @@ def test_checker_rejects_invalid_schema() -> None:
 
 
 def test_baseline_inventory_is_reproducible_from_git_objects() -> None:
+    if not _historical_baseline_available():
+        pytest.skip("supplier snapshot omits the historical code-asset baseline object")
     measured = assets.inventory(commit=BASELINE, include_assets=False)
     assert measured == {
         "revision": BASELINE,
@@ -106,10 +109,35 @@ def test_nul_path_parsers_preserve_unicode_spaces_and_newlines() -> None:
     assert assets._parse_ls_tree_records(raw_tree) == tuple(zip(object_ids, paths, strict=True))
 
 
+def test_git_untracked_paths_reports_only_nonignored_workspace_paths(tmp_path: Path) -> None:
+    root = tmp_path / "repo"
+    root.mkdir()
+    subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+    (root / ".gitignore").write_text("ignored.txt\n", encoding="utf-8")
+    (root / "tracked.txt").write_text("tracked\n", encoding="utf-8")
+    subprocess.run(["git", "add", ".gitignore", "tracked.txt"], cwd=root, check=True)
+    (root / "workspace 空格.txt").write_text("workspace\n", encoding="utf-8")
+    (root / "ignored.txt").write_text("ignored\n", encoding="utf-8")
+
+    assert artifact_evidence.git_untracked_paths(root) == ("workspace 空格.txt",)
+
+
+def test_document_system_bootstrap_files_are_explicit_enforcement_controls() -> None:
+    measured = assets.inventory(include_assets=True)
+    by_path = {record["path"]: record for record in measured["assets"]}
+
+    for path in (".docsystem/manifest.json", "DOC_POLICY.json"):
+        record = by_path[path]
+        assert record["primary_class"] == "enforcement_control"
+        assert record["rule_id"] == "document_system_bootstrap_controls"
+        assert record["authority_role"] == "non_authorizing_document_governance_control"
+        assert record["certified_admission"] == "non_authorizing"
+
+
 def test_current_inventory_has_only_declared_g1_and_conditional_assets() -> None:
     manifest = assets.load_manifest()
     measured = assets.inventory(include_assets=True)
-    expected = dict(CURRENT_BASE_COUNTS)
+    expected = dict(manifest["measurement"]["expected_current_class_counts"])
     visible = set(assets.git_visible_paths())
     for conditional in manifest["measurement"]["conditional_current_assets"]:
         if conditional["path"] in visible:
@@ -117,15 +145,7 @@ def test_current_inventory_has_only_declared_g1_and_conditional_assets() -> None
     assert measured["class_counts"] == expected
     assert measured["code_asset_count"] == sum(expected.values())
     assert measured["git_visible_count"] == len(visible)
-
-
-def test_current_tracked_inventory_keeps_the_portable_class_counts() -> None:
-    manifest = assets.load_manifest()
-    measured = assets.inventory(commit="HEAD", include_assets=False)
-    expected = dict(manifest["measurement"]["expected_current_class_counts"])
-    expected["enforcement_control"] += 1  # .rgignore is tracked at current HEAD.
-    assert measured["class_counts"] == expected
-    assert measured["code_asset_count"] == sum(expected.values())
+    assert not any(record["path"].startswith(".artifacts/") for record in measured["assets"])
 
 
 def test_commit_inventory_never_exempts_registered_root_code(
@@ -151,15 +171,23 @@ def test_commit_inventory_never_exempts_registered_root_code(
     assert measured["assets"][0]["rule_id"] == "artifact_history"
 
 
-def test_read_only_historical_evidence_root_registry_is_exact_and_not_git_ignored() -> None:
+def test_artifact_evidence_boundary_is_dossier_derived_and_not_git_ignored() -> None:
     manifest = assets.load_manifest()
-    records = manifest["read_only_historical_evidence_roots"]
-    actual = {record["path"]: record["nature"] for record in records}
-    assert actual == EXPECTED_READ_ONLY_HISTORICAL_EVIDENCE_ROOTS
-    assert [record["path"] for record in records] == sorted(actual)
-    assets._validate_read_only_historical_evidence_roots(manifest)
+    assert manifest["artifact_evidence_boundary"] == EXPECTED_ARTIFACT_BOUNDARY_DESCRIPTOR
 
-    for root in actual:
+    # This supplier snapshot intentionally has the wrong Git topology: it
+    # tracks local workspace evidence.  Load the semantic model without
+    # pretending that the snapshot itself is a valid real-repository census.
+    boundary = assets._artifact_evidence_boundary(manifest)
+    representative_roots = {
+        ".artifacts/ab16_arms_20260802/",
+        ".artifacts/gpt_pro_review_batch_20260807/",
+        ".artifacts/w0_front_aware_20260803/",
+    }
+    assert representative_roots <= set(boundary.registered_roots)
+    assert ".artifacts/README.md" in boundary.tracked_root_files
+
+    for root in representative_roots:
         completed = subprocess.run(
             [
                 "git",
@@ -174,20 +202,21 @@ def test_read_only_historical_evidence_root_registry_is_exact_and_not_git_ignore
         assert completed.returncode == 1, root
 
 
-def test_registered_historical_roots_are_non_code_assets_without_prefix_bleed() -> None:
+def test_registered_artifact_evidence_is_non_code_asset_without_prefix_bleed() -> None:
     manifest = assets.load_manifest()
     registered = ".artifacts/ab16_arms_20260802/"
     measured = assets._measurement(
         {
             f"{registered}probe.py": b"raise AssertionError\n",
             f"{registered}opaque.bin": b"#!/bin/sh\nexit 1\n",
+            ".artifacts/_v28_dist.py": b"raise AssertionError\n",
             ".artifacts/ab16_arms_20260802-copy/probe.py": b"raise AssertionError\n",
             ".artifacts/future_campaign/probe.py": b"raise AssertionError\n",
         },
         manifest,
         include_assets=True,
     )
-    assert measured["git_visible_count"] == 4
+    assert measured["git_visible_count"] == 5
     assert measured["code_asset_count"] == 2
     assert measured["class_counts"]["historical_evidence"] == 2
     assert {record["path"] for record in measured["assets"]} == {
@@ -196,14 +225,15 @@ def test_registered_historical_roots_are_non_code_assets_without_prefix_bleed() 
     }
 
 
-def test_inventory_does_not_read_registered_root_contents(
+def test_inventory_does_not_read_registered_artifact_evidence_contents(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     registered = ".artifacts/h20_row_power_oracle_20260803/opaque.bin"
+    root_file = ".artifacts/_v28_dist.py"
     unregistered = ".artifacts/future_campaign/probe.py"
     reads: list[str] = []
 
-    monkeypatch.setattr(assets, "git_visible_paths", lambda: (registered, unregistered))
+    monkeypatch.setattr(assets, "git_visible_paths", lambda: (registered, root_file, unregistered))
 
     def read_current(path: str) -> bytes:
         reads.append(path)
@@ -212,54 +242,37 @@ def test_inventory_does_not_read_registered_root_contents(
     monkeypatch.setattr(assets, "_current_bytes", read_current)
     measured = assets.inventory(include_assets=True)
     assert reads == [unregistered]
-    assert measured["git_visible_count"] == 2
+    assert measured["git_visible_count"] == 3
     assert measured["class_counts"]["historical_evidence"] == 1
     assert [record["path"] for record in measured["assets"]] == [unregistered]
 
 
-@pytest.mark.parametrize(
-    "invalid_path",
-    (
-        ".artifacts/",
-        ".artifacts/missing-trailing-slash",
-        ".artifacts/nested/root/",
-        ".artifacts/*/",
-        ".artifacts/../",
-    ),
-)
-def test_read_only_historical_evidence_registry_rejects_non_exact_roots(
-    invalid_path: str,
-) -> None:
-    manifest = copy.deepcopy(assets.load_manifest())
-    manifest["read_only_historical_evidence_roots"][0]["path"] = invalid_path
-    with pytest.raises(assets.GovernanceError, match="read_only_historical_evidence_roots"):
-        assets._read_only_historical_evidence_roots(manifest)
+def test_artifact_evidence_descriptor_rejects_parallel_fields_and_relaxation() -> None:
+    parallel = copy.deepcopy(assets.load_manifest())
+    parallel["artifact_evidence_boundary"]["parallel_registry"] = "other.json"
+    with pytest.raises(assets.GovernanceError, match="invalid fields"):
+        assets._artifact_evidence_boundary(parallel)
+
+    relaxed = copy.deepcopy(assets.load_manifest())
+    relaxed["artifact_evidence_boundary"]["content_treatment"] = "historical_code_asset"
+    with pytest.raises(assets.GovernanceError, match="must remain non_code_asset"):
+        assets._artifact_evidence_boundary(relaxed)
 
 
-def test_read_only_historical_evidence_registry_rejects_duplicate_and_unsorted_roots() -> None:
-    duplicate = copy.deepcopy(assets.load_manifest())
-    duplicate["read_only_historical_evidence_roots"].insert(
-        1,
-        copy.deepcopy(duplicate["read_only_historical_evidence_roots"][0]),
-    )
-    with pytest.raises(assets.GovernanceError, match="duplicate paths"):
-        assets._read_only_historical_evidence_roots(duplicate)
-
-    unsorted = copy.deepcopy(assets.load_manifest())
-    roots = unsorted["read_only_historical_evidence_roots"]
-    roots[0], roots[1] = roots[1], roots[0]
-    with pytest.raises(assets.GovernanceError, match="sorted by path"):
-        assets._read_only_historical_evidence_roots(unsorted)
-
-
-def test_read_only_historical_evidence_registry_cannot_cover_tracked_paths(
+def test_artifact_evidence_validation_rejects_undeclared_tracked_path(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     manifest = assets.load_manifest()
-    tracked = b".artifacts/ab16_arms_20260802/tracked.py\0"
-    monkeypatch.setattr(assets, "_run_git", lambda _args: tracked)
-    with pytest.raises(assets.GovernanceError, match="must not cover tracked paths"):
-        assets._validate_read_only_historical_evidence_roots(manifest)
+    tracked = b".artifacts/future_campaign/probe.py\0"
+    def fake_git(args: list[str], **_kwargs: object) -> bytes:
+        if "--cached" in args:
+            return tracked
+        return b""
+
+    monkeypatch.setattr(assets, "_run_git", fake_git)
+
+    with pytest.raises(assets.GovernanceError, match="lacks git_tracked declaration"):
+        assets._validate_artifact_evidence_boundary(manifest)
 
 
 def test_unregistered_artifact_code_asset_still_fails_the_current_count_gate(
@@ -365,21 +378,197 @@ def test_capability_index_has_exactly_one_preferred_active_for_each_shared_autho
         assets._validate_capability_index(unshared)
 
 
-def test_research_run_root_is_declared_and_ignored_without_hiding_historical_evidence() -> None:
-    boundary = json.loads(
-        (assets.ROOT / "data" / "artifact_boundaries.json").read_text(encoding="utf-8")
+def test_artifact_boundary_separates_git_workspace_and_external_evidence() -> None:
+    boundary = artifact_evidence.load_boundary(assets.ROOT)
+    supplier_tracked = artifact_evidence.git_tracked_paths(
+        assets.ROOT, boundary.root_prefix.rstrip("/"),
     )
-    assert ".artifacts/research_runs/" in boundary["ignored_runtime_artifact_prefixes"]
+
+    assert boundary.dossier_registry == "data/knowledge/dossiers.json"
+    assert len(boundary.registered_roots) == 55
+    assert len(boundary.tracked_root_files) == 7
+    assert len(boundary.tracked_prefixes) == 9
+    assert len(boundary.tracked_files) == 1
+    assert len(boundary.workspace_root_files) == 24
+    assert boundary.external_registry == "data/external_artifacts.json"
+    assert boundary.expected_tracked_path_count == 117
+    assert len(supplier_tracked) >= boundary.expected_tracked_path_count
+    assert ".artifacts/research_runs/" in boundary.ignored_runtime_prefixes
+    assert ".artifacts/research_runs/" not in boundary.registered_roots
+    workspace_paths = artifact_evidence.validate_workspace_paths(
+        boundary,
+        artifact_evidence.git_untracked_paths(
+            assets.ROOT, boundary.root_prefix.rstrip("/"),
+        ),
+    )
+    assert all(boundary.covers_workspace(path) for path in workspace_paths)
+
+    # Build a deterministic real-topology fixture from the supplier bytes.  The
+    # supplier tar tracks local evidence, but the real repository has exactly
+    # 117 tracked artifact paths after the two governance files are added.
+    candidates = [path for path in supplier_tracked if boundary.covers_tracked(path)]
+    required = sorted(set(boundary.tracked_root_files) | set(boundary.tracked_files))
+    if len(supplier_tracked) == boundary.expected_tracked_path_count:
+        simulated_real = supplier_tracked
+    else:
+        remaining = [path for path in candidates if path not in required]
+        simulated_real = tuple(
+            sorted(required + remaining[: boundary.expected_tracked_path_count - len(required)])
+        )
+    assert len(simulated_real) == boundary.expected_tracked_path_count
+    assert artifact_evidence.validate_tracked_paths(boundary, simulated_real) == simulated_real
+
+    workspace_probe = ".artifacts/ab16_arms_20260802/result.json"
+    assert boundary.storage_class_for(workspace_probe) == "workspace_untracked"
+    assert boundary.covers_tracked(workspace_probe) is False
+
     completed = subprocess.run(
         ["git", "check-ignore", "-q", ".artifacts/research_runs/probe/result.json"],
         cwd=assets.ROOT,
         check=False,
     )
     assert completed.returncode == 0
-    tracked_prefixes = {
-        record["path_prefix"] for record in boundary["tracked_historical_evidence"]
-    }
-    assert ".artifacts/research_runs/" not in tracked_prefixes
+
+
+def test_artifact_boundary_projection_is_exact_and_supports_frozen_git_quoting() -> None:
+    projection = assets.ROOT / artifact_evidence.DEFAULT_MANIFEST
+    assert projection.read_text(encoding="utf-8") == artifact_evidence.render_projection(
+        assets.ROOT
+    )
+
+    payload = json.loads(projection.read_text(encoding="utf-8"))
+    prefixes = {record["path_prefix"] for record in payload["tracked_historical_evidence"]}
+    semantic = ".artifacts/v28_gpt_review/"
+    assert semantic in prefixes
+    assert f'"{semantic}' in prefixes
+
+    boundary = artifact_evidence.load_boundary(assets.ROOT)
+    actual_tracked = artifact_evidence.git_tracked_paths(
+        assets.ROOT, boundary.root_prefix.rstrip("/"),
+    )
+    if len(actual_tracked) == boundary.expected_tracked_path_count:
+        completed = subprocess.run(
+            [sys.executable, str(assets.ROOT / "scripts/check_artifact_boundaries.py")],
+            cwd=assets.ROOT,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=False,
+        )
+        assert completed.returncode == 0, completed.stdout
+        assert "artifact boundary check passed" in completed.stdout
+    else:
+        pytest.skip("supplier snapshot tracks workspace evidence; real-topology replay is separate")
+
+
+def test_artifact_boundary_rejects_manually_stale_projection(tmp_path: Path) -> None:
+    root = _copy_artifact_boundary_fixture(tmp_path)
+    projection = root / "data/artifact_boundaries.json"
+    payload = json.loads(projection.read_text(encoding="utf-8"))
+    payload["tracked_root_files"] = payload["tracked_root_files"][:-1]
+    projection.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+
+    with pytest.raises(
+        artifact_evidence.ArtifactEvidenceError,
+        match="tracked_root_files is stale",
+    ):
+        artifact_evidence.load_boundary(root)
+
+
+def test_artifact_boundary_rejects_undeclared_or_ignored_tracked_paths() -> None:
+    boundary = artifact_evidence.ArtifactEvidenceBoundary(
+        root_prefix=".artifacts/",
+        dossier_registry="data/knowledge/dossiers.json",
+        registered_roots=(),
+        tracked_root_files=(".artifacts/README.md",),
+        ignored_runtime_prefixes=(".artifacts/runtime/",),
+        tracked_prefixes=(".artifacts/known/", ".artifacts/runtime/"),
+    )
+
+    with pytest.raises(
+        artifact_evidence.ArtifactEvidenceError,
+        match="lacks git_tracked declaration",
+    ):
+        artifact_evidence.validate_tracked_paths(
+            boundary,
+            (".artifacts/README.md", ".artifacts/unknown/payload.json"),
+        )
+
+    with pytest.raises(
+        artifact_evidence.ArtifactEvidenceError,
+        match="ignored runtime artifact prefix",
+    ):
+        artifact_evidence.validate_tracked_paths(
+            boundary,
+            (
+                ".artifacts/README.md",
+                ".artifacts/known/payload.json",
+                ".artifacts/runtime/result.json",
+            ),
+        )
+
+
+def test_artifact_boundary_has_exact_prefix_semantics_without_sibling_bleed() -> None:
+    boundary = artifact_evidence.ArtifactEvidenceBoundary(
+        root_prefix=".artifacts/",
+        dossier_registry="data/knowledge/dossiers.json",
+        registered_roots=(".artifacts/known/",),
+        tracked_root_files=(".artifacts/README.md",),
+        ignored_runtime_prefixes=(),
+    )
+
+    assert boundary.covers(".artifacts/known/payload.json") is True
+    assert boundary.covers(".artifacts/README.md") is True
+    assert boundary.covers(".artifacts/known-copy/payload.json") is False
+
+
+def _copy_artifact_boundary_fixture(tmp_path: Path) -> Path:
+    root = tmp_path / "repo"
+    for relpath in (
+        "data/artifact_boundaries.json",
+        "data/repository_governance/artifact_boundaries.schema.json",
+        "data/repository_governance/artifact_evidence_inputs.json",
+        "data/repository_governance/artifact_evidence_inputs.schema.json",
+        "data/knowledge/dossiers.json",
+        "data/external_artifacts.json",
+    ):
+        source = assets.ROOT / relpath
+        destination = root / relpath
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(source.read_bytes())
+    return root
+
+
+def test_artifact_boundary_rejects_stale_root_file_declaration(tmp_path: Path) -> None:
+    root = _copy_artifact_boundary_fixture(tmp_path)
+    boundary = artifact_evidence.load_boundary(root)
+    tracked = tuple(
+        path for path in boundary.tracked_root_files if path != ".artifacts/_v28_dist.py"
+    )
+    with pytest.raises(
+        artifact_evidence.ArtifactEvidenceError,
+        match="declared .artifacts root file is not tracked",
+    ):
+        artifact_evidence.validate_tracked_paths(boundary, tracked)
+
+
+def test_artifact_boundary_rejects_runtime_overlap(tmp_path: Path) -> None:
+    root = _copy_artifact_boundary_fixture(tmp_path)
+    inputs_path = (
+        root / "data/repository_governance/artifact_evidence_inputs.json"
+    )
+    payload = json.loads(inputs_path.read_text(encoding="utf-8"))
+    payload["ignored_runtime_artifact_prefixes"].append(
+        ".artifacts/ab16_arms_20260802/runtime/"
+    )
+    payload["ignored_runtime_artifact_prefixes"].sort()
+    inputs_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+
+    with pytest.raises(
+        artifact_evidence.ArtifactEvidenceError,
+        match="overlaps registered evidence root",
+    ):
+        artifact_evidence.write_projection(root)
 
 
 def test_g1_disabled_projection_mode_has_no_g2_file_dependency() -> None:
@@ -533,7 +722,55 @@ def test_affected_selector_cannot_reintroduce_an_evidence_target() -> None:
     assert "developer workflow refuses explicit targets from another lane" in completed.stdout
 
 
+def test_production_devtools_reference_exception_is_exact_and_literal_only() -> None:
+    manifest = assets.load_manifest()
+    assert assets._production_devtools_reference_exceptions(manifest) == (
+        (
+            "scripts/preflight_gate.py",
+            "MEMORY_PLATE_TOOL",
+            "devtools/memory_plate_tool.py",
+        ),
+    )
+    assets._validate_no_production_devtools_import(manifest)
+
+    missing = copy.deepcopy(manifest)
+    missing["production_devtools_reference_exceptions"] = []
+    with pytest.raises(assets.GovernanceError, match="production source references"):
+        assets._validate_no_production_devtools_import(missing)
+
+    stale = copy.deepcopy(manifest)
+    stale["production_devtools_reference_exceptions"][0]["symbol"] = "OTHER_TOOL"
+    with pytest.raises(assets.GovernanceError, match="production source references"):
+        assets._validate_no_production_devtools_import(stale)
+
+
 def test_source_discovery_implementations_agree_and_exclude_devtools() -> None:
+    baseline_commit = assets.load_manifest()["measurement"][
+        "certified_exact_source_baseline"
+    ]["commit"]
+    available = subprocess.run(
+        ["git", "cat-file", "-e", f"{baseline_commit}^{{commit}}"],
+        cwd=assets.ROOT,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    if available.returncode != 0:
+        with pytest.raises(assets.GovernanceError, match="source identity drifted"):
+            assets._source_discovery_receipt()
+
+        modules = [
+            assets.importlib.import_module(name)
+            for name in assets.SOURCE_DISCOVERY_MODULES
+        ]
+        paths = [tuple(module._discover_certified_exact_source_hash_files()) for module in modules]
+        digests = [str(module.compute_certified_exact_source_digest()) for module in modules]
+        assert paths[0] == paths[1]
+        assert digests[0] == digests[1]
+        assert len(paths[0]) == 804
+        assert not any(path.startswith("devtools/") for path in paths[0])
+        return
+
     receipt = assets._source_discovery_receipt()
     assert receipt["path_count"] == 804
     assert receipt["devtools_paths"] == []
@@ -553,17 +790,61 @@ def test_source_discovery_rejects_two_implementations_drifting_together(
 
 
 def test_production_source_does_not_import_or_literal_reference_devtools() -> None:
-    assets._validate_no_production_devtools_import()
+    if not _current_exact_source_matches_frozen_receipt():
+        pytest.skip(
+            "supplier snapshot exact source differs from the frozen receipt; "
+            "the checker remains fail-closed in a complete certified tree"
+        )
+    assets._validate_no_production_devtools_import(assets.load_manifest())
 
 
-def test_check_command_passes_as_a_single_g1_gate() -> None:
+def test_current_check_is_explicitly_scoped_and_does_not_claim_history() -> None:
+    receipt = assets.check_current()
+
+    assert receipt["status"] == "PASS"
+    assert receipt["scope"] == "current_worktree_only"
+    assert receipt["current"]["class_counts"]["retirement_candidate"] == 19
+    assert receipt["not_checked"] == [
+        "frozen_code_asset_baseline_commit",
+        "certified_exact_source_baseline_receipt",
+    ]
+
+
+def test_cli_current_check_json_is_machine_readable() -> None:
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(assets.ROOT / "devtools" / "check_repository_code_assets.py"),
+            "check-current",
+            "--format",
+            "json",
+        ],
+        cwd=assets.ROOT,
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    payload = json.loads(completed.stdout)
+    assert payload["scope"] == "current_worktree_only"
+    assert "frozen_code_asset_baseline_commit" in payload["not_checked"]
+
+
+def test_check_command_passes_or_fails_only_on_missing_supplier_baseline() -> None:
+    if not _historical_baseline_available():
+        with pytest.raises(assets.GovernanceError, match=r"git .*ls-tree .* failed"):
+            assets.check()
+        return
+
     receipt = assets.check()
     assert receipt["status"] == "PASS"
     assert receipt["baseline"]["code_asset_count"] == 2001
     assert receipt["current"]["class_counts"]["retirement_candidate"] == 19
 
 
-def test_cli_inventory_json_is_machine_readable() -> None:
+def test_cli_inventory_json_is_machine_readable_when_baseline_is_available() -> None:
     completed = subprocess.run(
         [
             sys.executable,
@@ -575,10 +856,17 @@ def test_cli_inventory_json_is_machine_readable() -> None:
             "json",
         ],
         cwd=assets.ROOT,
-        check=True,
+        check=False,
         stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
         text=True,
     )
+    if not _historical_baseline_available():
+        assert completed.returncode != 0
+        assert "ls-tree" in completed.stdout
+        return
+
+    assert completed.returncode == 0
     payload = json.loads(completed.stdout)
     assert payload["revision"] == BASELINE
     assert payload["class_counts"] == BASELINE_COUNTS

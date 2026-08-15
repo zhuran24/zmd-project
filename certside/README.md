@@ -6,7 +6,7 @@
 >（同 formal/ 的锁面地位；16 号 §6.4 政策原样有效）。
 > 设计权威：`docs/research/p3_0c_binding_pb_sidecar_design_v1.md`（内容 v2，
 > 经双会话对抗审回收；审查归档 `docs/research/p3_0c_sidecar_reviews_20260705/`）。
-> 总图位置：`docs/项目说明/00_master_roadmap.md` §2b。
+> 原始规划坐标：`docs/history/status/00_master_roadmap_pre_phase3_20260812.md` §2b；当前后续工作见 `docs/项目说明/ROADMAP.md` 的 proof logging 工作线。
 
 ## 目录
 

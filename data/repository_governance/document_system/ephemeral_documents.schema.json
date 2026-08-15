@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-ephemeral-documents-v1",
+  "title": "ZMD active ephemeral document registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "ledger_reviewed_at",
+    "records"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "zmd_ephemeral_documents_v1"
+    },
+    "ledger_reviewed_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    }
+  },
+  "$defs": {
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?!.*\\u0000).+$"
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "created_at",
+        "expires_at",
+        "exit_action",
+        "rationale",
+        "successor_path"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/relpath"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "exit_action": {
+          "enum": [
+            "archive",
+            "delete",
+            "promote"
+          ]
+        },
+        "successor_path": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/relpath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "exit_action": {
+                "const": "delete"
+              }
+            },
+            "required": [
+              "exit_action"
+            ]
+          },
+          "then": {
+            "properties": {
+              "successor_path": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "exit_action": {
+                "enum": [
+                  "archive",
+                  "promote"
+                ]
+              }
+            },
+            "required": [
+              "exit_action"
+            ]
+          },
+          "then": {
+            "properties": {
+              "successor_path": {
+                "$ref": "#/$defs/relpath"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

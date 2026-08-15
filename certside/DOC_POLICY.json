@@ -1,0 +1,77 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "certside",
+  "description": "Certification-side current specifications and notes.",
+  "defaults": {
+    "document_class": "normative",
+    "authority_role": "normative_input",
+    "mutation": "governed",
+    "context_level": "L1",
+    "purpose": "Certification-side semantics and operating guidance.",
+    "volatile_facts": "reference_only",
+    "invariant_refs": [
+      "DOC-INV-006",
+      "DOC-INV-009",
+      "DOC-INV-014"
+    ],
+    "after_change": [
+      "docsystem.doctor"
+    ],
+    "review_policy": {
+      "at_phase_boundary": true,
+      "max_interval_days": 60
+    },
+    "section_refs": [
+      "certification"
+    ]
+  },
+  "rules": [
+    {
+      "id": "certside_purpose_01",
+      "match": {
+        "path": "README.md"
+      },
+      "set": {
+        "purpose": "Certification-side operator entrypoint and scope boundary.",
+        "invariant_refs": [
+          "DOC-INV-006",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Certification-side documents must state separate operating and semantic responsibilities."
+    },
+    {
+      "id": "certside_purpose_02",
+      "match": {
+        "path": "binding_canonical_semantics_v1.md"
+      },
+      "set": {
+        "purpose": "Normative binding between certification checks and canonical project semantics.",
+        "invariant_refs": [
+          "DOC-INV-006",
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-016"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012"
+        ]
+      },
+      "rationale": "Certification-side documents must state separate operating and semantic responsibilities."
+    }
+  ],
+  "legacy_projection": {
+    "rules": [],
+    "out_of_scope_notes": [
+      {
+        "pattern": "certside/**",
+        "rationale": "Certification-side note family; governed outside the legacy prune scanner."
+      }
+    ]
+  }
+}

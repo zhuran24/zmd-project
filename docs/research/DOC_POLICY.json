@@ -1,0 +1,120 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "docs.research",
+  "description": "Dated research, external review and experiment evidence packages.",
+  "defaults": {
+    "document_class": "historical_evidence",
+    "authority_role": "evidence_only",
+    "mutation": "direct",
+    "context_level": "L1",
+    "purpose": "Research evidence while active; closed or superseded dossiers become immutable through the dossier lifecycle overlay.",
+    "volatile_facts": "source_allowed",
+    "invariant_refs": [
+      "DOC-INV-002",
+      "DOC-INV-003",
+      "DOC-INV-009",
+      "DOC-INV-014",
+      "DOC-INV-018"
+    ],
+    "required_reads": [
+      "docs/research/README.md"
+    ],
+    "after_change": [
+      "docsystem.intake",
+      "knowledge.refresh_dossiers",
+      "knowledge.check",
+      "docsystem.doctor"
+    ],
+    "review_policy": {
+      "at_phase_boundary": true,
+      "max_interval_days": null
+    },
+    "section_refs": [
+      "research-archive"
+    ],
+    "adr_refs": [
+      "DOC-ADR-014"
+    ]
+  },
+  "rules": [
+    {
+      "id": "research_navigation",
+      "match": {
+        "path": "README.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "direct",
+        "context_level": "L0",
+        "purpose": "Current lifecycle and navigation guide for the research archive.",
+        "volatile_facts": "reference_only",
+        "invariant_refs": [
+          "DOC-INV-007",
+          "DOC-INV-014"
+        ],
+        "section_refs": [
+          "research-archive"
+        ]
+      },
+      "rationale": "These two files explain how to enter the archive; individual dossiers remain evidence."
+    },
+    {
+      "id": "research_index_redirect",
+      "match": {
+        "path": "INDEX.md"
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L0",
+        "purpose": "Generated compatibility redirect from the ambiguous research INDEX to the archive front door and named transcript payload.",
+        "volatile_facts": "forbidden",
+        "section_refs": [
+          "research-archive"
+        ],
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-004",
+          "DOC-INV-007",
+          "DOC-INV-012",
+          "DOC-INV-013",
+          "DOC-INV-014"
+        ],
+        "adr_refs": [
+          "DOC-ADR-010",
+          "DOC-ADR-011"
+        ],
+        "source_paths": [
+          "data/repository_governance/document_system/entrypoints.json",
+          "devtools/docctl.py"
+        ],
+        "generator_action": "docsystem.render_entrypoints",
+        "after_change": [
+          "docs.reference.validate",
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": null
+        }
+      },
+      "rationale": "An index covering one transcript window cannot keep the ambiguous master-index path as handwritten current navigation."
+    }
+  ],
+  "legacy_projection": {
+    "rules": [
+      {
+        "id": "research_dossiers",
+        "match": {
+          "glob": "docs/research/**"
+        },
+        "document_class": "historical",
+        "rationale": "Dated research dossiers are evidence; stale references describe their historical context."
+      }
+    ],
+    "out_of_scope_notes": []
+  }
+}

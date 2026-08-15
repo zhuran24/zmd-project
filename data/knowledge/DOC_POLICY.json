@@ -1,0 +1,163 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "data.knowledge",
+  "description": "Structured claim, decision, dossier, review, triage, topic, terminology, validity-profile and current-state sources.",
+  "defaults": {
+    "document_class": "structured_knowledge",
+    "authority_role": "structured_knowledge",
+    "mutation": "governed",
+    "context_level": "L1",
+    "purpose": "Stable knowledge identities, scopes, evidence links, semantic reviews, inventory triage, topic and terminology coordinates, validity events, decisions and generated projection inputs.",
+    "volatile_facts": "source_allowed",
+    "invariant_refs": [
+      "DOC-INV-001",
+      "DOC-INV-003",
+      "DOC-INV-009",
+      "DOC-INV-010",
+      "DOC-INV-011",
+      "DOC-INV-014",
+      "DOC-INV-018",
+      "DOC-INV-021"
+    ],
+    "required_reads": [
+      "data/knowledge/README.md"
+    ],
+    "after_change": [
+      "docsystem.intake",
+      "knowledge.build",
+      "knowledge.check",
+      "docsystem.doctor"
+    ],
+    "review_policy": {
+      "at_phase_boundary": true,
+      "max_interval_days": 45
+    },
+    "section_refs": [
+      "knowledge"
+    ],
+    "adr_refs": [
+      "DOC-ADR-014",
+      "DOC-ADR-017"
+    ]
+  },
+  "rules": [
+    {
+      "id": "knowledge_readme",
+      "match": {
+        "path": "README.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "purpose": "Operating guide for the structured knowledge layer.",
+        "volatile_facts": "reference_only",
+        "required_reads": [
+          "docs/governance/document-system/ARCHITECTURE.md"
+        ]
+      },
+      "rationale": "The guide explains the ledger; it does not replace ledger contents."
+    },
+    {
+      "id": "decision_nonauthorizing_register",
+      "match": {
+        "path": "decisions.jsonl"
+      },
+      "set": {
+        "document_class": "structured_knowledge",
+        "authority_role": "structured_knowledge",
+        "mutation": "append_only",
+        "context_level": "L1",
+        "purpose": "Non-authorizing append-only query register whose records point to external owner authority sources.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-003",
+          "DOC-INV-018",
+          "DOC-INV-021"
+        ],
+        "required_reads": [
+          "data/knowledge/README.md",
+          "docs/governance/document-system/ADR/017-executable-knowledge-authority-and-nonauthorizing-decisions.md"
+        ],
+        "after_change": [
+          "docsystem.intake",
+          "knowledge.build",
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "adr_refs": [
+          "DOC-ADR-017"
+        ]
+      },
+      "rationale": "The register preserves prior records byte-for-byte after the declared v1→v2 migration; corrections append successors and never create owner authority."
+    },
+    {
+      "id": "knowledge_census_fixture",
+      "match": {
+        "path": "knowledge_census.json"
+      },
+      "set": {
+        "document_class": "structured_knowledge",
+        "authority_role": "governance_control",
+        "mutation": "governed",
+        "context_level": "L1",
+        "purpose": "Sole deliberately maintained numeric acceptance fixture for the knowledge layer; checker compares it with computed ledger properties.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-006",
+          "DOC-INV-011",
+          "DOC-INV-021"
+        ],
+        "adr_refs": [
+          "DOC-ADR-008",
+          "DOC-ADR-017"
+        ],
+        "after_change": [
+          "knowledge.build",
+          "knowledge.check",
+          "docsystem.tests"
+        ]
+      },
+      "rationale": "Numeric inventory expectations belong in one reviewed fixture instead of being scattered through framework tests."
+    },
+    {
+      "id": "knowledge_schemas",
+      "match": {
+        "prefix": "schemas/"
+      },
+      "set": {
+        "document_class": "governance_control",
+        "authority_role": "governance_control",
+        "context_level": "L2",
+        "purpose": "Schemas that define valid claim, decision, dossier, review, triage, topic, terminology, validity-profile and current-state and census records.",
+        "invariant_refs": [
+          "DOC-INV-003",
+          "DOC-INV-006",
+          "DOC-INV-010",
+          "DOC-INV-011",
+          "DOC-INV-018",
+          "DOC-INV-021"
+        ],
+        "adr_refs": [
+          "DOC-ADR-002",
+          "DOC-ADR-004",
+          "DOC-ADR-005",
+          "DOC-ADR-006",
+          "DOC-ADR-007",
+          "DOC-ADR-008",
+          "DOC-ADR-014",
+          "DOC-ADR-017"
+        ]
+      },
+      "rationale": "Schema changes can reinterpret the knowledge layer and therefore require governed review."
+    }
+  ],
+  "legacy_projection": {
+    "rules": [],
+    "out_of_scope_notes": [
+      {
+        "pattern": "data/knowledge/README.md",
+        "rationale": "Structured knowledge-ledger operating guide; integrity is enforced by knowledge and document-system checkers."
+      }
+    ]
+  }
+}

@@ -38,11 +38,11 @@
     },
     "expected_current_class_counts": {
       "active_implementation": 390,
-      "test": 670,
-      "common_infrastructure": 480,
+      "test": 664,
+      "common_infrastructure": 469,
       "authoritative_input": 4,
-      "enforcement_control": 10,
-      "historical_evidence": 473,
+      "enforcement_control": 40,
+      "historical_evidence": 466,
       "retirement_candidate": 19
     },
     "conditional_current_assets": [
@@ -80,9 +80,11 @@
     ],
     "include_shebang": true,
     "explicit_paths": [
+      ".docsystem/manifest.json",
       ".gitattributes",
       ".gitignore",
       ".rgignore",
+      "DOC_POLICY.json",
       "cc_memory_vnext/.gitignore",
       "certside/.gitignore",
       "data/artifact_boundaries.json",
@@ -114,141 +116,6 @@
       "data/repository_governance/*.json"
     ]
   },
-  "read_only_historical_evidence_roots": [
-    {
-      "path": ".artifacts/ab16_arms_20260802/",
-      "nature": "failed_campaign_history",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "AB16 r3-r6 campaign attempts, retained tool snapshots, failure receipts, and closeout evidence."
-    },
-    {
-      "path": ".artifacts/ab16_slimdown_20260801/",
-      "nature": "research_evidence",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "AB16 governance and simplification execution logs, launch records, preflight receipts, and result history."
-    },
-    {
-      "path": ".artifacts/adapt_batch_gates/",
-      "nature": "research_evidence",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "Batch-gate adaptation, full-gate, slow-lane, and interpreter comparison receipts."
-    },
-    {
-      "path": ".artifacts/band22_admission_sim_20260805/",
-      "nature": "research_evidence",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "band22 准入口分拣仿真四变体、harness 归档与终判读证据。"
-    },
-    {
-      "path": ".artifacts/band22_faithful_sim_20260805/",
-      "nature": "research_evidence",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "band22 忠实映射仿真运行与判据证据。"
-    },
-    {
-      "path": ".artifacts/band22_flow_account_20260805/",
-      "nature": "research_evidence",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "band22 静态流量账探针结果与主线复算报告。"
-    },
-    {
-      "path": ".artifacts/band22_headless_sim_20260805/",
-      "nature": "research_evidence",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "band22 无头仿真早期运行证据。"
-    },
-    {
-      "path": ".artifacts/band22_strict_hole_probe_20260805/",
-      "nature": "research_evidence",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "严格空地孔位探针证据。"
-    },
-    {
-      "path": ".artifacts/band22_strict_redesign_pack_20260805/",
-      "nature": "research_evidence",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "严格语义重设计咨询包装配材料。"
-    },
-    {
-      "path": ".artifacts/band22_strict_redesign_replies_20260805/",
-      "nature": "research_evidence",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "GPT Pro 三份严格 (42,6) 见证回件解包与三席独立验伤全套证据。"
-    },
-    {
-      "path": ".artifacts/batch_c_leftovers_20260714/",
-      "nature": "failed_campaign_history",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "Retained Batch-C drill, crash, restart, and ledger-rescue campaign history."
-    },
-    {
-      "path": ".artifacts/cleanroom_r3_adversarial/",
-      "nature": "research_evidence",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "Clean-room adversarial run prompt, execution log, and verdict evidence."
-    },
-    {
-      "path": ".artifacts/h20_row_power_oracle_20260803/",
-      "nature": "research_evidence",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "H20 row-power oracle, independent checker, receipts, and bounded research result."
-    },
-    {
-      "path": ".artifacts/ip_adapter_v3_20260805/",
-      "nature": "research_evidence",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "IndustrialPlanner v3 适配器实验证据。"
-    },
-    {
-      "path": ".artifacts/merge_codex_20260801/",
-      "nature": "research_evidence",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "Retained merge preflight and gate execution evidence."
-    },
-    {
-      "path": ".artifacts/rab_drill_20260716/",
-      "nature": "research_evidence",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "RAB drill control, resource, memory, and execution evidence."
-    },
-    {
-      "path": ".artifacts/w0_consult_packs_20260804/",
-      "nature": "research_evidence",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "W0 咨询包装配与回件证据（08-04）。"
-    },
-    {
-      "path": ".artifacts/w0_fixrerun_20260804/",
-      "nature": "research_evidence",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "W0 修复重跑与 M5 互核证据（08-04）。"
-    },
-    {
-      "path": ".artifacts/w0_front_aware_20260803/",
-      "nature": "research_evidence",
-      "content_treatment": "non_code_asset",
-      "mutation_expectation": "read_only_preserve_in_place",
-      "rationale": "W0 front-aware G1 opening brief, pattern catalog, master run roots, and preflight receipts. Line still active: append-only extension subpaths (g1_run/stage_c/ preflight logs, probe_20260803/, l2_consult_20260803/) keep accumulating until the line closes; existing bytes are immutable."
-    }
-  ],
   "classification": {
     "primary_classes": [
       "active_implementation",
@@ -276,6 +143,26 @@
         ],
         "mutation_policy": "normal_review_plus_soundness_obligations",
         "rationale": "master_model imports PoseBoolExactMasterDelegate and EXACT_USE_POSE_BOOL_MASTER can enable it; public certification remains fail-closed."
+      },
+      {
+        "id": "document_system_bootstrap_controls",
+        "match": {
+          "paths": [
+            ".docsystem/manifest.json",
+            "DOC_POLICY.json"
+          ]
+        },
+        "primary_class": "enforcement_control",
+        "lifecycle": "current",
+        "authority_role": "non_authorizing_document_governance_control",
+        "certified_admission": "non_authorizing",
+        "workflow_membership": [
+          "developer",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "framework_governance_review",
+        "rationale": "The bootstrap manifest and root document policy define the fail-closed document-system entry boundary without granting production authority."
       },
       {
         "id": "repository_governance_control",
@@ -310,6 +197,27 @@
         ],
         "mutation_policy": "generated_from_governance_manifest",
         "rationale": "The default search projection is a visible enforcement control and remains optional while G1 isolation is disabled."
+      },
+      {
+        "id": "document_governance_gate_controls",
+        "match": {
+          "paths": [
+            ".github/workflows/document-governance.yml",
+            "devtools/document_governance_gate.py",
+            "devtools/document_maintenance_audit.py"
+          ]
+        },
+        "primary_class": "enforcement_control",
+        "lifecycle": "current",
+        "authority_role": "non_authorizing_document_governance_control",
+        "certified_admission": "non_authorizing",
+        "workflow_membership": [
+          "developer",
+          "full",
+          "security"
+        ],
+        "mutation_policy": "framework_governance_review",
+        "rationale": "The manifest-owned governance runner, periodic audit runner and shared CI trigger enforce document governance without entering production source authority."
       },
       {
         "id": "governance_tests",
@@ -821,6 +729,37 @@
         "lifecycle": "current_frozen_or_owner_controlled",
         "authority_role": "proof_review_or_artifact_boundary_control",
         "mutation_policy": "project_lock_or_owner_process_required"
+      },
+      {
+        "id": "document_system_bootstrap_role",
+        "match": {
+          "paths": [
+            ".docsystem/manifest.json",
+            "DOC_POLICY.json"
+          ]
+        },
+        "asset_role": "current_enforcement_control",
+        "lifecycle": "current",
+        "authority_role": "document_governance_only",
+        "mutation_policy": "framework_governance_review"
+      },
+      {
+        "id": "document_governance_gate_role",
+        "match": {
+          "paths": [
+            ".github/workflows/document-governance.yml",
+            "data/repository_governance/document_system/governance_gate.json",
+            "data/repository_governance/document_system/governance_gate.schema.json",
+            "devtools/document_governance_gate.py",
+            "data/repository_governance/document_system/maintenance_audit.json",
+            "data/repository_governance/document_system/maintenance_audit.schema.json",
+            "devtools/document_maintenance_audit.py"
+          ]
+        },
+        "asset_role": "current_enforcement_control",
+        "lifecycle": "current",
+        "authority_role": "document_governance_only",
+        "mutation_policy": "framework_governance_review"
       },
       {
         "id": "retired_f8_current_spec",
@@ -1410,6 +1349,24 @@
       "target": "src/tests/cuts/test_cut_store_rotation.py",
       "status": "pending_missing_target",
       "behavior": "do_not_start_pytest"
+    }
+  ],
+  "artifact_evidence_boundary": {
+    "manifest": "data/artifact_boundaries.json",
+    "schema": "data/repository_governance/artifact_boundaries.schema.json",
+    "inputs": "data/repository_governance/artifact_evidence_inputs.json",
+    "inputs_schema": "data/repository_governance/artifact_evidence_inputs.schema.json",
+    "content_treatment": "non_code_asset",
+    "mutation_expectation": "read_only_preserve_in_place"
+  },
+  "production_devtools_reference_exceptions": [
+    {
+      "path": "scripts/preflight_gate.py",
+      "kind": "literal_only",
+      "literal": "devtools/memory_plate_tool.py",
+      "symbol": "MEMORY_PLATE_TOOL",
+      "lifecycle": "dormant_advisory_pointer",
+      "rationale": "The memory layer is intentionally unregistered, while the advisory index check retains its exact former tool path for fail-visible recovery. No production import is allowed."
     }
   ]
 }

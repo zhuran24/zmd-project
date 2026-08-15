@@ -1,0 +1,397 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-document-intake-v1",
+  "title": "ZMD event-driven document intake protocol",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "system_version",
+    "owner_identities",
+    "semantic_identity",
+    "authority_changes",
+    "dossier_workflow",
+    "local_optional_evidence",
+    "ephemeral_documents",
+    "events"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "zmd_document_intake_v1"
+    },
+    "system_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "owner_identities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "semantic_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claims",
+        "decisions"
+      ],
+      "properties": {
+        "claims": {
+          "$ref": "#/$defs/identity_ledger"
+        },
+        "decisions": {
+          "$ref": "#/$defs/identity_ledger"
+        }
+      }
+    },
+    "authority_changes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority_roles",
+        "mutations",
+        "decision_source",
+        "required_decision_status",
+        "evidence_match",
+        "path_rules",
+        "required_evidence_role",
+        "companion_check"
+      ],
+      "properties": {
+        "authority_roles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "machine_authority",
+              "normative_input",
+              "governance_control"
+            ]
+          }
+        },
+        "mutations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "owner_only"
+            ]
+          }
+        },
+        "decision_source": {
+          "$ref": "#/$defs/relpath"
+        },
+        "required_decision_status": {
+          "const": "current"
+        },
+        "evidence_match": {
+          "const": "exact_changed_path"
+        },
+        "path_rules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "match",
+              "allowed_authority_effects",
+              "required_scope_any"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9_]*$"
+              },
+              "match": {
+                "$ref": "#/$defs/match"
+              },
+              "allowed_authority_effects": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "phase_gate",
+                    "project_semantics",
+                    "research_governance",
+                    "scope_boundary"
+                  ]
+                }
+              },
+              "required_scope_any": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        },
+        "required_evidence_role": {
+          "const": "authority_change"
+        },
+        "companion_check": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "enabled",
+            "blocking",
+            "missing_companion_severity"
+          ],
+          "properties": {
+            "enabled": {
+              "const": true
+            },
+            "blocking": {
+              "type": "boolean"
+            },
+            "missing_companion_severity": {
+              "const": "warning"
+            }
+          }
+        }
+      }
+    },
+    "dossier_workflow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "triage_source",
+        "new_tracked_research_lifecycle",
+        "closure_outcomes"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/relpath"
+        },
+        "triage_source": {
+          "$ref": "#/$defs/relpath"
+        },
+        "new_tracked_research_lifecycle": {
+          "const": "active"
+        },
+        "closure_outcomes": {
+          "type": "array",
+          "minItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "knowledge_promoted",
+              "negative_results_promoted",
+              "decision_recorded",
+              "no_reusable_claim",
+              "superseded_by_dossier"
+            ]
+          }
+        }
+      }
+    },
+    "local_optional_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_for_new_records",
+        "hash_algorithm",
+        "required_fields"
+      ],
+      "properties": {
+        "required_for_new_records": {
+          "const": true
+        },
+        "hash_algorithm": {
+          "const": "sha256"
+        },
+        "required_fields": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "manifest_path",
+              "manifest_sha256",
+              "recovery_instructions"
+            ]
+          }
+        }
+      }
+    },
+    "ephemeral_documents": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "schema"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/relpath"
+        },
+        "schema": {
+          "$ref": "#/$defs/relpath"
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/event"
+      }
+    }
+  },
+  "$defs": {
+    "relpath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?!.*\\u0000).+$"
+    },
+    "identity_ledger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "id_field",
+        "semantic_fields"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/relpath"
+        },
+        "id_field": {
+          "const": "id"
+        },
+        "semantic_fields": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          }
+        },
+        "allowed_schema_migrations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identity_schema_migration"
+          }
+        }
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "description",
+        "action_ids"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^DOC-EVENT-[A-Z0-9][A-Z0-9-]*$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "action_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_.-]*$"
+          }
+        }
+      }
+    },
+    "match": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/relpath"
+        },
+        "paths": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/relpath"
+          }
+        },
+        "prefix": {
+          "type": "string",
+          "minLength": 2,
+          "pattern": "/$"
+        },
+        "glob": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "identity_schema_migration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "from_schema_version",
+        "to_schema_version",
+        "allow_added_semantic_fields",
+        "migration_id",
+        "allow_record_rewrite_fields"
+      ],
+      "properties": {
+        "from_schema_version": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "to_schema_version": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "allow_added_semantic_fields": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          }
+        },
+        "migration_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "allow_record_rewrite_fields": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          }
+        }
+      }
+    }
+  }
+}

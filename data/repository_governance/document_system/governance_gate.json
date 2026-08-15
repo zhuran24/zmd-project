@@ -1,0 +1,553 @@
+{
+  "schema_version": "zmd_document_governance_gate_v2",
+  "system_version": "2.6.0",
+  "fingerprint": {
+    "version": "git_declared_state_v2",
+    "hash_algorithm": "sha256",
+    "index": "included",
+    "tracked_worktree": "modified_deleted_and_mode_state",
+    "workspace_inputs": "manifest_declared_overlays_only",
+    "arbitrary_untracked": "excluded",
+    "ignored": "excluded"
+  },
+  "runner": {
+    "default_profile": "changed",
+    "max_parallel_lanes": 4,
+    "lane_isolation": "process_plus_unique_external_tempdir",
+    "mutation_policy": "git_visible_state_must_be_identical"
+  },
+  "profiles": {
+    "changed": {
+      "description": "Local, pull-request and push gate for the current document/framework change set.",
+      "requires_base": false,
+      "lane_ids": [
+        "document_intake",
+        "docsystem_changed",
+        "docsystem_doctor",
+        "maintenance_audit",
+        "knowledge_integrity",
+        "reference_registry",
+        "artifact_evidence",
+        "code_assets_current",
+        "document_system_regressions",
+        "document_intake_regressions",
+        "maintenance_audit_regressions",
+        "document_landing_regressions",
+        "knowledge_regressions",
+        "governance_gate_regressions",
+        "code_assets_regressions",
+        "reference_regressions",
+        "framework_ruff",
+        "framework_mypy"
+      ]
+    },
+    "full": {
+      "description": "Phase-boundary validation of all current document, knowledge and code-asset surfaces; historical object replay is a separate manual profile.",
+      "requires_base": false,
+      "lane_ids": [
+        "document_intake",
+        "docsystem_changed",
+        "docsystem_doctor",
+        "maintenance_audit",
+        "knowledge_integrity",
+        "reference_registry",
+        "artifact_evidence",
+        "code_assets_current",
+        "document_system_regressions",
+        "document_intake_regressions",
+        "maintenance_audit_regressions",
+        "document_landing_regressions",
+        "knowledge_regressions",
+        "governance_gate_regressions",
+        "code_assets_regressions",
+        "reference_regressions",
+        "framework_ruff",
+        "framework_mypy"
+      ]
+    },
+    "weekly": {
+      "description": "Clean-tree scheduled audit of current projections and semantic maintenance queues; no external Git-object dependency.",
+      "requires_base": false,
+      "lane_ids": [
+        "docsystem_doctor",
+        "maintenance_audit",
+        "knowledge_integrity",
+        "reference_registry",
+        "artifact_evidence",
+        "code_assets_current",
+        "document_system_regressions",
+        "document_intake_regressions",
+        "maintenance_audit_regressions",
+        "document_landing_regressions",
+        "knowledge_regressions",
+        "governance_gate_regressions",
+        "code_assets_regressions",
+        "reference_regressions",
+        "framework_ruff",
+        "framework_mypy"
+      ]
+    },
+    "framework": {
+      "description": "Focused document-framework regression shards used by docsystem.tests.",
+      "requires_base": false,
+      "lane_ids": [
+        "document_system_regressions",
+        "document_intake_regressions",
+        "maintenance_audit_regressions",
+        "document_landing_regressions",
+        "knowledge_regressions",
+        "governance_gate_regressions",
+        "code_assets_regressions",
+        "reference_regressions"
+      ]
+    },
+    "historical_replay": {
+      "description": "Manual-only replay of the frozen historical code-asset baseline; requires the complete external Git object graph.",
+      "requires_base": false,
+      "lane_ids": [
+        "code_assets_history"
+      ]
+    }
+  },
+  "lanes": [
+    {
+      "id": "document_intake",
+      "description": "Typed Git-diff intake for new documents, dossier workflow, stable knowledge identity, owner companions and temporary/local evidence.",
+      "command": [
+        "{python}",
+        "devtools/docctl.py",
+        "intake",
+        "--changed",
+        "--json"
+      ],
+      "timeout_seconds": 180,
+      "base_argument": "--base",
+      "required_paths": [
+        "devtools/docctl.py",
+        "devtools/build_knowledge_docs.py",
+        "data/repository_governance/document_system/intake.json",
+        "data/repository_governance/document_system/intake.schema.json",
+        "data/repository_governance/document_system/ephemeral_documents.json",
+        "data/repository_governance/document_system/ephemeral_documents.schema.json",
+        "data/knowledge/schemas/dossiers.schema.json"
+      ],
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only"
+    },
+    {
+      "id": "docsystem_changed",
+      "description": "Diff-aware mutation, event-intake, policy-anchor and framework-companion validation.",
+      "command": [
+        "{python}",
+        "devtools/docctl.py",
+        "check",
+        "--changed",
+        "--json"
+      ],
+      "timeout_seconds": 180,
+      "base_argument": "--base",
+      "required_paths": [
+        "devtools/docctl.py",
+        "data/repository_governance/document_system/intake.json",
+        "data/repository_governance/document_system/intake.schema.json",
+        "data/repository_governance/document_system/ephemeral_documents.json",
+        "data/repository_governance/document_system/ephemeral_documents.schema.json",
+        "data/knowledge/schemas/dossiers.schema.json"
+      ],
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only"
+    },
+    {
+      "id": "docsystem_doctor",
+      "description": "Self-consistency, projection freshness and framework-core closure.",
+      "command": [
+        "{python}",
+        "devtools/docctl.py",
+        "doctor"
+      ],
+      "timeout_seconds": 180,
+      "base_argument": null,
+      "required_paths": [
+        ".docsystem/manifest.json",
+        "devtools/docctl.py"
+      ],
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only"
+    },
+    {
+      "id": "maintenance_audit",
+      "description": "Read-only weekly maintenance audit over existing policy, knowledge, lifecycle and Git-visible truth sources.",
+      "command": [
+        "{python}",
+        "devtools/docctl.py",
+        "audit",
+        "--profile",
+        "weekly",
+        "--json"
+      ],
+      "timeout_seconds": 300,
+      "base_argument": null,
+      "required_paths": [
+        ".docsystem/manifest.json",
+        "devtools/docctl.py",
+        "devtools/document_maintenance_audit.py",
+        "data/repository_governance/document_system/maintenance_audit.json",
+        "data/repository_governance/document_system/maintenance_audit.schema.json",
+        "docs/MAINTENANCE_QUEUE.md"
+      ],
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only"
+    },
+    {
+      "id": "knowledge_integrity",
+      "description": "Claim, decision, dossier, topic, term and generated knowledge projection integrity.",
+      "command": [
+        "{python}",
+        "devtools/check_knowledge_docs.py"
+      ],
+      "timeout_seconds": 180,
+      "base_argument": null,
+      "required_paths": [
+        "devtools/check_knowledge_docs.py",
+        "data/knowledge/claims.jsonl"
+      ],
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only"
+    },
+    {
+      "id": "reference_registry",
+      "description": "Legacy reference-scan registry coverage and structural validity.",
+      "command": [
+        "{python}",
+        "devtools/docs_reference_scan.py",
+        "validate-registry"
+      ],
+      "timeout_seconds": 180,
+      "base_argument": null,
+      "required_paths": [
+        "devtools/docs_reference_scan.py",
+        "data/repository_governance/doc_classes.json"
+      ],
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only"
+    },
+    {
+      "id": "artifact_evidence",
+      "description": "Tracked historical-evidence boundary and frozen compatibility projection.",
+      "command": [
+        "{python}",
+        "devtools/artifact_evidence.py",
+        "check"
+      ],
+      "timeout_seconds": 180,
+      "base_argument": null,
+      "required_paths": [
+        "devtools/artifact_evidence.py",
+        "data/repository_governance/artifact_evidence_inputs.json"
+      ],
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only"
+    },
+    {
+      "id": "code_assets_current",
+      "description": "Current-worktree code-asset classification, isolation and enforcement-control counts without claiming historical replay.",
+      "command": [
+        "{python}",
+        "devtools/check_repository_code_assets.py",
+        "check-current",
+        "--format",
+        "json"
+      ],
+      "timeout_seconds": 300,
+      "base_argument": null,
+      "required_paths": [
+        "devtools/check_repository_code_assets.py",
+        "data/repository_governance/code_assets.json"
+      ],
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only"
+    },
+    {
+      "id": "document_system_regressions",
+      "description": "Document-system resolver, policy, entrypoint and convergence regressions.",
+      "command": [
+        "{python}",
+        "-m",
+        "pytest",
+        "-p",
+        "no:randomly",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp={temp}/pytest",
+        "-q",
+        "src/tests/test_document_system.py"
+      ],
+      "timeout_seconds": 300,
+      "base_argument": null,
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only",
+      "required_paths": [
+        "src/tests/test_document_system.py"
+      ]
+    },
+    {
+      "id": "document_intake_regressions",
+      "description": "Event-intake, typed dossier closure, ephemeral lifecycle and local-evidence portability regressions.",
+      "command": [
+        "{python}",
+        "-m",
+        "pytest",
+        "-p",
+        "no:randomly",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp={temp}/pytest",
+        "-q",
+        "devtools/tests/test_document_intake.py"
+      ],
+      "timeout_seconds": 300,
+      "base_argument": null,
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only",
+      "required_paths": [
+        "devtools/tests/test_document_intake.py"
+      ]
+    },
+    {
+      "id": "maintenance_audit_regressions",
+      "description": "Periodic audit registry, deterministic projection, severity and no-parallel-truth regressions.",
+      "command": [
+        "{python}",
+        "-m",
+        "pytest",
+        "-p",
+        "no:randomly",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp={temp}/pytest",
+        "-q",
+        "devtools/tests/test_document_maintenance_audit.py"
+      ],
+      "timeout_seconds": 300,
+      "base_argument": null,
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only",
+      "required_paths": [
+        "devtools/tests/test_document_maintenance_audit.py"
+      ]
+    },
+    {
+      "id": "document_landing_regressions",
+      "description": "Non-destructive real-repository landing, dynamic drift and semantic migration regressions.",
+      "command": [
+        "{python}",
+        "-m",
+        "pytest",
+        "-p",
+        "no:randomly",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp={temp}/pytest",
+        "-q",
+        "devtools/tests/test_document_patch_landing.py"
+      ],
+      "timeout_seconds": 300,
+      "base_argument": null,
+      "required_paths": [
+        "data/repository_governance/document_system/landing.json",
+        "data/repository_governance/document_system/landing.schema.json",
+        "data/repository_governance/document_system/landing_ack.schema.json",
+        "devtools/document_patch_landing.py",
+        "devtools/tests/test_document_patch_landing.py"
+      ],
+      "environment": {
+        "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1"
+      },
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only"
+    },
+    {
+      "id": "knowledge_regressions",
+      "description": "Knowledge-ledger, projection and phase-2 closure regressions.",
+      "command": [
+        "{python}",
+        "-m",
+        "pytest",
+        "-p",
+        "no:randomly",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp={temp}/pytest",
+        "-q",
+        "src/tests/test_knowledge_docs.py"
+      ],
+      "timeout_seconds": 300,
+      "base_argument": null,
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only",
+      "required_paths": [
+        "src/tests/test_knowledge_docs.py"
+      ]
+    },
+    {
+      "id": "governance_gate_regressions",
+      "description": "Governance-gate configuration, fingerprint and mutation-blocking regressions.",
+      "command": [
+        "{python}",
+        "-m",
+        "pytest",
+        "-p",
+        "no:randomly",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp={temp}/pytest",
+        "-q",
+        "devtools/tests/test_document_governance_gate.py"
+      ],
+      "timeout_seconds": 300,
+      "base_argument": null,
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only",
+      "required_paths": [
+        "devtools/tests/test_document_governance_gate.py"
+      ]
+    },
+    {
+      "id": "code_assets_regressions",
+      "description": "Repository code-asset, artifact-boundary and current/history scope regressions.",
+      "command": [
+        "{python}",
+        "-m",
+        "pytest",
+        "-p",
+        "no:randomly",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp={temp}/pytest",
+        "-q",
+        "devtools/tests/test_repository_code_assets.py"
+      ],
+      "timeout_seconds": 300,
+      "base_argument": null,
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only",
+      "required_paths": [
+        "devtools/tests/test_repository_code_assets.py"
+      ]
+    },
+    {
+      "id": "reference_regressions",
+      "description": "Legacy document-reference scanner regression suite.",
+      "command": [
+        "{python}",
+        "-m",
+        "pytest",
+        "-p",
+        "no:randomly",
+        "-p",
+        "no:cacheprovider",
+        "--basetemp={temp}/pytest",
+        "-q",
+        "src/tests/test_docs_reference_scan.py"
+      ],
+      "timeout_seconds": 300,
+      "base_argument": null,
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only",
+      "required_paths": [
+        "src/tests/test_docs_reference_scan.py"
+      ]
+    },
+    {
+      "id": "framework_ruff",
+      "description": "Static lint for the framework gate, resolver, periodic audit, code-asset checker and their focused tests.",
+      "command": [
+        "{python}",
+        "-m",
+        "ruff",
+        "check",
+        "devtools/document_governance_gate.py",
+        "devtools/docctl.py",
+        "devtools/check_repository_code_assets.py",
+        "devtools/tests/test_document_intake.py",
+        "devtools/tests/test_document_governance_gate.py",
+        "devtools/tests/test_repository_code_assets.py",
+        "devtools/document_maintenance_audit.py",
+        "devtools/tests/test_document_maintenance_audit.py",
+        "src/tests/test_document_system.py",
+        "src/tests/test_docs_reference_scan.py",
+        "devtools/document_patch_landing.py",
+        "devtools/tests/test_document_patch_landing.py"
+      ],
+      "timeout_seconds": 300,
+      "base_argument": null,
+      "required_paths": [
+        "ruff.toml"
+      ],
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only"
+    },
+    {
+      "id": "framework_mypy",
+      "description": "Strict type validation for the governance runner, periodic audit and document resolver boundaries.",
+      "command": [
+        "{python}",
+        "-m",
+        "mypy",
+        "--explicit-package-bases",
+        "--ignore-missing-imports",
+        "--follow-imports=silent",
+        "devtools/document_governance_gate.py",
+        "devtools/docctl.py",
+        "devtools/document_maintenance_audit.py",
+        "devtools/document_patch_landing.py"
+      ],
+      "timeout_seconds": 600,
+      "base_argument": null,
+      "required_paths": [
+        "devtools/document_governance_gate.py",
+        "devtools/docctl.py",
+        "devtools/document_maintenance_audit.py"
+      ],
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only"
+    },
+    {
+      "id": "code_assets_history",
+      "description": "Full frozen-baseline and certified-source history replay; requires the complete supplier Git object graph.",
+      "command": [
+        "{python}",
+        "devtools/check_repository_code_assets.py",
+        "check",
+        "--format",
+        "json"
+      ],
+      "timeout_seconds": 900,
+      "base_argument": null,
+      "required_paths": [
+        "devtools/check_repository_code_assets.py",
+        "data/repository_governance/code_assets.json"
+      ],
+      "environment": {},
+      "isolation": "process_tempdir",
+      "mutation_policy": "read_only"
+    }
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "data.repository_governance",
+  "description": "Repository governance ledgers and the self-describing document-system machine sources.",
+  "defaults": {
+    "document_class": "governance_control",
+    "authority_role": "governance_control",
+    "mutation": "governed",
+    "context_level": "L2",
+    "purpose": "Fail-closed repository governance registries and schemas.",
+    "volatile_facts": "source_allowed",
+    "invariant_refs": [
+      "DOC-INV-006",
+      "DOC-INV-007",
+      "DOC-INV-014",
+      "DOC-INV-017",
+      "DOC-INV-018",
+      "DOC-INV-019",
+      "DOC-INV-020",
+      "DOC-INV-021",
+      "DOC-INV-022"
+    ],
+    "required_reads": [
+      "data/repository_governance/README.md"
+    ],
+    "after_change": [
+      "docsystem.intake",
+      "docsystem.doctor",
+      "docsystem.render_maintenance",
+      "docsystem.audit",
+      "code_assets.current",
+      "code_assets.check",
+      "docsystem.gate"
+    ],
+    "review_policy": {
+      "at_phase_boundary": true,
+      "max_interval_days": 60
+    },
+    "section_refs": [
+      "repository-governance"
+    ],
+    "adr_refs": [
+      "DOC-ADR-014",
+      "DOC-ADR-015",
+      "DOC-ADR-016",
+      "DOC-ADR-017",
+      "DOC-ADR-018"
+    ]
+  },
+  "rules": [
+    {
+      "id": "legacy_doc_classes_output",
+      "match": {
+        "path": "doc_classes.json"
+      },
+      "set": {
+        "document_class": "generated_projection",
+        "authority_role": "projection_only",
+        "mutation": "generator_only",
+        "context_level": "L3",
+        "purpose": "Generated compatibility projection consumed by docs_reference_scan.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-004",
+          "DOC-INV-006"
+        ],
+        "adr_refs": [
+          "DOC-ADR-003"
+        ],
+        "source_paths": [
+          "data/repository_governance/document_system/legacy_doc_scan_base.json",
+          "**/DOC_POLICY.json"
+        ],
+        "generator_action": "docsystem.render_legacy",
+        "after_change": [
+          "docs.reference.validate",
+          "docsystem.doctor"
+        ]
+      },
+      "rationale": "The old scanner keeps a fixed path, but the file is now rebuilt from distributed policy declarations."
+    },
+    {
+      "id": "document_system_sources",
+      "match": {
+        "prefix": "document_system/"
+      },
+      "set": {
+        "document_class": "framework_core",
+        "authority_role": "framework_definition",
+        "context_level": "L3",
+        "purpose": "Schemas, invariants, gate registry and compatibility sources defining the document framework.",
+        "volatile_facts": "forbidden",
+        "invariant_refs": [
+          "DOC-INV-005",
+          "DOC-INV-006",
+          "DOC-INV-007",
+          "DOC-INV-013",
+          "DOC-INV-014",
+          "DOC-INV-017",
+          "DOC-INV-018",
+          "DOC-INV-019",
+          "DOC-INV-020",
+          "DOC-INV-021",
+          "DOC-INV-022"
+        ],
+        "adr_refs": [
+          "DOC-ADR-001",
+          "DOC-ADR-002",
+          "DOC-ADR-003",
+          "DOC-ADR-010",
+          "DOC-ADR-011",
+          "DOC-ADR-013",
+          "DOC-ADR-014",
+          "DOC-ADR-015",
+          "DOC-ADR-016",
+          "DOC-ADR-017",
+          "DOC-ADR-018"
+        ],
+        "required_reads": [
+          "docs/governance/document-system/ARCHITECTURE.md",
+          "docs/governance/document-system/MAINTAINING.md"
+        ],
+        "after_change": [
+          "docsystem.intake",
+          "docsystem.render_legacy",
+          "docsystem.render_entrypoints",
+          "docsystem.render_guidance",
+          "docsystem.doctor",
+          "docsystem.tests",
+          "docsystem.render_sections",
+          "docsystem.render_maintenance",
+          "docsystem.audit",
+          "docsystem.gate"
+        ],
+        "section_refs": [
+          "documentation-framework"
+        ]
+      },
+      "rationale": "Changing these files changes the framework itself."
+    },
+    {
+      "id": "artifact_evidence_semantic_inputs",
+      "match": {
+        "paths": [
+          "artifact_evidence_inputs.json",
+          "artifact_evidence_inputs.schema.json",
+          "artifact_boundaries.schema.json"
+        ]
+      },
+      "set": {
+        "purpose": "Semantic inputs and schemas for dossier-derived tracked artifact evidence and the frozen checker compatibility projection.",
+        "context_level": "L2",
+        "invariant_refs": [
+          "DOC-INV-004",
+          "DOC-INV-006",
+          "DOC-INV-009"
+        ],
+        "required_reads": [
+          "docs/项目说明/24_repository_asset_governance.md"
+        ],
+        "after_change": [
+          "artifact_evidence.render",
+          "artifact_evidence.check",
+          "code_assets.check",
+          "docsystem.doctor"
+        ]
+      },
+      "rationale": "Direct root files and runtime prefixes are explicit governance inputs; the large historical-evidence prefix list is generated, never maintained in parallel."
+    }
+  ],
+  "legacy_projection": {
+    "rules": [
+      {
+        "id": "repository_governance_registry",
+        "match": {
+          "prefix": "data/repository_governance/"
+        },
+        "document_class": "locked",
+        "rationale": "Governance ledger family including generated compatibility projections; never a prune subject."
+      }
+    ],
+    "out_of_scope_notes": []
+  }
+}

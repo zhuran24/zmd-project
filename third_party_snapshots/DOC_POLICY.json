@@ -1,0 +1,33 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "third_party_snapshots",
+  "description": "Vendored upstream snapshots.",
+  "defaults": {
+    "document_class": "vendored_snapshot",
+    "authority_role": "vendored_upstream",
+    "mutation": "immutable",
+    "context_level": "L0",
+    "purpose": "Byte-preserved upstream snapshots and provenance notes.",
+    "volatile_facts": "source_allowed",
+    "invariant_refs": [
+      "DOC-INV-002"
+    ],
+    "after_change": [
+      "docsystem.doctor"
+    ],
+    "review_policy": {
+      "at_phase_boundary": false,
+      "max_interval_days": null
+    }
+  },
+  "rules": [],
+  "legacy_projection": {
+    "rules": [],
+    "out_of_scope_notes": [
+      {
+        "pattern": "third_party_snapshots/**",
+        "rationale": "Vendored upstream snapshots; never edited in this repository."
+      }
+    ]
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "specs.ecosystem_notes",
+  "description": "Local lifecycle boundary for non-authoritative ecosystem research notes.",
+  "defaults": {
+    "document_class": "living",
+    "authority_role": "current_guidance",
+    "mutation": "governed",
+    "context_level": "L1",
+    "purpose": "Current local entrypoint for frozen, non-authoritative ecosystem research notes.",
+    "volatile_facts": "reference_only",
+    "section_refs": [
+      "specifications",
+      "compatibility-adapters"
+    ],
+    "invariant_refs": [
+      "DOC-INV-002",
+      "DOC-INV-007",
+      "DOC-INV-009",
+      "DOC-INV-014"
+    ],
+    "required_reads": [
+      "specs/README.md",
+      "docs/compatibility_matrix.md"
+    ],
+    "after_change": [
+      "docsystem.render_guidance",
+      "docsystem.render_sections",
+      "docsystem.doctor"
+    ],
+    "review_policy": {
+      "at_phase_boundary": true,
+      "max_interval_days": 120
+    }
+  },
+  "rules": [
+    {
+      "id": "frozen_ecosystem_note_payloads",
+      "match": {
+        "paths": [
+          "aslappyslashy_modeling_vocabulary_notes.md",
+          "dige_product_surface_patterns.md",
+          "endfield_base_report_notes.md",
+          "endfield_calc_catalog_inventory.md",
+          "endfield_calc_current_repository_semantic_alignment.md",
+          "endfield_calc_snapshot_ingest_mapping.md",
+          "exploratory_layout_inspirations.md",
+          "industrial_planner_blueprint_contract_notes.md",
+          "industrial_planner_frontend_inventory.md"
+        ]
+      },
+      "set": {
+        "document_class": "historical_evidence",
+        "authority_role": "evidence_only",
+        "mutation": "immutable",
+        "context_level": "L1",
+        "purpose": "Frozen non-authoritative ecosystem observation; current adapter and specification semantics live elsewhere.",
+        "volatile_facts": "reference_only",
+        "section_refs": [
+          "compatibility-adapters"
+        ],
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-009",
+          "DOC-INV-014"
+        ],
+        "required_reads": [
+          "specs/ecosystem_notes/README.md"
+        ],
+        "after_change": [
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": false,
+          "max_interval_days": null
+        }
+      },
+      "rationale": "These inventories and borrowed-vocabulary studies preserve observations at their recording time; they do not follow current external repositories or certified semantics."
+    }
+  ],
+  "legacy_projection": {
+    "rules": [],
+    "out_of_scope_notes": []
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "docs.drafts",
+  "description": "Explicitly registered short-lived Markdown workbench.",
+  "defaults": {
+    "document_class": "ephemeral",
+    "authority_role": "none",
+    "mutation": "direct",
+    "context_level": "L0",
+    "purpose": "Short-lived working document whose expiry and exit action are recorded in the ephemeral registry.",
+    "volatile_facts": "reference_only",
+    "invariant_refs": [
+      "DOC-INV-007",
+      "DOC-INV-008",
+      "DOC-INV-018"
+    ],
+    "adr_refs": [
+      "DOC-ADR-014"
+    ],
+    "source_paths": [
+      "data/repository_governance/document_system/ephemeral_documents.json"
+    ],
+    "required_reads": [
+      "docs/AGENT_OPERATIONS.md"
+    ],
+    "after_change": [
+      "docsystem.intake",
+      "docsystem.doctor"
+    ],
+    "generator_action": null,
+    "review_policy": {
+      "at_phase_boundary": false,
+      "max_interval_days": 14
+    },
+    "relaxation_decision_id": null,
+    "section_refs": [],
+    "knowledge_refs": []
+  },
+  "rules": [],
+  "legacy_projection": {
+    "rules": [],
+    "out_of_scope_notes": [
+      {
+        "pattern": "docs/drafts/**",
+        "rationale": "Explicitly registered ephemeral workbench; excluded from current guidance and historical evidence maps."
+      }
+    ]
+  }
+}

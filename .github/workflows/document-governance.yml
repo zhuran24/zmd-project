@@ -1,0 +1,102 @@
+name: document-governance
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "Governance profile"
+        required: true
+        default: weekly
+        type: choice
+        options:
+          - weekly
+          - full
+          - historical_replay
+
+permissions:
+  contents: read
+
+concurrency:
+  group: document-governance-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  gate:
+    name: non-mutating document gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out the complete Git object graph
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: |
+            requirements.lock.txt
+            requirements-dev.lock.txt
+
+      - name: Install locked gate dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.lock.txt -r requirements-dev.lock.txt
+
+      - name: Select the shared gate profile and diff base
+        id: scope
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE_SHA: ${{ github.event.before }}
+          MANUAL_PROFILE: ${{ inputs.profile }}
+        run: |
+          set -euo pipefail
+          case "$EVENT_NAME" in
+            pull_request)
+              printf 'profile=changed\n' >> "$GITHUB_OUTPUT"
+              printf 'base=%s\n' "$PR_BASE_SHA" >> "$GITHUB_OUTPUT"
+              ;;
+            push)
+              printf 'profile=changed\n' >> "$GITHUB_OUTPUT"
+              if [[ -n "$PUSH_BEFORE_SHA" && ! "$PUSH_BEFORE_SHA" =~ ^0+$ ]]; then
+                printf 'base=%s\n' "$PUSH_BEFORE_SHA" >> "$GITHUB_OUTPUT"
+              else
+                printf 'base=%s\n' "$(git rev-parse HEAD^)" >> "$GITHUB_OUTPUT"
+              fi
+              ;;
+            schedule)
+              printf 'profile=weekly\n' >> "$GITHUB_OUTPUT"
+              printf 'base=\n' >> "$GITHUB_OUTPUT"
+              ;;
+            workflow_dispatch)
+              printf 'profile=%s\n' "${MANUAL_PROFILE:-weekly}" >> "$GITHUB_OUTPUT"
+              printf 'base=\n' >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              printf 'unsupported event: %s\n' "$EVENT_NAME" >&2
+              exit 2
+              ;;
+          esac
+
+      - name: Run the manifest-owned document governance gate
+        shell: bash
+        env:
+          PROFILE: ${{ steps.scope.outputs.profile }}
+          BASE: ${{ steps.scope.outputs.base }}
+        run: |
+          set -euo pipefail
+          command=(python devtools/document_governance_gate.py run --profile "$PROFILE")
+          if [[ -n "$BASE" ]]; then
+            command+=(--base "$BASE")
+          fi
+          "${command[@]}"

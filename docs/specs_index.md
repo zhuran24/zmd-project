@@ -1,36 +1,23 @@
-# `specs/` index
+# 旧 specs 索引兼容入口
 
-The numbered specifications describe contracts and design boundaries. Current runtime behavior is
-code-first, but any divergence is a defect to repair in the same change. “Code changed, spec later”
-is not an accepted steady state for proof, schema or publication semantics.
+> 本页由文档系统的前门注册表自动生成；禁止手工修改。
+> 真源：[`data/repository_governance/document_system/entrypoints.json`](../data/repository_governance/document_system/entrypoints.json)。
 
-## Core groups
+编号规范的现行分区入口已经迁到 specs/README.md；本路径不再维护第二份规格地图。
 
-| Specs | Scope |
-|---|---|
-| `01`–`05` | Problem, notation, canonical rules, demand expansion and exact instance domain |
-| `06`–`07` | Candidate placement and placement masters |
-| `08` | Continuous topology-flow diagnostic only; not a certified gate/cut oracle |
-| `09` | Exact discrete grid routing and connectivity acceptance |
-| `10` | Benders/cut design, including historical and future cut-family boundaries |
-| `11` | Current producer → supervisor → central publisher orchestration |
-| `12` | Blueprint schema plus canonical publication authority |
-| `13`–`20` | Ecosystem, interchange and preprocess contracts |
-| `21` | Probe/telemetry scheduling, non-authoritative |
-| `22`–`23` | IndustrialPlanner export/validation and outer-base decision-support |
+## 当前入口
 
-`ecosystem_notes/` contains informal compatibility notes, not certification authority.
+- [规范分区入口](../specs/README.md)：编号规范的阅读顺序、职责边界和生态注记分流。
+- [当前文档职责](GUIDANCE_INDEX.md)：按有效 policy 查询当前规范与入口。
 
-## Reading rules
+## 维护边界
 
-1. Start with `PROJECT_LOCK.md` and `specs/11_pipeline_orchestration.md` for certification/release
-   semantics.
-2. A schema-valid, adapter-valid or telemetry-valid artifact is not automatically proof-bearing.
-3. `specs/08` must never be cited as a flow gate or Farkas certificate implementation.
-4. `specs/12` must be read together with `src/search/certified_surface.py`; generic writers cannot
-   publish canonical certified files.
-5. Historical phase names and test numbers describe their dated bytes only.
+- 不得在旧路径重新维护规范分组或当前实现状态。
+- 生态注记不是认证 authority；其边界见 specs/ecosystem_notes/README.md。
+- 退出当前职责前的正文见 [历史快照](history/navigation/docs_specs_index_pre_phase3_batch3_20260812.md)；它只保留当时叙述。
 
-When code and a spec disagree, do not silently “trust code and leave the spec”. Treat the text drift
-as a release defect, determine the actual current behavior with tests/call sites, and update lock,
-spec, comments and obligations together where required.
+需要改变本页时，修改前门注册表后运行：
+
+```bash
+.venv/bin/python devtools/docctl.py render-entrypoints --write
+```

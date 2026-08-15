@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-backfill-triage-v1",
+  "title": "ZMD exhaustive long-tail dossier triage",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "ledger_reviewed_at",
+    "triage_is_not_semantic_review",
+    "groups"
+  ],
+  "properties": {
+    "schema_version": {"const": "zmd_backfill_triage_v1"},
+    "ledger_reviewed_at": {"type": "string", "format": "date"},
+    "triage_is_not_semantic_review": {"const": true},
+    "groups": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/group"}
+    }
+  },
+  "$defs": {
+    "group": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "disposition",
+        "priority",
+        "dossier_ids",
+        "rationale",
+        "related_claim_ids",
+        "representative_review_ids",
+        "reopen_triggers",
+        "tags"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^TRIAGE-[A-Z0-9][A-Z0-9-]*$"
+        },
+        "disposition": {
+          "enum": [
+            "family_context_only",
+            "historical_semantic_queue",
+            "local_optional_queue"
+          ]
+        },
+        "priority": {"enum": ["low", "normal", "high"]},
+        "dossier_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^DOSSIER-[A-Z0-9][A-Z0-9-]*$"
+          }
+        },
+        "rationale": {"type": "string", "minLength": 1},
+        "related_claim_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^CLAIM-[A-Z0-9][A-Z0-9-]*$"
+          }
+        },
+        "representative_review_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^REVIEW-[A-Z0-9][A-Z0-9-]*$"
+          }
+        },
+        "reopen_triggers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "tags": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]*$"
+          }
+        }
+      }
+    }
+  }
+}

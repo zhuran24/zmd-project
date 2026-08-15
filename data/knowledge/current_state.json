@@ -1,0 +1,256 @@
+{
+  "schema_version": "zmd_current_state_v2",
+  "ledger_reviewed_at": "2026-08-14",
+  "title": "ZMD 当前知识状态",
+  "sources": {
+    "project_lock": "PROJECT_LOCK.md",
+    "canonical_rules": "rules/canonical_rules.json",
+    "mandatory_instances": "data/preprocessed/mandatory_exact_instances.json",
+    "proof_obligations": "data/proof_obligations/p1_2_proof_obligations.json",
+    "phase_gate": "data/review_gates/phase_1_2_spike_close.json",
+    "exact_full_scale_status": "data/solutions/exact_full_scale_status.json"
+  },
+  "authority_sources": [
+    {
+      "path": "PROJECT_LOCK.md",
+      "role": "certified exactness、命题 P、冻结身份与发布边界。"
+    },
+    {
+      "path": "docs/项目说明/01_overview.md",
+      "role": "六个 gating 谓词的外延与 CERTIFIED 命题。"
+    },
+    {
+      "path": "rules/canonical_rules.json",
+      "role": "当前 canonical 游戏规则、admissibility 与空矩形语义。"
+    },
+    {
+      "path": "data/proof_obligations/p1_2_proof_obligations.json",
+      "role": "P1.2 fail-closed 机器义务、proof-bearing sink 与 source/hash floor。"
+    },
+    {
+      "path": "data/review_gates/phase_1_2_spike_close.json",
+      "role": "当前 owner-only phase gate；测试、Markdown 与 receipt 均不能替代 owner 决定。"
+    },
+    {
+      "path": "data/solutions/exact_full_scale_status.json",
+      "role": "checked-in full-scale exact 结果状态与阻断检查。"
+    },
+    {
+      "path": "data/knowledge/claims.jsonl",
+      "role": "具有稳定 ID、作用域、前提、后果和证据的 claim 账本。"
+    },
+    {
+      "path": "data/knowledge/decisions.jsonl",
+      "role": "非授权、append-only 的 owner/governance 决定查询登记；每条记录必须指向外部权威真源，本文件不能授权。"
+    },
+    {
+      "path": "data/knowledge/backfill_triage.json",
+      "role": "未获 current review 的 dossier 长尾分诊；只保证 inventory coverage，不授予语义结论。"
+    },
+    {
+      "path": "data/knowledge/topics.json",
+      "role": "稳定主题到 claim、dossier topic 与术语的导航坐标。"
+    },
+    {
+      "path": "data/knowledge/terminology.json",
+      "role": "核心术语、别名与禁止混同边界。"
+    }
+  ],
+  "sections": [
+    {
+      "id": "certified_boundary",
+      "title": "Certified 命题边界",
+      "claim_ids": [
+        "CLAIM-ACTIVE-SCOPE-SINGLE-BASE",
+        "CLAIM-CERTIFIED-THEOREM-SCOPE",
+        "CLAIM-EMPTY-RECTANGLE-STRICT",
+        "CLAIM-MODEL-STRICTER-FACES-SCOPE-DEBT",
+        "CLAIM-ADMISSION-PORT-OMISSION-SCOPE-RESTRICTION",
+        "CLAIM-WAREHOUSE-BRIDGE-EXCLUSION-TARGET-CONDITIONAL",
+        "CLAIM-BINDING-SLOT-SINGLE-COMMODITY-SCOPE",
+        "CLAIM-EMPTY-RECTANGLE-MIN-SIDE-ADMISSIBILITY-SIX",
+        "CLAIM-CONNECTIVITY-QUANTIFIER-PER-COMMODITY-SOURCE-SINK"
+      ]
+    },
+    {
+      "id": "checked_in_result",
+      "title": "Checked-in 求解结果",
+      "claim_ids": [
+        "CLAIM-CERTIFIED-EXISTENCE-OPEN",
+        "CLAIM-DURABLE-CERTIFIED-RESULT-ABSENT"
+      ]
+    },
+    {
+      "id": "six_predicate_ledger",
+      "title": "六谓词研究账本",
+      "claim_ids": [
+        "CLAIM-SIX-PREDICATE-RESEARCH-LEDGER",
+        "CLAIM-SMM4-LEX-BAND-COMPOSITION-2086",
+        "CLAIM-SMM-209-EXCLUDES-22X54"
+      ]
+    },
+    {
+      "id": "parallel_p2_ledger",
+      "title": "P2.0 独立研究账本",
+      "claim_ids": [
+        "CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814",
+        "CLAIM-P2-AREA-BOUND-1167",
+        "CLAIM-P2-MIN-SIDE-UPPER-OPEN",
+        "CLAIM-P2-SINGLE-LAYER-AREA-BOUND-1015",
+        "CLAIM-P2-BUCKWHEAT-SANDLEAF-MANDATORY-BRANCH",
+        "CLAIM-P2-FIVE-FULL-ONE-HALF-CONDITIONAL"
+      ]
+    },
+    {
+      "id": "structural_reasoning",
+      "title": "当前结构性推理与发现方法",
+      "claim_ids": [
+        "CLAIM-BOUNDARY-GENERIC-OUTPUT-SLOTS-SATURATED",
+        "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1",
+        "CLAIM-BAND22-V0A-STRICT-HOLE-INCOMPATIBLE",
+        "CLAIM-POWER-HALO-POLE-LOWER-BOUND-NINE",
+        "CLAIM-ORDINARY-MEMBRANE-TERMINAL-BOUND-S48",
+        "CLAIM-R4-NECESSARY-DIMENSION-INEQUALITY",
+        "CLAIM-R4-BOUNDARY-23-23-FULL-SPAN-EXCLUSION",
+        "CLAIM-ZERO-SLACK-AUDIT-METHOD",
+        "CLAIM-BOUNDARY-LOADER-EXCLUDED-FROZEN-INSTANCE",
+        "CLAIM-RATE-LEMMA-CONDITIONAL-PROFILE"
+      ]
+    },
+    {
+      "id": "selection_separation",
+      "title": "选择、分离与消费机制边界",
+      "claim_ids": [
+        "CLAIM-PAIRWISE-CLOSURE-INCOMPLETE",
+        "CLAIM-DISCOVERY-AND-VALIDATION-SEPARATE-OBLIGATIONS",
+        "CLAIM-FORWARD-COMPLETENESS-RELATIVE-TO-DECLARED-FRAGMENT",
+        "CLAIM-PROVED-PREMODEL-EXCLUSION-PERMITS-MODEL-OMISSION",
+        "CLAIM-TYPED-CUT-PIPELINE-CONSUMES-KNOWN-CUTS-NOT-DISCOVERS-THEM",
+        "CLAIM-RAW-ELIGIBLE-EVENTS-REQUIRED-FOR-SEPARATION-EVALUATION",
+        "CLAIM-GENERIC-CP-SAT-SEPARATION-IMPOSSIBILITY-OPEN",
+        "CLAIM-BUDGET-EXHAUSTION-IS-UNKNOWN-NOT-FIXED-POINT"
+      ]
+    },
+    {
+      "id": "routing_semantics",
+      "title": "接收终端语义与模型约束选择",
+      "claim_ids": [
+        "CLAIM-STORAGE-BOX-ACCEPTANCE-INVARIANT-FROZEN",
+        "CLAIM-MIXED-TERMINAL-TRIPARTITION",
+        "CLAIM-DESTINATION-FRONT-EXCLUSIVITY-TERMINAL-SENSITIVE",
+        "CLAIM-SOURCE-FRONT-EXCLUSIVITY-OVERSTRICT",
+        "CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT-BOUNDARY"
+      ]
+    },
+    {
+      "id": "historical_validity",
+      "title": "历史结果有效性边界",
+      "claim_ids": [
+        "CLAIM-FRONT-OFFSET-PRE-0718-SUPERSEDED",
+        "CLAIM-FRONT-OFFSET-HISTORICAL-REJUDGMENT-40",
+        "CLAIM-LEVER-VERDICTS-ARE-ITEM-AND-REVISION-BOUNDED"
+      ]
+    },
+    {
+      "id": "production_open_boundary",
+      "title": "Production 开放边界",
+      "claim_ids": [
+        "CLAIM-CUT-FRAMEWORK-PRODUCTION-STATUS",
+        "CLAIM-AB16-CAMPAIGN-CLOSEOUT-NO-ATTRIBUTABLE-CUT-RESULT"
+      ]
+    }
+  ],
+  "featured_decision_ids": [
+    "DECISION-P1-2-RECLOSE-20260806",
+    "DECISION-EMPTY-RECTANGLE-STRICT-20260805",
+    "DECISION-B6-HOLD-20260803"
+  ],
+  "required_active_slots": [
+    "project.active_scope",
+    "certified.theorem_scope",
+    "canonical.empty_rectangle_semantics",
+    "certified.whole_layout_existence",
+    "research_ledger.six_predicate",
+    "research_ledger.p2_throughput",
+    "cut_framework.production_status",
+    "historical_validity.front_offset",
+    "canonical.empty_rectangle_min_side",
+    "canonical.connectivity_quantifier",
+    "certified.durable_result"
+  ],
+  "inventory": {
+    "roots": [
+      {
+        "path": "docs/research",
+        "include": "directories_and_markdown",
+        "availability": "required",
+        "tracked_state": "tracked",
+        "default_lifecycle": "historical",
+        "default_relevance": "historical"
+      },
+      {
+        "path": ".artifacts",
+        "include": "directories",
+        "availability": "optional",
+        "tracked_state": "local_optional",
+        "default_lifecycle": "historical",
+        "default_relevance": "unreviewed"
+      }
+    ],
+    "exclude_paths": [
+      "docs/research/README.md",
+      "docs/research/INDEX.md"
+    ]
+  },
+  "coverage": {
+    "dossiers": "已登记 docs/research 一级目录与一级 Markdown，以及本机存在或被承重证据引用的 .artifacts 一级目录。轻量 checkout 可缺少 local artifact root。",
+    "claims": "Phase 4 Batch 4 CP2 迁移后共 92 条稳定 claim；CURRENT 按 claim_selection_policy 只投影当前承重子集，完整账本由 CATALOG、topic、reasoning 与 validity 页面查询。",
+    "historical_claim_backfill": "第二阶段已收口：41 个 dossier 有 current review，其中 40 个为语义审阅、1 个为缺失外部根的 availability/provenance review；其余 163 个 dossier 全部且仅进入一个显式 triage group。100% inventory coverage 不等于 100% semantic review。"
+  },
+  "generated_outputs": {
+    "current": "docs/CURRENT.md",
+    "catalog": "docs/CATALOG.md",
+    "reasoning": "docs/REASONING_LEDGER.md",
+    "validity": "docs/VALIDITY_LEDGER.md",
+    "backfill": "docs/BACKFILL_LEDGER.md",
+    "topics": "docs/TOPIC_INDEX.md",
+    "terminology": "docs/TERMINOLOGY.md",
+    "open_questions": "docs/OPEN_QUESTIONS.md"
+  },
+  "decision_register": {
+    "path": "data/knowledge/decisions.jsonl",
+    "role": "non_authorizing_append_only_register",
+    "mutation": "append_only",
+    "non_authorizing": true,
+    "future_disposition": "OWNER_RULING_EVENT immutable archive 落地后，转为 GENERATED_PROJECTION 或退役；本批不预先扩 representation_class。"
+  },
+  "claim_selection_policy": {
+    "mode": "curated_current_projection",
+    "criteria": [
+      "选择当前操作、认证边界、活动 singleton slot、承重研究账本与明确 OPEN 命题",
+      "每条被选 claim 必须为 current 或 open，且同一 claim 不跨 section 重复"
+    ],
+    "excludes": [
+      "历史、refuted、superseded 与长尾背景 claim 不进入 CURRENT，但仍保留在 CATALOG、topic 与 validity 投影",
+      "未被 CURRENT 选录不表示 claim 不重要、无效或未登记"
+    ]
+  },
+  "representation_class_mapping": {
+    "AUTHORITATIVE_CURRENT": [
+      "governance_control",
+      "locked_authority",
+      "normative",
+      "structured_knowledge"
+    ],
+    "GENERATED_PROJECTION": [
+      "generated_projection"
+    ],
+    "IMMUTABLE_HISTORICAL_SNAPSHOT": [
+      "historical_evidence",
+      "vendored_snapshot"
+    ],
+    "QUOTATION_FOR_EVIDENCE": [
+      "historical_evidence"
+    ]
+  }
+}

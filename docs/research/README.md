@@ -1,11 +1,26 @@
-# docs/research/ 历史研究与外审档案
+# `docs/research/` 历史研究与外审档案
 
-本目录保存按日期/版本冻结的实验、外审、prompt、原始响应和阶段性结论。文件中的“当前”“已闭”“LIVE”“GO”等词只描述其记录时间点，不能覆盖当前工作树。
+本目录保存按日期或版本冻结的实验、证明草稿、外审输入输出、原始响应和阶段性结论。文内的“当前”“已闭”“LIVE”“GO”“最终”等词只对记录时间点成立，不能覆盖今天的机器状态或 owner 决定。
 
-当前状态必须从 `PROJECT_LOCK.md`、`data/proof_obligations/p1_2_proof_obligations.json`、`data/review_gates/phase_1_2_spike_close.json`、`docs/项目说明/06_current_status.md`、`NAV_MAP.md` 与 `specs/11_pipeline_orchestration.md` 读取；`docs/certified_proof_chain_analysis.md` 是 2026-06-19 的历史 write-point 快照。2026-07-07 后口径：fixed-witness、P1.2 open gate、independent infeasibility reverify 和 PR1 producer/supervisor split 已在后续工作树落地；P1.2 已由 owner `owner_manual_decision` 正式 CLOSED，P1.3 已开启。PR2、review-package 剩余边界中仅防蓄意内鬼硬化桶延期到发布时点，#9a 是部署时点任务。
+- 当前状态：[`../CURRENT.md`](../CURRENT.md)
+- claim、decision 与全部一级研究包目录：[`../CATALOG.md`](../CATALOG.md)
+- semantic review、availability-only review 与未审 triage：[`../BACKFILL_LEDGER.md`](../BACKFILL_LEDGER.md)
+- 跨目录主题与术语：[`../TOPIC_INDEX.md`](../TOPIC_INDEX.md)、[`../TERMINOLOGY.md`](../TERMINOLOGY.md)
+- 按问题进入项目：[`../START_HERE.md`](../START_HERE.md)
+- 文档分区与局部前门：[`../SECTION_INDEX.md`](../SECTION_INDEX.md)
+- 本机 artifact 根的边界说明：[`../../.artifacts/README.md`](../../.artifacts/README.md)
 
-总注：本目录 `p1_2_v*` 系列报告中的 “P1.2 remains blocked” 等现状句均为各版本时点快照；P1.2 已于 2026-07-07 由 `owner_manual_decision` 正式 CLOSED。P1.3 已部分落地：截至 2026-07-11，`step_8_apply_to_master` 已翻译 F1/F5/F6/F7，direct attach 仍由 `EXACT_CUT_FRAMEWORK_ATTACH` 门控且 certified 禁用；Stage B B0/B1/B1.5 已完成，B2-B5、PIC C/D/E 与 B6 owner promotion 尚未完成。
+研究档案的职责是保留证据，不是追随现态改写。dossier 被登记或放入 triage 只说明它可发现且已分流，不表示内容已经做过语义审阅。要把历史观察升级为当前结论，必须给它稳定 claim ID，写明作用域、前提、直接后果、明确不推出的内容和证据，再由知识脊柱投影。
 
-研究档案作为证据保留，不应为了迎合现态而改写当时观察。需要把历史结论用于现行 runbook 时，必须重新对照当前代码和测试，再在 living docs 中写入带日期的结论。
+旧路径 `INDEX.md` 现为机器生成的兼容跳转；它原先只索引 2026-05-07/08 Phase 3C agent transcript。字节载荷已按真实范围重命名为 [`research_phase3c_agent_transcript_index_20260507_08.md`](../history/navigation/research_phase3c_agent_transcript_index_20260507_08.md)，不是本目录总索引。总目录由 `data/knowledge/dossiers.json` 生成到 [`../CATALOG.md`](../CATALOG.md)。
 
-`docs/research/INDEX.md` 只索引 2026-05-07/08 Phase 3C agent transcript，不是本目录的完整 manifest。`docs/DOC_TREE_COMPLETENESS.json` 提供信息性 first-level inventory，但不参与 preflight 或认证。
+## 新 research workflow
+
+新的 tracked research 包使用类型化入口创建，不要先裸建目录、以后再等盘点补账：
+
+```bash
+.venv/bin/python devtools/docctl.py new research-dossier \
+  docs/research/<package> --title "<title>" --date YYYY-MM-DD --topic <topic>
+```
+
+任务关闭前先写 current semantic review 与必要 claim/decision，再运行 `devtools/docctl.py close-dossier` 登记 typed outcome。关闭后的正文由 dossier lifecycle 自动收紧为 immutable；更正使用 erratum、successor 或 superseding knowledge record。

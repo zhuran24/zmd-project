@@ -1,5 +1,7 @@
 # Certification Taxonomy: Verification, Acceptance, Sealing, Publication
 
+> **知识脊柱入口：** 当前机器状态见 [`../CURRENT.md`](../CURRENT.md)，完整决定与证据见 [`../CATALOG.md`](../CATALOG.md)。本页只解释概念，不复制当前 gate 值。
+
 This document is a navigation aid only. It maps four human-facing concepts to
 existing project names so readers do not mistake one reused status string for one
 proof authority. It does not change code semantics, status-machine behavior, guard
@@ -13,7 +15,7 @@ authoritative contract.
 | 核验 | master placement checks, binding checks, routing checks, empty-rectangle geometry checks | Check whether a local mathematical or geometric claim is true under the current inputs. |
 | 采信 | `candidate_proof_replay` sink replay, isolated replay acceptance, `UNPROVEN` downgrade on rejection | Decide whether a strong candidate-level claim can be trusted after the sink independently replays it. A candidate record saying `CERTIFIED` is an untrusted claim until this acceptance step succeeds. |
 | 封存 | `ExactCampaign.supervisor_seal()` | The sole durable terminal `CERTIFIED` mint. It rereads the committed proposal from disk, validates bindings, runs sink replay and fixed-witness verification, then writes the sealed terminal state. |
-| 发布 | `certified_surface`, `resolve_p1_2_publish_open_gate`, owner phase gate | Public files are publishable only when they come from the same sealed disk-current result and the phase gate allows publication. |
+| 发布 | `certified_surface`、发布前机器检查与 owner phase gate | Public files are publishable only when they come from the same sealed disk-current result and the phase gate allows publication. |
 
 ## Axes
 
@@ -21,8 +23,8 @@ authoritative contract.
 string. At the candidate layer it can mean "the producer reported a strong claim."
 That claim is not authoritative until sink replay accepts it. At the campaign
 terminal layer, durable `CERTIFIED` can only be minted by `supervisor_seal`. At the
-public layer, publication still requires `certified_surface` currentness and the
-P1.2 open-gate/owner phase gate.
+public layer, publication still requires `certified_surface` currentness and whatever
+explicit owner phase-gate condition the current release contract requires.
 
 In short:
 

@@ -1,62 +1,115 @@
 # Repository governance ledger
 
-Two registries live here. `code_assets.json` governs code assets; `doc_classes.json` governs
-documents. Both are descriptive projections: neither can authorize an edit, close a phase, or
-certify anything.
+This directory contains fail-closed governance sources and generated compatibility projections. None of them can authorize an edit, close a phase, or certify a mathematical result.
 
-## `doc_classes.json` — document classification
+The document framework bootstraps from [`.docsystem/manifest.json`](../../.docsystem/manifest.json). Effective rules come from inherited `DOC_POLICY.json` files plus schemas and registries under `document_system/`. Query a target before changing it:
 
-`doc_classes.json` names which tracked markdown files the prune-system docs adapter
-(`devtools/docs_reference_scan.py`) may look at, and how. Three classes: `locked` documents are
-never scanned at all; `historical` documents can only ever produce FYI observations, because a
-stale reference inside dated evidence is a property of the evidence; `living` documents are the
-only ones whose findings become cleanup candidates. A tracked markdown file inside the declared
-scan scope that matches no rule is reported as `unregistered_doc`, and every tracked markdown file
-must be either in scope or listed under `scan_scope.out_of_scope_notes` with a reason — there is no
-silent third state.
+```bash
+.venv/bin/python devtools/docctl.py context <path> --intent edit
+.venv/bin/python devtools/docctl.py check --changed
+```
 
-To add a document, register it in `rules` (or widen `scan_scope`), then run
-`python devtools/docs_reference_scan.py validate-registry`, which fails closed if a registered
-member is untracked, a list is unsorted, or a markdown file has fallen through the coverage
-invariant. Changing a classification is an owner-visible judgement, not a mechanical fix:
-demoting a document to `historical` permanently exempts it from cleanup candidates.
+## Document sections and convergence
 
-Two consequences worth knowing before adding markdown anywhere in this repository. First, the
-coverage invariant is a **repository-wide gate, not an advisory signal**: a tracked markdown file
-that is neither in `scan_scope` nor listed under `out_of_scope_notes` makes the scanner and its
-test fail, so a new `data/README.md`, a new `docs/项目说明/子目录/x.md`, or any new top-level
-directory containing markdown turns the fast test lane red until someone updates this registry.
-That is the intended R22 negative-example semantics — registration is the point — but it is a
-cost paid by whoever adds the file, not by whoever maintains the registry. Second, a path claimed
-by two rules with different classes is a **structural error**, not a first-match-wins race: rule
-order carries no meaning, so a broad rule cannot silently reclassify the documents below it.
-Redundant rules that agree on the class are fine.
+The [front-door registry](document_system/entrypoints.json) declares bounded entry surfaces, guarded guides and generated compatibility redirects. The [section registry](document_system/sections.json) assigns stable section IDs through effective policies and generates [`docs/SECTION_INDEX.md`](../../docs/SECTION_INDEX.md). The same graph generates [`docs/CONVERGENCE_REPORT.md`](../../docs/CONVERGENCE_REPORT.md), which checks local reachability, unique current responsibilities, volatile-state discipline and retired-entrypoint isolation.
 
-One more thing to know before reading a scan report: its fail-closed self check is built for a
-**cooperative operator**, and it says so. Every report carries `metadata.threat_model` and
-`metadata.self_check_scope`, and `truth_sources_clean` means "clean for the object classes listed
-under `covers`" — not "this checkout is globally consistent". The check catches what ordinary work
-produces: uncommitted edits to anything the scan read, untracked and ignored files, staged deletions
-and renames, empty directories, `assume-unchanged`. It does not catch a repository somebody built to
-fool it — a tracked symlink standing in for the registry, git routing environment variables, a
-hardlinked report destination, a clean filter, submodule internals. Those are listed one line each
-in the report and explained in full (shape, consequence, and what closing each would take) in the
-`devtools/docs_reference_scan.py` module docstring. Leaving them open is the standing owner ruling
-of 2026-07-06 — hardening that only stops a deliberate insider waits for the release point and is
-not a closure prerequisite — so the honest move is to publish the boundary, not to imply it away.
+```bash
+.venv/bin/python devtools/docctl.py render-sections --write
+.venv/bin/python devtools/docctl.py render-convergence --write
+.venv/bin/python devtools/docctl.py doctor
+```
 
-## `code_assets.json` — code asset ledger
+## Non-mutating document governance gate
 
-`code_assets.json` and its adjacent schema are the repository code-asset governance ledger. The
-`read_only_historical_evidence_roots` entries name non-authorizing, read-only `.artifacts/<root>/`
-collection boundaries whose contents remain Git-visible but are not inspected or counted as code assets. A registration
-does not make the evidence current, executable, certified, or production-authoritative, and it does not enforce filesystem
-immutability; byte preservation remains an independent review obligation.
+The manifest points to [`document_system/governance_gate.json`](document_system/governance_gate.json), its adjacent schema, `devtools/document_governance_gate.py`, and the shared CI workflow. Local agents, pull requests, pushes and scheduled audits select a profile from this one registry; the workflow does not maintain a parallel lane list.
 
-For a future campaign, first compare the live inventory with `inventory --commit HEAD` and obtain owner confirmation that
-the exact new top-level sibling root is historical evidence. Do not append to an already registered root. Exception: a root registered while its research line is still
-running may name append-only extension subpaths in its rationale; bytes that
-already exist stay immutable, and the exception ends when the line closes. Add one sorted
-registry entry with its nature, `non_code_asset` treatment, read-only expectation, and rationale in the same change; do not
-add a Git or search ignore. Then rerun the live check, the tracked-only inventory, governance tests, and the negative case
-showing that an unregistered sibling `.artifacts` code asset still fails the count gate.
+```bash
+.venv/bin/python devtools/document_governance_gate.py list --json
+.venv/bin/python devtools/docctl.py gate --profile changed
+.venv/bin/python devtools/docctl.py gate --profile full
+```
+
+Every lane runs in its own process with an external temporary root. The runner fingerprints HEAD, the index, Git-visible paths, status and changed or non-ignored untracked bytes before and after execution. A lane failure, timeout or repository-state change blocks the gate. Render and repair actions are deliberately excluded; write projections first, then run the gate against the resulting tree.
+
+The `changed` profile uses `check-current` for code-assets governance and explicitly does not claim frozen historical replay. The `full` and `weekly` profiles retain the historical checker and require the supplier Git objects named by the ledger.
+
+
+## Periodic semantic maintenance audit
+
+[`maintenance_audit.json`](document_system/maintenance_audit.json) declares read-only weekly, deep and phase-close profiles over existing truth sources; [`docs/MAINTENANCE_QUEUE.md`](../../docs/MAINTENANCE_QUEUE.md) is their generated phase-close projection. Run `.venv/bin/python devtools/docctl.py audit --profile weekly`; at a boundary use `--profile phase_close --as-of YYYY-MM-DD`, then repair the original ledger or policy and run `docctl.py render-maintenance --write`. Do not hand-edit the queue or treat Git last-touch dates as semantic review.
+
+## `doc_classes.json` - legacy compatibility projection
+
+`devtools/docs_reference_scan.py` still consumes `doc_classes.json` at this fixed path, but the file is generated rather than maintained as a second classification source:
+
+```text
+document_system/legacy_doc_scan_base.json
+  + legacy_projection fragments in distributed DOC_POLICY.json files
+  -> devtools/docctl.py render-legacy
+  -> doc_classes.json
+```
+
+Change the nearest policy, then run:
+
+```bash
+.venv/bin/python devtools/docctl.py render-legacy --write
+.venv/bin/python devtools/docs_reference_scan.py validate-registry
+.venv/bin/python devtools/docctl.py doctor
+```
+
+The scanner's `locked`, `historical` and `living` classes serve only its cleanup contract. They do not grant mutation rights and do not replace `docctl context`. Every in-scope Markdown path must be covered or explicitly excluded with a reason; incompatible rule overlap remains an error.
+
+Its self-check assumes a cooperative operator. `truth_sources_clean` covers only the object classes named in the report, not arbitrary adversarial repository construction. The exact threat boundary and the standing owner decision are documented in the `devtools/docs_reference_scan.py` module docstring.
+
+## `document_system/entrypoints.json` - fixed front-door registry
+
+The registry contains roles and contracts, not live gate values, hashes, bounds or test counts. Change it together with the exact-path policy, then rebuild:
+
+```bash
+.venv/bin/python devtools/docctl.py render-entrypoints --write
+.venv/bin/python devtools/docctl.py render-guidance --write
+.venv/bin/python devtools/docctl.py doctor
+```
+
+Do not hand-edit generated redirects. Framework rationale and safe-change requirements live in `docs/governance/document-system/ARCHITECTURE.md` and `MAINTAINING.md`.
+
+## `artifact_boundaries.json` - generated tracked-evidence projection
+
+The semantic inputs are deliberately small:
+
+- top-level `.artifacts/<dossier>/` roots come from `data/knowledge/dossiers.json`;
+- direct files below `.artifacts/` and ignored runtime prefixes live in `artifact_evidence_inputs.json`;
+- the adjacent input and projection schemas define both shapes.
+
+`data/artifact_boundaries.json` is a generated schema-v1 compatibility surface for the frozen certified checker. The generator emits quote-prefixed records for Git's human-readable C-quoted path form. Semantic consumers ignore those compatibility-only strings and use exact dossier roots plus direct files.
+
+```bash
+.venv/bin/python devtools/artifact_evidence.py render --write
+.venv/bin/python scripts/check_artifact_boundaries.py
+.venv/bin/python devtools/artifact_evidence.py check
+```
+
+A new tracked package first needs a dossier record. A new direct root file belongs in `artifact_evidence_inputs.json`. Runtime prefixes cannot overlap evidence or contain tracked files. Do not hand-edit the projection or modify the frozen checker merely to accommodate its generated input.
+
+## `code_assets.json` - code asset ledger
+
+`code_assets.json` and its schema classify Git-visible code assets and define search, lint, pytest and capability projections. Its `artifact_evidence_boundary` descriptor points to the semantic inputs, schemas and compatibility projection above.
+
+For the current worktree, registered artifact evidence is excluded before content inspection. An unregistered `.artifacts/**` code file remains a code asset and trips the count gate. Historical commit inventory is measured raw, without today's dossier exemption, so a complete Git history can replay its recorded baseline under the original tree.
+
+Registration does not make evidence current, executable, certified or production-authoritative, and it does not prove byte immutability.
+
+```bash
+.venv/bin/python devtools/artifact_evidence.py check
+.venv/bin/python devtools/check_repository_code_assets.py inventory --format json
+.venv/bin/python devtools/check_repository_code_assets.py check-current
+.venv/bin/python devtools/check_repository_code_assets.py check
+```
+
+Do not use `inventory --commit HEAD` as a substitute for the live boundary. Current inventory intentionally excludes registered evidence before reading it, while commit inventory retains those paths for historical semantics and may need to read a multi-gigabyte tree. Historical replay belongs to the pinned baseline commit in the ledger.
+
+Production imports from `devtools` remain forbidden. The only admissible literal exception is an exact `literal_only / dormant_advisory_pointer` record bound to one production file, assigned symbol and path string. Broad matches, dynamic calls, imports and stale exception records fail closed.
+
+`check-current` validates the current projection and prints the historical receipts it did not check. Only `check` performs those comparisons.
+
+Historical replay requires the Git objects named by the ledger. A supplier snapshot that omits them must remain fail-closed rather than rewriting the frozen receipt to fit the available checkout.

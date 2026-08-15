@@ -1,0 +1,389 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-current-state-v2",
+  "title": "ZMD current-state projection configuration v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "ledger_reviewed_at",
+    "title",
+    "sources",
+    "authority_sources",
+    "decision_register",
+    "representation_class_mapping",
+    "claim_selection_policy",
+    "sections",
+    "featured_decision_ids",
+    "required_active_slots",
+    "inventory",
+    "coverage",
+    "generated_outputs"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "zmd_current_state_v2"
+    },
+    "ledger_reviewed_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_lock",
+        "canonical_rules",
+        "mandatory_instances",
+        "proof_obligations",
+        "phase_gate",
+        "exact_full_scale_status"
+      ],
+      "properties": {
+        "project_lock": {
+          "type": "string",
+          "minLength": 1
+        },
+        "canonical_rules": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mandatory_instances": {
+          "type": "string",
+          "minLength": 1
+        },
+        "proof_obligations": {
+          "type": "string",
+          "minLength": 1
+        },
+        "phase_gate": {
+          "type": "string",
+          "minLength": 1
+        },
+        "exact_full_scale_status": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "authority_sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "role"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "claim_ids"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "claim_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "^CLAIM-[A-Z0-9][A-Z0-9-]*$"
+            },
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "featured_decision_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^DECISION-[A-Z0-9][A-Z0-9-]*$"
+      },
+      "uniqueItems": true
+    },
+    "required_active_slots": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "roots",
+        "exclude_paths"
+      ],
+      "properties": {
+        "roots": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "include",
+              "availability",
+              "tracked_state",
+              "default_lifecycle",
+              "default_relevance"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "include": {
+                "enum": [
+                  "directories",
+                  "directories_and_markdown"
+                ]
+              },
+              "availability": {
+                "enum": [
+                  "required",
+                  "optional"
+                ]
+              },
+              "tracked_state": {
+                "enum": [
+                  "tracked",
+                  "local_optional"
+                ]
+              },
+              "default_lifecycle": {
+                "enum": [
+                  "active",
+                  "historical",
+                  "superseded"
+                ]
+              },
+              "default_relevance": {
+                "enum": [
+                  "background",
+                  "current_evidence",
+                  "historical",
+                  "unreviewed"
+                ]
+              }
+            }
+          }
+        },
+        "exclude_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dossiers",
+        "claims",
+        "historical_claim_backfill"
+      ],
+      "properties": {
+        "dossiers": {
+          "type": "string",
+          "minLength": 1
+        },
+        "claims": {
+          "type": "string",
+          "minLength": 1
+        },
+        "historical_claim_backfill": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "generated_outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current",
+        "catalog",
+        "reasoning",
+        "validity",
+        "backfill",
+        "topics",
+        "terminology",
+        "open_questions"
+      ],
+      "properties": {
+        "current": {
+          "type": "string",
+          "minLength": 1
+        },
+        "catalog": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reasoning": {
+          "type": "string",
+          "minLength": 1
+        },
+        "validity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "backfill": {
+          "type": "string",
+          "minLength": 1
+        },
+        "topics": {
+          "type": "string",
+          "minLength": 1
+        },
+        "terminology": {
+          "type": "string",
+          "minLength": 1
+        },
+        "open_questions": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "decision_register": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "role",
+        "mutation",
+        "non_authorizing",
+        "future_disposition"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "const": "non_authorizing_append_only_register"
+        },
+        "mutation": {
+          "const": "append_only"
+        },
+        "non_authorizing": {
+          "const": true
+        },
+        "future_disposition": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "claim_selection_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "criteria",
+        "excludes"
+      ],
+      "properties": {
+        "mode": {
+          "const": "curated_current_projection"
+        },
+        "criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "excludes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "representation_class_mapping": {
+      "type": "object",
+      "description": "Explicit bridge from record representation_class to existing DOC_POLICY document_class values; not a third document taxonomy.",
+      "additionalProperties": false,
+      "required": [
+        "AUTHORITATIVE_CURRENT",
+        "GENERATED_PROJECTION",
+        "IMMUTABLE_HISTORICAL_SNAPSHOT",
+        "QUOTATION_FOR_EVIDENCE"
+      ],
+      "properties": {
+        "AUTHORITATIVE_CURRENT": {
+          "const": [
+            "governance_control",
+            "locked_authority",
+            "normative",
+            "structured_knowledge"
+          ],
+          "description": "Allowed DOC_POLICY document_class coordinates for this representation role."
+        },
+        "GENERATED_PROJECTION": {
+          "const": [
+            "generated_projection"
+          ],
+          "description": "Allowed DOC_POLICY document_class coordinates for this representation role."
+        },
+        "IMMUTABLE_HISTORICAL_SNAPSHOT": {
+          "const": [
+            "historical_evidence",
+            "vendored_snapshot"
+          ],
+          "description": "Allowed DOC_POLICY document_class coordinates for this representation role."
+        },
+        "QUOTATION_FOR_EVIDENCE": {
+          "const": [
+            "historical_evidence"
+          ],
+          "description": "Allowed DOC_POLICY document_class coordinates for this representation role."
+        }
+      }
+    }
+  }
+}

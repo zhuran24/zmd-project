@@ -1,0 +1,3313 @@
+{
+  "schema_version": "zmd_dossiers_v1",
+  "ledger_reviewed_at": "2026-08-12",
+  "records": [
+    {
+      "id": "DOSSIER-AB16-ARMS-20260802-DC229C4539",
+      "path": ".artifacts/ab16_arms_20260802",
+      "entry_file": ".artifacts/ab16_arms_20260802/EVAL.md",
+      "title": "AB16 十六臂正式实验收据",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "current_evidence",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-02",
+      "topics": [
+        "cut-framework",
+        "separation-telemetry",
+        "solver-experiment"
+      ],
+      "summary": "本机可选的 16-arm frozen-run EVAL；16/16 budget-censored，generated/compiled/applied 均为 0/0/0。"
+    },
+    {
+      "id": "DOSSIER-AB16-SLIMDOWN-20260801-DFA55C71DB",
+      "path": ".artifacts/ab16_slimdown_20260801",
+      "entry_file": ".artifacts/ab16_slimdown_20260801/RESULT.md",
+      "title": "AB16 减法批结果",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-01",
+      "topics": [
+        "other"
+      ],
+      "summary": "日期：2026-08-01"
+    },
+    {
+      "id": "DOSSIER-ADAPT-BATCH-GATES-EC7F30EDA7",
+      "path": ".artifacts/adapt_batch_gates",
+      "entry_file": null,
+      "title": "adapt batch gates",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": null,
+      "topics": [
+        "other"
+      ],
+      "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-APX-E-GATE-REVIEW-20260810-1E0BCC6818",
+      "path": ".artifacts/apx_e_gate_review_20260810",
+      "entry_file": ".artifacts/apx_e_gate_review_20260810/PASSTHROUGH_TABLE.md",
+      "title": "【过堂表】推理外环求解器 · 附录 E 七问过堂",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-10",
+      "topics": [
+        "other"
+      ],
+      "summary": "---"
+    },
+    {
+      "id": "DOSSIER-AXIOM-ANALYSIS-20260806-A86B1853BB",
+      "path": ".artifacts/axiom_analysis_20260806",
+      "entry_file": ".artifacts/axiom_analysis_20260806/AXIOM_KERNEL_PROPOSAL.md",
+      "title": "游戏语义最小公理系（终稿提案 v2，2026-08-06）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-06",
+      "topics": [
+        "rules-semantics"
+      ],
+      "summary": "证据路标记：SIM-=模拟器源码路；OWN-=owner 定谳/记忆路；W-/M-/R-/P-/U-带词缀（如 W-MIX-02、M-AXIOM-01、R-LEMMA-01、P-BRIDGE-01、U-GAP-03）=成文规则/文书路；R-nn/B-nn/P-nn/RT-nn/A-nn/U-nn 纯数字（如 R-07、B-02、A-01、U-01）=求解器模型路。证据等级标注沿用三席口径：【实读】=验证席亲自打开源码核对；未标者为证据清单级。"
+    },
+    {
+      "id": "DOSSIER-BAND22-ADMISSION-SIM-20260805-81C82FE8AA",
+      "path": ".artifacts/band22_admission_sim_20260805",
+      "entry_file": ".artifacts/band22_admission_sim_20260805/FINAL_REPORT.md",
+      "title": "准入口分拣实验 · 总判读（2026-08-05，主线代笔收口）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-05",
+      "topics": [
+        "upper-bound"
+      ],
+      "summary": "不入证明链账（吞吐 OUT-OF-SCOPE）。"
+    },
+    {
+      "id": "DOSSIER-BAND22-FAITHFUL-SIM-20260805-8A9863F99B",
+      "path": ".artifacts/band22_faithful_sim_20260805",
+      "entry_file": ".artifacts/band22_faithful_sim_20260805/FAITHFUL_SIM_REPORT.md",
+      "title": "band22 忠实化蓝图 · IndustrialPlanner v3 无头仿真判读",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-05",
+      "topics": [
+        "upper-bound",
+        "industrial-delivery"
+      ],
+      "summary": "日期：2026-08-05 · 上游工作副本：/home/zhuran24/upstream/IndustrialPlanner-simrun（v3 分支，HEAD 7b946c16） 前置：映射席 MAPPINGREPORT.md + faithfulmapping.json（同目录）· 首跑 .artifacts/band22headlesssim20260805/SIMREPORT.md 零 tracked 文件改动：全部产物落 .artifacts/band22faithfulsim20260805/ 与…"
+    },
+    {
+      "id": "DOSSIER-BAND22-FLOW-ACCOUNT-20260805-9B415D409F",
+      "path": ".artifacts/band22_flow_account_20260805",
+      "entry_file": ".artifacts/band22_flow_account_20260805/REPORT.md",
+      "title": "band22 静态流量账（2026-08-05）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-05",
+      "topics": [
+        "upper-bound"
+      ],
+      "summary": "logistics-constants.ts:11（2 秒/格）+ entity-definition.ts:1416-1423（1 槽×容量 1） + runtime-slot-access.ts:1075（每周期 1 件）。管道 = 120 件/分钟。"
+    },
+    {
+      "id": "DOSSIER-BAND22-HEADLESS-SIM-20260805-B287B4FBCC",
+      "path": ".artifacts/band22_headless_sim_20260805",
+      "entry_file": ".artifacts/band22_headless_sim_20260805/harness/README.md",
+      "title": "band22 无头仿真 harness — 源码存档与复现方式",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-05",
+      "topics": [
+        "upper-bound"
+      ],
+      "summary": "这四个文件是本次调查写的 harness 源码存档（只读副本）。运行副本在 /home/zhuran24/upstream/IndustrialPlanner-simrun（上游 IndustrialPlanner 的 v3 分支本地克隆， HEAD 7b946c16），路径一一对应："
+    },
+    {
+      "id": "DOSSIER-BAND22-R4-PREP-20260806-47C18A75BE",
+      "path": ".artifacts/band22_r4_prep_20260806",
+      "entry_file": ".artifacts/band22_r4_prep_20260806/00_TASK_BRIEF_DRAFT.md",
+      "title": "band22 第四轮设计任务书",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-06",
+      "topics": [
+        "upper-bound"
+      ],
+      "summary": "---"
+    },
+    {
+      "id": "DOSSIER-BAND22-REGISTRATION-20260805-5D2448DDF7",
+      "path": ".artifacts/band22_registration_20260805",
+      "entry_file": ".artifacts/band22_registration_20260805/downloads_orphans_20260807/README.md",
+      "title": "下载夹孤本抢救（20260807 晚整理时发现）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-05",
+      "topics": [
+        "upper-bound"
+      ],
+      "summary": "两件 band22 时代（08-05）交付物在全 .artifacts 无副本，原件躺 ~/下载。 band22 线已死（三见证真死），此为史料保全非现役工件。原件已移 ~/下载/旧批归档202608/。"
+    },
+    {
+      "id": "DOSSIER-BAND22-REGISTRATION-V2-20260805-16522D6183",
+      "path": ".artifacts/band22_registration_v2_20260805",
+      "entry_file": ".artifacts/band22_registration_v2_20260805/SURVEY_POINTER.md",
+      "title": "band22 registration v2 20260805",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-05",
+      "topics": [
+        "upper-bound"
+      ],
+      "summary": "调查报告三段已由 reg-driver-survey 席经消息交付主线（08-05 深夜），全文见主会话转录；本目录为 v2 适配实施批工作区。关键结论：研究面适配 GO、第一阶段零封印；四个 P0/P1 阻塞=loader 形状/11 未激活候选口假阴性/ghost 双索引/不消费已知 binding。"
+    },
+    {
+      "id": "DOSSIER-BAND22-SIM-EXPORT-20260805-32DC974A11",
+      "path": ".artifacts/band22_sim_export_20260805",
+      "entry_file": ".artifacts/band22_sim_export_20260805/validation_report.md",
+      "title": "IndustrialPlanner Validation Report",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-05",
+      "topics": [
+        "upper-bound",
+        "industrial-delivery"
+      ],
+      "summary": ""
+    },
+    {
+      "id": "DOSSIER-BAND22-STRICT-HOLE-PROBE-20260805-B4EF0C65D3",
+      "path": ".artifacts/band22_strict_hole_probe_20260805",
+      "entry_file": ".artifacts/band22_strict_hole_probe_20260805/PROBE_REPORT.md",
+      "title": "band22 严格空地结构探针",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "current_evidence",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-05",
+      "topics": [
+        "upper-bound"
+      ],
+      "summary": "本机可选的 52=52 槽账、边界禁轨和孔位容量探针。"
+    },
+    {
+      "id": "DOSSIER-BAND22-STRICT-REDESIGN-PACK-20260805-F8A8392DAF",
+      "path": ".artifacts/band22_strict_redesign_pack_20260805",
+      "entry_file": ".artifacts/band22_strict_redesign_pack_20260805/00_ASK.md",
+      "title": "00ASK — 严格空地语义下的 band22 家族见证重设计，目标 (42, 6)",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-05",
+      "topics": [
+        "upper-bound"
+      ],
+      "summary": "打包日期 2026-08-05（第二版，v2）。本包自包含：你只会看到本目录内的材料， 不需要访问任何外部仓库、链接或历史对话。凡本文引用的文件都在包内，路径均相对本目录给出。"
+    },
+    {
+      "id": "DOSSIER-BAND22-STRICT-REDESIGN-REPLIES-20260805-2F5380CA05",
+      "path": ".artifacts/band22_strict_redesign_replies_20260805",
+      "entry_file": ".artifacts/band22_strict_redesign_replies_20260805/r1_strict42/strict42_band22_v2_delivery/README.md",
+      "title": "strict42 / band22 v2 交付说明",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-05",
+      "topics": [
+        "upper-bound"
+      ],
+      "summary": "【已证明】本目录给出严格空地语义下的坐标级 (area, minside) = (42, 6) 见证。最终孔为 x=32..38, y=64..69，尺寸 7×6；孔与强制设施机身、电杆、路由的交集均为 0。"
+    },
+    {
+      "id": "DOSSIER-BATCH4-20260718-37902EF1B5",
+      "path": ".artifacts/batch4_20260718",
+      "entry_file": null,
+      "title": "batch4 20260718",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-07-18",
+      "topics": [
+        "other"
+      ],
+      "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-BATCH-C-LEFTOVERS-20260714-EAC2289AC0",
+      "path": ".artifacts/batch_c_leftovers_20260714",
+      "entry_file": null,
+      "title": "batch c leftovers 20260714",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-07-14",
+      "topics": [
+        "other"
+      ],
+      "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-CANONICAL-RESEAL-20260808-126986753E",
+      "path": ".artifacts/canonical_reseal_20260808",
+      "entry_file": null,
+      "title": "canonical reseal 20260808",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-08",
+      "topics": [
+        "rules-semantics"
+      ],
+      "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-CLEANROOM-R3-ADVERSARIAL-A6B46333B2",
+      "path": ".artifacts/cleanroom_r3_adversarial",
+      "entry_file": ".artifacts/cleanroom_r3_adversarial/verdict.md",
+      "title": "R3 certified 候选证书对抗审查 verdict",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": null,
+      "topics": [
+        "other"
+      ],
+      "summary": "固定一根杆 q，令 Sq 是被分配给它的制造机集合。对每台 F∈Sq，840 条局部不等式给出"
+    },
+    {
+      "id": "DOSSIER-CODEX-TAKEOVER-3784FD3D07",
+      "path": ".artifacts/codex_takeover",
+      "entry_file": null,
+      "title": "codex takeover",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": null,
+      "topics": [
+        "other"
+      ],
+      "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-DOC-SWEEP-20260717-54167D9495",
+      "path": ".artifacts/doc_sweep_20260717",
+      "entry_file": null,
+      "title": "doc sweep 20260717",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-07-17",
+      "topics": [
+        "other"
+      ],
+      "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-EMPTINESS-RITUAL-20260805-7CDD6F4EA4",
+      "path": ".artifacts/emptiness_ritual_20260805",
+      "entry_file": ".artifacts/emptiness_ritual_20260805/NOTES.md",
+      "title": "canonical emptiness freeze-ritual（2026-08-05，提交 5f1b974）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-05",
+      "topics": [
+        "rules-semantics"
+      ],
+      "summary": "02 号裁决文书挂账 5 落地：把 owner 2026-08-05「空地当时的定义就是什么都不能有」 写进 rules/canonicalrules.json。只写定义，不含挂账 1 的认证链实现修复。"
+    },
+    {
+      "id": "DOSSIER-FC-LIFT-AB-20260716-5FD5604614",
+      "path": ".artifacts/fc_lift_ab_20260716",
+      "entry_file": null,
+      "title": "fc lift ab 20260716",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-07-16",
+      "topics": [
+        "other"
+      ],
+      "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-FRONT-OFFSET-INCIDENT-20260718-2B25E2B21B",
+      "path": ".artifacts/front_offset_incident_20260718",
+      "entry_file": ".artifacts/front_offset_incident_20260718/history.json",
+      "title": "front offset 本地复验收据",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-07-18",
+      "topics": [
+        "rules-semantics"
+      ],
+      "summary": "事故修复批的本机可选日志与结构化收据。"
+    },
+    {
+      "id": "DOSSIER-GHOST-STRICT-FIX-20260805-0FBA53DB19",
+      "path": ".artifacts/ghost_strict_fix_20260805",
+      "entry_file": ".artifacts/ghost_strict_fix_20260805/mutation_manifests_20260806/SUMMARY.md",
+      "title": "strict ghost 修复与复审收据",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "current_evidence",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-05",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "2026-08-05 至 08-06 strict-semantics 修复、外审与 seal batch 的本机可选证据。"
+    },
+    {
+      "id": "DOSSIER-GHOST-STRICT-FIX-PLAN-20260805-03154569FD",
+      "path": ".artifacts/ghost_strict_fix_plan_20260805",
+      "entry_file": ".artifacts/ghost_strict_fix_plan_20260805/BATCH_PLAN.md",
+      "title": "认证链严格空地语义修复批 — 执行计划",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-05",
+      "topics": [
+        "other"
+      ],
+      "summary": "---"
+    },
+    {
+      "id": "DOSSIER-GPT-PRO-REVIEW-BATCH-20260807-2DAE56A307",
+      "path": ".artifacts/gpt_pro_review_batch_20260807",
+      "entry_file": ".artifacts/gpt_pro_review_batch_20260807/4_p2_0_specialized/README.md",
+      "title": "P2.0 吞吐认证特化设计稿批（2026-08-07）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-07",
+      "topics": [
+        "other"
+      ],
+      "summary": "性质：研究层设计稿批。不改生产代码、不改锁面、不改 canonical。落地立项待 owner 过目。"
+    },
+    {
+      "id": "DOSSIER-GPT-PRO-REVIEW-BATCH-20260808-A687A90BB0",
+      "path": ".artifacts/gpt_pro_review_batch_20260808",
+      "entry_file": ".artifacts/gpt_pro_review_batch_20260808/9_architecture_holistic_review/pkg/README.md",
+      "title": "本包是什么 · 怎么读",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-08",
+      "topics": [
+        "other"
+      ],
+      "summary": "本包是一套尚未动工的求解器架构设计的全部在案材料，交付给你做架构级审查。"
+    },
+    {
+      "id": "DOSSIER-H20-ROW-POWER-ORACLE-20260803-28FC39F69B",
+      "path": ".artifacts/h20_row_power_oracle_20260803",
+      "entry_file": ".artifacts/h20_row_power_oracle_20260803/RESULT.md",
+      "title": "H20 row-power 微型判定器结果",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-03",
+      "topics": [
+        "other"
+      ],
+      "summary": "性质：research-only 执行记录 截止日期：2026-08-03 状态：H20ROWPOWERUNSATBOTHR1INTERPRETATIONS 冻结输入：Git 3b4e859a0ffe080edd88953e2ad24811b3ecdeb7；16 号文书 SHA-256 b3980eccdc629612c5371f862a1a31891b48f8b6530d6452512ee9d1dd25ca8f 状态边界：U=(1188,18)、L=absent 未改变。"
+    },
+    {
+      "id": "DOSSIER-IP-ADAPTER-V3-20260805-463C50D116",
+      "path": ".artifacts/ip_adapter_v3_20260805",
+      "entry_file": ".artifacts/ip_adapter_v3_20260805/CHANGES.md",
+      "title": "IP adapter v3 原生降级批 — 实施席改动说明",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-05",
+      "topics": [
+        "other"
+      ],
+      "summary": "执行依据：IMPLEMENTATIONPLAN.md（原生降级批）。 范围：只改 src/adapters/industrialplanner/ 与 src/tests/ 里 industrialplanner 相关测试。 没做的（归落库席）：不重生成 data/examples/industrialplanner/generated/、不拷 golden fixture 进仓、不 git add、不提交。"
+    },
+    {
+      "id": "DOSSIER-IP-CD-SEMANTICS-20260805-7002030E2F",
+      "path": ".artifacts/ip_cd_semantics_20260805",
+      "entry_file": ".artifacts/ip_cd_semantics_20260805/PATCH_NOTES.md",
+      "title": "【已取消】IndustrialPlanner 准入口限速改 CD 语义",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-05",
+      "topics": [
+        "industrial-delivery"
+      ],
+      "summary": "状态：任务取消，代码零改动。模拟器现有的「10 秒固定窗配额」实现是对的，不需要修改。"
+    },
+    {
+      "id": "DOSSIER-LAYER2-GATES-EC926F69A7",
+      "path": ".artifacts/layer2_gates",
+      "entry_file": null,
+      "title": "layer2 gates",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": null,
+      "topics": [
+        "other"
+      ],
+      "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-M5-REVALIDATION-20260803-40F267675F",
+      "path": ".artifacts/m5_revalidation_20260803",
+      "entry_file": ".artifacts/m5_revalidation_20260803/NOTES.md",
+      "title": "M5 存在性复验(现行池 f05b1291) — 2026-08-03 深夜",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-03",
+      "topics": [
+        "other"
+      ],
+      "summary": "一直跑，不设时限；停机条件 = 左线程真的需要机器资源时，届时停掉按「枚举 censored@N 小时」入账（三大发现已在案，无损科学结论）。此前我建议的 24h 复查点作废。"
+    },
+    {
+      "id": "DOSSIER-MEMSYS-MEETING-20260808-1BB4142581",
+      "path": ".artifacts/memsys_meeting_20260808",
+      "entry_file": ".artifacts/memsys_meeting_20260808/FINAL_VERDICT.md",
+      "title": "记忆系统全面复查会议 · 主持人终裁（2026-08-08）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-08",
+      "topics": [
+        "other"
+      ],
+      "summary": "T1 判决：M-02「已越 25KB 字节上限」证伪。 六变体假 HOME 实验（决定性 F 臂：36,056 字节/12,360 JS 字符/150 行 → 零截断）钉死：eoe=25000 的单位是 JS 字符（UTF-16 code unit），展示时 ÷1024 印成 KB。真实 MEMORY.md = 15,383 字符（61.5%）/ 81 行（40.5%），两条线都没踩。且撞顶不静默（警告随索引注入、模型可见）。 → M-02 从「急救」降级为「水位监测项」（归批③：字符+行双水位机械检查，>80%…"
+    },
+    {
+      "id": "DOSSIER-MERGE-CODEX-20260801-E0761ADC63",
+      "path": ".artifacts/merge_codex_20260801",
+      "entry_file": null,
+      "title": "merge codex 20260801",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-01",
+      "topics": [
+        "other"
+      ],
+      "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-MIXFLOW-DEMIX-BAN-20260807-FFEA2B3CE4",
+      "path": ".artifacts/mixflow_demix_ban_20260807",
+      "entry_file": ".artifacts/mixflow_demix_ban_20260807/CORRECTION_open_yard_fixture_20260807.md",
+      "title": "更正：openyard8x8 探针装置端口朝向不忠实（2026-08-07，U-01 批发现并修）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-07",
+      "topics": [
+        "p2-throughput"
+      ],
+      "summary": "处置依据：team-lead 2026-08-07 拍板「openyard 装置在本批顺手修忠实（已有忠实变体， 替换 + 标注原装置缺陷即可）」。本文件是那次替换的记录。"
+    },
+    {
+      "id": "DOSSIER-MIXFLOW-REVIEW-PACK-20260806-8BC80DB22D",
+      "path": ".artifacts/mixflow_review_pack_20260806",
+      "entry_file": ".artifacts/mixflow_review_pack_20260806/staging/00_REVIEW_ASK.md",
+      "title": "外审任务书：routing 模型混流表达手术（soundness 审查）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-06",
+      "topics": [
+        "p2-throughput"
+      ],
+      "summary": "日期：2026-08-06。审查对象：对 certified-exact 求解器 routing 子问题模型的一次 可行域放宽手术（原型阶段，未合入 main、未接入认证路径）。"
+    },
+    {
+      "id": "DOSSIER-MIXFLOW-U01-20260807-0F66A1F37E",
+      "path": ".artifacts/mixflow_u01_20260807",
+      "entry_file": ".artifacts/mixflow_u01_20260807/AWAITING_MAINLINE.md",
+      "title": "U-01 施工席：完工待主线（2026-08-07）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-07",
+      "topics": [
+        "p2-throughput"
+      ],
+      "summary": "状态：DONE。本席没有还能自己推进的工作项了。"
+    },
+    {
+      "id": "DOSSIER-P2-0-REFRESH-20260805-627C980F03",
+      "path": ".artifacts/p2_0_refresh_20260805",
+      "entry_file": ".artifacts/p2_0_refresh_20260805/AREA_BOUND_UPGRADE_PLAN.md",
+      "title": "P2.0 refresh 本地收据",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "current_evidence",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-05",
+      "topics": [
+        "p2-throughput"
+      ],
+      "summary": "P2.0 面积界与复核脚本的本机可选收据根。"
+    },
+    {
+      "id": "DOSSIER-PHASE3B-ACCEL-TUNING-64039CA2F2",
+      "path": ".artifacts/phase3b_accel_tuning",
+      "entry_file": null,
+      "title": "phase3b accel tuning",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": null,
+      "topics": [
+        "other"
+      ],
+      "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-PHASE3B-AI-ACCEL-20260429-4CCE6170E3",
+      "path": ".artifacts/phase3b_ai_accel_20260429",
+      "entry_file": null,
+      "title": "phase3b ai accel 20260429",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-04-29",
+      "topics": [
+        "other"
+      ],
+      "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-PROOF-SCOUT-20260718-7C6AD03F03",
+      "path": ".artifacts/proof_scout_20260718",
+      "entry_file": null,
+      "title": "proof scout 20260718",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-07-18",
+      "topics": [
+        "other"
+      ],
+      "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-PRUNE-V2-20260803-A4F09E4468",
+      "path": ".artifacts/prune_v2_20260803",
+      "entry_file": ".artifacts/prune_v2_20260803/design_p4_compaction_timeless_layer.md",
+      "title": "剪枝 P4 设计稿 v0：定点大修 + 无时态层",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-03",
+      "topics": [
+        "other"
+      ],
+      "summary": "剪枝 v2 只保事实正确（引用不死、结论不过时、承诺不落空），不管结构最优——增量订正的局部最优叠加成地层沉积（标本：M5 卡 = 07-12 正文 + 08-03 订正 + 08-05 终局，三层）。文档里满地日期本质是「没人会更新这句话」的保险；剪枝体检就位后这份保险可以撤，但撤保险的操作（压实+去时化）系统里还没有。"
+    },
+    {
+      "id": "DOSSIER-RAB-DRILL-20260716-132E17F171",
+      "path": ".artifacts/rab_drill_20260716",
+      "entry_file": null,
+      "title": "rab drill 20260716",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-07-16",
+      "topics": [
+        "other"
+      ],
+      "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-SOLVER-RETHINK-20260808-47BE0A3C3A",
+      "path": ".artifacts/solver_rethink_20260808",
+      "entry_file": ".artifacts/solver_rethink_20260808/DESIGN_DOC_v2.md",
+      "title": "推理外环 solver-rethink 设计与对抗收敛包",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-08",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "solver-rethink"
+      ],
+      "summary": "本机可选的推理外环、CP-SAT 内层、完备性口径、能力缺口与对抗收敛设计包；未立线、未获 production authority。"
+    },
+    {
+      "id": "DOSSIER-TRACK-B-B1-SIDEWISE-MARKED-MEMBRANE-FRESH-AUTHORITY-2026-2C7C3FCD74",
+      "path": ".artifacts/track_b_b1_sidewise_marked_membrane_fresh_authority_20260727",
+      "entry_file": null,
+      "title": "SMM4 fresh-authority local artifact root",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "current_evidence",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-07-27",
+      "topics": [
+        "formal-verification",
+        "upper-bound"
+      ],
+      "summary": "External authorization root named by the tracked authority report; intentionally optional and absent from some checkouts."
+    },
+    {
+      "id": "DOSSIER-V28-GPT-REVIEW-93871F1F70",
+      "path": ".artifacts/v28_gpt_review",
+      "entry_file": ".artifacts/v28_gpt_review/b1/REVIEW.md",
+      "title": "Phase 1.2 spike close 严格闭关审查 — v28 外部审查结果",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": null,
+      "topics": [
+        "solver-experiment"
+      ],
+      "summary": "审查对象: phase12spikereviewv28.zip"
+    },
+    {
+      "id": "DOSSIER-V46-VALIDATION-100519A7C4",
+      "path": ".artifacts/v46_validation",
+      "entry_file": null,
+      "title": "v46 validation",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": null,
+      "topics": [
+        "other"
+      ],
+      "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-W0-CONSULT-PACKS-20260804-D95CAAE8A6",
+      "path": ".artifacts/w0_consult_packs_20260804",
+      "entry_file": ".artifacts/w0_consult_packs_20260804/pricing_exp/11_runnable/README.md",
+      "title": "11runnable · 解包即可运行的探测闭包",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-04",
+      "topics": [
+        "witness-lower-bound"
+      ],
+      "summary": "08areaprobe.py（包根那份）是运行时字节的逐字副本，它顶部的 SNAP 常量指向发件机上的一个临时快照目录， 所以那一份复制出去是跑不起来的。本目录是同一份代码的可运行版：唯一的改动是把 SNAP 换成包内相对路径 （Path(file).resolve().parents[1]），其余逐字节相同（MANIFEST.sha256 里两份的差异只有这几行）。"
+    },
+    {
+      "id": "DOSSIER-W0-FIXRERUN-20260804-7239554A2D",
+      "path": ".artifacts/w0_fixrerun_20260804",
+      "entry_file": ".artifacts/w0_fixrerun_20260804/pricing_exp_run/README.md",
+      "title": "Pricing-bound experiment deliverable",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-04",
+      "topics": [
+        "witness-lower-bound"
+      ],
+      "summary": "This directory is research-only. It does not write to a proof registry or claim a formal certificate."
+    },
+    {
+      "id": "DOSSIER-W0-FRONT-AWARE-20260803-1040F8BE76",
+      "path": ".artifacts/w0_front_aware_20260803",
+      "entry_file": ".artifacts/w0_front_aware_20260803/fix_batch_brief.md",
+      "title": "W0 G1 修复批（三席审查后主会话裁决；2026-08-03）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-03",
+      "topics": [
+        "witness-lower-bound"
+      ],
+      "summary": "背景：G1 批三席审查终局 = codex 对抗席 BLOCK（4 阻塞）、opus 章程席/质量席 PASSWITHNOTES。 完整审查原文：/tmp/claude-1000/-home-zhuran24-zmd-pj/8f5c01e7-682b-43f6-a633-2c4886554c21/tasks/waj0d0gk2.output。 主会话已亲手验真枢纽争议并逐条裁决如下。本批 = 按裁决收口，不重跑 G1、不做 L2。"
+    },
+    {
+      "id": "DOSSIER-W0-METHOD-RFP-20260803-1CBCC9501E",
+      "path": ".artifacts/w0_method_rfp_20260803",
+      "entry_file": ".artifacts/w0_method_rfp_20260803/00_ASK.md",
+      "title": "任务：从零设计一套下界见证构造方法",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-03",
+      "topics": [
+        "witness-lower-bound"
+      ],
+      "summary": "请从头设计：如何构造出规格书 §1 的那张完整合法布局（含 6×7 空矩形）并通过六谓词 checker。不要求你沿用或避开任何已有路线；死亡名单里的三条路除外——它们是被 证死的，除非你能指出判死论证本身的错误，或指出它被外推得比证据宽（两种都是 有效反驳，请直说是哪一种）。"
+    },
+    {
+      "id": "DOSSIER-W0-PROBE-HOLE-20260804-11D39E624B",
+      "path": ".artifacts/w0_probe_hole_20260804",
+      "entry_file": ".artifacts/w0_probe_hole_20260804/SUMMARY.md",
+      "title": "边界七族带孔探测终局（2026-08-04）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-04",
+      "topics": [
+        "witness-lower-bound"
+      ],
+      "summary": "strict 读法只会 ≤101），而各自 packing 级上界读数为 129/134。措辞纪律（codex refute 二轮订正）：129/134 是上界非可行 witness——已证命题=「面积账对真实天花板至少虚高 28 格」，不是「真能装 129」。"
+    },
+    {
+      "id": "DOSSIER-WITNESS-20260717-1D5FD48183",
+      "path": ".artifacts/witness_20260717",
+      "entry_file": null,
+      "title": "witness 20260717",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-07-17",
+      "topics": [
+        "witness-lower-bound"
+      ],
+      "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-B1-CONDITIONAL-HALO-20260722-0D968A299D",
+      "path": "docs/research/b1_conditional_halo_20260722",
+      "entry_file": "docs/research/b1_conditional_halo_20260722/README.md",
+      "title": "Track B/B1 round 2: conditional halo",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-07-22",
+      "topics": [
+        "upper-bound",
+        "solver-experiment"
+      ],
+      "summary": "All-selected-poles conditional-halo 必要式、actual-P ceiling 账与 512 对 control/treatment 零增量剪枝边界。"
+    },
+    {
+      "id": "DOSSIER-B1-POSE-BOOL-PHASE0-20260517-DBAB7753FE",
+      "path": "docs/research/b1_pose_bool_phase0_20260517",
+      "entry_file": "docs/research/b1_pose_bool_phase0_20260517/README.md",
+      "title": "B1 Phase 0 verdict — pose-bool master + powercoverage",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-17",
+      "topics": [
+        "solver-experiment"
+      ],
+      "summary": "Date: 2026-05-17 Lever: B1 (唯一未试的 paradigm lever, 在 L1-L16 14 条全死 + L11 用户拒绝后) Decision: 用户授权走 B1, ROI 自决"
+    },
+    {
+      "id": "DOSSIER-B1-Q-MEMBRANE-HALO-20260722-D054906F9B",
+      "path": "docs/research/b1_q_membrane_halo_20260722",
+      "entry_file": "docs/research/b1_q_membrane_halo_20260722/README.md",
+      "title": "Track B/B1 round 1: Q/membrane/halo",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-07-22",
+      "topics": [
+        "upper-bound"
+      ],
+      "summary": "Boundary Q 交叠、ordinary membrane 与 tangential endpoint 修正形成的 B1-QMH 必要不等式及其双计数边界。"
+    },
+    {
+      "id": "DOSSIER-B1-R4-1188-22-PB-20260723-FE5DFB853D",
+      "path": "docs/research/b1_r4_1188_22_pb_20260723",
+      "entry_file": "docs/research/b1_r4_1188_22_pb_20260723/README.md",
+      "title": "Track B/B1：R4 (1188,22) 候选的 proof-bearing 回归",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-07-23",
+      "topics": [
+        "upper-bound",
+        "formal-verification"
+      ],
+      "summary": "给定 A004 几何引理后，2084 个 lex-better orientations 的 OPB、RoundingSat proof、VeriPB 验证与 detached upper-update receipt。"
+    },
+    {
+      "id": "DOSSIER-B1-RABSEP-ROUTING-AWARE-BINDING-20260518-E08AD6BF23",
+      "path": "docs/research/b1_rabsep_routing_aware_binding_20260518",
+      "entry_file": null,
+      "title": "b1 rabsep routing aware binding 20260518",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-18",
+      "topics": [
+        "other"
+      ],
+      "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-B1-SIDEWISE-MARKED-MEMBRANE-20260724-684AF89404",
+      "path": "docs/research/b1_sidewise_marked_membrane_20260724",
+      "entry_file": "docs/research/b1_sidewise_marked_membrane_20260724/README.md",
+      "title": "Track B/B1：22×54 分边 marked-membrane 最小证明轮",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-24",
+      "topics": [
+        "upper-bound"
+      ],
+      "summary": "本目录是 cuts Gate 1 支线终止后返回 Track B 的下一项最小工作。研究目标是 核心计划候选 3 的 ceiling 特化：对四条边容量 22,22,54,54 分开记账，并把 ordinary terminals、marked terminals、端点 partial contact 与 protocol core 的真实单实体 face 选择放进同一安全放松。"
+    },
+    {
+      "id": "DOSSIER-B1-SIDEWISE-MARKED-MEMBRANE-AUTHORITY-RECOVERY-20260724-9E688ADD0E",
+      "path": "docs/research/b1_sidewise_marked_membrane_authority_recovery_20260724",
+      "entry_file": "docs/research/b1_sidewise_marked_membrane_authority_recovery_20260724/README.md",
+      "title": "SMM3 authority recovery 终态",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-24",
+      "topics": [
+        "upper-bound"
+      ],
+      "summary": "SMM3 已完成 privileged manager attestation、两阶段 synthetic 生命周期验证与 formal admission，但唯一 formal a002 在 payload 的 selection replay 处 失败关闭。该 attempt 已消费，不得重跑或补写。没有 RoundingSat、VeriPB 或 proof 工件由本轮产生，因此本目录不建立 U=(1188,18)。"
+    },
+    {
+      "id": "DOSSIER-B1-SIDEWISE-MARKED-MEMBRANE-FRESH-AUTHORITY-20260727-EA260C6D6B",
+      "path": "docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727",
+      "entry_file": "docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md",
+      "title": "SMM4 fresh-authority 上界闭包",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "current_evidence",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-07-27",
+      "topics": [
+        "upper-bound"
+      ],
+      "summary": "把 SMM-209 与旧 band authority 合并为 U=(1188,18) 的 tracked authority 文书。"
+    },
+    {
+      "id": "DOSSIER-B1-SIDEWISE-MARKED-MEMBRANE-STRICT-20260724-F275CFCFE2",
+      "path": "docs/research/b1_sidewise_marked_membrane_strict_20260724",
+      "entry_file": "docs/research/b1_sidewise_marked_membrane_strict_20260724/README.md",
+      "title": "SMM-209 严格膜不等式",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "current_evidence",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-07-24",
+      "topics": [
+        "upper-bound"
+      ],
+      "summary": "22×54 / 54×22 排除的纸面证明、翻译检查与对抗判读。"
+    },
+    {
+      "id": "DOSSIER-BAND22-REGISTRATION-20260805-C053405AC5",
+      "path": "docs/research/band22_registration_20260805",
+      "entry_file": "docs/research/band22_registration_20260805/README.md",
+      "title": "band22 v2 witness → official binding/routing gates",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-08-05",
+      "topics": [
+        "upper-bound",
+        "witness-lower-bound"
+      ],
+      "summary": "Status: CURRENT research-only adapter contract"
+    },
+    {
+      "id": "DOSSIER-BAND22-SIM-EXPORT-20260805-9A43971884",
+      "path": "docs/research/band22_sim_export_20260805",
+      "entry_file": "docs/research/band22_sim_export_20260805/README.md",
+      "title": "band22 见证布局 → IndustrialPlanner 蓝图导出",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-08-05",
+      "topics": [
+        "upper-bound",
+        "industrial-delivery"
+      ],
+      "summary": "状态：已完成（2026-08-05）。产物为 research-only 导出件，不是认证材料，不参与任何 release 边界判定。"
+    },
+    {
+      "id": "DOSSIER-BATCH-CE-ATTACH-HOST-20260712-D4A08ECB0B",
+      "path": "docs/research/batch_ce_attach_host_20260712",
+      "entry_file": "docs/research/batch_ce_attach_host_20260712/01_batch_c_execution_plan_draft.md",
+      "title": "Batch C/E attach-host evidence line",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "current_evidence",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-07-12",
+      "topics": [
+        "cut-framework",
+        "solver-experiment"
+      ],
+      "summary": "Cut attach-host、prod-form mirror 和 fail-closed 修复证据；证明 consumer 接线边界，不授权 autonomous separation 或 production attach。"
+    },
+    {
+      "id": "DOSSIER-BENDERS-SYMMETRY-PHASE0-20260520-D5A77E6403",
+      "path": "docs/research/benders_symmetry_phase0_20260520",
+      "entry_file": "docs/research/benders_symmetry_phase0_20260520/README.md",
+      "title": "Phase 0 cheap gate — Benders symmetry / cut-orbit lifting",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-20",
+      "topics": [
+        "cut-framework",
+        "solver-experiment"
+      ],
+      "summary": "Date: 2026-05-20 Scope: Phase 0 only (cheap gate, no src changes) Verdict so far: TBD (probe written, not yet executed)"
+    },
+    {
+      "id": "DOSSIER-CAND-C-COLUMN-GENERATION-PHASE0-20260521-6F6C808E65",
+      "path": "docs/research/cand_c_column_generation_phase0_20260521",
+      "entry_file": "docs/research/cand_c_column_generation_phase0_20260521/README.md",
+      "title": "Phase 0 cheap gate — Column Generation / Branch-and-Price",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-21",
+      "topics": [
+        "solver-experiment"
+      ],
+      "summary": "Date: 2026-05-21 Paradigm: cand C (column generation with intermediate-granularity patterns) Status: probe written, dry-run only — measurement queued."
+    },
+    {
+      "id": "DOSSIER-CAND-C-COLUMN-GENERATION-PHASE1-20260521-4E809F3AB7",
+      "path": "docs/research/cand_c_column_generation_phase1_20260521",
+      "entry_file": "docs/research/cand_c_column_generation_phase1_20260521/README.md",
+      "title": "Phase 1 — Column Generation + integer reconstruction validator",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-21",
+      "topics": [
+        "p1_2-proof-chain",
+        "solver-experiment"
+      ],
+      "summary": "Date: 2026-05-21 Paradigm: cand C (column generation / branch-and-price) Predecessor: candccolumngenerationphase020260521/ (8/8 GO on 20-inst) Status: probe written, dry-run rc=0 — measurement queued for background."
+    },
+    {
+      "id": "DOSSIER-CAND-C-COLUMN-GENERATION-PHASE2-20260521-9625F52BA3",
+      "path": "docs/research/cand_c_column_generation_phase2_20260521",
+      "entry_file": "docs/research/cand_c_column_generation_phase2_20260521/README.md",
+      "title": "Phase 2 — Column Generation: share cache + Ryan-Foster + 160/266 + routing-aware + boundary equality",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-21",
+      "topics": [
+        "solver-experiment"
+      ],
+      "summary": "Date: 2026-05-21 Paradigm: cand C (column generation / branch-and-price) Predecessor: candccolumngenerationphase120260521/ — 4/4 ramp GO (5/20/40/80 inst, m10 integer reconstruction True, m11 nodes 11/33/53)."
+    },
+    {
+      "id": "DOSSIER-CANONICAL-BATCH-20260807-B460BA9381",
+      "path": "docs/research/canonical_batch_20260807",
+      "entry_file": "docs/research/canonical_batch_20260807/README.md",
+      "title": "canonical 公理 kernel + 四件套修正批（2026-08-07）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-08-07",
+      "topics": [
+        "rules-semantics"
+      ],
+      "summary": "owner 2026-08-07 晨拍板：公理 kernel 提案与在案四件套（W-PENDING-01）合并、一次 freeze-ritual 走完。本目录 = 该批的定谳存档 + reseal 台账 + 验证记录。"
+    },
+    {
+      "id": "DOSSIER-CANONICAL-BATCH-20260808-B2462129DF",
+      "path": "docs/research/canonical_batch_20260808",
+      "entry_file": "docs/research/canonical_batch_20260808/BLOCKERS.md",
+      "title": "BLOCKERS / 待定点（canonical 08-08 改稿草案 · v3）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-08-08",
+      "topics": [
+        "rules-semantics"
+      ],
+      "summary": "---"
+    },
+    {
+      "id": "DOSSIER-CLEANROOM-REDERIVATION-20260718-41375BBFE3",
+      "path": "docs/research/cleanroom_rederivation_20260718",
+      "entry_file": "docs/research/cleanroom_rederivation_20260718/25_rstar_pricetag_delivery_20260804/README.md",
+      "title": "R- 价签精算交付包",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-18",
+      "topics": [
+        "rules-semantics"
+      ],
+      "summary": "本交付包按 00ASK.md 完成九条充分限制的价签、前提集、撤退线和判定实验设计；authority=false，不登记任何界，账本不变。【已证明】"
+    },
+    {
+      "id": "DOSSIER-CUT-FRAMEWORK-REVIEW-GPT56PRO-20260710-C6C896B93B",
+      "path": "docs/research/cut_framework_review_gpt56pro_20260710",
+      "entry_file": "docs/research/cut_framework_review_gpt56pro_20260710/patches/README.md",
+      "title": "补丁顺序",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-10",
+      "topics": [
+        "cut-framework"
+      ],
+      "summary": "基线：项目包 committed tree。"
+    },
+    {
+      "id": "DOSSIER-D-STEP2-HINT-TRIALS-20260516-8794B39D8A",
+      "path": "docs/research/d_step2_hint_trials_20260516",
+      "entry_file": "docs/research/d_step2_hint_trials_20260516/README.md",
+      "title": "D step 2 Hint Trials — 2026-05-16",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-16",
+      "topics": [
+        "other"
+      ],
+      "summary": "5 个 hint trial 的 campaign state + telemetry 归档. 验证 community blueprint hint 注入对 master FEASIBLE 率的影响."
+    },
+    {
+      "id": "DOSSIER-DOC-TREE-FULL-AUDIT-20260604-80C4D1938D",
+      "path": "docs/research/doc_tree_full_audit_20260604",
+      "entry_file": "docs/research/doc_tree_full_audit_20260604/FINDINGS.md",
+      "title": "文档树全量审查 findings (2026-06-04, WF wv9rnpdzd)",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-06-04",
+      "topics": [
+        "documentation-governance"
+      ],
+      "summary": "8 单元 fresh-eyes 全审 (R1/R3 口径, 非 R2 查修) + 每条对抗式核验。65 raw → confirmed 60 / refuted 5。severity: high 13 / med 25 / low 22。kind: currency 4 / broken-ref 5 / inconsistency 18 / staleness 26 / cross-doc 3 / overclaim 3 / other 1。"
+    },
+    {
+      "id": "DOSSIER-FORMAL-VERIFICATION-LANGUAGES-ASSESSMENT-20260711-CCCFF888D8",
+      "path": "docs/research/formal_verification_languages_assessment_20260711",
+      "entry_file": "docs/research/formal_verification_languages_assessment_20260711/01_ats_fstar_assessment.md",
+      "title": "ATS / F\\ 形式化验证语言对本项目的适用性评估",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-11",
+      "topics": [
+        "formal-verification"
+      ],
+      "summary": "这类语言的看家本领是把「程序本身正确」变成机器可查的定理——典型用法不是验证求解器,而是验证检查器(De Bruijn 准则:求解器大而不可信,检查器小而可信)。"
+    },
+    {
+      "id": "DOSSIER-FRONT-OFFSET-INCIDENT-20260718-7F16095D41",
+      "path": "docs/research/front_offset_incident_20260718",
+      "entry_file": "docs/research/front_offset_incident_20260718/00_incident_survey_and_fix_plan.md",
+      "title": "front offset 事故与历史重判",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "current_evidence",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-07-18",
+      "topics": [
+        "rules-semantics"
+      ],
+      "summary": "旧 front 坐标重复偏移的根因、修复与历史结论有效性边界。"
+    },
+    {
+      "id": "DOSSIER-GEMINI-CROSS-CHECK-PHASE1-2-F5-ROUND3-20260524-F197C69BC0",
+      "path": "docs/research/gemini_cross_check_phase1_2_f5_round3_20260524",
+      "entry_file": "docs/research/gemini_cross_check_phase1_2_f5_round3_20260524/verdict.md",
+      "title": "gemini cross check phase1 2 f5 round3 20260524",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-24",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "GOWITHMINOR (Defer to Phase 1.5+)"
+    },
+    {
+      "id": "DOSSIER-HISTORY-TOOLCHAIN-ORIGIN-20260709-411160EC29",
+      "path": "docs/research/history_toolchain_origin_20260709",
+      "entry_file": "docs/research/history_toolchain_origin_20260709/README.md",
+      "title": "工具链起源考古：「自建 cut framework」决策的调研与最初设计（2026-07-09）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-07-09",
+      "topics": [
+        "cut-framework",
+        "documentation-governance",
+        "solver-architecture"
+      ],
+      "summary": "cut-language thesis、专用 cut/proof 工具链、oracle/validator 分工与早期 lifecycle 的 tracked 起源考古。"
+    },
+    {
+      "id": "DOSSIER-L14-WEIGHTED-OCCUPANCY-POC-20260516-6AF12BD79C",
+      "path": "docs/research/l14_weighted_occupancy_poc_20260516",
+      "entry_file": "docs/research/l14_weighted_occupancy_poc_20260516/README.md",
+      "title": "L14 weighted-occupancy blocker oracle PoC — 2026-05-16",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-16",
+      "topics": [
+        "solver-experiment"
+      ],
+      "summary": "GPT Pro 在收到 v10 死路 + 强化版 prompt (要求方案对准 upper-bound INFEASIBLE 排除, 不准 anecdotal \"不可达\") 后, 给出proof-carrying weighted-occupancy blocker oracle (Farkas-style 整数证书). 本目录归档 PoC 实测 + verdict."
+    },
+    {
+      "id": "DOSSIER-LAYOUT-INVARIANT-CERT-PHASE0-20260520-5DA45C1506",
+      "path": "docs/research/layout_invariant_cert_phase0_20260520",
+      "entry_file": "docs/research/layout_invariant_cert_phase0_20260520/README.md",
+      "title": "LIC Phase 0 — Layout-Invariant Cert cheap-gate",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-20",
+      "topics": [
+        "witness-lower-bound",
+        "solver-experiment"
+      ],
+      "summary": "Date: 2026-05-20 Status: probe written + dry-run pass; measurement run pending Lever: candidate Path 18 (independent brainstorm, not from GPT review)"
+    },
+    {
+      "id": "DOSSIER-LEVER25-IHS-PHASE0-20260520-4194EBD09A",
+      "path": "docs/research/lever25_ihs_phase0_20260520",
+      "entry_file": "docs/research/lever25_ihs_phase0_20260520/README.md",
+      "title": "Lever 25 IHS (Implicit Hitting Set) — Phase 0 cheap gate",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-20",
+      "topics": [
+        "solver-experiment"
+      ],
+      "summary": "Lever 25 explores the Implicit Hitting Set (IHS) paradigm as an alternative to standard LBBD cut accumulation. Instead of adding each oracle-extracted core directly to the master, IHS keeps an external store of all observed cores and solves a minimum hitting…"
+    },
+    {
+      "id": "DOSSIER-LITERATURE-REVIEW-PAPERS-20260524-F002A45263",
+      "path": "docs/research/literature_review_papers_20260524",
+      "entry_file": "docs/research/literature_review_papers_20260524/README.md",
+      "title": "Literature Review — 2026-05-24",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-24",
+      "topics": [
+        "other"
+      ],
+      "summary": "触发: 用户 /deep-research 目前还有哪些论文对我们项目有帮助和参考意义的"
+    },
+    {
+      "id": "DOSSIER-NONCERT-CUTS-AB16-20260724-826CF39625",
+      "path": "docs/research/noncert_cuts_ab16_20260724",
+      "entry_file": "docs/research/noncert_cuts_ab16_20260724/README.md",
+      "title": "AB16 非认证 cut 实验线",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "current_evidence",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-07-24",
+      "topics": [
+        "cut-framework"
+      ],
+      "summary": "cut 激活暴露、固定运行与 B6 promotion 证据边界。"
+    },
+    {
+      "id": "DOSSIER-NONCERT-CUTS-AB-TRUST-20260723-92D0F8BDCA",
+      "path": "docs/research/noncert_cuts_ab_trust_20260723",
+      "entry_file": "docs/research/noncert_cuts_ab_trust_20260723/README.md",
+      "title": "Non-certified cuts A/B credibility experiment",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-23",
+      "topics": [
+        "cut-framework"
+      ],
+      "summary": "Document kind: research terminal-status summary\\ Cutoff date: 2026-07-23\\ Status: CREDIBILITYINCOMPLETE — Gate 1 admits neither a positive nor a negative cuts claim\\ Authority run: run-20260723T113911Z-SrJBE0\\ Repository identity: 398f8725c770f3c36408adebe944…"
+    },
+    {
+      "id": "DOSSIER-NONCERT-CUTS-AB-TRUST-GATE1-V3-20260723-A086F47E85",
+      "path": "docs/research/noncert_cuts_ab_trust_gate1_v3_20260723",
+      "entry_file": "docs/research/noncert_cuts_ab_trust_gate1_v3_20260723/README.md",
+      "title": "Gate 1 v3 authority closeout",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-23",
+      "topics": [
+        "cut-framework"
+      ],
+      "summary": "Document kind: research authority-hardening terminal summary Evidence cutoff date (UTC): 2026-07-23 Status: HARDENINGINCOMPLETE / LEGACYA002CREDIBILITYINCOMPLETE Authority run: run-20260723T113911Z-SrJBE0 Repository HEAD: 398f8725c770f3c36408adebe9448a890ed88…"
+    },
+    {
+      "id": "DOSSIER-NONCERT-CUTS-AB-TRUST-GATE1-V4-20260724-CBD18919D9",
+      "path": "docs/research/noncert_cuts_ab_trust_gate1_v4_20260724",
+      "entry_file": "docs/research/noncert_cuts_ab_trust_gate1_v4_20260724/README.md",
+      "title": "Non-certified cuts Gate 1 v4 authority completion",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-24",
+      "topics": [
+        "cut-framework"
+      ],
+      "summary": "Document kind: research authority terminal summary Evidence cutoff date: 2026-07-24 (Asia/Tokyo) Status: CUTSGATE1V4AUTHORITYCOMPLETIONPASS / MECHANISMCREDIBLE Authority run: run-20260723T231223Z-0067f7 Repository HEAD: 398f8725c770f3c36408adebe9448a890ed886fe"
+    },
+    {
+      "id": "DOSSIER-P1-2-SPIKE-SIZING-GATE-20260601-C56E677966",
+      "path": "docs/research/p1_2_spike_sizing_gate_20260601",
+      "entry_file": "docs/research/p1_2_spike_sizing_gate_20260601/RESULTS.md",
+      "title": "P1.2 spike — 真 cut body sizing cheap gate 结果 (active v6 / v27)",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-06-01",
+      "topics": [
+        "p1_2-proof-chain",
+        "cut-framework",
+        "solver-experiment"
+      ],
+      "summary": "本文件保留下面 v1-v5 的历史叙述用于审计。gate close / P1.3A cap 设计的当前有效口径是本节， 不是后面较早的 type-pool-only 表。"
+    },
+    {
+      "id": "DOSSIER-P1-2-V30-CANDIDATE-REVIEW-RESET-D5557D4DD7",
+      "path": "docs/research/p1_2_v30_candidate_review_reset.md",
+      "entry_file": "docs/research/p1_2_v30_candidate_review_reset.md",
+      "title": "P1.2 v30 candidate review reset evidence",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Status: NOT CLEAN."
+    },
+    {
+      "id": "DOSSIER-P1-2-V31-CANDIDATE-REVIEW-RESET-8EB314EEA9",
+      "path": "docs/research/p1_2_v31_candidate_review_reset.md",
+      "entry_file": "docs/research/p1_2_v31_candidate_review_reset.md",
+      "title": "P1.2 v31 candidate review reset evidence",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Status: NOT CLEAN."
+    },
+    {
+      "id": "DOSSIER-P1-2-V31-POSTMORTEM-PROOF-OBLIGATION-CONSOLIDATION-B8536C155B",
+      "path": "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md",
+      "entry_file": "docs/research/p1_2_v31_postmortem_proof_obligation_consolidation.md",
+      "title": "P1.2 v31 postmortem: proof-obligation consolidation",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-07"
+    },
+    {
+      "id": "DOSSIER-P1-2-V31-V46-FINDING-TAXONOMY-8B3B767053",
+      "path": "docs/research/p1_2_v31_v46_finding_taxonomy.md",
+      "entry_file": "docs/research/p1_2_v31_v46_finding_taxonomy.md",
+      "title": "P1.2 V31-V46 finding taxonomy and review-protocol reset",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Package: v46reviewprotocolredesign Algorithmic reset package: v32runtimecachesourcedigestconsolidation Date: 2026-06-08 Review type: internalreviewprotocolredesign Outcome: reviewprotocolredesign Infrastructure findings: 1 Resets algorithmic counter: false"
+    },
+    {
+      "id": "DOSSIER-P1-2-V37-PHASE-GATE-PROVENANCE-HARDENING-2F7734A113",
+      "path": "docs/research/p1_2_v37_phase_gate_provenance_hardening.md",
+      "entry_file": "docs/research/p1_2_v37_phase_gate_provenance_hardening.md",
+      "title": "P1.2 V37 phase-gate provenance hardening",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "This note records the machine-checkable provenance invariants added after the V37 clean-review candidate probe. A clean-review slot is not satisfied by the spelling of an evidence path alone: the evidence body must contain the exact normalized claimed review…"
+    },
+    {
+      "id": "DOSSIER-P1-2-V38-PHASE-GATE-PACKAGE-IDENTITY-A4399F1D27",
+      "path": "docs/research/p1_2_v38_phase_gate_package_identity.md",
+      "entry_file": "docs/research/p1_2_v38_phase_gate_package_identity.md",
+      "title": "P1.2 V38 Phase Gate Package Identity Hardening",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "The V38 clean-review pass found that phase-gate clean evidence could still be bound to a self-declared reviewhistory[].package string instead of the actual current review package. That left a fake-ready path where three clean reviews used unique files, unique…"
+    },
+    {
+      "id": "DOSSIER-P1-2-V44-PHASE-GATE-SOURCE-AUTHORITY-AND-METADATA-RESET-7036E4E74D",
+      "path": "docs/research/p1_2_v44_phase_gate_source_authority_and_metadata_reset.md",
+      "entry_file": "docs/research/p1_2_v44_phase_gate_source_authority_and_metadata_reset.md",
+      "title": "P1.2 V44 phase-gate source authority and metadata reset",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Package: v44candidate Review type: independentfullexternal Outcome: majorsoundnessfindingsfound Major or soundness findings: 2 Resets counter: true"
+    },
+    {
+      "id": "DOSSIER-P1-2-V45-PHASE-GATE-MARKUP-AND-GIT-AUTHORITY-RESET-17F015AF60",
+      "path": "docs/research/p1_2_v45_phase_gate_markup_and_git_authority_reset.md",
+      "entry_file": "docs/research/p1_2_v45_phase_gate_markup_and_git_authority_reset.md",
+      "title": "P1.2 V45 phase-gate markup and Git authority reset",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Package: v45candidate"
+    },
+    {
+      "id": "DOSSIER-P1-2-V46-PHASE-GATE-GIT-AUTHORITY-AND-METADATA-RESET-33949AE9C9",
+      "path": "docs/research/p1_2_v46_phase_gate_git_authority_and_metadata_reset.md",
+      "entry_file": "docs/research/p1_2_v46_phase_gate_git_authority_and_metadata_reset.md",
+      "title": "P1.2 V46 phase-gate Git authority and metadata reset",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Package: v46candidate Date: 2026-06-08 Baseline reviewed: zmd22.7z Baseline archive SHA256: 5AC8255BB93CF299FF96481806CE7C957CBA9E30590568182E5925624618FBA1 Baseline archive size: 157479435 bytes Baseline Git HEAD: 648ede596cd7f7d6365d84dd56aa8a3caee19b26"
+    },
+    {
+      "id": "DOSSIER-P1-2-V50-MANUAL-PHASE-GATE-SIMPLIFICATION-3D7469FFC5",
+      "path": "docs/research/p1_2_v50_manual_phase_gate_simplification.md",
+      "entry_file": "docs/research/p1_2_v50_manual_phase_gate_simplification.md",
+      "title": "P1.2 V50 manual phase-gate simplification",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-08"
+    },
+    {
+      "id": "DOSSIER-P1-2-V56-CERTIFIED-CUT-REPLAY-CONSOLIDATION-D34374EFFA",
+      "path": "docs/research/p1_2_v56_certified_cut_replay_consolidation.md",
+      "entry_file": "docs/research/p1_2_v56_certified_cut_replay_consolidation.md",
+      "title": "P1.2 V56 certified cut replay faithfulness consolidation",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain",
+        "cut-framework"
+      ],
+      "summary": "Date: 2026-06-08"
+    },
+    {
+      "id": "DOSSIER-P1-2-V58-CONDITION-REQUIRED-CUT-ANCHOR-VALIDATION-3F6EB607C8",
+      "path": "docs/research/p1_2_v58_condition_required_cut_anchor_validation.md",
+      "entry_file": "docs/research/p1_2_v58_condition_required_cut_anchor_validation.md",
+      "title": "P1.2 V58 condition-required cut anchor validation",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain",
+        "cut-framework"
+      ],
+      "summary": "Status: patch evidence for a V58 certified lifecycle false-negative found in zmd35.7z."
+    },
+    {
+      "id": "DOSSIER-P1-2-V59-CONDITION-REQUIRED-CUT-DOMAIN-VALIDATION-FC7B10C2FC",
+      "path": "docs/research/p1_2_v59_condition_required_cut_domain_validation.md",
+      "entry_file": "docs/research/p1_2_v59_condition_required_cut_domain_validation.md",
+      "title": "P1.2 V59 condition-required cut domain validation",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain",
+        "cut-framework"
+      ],
+      "summary": "Status: patch evidence for a V59 certified lifecycle false-negative found in zmd36.7z."
+    },
+    {
+      "id": "DOSSIER-P1-2-V60-MASTER-DOMAIN-CONTRACT-996F05F604",
+      "path": "docs/research/p1_2_v60_master_domain_contract.md",
+      "entry_file": "docs/research/p1_2_v60_master_domain_contract.md",
+      "title": "P1.2 V60 master-domain contract hardening",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Certified exact campaign candidates are full ghost-anchor-domain claims. The runtime may expose experimental anchor-slicing controls for RAM probes, but a terminal INFEASIBLE campaign record cannot inherit those controls unless the proof state records and val…"
+    },
+    {
+      "id": "DOSSIER-P1-2-V61-MASTER-DOMAIN-CANDIDATE-FRONTIER-CONTRACT-9A8B2351BE",
+      "path": "docs/research/p1_2_v61_master_domain_candidate_frontier_contract.md",
+      "entry_file": "docs/research/p1_2_v61_master_domain_candidate_frontier_contract.md",
+      "title": "P1.2 V61 master-domain and candidate-frontier contract",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "V61 is a reset-grade sibling of the V57-V60 certified cut replay/domain-contract family. It does not reopen the retired V47-V50 receipt/counter authority. The live issue is that terminal certified evidence must describe the actual constructed certified lifecy…"
+    },
+    {
+      "id": "DOSSIER-P1-2-V62-FRONTIER-TERMINAL-EVIDENCE-AND-OUTER-MASTER-DOM-BDCFA7A310",
+      "path": "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
+      "entry_file": "docs/research/p1_2_v62_frontier_terminal_evidence_and_outer_master_domain_guard.md",
+      "title": "P1.2 V62 frontier terminal evidence and outer master-domain guard",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Status: reset-grade algorithmic / proof-obligation consolidation input."
+    },
+    {
+      "id": "DOSSIER-P1-2-V63-TERMINAL-EVIDENCE-EXPORT-BOUNDARY-REVIEW-C1B9CAC680",
+      "path": "docs/research/p1_2_v63_terminal_evidence_export_boundary_review.md",
+      "entry_file": "docs/research/p1_2_v63_terminal_evidence_export_boundary_review.md",
+      "title": "P1.2 V63 terminal evidence export boundary review",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "This note records the V63 follow-up hardening for the V62 terminal frontier evidence contract."
+    },
+    {
+      "id": "DOSSIER-P1-2-V64-POWER-WITNESS-REPRESENTATION-ENV-GUARD-1E7C6CB745",
+      "path": "docs/research/p1_2_v64_power_witness_representation_env_guard.md",
+      "entry_file": "docs/research/p1_2_v64_power_witness_representation_env_guard.md",
+      "title": "P1.2 V64 power-witness representation env guard",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain",
+        "witness-lower-bound"
+      ],
+      "summary": "V64 extends the V63 certified exact terminal-evidence boundary to sibling master/witness representations exposed by environment/debug knobs. A certified exact run must fail closed before ExactSearchSession or precheck construction when any env knob can remove…"
+    },
+    {
+      "id": "DOSSIER-P1-2-V66-CERTIFIED-LIFECYCLE-EVIDENCE-CONSOLIDATION-CAF85D6BDF",
+      "path": "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md",
+      "entry_file": "docs/research/p1_2_v66_certified_lifecycle_evidence_consolidation.md",
+      "title": "P1.2 V66 certified lifecycle evidence consolidation",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-09"
+    },
+    {
+      "id": "DOSSIER-P1-2-V66-STALE-DELIVERY-ARTIFACT-GUARD-E897C29E8C",
+      "path": "docs/research/p1_2_v66_stale_delivery_artifact_guard.md",
+      "entry_file": "docs/research/p1_2_v66_stale_delivery_artifact_guard.md",
+      "title": "P1.2 V66 stale delivery artifact guard",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain",
+        "industrial-delivery"
+      ],
+      "summary": "V66 closes two certifiedexact fail-closed residue paths. First, blocker branches already cleared terminal finalresult / finalstatus in the campaign checkpoint, but could leave older data/solutions/finalsolution.json, data/blueprints/optimalblueprint.json, or…"
+    },
+    {
+      "id": "DOSSIER-P1-2-V73-CERTIFIED-SURFACE-VERIFIER-CONSOLIDATION-7AA51E1A9F",
+      "path": "docs/research/p1_2_v73_certified_surface_verifier_consolidation.md",
+      "entry_file": "docs/research/p1_2_v73_certified_surface_verifier_consolidation.md",
+      "title": "P1.2 V73 Certified Surface Verifier Consolidation",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "V72 closed the known sibling bypasses, but the review pattern showed a deeper risk: multiple public read surfaces still had enough local predicate logic to invent their own meaning of CERTIFIED. V73 consolidates that authority into a single verifier module."
+    },
+    {
+      "id": "DOSSIER-P1-2-V74-CERTIFIED-SURFACE-AUTHORITY-HARDENING-91A96BFE49",
+      "path": "docs/research/p1_2_v74_certified_surface_authority_hardening.md",
+      "entry_file": "docs/research/p1_2_v74_certified_surface_authority_hardening.md",
+      "title": "P1.2 V74 Certified Surface Authority Hardening",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "V73 correctly moved public CERTIFIED publication into one verifier, but the review found one remaining architectural wrinkle: the verifier still accepted caller-supplied in-memory campaign and manifest payloads as if they were the repository's public evidence…"
+    },
+    {
+      "id": "DOSSIER-P1-2-V75-TERMINAL-FRONTIER-EVIDENCE-SEALING-C43D367D50",
+      "path": "docs/research/p1_2_v75_terminal_frontier_evidence_sealing.md",
+      "entry_file": "docs/research/p1_2_v75_terminal_frontier_evidence_sealing.md",
+      "title": "P1.2 V75 Terminal Frontier Evidence Sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "V74 made the public CERTIFIED surface verifier authoritative over disk state, strict JSON, and exact-artifact hashes. The next review pass found that this outer verifier was not the weak point anymore. The remaining false-negative seam was inside the terminal…"
+    },
+    {
+      "id": "DOSSIER-P1-2-V76-PROJECT-BOUND-TERMINAL-EVIDENCE-43DCB88753",
+      "path": "docs/research/p1_2_v76_project_bound_terminal_evidence.md",
+      "entry_file": "docs/research/p1_2_v76_project_bound_terminal_evidence.md",
+      "title": "P1.2 V76 project-bound terminal evidence review",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-10"
+    },
+    {
+      "id": "DOSSIER-P1-2-V77-DELIVERY-MANIFEST-WRITER-AUTHORITY-9337E8274B",
+      "path": "docs/research/p1_2_v77_delivery_manifest_writer_authority.md",
+      "entry_file": "docs/research/p1_2_v77_delivery_manifest_writer_authority.md",
+      "title": "P1.2 V77 delivery manifest writer authority review",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain",
+        "industrial-delivery"
+      ],
+      "summary": "Date: 2026-06-10"
+    },
+    {
+      "id": "DOSSIER-P1-2-V78-CERTIFIED-MANIFEST-WRITER-CANONICAL-SURFACE-14CBB05590",
+      "path": "docs/research/p1_2_v78_certified_manifest_writer_canonical_surface.md",
+      "entry_file": "docs/research/p1_2_v78_certified_manifest_writer_canonical_surface.md",
+      "title": "P1.2 V78 certified manifest writer canonical-surface hardening",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain",
+        "rules-semantics"
+      ],
+      "summary": "Date: 2026-06-10"
+    },
+    {
+      "id": "DOSSIER-P1-2-V79-TERMINAL-DOMAIN-AXIS-SEALING-CB3497A612",
+      "path": "docs/research/p1_2_v79_terminal_domain_axis_sealing.md",
+      "entry_file": "docs/research/p1_2_v79_terminal_domain_axis_sealing.md",
+      "title": "P1.2 V79 terminal candidate-domain axis sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-10"
+    },
+    {
+      "id": "DOSSIER-P1-2-V80-DENY-UNKNOWN-CERTIFIED-SURFACE-11A22CC93C",
+      "path": "docs/research/p1_2_v80_deny_unknown_certified_surface.md",
+      "entry_file": "docs/research/p1_2_v80_deny_unknown_certified_surface.md",
+      "title": "P1.2 V80 deny-unknown certified-surface hardening",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-10"
+    },
+    {
+      "id": "DOSSIER-P1-2-V81-PARTIAL-PRECHECK-AND-RELEASE-CLAIM-SEALING-4FA1510135",
+      "path": "docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md",
+      "entry_file": "docs/research/p1_2_v81_partial_precheck_and_release_claim_sealing.md",
+      "title": "P1.2 V81 partial-precheck and release-claim sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain",
+        "industrial-delivery"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V82-ORIENTED-DOMAIN-AND-CUT-REPLAY-SEALING-4A8EF4883C",
+      "path": "docs/research/p1_2_v82_oriented_domain_and_cut_replay_sealing.md",
+      "entry_file": "docs/research/p1_2_v82_oriented_domain_and_cut_replay_sealing.md",
+      "title": "P1.2 V82 oriented candidate domain and persisted-cut replay sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain",
+        "cut-framework"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V83-GEOMETRY-WITNESS-NOGOOD-SCOPE-AND-LOADER-SEALIN-428112A0D6",
+      "path": "docs/research/p1_2_v83_geometry_witness_nogood_scope_and_loader_sealing.md",
+      "entry_file": "docs/research/p1_2_v83_geometry_witness_nogood_scope_and_loader_sealing.md",
+      "title": "P1.2 V83 geometry-witness, nogood-scope, and mandatory-loader sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain",
+        "witness-lower-bound"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V84-LAYOUT-OPTIMALITY-AND-ARTIFACT-BOUNDARY-SEALING-2646648D75",
+      "path": "docs/research/p1_2_v84_layout_optimality_and_artifact_boundary_sealing.md",
+      "entry_file": "docs/research/p1_2_v84_layout_optimality_and_artifact_boundary_sealing.md",
+      "title": "P1.2 V84 layout-optimality and artifact-boundary sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V85-REQUIRED-OPTIONAL-TERMINAL-SEALING-0C5E057996",
+      "path": "docs/research/p1_2_v85_required_optional_terminal_sealing.md",
+      "entry_file": "docs/research/p1_2_v85_required_optional_terminal_sealing.md",
+      "title": "P1.2 V85 required-optional terminal sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V86-POWER-WITNESS-TERMINAL-SEALING-209B19CC9E",
+      "path": "docs/research/p1_2_v86_power_witness_terminal_sealing.md",
+      "entry_file": "docs/research/p1_2_v86_power_witness_terminal_sealing.md",
+      "title": "P1.2 V86 power-witness terminal sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain",
+        "witness-lower-bound"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V87-ANCHOR-AND-POLE-IRREDUNDANCY-SEALING-252F310360",
+      "path": "docs/research/p1_2_v87_anchor_and_pole_irredundancy_sealing.md",
+      "entry_file": "docs/research/p1_2_v87_anchor_and_pole_irredundancy_sealing.md",
+      "title": "P1.2 V87 ghost-anchor and pole-irredundancy terminal sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V88-GHOST-ANCHOR-REQUIRED-SEALING-D1943B9A4D",
+      "path": "docs/research/p1_2_v88_ghost_anchor_required_sealing.md",
+      "entry_file": "docs/research/p1_2_v88_ghost_anchor_required_sealing.md",
+      "title": "P1.2 V88 ghost-anchor required sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V89-GHOST-PICK-TERMINAL-BINDING-SEALING-C6B2882B47",
+      "path": "docs/research/p1_2_v89_ghost_pick_terminal_binding_sealing.md",
+      "entry_file": "docs/research/p1_2_v89_ghost_pick_terminal_binding_sealing.md",
+      "title": "P1.2 V89 ghost-pick terminal binding sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V90-FINAL-RESULT-FIELD-ALLOWLIST-SEALING-81D82D7C67",
+      "path": "docs/research/p1_2_v90_final_result_field_allowlist_sealing.md",
+      "entry_file": "docs/research/p1_2_v90_final_result_field_allowlist_sealing.md",
+      "title": "P1.2 V90 final-result field-allowlist sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V91-NESTED-PUBLIC-FIELD-SEALING-4D91AABA1A",
+      "path": "docs/research/p1_2_v91_nested_public_field_sealing.md",
+      "entry_file": "docs/research/p1_2_v91_nested_public_field_sealing.md",
+      "title": "P1.2 V91 nested public-field sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V92-RELEASE-STATUS-ALLOWLIST-SEALING-3C2335E2DC",
+      "path": "docs/research/p1_2_v92_release_status_allowlist_sealing.md",
+      "entry_file": "docs/research/p1_2_v92_release_status_allowlist_sealing.md",
+      "title": "P1.2 V92 release-status allowlist sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain",
+        "industrial-delivery"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V93-NOTE-AND-SOLUTION-ENTRY-SEALING-3ECFEAADAD",
+      "path": "docs/research/p1_2_v93_note_and_solution_entry_sealing.md",
+      "entry_file": "docs/research/p1_2_v93_note_and_solution_entry_sealing.md",
+      "title": "P1.2 V93 note and solution-entry sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V94-PROTOCOL-STORAGE-SURPLUS-SEALING-D2DDA99FE5",
+      "path": "docs/research/p1_2_v94_protocol_storage_surplus_sealing.md",
+      "entry_file": "docs/research/p1_2_v94_protocol_storage_surplus_sealing.md",
+      "title": "P1.2 V94 protocol-storage surplus sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V95-OPTIONAL-METADATA-AND-STOP-REASON-SEALING-9738EDCE9C",
+      "path": "docs/research/p1_2_v95_optional_metadata_and_stop_reason_sealing.md",
+      "entry_file": "docs/research/p1_2_v95_optional_metadata_and_stop_reason_sealing.md",
+      "title": "P1.2 V95 optional-metadata and stop-reason sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V96-SYMLINK-ANCESTOR-BOUNDARY-SEALING-076F167DB3",
+      "path": "docs/research/p1_2_v96_symlink_ancestor_boundary_sealing.md",
+      "entry_file": "docs/research/p1_2_v96_symlink_ancestor_boundary_sealing.md",
+      "title": "P1.2 V96 symlink-ancestor boundary sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V97-CANONICAL-CHECKPOINT-AUTHORITY-SEALING-CE3B241BB4",
+      "path": "docs/research/p1_2_v97_canonical_checkpoint_authority_sealing.md",
+      "entry_file": "docs/research/p1_2_v97_canonical_checkpoint_authority_sealing.md",
+      "title": "P1.2 V97 canonical-checkpoint authority sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain",
+        "rules-semantics"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V98-B5A-SYMLINK-AUTHORITY-SEALING-E71458350B",
+      "path": "docs/research/p1_2_v98_b5a_symlink_authority_sealing.md",
+      "entry_file": "docs/research/p1_2_v98_b5a_symlink_authority_sealing.md",
+      "title": "P1.2 V98 B5A symlink-authority sealing",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Date: 2026-06-11"
+    },
+    {
+      "id": "DOSSIER-P1-2-V99-CLOSE-KERNEL-SEALING-207F650E44",
+      "path": "docs/research/p1_2_v99_close_kernel_sealing.md",
+      "entry_file": "docs/research/p1_2_v99_close_kernel_sealing.md",
+      "title": "P1.2 V99 close-kernel sealing",
+      "kind": "note",
+      "lifecycle": "active",
+      "relevance": "current_evidence",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "P1.2 proof-bearing sink 与 close-kernel 的 tracked review anchor。"
+    },
+    {
+      "id": "DOSSIER-P1-2B-F2-F4-GEMINI-ROUND1-20260524-948D3BB9A8",
+      "path": "docs/research/p1_2b_f2_f4_gemini_round1_20260524",
+      "entry_file": "docs/research/p1_2b_f2_f4_gemini_round1_20260524/gemini_response.md",
+      "title": "p1 2b f2 f4 gemini round1 20260524",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-24",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "CONCERN (Borderline NOTGO due to a hidden recursion crash in Dinic, but mathematically sound for Phase 1.2 edge-only mode)."
+    },
+    {
+      "id": "DOSSIER-P1-2B-F2-F4-GEMINI-ROUND2-20260524-016B519BD5",
+      "path": "docs/research/p1_2b_f2_f4_gemini_round2_20260524",
+      "entry_file": "docs/research/p1_2b_f2_f4_gemini_round2_20260524/gemini_response.md",
+      "title": "p1 2b f2 f4 gemini round2 20260524",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-24",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "GOWITHMINOR"
+    },
+    {
+      "id": "DOSSIER-P1-2B-F2-F4-GEMINI-ROUND3-20260524-A342B2A1F0",
+      "path": "docs/research/p1_2b_f2_f4_gemini_round3_20260524",
+      "entry_file": "docs/research/p1_2b_f2_f4_gemini_round3_20260524/gemini_response.md",
+      "title": "p1 2b f2 f4 gemini round3 20260524",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-24",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "GOWITHMINOR"
+    },
+    {
+      "id": "DOSSIER-P1-2B-F3-GEMINI-ROUND1-20260526-655B7B3DF6",
+      "path": "docs/research/p1_2b_f3_gemini_round1_20260526",
+      "entry_file": "docs/research/p1_2b_f3_gemini_round1_20260526/gemini_response.md",
+      "title": "p1 2b f3 gemini round1 20260526",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-26",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Overall Verdict: PASS (with completeness warnings). The mathematical soundness strictly holds under the v1.0 spec assumption (all ports active), and the literal asymmetry strictly follows state machine rules without over-cutting. Implementation deviations (so…"
+    },
+    {
+      "id": "DOSSIER-P1-2B-F3-GEMINI-ROUND2-20260526-3304F1F0AA",
+      "path": "docs/research/p1_2b_f3_gemini_round2_20260526",
+      "entry_file": "docs/research/p1_2b_f3_gemini_round2_20260526/gemini_response.md",
+      "title": "p1 2b f3 gemini round2 20260526",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-26",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "OVERALL VERDICT: PASS. The Round 1 warning is fully closed, and the implementation mathematically guarantees deterministic state reconstruction upon failure without log spam."
+    },
+    {
+      "id": "DOSSIER-P1-2B-F6-SHAPE-PACKING-HALL-GEMINI-ROUND1-20260525-824FA5AE3B",
+      "path": "docs/research/p1_2b_f6_shape_packing_hall_gemini_round1_20260525",
+      "entry_file": "docs/research/p1_2b_f6_shape_packing_hall_gemini_round1_20260525/gemini_response.md",
+      "title": "p1 2b f6 shape packing hall gemini round1 20260525",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-25",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "NOTGO"
+    },
+    {
+      "id": "DOSSIER-P1-2B-F6-SHAPE-PACKING-HALL-GEMINI-ROUND2-20260525-7550CF55CC",
+      "path": "docs/research/p1_2b_f6_shape_packing_hall_gemini_round2_20260525",
+      "entry_file": "docs/research/p1_2b_f6_shape_packing_hall_gemini_round2_20260525/gemini_response.md",
+      "title": "p1 2b f6 shape packing hall gemini round2 20260525",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-25",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "NOTGO"
+    },
+    {
+      "id": "DOSSIER-P1-2B-F6-SHAPE-PACKING-HALL-GEMINI-ROUND3-20260525-7CFD3F9A5E",
+      "path": "docs/research/p1_2b_f6_shape_packing_hall_gemini_round3_20260525",
+      "entry_file": "docs/research/p1_2b_f6_shape_packing_hall_gemini_round3_20260525/gemini_response.md",
+      "title": "p1 2b f6 shape packing hall gemini round3 20260525",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-25",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "NOTGO"
+    },
+    {
+      "id": "DOSSIER-P1-2B-F7-POWER-HITTING-SET-GEMINI-ROUND1-20260525-DB49AFB525",
+      "path": "docs/research/p1_2b_f7_power_hitting_set_gemini_round1_20260525",
+      "entry_file": "docs/research/p1_2b_f7_power_hitting_set_gemini_round1_20260525/gemini_response.md",
+      "title": "p1 2b f7 power hitting set gemini round1 20260525",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-25",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "NOTGO"
+    },
+    {
+      "id": "DOSSIER-P1-2B-F7-POWER-HITTING-SET-GEMINI-ROUND2-20260525-C4D8B4A483",
+      "path": "docs/research/p1_2b_f7_power_hitting_set_gemini_round2_20260525",
+      "entry_file": "docs/research/p1_2b_f7_power_hitting_set_gemini_round2_20260525/gemini_response.md",
+      "title": "p1 2b f7 power hitting set gemini round2 20260525",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-25",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "NOTGO"
+    },
+    {
+      "id": "DOSSIER-P1-2B-F8-POWER-GRID-REACH-GEMINI-ROUND1-20260525-DCCCF931FA",
+      "path": "docs/research/p1_2b_f8_power_grid_reach_gemini_round1_20260525",
+      "entry_file": "docs/research/p1_2b_f8_power_grid_reach_gemini_round1_20260525/gemini_response.md",
+      "title": "p1 2b f8 power grid reach gemini round1 20260525",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-25",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "NOTGO"
+    },
+    {
+      "id": "DOSSIER-P1-2B-F8-POWER-GRID-REACH-GEMINI-ROUND2-20260525-111B62C30A",
+      "path": "docs/research/p1_2b_f8_power_grid_reach_gemini_round2_20260525",
+      "entry_file": "docs/research/p1_2b_f8_power_grid_reach_gemini_round2_20260525/gemini_response.md",
+      "title": "p1 2b f8 power grid reach gemini round2 20260525",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-25",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "NOTGO"
+    },
+    {
+      "id": "DOSSIER-P1-2B-F8-POWER-GRID-REACH-GEMINI-ROUND3-20260525-975688FCEE",
+      "path": "docs/research/p1_2b_f8_power_grid_reach_gemini_round3_20260525",
+      "entry_file": "docs/research/p1_2b_f8_power_grid_reach_gemini_round3_20260525/gemini_response.md",
+      "title": "p1 2b f8 power grid reach gemini round3 20260525",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-25",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "NOTGO"
+    },
+    {
+      "id": "DOSSIER-P1-2B-F8-POWER-GRID-REACH-GEMINI-ROUND4-20260525-99108B2CDC",
+      "path": "docs/research/p1_2b_f8_power_grid_reach_gemini_round4_20260525",
+      "entry_file": "docs/research/p1_2b_f8_power_grid_reach_gemini_round4_20260525/gemini_response.md",
+      "title": "p1 2b f8 power grid reach gemini round4 20260525",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-25",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "NOTGO"
+    },
+    {
+      "id": "DOSSIER-P1-2B-F8-POWER-GRID-REACH-GEMINI-ROUND5-20260525-9F2E264F77",
+      "path": "docs/research/p1_2b_f8_power_grid_reach_gemini_round5_20260525",
+      "entry_file": "docs/research/p1_2b_f8_power_grid_reach_gemini_round5_20260525/gemini_response.md",
+      "title": "p1 2b f8 power grid reach gemini round5 20260525",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-25",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "GO"
+    },
+    {
+      "id": "DOSSIER-P1-2B-F9-DENSITY-ENVELOPE-GEMINI-ROUND1-20260524-069C3F5DE0",
+      "path": "docs/research/p1_2b_f9_density_envelope_gemini_round1_20260524",
+      "entry_file": "docs/research/p1_2b_f9_density_envelope_gemini_round1_20260524/gemini_response.md",
+      "title": "p1 2b f9 density envelope gemini round1 20260524",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-24",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "NOTGO"
+    },
+    {
+      "id": "DOSSIER-P1-2B-F9-DENSITY-ENVELOPE-GEMINI-ROUND2-20260524-C00FC1FF2B",
+      "path": "docs/research/p1_2b_f9_density_envelope_gemini_round2_20260524",
+      "entry_file": "docs/research/p1_2b_f9_density_envelope_gemini_round2_20260524/gemini_response.md",
+      "title": "p1 2b f9 density envelope gemini round2 20260524",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-24",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "NOTGO"
+    },
+    {
+      "id": "DOSSIER-P1-2B-F9-DENSITY-ENVELOPE-GEMINI-ROUND3-20260524-2F6134754D",
+      "path": "docs/research/p1_2b_f9_density_envelope_gemini_round3_20260524",
+      "entry_file": "docs/research/p1_2b_f9_density_envelope_gemini_round3_20260524/gemini_response.md",
+      "title": "p1 2b f9 density envelope gemini round3 20260524",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-24",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "NOTGO"
+    },
+    {
+      "id": "DOSSIER-P1-2B-MINI-STEP-8-SPIKE-20260525-5D74B8309D",
+      "path": "docs/research/p1_2b_mini_step_8_spike_20260525",
+      "entry_file": "docs/research/p1_2b_mini_step_8_spike_20260525/verdict.md",
+      "title": "Mini Step 8 Spike — Verdict",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-25",
+      "topics": [
+        "p1_2-proof-chain",
+        "solver-experiment"
+      ],
+      "summary": "Date: 2026-05-25 Scope: Phase 1.2 close gate (per GPT pro P1.2 in-progress review #6) Verdict: GO — all 6 family forms translate cleanly to CP-SAT API, rebuild cost scales linearly to 10K cuts (114ms build + 2ms solve on toy 50 BoolVar master)."
+    },
+    {
+      "id": "DOSSIER-P1-3-A-BATCH0-20260709-25C725D5B0",
+      "path": "docs/research/p1_3_a_batch0_20260709",
+      "entry_file": "docs/research/p1_3_a_batch0_20260709/README.md",
+      "title": "A 批 0：C6/C1 供电编码原型头对头（2026-07-09）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-09",
+      "topics": [
+        "other"
+      ],
+      "summary": "b04r（C1 v1 自由搜索 w6 1800s）：OPTIMAL @541.3s（495 万分支 / 1077 冲突）。 266 mandatory + storage box + 26 杆 + 6×6 ghost（anchor (55,50)）完整布局， 独立覆盖复验（G0.4 门，照终端验证器语义、不 import 生产码）四项全过： 边界 / 两两不重叠 / ghost 全空 / 220 需电设施供电全覆盖；unforced 记录=0 （每杆都是某设施唯一覆盖者，直接满足 exactcampaign.py…"
+    },
+    {
+      "id": "DOSSIER-P1-3-BATCH1-DESIGN-20260710-57F92742D0",
+      "path": "docs/research/p1_3_batch1_design_20260710",
+      "entry_file": "docs/research/p1_3_batch1_design_20260710/00_batch1_workplan.md",
+      "title": "P1.3 批 1 C1 certified 化任务书草案（2026-07-10）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-10",
+      "topics": [
+        "other"
+      ],
+      "summary": "范围：只把批 0 已实测获胜的 C1 供电编码升格为 src/models/exactcoordinatemaster.py 的 certified 默认编码，并补齐解级 dominance 剪杆与 reseal 材料。本文件是主会话对抗复核前的任务书草案，不是实现提交。"
+    },
+    {
+      "id": "DOSSIER-P1-3-F5-ORBIT-LIFT-SOUNDNESS-DESIGN-V1-291502415A",
+      "path": "docs/research/p1_3_f5_orbit_lift_soundness_design_v1.md",
+      "entry_file": "docs/research/p1_3_f5_orbit_lift_soundness_design_v1.md",
+      "title": "F5 orbit-aware lifting soundness 论证与实施规格 v1",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "other"
+      ],
+      "summary": "Status: HISTORICALORPLAN（研究层设计稿；F5 生产接入属 P1.3，本稿不改生产代码、不动锁面） Authored: 2026-07-04 先例定位： PROJECTLOCK.md §3A（2026-05-22）已强制 \"state 必走 group-orbit 而非 per-instance，消 10^134 label symmetry；AnonymousSlotRef multiset 包含语义跨 candidate enumeration order 必 sound（slotind…"
+    },
+    {
+      "id": "DOSSIER-P1-3-F5-ORBIT-LIFT-SOUNDNESS-DESIGN-V2-D1ACE22754",
+      "path": "docs/research/p1_3_f5_orbit_lift_soundness_design_v2.md",
+      "entry_file": "docs/research/p1_3_f5_orbit_lift_soundness_design_v2.md",
+      "title": "F5 orbit-aware lifting soundness 论证与实施规格 v2",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "other"
+      ],
+      "summary": "Status: HISTORICALORPLAN（研究层设计稿；F5 生产接入属 P1.3） Authored: 2026-07-04（v2，取代 v1；v2.1 = 本地核查回收；v3 = GPT Pro 终审回收——immutablescope 白/黑名单明文化、presence-key alias 禁令、canonicalrelabel 禁静默去重、现状/MUST 分离。终审总判定：定理层与实施规格层均\"修后可靠\"；原件归档 p2designexternalreviews20260704/finalroun…"
+    },
+    {
+      "id": "DOSSIER-P1-3-M4-RECON-20260708-3819BDF48B",
+      "path": "docs/research/p1_3_m4_recon_20260708",
+      "entry_file": "docs/research/p1_3_m4_recon_20260708/README.md",
+      "title": "P1.3 M4 开工侦察材料（2026-07-08）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-08",
+      "topics": [
+        "other"
+      ],
+      "summary": "M4（F2-F7+F9 逐族阶梯 + 两横切件）开工前的九路侦察报告存档。七路 Fable + 一路 codex（f9，配额耗尽前完成）+ 一路 D2 追加侦察。全部带真实签名 + 行号级硬事实（行号以当日 HEAD 为准，后续 M4 各批 reseal 后会漂移——结论仍有效，行号仅当叙事线索）。"
+    },
+    {
+      "id": "DOSSIER-P1-3-M5-CONVERGENCE-20260708-A96D060024",
+      "path": "docs/research/p1_3_m5_convergence_20260708",
+      "entry_file": "docs/research/p1_3_m5_convergence_20260708/m5_ab_param_bisect_20260711.md",
+      "title": "M5 A/B 首战:产品默认 solve 参数病态的单变量归因(2026-07-11 凌晨)",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-08",
+      "topics": [
+        "other"
+      ],
+      "summary": "M5 归因判决(m5c1memoryattribution20260710.md)与 attach spike E1 系列(../p13aattachpoweronspike20260710/01spikespec.md)两次把「产品默认 solve 参数(FIXEDSEARCH+probing3+symmetry3)在 C1 上持续吃内存不出解」列为待归因病态(smoke#4 撞帽死 vs 第四刀原型参数绿)。本实验做单变量二分。"
+    },
+    {
+      "id": "DOSSIER-P1-3-M6-DIAGNOSIS-20260709-7C9DEFFA5D",
+      "path": "docs/research/p1_3_m6_diagnosis_20260709",
+      "entry_file": "docs/research/p1_3_m6_diagnosis_20260709/01_ablation_map.md",
+      "title": "诊断侦察·ablationmap（Fable，2026-07-09）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-09",
+      "topics": [
+        "other"
+      ],
+      "summary": "6×6 coordinate master 的约束族已全量盘点：真正的模型只有 8 族（slot 几何/签名桶/对称链/核心 nooverlap2d/ghost 族/供电 witness/供电容量族/全局有效不等式），其中「供电三层」和「ghost 4225-anchor 多重性」是仅有的两大可疑墙，且每族都找到了 harness 层合法关闭开关（构造 flag、create 后 unsafe env + 自建 core、fromexactcore kwarg、monkeypatch 四类）——另出土两个免费大发…"
+    },
+    {
+      "id": "DOSSIER-P1-3A-ATTACH-POWER-ON-SPIKE-20260710-25E1F679CB",
+      "path": "docs/research/p1_3a_attach_power_on_spike_20260710",
+      "entry_file": "docs/research/p1_3a_attach_power_on_spike_20260710/02_spike_evidence.md",
+      "title": "P1.3A attach 通电 spike 规格书（主会话亲写定稿，2026-07-10 夜）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-07-10",
+      "topics": [
+        "cut-framework",
+        "solver-experiment"
+      ],
+      "summary": "约 10K synthetic redundant F5 的真实 step-8 通电与 overhead 证据；只覆盖工程接线，不覆盖 cut 科学效力。"
+    },
+    {
+      "id": "DOSSIER-P1-3A-ATTACH-SIZING-SPIKE-20260708-02F3C50E2F",
+      "path": "docs/research/p1_3a_attach_sizing_spike_20260708",
+      "entry_file": "docs/research/p1_3a_attach_sizing_spike_20260708/verdict.md",
+      "title": "P1.3A attach sizing spike — verdict（2026-07-08）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-07-08",
+      "topics": [
+        "cut-framework",
+        "solver-experiment"
+      ],
+      "summary": "增量 attach 形态与容量 sizing 的工程 GO；明确不证明收敛、P1.3 完成或 production promotion。"
+    },
+    {
+      "id": "DOSSIER-P2-0-AREA-BOUND-20260806-6016501B5F",
+      "path": "docs/research/p2_0_area_bound_20260806",
+      "entry_file": "docs/research/p2_0_area_bound_20260806/AREA_BOUND_THEOREM_REPORT.md",
+      "title": "P2.0 面积上界账本",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "current_evidence",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-08-06",
+      "topics": [
+        "p2-throughput"
+      ],
+      "summary": "P2.0 吞吐语义下 A≤1167、条件界 A≤1015、共享前件与 min_side 次坐标开放义务的定理、复核和收据索引。"
+    },
+    {
+      "id": "DOSSIER-P2-0-SPECIALIZED-20260807-C40266E222",
+      "path": "docs/research/p2_0_specialized_20260807",
+      "entry_file": "docs/research/p2_0_specialized_20260807/README.md",
+      "title": "P2.0 特化推理与反例重判",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "current_evidence",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-08-07",
+      "topics": [
+        "p2-throughput"
+      ],
+      "summary": "台间占空自由度、作物必分支、steel_block 反例和阶梯见证的主 dossier。"
+    },
+    {
+      "id": "DOSSIER-P2-0-THROUGHPUT-CERTIFICATION-PARADIGM-DESIGN-V1-1282665D68",
+      "path": "docs/research/p2_0_throughput_certification_paradigm_design_v1.md",
+      "entry_file": "docs/research/p2_0_throughput_certification_paradigm_design_v1.md",
+      "title": "P2.0 吞吐认证范式设计稿 v1",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "solver-experiment",
+        "p2-throughput"
+      ],
+      "summary": "Status: HISTORICALORPLAN（研究层设计稿，不是生产实现，不改变任何锁边界） Authored: 2026-07-04 Scope authority: 在本稿全部落地并走完 freeze-ritual 之前，PROJECTLOCK.md §1A B 块（吞吐/带宽/离散容量流 OUT-OF-SCOPE）与 rules/canonicalrules.json:415-417（mixedcommodityflow 的 out-of-scope 声明）继续有效。本稿存在 ≠ scope 已改。"
+    },
+    {
+      "id": "DOSSIER-P2-0-THROUGHPUT-CERTIFICATION-PARADIGM-DESIGN-V2-AB7D01DE56",
+      "path": "docs/research/p2_0_throughput_certification_paradigm_design_v2.md",
+      "entry_file": "docs/research/p2_0_throughput_certification_paradigm_design_v2.md",
+      "title": "P2.0 吞吐认证范式设计稿 v2",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "solver-experiment",
+        "p2-throughput"
+      ],
+      "summary": "Status: HISTORICALORPLAN（研究层设计稿，不改生产代码/锁面） Authored: 2026-07-04（v2，取代 v1；v2.1 = 本地三路核查回收；v3 = GPT Pro 终审回收——TP7-D 验证器补 A13/HOL 验收义务、selected-solution nogood 改完整 0/1 等式键、envelope 强制 scope/kind、Farkas 绑定行族清单。终审总判定：\"修复所列问题后可作为 P2.0b 实现规格\"；终审原件与审查方修订参考版归档 p2desig…"
+    },
+    {
+      "id": "DOSSIER-P2-DESIGN-EXTERNAL-REVIEWS-20260704-54F28681D7",
+      "path": "docs/research/p2_design_external_reviews_20260704",
+      "entry_file": "docs/research/p2_design_external_reviews_20260704/README.md",
+      "title": "2026-07-04 设计稿预实现外审归档（GPT Pro 五会话）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-04",
+      "topics": [
+        "other"
+      ],
+      "summary": "性质：HISTORICALORPLAN 审计档案。这些是对三份「先想后做」设计稿 v1 的外部审查/对照产物， 是 v2 修订的输入证据。不是命令、不是当前状态权威；补丁一律未盲 apply（v2 由本方 triage 后重写）。"
+    },
+    {
+      "id": "DOSSIER-P3-0-FORMAL-REVIEWS-20260705-D6CB85EB2A",
+      "path": "docs/research/p3_0_formal_reviews_20260705",
+      "entry_file": "docs/research/p3_0_formal_reviews_20260705/README.md",
+      "title": "2026-07-05 P3.0 形式化头启动首轮独立审查归档（三会话）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-05",
+      "topics": [
+        "formal-verification"
+      ],
+      "summary": "性质：HISTORICALORPLAN 审计档案，formal/ 首批定理与 P3.0 设计稿 v1 的 三路独立审查产物，v2 修订的输入证据。补丁未盲 apply（lean 补丁经本地重编译 + 公理审计后采纳；一处 API 修复：Lean core 无 Function.Bijective，双射前提改双侧逆）。"
+    },
+    {
+      "id": "DOSSIER-P3-0-FORMAL-VERIFICATION-HEAD-START-DESIGN-V1-B01927D599",
+      "path": "docs/research/p3_0_formal_verification_head_start_design_v1.md",
+      "entry_file": "docs/research/p3_0_formal_verification_head_start_design_v1.md",
+      "title": "P3.0 形式化证明头启动 — 双轴架构与首批机器检查定理（v2，2026-07-05）",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "formal-verification"
+      ],
+      "summary": "项目的\"证明\"信任面拆成两个正交的轴,形式化投资必须分开对待:"
+    },
+    {
+      "id": "DOSSIER-P3-0B-FAMILY-FORMALIZABILITY-SURVEY-20260705-37E896037C",
+      "path": "docs/research/p3_0b_family_formalizability_survey_20260705",
+      "entry_file": "docs/research/p3_0b_family_formalizability_survey_20260705/README.md",
+      "title": "F1-F9 与完备性的形式化可开工地图（2026-07-05 调查）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-05",
+      "topics": [
+        "formal-verification"
+      ],
+      "summary": "性质：HISTORICALORPLAN。10 路并行只读调查（每 family 一读者：spec + validator 源码 + oracle/helper，全部断言带 file:line；另一读者查完备性 Q1 现状），为 「P3.0 形式化线下一步先啃哪块」提供事实底料与排序。原始逐 family 报告在本目录 f.md / completeness.md。综合裁定如下（裁定是本方的，事实是调查的）。"
+    },
+    {
+      "id": "DOSSIER-P3-0B-FORMAL-REVIEWS-ROUND2-20260705-23A40FE2C2",
+      "path": "docs/research/p3_0b_formal_reviews_round2_20260705",
+      "entry_file": "docs/research/p3_0b_formal_reviews_round2_20260705/README.md",
+      "title": "P3.0b 第二轮独立审查归档（2026-07-05）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-05",
+      "topics": [
+        "formal-verification"
+      ],
+      "summary": "对象一：formal/ZmdFormal/CutFamilies.lean（17 条）+ FrameworkLemmas.lean （9 条）的陈述保真。三路：对抗审 CutFamilies（双会话）、对抗审 FrameworkLemmas（双会话）、盲形式化对拼（26 条独立陈述）。 对象二（后续回传）：Q1 不可行类分类学设计稿 v1 的对抗审（双会话， taxonomyauditsession1/2.md）——会话 1 判\"架构级重写\"、会话 2 判"
+    },
+    {
+      "id": "DOSSIER-P3-0C-BINDING-PB-SIDECAR-DESIGN-V1-985EA9D7F5",
+      "path": "docs/research/p3_0c_binding_pb_sidecar_design_v1.md",
+      "entry_file": "docs/research/p3_0c_binding_pb_sidecar_design_v1.md",
+      "title": "binding 子问题 PB 独立重建 + VeriPB sidecar——设计稿 v2",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "formal-verification"
+      ],
+      "summary": "对生产链宣布的 binding INFEASIBLE 判决，用一条异构旁路复验：从冻结工件 独立重建同一子问题的伪布尔（PB/OPB）编码 → 用原生产证明日志的求解器 （RoundingSat）重解 → 用独立检查器（VeriPB 3.0）复核其 UNSAT 证明 → 与生产 判决对账。最危险的失败模式不是报 UNKNOWN，而是「证明了另一个模型 UNSAT、 被当成生产 binding INFEASIBLE 的证据」（v1 两份外审的共同警告）——本版的"
+    },
+    {
+      "id": "DOSSIER-P3-0C-SIDECAR-REVIEWS-20260705-728E34B496",
+      "path": "docs/research/p3_0c_sidecar_reviews_20260705",
+      "entry_file": "docs/research/p3_0c_sidecar_reviews_20260705/README.md",
+      "title": "P3.0c binding PB sidecar 设计稿 v1 外审归档（2026-07-05）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-05",
+      "topics": [
+        "other"
+      ],
+      "summary": "轴 B 证书侧 Phase 0+1 设计稿 v1 的双会话独立对抗审原件。两份均判 REJECT （方向保留：PB/OPB 独立重建 + RoundingSat + VeriPB sidecar 路线双方都攻击失败； 但 v1 的 scope gate、输入契约、语义完整性、验收强度不能作实现基线）。"
+    },
+    {
+      "id": "DOSSIER-P3-B-DESIGN-REVIEW-V14-20260521-24BD84A607",
+      "path": "docs/research/p3_b_design_review_v14_20260521",
+      "entry_file": "docs/research/p3_b_design_review_v14_20260521/README.md",
+      "title": "v14 — P3 Design B Architecture Stress Test (2026-05-21)",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-21",
+      "topics": [
+        "other"
+      ],
+      "summary": "---"
+    },
+    {
+      "id": "DOSSIER-P3-B-DESIGN-V2-20260521-F2C6312F04",
+      "path": "docs/research/p3_b_design_v2_20260521",
+      "entry_file": "docs/research/p3_b_design_v2_20260521/poc/README.md",
+      "title": "B core PoC — Day 16c-4 (补做 prep 项 3)",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-21",
+      "topics": [
+        "solver-experiment"
+      ],
+      "summary": "bcorelifecyclepoc.py 实现 cut object lifecycle 9 步 (per cutlifecyclev2 v3.1 §2) on Family 1 regioncapacity (per cutfamilyspecs/01 v1.1):"
+    },
+    {
+      "id": "DOSSIER-PARADIGM-SEARCH-REVIEW-V12-WITH-CODE-20260520-FC02CE09A5",
+      "path": "docs/research/paradigm_search_review_v12_with_code_20260520",
+      "entry_file": "docs/research/paradigm_search_review_v12_with_code_20260520/README.md",
+      "title": "v12 Paradigm Search Review (with code) — 2026-05-20",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-20",
+      "topics": [
+        "solver-experiment"
+      ],
+      "summary": "项目在 CP-SAT + LBBD framework 内 24 lever 全 verdict 死之后, 调研了 32 个 paradigm 方向看是否有现成可调用的 algorithm 范式能 break. 4 个候选方向仍 alive, 其余 NO-GO. 包整理这些调研结果 + 24 lever 历史实施 + 共享 production code + 当前对 problem 瓶颈的理解, 提交 review."
+    },
+    {
+      "id": "DOSSIER-PCR-CUT-PATCH-ROUTING-CONFLICT-20260519-0F2552BB75",
+      "path": "docs/research/pcr_cut_patch_routing_conflict_20260519",
+      "entry_file": "docs/research/pcr_cut_patch_routing_conflict_20260519/phase5_verdict.md",
+      "title": "PCR-CUT (Path 14) Phase 5 verdict — 2026-05-19",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-19",
+      "topics": [
+        "cut-framework"
+      ],
+      "summary": "🟡 0/8 CERTIFIED, 7/8 UNPROVEN, 1/8 sound master-INFEASIBLE."
+    },
+    {
+      "id": "DOSSIER-PHASE0-LAZY-POWER-COMPLETION-20260517-2DD76729CA",
+      "path": "docs/research/phase0_lazy_power_completion_20260517",
+      "entry_file": "docs/research/phase0_lazy_power_completion_20260517/README.md",
+      "title": "Phase 0 mini-PoC verdict — Lazy Power Completion v1",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-17",
+      "topics": [
+        "solver-experiment"
+      ],
+      "summary": "GPT v11 提的 Lazy Power Completion 架构 (master 跳 coverage 留 pole slot + completion subproblem 解电杆) 的 Phase 0 止损 gate 实测."
+    },
+    {
+      "id": "DOSSIER-PHASE1-2-GPT-PRO-AUDIT-20260525-84DB22A832",
+      "path": "docs/research/phase1_2_gpt_pro_audit_20260525",
+      "entry_file": "docs/research/phase1_2_gpt_pro_audit_20260525/README.md",
+      "title": "Phase 1.2 audit artifact",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-25",
+      "topics": [
+        "p1_2-proof-chain"
+      ],
+      "summary": "Contents:"
+    },
+    {
+      "id": "DOSSIER-PROD-SCALE-SPIKE-DESIGN-20260525-770C030C5E",
+      "path": "docs/research/prod_scale_spike_design_20260525",
+      "entry_file": "docs/research/prod_scale_spike_design_20260525/MERGER.md",
+      "title": "Prod-scale spike design — main merger (N=8 parallel slant)",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-25",
+      "topics": [
+        "solver-experiment"
+      ],
+      "summary": "Build target: GPT pro audit Finding 5 close. mini Step 8 spike 50 BoolVar toy + synthetic cuts + INFEASIBLE 早停, 不能当 Phase 1.3A integration close gate. 此 merger 合并 8 路 parallel design 出 final spike spec."
+    },
+    {
+      "id": "DOSSIER-PROFILES-A2B11892A9",
+      "path": "docs/research/profiles",
+      "entry_file": "docs/research/profiles/p1_20_short_profile_20260510/README.md",
+      "title": "P1 #20 短跑性能分析（2026-05-10）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "solver-experiment"
+      ],
+      "summary": "CP-SAT 求解器一次约 10 分钟的 short profile，目的是用 py-spy --native 找到真实热点，给后续优化（编译器、缓存、CP-SAT 参数）打底。"
+    },
+    {
+      "id": "DOSSIER-PROJECT-BOTTLENECK-AUDIT-20260702-9E995CC2F0",
+      "path": "docs/research/project_bottleneck_audit_20260702",
+      "entry_file": "docs/research/project_bottleneck_audit_20260702/README.md",
+      "title": "2026-07-02 全项目瓶颈审计归档（多代理工作流，37 agent）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-02",
+      "topics": [
+        "documentation-governance"
+      ],
+      "summary": "性质：HISTORICALORPLAN 审计档案。另一会话于 2026-07-02 深夜运行的全项目「历史 + 最终目标瓶颈」 调查工作流产物：8 个维度 × fable/codex 双模型独立阅读（16 份维度报告，dims.md），继而合成 12 条 瓶颈、逐条由独立核查员回源码验证（bottlenecks.md，每条带 VERDICT: CONFIRMED/PARTLY、 severity 独立复核与 file:line 核实记录）。不是当前状态权威；快照后仓库已发生重大变化（见下表）。"
+    },
+    {
+      "id": "DOSSIER-PROOF-LOGGING-SCOUT-20260718-2B4BF502F3",
+      "path": "docs/research/proof_logging_scout_20260718",
+      "entry_file": "docs/research/proof_logging_scout_20260718/01_scout_log_20260718.md",
+      "title": "牌 D 侦察日志：证明日志求解器工具链（2026-07-18）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-18",
+      "topics": [
+        "formal-verification"
+      ],
+      "summary": "d4edbf7908a9，2026-03-03，源码编译 -Dsoplex=OFF）直接吃 OPB → --proof-log= 输出 PBP → VeriPB 3.0.2（cargo 安装，Rust 版）校验。 不经过 CNF 翻译——少一层编码信任缺口。"
+    },
+    {
+      "id": "DOSSIER-Q1-INFEASIBILITY-CLASS-TAXONOMY-DESIGN-V1-69B91DF7A9",
+      "path": "docs/research/q1_infeasibility_class_taxonomy_design_v1.md",
+      "entry_file": "docs/research/q1_infeasibility_class_taxonomy_design_v1.md",
+      "title": "Q1 不可行类分类学与完备性命题设计稿 v2",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "other"
+      ],
+      "summary": "Status: HISTORICALORPLAN（研究层设计稿，不改生产代码/锁面） Authored: 2026-07-05（v1 同日送双会话对抗审；v2 = 外审回收版—— 会话 A 判\"架构级重写\"、会话 B 判\"修复后可作 Q1a 基准\"，两份实质收敛； v2 按两份修复文本融合重写 §2/§3/§4/§5/§7/§8/§9，原件归档 docs/research/p30bformalreviewsround220260705/（6/7 号文件））"
+    },
+    {
+      "id": "DOSSIER-R3-UPPER-BOUND-PB-20260722-60ED8947CD",
+      "path": "docs/research/r3_upper_bound_pb_20260722",
+      "entry_file": "docs/research/r3_upper_bound_pb_20260722/README.md",
+      "title": "Track B/B0：R3 (1190,34) 算术层的 PB/VeriPB 链",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-07-22",
+      "topics": [
+        "upper-bound",
+        "formal-verification"
+      ],
+      "summary": "R3 shared body/access、ordinary membrane 与 power 前件，以及给定几何引理后的 2074-orientation PB/VeriPB 算术闭包。"
+    },
+    {
+      "id": "DOSSIER-R4-EXTERNAL-BRAIN-HANDOFF-20260722-4A5CA75F11",
+      "path": "docs/research/r4_external_brain_handoff_20260722",
+      "entry_file": "docs/research/r4_external_brain_handoff_20260722/README.md",
+      "title": "R4 external-brain handoff package",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-22",
+      "topics": [
+        "upper-bound"
+      ],
+      "summary": "This directory prepares the local R4 handoff defined by Part 6 of /home/zhuran24/zmd-pj-codex/核心计划书.md. It does not submit anything to an external service. The handoff becomes ready only when an immutable package is sealed, an independent verifier emits a PAS…"
+    },
+    {
+      "id": "DOSSIER-R4-RESPONSE-REVIEW-20260723-D8EBC0DB9D",
+      "path": "docs/research/r4_response_review_20260723",
+      "entry_file": "docs/research/r4_response_review_20260723/README.md",
+      "title": "R4 external-response review",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-07-23",
+      "topics": [
+        "upper-bound"
+      ],
+      "summary": "R4 response 的 110-mark census、S+12 marked membrane、t+m≤4、23+23 full-span 排除与完整尺寸必要式。"
+    },
+    {
+      "id": "DOSSIER-RAB-SEP-PROMOTION-20260716-CF6D536C85",
+      "path": "docs/research/rab_sep_promotion_20260716",
+      "entry_file": "docs/research/rab_sep_promotion_20260716/01_front_free_necessity_soundness_review.md",
+      "title": "01 — ①′ 第一段：front-free 必要性 soundness 审查（v2 修订版，2026-07-16，对抗验证完成）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-07-16",
+      "topics": [
+        "cut-framework",
+        "separation-telemetry"
+      ],
+      "summary": "RAB/front-clear separator 的 soundness、telemetry、promotion 与后续失效历史；batch3 只提炼 raw-event 评价原则。"
+    },
+    {
+      "id": "DOSSIER-RULE-SYSTEM-REDESIGN-20260807-9B23FA19D2",
+      "path": "docs/research/rule_system_redesign_20260807",
+      "entry_file": "docs/research/rule_system_redesign_20260807/FIRST_PRINCIPLES_DESIGN.md",
+      "title": "规则形态与推理流程重设计",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "current_evidence",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-08-07",
+      "topics": [
+        "reasoning-system",
+        "rules-semantics",
+        "separation-method"
+      ],
+      "summary": "低余量发现法、条件塌点、pairwise closure 反例、双向保真与 derived-rule 工作流的现行研究文书。"
+    },
+    {
+      "id": "DOSSIER-RULES-AUDIT-20260718-A447D60E10",
+      "path": "docs/research/rules_audit_20260718",
+      "entry_file": "docs/research/rules_audit_20260718/02_empty_rectangle_semantics_adjudication_20260805.md",
+      "title": "规则语义审计与 owner 裁决",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "current_evidence",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-07-18",
+      "topics": [
+        "rules-semantics"
+      ],
+      "summary": "当前 strict empty-rectangle 语义与相关游戏规则裁决的 tracked 证据包。"
+    },
+    {
+      "id": "DOSSIER-SAC-HULL-SEPARATOR-CAPACITY-20260518-671A7E1193",
+      "path": "docs/research/sac_hull_separator_capacity_20260518",
+      "entry_file": null,
+      "title": "sac hull separator capacity 20260518",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-18",
+      "topics": [
+        "cut-framework"
+      ],
+      "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-SETPACKING-PROVER-POC-20260517-A6B0980958",
+      "path": "docs/research/setpacking_prover_poc_20260517",
+      "entry_file": "docs/research/setpacking_prover_poc_20260517/README.md",
+      "title": "Set-packing prover PoC — 2026-05-17",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-17",
+      "topics": [
+        "solver-experiment"
+      ],
+      "summary": "GPT 在 L14 weighted-occupancy 死路后推荐升级到 set-packing branch-and-bound prover: 直接在 (x{g,p}) 整数变量上搜, weighted LP 当 dual bound. GPT 估 1-2 个月工作."
+    },
+    {
+      "id": "DOSSIER-SMT-MT-OUTER-PRUNING-PHASE0-20260521-042BF3000C",
+      "path": "docs/research/smt_mt_outer_pruning_phase0_20260521",
+      "entry_file": "docs/research/smt_mt_outer_pruning_phase0_20260521/README.md",
+      "title": "SMT-MT Outer Pruning Phase 0 (2026-05-21)",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-21",
+      "topics": [
+        "formal-verification",
+        "solver-experiment"
+      ],
+      "summary": "Phase 0 cheap-gate probe for SMT Modulo Monotonic Theories (Bayless et al., AAAI 2015) outer-search pruning. Mocks the inner solver with a Dummy threshold/random verdict and measures whether geometric monotone containment prunes enough of the candidate pool t…"
+    },
+    {
+      "id": "DOSSIER-SMT-MT-OUTER-PRUNING-PHASE1-20260521-DF50598CC0",
+      "path": "docs/research/smt_mt_outer_pruning_phase1_20260521",
+      "entry_file": "docs/research/smt_mt_outer_pruning_phase1_20260521/README.md",
+      "title": "SMT-MT Outer Pruning Phase 1 (2026-05-21)",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-21",
+      "topics": [
+        "p1_2-proof-chain",
+        "formal-verification"
+      ],
+      "summary": "Phase 1 wires the SMT Modulo Monotonic Theories outer pruning engine into src/search/outersearch.py behind EXACTSMTMTOUTERPRUNING=1 env flag. Phase 0 cheap-gate (Dummy inner mock) measured 76.7% prune ratio + p95 293ms + 0.43GB RSS delta + 38.6s build wall —…"
+    },
+    {
+      "id": "DOSSIER-TERMINAL-NO-SOLUTION-EVIDENCE-CONTRACT-DESIGN-V1-A9EA1B8AA3",
+      "path": "docs/research/terminal_no_solution_evidence_contract_design_v1.md",
+      "entry_file": "docs/research/terminal_no_solution_evidence_contract_design_v1.md",
+      "title": "Terminal 全域无解证书合同设计稿 v1",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "other"
+      ],
+      "summary": "Status: HISTORICALORPLAN（研究层设计稿，不改生产代码/锁面） Authored: 2026-07-04 填的洞： src/search/outersearch.py:1982-1989——候选域穷尽但无任何 certified 候选时，当前 terminal-frontier 证据 schema 只支持正向 CERTIFIED final result，系统只能 fail-closed 返回 UNPROVEN。「所有 admissible 候选均不可行」这一与 CERTIFIED 同等 p…"
+    },
+    {
+      "id": "DOSSIER-TERMINAL-NO-SOLUTION-EVIDENCE-CONTRACT-DESIGN-V2-473B668ADD",
+      "path": "docs/research/terminal_no_solution_evidence_contract_design_v2.md",
+      "entry_file": "docs/research/terminal_no_solution_evidence_contract_design_v2.md",
+      "title": "Terminal 全域无解证书合同设计稿 v2",
+      "kind": "note",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": null,
+      "topics": [
+        "other"
+      ],
+      "summary": "Status: HISTORICALORPLAN（研究层设计稿，不改生产代码/锁面） Authored: 2026-07-04（v2，取代 v1；v2.1 = 本地核查回收；v3 = GPT Pro 终审回收——schema 分层 proposalcore/sealedpublic + 负向复验/seal digest 绑定链、独立性禁共享 canonical parser、seal-only handle 拒绝清单、一般域反链警告、O-1~O-16。终审总判定：引理层可靠（master 侧已被逐行独立验证）、合…"
+    },
+    {
+      "id": "DOSSIER-V10-WITNESS-PREFLIGHT-SMOKE-20260516-1FA7D0C7BB",
+      "path": "docs/research/v10_witness_preflight_smoke_20260516",
+      "entry_file": "docs/research/v10_witness_preflight_smoke_20260516/README.md",
+      "title": "v10 witness preflight 实测归档 — 2026-05-16",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-16",
+      "topics": [
+        "witness-lower-bound"
+      ],
+      "summary": "GPT Pro 在 v9 review 包基础上 (注: v9 已记录 v8 anchor slicing 失败), 提出 witness-only mandatory-placement preflight 方案. 本目录归档 patch + 实测数据 + verdict 数据点."
+    },
+    {
+      "id": "DOSSIER-V8-ANCHOR-SLICING-SMOKE-20260516-66643824CB",
+      "path": "docs/research/v8_anchor_slicing_smoke_20260516",
+      "entry_file": "docs/research/v8_anchor_slicing_smoke_20260516/README.md",
+      "title": "v8 anchor slicing 实测归档 — 2026-05-16",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-05-16",
+      "topics": [
+        "other"
+      ],
+      "summary": "GPT Pro 在 v7 review 包基础上, 针对 Path 8 (ghost-anchor disjunctive decomposition) 给出 v8 完整 patch + 交付包. 本目录归档该 patch + 我们本地实测数据 + verdict 数据点."
+    },
+    {
+      "id": "DOSSIER-W0-FRONT-AWARE-20260803-425794297E",
+      "path": "docs/research/w0_front_aware_20260803",
+      "entry_file": "docs/research/w0_front_aware_20260803/evidence/README.md",
+      "title": "G1 两个 master run root 的仓内副本（字节原样）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-08-03",
+      "topics": [
+        "witness-lower-bound"
+      ],
+      "summary": "RESULT.md 的每个数字都来自这两个运行根。它们原本只存在于单机根盘的 .artifacts/（未跟踪、权限 700），所以这里放一份字节原样的副本进 git。"
+    },
+    {
+      "id": "DOSSIER-W0-POWER-CYCLE-DOMINO-D6-20260728-40A9A51629",
+      "path": "docs/research/w0_power_cycle_domino_d6_20260728",
+      "entry_file": "docs/research/w0_power_cycle_domino_d6_20260728/README.md",
+      "title": "W0 power-cycle domino：D6 局部联合 completion gate",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-07-28",
+      "topics": [
+        "witness-lower-bound"
+      ],
+      "summary": "状态： RESEARCHONLY / LOCALD6ONLY / TWOV2NEGATIVEROOTSACCEPTED / SWAPV3REPLAYACCEPTEDINFEASIBLE"
+    },
+    {
+      "id": "DOSSIER-WITNESS-CONSTRUCTOR-20260717-5F04E123B3",
+      "path": "docs/research/witness_constructor_20260717",
+      "entry_file": "docs/research/witness_constructor_20260717/07_routing_aware/README.md",
+      "title": "whole-layout witness constructor 线",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "current_evidence",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-07-17",
+      "topics": [
+        "witness-lower-bound"
+      ],
+      "summary": "当前 tracked witness 构造与 routing-aware 尝试入口；没有登记成功 lower witness。"
+    }
+  ]
+}

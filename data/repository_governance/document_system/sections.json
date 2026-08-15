@@ -1,0 +1,297 @@
+{
+  "schema_version": "zmd_document_sections_v1",
+  "system_version": "2.6.0",
+  "covered_document_classes": [
+    "locked_authority",
+    "generated_projection",
+    "normative",
+    "living",
+    "structured_knowledge",
+    "governance_control",
+    "framework_core"
+  ],
+  "exempt_paths": [],
+  "records": [
+    {
+      "id": "repository-navigation",
+      "title": "仓库导航与 agent 自举",
+      "entry_path": "README.md",
+      "entry_kind": "manual",
+      "purpose": "稳定仓库身份、任务路由、代码地图和 agent 最小自举入口。",
+      "required_targets": [
+        "docs/START_HERE.md",
+        "docs/GUIDANCE_INDEX.md",
+        "NAV_MAP.md",
+        "docs/SECTION_INDEX.md"
+      ],
+      "related_section_ids": [
+        "knowledge",
+        "operations",
+        "documentation-framework"
+      ],
+      "max_lines": 48,
+      "max_bytes": 14000
+    },
+    {
+      "id": "knowledge",
+      "title": "当前状态与结构化知识",
+      "entry_path": "data/knowledge/README.md",
+      "entry_kind": "manual",
+      "purpose": "current state、claim、decision、dossier、topic、terminology 与有效性投影的写入和查询入口。",
+      "required_targets": [
+        "docs/CURRENT.md",
+        "docs/CATALOG.md",
+        "docs/TOPIC_INDEX.md",
+        "docs/VALIDITY_LEDGER.md"
+      ],
+      "related_section_ids": [
+        "research-archive",
+        "topic-guides",
+        "certification"
+      ],
+      "max_lines": 130,
+      "max_bytes": 16000
+    },
+    {
+      "id": "documentation-framework",
+      "title": "文档系统框架",
+      "entry_path": "docs/governance/document-system/ARCHITECTURE.md",
+      "entry_kind": "manual",
+      "purpose": "文档类型、继承策略、框架维护、自举恢复、职责投影、周期审计与常态交接。",
+      "required_targets": [
+        "docs/governance/document-system/MAINTAINING.md",
+        "docs/governance/document-system/STEADY_STATE.md",
+        "data/repository_governance/document_system/intake.json",
+        "data/repository_governance/document_system/sections.json",
+        "docs/GUIDANCE_INDEX.md",
+        "docs/SECTION_INDEX.md",
+        "docs/CONVERGENCE_REPORT.md",
+        "docs/MAINTENANCE_QUEUE.md"
+      ],
+      "related_section_ids": [
+        "repository-navigation",
+        "repository-governance",
+        "knowledge"
+      ],
+      "max_lines": 460,
+      "max_bytes": 54000
+    },
+    {
+      "id": "project-manual",
+      "title": "项目手册",
+      "entry_path": "docs/项目说明/README.md",
+      "entry_kind": "manual",
+      "purpose": "稳定语义、数学背景、工作流、风险、未来路线与编年史。",
+      "required_targets": [
+        "docs/CURRENT.md",
+        "docs/项目说明/ROADMAP.md",
+        "docs/项目说明/HISTORY.md",
+        "docs/项目说明/11_dependency_graph.md"
+      ],
+      "related_section_ids": [
+        "knowledge",
+        "operations",
+        "specifications"
+      ],
+      "max_lines": 35,
+      "max_bytes": 14000
+    },
+    {
+      "id": "specifications",
+      "title": "规范与设计契约",
+      "entry_path": "specs/README.md",
+      "entry_kind": "manual",
+      "purpose": "编号 specification 的规范边界、阅读顺序与非权威生态注记分流。",
+      "required_targets": [
+        "PROJECT_LOCK.md",
+        "specs/01_problem_statement.md",
+        "specs/11_pipeline_orchestration.md",
+        "specs/ecosystem_notes/README.md"
+      ],
+      "related_section_ids": [
+        "certification",
+        "compatibility-adapters",
+        "operations"
+      ],
+      "max_lines": 80,
+      "max_bytes": 24000
+    },
+    {
+      "id": "operations",
+      "title": "运行与维护",
+      "entry_path": "docs/OPERATIONS.md",
+      "entry_kind": "manual",
+      "purpose": "campaign、并行、环境变量、probe、脚本、agent 操作与故障处理入口。",
+      "required_targets": [
+        "docs/AGENT_OPERATIONS.md",
+        "docs/exact_campaign_operations.md",
+        "docs/env_variable_index.md",
+        "scripts/README.md",
+        "scripts/pumpkin_poc/README.md"
+      ],
+      "related_section_ids": [
+        "repository-navigation",
+        "project-manual",
+        "specifications"
+      ],
+      "max_lines": 80,
+      "max_bytes": 22000
+    },
+    {
+      "id": "research-archive",
+      "title": "研究与外审档案",
+      "entry_path": "docs/research/README.md",
+      "entry_kind": "manual",
+      "purpose": "dated dossier、外审、实验与 transcript 的证据边界和知识晋升入口。",
+      "required_targets": [
+        "docs/CATALOG.md",
+        "docs/BACKFILL_LEDGER.md",
+        "docs/history/navigation/research_phase3c_agent_transcript_index_20260507_08.md",
+        ".artifacts/README.md"
+      ],
+      "related_section_ids": [
+        "knowledge",
+        "history-archive",
+        "topic-guides"
+      ],
+      "max_lines": 36,
+      "max_bytes": 14000
+    },
+    {
+      "id": "history-archive",
+      "title": "历史快照与冻结交付",
+      "entry_path": "docs/history/README.md",
+      "entry_kind": "manual",
+      "purpose": "退出当前职责的字节快照、旧导航和冻结 delivery 文档的可发现入口。",
+      "required_targets": [
+        "docs/history/status/README.md",
+        "docs/history/navigation/README.md",
+        "docs/history/deliveries/README.md",
+        "docs/history/convergence/README.md"
+      ],
+      "related_section_ids": [
+        "research-archive",
+        "documentation-framework",
+        "compatibility-adapters"
+      ],
+      "max_lines": 60,
+      "max_bytes": 18000
+    },
+    {
+      "id": "topic-guides",
+      "title": "主题阅读辅助",
+      "entry_path": "docs/subjects/README.md",
+      "entry_kind": "manual",
+      "purpose": "少量稳定概念速查；当前值与可枚举知识仍委托给生成投影。",
+      "required_targets": [
+        "docs/CURRENT.md",
+        "docs/CATALOG.md",
+        "docs/TOPIC_INDEX.md"
+      ],
+      "related_section_ids": [
+        "knowledge",
+        "certification",
+        "documentation-framework"
+      ],
+      "max_lines": 32,
+      "max_bytes": 12000
+    },
+    {
+      "id": "formal-verification",
+      "title": "形式化验证",
+      "entry_path": "formal/README.md",
+      "entry_kind": "manual",
+      "purpose": "Lean 模块、构建方式、公理审计、陈述边界与研究证据坐标；不自行提升 production certification。",
+      "required_targets": [
+        "PROJECT_LOCK.md",
+        "docs/CATALOG.md",
+        "docs/research/p3_0_formal_verification_head_start_design_v1.md"
+      ],
+      "related_section_ids": [
+        "certification",
+        "research-archive",
+        "knowledge"
+      ],
+      "max_lines": 80,
+      "max_bytes": 22000
+    },
+    {
+      "id": "certification",
+      "title": "认证与发布边界",
+      "entry_path": "docs/CERTIFICATION.md",
+      "entry_kind": "manual",
+      "purpose": "认证问题的有界导航入口；PROJECT_LOCK 仍是 owner-only 的最高仓内权威。",
+      "required_targets": [
+        "PROJECT_LOCK.md",
+        "docs/CURRENT.md",
+        "docs/PHASE_1_2_CLOSE_GATE.md",
+        "docs/项目说明/12_go_criteria.md",
+        "certside/README.md",
+        "certside/binding_canonical_semantics_v1.md"
+      ],
+      "related_section_ids": [
+        "knowledge",
+        "specifications",
+        "operations",
+        "formal-verification"
+      ],
+      "max_lines": 60,
+      "max_bytes": 16000
+    },
+    {
+      "id": "compatibility-adapters",
+      "title": "兼容层与适配器",
+      "entry_path": "docs/compatibility_matrix.md",
+      "entry_kind": "manual",
+      "purpose": "外部生态借用、adapter/export 边界和冻结 IndustrialPlanner delivery 入口。",
+      "required_targets": [
+        "BORROWED_COMPONENTS.md",
+        "src/adapters/README.md",
+        "specs/ecosystem_notes/README.md",
+        "docs/history/deliveries/README.md"
+      ],
+      "related_section_ids": [
+        "specifications",
+        "history-archive",
+        "operations"
+      ],
+      "max_lines": 60,
+      "max_bytes": 18000
+    },
+    {
+      "id": "repository-governance",
+      "title": "仓库治理",
+      "entry_path": "data/repository_governance/README.md",
+      "entry_kind": "manual",
+      "purpose": "代码资产、legacy 引用扫描、文档框架机器注册表与周期审计的 fail-closed 治理。",
+      "required_targets": [
+        ".docsystem/manifest.json",
+        "data/repository_governance/document_system/entrypoints.json",
+        "data/repository_governance/document_system/sections.json"
+      ],
+      "related_section_ids": [
+        "documentation-framework",
+        "repository-navigation"
+      ],
+      "max_lines": 120,
+      "max_bytes": 18000
+    },
+    {
+      "id": "implementation-navigation",
+      "title": "代码与模块导航",
+      "entry_path": "NAV_MAP.md",
+      "entry_kind": "manual",
+      "purpose": "代码、数据、脚本和模块局部说明的稳定导航，不承担当前状态。",
+      "required_targets": [
+        "src/adapters/README.md"
+      ],
+      "related_section_ids": [
+        "repository-navigation",
+        "operations",
+        "compatibility-adapters"
+      ],
+      "max_lines": 130,
+      "max_bytes": 18000
+    }
+  ]
+}

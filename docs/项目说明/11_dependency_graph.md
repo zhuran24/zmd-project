@@ -1,24 +1,24 @@
-# 11 — 当前认证链依赖图
+# 11 — 认证链依赖图
 
-> 本文描述 2026-07-11 工作树。历史 cut-family 计划的依赖关系见 `docs/research/`，不能覆盖
-> 当前 producer/supervisor/publisher 与 owner gate 边界。
+> 本页只描述稳定依赖关系，不保存阶段完成度、owner 决定值、cut-family 当前成员或
+> backlog 状态。唯一现态投影见 [`../CURRENT.md`](../CURRENT.md)，claim、decision 与
+> dossier 关系见 [`../CATALOG.md`](../CATALOG.md)。知识脊柱启用前的原文保存在
+> [`../history/status/11_dependency_graph_pre_knowledge_spine_20260811.md`](../history/status/11_dependency_graph_pre_knowledge_spine_20260811.md)。
 
 ## 11.1 候选求解依赖
 
 ```text
-canonical rules + preprocess plan + hash-bound artifacts
+canonical rules + preprocess plan + hash-bound exact inputs
   -> placement master
   -> binding
   -> exact routing + selected-graph connectivity guard
   -> power / terminal whole-layout checks
-  -> internal RUN_STATUS_CERTIFIED candidate verdict
+  -> internal candidate verdict
 ```
 
-`src/models/flow_subproblem.py` 是旁路连续 LP 诊断器。它不位于 certified acceptance 的
-必经 gate 上，`INFEASIBLE`/`UNKNOWN` 也不能单独产生 proof-bearing elimination。
-
-whole-layout persisted nogood 只有通过
-`src/search/independent_infeasibility_reverifier.py` 的独立复验，才可进入当前证据链。
+`src/models/flow_subproblem.py` 是旁路诊断器，不是 certified acceptance gate。whole-layout
+proof-bearing elimination 只有经过 `src/search/independent_infeasibility_reverifier.py` 的
+独立复验，才可进入 exact-safe 证据链。
 
 ## 11.2 Campaign authority 依赖
 
@@ -28,27 +28,27 @@ candidate records
   -> outer_search commits CANDIDATE_PROPOSED
        + terminal frontier evidence
        + sink replay request
-       + fixed-witness capsule/material
-  -> scripts/run_supervisor_seal.py（生产 supervisor 入口，独立命令、marker 驱动，不由 main.py 顺手执行）
+       + fixed-witness material
+  -> scripts/run_supervisor_seal.py
   -> ExactCampaign.supervisor_seal()
        + canonical disk reread
-       + current hash check
+       + source/input currentness checks
        + sink replay
        + fixed-witness verification
        + pre/post disk currentness
   -> durable terminal CERTIFIED checkpoint
 ```
 
-producer 不能跳过 supervisor。内部 candidate `CERTIFIED`、proposal marker 或 caller-memory
-payload 都不能替代 supervisor seal。
+producer、caller-memory payload、内部 candidate verdict 或 proposal marker 都不能替代
+supervisor seal。
 
 ## 11.3 Public publication 依赖
 
 ```text
 supervisor-sealed campaign
   + valid terminal evidence
-  + current exact bytes/source closure
-  + owner-closed P1.2 publish gate
+  + current exact input/source closure
+  + owner-controlled publish gate
   -> publish_verified_certified_delivery_surface()
   -> final_solution.json
   -> optimal_blueprint.json
@@ -56,28 +56,29 @@ supervisor-sealed campaign
   -> full surface re-verification
 ```
 
-当前 owner gate 为 `closed_manual_owner_decision`（2026-07-07 owner 手动输入），所以 public publication
-不再因 owner gate 本身 fail closed；但不得从测试、receipt、seal 或 checker 绿灯自动推导 release。
-serializer、adapter、viewer、report 和 compatibility export 只能生成非权威派生物。
+owner gate 的当前值只读机器 gate 与 [`../CURRENT.md`](../CURRENT.md)。gate 允许进入下一阶段
+不等于已有可发布结果；测试、receipt、seal 或 checker PASS 也不能自动推出 release。
+serializer、adapter、viewer、report 与 compatibility export 只能生成非权威派生物。
 
-## 11.4 P1.2 open-work dependency
+## 11.4 Cut 与研究依赖
 
 ```text
-PR1 publication-boundary hardening                IMPLEMENTED in worktree
-fixed-witness + independent whole-layout replay   IMPLEMENTED in worktree
-publish-open gate + central publisher             IMPLEMENTED in worktree
-PR2 controlled/read-once verifier TCB              OPEN
-review package immutable commit materialization   IMPLEMENTED in worktree
-archive/review policy completeness                 PARTIAL
-owner manual close decision                        CLOSED (owner 2026-07-07)
+research observation / counterexample / paper proof
+  -> stable claim or dossier
+  -> explicit authority review
+  -> optional research-ledger effect
+  -> separate production admission and owner promotion, when applicable
 ```
 
-这些条件不能互相替代。机器 checker 通过不等于 owner gate 关闭；owner 决定也不能替代技术
-证据和同一工作树验证。
+cut family 的 validator、lowering、shadow、retired、attach 与 promotion 是不同状态维度。
+当前矩阵与 B6 决定只查 [`../CATALOG.md`](../CATALOG.md)，不能从历史计划、一次 PASS 或
+“active”一词反推 production admission。
 
-## 11.5 Current cut-family integration boundary
+## 11.5 状态与计划分离
 
-`src/cuts/` 当前在册为 F1-F7+F9（F8 retired）。F1/F5/F6/F7 direct Step-8 bridge 与 Stage B
-B0/B1/B1.5 已落地，但 `EXACT_CUT_FRAMEWORK_ATTACH` 仍在 certified unsafe map、默认关闭；B2-B5、
-PIC C/D/E、RFC-002/003 与 B6 owner promotion 未完成。它们不能被写成默认 certified master 已启用，
-也不能借用 flow diagnostic 或历史 review pass 扩张 P1.2 theorem。
+- “现在是什么”：[`../CURRENT.md`](../CURRENT.md)
+- “为什么相信”：[`../CATALOG.md`](../CATALOG.md) 中的 claim、decision 与 evidence
+- “接下来做什么”：[`ROADMAP.md`](ROADMAP.md)
+- “稳定方法怎么用”：[`REASONING_METHOD.md`](REASONING_METHOD.md)
+- “事件何时发生”：[`HISTORY.md`](HISTORY.md)
+- “迁移前文档当时怎么说”：[`../history/status/`](../history/status/)

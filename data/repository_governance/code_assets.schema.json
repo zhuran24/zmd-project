@@ -9,7 +9,8 @@
     "authority",
     "measurement",
     "code_selector",
-    "read_only_historical_evidence_roots",
+    "artifact_evidence_boundary",
+    "production_devtools_reference_exceptions",
     "classification",
     "asset_role_rules",
     "logical_isolation",
@@ -168,14 +169,6 @@
           "uniqueItems": true
         }
       }
-    },
-    "read_only_historical_evidence_roots": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "$ref": "#/$defs/readOnlyHistoricalEvidenceRoot"
-      },
-      "uniqueItems": true
     },
     "classification": {
       "type": "object",
@@ -341,6 +334,77 @@
       "items": {
         "$ref": "#/$defs/pytestPendingRecipe"
       }
+    },
+    "artifact_evidence_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest",
+        "schema",
+        "inputs",
+        "inputs_schema",
+        "content_treatment",
+        "mutation_expectation"
+      ],
+      "properties": {
+        "manifest": {
+          "$ref": "#/$defs/repositoryPath"
+        },
+        "schema": {
+          "$ref": "#/$defs/repositoryPath"
+        },
+        "inputs": {
+          "$ref": "#/$defs/repositoryPath"
+        },
+        "inputs_schema": {
+          "$ref": "#/$defs/repositoryPath"
+        },
+        "content_treatment": {
+          "const": "non_code_asset"
+        },
+        "mutation_expectation": {
+          "const": "read_only_preserve_in_place"
+        }
+      }
+    },
+    "production_devtools_reference_exceptions": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "kind",
+          "literal",
+          "symbol",
+          "lifecycle",
+          "rationale"
+        ],
+        "properties": {
+          "path": {
+            "$ref": "#/$defs/repositoryPath"
+          },
+          "kind": {
+            "const": "literal_only"
+          },
+          "literal": {
+            "type": "string",
+            "pattern": "^devtools/.+"
+          },
+          "symbol": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9_]*$"
+          },
+          "lifecycle": {
+            "const": "dormant_advisory_pointer"
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
     }
   },
   "$defs": {
@@ -358,45 +422,6 @@
           "pattern": "[*?\\[]"
         }
       ]
-    },
-    "readOnlyHistoricalEvidenceRoot": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "path",
-        "nature",
-        "content_treatment",
-        "mutation_expectation",
-        "rationale"
-      ],
-      "properties": {
-        "path": {
-          "allOf": [
-            {
-              "$ref": "#/$defs/repositoryPath"
-            },
-            {
-              "pattern": "^\\.artifacts/[^/]+/$"
-            }
-          ]
-        },
-        "nature": {
-          "enum": [
-            "research_evidence",
-            "failed_campaign_history"
-          ]
-        },
-        "content_treatment": {
-          "const": "non_code_asset"
-        },
-        "mutation_expectation": {
-          "const": "read_only_preserve_in_place"
-        },
-        "rationale": {
-          "type": "string",
-          "minLength": 1
-        }
-      }
     },
     "classCounts": {
       "type": "object",

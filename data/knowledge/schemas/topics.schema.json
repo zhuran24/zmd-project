@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zmd-topics-v1",
+  "title": "ZMD stable topic registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "ledger_reviewed_at", "records"],
+  "properties": {
+    "schema_version": {"const": "zmd_topics_v1"},
+    "ledger_reviewed_at": {"type": "string", "format": "date"},
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/record"}
+    }
+  },
+  "$defs": {
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "summary",
+        "claim_ids",
+        "dossier_topic_labels",
+        "term_ids",
+        "entry_paths",
+        "open_question_claim_ids",
+        "tags"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^TOPIC-[A-Z0-9][A-Z0-9-]*$"
+        },
+        "title": {"type": "string", "minLength": 1},
+        "summary": {"type": "string", "minLength": 1},
+        "claim_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^CLAIM-[A-Z0-9][A-Z0-9-]*$"
+          }
+        },
+        "dossier_topic_labels": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]*$"
+          }
+        },
+        "term_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^TERM-[A-Z0-9][A-Z0-9-]*$"
+          }
+        },
+        "entry_paths": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "open_question_claim_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^CLAIM-[A-Z0-9][A-Z0-9-]*$"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]*$"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,221 @@
+{
+  "schema_version": "zmd_doc_policy_v1",
+  "policy_id": "docs.governance.document_system",
+  "description": "Human-readable architecture, maintenance protocol and ADRs for the document framework.",
+  "defaults": {
+    "document_class": "framework_core",
+    "authority_role": "framework_definition",
+    "mutation": "governed",
+    "context_level": "L3",
+    "purpose": "Current architecture, safe evolution protocol and design-decision history for the self-describing document system.",
+    "volatile_facts": "forbidden",
+    "invariant_refs": [
+      "DOC-INV-005",
+      "DOC-INV-006",
+      "DOC-INV-007",
+      "DOC-INV-008",
+      "DOC-INV-010",
+      "DOC-INV-014",
+      "DOC-INV-017",
+      "DOC-INV-018",
+      "DOC-INV-019",
+      "DOC-INV-021",
+      "DOC-INV-020",
+      "DOC-INV-022",
+      "DOC-INV-023"
+    ],
+    "adr_refs": [
+      "DOC-ADR-001",
+      "DOC-ADR-002",
+      "DOC-ADR-003",
+      "DOC-ADR-004",
+      "DOC-ADR-005",
+      "DOC-ADR-006",
+      "DOC-ADR-011",
+      "DOC-ADR-013",
+      "DOC-ADR-014",
+      "DOC-ADR-015",
+      "DOC-ADR-016",
+      "DOC-ADR-017",
+      "DOC-ADR-018",
+      "DOC-ADR-019",
+      "DOC-ADR-020"
+    ],
+    "required_reads": [
+      "docs/governance/document-system/ARCHITECTURE.md",
+      "docs/governance/document-system/MAINTAINING.md"
+    ],
+    "after_change": [
+      "docsystem.intake",
+      "docsystem.render_legacy",
+      "docsystem.doctor",
+      "docsystem.tests",
+      "docs.reference.validate",
+      "docsystem.render_sections",
+      "docsystem.gate",
+      "docsystem.render_maintenance",
+      "docsystem.audit"
+    ],
+    "review_policy": {
+      "at_phase_boundary": true,
+      "max_interval_days": 60
+    },
+    "section_refs": [
+      "documentation-framework"
+    ]
+  },
+  "rules": [
+    {
+      "id": "accepted_adr_bodies",
+      "match": {
+        "glob": "ADR/*-*.md"
+      },
+      "set": {
+        "document_class": "historical_evidence",
+        "authority_role": "framework_definition",
+        "mutation": "immutable",
+        "purpose": "Accepted framework design decisions. New decisions use a new ADR; accepted ADR text is not rewritten.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-006",
+          "DOC-INV-019"
+        ]
+      },
+      "rationale": "ADRs preserve why the framework changed; follow-up decisions supersede rather than rewrite them."
+    },
+    {
+      "id": "adr_index",
+      "match": {
+        "path": "ADR/README.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "governed",
+        "purpose": "Current index of framework ADRs.",
+        "volatile_facts": "reference_only"
+      },
+      "rationale": "The ADR index is current navigation, unlike accepted ADR bodies."
+    },
+    {
+      "id": "framework_guide_purpose_01",
+      "match": {
+        "path": "ARCHITECTURE.md"
+      },
+      "set": {
+        "purpose": "Current conceptual architecture, invariants and component relationships of the self-describing document system.",
+        "invariant_refs": [
+          "DOC-INV-005",
+          "DOC-INV-006",
+          "DOC-INV-007",
+          "DOC-INV-008",
+          "DOC-INV-012",
+          "DOC-INV-013",
+          "DOC-INV-014",
+          "DOC-INV-015",
+          "DOC-INV-016",
+          "DOC-INV-017",
+          "DOC-INV-018",
+          "DOC-INV-019",
+          "DOC-INV-021",
+          "DOC-INV-023"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012",
+          "DOC-ADR-013",
+          "DOC-ADR-014",
+          "DOC-ADR-015",
+          "DOC-ADR-016",
+          "DOC-ADR-017",
+          "DOC-ADR-018",
+          "DOC-ADR-019",
+          "DOC-ADR-020"
+        ]
+      },
+      "rationale": "Architecture and maintenance are different current responsibilities and must not share one generic role."
+    },
+    {
+      "id": "framework_guide_purpose_02",
+      "match": {
+        "path": "MAINTAINING.md"
+      },
+      "set": {
+        "purpose": "Safe change, migration, generation, testing and recovery procedure for the document framework.",
+        "invariant_refs": [
+          "DOC-INV-005",
+          "DOC-INV-006",
+          "DOC-INV-007",
+          "DOC-INV-008",
+          "DOC-INV-012",
+          "DOC-INV-013",
+          "DOC-INV-014",
+          "DOC-INV-015",
+          "DOC-INV-016",
+          "DOC-INV-017",
+          "DOC-INV-018",
+          "DOC-INV-019",
+          "DOC-INV-021",
+          "DOC-INV-023"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012",
+          "DOC-ADR-013",
+          "DOC-ADR-014",
+          "DOC-ADR-015",
+          "DOC-ADR-016",
+          "DOC-ADR-017",
+          "DOC-ADR-018",
+          "DOC-ADR-019",
+          "DOC-ADR-020"
+        ]
+      },
+      "rationale": "Architecture and maintenance are different current responsibilities and must not share one generic role."
+    },
+    {
+      "id": "framework_guide_purpose_03",
+      "match": {
+        "path": "STEADY_STATE.md"
+      },
+      "set": {
+        "purpose": "Durable steady-state maintenance contract, framework reopening criteria and fail-closed handoff after the staged documentation rebuild.",
+        "invariant_refs": [
+          "DOC-INV-006",
+          "DOC-INV-007",
+          "DOC-INV-008",
+          "DOC-INV-017",
+          "DOC-INV-018",
+          "DOC-INV-019",
+          "DOC-INV-020",
+          "DOC-INV-021",
+          "DOC-INV-022",
+          "DOC-INV-023"
+        ],
+        "adr_refs": [
+          "DOC-ADR-013",
+          "DOC-ADR-014",
+          "DOC-ADR-015",
+          "DOC-ADR-016",
+          "DOC-ADR-017",
+          "DOC-ADR-018",
+          "DOC-ADR-019",
+          "DOC-ADR-020"
+        ]
+      },
+      "rationale": "The final handoff is a current maintenance contract, not a generated status page or historical receipt."
+    }
+  ],
+  "legacy_projection": {
+    "rules": [
+      {
+        "id": "document_system_framework_guides",
+        "match": {
+          "prefix": "docs/governance/document-system/"
+        },
+        "document_class": "locked",
+        "rationale": "Document-system architecture, maintenance protocol and ADRs; governed framework core, never a prune subject."
+      }
+    ],
+    "out_of_scope_notes": []
+  }
+}

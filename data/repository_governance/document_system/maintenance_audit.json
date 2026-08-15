@@ -1,0 +1,230 @@
+{
+  "schema_version": "zmd_document_maintenance_audit_v1",
+  "system_version": "2.6.0",
+  "snapshot_as_of": "2026-08-13",
+  "projection": {
+    "output": "docs/MAINTENANCE_QUEUE.md",
+    "generator_action": "docsystem.render_maintenance"
+  },
+  "profiles": {
+    "weekly": {
+      "description": "Read-only weekly sweep. Mechanical errors block; semantic queues remain visible without turning every unresolved item into a failed build.",
+      "check_ids": [
+        "DOC-AUDIT-SNAPSHOT-AGE",
+        "DOC-AUDIT-EPHEMERAL-EXPIRY",
+        "DOC-AUDIT-ACTIVE-DOSSIER-AGE",
+        "DOC-AUDIT-TRIAGE-BACKLOG",
+        "DOC-AUDIT-REVIEW-FOLLOWUPS",
+        "DOC-AUDIT-LIVING-FRESHNESS",
+        "DOC-AUDIT-DEPRECATED-KNOWLEDGE-REFERENCES",
+        "DOC-AUDIT-TERMINOLOGY-COLLISION",
+        "DOC-AUDIT-TOPIC-COVERAGE",
+        "DOC-AUDIT-OPEN-CLAIM-QUEUE"
+      ],
+      "fail_on": [
+        "error"
+      ]
+    },
+    "deep": {
+      "description": "Deep semantic-maintenance audit. Both overdue warnings and mechanical errors block closure.",
+      "check_ids": [
+        "DOC-AUDIT-SNAPSHOT-AGE",
+        "DOC-AUDIT-EPHEMERAL-EXPIRY",
+        "DOC-AUDIT-ACTIVE-DOSSIER-AGE",
+        "DOC-AUDIT-TRIAGE-BACKLOG",
+        "DOC-AUDIT-REVIEW-FOLLOWUPS",
+        "DOC-AUDIT-LIVING-FRESHNESS",
+        "DOC-AUDIT-DEPRECATED-KNOWLEDGE-REFERENCES",
+        "DOC-AUDIT-TERMINOLOGY-COLLISION",
+        "DOC-AUDIT-TOPIC-COVERAGE",
+        "DOC-AUDIT-OPEN-CLAIM-QUEUE"
+      ],
+      "fail_on": [
+        "warning",
+        "error"
+      ]
+    },
+    "phase_close": {
+      "description": "Phase-close audit with the full maintenance surface and explicit phase-boundary inventory.",
+      "check_ids": [
+        "DOC-AUDIT-SNAPSHOT-AGE",
+        "DOC-AUDIT-EPHEMERAL-EXPIRY",
+        "DOC-AUDIT-ACTIVE-DOSSIER-AGE",
+        "DOC-AUDIT-TRIAGE-BACKLOG",
+        "DOC-AUDIT-REVIEW-FOLLOWUPS",
+        "DOC-AUDIT-LIVING-FRESHNESS",
+        "DOC-AUDIT-DEPRECATED-KNOWLEDGE-REFERENCES",
+        "DOC-AUDIT-TERMINOLOGY-COLLISION",
+        "DOC-AUDIT-TOPIC-COVERAGE",
+        "DOC-AUDIT-OPEN-CLAIM-QUEUE",
+        "DOC-AUDIT-PHASE-BOUNDARY-SURFACE"
+      ],
+      "fail_on": [
+        "warning",
+        "error"
+      ]
+    }
+  },
+  "checks": [
+    {
+      "id": "DOC-AUDIT-SNAPSHOT-AGE",
+      "title": "维护投影快照年龄",
+      "kind": "audit_snapshot_age",
+      "description": "防止生成的维护队列长期保持结构正确却失去时间意义。",
+      "action_ids": [
+        "docsystem.render_maintenance",
+        "docsystem.audit"
+      ],
+      "parameters": {
+        "warning_days": 21,
+        "error_days": 60
+      }
+    },
+    {
+      "id": "DOC-AUDIT-EPHEMERAL-EXPIRY",
+      "title": "临时文档到期",
+      "kind": "ephemeral_expiry",
+      "description": "到期临时材料必须晋升、归档或删除，不能静默变成永久当前文档。",
+      "action_ids": [
+        "docsystem.intake",
+        "docsystem.doctor"
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "DOC-AUDIT-ACTIVE-DOSSIER-AGE",
+      "title": "活跃 dossier 年龄",
+      "kind": "active_dossier_age",
+      "description": "长期 active 的研究包需要关闭、重申 next action，或明确仍在工作流中。",
+      "action_ids": [
+        "docsystem.intake",
+        "knowledge.build"
+      ],
+      "parameters": {
+        "warning_days": 45,
+        "error_days": 120
+      }
+    },
+    {
+      "id": "DOC-AUDIT-TRIAGE-BACKLOG",
+      "title": "历史 dossier 分诊积压",
+      "kind": "triage_backlog",
+      "description": "长尾 inventory 继续由唯一 triage ledger 管理，并在 ledger 陈旧时升级。",
+      "action_ids": [
+        "knowledge.build",
+        "knowledge.check"
+      ],
+      "parameters": {
+        "warning_days": 30,
+        "error_days": 90
+      }
+    },
+    {
+      "id": "DOC-AUDIT-REVIEW-FOLLOWUPS",
+      "title": "语义审阅未决项",
+      "kind": "review_followups",
+      "description": "current review 中的 unresolved 与 next_review_trigger 形成可查询维护队列。",
+      "action_ids": [
+        "knowledge.build",
+        "knowledge.check"
+      ],
+      "parameters": {
+        "warning_days": 60,
+        "error_days": 180
+      }
+    },
+    {
+      "id": "DOC-AUDIT-LIVING-FRESHNESS",
+      "title": "活文档复核新鲜度",
+      "kind": "living_freshness",
+      "description": "使用 policy 的 max_interval_days 与 Git 最近触达日期发现渐进式陈旧；Git 日期只是一种复核触发器，不是语义正确证明。",
+      "action_ids": [
+        "docsystem.intake",
+        "docsystem.doctor"
+      ],
+      "parameters": {
+        "warning_multiplier": 1.0,
+        "error_multiplier": 2.0,
+        "document_classes": [
+          "locked_authority",
+          "normative",
+          "living",
+          "structured_knowledge",
+          "governance_control",
+          "framework_core"
+        ]
+      }
+    },
+    {
+      "id": "DOC-AUDIT-DEPRECATED-KNOWLEDGE-REFERENCES",
+      "title": "失效知识的当前引用",
+      "kind": "deprecated_knowledge_references",
+      "description": "current 手写文档引用 refuted 或 superseded claim 时必须在同一行显式标出历史、失效或换代语境。",
+      "action_ids": [
+        "docsystem.intake",
+        "knowledge.check"
+      ],
+      "parameters": {
+        "deprecated_statuses": [
+          "refuted",
+          "superseded"
+        ],
+        "allowed_context_tokens": [
+          "refuted",
+          "superseded",
+          "已反驳",
+          "已替代",
+          "已撤回",
+          "失效",
+          "历史",
+          "旧命题",
+          "不再"
+        ]
+      }
+    },
+    {
+      "id": "DOC-AUDIT-TERMINOLOGY-COLLISION",
+      "title": "术语身份碰撞",
+      "kind": "terminology_collision",
+      "description": "canonical label 与 alias 不能跨 term ID 静默复用。",
+      "action_ids": [
+        "knowledge.build",
+        "knowledge.check"
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "DOC-AUDIT-TOPIC-COVERAGE",
+      "title": "主题坐标完整性",
+      "kind": "topic_coverage",
+      "description": "topic 引用的 claim、term、入口和开放问题必须存在，开放 claim 必须至少进入一个稳定 topic。",
+      "action_ids": [
+        "knowledge.build",
+        "knowledge.check"
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "DOC-AUDIT-OPEN-CLAIM-QUEUE",
+      "title": "开放 claim 队列",
+      "kind": "open_claim_queue",
+      "description": "开放问题保持可见，但它们本身不是机械失败。",
+      "action_ids": [
+        "knowledge.build",
+        "knowledge.check"
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "DOC-AUDIT-PHASE-BOUNDARY-SURFACE",
+      "title": "阶段边界维护表面",
+      "kind": "phase_boundary_surface",
+      "description": "在 phase close 时列出 active dossier、triage 组、未决 review、开放 claim 与到期临时材料，供语义验收逐项处置。",
+      "action_ids": [
+        "docsystem.audit_deep",
+        "docsystem.gate_full"
+      ],
+      "parameters": {}
+    }
+  ]
+}

@@ -1,0 +1,250 @@
+{
+  "schema_version": "zmd_document_intake_v1",
+  "system_version": "2.6.0",
+  "owner_identities": [
+    "zhuran24"
+  ],
+  "semantic_identity": {
+    "claims": {
+      "source": "data/knowledge/claims.jsonl",
+      "id_field": "id",
+      "semantic_fields": [
+        "title",
+        "kind",
+        "authority_effect",
+        "slot",
+        "statement",
+        "scope",
+        "premises",
+        "consequences",
+        "does_not_imply",
+        "dependencies",
+        "supersedes"
+      ]
+    },
+    "decisions": {
+      "source": "data/knowledge/decisions.jsonl",
+      "id_field": "id",
+      "semantic_fields": [
+        "title",
+        "authority_effect",
+        "external_decision_id",
+        "decided_at",
+        "decided_by",
+        "statement",
+        "scope",
+        "consequences",
+        "does_not_imply",
+        "supersedes"
+      ],
+      "allowed_schema_migrations": [
+        {
+          "from_schema_version": "zmd_decision_v1",
+          "to_schema_version": "zmd_decision_v2",
+          "allow_added_semantic_fields": [
+            "external_decision_id"
+          ],
+          "migration_id": "decision_v1_to_v2_nonauthorizing_register",
+          "allow_record_rewrite_fields": [
+            "schema_version",
+            "external_decision_id",
+            "non_authorizing",
+            "ruling_event_id",
+            "authority_source",
+            "evidence"
+          ]
+        }
+      ]
+    }
+  },
+  "authority_changes": {
+    "authority_roles": [
+      "machine_authority",
+      "governance_control"
+    ],
+    "mutations": [
+      "owner_only"
+    ],
+    "decision_source": "data/knowledge/decisions.jsonl",
+    "required_decision_status": "current",
+    "evidence_match": "exact_changed_path",
+    "path_rules": [
+      {
+        "id": "project_lock",
+        "match": {
+          "path": "PROJECT_LOCK.md"
+        },
+        "allowed_authority_effects": [
+          "project_semantics",
+          "scope_boundary"
+        ],
+        "required_scope_any": [
+          "project-lock",
+          "certified-scope",
+          "certified-semantics"
+        ]
+      },
+      {
+        "id": "canonical_rules",
+        "match": {
+          "glob": "rules/**"
+        },
+        "allowed_authority_effects": [
+          "project_semantics"
+        ],
+        "required_scope_any": [
+          "canonical-rules",
+          "certified-semantics"
+        ]
+      },
+      {
+        "id": "phase_gate",
+        "match": {
+          "glob": "data/review_gates/**"
+        },
+        "allowed_authority_effects": [
+          "phase_gate"
+        ],
+        "required_scope_any": [
+          "phase-gate"
+        ]
+      },
+      {
+        "id": "proof_obligations",
+        "match": {
+          "glob": "data/proof_obligations/**"
+        },
+        "allowed_authority_effects": [
+          "project_semantics",
+          "scope_boundary"
+        ],
+        "required_scope_any": [
+          "proof-obligations",
+          "certified-scope"
+        ]
+      },
+      {
+        "id": "artifact_boundary_checker",
+        "match": {
+          "path": "scripts/check_artifact_boundaries.py"
+        },
+        "allowed_authority_effects": [
+          "scope_boundary"
+        ],
+        "required_scope_any": [
+          "artifact-boundary",
+          "certified-scope"
+        ]
+      }
+    ],
+    "required_evidence_role": "authority_change",
+    "companion_check": {
+      "enabled": true,
+      "blocking": false,
+      "missing_companion_severity": "warning"
+    }
+  },
+  "dossier_workflow": {
+    "source": "data/knowledge/dossiers.json",
+    "triage_source": "data/knowledge/backfill_triage.json",
+    "new_tracked_research_lifecycle": "active",
+    "closure_outcomes": [
+      "knowledge_promoted",
+      "negative_results_promoted",
+      "decision_recorded",
+      "no_reusable_claim",
+      "superseded_by_dossier"
+    ]
+  },
+  "local_optional_evidence": {
+    "required_for_new_records": true,
+    "hash_algorithm": "sha256",
+    "required_fields": [
+      "manifest_path",
+      "manifest_sha256",
+      "recovery_instructions"
+    ]
+  },
+  "ephemeral_documents": {
+    "source": "data/repository_governance/document_system/ephemeral_documents.json",
+    "schema": "data/repository_governance/document_system/ephemeral_documents.schema.json"
+  },
+  "events": [
+    {
+      "id": "DOC-EVENT-DOCUMENT-CREATED",
+      "title": "新增文档已分类",
+      "description": "Every new Markdown path must resolve to a non-unmanaged contract and, when current, to an explicit section.",
+      "action_ids": [
+        "docsystem.render_guidance",
+        "docsystem.render_sections",
+        "docsystem.render_convergence",
+        "docsystem.doctor"
+      ]
+    },
+    {
+      "id": "DOC-EVENT-GENERATED-WRITE-THROUGH",
+      "title": "生成页穿透更新",
+      "description": "A generated projection may change only with one of its declared source paths and its registered generator.",
+      "action_ids": [
+        "docsystem.doctor"
+      ]
+    },
+    {
+      "id": "DOC-EVENT-DOSSIER-REGISTERED",
+      "title": "研究包登记",
+      "description": "A new research or evidence package must enter the dossier ledger and an explicit review, triage, or open workflow in the same transaction.",
+      "action_ids": [
+        "knowledge.build",
+        "knowledge.check",
+        "docsystem.doctor"
+      ]
+    },
+    {
+      "id": "DOC-EVENT-DOSSIER-CLOSED",
+      "title": "研究包关闭",
+      "description": "An active dossier may close only with a typed outcome, a current semantic review, and explicit promoted knowledge, no-result reason, or successor.",
+      "action_ids": [
+        "knowledge.build",
+        "knowledge.check",
+        "docsystem.doctor"
+      ]
+    },
+    {
+      "id": "DOC-EVENT-AUTHORITY-CHANGED",
+      "title": "权威变化 companion 提示",
+      "description": "Owner-governed authority changes are detected and matched against a newly added non-authorizing decision-register companion. During the OWNER_RULING_EVENT transition the missing companion is a non-blocking warning; future promotion flips the registry switch.",
+      "action_ids": [
+        "knowledge.build",
+        "knowledge.check",
+        "docsystem.gate"
+      ]
+    },
+    {
+      "id": "DOC-EVENT-KNOWLEDGE-IDENTITY",
+      "title": "稳定知识身份",
+      "description": "Existing claim and decision IDs cannot be deleted or have semantic identity fields rewritten in place; semantic changes use a new ID and explicit supersession.",
+      "action_ids": [
+        "knowledge.build",
+        "knowledge.check"
+      ]
+    },
+    {
+      "id": "DOC-EVENT-EPHEMERAL-LIFECYCLE",
+      "title": "临时文档退出条件",
+      "description": "Every ephemeral document must have a machine-readable creation date, expiry date, exit action, and rationale.",
+      "action_ids": [
+        "docsystem.doctor"
+      ]
+    },
+    {
+      "id": "DOC-EVENT-LOCAL-EVIDENCE-PORTABILITY",
+      "title": "本机证据可恢复性",
+      "description": "Every newly registered local-optional dossier must record a manifest path, manifest digest, and stable recovery instructions.",
+      "action_ids": [
+        "artifact_evidence.render",
+        "artifact_evidence.check",
+        "knowledge.check"
+      ]
+    }
+  ]
+}
