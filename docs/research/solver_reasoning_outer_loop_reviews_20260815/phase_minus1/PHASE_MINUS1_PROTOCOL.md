@@ -1,6 +1,7 @@
 # Phase -1：推理外环立项前实验闸冻结协议
 
-> **状态：** `FROZEN_PRE_RUN`。本文件与同目录 `corpus_manifest.json` 所在的 Git 提交就是本轮协议冻结根；提交后不得根据观察结果修改 corpus、分类、指标或阈值。
+> **状态：** `FROZEN_PRE_RUN_V1_1`。本文件与同目录 `corpus_manifest.json` 最新一次 pre-run 提交就是本轮协议冻结根；不得根据运行观察修改 corpus、分类、指标或阈值。
+> **Pre-run erratum 001：** 初始冻结提交 `94ddbb1` 后、任何 solver 发射前，harness 实现发现 `GREEDY-S0` 没有逐 entry anchor、embedded `ghost_pick` 没有形状字段。v1.1 只补两条输入身份链：无 anchor 的 pose_idx 必须由钉死 candidate-pool SHA 的 source run record 支撑；ghost 形状必须来自钉死 SHA 的 source-side record。corpus、切分、预算、指标、阈值均未变化，观察数为零。
 > **性质：** `non_authorizing / research_only`。本协议只规定证据可采纳性；owner 已授权开展 Phase -1，但实验全绿不等于推理外环立项，最终第二道闸仍是 owner 立项裁决。
 > **隔离边界：** 本轮绕过 master，直接研究 fixed placement 的 binding/routing 接口；不修改或消费 proof-bearing 发布面，不调用 supervisor seal/publisher，不设置 certified 路径的 unsafe 环境变量，不改冻结工件。
 > **直接检验的架构假设：** 接口可压缩性。语义可压缩性与构造可分解性本轮只记旁证，不因 Phase -1 结果获得通过状态。
@@ -38,8 +39,9 @@
 - raw 文件 SHA-256 与 manifest 一致；
 - 当前四份输入工件 SHA-256 与 manifest 一致；
 - 266 个 mandatory instance 全部存在且 facility type 一致；
-- pose 只允许按 manifest 的 normalization contract 机械解析；
+- pose 只允许按 manifest 的 normalization contract 机械解析；没有 anchor 的 `pose_idx` 只有在 manifest 钉死的 source run record 证明其 candidate-pool SHA 与当前冻结 pool 完全一致时才可接纳；
 - canonical normalized placement digest 与 manifest 一致；
+- embedded `ghost_pick` 的宽高必须由 manifest 钉死 SHA 的 source-side record 提供，不得凭项目惯例猜定形状；
 - normalized layout 之间不得重号；
 - 未识别 extra record、缺 mandatory、歧义 pose、坐标推测或 hash mismatch 一律记 `INELIGIBLE_INPUT`，不得进入 D1 分母。
 

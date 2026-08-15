@@ -1,10 +1,19 @@
 {
   "schema_version": "zmd_reasoning_outer_loop_phase_minus1_corpus_v1",
-  "status": "FROZEN_PRE_RUN",
+  "status": "FROZEN_PRE_RUN_V1_1",
   "research_only": true,
   "created_at": "2026-08-15",
   "repository_base_head": "cf553bfc94194dec2bdb3ea2b2410d36b682211e",
-  "freeze_identity": "the Git commit containing this manifest and PHASE_MINUS1_PROTOCOL.md",
+  "freeze_identity": "the latest pre-run protocol commit containing this manifest and PHASE_MINUS1_PROTOCOL.md",
+  "pre_run_errata": [
+    {
+      "id": "PRE_RUN_ERRATUM_001",
+      "basis": "Harness implementation discovered before any solver launch that GREEDY-S0 omits per-entry anchors and embedded ghost_pick records omit shape dimensions.",
+      "change": "Permit pose_idx fallback only when a pinned source-side run record proves the exact current candidate-pool SHA; require pinned source-side records for embedded ghost dimensions.",
+      "unchanged": ["corpus membership", "discovery/holdout split", "budgets", "metrics", "go/no-go thresholds"],
+      "observations_seen_before_change": 0
+    }
+  ],
   "sampling_seed": 20260815,
   "sampling_frame": {
     "description": "All locally available fixed-placement JSON candidates in the selected post-current-semantics and cross-line strata that were statically inspected before protocol freeze, plus the six earlier arm-off candidates retained as explicit admission exclusions.",
@@ -24,7 +33,7 @@
     "mandatory_instance_count": 266,
     "pose_resolution_order": [
       "exact facility_type plus exact pose_id lookup in the frozen current candidate pool",
-      "otherwise current pose_idx only when it is in range and the recorded anchor equals the current pose anchor"
+      "otherwise current pose_idx only when it is in range and either the recorded anchor equals the current pose anchor or a pinned source-side run record proves the exact current candidate-pool SHA"
     ],
     "forbidden_repairs": [
       "coordinate inference",
@@ -66,7 +75,13 @@
       "adapter": "top_level_pose_map",
       "expected_record_count": 293,
       "expected_pose_id_remaps": 1,
-      "ghost_source": "embedded_ghost_pick"
+      "ghost_source": "embedded_ghost_pick",
+      "ghost_shape_source": {
+        "path": ".artifacts/batch4_20260718/prod_ab/fcl_lift__postmem/run_record.json",
+        "raw_sha256": "82e36591195df9f72f8eb89971347bda6cb3539cbca66c629681270011fa6784",
+        "json_pointer": "/configuration",
+        "mapping": "w=ghost_w,h=ghost_h"
+      }
     },
     {
       "id": "POSTMEM-01",
@@ -78,7 +93,13 @@
       "adapter": "top_level_pose_map",
       "expected_record_count": 289,
       "expected_pose_id_remaps": 1,
-      "ghost_source": "embedded_ghost_pick"
+      "ghost_source": "embedded_ghost_pick",
+      "ghost_shape_source": {
+        "path": ".artifacts/batch4_20260718/prod_ab/fcl_lift__postmem/run_record.json",
+        "raw_sha256": "82e36591195df9f72f8eb89971347bda6cb3539cbca66c629681270011fa6784",
+        "json_pointer": "/configuration",
+        "mapping": "w=ghost_w,h=ghost_h"
+      }
     },
     {
       "id": "POSTMEM-02",
@@ -90,7 +111,13 @@
       "adapter": "top_level_pose_map",
       "expected_record_count": 292,
       "expected_pose_id_remaps": 1,
-      "ghost_source": "embedded_ghost_pick"
+      "ghost_source": "embedded_ghost_pick",
+      "ghost_shape_source": {
+        "path": ".artifacts/batch4_20260718/prod_ab/fcl_lift__postmem/run_record.json",
+        "raw_sha256": "82e36591195df9f72f8eb89971347bda6cb3539cbca66c629681270011fa6784",
+        "json_pointer": "/configuration",
+        "mapping": "w=ghost_w,h=ghost_h"
+      }
     },
     {
       "id": "POSTMEM-03",
@@ -102,7 +129,13 @@
       "adapter": "top_level_pose_map",
       "expected_record_count": 290,
       "expected_pose_id_remaps": 1,
-      "ghost_source": "embedded_ghost_pick"
+      "ghost_source": "embedded_ghost_pick",
+      "ghost_shape_source": {
+        "path": ".artifacts/batch4_20260718/prod_ab/fcl_lift__postmem/run_record.json",
+        "raw_sha256": "82e36591195df9f72f8eb89971347bda6cb3539cbca66c629681270011fa6784",
+        "json_pointer": "/configuration",
+        "mapping": "w=ghost_w,h=ghost_h"
+      }
     },
     {
       "id": "POSTMEM-04",
@@ -114,7 +147,13 @@
       "adapter": "top_level_pose_map",
       "expected_record_count": 294,
       "expected_pose_id_remaps": 1,
-      "ghost_source": "embedded_ghost_pick"
+      "ghost_source": "embedded_ghost_pick",
+      "ghost_shape_source": {
+        "path": ".artifacts/batch4_20260718/prod_ab/fcl_lift__postmem/run_record.json",
+        "raw_sha256": "82e36591195df9f72f8eb89971347bda6cb3539cbca66c629681270011fa6784",
+        "json_pointer": "/configuration",
+        "mapping": "w=ghost_w,h=ghost_h"
+      }
     },
     {
       "id": "POSTMEM-05",
@@ -126,7 +165,13 @@
       "adapter": "top_level_pose_map",
       "expected_record_count": 292,
       "expected_pose_id_remaps": 1,
-      "ghost_source": "embedded_ghost_pick"
+      "ghost_source": "embedded_ghost_pick",
+      "ghost_shape_source": {
+        "path": ".artifacts/batch4_20260718/prod_ab/fcl_lift__postmem/run_record.json",
+        "raw_sha256": "82e36591195df9f72f8eb89971347bda6cb3539cbca66c629681270011fa6784",
+        "json_pointer": "/configuration",
+        "mapping": "w=ghost_w,h=ghost_h"
+      }
     },
     {
       "id": "W0-ALIGNMENT",
@@ -140,6 +185,7 @@
       "expected_pose_id_remaps": 0,
       "ghost_source": {
         "path": ".artifacts/w0_fixrerun_20260804/band22_alignment/max_empty_rect_for_this_placement.json",
+        "raw_sha256": "aeb3a046a23309db845c238372d3b0a8e442c2ac7c94eb9de18ab0f1d9420fc6",
         "json_pointer": "/max_admissible_empty_rect_minside_ge_6/rect",
         "mapping": "x=x0,y=y0,w=w,h=h"
       }
@@ -154,7 +200,13 @@
       "adapter": "top_level_pose_map",
       "expected_record_count": 293,
       "expected_pose_id_remaps": 0,
-      "ghost_source": "embedded_ghost_pick"
+      "ghost_source": "embedded_ghost_pick",
+      "ghost_shape_source": {
+        "path": ".artifacts/ab16_arms_20260802/run-20260802T221714Z-r6/prospective-ab16/manifest-a001.json",
+        "raw_sha256": "3856d56620cd8cec57bb1536d9633bbf948a6a0cb3fdfc20c005d2baa8289b84",
+        "json_pointer": "/runtime_parameters/ghost_rect",
+        "mapping": "[w,h]"
+      }
     },
     {
       "id": "GREEDY-S0",
@@ -166,7 +218,12 @@
       "adapter": "solution_pose_map_plus_ghost_list",
       "expected_record_count": 267,
       "expected_pose_id_remaps": 0,
-      "ghost_source": "top_level_ghost_list"
+      "ghost_source": "top_level_ghost_list",
+      "source_identity_record": {
+        "path": ".artifacts/batch4_20260718/witness_newpool/greedy_s0/run_record.json",
+        "raw_sha256": "c197dcffadc68c11e846108533160e3df9f73d17fa3e065d00e230cbf4309958",
+        "candidate_pool_json_pointer": "/input_sha256s/data~1preprocessed~1candidate_placements.json/sha256"
+      }
     }
   ],
   "excluded_candidates": [
