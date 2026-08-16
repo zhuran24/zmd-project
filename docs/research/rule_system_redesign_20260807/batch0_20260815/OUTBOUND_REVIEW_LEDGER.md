@@ -108,7 +108,7 @@
 | 回件原文 | `.artifacts/gpt_pro_review_batch_20260807/verdict/fen5/REPLY_VERBATIM.md` |
 | 本地核签 | `.artifacts/gpt_pro_review_batch_20260807/verdict/fen5/ADJUDICATION_fen5.md` |
 | 当前状态 | `RETURNED + ADJUDICATED + CLOSED_HISTORICAL` |
-| 当前作用域 | owner 2026-08-13 允许本线立项并按缺省批序先做批 0，但“需要你拍板的八件”仍逐项待裁；fen5 审过不等于整套方法已获 owner 批准 |
+| 当前作用域 | owner 2026-08-13 允许本线立项；2026-08-15 又接受第 4 件、准许 `rules/derived/` 非冻结立架（`3d34687`）。其余七件仍逐项待裁；fen5 审过与单项获批都不等于整套方法已获 owner 批准 |
 | 失效通知 | 未整体失效；任何被后续事实或 owner 裁决改写的局部仍须通过连锁账逐项标注 |
 | 消费规则 | 当前落地批以 `FINAL_DESIGN.md` 批表、owner 状态追记和 fen5 核签共同约束，不单独拿 raw reply 充当施工授权 |
 

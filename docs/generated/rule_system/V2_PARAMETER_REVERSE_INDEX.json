@@ -73,9 +73,9 @@
       ],
       "frozen_artifact_refs": [],
       "code_call_sites_non_exhaustive": [
-        "src/adapters/industrial_planner/blueprint_validator.py:993",
-        "src/adapters/industrial_planner/compatibility_report.py:135",
-        "src/adapters/industrial_planner/mapping_registry.py:368"
+        "devtools/rule_system_tooling.py:1218",
+        "devtools/rule_system_tooling.py:1221",
+        "devtools/rule_system_tooling.py:861"
       ]
     },
     {
