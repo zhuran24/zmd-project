@@ -385,7 +385,7 @@ def test_artifact_boundary_separates_git_workspace_and_external_evidence() -> No
     )
 
     assert boundary.dossier_registry == "data/knowledge/dossiers.json"
-    assert len(boundary.registered_roots) == 55
+    assert len(boundary.registered_roots) == 57
     assert len(boundary.tracked_root_files) == 7
     assert len(boundary.tracked_prefixes) == 9
     assert len(boundary.tracked_files) == 1

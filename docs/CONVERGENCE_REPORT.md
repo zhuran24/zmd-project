@@ -1,7 +1,7 @@
 # 文档职责收束验收报告
 
 > 本页由当前 `DOC_POLICY.json`、前门注册表、section registry 与 Markdown 链接图自动生成；禁止手工修改。
-> 文档系统版本：`2.6.0`；验收状态：`PASS`；审计摘要：`sha256:22e3b06d387678af720f22e1eacfd7ab3594dd93d4c638b5bf04f6c647c074b1`。
+> 文档系统版本：`2.6.0`；验收状态：`PASS`；审计摘要：`sha256:707a96e05f19cfd6bd827ac631bfaa6e9e2f052746d1c59e75d78644adeb68bc`。
 
 本页回答第三阶段是否已经消除局部孤岛、重复职责、手写易变状态和经退役入口下钻。它不授予项目 authority，也不把历史证据提升为 current。
 
@@ -9,7 +9,7 @@
 
 | 项目 | 结果 |
 |---|---:|
-| current Markdown | 132 |
+| current Markdown | 133 |
 | 显式 section | 14 |
 | 生成式兼容入口 | 14 |
 | 重复 current 职责组 | 0 |
@@ -27,7 +27,7 @@
 | `knowledge` | `data/knowledge/README.md` | 9 | 9 | 0 |
 | `documentation-framework` | `docs/governance/document-system/ARCHITECTURE.md` | 30 | 30 | 0 |
 | `project-manual` | `docs/项目说明/README.md` | 19 | 19 | 0 |
-| `specifications` | `specs/README.md` | 25 | 25 | 0 |
+| `specifications` | `specs/README.md` | 26 | 26 | 0 |
 | `operations` | `docs/OPERATIONS.md` | 8 | 8 | 0 |
 | `research-archive` | `docs/research/README.md` | 2 | 2 | 0 |
 | `history-archive` | `docs/history/README.md` | 7 | 7 | 0 |

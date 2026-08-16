@@ -28,6 +28,10 @@
 
 [`ecosystem_notes/`](ecosystem_notes/README.md) 保存外部仓库 inventory、借用词汇和兼容研究。它们是 explanatory input，不是 certified semantics、owner authority 或生产证明。
 
+## 派生规则登记处
+
+[`rules/derived/`](../rules/derived/README.md) 保存非冻结的派生规则登记（owner 2026-08-15 裁定获准）：条目 schema、逐条目 UNREVIEWED 状态机与打包声明。它们不是 canonical 权威；任何条目升入冻结 canonical 前必须走完整评审与 freeze-ritual。
+
 ## 相关入口
 
 - [当前状态](../docs/CURRENT.md)

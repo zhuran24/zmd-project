@@ -303,7 +303,7 @@
     {
       "id": "canonical_rules_authority",
       "match": {
-        "prefix": "rules/"
+        "glob": "rules/*"
       },
       "set": {
         "document_class": "locked_authority",
@@ -339,6 +339,45 @@
         ]
       },
       "rationale": "Canonical rule files are machine authorities; ordinary documentation maintenance cannot rewrite them."
+    },
+    {
+      "id": "derived_rules_registry_contract",
+      "match": {
+        "prefix": "rules/derived/"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "mutation": "governed",
+        "context_level": "L1",
+        "purpose": "Non-frozen derived rule registry: schema, UNREVIEWED-state entries and packaging declaration; never canonical authority, never certification evidence.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-009",
+          "DOC-INV-014",
+          "DOC-INV-018"
+        ],
+        "required_reads": [
+          "docs/CURRENT.md"
+        ],
+        "after_change": [
+          "docsystem.intake",
+          "knowledge.build",
+          "knowledge.check",
+          "docsystem.doctor"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": null
+        },
+        "section_refs": [
+          "specifications"
+        ],
+        "adr_refs": [
+          "DOC-ADR-014"
+        ]
+      },
+      "rationale": "Owner 2026-08-15 explicitly approved rules/derived/ as a non-frozen derived subdirectory (redesign line gate item 4, registered in docs/research/rule_system_redesign_20260807/OWNER_DECISION_SUMMARY.md, commit 3d34687) and separately authorized this governance carve-out; any future rules/ subdirectory still fails closed until it receives an explicit contract."
     },
     {
       "id": "append_only_changelog",
@@ -445,6 +484,10 @@
       {
         "pattern": ".artifacts/**",
         "rationale": "Read-only or local historical evidence roots; never a prune subject."
+      },
+      {
+        "pattern": "rules/derived/**",
+        "rationale": "Non-frozen derived rule registry with its own DOC_POLICY contract (owner-approved 2026-08-15); machine registry payloads are not legacy prune subjects."
       }
     ]
   }

@@ -85,6 +85,10 @@
         "rationale": "Frozen candidate-path phase verdicts; retained outside the legacy prune scanner."
       },
       {
+        "pattern": "rules/derived/**",
+        "rationale": "Non-frozen derived rule registry with its own DOC_POLICY contract (owner-approved 2026-08-15); machine registry payloads are not legacy prune subjects."
+      },
+      {
         "pattern": "scripts/**",
         "rationale": "Tooling directory READMEs; governed outside the legacy prune scanner."
       },
