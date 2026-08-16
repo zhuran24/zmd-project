@@ -1,0 +1,197 @@
+{
+  "schema_version": "zmd_reasoning_outer_loop_phase_minus1_v2_corpus_v1",
+  "status": "FROZEN_PRE_RUN_V2",
+  "research_only": true,
+  "non_authorizing": true,
+  "created_at": "2026-08-15",
+  "repository_base_head": "21c0108e3ab91f66437bffe5e9ab6562f6e9338a",
+  "freeze_identity": "the first commit containing this manifest and PHASE_MINUS1_V2_PROTOCOL.md",
+  "predecessor": {
+    "protocol_commit": "2bd28a9848a1b247a96ca2c34b1f83782f2cda11",
+    "evidence_commit": "1914e2a3ec7bc07fec4ccbcbf428129247ed0eed",
+    "mechanical_audit_commit": "21c0108e3ab91f66437bffe5e9ab6562f6e9338a",
+    "verdict": "INCONCLUSIVE",
+    "protocol_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/PHASE_MINUS1_PROTOCOL.md",
+    "protocol_sha256": "46df77d131f2511fdb5022468308e150065e47a28bcbc471de19d486a8584596",
+    "manifest_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/corpus_manifest.json",
+    "manifest_sha256": "8f7e33ffb477ebea7152f3163b7754eddcc64596fe67949b6f5bdfde8061de91",
+    "verdict_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/GO_NO_GO.md",
+    "verdict_sha256": "b638ff080d30705317754d3b05b5014851c3595e83e6ddbbc7dccaa39f812e4b",
+    "r3_exact_event_count": 7578,
+    "r3_layout_count": 9,
+    "r3_watchdog_seconds_per_layout": 180,
+    "observed_rounds_per_second": 4.677777777777778
+  },
+  "current_input_identities": {
+    "data/preprocessed/candidate_placements.json": "f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3",
+    "data/preprocessed/mandatory_exact_instances.json": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6",
+    "data/preprocessed/generic_io_requirements.json": "ad5125b50e607a7f3f3bf0b54fea64f93edf87cedb62e8d24f5590e1c895c44e",
+    "rules/canonical_rules.json": "c3fc3a34e67b2321048a8861a9b178c744361698a838039b0361287c9fb542c0"
+  },
+  "normalization_contract": {
+    "source": "v1 corpus manifest, unchanged for selected records",
+    "mandatory_instance_count": 266,
+    "deduplication_key": "sha256 of canonical normalized placement map",
+    "forbidden_repairs": [
+      "coordinate inference",
+      "nearest-pose matching",
+      "guessing an ambiguous port mode",
+      "dropping a mandatory instance",
+      "changing facility_type"
+    ]
+  },
+  "deep_runs": [
+    {
+      "run_id": "DEEP-POSTMEM-00",
+      "layout_id": "POSTMEM-00",
+      "role": "discovery",
+      "stratum": "postmem_fcl_lift",
+      "max_wall_seconds": 28800,
+      "saturation_early_stop_allowed": true
+    },
+    {
+      "run_id": "DEEP-W0-ALIGNMENT",
+      "layout_id": "W0-ALIGNMENT",
+      "role": "discovery",
+      "stratum": "cross_line_fixed_layout",
+      "max_wall_seconds": 28800,
+      "saturation_early_stop_allowed": true
+    },
+    {
+      "run_id": "DEEP-GREEDY-S0",
+      "layout_id": "GREEDY-S0",
+      "role": "audit_holdout",
+      "stratum": "cross_line_fixed_layout",
+      "max_wall_seconds": 28800,
+      "saturation_early_stop_allowed": true
+    }
+  ],
+  "slice_runs": [
+    {
+      "run_id": "SLICE-POSTMEM-00-P1",
+      "layout_id": "POSTMEM-00",
+      "target_product": 1,
+      "max_wall_seconds": 2700
+    },
+    {
+      "run_id": "SLICE-POSTMEM-00-P64",
+      "layout_id": "POSTMEM-00",
+      "target_product": 64,
+      "max_wall_seconds": 2700
+    },
+    {
+      "run_id": "SLICE-POSTMEM-00-P4096",
+      "layout_id": "POSTMEM-00",
+      "target_product": 4096,
+      "max_wall_seconds": 2700
+    },
+    {
+      "run_id": "SLICE-W0-ALIGNMENT-P1",
+      "layout_id": "W0-ALIGNMENT",
+      "target_product": 1,
+      "max_wall_seconds": 2700
+    },
+    {
+      "run_id": "SLICE-W0-ALIGNMENT-P64",
+      "layout_id": "W0-ALIGNMENT",
+      "target_product": 64,
+      "max_wall_seconds": 2700
+    },
+    {
+      "run_id": "SLICE-W0-ALIGNMENT-P4096",
+      "layout_id": "W0-ALIGNMENT",
+      "target_product": 4096,
+      "max_wall_seconds": 2700
+    }
+  ],
+  "execution_contract": {
+    "binding_seconds": 20.0,
+    "routing_seconds": 30.0,
+    "binding_workers": 1,
+    "routing_workers": 1,
+    "cp_sat_random_seed": 1,
+    "python_hash_seed": 0,
+    "deep_parallelism": 3,
+    "slice_parallelism": 1,
+    "total_parallelism": 4,
+    "alternative_count_cap": null,
+    "saturation": {
+      "window_size_events": 5000,
+      "minimum_complete_windows": 12,
+      "minimum_cumulative_events": 60000,
+      "required_consecutive_saturated_windows": 3,
+      "max_new_atomic_signatures": 0,
+      "max_new_event_shapes": 2,
+      "max_new_event_mass_fraction": 0.005,
+      "minimum_event_shape_jaccard": 0.95,
+      "maximum_event_shape_tvd": 0.05,
+      "maximum_good_turing_unseen_mass": 0.01
+    },
+    "slice_calibration_success": {
+      "minimum_exact_terminal_arms": 5,
+      "required_target_product_1_terminal_arms": 2,
+      "journal_or_identity_corruption_allowed": false
+    }
+  },
+  "records": [
+    {
+      "id": "POSTMEM-00",
+      "role": "discovery",
+      "stratum": "postmem_fcl_lift",
+      "path": ".artifacts/batch4_20260718/prod_ab/fcl_lift__postmem/layouts/layout_000_0f42873c9b43.json",
+      "raw_sha256": "0f42873c9b43221469ffba98a91affad13af2747da3740935e7baf960130f69b",
+      "normalized_sha256": "77b33253e83e83ed98089c85814a92e600f04244938e2a1db8bb57395b0c332b",
+      "adapter": "top_level_pose_map",
+      "expected_record_count": 293,
+      "expected_pose_id_remaps": 1,
+      "ghost_source": "embedded_ghost_pick",
+      "ghost_shape_source": {
+        "path": ".artifacts/batch4_20260718/prod_ab/fcl_lift__postmem/run_record.json",
+        "raw_sha256": "82e36591195df9f72f8eb89971347bda6cb3539cbca66c629681270011fa6784",
+        "json_pointer": "/configuration",
+        "mapping": "w=ghost_w,h=ghost_h"
+      }
+    },
+    {
+      "id": "W0-ALIGNMENT",
+      "role": "discovery",
+      "stratum": "cross_line_fixed_layout",
+      "path": ".artifacts/w0_fixrerun_20260804/band22_alignment/registration_placement_solution.json",
+      "raw_sha256": "db85d3e18fd0fc12ba743e0fd86e38183262a24c90d28805634c952cf27103c7",
+      "normalized_sha256": "d199c88e6d65582a269ec5142b33e3d9db9294eeb0b1a25f9ee05005ff1a26aa",
+      "adapter": "solution_pose_map",
+      "expected_record_count": 292,
+      "expected_pose_id_remaps": 0,
+      "ghost_source": {
+        "path": ".artifacts/w0_fixrerun_20260804/band22_alignment/max_empty_rect_for_this_placement.json",
+        "raw_sha256": "aeb3a046a23309db845c238372d3b0a8e442c2ac7c94eb9de18ab0f1d9420fc6",
+        "json_pointer": "/max_admissible_empty_rect_minside_ge_6/rect",
+        "mapping": "x=x0,y=y0,w=w,h=h"
+      }
+    },
+    {
+      "id": "GREEDY-S0",
+      "role": "audit_holdout",
+      "stratum": "cross_line_fixed_layout",
+      "path": ".artifacts/batch4_20260718/witness_newpool/greedy_s0/result.json",
+      "raw_sha256": "8a93b2f9cfb8617f649007126126acadee186edb826ba60f53cc93f1c1bf6207",
+      "normalized_sha256": "574a3690fda39923a5a329837940bd6508dc891c4b49d603da6ade904f89a3b7",
+      "adapter": "solution_pose_map_plus_ghost_list",
+      "expected_record_count": 267,
+      "expected_pose_id_remaps": 0,
+      "ghost_source": "top_level_ghost_list",
+      "source_identity_record": {
+        "path": ".artifacts/batch4_20260718/witness_newpool/greedy_s0/run_record.json",
+        "raw_sha256": "c197dcffadc68c11e846108533160e3df9f73d17fa3e065d00e230cbf4309958",
+        "candidate_pool_json_pointer": "/input_sha256s/data~1preprocessed~1candidate_placements.json/sha256"
+      }
+    }
+  ],
+  "d3_d4": {
+    "status": "DEFERRED_BY_OWNER",
+    "candidate_interface_only": true,
+    "compilation_allowed": false,
+    "treatment_allowed": false,
+    "holdout_ab_allowed": false
+  }
+}
