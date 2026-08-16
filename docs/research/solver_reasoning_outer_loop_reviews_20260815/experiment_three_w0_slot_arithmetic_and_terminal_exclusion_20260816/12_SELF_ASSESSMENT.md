@@ -74,7 +74,7 @@ checker 的 `--coverage off` 模式不读取 journal 仍可 PASS；因此覆盖�
 定理一: Active_041(b) -> not exists routing witness r
 ```
 
-[`10_check_w0_terminal_exclusion.py`](10_check_w0_terminal_exclusion.py) 重新运行两个 theorem checker，并关闭八条路径级义务：
+[`10_check_w0_terminal_exclusion.py`](10_check_w0_terminal_exclusion.py) 重新运行两个 theorem checker，并对八条路径级义务分别记录机器关闭或人工论证状态：
 
 - 输入身份；
 - 52-slot 完整性；
@@ -84,6 +84,8 @@ checker 的 `--coverage off` 模式不读取 journal 仍可 PASS；因此覆盖�
 - port specs 与 strict rectangle 进入 exact routing path；
 - context transport；
 - exact-status 与 stable claim ledger 不干扰。
+
+其中 LIFT-02/03/04/07/08 由对应机器布尔检查驱动为 `DISCHARGED`；LIFT-01 输入桥、LIFT-05 导出语义桥和 LIFT-06 第二入口否定只有源码身份、marker 或局部调用计数支持，状态为 `ARGUED_NOT_MACHINE_CHECKED`。当前计数为 5 条机器关闭、3 条人工论证、0 条 `OPEN`。
 
 A_BASELINE snapshot 独立重算：
 
@@ -134,7 +136,7 @@ INCONCLUSIVE
 | 把 1007 个样本当全称证明 | 未发生；coverage off 独立 PASS |
 | 把 selection hash 黑名单包装成定理 | 未发生；证明对象只有 52/34/18 与 ExactlyOne |
 | 只引用 model snapshot，不从规则与输入重导 | 未发生；slot 与 demand 各有独立字节重导链 |
-| 定理成立但 consumer/lift 未核 | 未发生；八条路径义务 8/8 关闭 |
+| 定理成立但 consumer/lift 未核 | 未发生静默遗漏；八条义务均入账，其中 5 条机器关闭、3 条明确标为仅人工论证、0 条 `OPEN` |
 | 把 current-model restriction 冒充完整游戏语义 | 未发生；Judgment 与终局文书反复限定 current pinned model |
 | 把单候选排除写成全局 `M_t` 或 bound 变化 | 未发生；全局 `M_t` 保持 `N_A_NOT_READY`，只记 `ΔM_bottom=-1` |
 | 用新证明倒签金丝雀 PASS | 未发生；历史判词保持 `INCONCLUSIVE` |

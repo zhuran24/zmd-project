@@ -1,13 +1,26 @@
 {
   "authority_basis": {
     "authority_class": "research_only_non_authorizing",
+    "authority_sources": {
+      "acceptance_criteria": {
+        "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/00_ACCEPTANCE_CRITERIA_FROZEN.md",
+        "sha256": "905e0b531c777c0b5216f306f77a0cacac57bd6b4a9b8d951d45fb31b574d5b2"
+      },
+      "owner_authorization": {
+        "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/00_OWNER_AUTHORIZATION_20260816.md",
+        "sha256": "e73af26bcb2a2184e3f83c93d79bdbac0563890c2a78bc506b914d844d2401b7"
+      }
+    },
     "source_paths": [
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/00_OWNER_AUTHORIZATION_20260816.md",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/00_ACCEPTANCE_CRITERIA_FROZEN.md",
       "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/06_MODEL_CORRESPONDENCE_MANIFEST.json",
       "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/07_MODEL_CORRESPONDENCE.md",
       "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/08_TERMINAL_EXCLUSION_JUDGMENT.json",
       "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/09_TERMINAL_EXCLUSION_PROOF.md"
     ]
   },
+  "blocking_scope": [],
   "canary_history": {
     "current_action": "UNCHANGED",
     "historical_verdict": "INCONCLUSIVE",
@@ -21,11 +34,11 @@
   },
   "contract_identity": {
     "file_hashes": {
-      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/06_MODEL_CORRESPONDENCE_MANIFEST.json": "0dc191d457dce0593a1ab6292a5c54e0b81b807db329c84683da5b3b6ba51a88",
-      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/07_MODEL_CORRESPONDENCE.md": "bfd4757df9c97cfcf846e50ce95aeda8d4dcab4af1f4a6e2755a08caa9247c58",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/06_MODEL_CORRESPONDENCE_MANIFEST.json": "de0de2281e46cc6bb59ea40ca0064e98723f0d94ec1324d3a580a42fd421d751",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/07_MODEL_CORRESPONDENCE.md": "d4cb6e9324face2c0340c2b36d01d7014090aac198588cc6b524e87417dfa006",
       "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/08_TERMINAL_EXCLUSION_JUDGMENT.json": "6210f921553a00f9001013ae9ad421ec59a78d2448557ebf4ade321bb97d89d9",
       "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/09_TERMINAL_EXCLUSION_PROOF.md": "476f538b479325a697ad40b7e7f9e7362c71f1e82a60e6972a782f7e8b006929",
-      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/10_check_w0_terminal_exclusion.py": "afa7ee66e90877fcf33dea4ed61eb1c7e64626466aa2397d24e66e8f8a7b48a6"
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/10_check_w0_terminal_exclusion.py": "c35825f9db86e7810f211cbff60b4dbab525c63d4fd3a13e3e9a06b4749f8486"
     },
     "manifest_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/01_CONTEXT_MANIFEST.json",
     "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27",
@@ -38,7 +51,7 @@
     "theorem_one_judgment_sha256": "853c7aa9df3939e8eea97afebbf34c4c453a8e641d186ec75af82af291d0ebc3",
     "theorem_two_contextHash": "f66d8a2c0334be01b419229da97d8c32fc19bfb4d5fa07e2cd6e370e40e79a28",
     "theorem_two_judgment_sha256": "91307f7a4ac97c2a73537a3515363a395b171441880134bb11eb3b26513b8454",
-    "theorem_two_receipt_sha256": "19efd8cc23a200eddd120fb7c0cba7633fc7f2c51ac7fb9fe54894e5dbaf4251"
+    "theorem_two_receipt_sha256": "16ea187f91c32f84170e3054066bb710ea8905642c186e8beb3f4dc3700b05c4"
   },
   "endpoint_transaction": {
     "candidate_key": "W0-ALIGNMENT|x1-y51-w6-h7",
@@ -61,12 +74,12 @@
     {
       "killed": true,
       "name": "context_mismatch",
-      "reason": "synthetic context mismatch"
+      "reason": "theorem-two contextHash drift"
     },
     {
       "killed": true,
       "name": "reopened_path_obligation",
-      "reason": "synthetic open path obligation"
+      "reason": "machine obligation is not discharged: W0-LIFT-02-SLOT-COMPLETENESS: OPEN"
     },
     {
       "killed": true,
@@ -81,12 +94,12 @@
     {
       "killed": true,
       "name": "candidate_delta_zero",
-      "reason": "synthetic candidate delta drift"
+      "reason": "candidate delta_M_bottom drift"
     },
     {
       "killed": true,
       "name": "canary_rejudgment",
-      "reason": "synthetic canary rejudgment"
+      "reason": "terminal judgment rewrote canary verdict"
     }
   ],
   "non_implications": [
@@ -101,7 +114,7 @@
     "no_rejudgment_of_the_W0_unary_lowering_canary",
     "no_use_of_observational_coverage_as_proof"
   ],
-  "outcome": "PASS",
+  "outcome": "W0_TERMINAL_EXCLUSION_PASS",
   "path_obligations": [
     {
       "evidence": [
@@ -109,7 +122,13 @@
         "fixed-layout harness source hash PASS"
       ],
       "id": "W0-LIFT-01-INPUT-IDENTITY",
-      "status": "DISCHARGED"
+      "machine_checked": false,
+      "required_evidence": [
+        "theorem-two input checker",
+        "phase-minus1 harness source identity"
+      ],
+      "status": "ARGUED_NOT_MACHINE_CHECKED",
+      "status_reason": "The checker verifies pinned inputs and harness source identity but does not execute the runtime bridge from every frozen input into the binding model."
     },
     {
       "evidence": [
@@ -117,7 +136,13 @@
         "binding source audit PASS"
       ],
       "id": "W0-LIFT-02-SLOT-COMPLETENESS",
-      "status": "DISCHARGED"
+      "machine_checked": true,
+      "required_evidence": [
+        "binding source audit",
+        "A_BASELINE model snapshot"
+      ],
+      "status": "DISCHARGED",
+      "status_reason": "All registered machine checks passed."
     },
     {
       "evidence": [
@@ -125,7 +150,13 @@
         "binding source AddExactlyOne marker PASS"
       ],
       "id": "W0-LIFT-03-PER-SLOT-EXACTLY-ONE",
-      "status": "DISCHARGED"
+      "machine_checked": true,
+      "required_evidence": [
+        "binding source audit",
+        "A_BASELINE model snapshot"
+      ],
+      "status": "DISCHARGED",
+      "status_reason": "All registered machine checks passed."
     },
     {
       "evidence": [
@@ -133,14 +164,25 @@
         "requirement source marker PASS"
       ],
       "id": "W0-LIFT-04-GLOBAL-COUNTS",
-      "status": "DISCHARGED"
+      "machine_checked": true,
+      "required_evidence": [
+        "binding source audit",
+        "A_BASELINE model snapshot"
+      ],
+      "status": "DISCHARGED",
+      "status_reason": "All registered machine checks passed."
     },
     {
       "evidence": [
         "non-__unused__ generic output is emitted as an out port spec; __unused__ is skipped"
       ],
       "id": "W0-LIFT-05-ACTIVE-PORT-EXPORT",
-      "status": "DISCHARGED"
+      "machine_checked": false,
+      "required_evidence": [
+        "binding source audit"
+      ],
+      "status": "ARGUED_NOT_MACHINE_CHECKED",
+      "status_reason": "The checker audits source markers for export behavior but does not execute the selection-to-port-spec semantic bridge."
     },
     {
       "evidence": [
@@ -148,21 +190,39 @@
         "exact precheck and RoutingSubproblem markers PASS"
       ],
       "id": "W0-LIFT-06-ROUTING-CONSUMPTION",
-      "status": "DISCHARGED"
+      "machine_checked": false,
+      "required_evidence": [
+        "phase-minus1 harness source audit",
+        "routing source identity"
+      ],
+      "status": "ARGUED_NOT_MACHINE_CHECKED",
+      "status_reason": "The checker verifies the pinned single-chain markers and call count but does not exhaustively prove that no alternate binding bypass exists."
     },
     {
       "evidence": [
         "premise strengthening preserves theorem-one conditional implication"
       ],
       "id": "W0-LIFT-07-CONTEXT-TRANSPORT",
-      "status": "DISCHARGED"
+      "machine_checked": true,
+      "required_evidence": [
+        "theorem-one checker PASS",
+        "theorem-two checker PASS",
+        "structured context relation check"
+      ],
+      "status": "DISCHARGED",
+      "status_reason": "All registered machine checks passed."
     },
     {
       "evidence": [
         "protected files unchanged=True"
       ],
       "id": "W0-LIFT-08-ENDPOINT-NONINTERFERENCE",
-      "status": "DISCHARGED"
+      "machine_checked": true,
+      "required_evidence": [
+        "protected surface hash check"
+      ],
+      "status": "DISCHARGED",
+      "status_reason": "All registered machine checks passed."
     }
   ],
   "result_kind": "w0_terminal_exclusion_check",
@@ -203,7 +263,6 @@
     "target_slot_id": "boundary_port_041:out:0",
     "variable_count": 17190
   },
-  "status": "PASS",
   "subject_identity": {
     "judgment_id": "J-W0-FIXED-RECT-BINDING-ROUTING-EXCLUDED-V1",
     "layout_id": "W0-ALIGNMENT",
@@ -220,6 +279,10 @@
     "delta_M_bottom": -1,
     "evidence_type": "EXACT_SINGLETON_EXCLUSION_BY_COMPOSED_THEOREMS",
     "global_M_t": "N_A_NOT_READY",
+    "path_obligation_count": 8,
+    "path_obligations_argued_not_machine_checked": 3,
+    "path_obligations_discharged": 5,
+    "path_obligations_open": 0,
     "proof_step_count": 7,
     "terminal_status": "PROVED_EXCLUDED_RESEARCH"
   },
@@ -231,14 +294,16 @@
     "global_M_t": "N_A_NOT_READY",
     "negative_test_count": 6,
     "path_obligation_count": 8,
-    "path_obligations_discharged": 8,
+    "path_obligations_argued_not_machine_checked": 3,
+    "path_obligations_discharged": 5,
+    "path_obligations_open": 0,
     "protected_surfaces_unchanged": true,
     "snapshot_blue_requirement": 34,
     "snapshot_literal_count": 156,
     "snapshot_slot_count": 52,
     "snapshot_source_requirement": 18,
-    "theorem_one_pass": true,
     "theorem_identity_file_count": 6,
+    "theorem_one_pass": true,
     "theorem_two_pass": true
   }
 }

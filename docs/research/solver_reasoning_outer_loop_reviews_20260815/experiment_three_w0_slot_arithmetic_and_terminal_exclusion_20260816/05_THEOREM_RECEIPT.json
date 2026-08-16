@@ -2,17 +2,29 @@
   "authority_basis": {
     "authority_class": "research_only_non_authorizing",
     "source_paths": [
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/00_OWNER_AUTHORIZATION_20260816.md",
       "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/00_ACCEPTANCE_CRITERIA_FROZEN.md",
       "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/01_CONTEXT_MANIFEST.json",
       "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/02_JUDGMENT.json",
       "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/03_PROOF.md"
-    ]
+    ],
+    "authority_sources": {
+      "owner_authorization": {
+        "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/00_OWNER_AUTHORIZATION_20260816.md",
+        "sha256": "e73af26bcb2a2184e3f83c93d79bdbac0563890c2a78bc506b914d844d2401b7"
+      },
+      "acceptance_criteria": {
+        "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/00_ACCEPTANCE_CRITERIA_FROZEN.md",
+        "sha256": "905e0b531c777c0b5216f306f77a0cacac57bd6b4a9b8d951d45fb31b574d5b2"
+      }
+    }
   },
+  "blocking_scope": [],
   "contract_identity": {
     "protocol_freeze_commit": "a517fa7492a34f881f46b0a4cc9aae98bd6729ad",
     "base_contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded",
     "binding_contractHash": "1b9676a810521fb0b13828a4e2f9eb402c414c5bd82e98a9e365302a38c66c45",
-    "checker_sha256": "4a863834f5990d6cab4366f4b27fd32d0676c1563dd7c98859b1357b20a5cf6d",
+    "checker_sha256": "23ad6392d689201439149b3f284882699e0ed2a084317d401d5b5c0a23948207",
     "contextHash": "f66d8a2c0334be01b419229da97d8c32fc19bfb4d5fa07e2cd6e370e40e79a28",
     "judgment_sha256": "91307f7a4ac97c2a73537a3515363a395b171441880134bb11eb3b26513b8454",
     "manifest_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/01_CONTEXT_MANIFEST.json",
@@ -114,7 +126,7 @@
     "no_equivalence_to_full_adjudicated_game_semantics",
     "no_use_of_observational_coverage_as_proof"
   ],
-  "outcome": "PASS",
+  "outcome": "W0_SLOT_ARITHMETIC_PASS",
   "proof_summary": {
     "all_unused_indicators_forced_zero": true,
     "blue_iron_ore_count": 34,
@@ -136,7 +148,6 @@
     "target_slot_id": "boundary_port_041:out:0",
     "total_slot_count": 52
   },
-  "status": "PASS",
   "subject_identity": {
     "judgment_id": "J-W0-GENERIC-OUTPUT-SLOT-SATURATION-041-V1",
     "layout_id": "W0-ALIGNMENT",

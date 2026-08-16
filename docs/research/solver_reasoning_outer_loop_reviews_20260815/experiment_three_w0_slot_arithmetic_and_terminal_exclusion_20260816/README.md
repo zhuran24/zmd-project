@@ -65,7 +65,7 @@ generic-output literals              156
 target ExactlyOne constraint         273
 blue exact-count constraint          287 = 34
 source exact-count constraint        288 = 18
-path obligations                 8 / 8 discharged
+path obligations                 5 machine-discharged + 3 argued; 0 open
 terminal negative tests          6 / 6 killed
 ```
 

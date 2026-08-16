@@ -23,22 +23,19 @@ from typing import Any, Callable, Mapping, Sequence
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_REPO_ROOT = HERE.parents[3]
+OWNER_AUTHORIZATION_PATH = HERE / "00_OWNER_AUTHORIZATION_20260816.md"
+ACCEPTANCE_PATH = HERE / "00_ACCEPTANCE_CRITERIA_FROZEN.md"
 MANIFEST_PATH = HERE / "01_CONTEXT_MANIFEST.json"
 JUDGMENT_PATH = HERE / "02_JUDGMENT.json"
 PROOF_PATH = HERE / "03_PROOF.md"
-ACCEPTANCE_PATH = HERE / "00_ACCEPTANCE_CRITERIA_FROZEN.md"
-REQUIRED_RECEIPT_FIELDS = (
-    "result_kind",
-    "outcome",
-    "subject_identity",
-    "verified_scope",
-    "authority_basis",
-    "granted_effects",
-    "non_implications",
-    "contract_identity",
-)
-
-
+RECEIPT_SCHEMA_PATH = HERE / "13_RECEIPT_ENVELOPE_SCHEMA_V1.json"
+PROTOCOL_FREEZE_COMMIT = "a517fa7492a34f881f46b0a4cc9aae98bd6729ad"
+THEOREM_COMMIT = "c8b69a03c8fae76a0b7b0864aa5bbea34e02fa0e"
+TERMINAL_COMMIT = "da43392c18b725b007095ce31b8f9ba6461ea483"
+OWNER_AUTHORIZATION_SHA256 = "e73af26bcb2a2184e3f83c93d79bdbac0563890c2a78bc506b914d844d2401b7"
+ACCEPTANCE_SHA256 = "905e0b531c777c0b5216f306f77a0cacac57bd6b4a9b8d951d45fb31b574d5b2"
+THEOREM_PASS_OUTCOME = "W0_SLOT_ARITHMETIC_PASS"
+THEOREM_FAIL_OUTCOME = "W0_SLOT_ARITHMETIC_FAIL"
 class CheckError(RuntimeError):
     """The theorem or one of its pinned premises failed closed."""
 
@@ -82,6 +79,150 @@ def read_json(path: Path, *, label: str | None = None) -> Any:
     except OSError as exc:
         raise CheckError(f"cannot read {label or path}: {exc}") from exc
     return parse_json_bytes(payload, label=label or str(path))
+
+
+def _schema_type_matches(instance: Any, expected: str) -> bool:
+    if expected == "object":
+        return isinstance(instance, Mapping)
+    if expected == "array":
+        return isinstance(instance, list)
+    if expected == "string":
+        return isinstance(instance, str)
+    if expected == "boolean":
+        return isinstance(instance, bool)
+    if expected == "integer":
+        return isinstance(instance, int) and not isinstance(instance, bool)
+    if expected == "number":
+        return isinstance(instance, (int, float)) and not isinstance(instance, bool)
+    if expected == "null":
+        return instance is None
+    raise CheckError(f"unsupported JSON Schema type: {expected}")
+
+
+def _json_values_equal(left: Any, right: Any) -> bool:
+    if isinstance(left, bool) or isinstance(right, bool):
+        return type(left) is type(right) and left == right
+    if (
+        isinstance(left, (int, float))
+        and not isinstance(left, bool)
+        and isinstance(right, (int, float))
+        and not isinstance(right, bool)
+    ):
+        return left == right
+    if isinstance(left, list) and isinstance(right, list):
+        return len(left) == len(right) and all(
+            _json_values_equal(left_item, right_item)
+            for left_item, right_item in zip(left, right, strict=True)
+        )
+    if isinstance(left, Mapping) and isinstance(right, Mapping):
+        return set(left) == set(right) and all(
+            _json_values_equal(left[key], right[key]) for key in left
+        )
+    return type(left) is type(right) and left == right
+
+
+def _schema_matches(instance: Any, schema: Any) -> bool:
+    try:
+        validate_json_schema_subset(instance, schema, path="<conditional>")
+    except CheckError:
+        return False
+    return True
+
+
+def validate_json_schema_subset(instance: Any, schema: Any, *, path: str = "$") -> None:
+    """Validate the Draft 2020-12 subset used by the frozen receipt schema."""
+
+    if isinstance(schema, bool):
+        require(schema, f"receipt schema rejected {path}")
+        return
+    require(isinstance(schema, Mapping), f"receipt schema node is not an object at {path}")
+    supported_keywords = {
+        "$schema",
+        "$id",
+        "title",
+        "description",
+        "type",
+        "required",
+        "properties",
+        "additionalProperties",
+        "minProperties",
+        "const",
+        "enum",
+        "minLength",
+        "minItems",
+        "maxItems",
+        "uniqueItems",
+        "items",
+        "contains",
+        "minContains",
+        "maxContains",
+        "allOf",
+        "if",
+        "then",
+        "else",
+    }
+    unknown_keywords = set(schema) - supported_keywords
+    require(not unknown_keywords, f"unsupported receipt schema keywords at {path}: {sorted(unknown_keywords)}")
+
+    if "type" in schema:
+        expected_type = schema["type"]
+        require(isinstance(expected_type, str), f"schema type is not a string at {path}")
+        require(_schema_type_matches(instance, expected_type), f"schema type mismatch at {path}: expected {expected_type}")
+    if "const" in schema:
+        require(_json_values_equal(instance, schema["const"]), f"schema const mismatch at {path}")
+    if "enum" in schema:
+        enum_values = schema["enum"]
+        require(isinstance(enum_values, list), f"schema enum is not an array at {path}")
+        require(instance in enum_values, f"schema enum mismatch at {path}")
+    if isinstance(instance, str) and "minLength" in schema:
+        require(len(instance) >= int(schema["minLength"]), f"schema minLength mismatch at {path}")
+
+    if isinstance(instance, Mapping):
+        required = schema.get("required", [])
+        require(isinstance(required, list), f"schema required is not an array at {path}")
+        for key in required:
+            require(isinstance(key, str), f"schema required key is not a string at {path}")
+            require(key in instance, f"schema required key missing at {path}/{key}")
+        if "minProperties" in schema:
+            require(len(instance) >= int(schema["minProperties"]), f"schema minProperties mismatch at {path}")
+        properties = schema.get("properties", {})
+        require(isinstance(properties, Mapping), f"schema properties is not an object at {path}")
+        for key, child_schema in properties.items():
+            if key in instance:
+                validate_json_schema_subset(instance[key], child_schema, path=f"{path}/{key}")
+        if schema.get("additionalProperties") is False:
+            extras = set(instance) - set(properties)
+            require(not extras, f"schema additional properties at {path}: {sorted(extras)}")
+
+    if isinstance(instance, list):
+        if "minItems" in schema:
+            require(len(instance) >= int(schema["minItems"]), f"schema minItems mismatch at {path}")
+        if "maxItems" in schema:
+            require(len(instance) <= int(schema["maxItems"]), f"schema maxItems mismatch at {path}")
+        if schema.get("uniqueItems") is True:
+            for index, item in enumerate(instance):
+                require(item not in instance[:index], f"schema uniqueItems mismatch at {path}/{index}")
+        if "items" in schema:
+            for index, item in enumerate(instance):
+                validate_json_schema_subset(item, schema["items"], path=f"{path}/{index}")
+        if "contains" in schema:
+            match_count = sum(_schema_matches(item, schema["contains"]) for item in instance)
+            min_contains = int(schema.get("minContains", 1))
+            max_contains = int(schema.get("maxContains", len(instance)))
+            require(min_contains <= match_count <= max_contains, f"schema contains mismatch at {path}")
+
+    for index, child_schema in enumerate(schema.get("allOf", [])):
+        validate_json_schema_subset(instance, child_schema, path=f"{path}/allOf/{index}")
+    if "if" in schema:
+        branch = "then" if _schema_matches(instance, schema["if"]) else "else"
+        if branch in schema:
+            validate_json_schema_subset(instance, schema[branch], path=f"{path}/{branch}")
+
+
+def validate_receipt_against_schema(receipt: Mapping[str, Any]) -> None:
+    schema = read_json(RECEIPT_SCHEMA_PATH, label="receipt envelope schema")
+    require(isinstance(schema, Mapping), "receipt envelope schema root is not an object")
+    validate_json_schema_subset(receipt, schema)
 
 
 def sha256_bytes(payload: bytes) -> str:
@@ -670,9 +811,46 @@ def git_chronology(repo_root: Path) -> dict[str, Any]:
         require(relation_result.returncode == 0, "acceptance freeze commit is not an ancestor of theorem commit")
         relation = "FREEZE_PRECEDES_THEOREM"
     return {
-        "acceptance_freeze_commit": freeze_commit,
-        "theorem_introduction_commit": theorem_commit,
+        "protocol_freeze_commit": freeze_commit,
+        "theorem_commit": theorem_commit,
         "relation": relation,
+    }
+
+
+def base_contract_identity() -> dict[str, Any]:
+    return {
+        "protocol_freeze_commit": PROTOCOL_FREEZE_COMMIT,
+        "theorem_commit": THEOREM_COMMIT,
+        "terminal_commit": TERMINAL_COMMIT,
+        "manifest_path": str(MANIFEST_PATH.relative_to(DEFAULT_REPO_ROOT)),
+        "receipt_schema_path": str(RECEIPT_SCHEMA_PATH.relative_to(DEFAULT_REPO_ROOT)),
+    }
+
+
+def authority_basis(*, defensive: bool = False) -> dict[str, Any]:
+    owner_path = str(OWNER_AUTHORIZATION_PATH.relative_to(DEFAULT_REPO_ROOT))
+    acceptance_path = str(ACCEPTANCE_PATH.relative_to(DEFAULT_REPO_ROOT))
+    owner_sha = OWNER_AUTHORIZATION_SHA256 if defensive else sha256_file(OWNER_AUTHORIZATION_PATH)[0]
+    acceptance_sha = ACCEPTANCE_SHA256 if defensive else sha256_file(ACCEPTANCE_PATH)[0]
+    return {
+        "authority_class": "research_only_non_authorizing",
+        "source_paths": [
+            owner_path,
+            acceptance_path,
+            str(MANIFEST_PATH.relative_to(DEFAULT_REPO_ROOT)),
+            str(JUDGMENT_PATH.relative_to(DEFAULT_REPO_ROOT)),
+            str(PROOF_PATH.relative_to(DEFAULT_REPO_ROOT)),
+        ],
+        "authority_sources": {
+            "owner_authorization": {
+                "path": owner_path,
+                "sha256": owner_sha,
+            },
+            "acceptance_criteria": {
+                "path": acceptance_path,
+                "sha256": acceptance_sha,
+            },
+        },
     }
 
 
@@ -684,7 +862,14 @@ def make_receipt(
     details: Mapping[str, Any],
     error: str | None = None,
 ) -> dict[str, Any]:
-    pass_outcome = outcome == "PASS"
+    pass_outcome = outcome == THEOREM_PASS_OUTCOME
+    require(
+        outcome in {THEOREM_PASS_OUTCOME, THEOREM_FAIL_OUTCOME},
+        f"unsupported theorem receipt outcome: {outcome}",
+    )
+    contract_updates = {
+        key: value for key, value in dict(contract_identity).items() if value is not None
+    }
     receipt: dict[str, Any] = {
         "result_kind": "w0_slot_arithmetic_theorem_check",
         "outcome": outcome,
@@ -694,23 +879,16 @@ def make_receipt(
             "target_slot_id": "boundary_port_041:out:0",
         },
         "verified_scope": dict(verified_scope),
-        "authority_basis": {
-            "authority_class": "research_only_non_authorizing",
-            "source_paths": [
-                str(ACCEPTANCE_PATH.relative_to(DEFAULT_REPO_ROOT)),
-                str(MANIFEST_PATH.relative_to(DEFAULT_REPO_ROOT)),
-                str(JUDGMENT_PATH.relative_to(DEFAULT_REPO_ROOT)),
-                str(PROOF_PATH.relative_to(DEFAULT_REPO_ROOT)),
-            ],
-        },
+        "authority_basis": authority_basis(defensive=not pass_outcome),
         "granted_effects": (
             [
                 "permits_offline_composition_with_J-W0-GHOST-FRONT-BOUNDARY-041-V1",
                 "permits_research_candidate_exclusion_review_for_the_fixed_W0_rectangle",
             ]
             if pass_outcome
-            else ["blocks_terminal_exclusion_composition"]
+            else []
         ),
+        "blocking_scope": [] if pass_outcome else ["terminal_exclusion_composition"],
         "non_implications": [
             "no_certification_effect",
             "no_exact_status_update",
@@ -721,12 +899,20 @@ def make_receipt(
             "no_equivalence_to_full_adjudicated_game_semantics",
             "no_use_of_observational_coverage_as_proof",
         ],
-        "contract_identity": dict(contract_identity),
+        "contract_identity": {**base_contract_identity(), **contract_updates},
         "details": dict(details),
     }
     if error is not None:
         receipt["error"] = error
-    require(all(field in receipt for field in REQUIRED_RECEIPT_FIELDS), "receipt lost an eight-field key")
+    try:
+        validate_receipt_against_schema(receipt)
+    except CheckError as exc:
+        if pass_outcome:
+            raise
+        receipt["schema_validation"] = {
+            "status": "UNAVAILABLE_OR_FAILED_DURING_FAILURE",
+            "error": str(exc),
+        }
     return receipt
 
 
@@ -847,7 +1033,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         }
         details = {
             "schema_version": "zmd_w0_slot_arithmetic_theorem_receipt_v1",
-            "status": "PASS",
             "pinned_files": file_receipts,
             "slot_derivation": slot_summary,
             "demand_derivation": demand_summary,
@@ -858,7 +1043,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "timing_seconds": time.perf_counter() - started,
         }
         receipt = make_receipt(
-            outcome="PASS",
+            outcome=THEOREM_PASS_OUTCOME,
             verified_scope=verified_scope,
             contract_identity=contract_identity,
             details=details,
@@ -866,17 +1051,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         exit_code = 0
     except (CheckError, OSError, UnicodeError, KeyError, TypeError, ValueError, IndexError) as exc:
         contract_identity = {
-            "manifest_path": str(MANIFEST_PATH),
-            "judgment_path": str(JUDGMENT_PATH),
+            "judgment_path": str(JUDGMENT_PATH.relative_to(DEFAULT_REPO_ROOT)),
             "checker_sha256": sha256_file(Path(__file__).resolve())[0],
         }
         receipt = make_receipt(
-            outcome="FAIL",
+            outcome=THEOREM_FAIL_OUTCOME,
             verified_scope={"completed": False, "coverage_mode": args.coverage},
             contract_identity=contract_identity,
             details={
                 "schema_version": "zmd_w0_slot_arithmetic_theorem_receipt_v1",
-                "status": "FAIL",
                 "timing_seconds": time.perf_counter() - started,
             },
             error=str(exc),

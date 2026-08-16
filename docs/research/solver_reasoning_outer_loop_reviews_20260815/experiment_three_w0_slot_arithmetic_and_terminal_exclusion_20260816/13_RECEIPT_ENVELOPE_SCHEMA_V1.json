@@ -15,13 +15,20 @@
   ],
   "properties": {
     "result_kind": {
-      "type": "string",
-      "minLength": 1
+      "enum": [
+        "w0_slot_arithmetic_theorem_check",
+        "w0_terminal_exclusion_check"
+      ]
     },
     "outcome": {
-      "type": "string",
-      "minLength": 1
+      "enum": [
+        "W0_SLOT_ARITHMETIC_PASS",
+        "W0_SLOT_ARITHMETIC_FAIL",
+        "W0_TERMINAL_EXCLUSION_PASS",
+        "W0_TERMINAL_EXCLUSION_FAIL"
+      ]
     },
+    "status": false,
     "subject_identity": {
       "type": "object",
       "minProperties": 1
@@ -34,25 +41,89 @@
       "type": "object",
       "required": [
         "authority_class",
-        "source_paths"
+        "source_paths",
+        "authority_sources"
       ],
       "properties": {
         "authority_class": {
-          "const": "research_only_non_authorizing"
+          "type": "string",
+          "minLength": 1
         },
         "source_paths": {
           "type": "array",
-          "minItems": 1,
+          "minItems": 2,
           "items": {
             "type": "string",
             "minLength": 1
           },
-          "uniqueItems": true
+          "uniqueItems": true,
+          "allOf": [
+            {
+              "contains": {
+                "const": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/00_OWNER_AUTHORIZATION_20260816.md"
+              }
+            },
+            {
+              "contains": {
+                "const": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/00_ACCEPTANCE_CRITERIA_FROZEN.md"
+              }
+            }
+          ]
+        },
+        "authority_sources": {
+          "type": "object",
+          "required": [
+            "owner_authorization",
+            "acceptance_criteria"
+          ],
+          "properties": {
+            "owner_authorization": {
+              "type": "object",
+              "required": [
+                "path",
+                "sha256"
+              ],
+              "properties": {
+                "path": {
+                  "const": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/00_OWNER_AUTHORIZATION_20260816.md"
+                },
+                "sha256": {
+                  "const": "e73af26bcb2a2184e3f83c93d79bdbac0563890c2a78bc506b914d844d2401b7"
+                }
+              },
+              "additionalProperties": false
+            },
+            "acceptance_criteria": {
+              "type": "object",
+              "required": [
+                "path",
+                "sha256"
+              ],
+              "properties": {
+                "path": {
+                  "const": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/00_ACCEPTANCE_CRITERIA_FROZEN.md"
+                },
+                "sha256": {
+                  "const": "905e0b531c777c0b5216f306f77a0cacac57bd6b4a9b8d951d45fb31b574d5b2"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": true
     },
     "granted_effects": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "blocking_scope": {
       "type": "array",
       "items": {
         "type": "string",
@@ -68,6 +139,236 @@
         "minLength": 1
       },
       "uniqueItems": true
+    },
+    "path_obligations": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "machine_checked",
+          "required_evidence",
+          "evidence",
+          "status_reason"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "W0-LIFT-01-INPUT-IDENTITY",
+              "W0-LIFT-02-SLOT-COMPLETENESS",
+              "W0-LIFT-03-PER-SLOT-EXACTLY-ONE",
+              "W0-LIFT-04-GLOBAL-COUNTS",
+              "W0-LIFT-05-ACTIVE-PORT-EXPORT",
+              "W0-LIFT-06-ROUTING-CONSUMPTION",
+              "W0-LIFT-07-CONTEXT-TRANSPORT",
+              "W0-LIFT-08-ENDPOINT-NONINTERFERENCE"
+            ]
+          },
+          "status": {
+            "enum": [
+              "DISCHARGED",
+              "ARGUED_NOT_MACHINE_CHECKED",
+              "OPEN"
+            ]
+          },
+          "machine_checked": {
+            "type": "boolean"
+          },
+          "required_evidence": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "evidence": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "status_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "DISCHARGED"
+                }
+              },
+              "required": [
+                "status"
+              ]
+            },
+            "then": {
+              "properties": {
+                "machine_checked": {
+                  "const": true
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "enum": [
+                    "ARGUED_NOT_MACHINE_CHECKED",
+                    "OPEN"
+                  ]
+                }
+              },
+              "required": [
+                "status"
+              ]
+            },
+            "then": {
+              "properties": {
+                "machine_checked": {
+                  "const": false
+                }
+              }
+            }
+          }
+        ],
+        "additionalProperties": true
+      },
+      "allOf": [
+        {
+          "contains": {
+            "type": "object",
+            "required": ["id", "status", "machine_checked"],
+            "properties": {
+              "id": {"const": "W0-LIFT-01-INPUT-IDENTITY"},
+              "status": {"const": "ARGUED_NOT_MACHINE_CHECKED"},
+              "machine_checked": {"const": false}
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": ["id", "status", "machine_checked"],
+            "properties": {
+              "id": {"const": "W0-LIFT-02-SLOT-COMPLETENESS"},
+              "status": {"const": "DISCHARGED"},
+              "machine_checked": {"const": true}
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": ["id", "status", "machine_checked"],
+            "properties": {
+              "id": {"const": "W0-LIFT-03-PER-SLOT-EXACTLY-ONE"},
+              "status": {"const": "DISCHARGED"},
+              "machine_checked": {"const": true}
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": ["id", "status", "machine_checked"],
+            "properties": {
+              "id": {"const": "W0-LIFT-04-GLOBAL-COUNTS"},
+              "status": {"const": "DISCHARGED"},
+              "machine_checked": {"const": true}
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": ["id", "status", "machine_checked"],
+            "properties": {
+              "id": {"const": "W0-LIFT-05-ACTIVE-PORT-EXPORT"},
+              "status": {"const": "ARGUED_NOT_MACHINE_CHECKED"},
+              "machine_checked": {"const": false}
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": ["id", "status", "machine_checked"],
+            "properties": {
+              "id": {"const": "W0-LIFT-06-ROUTING-CONSUMPTION"},
+              "status": {"const": "ARGUED_NOT_MACHINE_CHECKED"},
+              "machine_checked": {"const": false}
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": ["id", "status", "machine_checked"],
+            "properties": {
+              "id": {"const": "W0-LIFT-07-CONTEXT-TRANSPORT"},
+              "status": {"const": "DISCHARGED"},
+              "machine_checked": {"const": true}
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": ["id", "status", "machine_checked"],
+            "properties": {
+              "id": {"const": "W0-LIFT-08-ENDPOINT-NONINTERFERENCE"},
+              "status": {"const": "DISCHARGED"},
+              "machine_checked": {"const": true}
+            }
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      ]
+    },
+    "terminal_summary": {
+      "type": "object",
+      "required": [
+        "terminal_status",
+        "path_obligations_open"
+      ],
+      "properties": {
+        "terminal_status": {
+          "type": "string",
+          "const": "PROVED_EXCLUDED_RESEARCH"
+        },
+        "path_obligations_open": {
+          "type": "integer",
+          "const": 0
+        }
+      },
+      "additionalProperties": true
     },
     "contract_identity": {
       "description": "Experiment three has no prelaunch revision commit. Its truthful identity chain is the frozen acceptance protocol, the theorem implementation, and the terminal closure commit; terminal_commit is also the commit that first introduced both receipts.",
@@ -99,5 +400,158 @@
       "additionalProperties": true
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "result_kind": {
+            "const": "w0_slot_arithmetic_theorem_check"
+          }
+        },
+        "required": [
+          "result_kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "enum": [
+              "W0_SLOT_ARITHMETIC_PASS",
+              "W0_SLOT_ARITHMETIC_FAIL"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result_kind": {
+            "const": "w0_terminal_exclusion_check"
+          }
+        },
+        "required": [
+          "result_kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "enum": [
+              "W0_TERMINAL_EXCLUSION_PASS",
+              "W0_TERMINAL_EXCLUSION_FAIL"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "enum": [
+              "W0_SLOT_ARITHMETIC_FAIL",
+              "W0_TERMINAL_EXCLUSION_FAIL"
+            ]
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "required": [
+          "blocking_scope"
+        ],
+        "properties": {
+          "granted_effects": {
+            "maxItems": 0
+          },
+          "blocking_scope": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "enum": [
+              "W0_SLOT_ARITHMETIC_PASS",
+              "W0_TERMINAL_EXCLUSION_PASS"
+            ]
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "required": [
+          "blocking_scope"
+        ],
+        "properties": {
+          "granted_effects": {
+            "minItems": 1
+          },
+          "blocking_scope": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "const": "W0_TERMINAL_EXCLUSION_PASS"
+          }
+        },
+        "required": [
+          "outcome"
+        ]
+      },
+      "then": {
+        "required": [
+          "path_obligations",
+          "terminal_summary"
+        ],
+        "properties": {
+          "verified_scope": {
+            "required": [
+              "path_obligation_count",
+              "path_obligations_discharged",
+              "path_obligations_argued_not_machine_checked",
+              "path_obligations_open",
+              "candidate_state_after"
+            ],
+            "properties": {
+              "path_obligation_count": {
+                "type": "integer",
+                "const": 8
+              },
+              "path_obligations_discharged": {
+                "type": "integer",
+                "const": 5
+              },
+              "path_obligations_argued_not_machine_checked": {
+                "type": "integer",
+                "const": 3
+              },
+              "path_obligations_open": {
+                "type": "integer",
+                "const": 0
+              },
+              "candidate_state_after": {
+                "type": "string",
+                "const": "PROVED_EXCLUDED"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
   "additionalProperties": true
 }
