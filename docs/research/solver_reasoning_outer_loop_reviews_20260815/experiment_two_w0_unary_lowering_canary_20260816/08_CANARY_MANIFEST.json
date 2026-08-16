@@ -1,0 +1,118 @@
+{
+  "schema_version": "zmd_w0_unary_lowering_canary_manifest_v1",
+  "status": "IMPLEMENTATION_PINNED",
+  "protocol_freeze_commit": "0339c745b6c7f498fc989398de380a78578fc785",
+  "layout_id": "W0-ALIGNMENT",
+  "normalized_layout_sha256": "d199c88e6d65582a269ec5142b33e3d9db9294eeb0b1a25f9ee05005ff1a26aa",
+  "judgment_id": "J-W0-GHOST-FRONT-BOUNDARY-041-V1",
+  "target_slot_id": "boundary_port_041:out:0",
+  "target_unused_label": "__unused__",
+  "lowering_constraint_name": "w0_j041_force_unused",
+  "artifact_root": ".artifacts/solver_reasoning_outer_loop_w0_unary_canary_20260816",
+  "arms": [
+    "A_BASELINE",
+    "B_OBSERVER_NOOP",
+    "C_UNARY_LOWERING"
+  ],
+  "run_parameters": {
+    "event_cap": 1007,
+    "arm_watchdog_seconds": 900.0,
+    "binding_solve_cap_seconds": 20.0,
+    "routing_solve_cap_seconds": 30.0,
+    "binding_workers": 1,
+    "routing_workers": 1,
+    "alternative_cap": null,
+    "overload_separation": false,
+    "progress_every_events": 25
+  },
+  "code_root_files": [
+    {
+      "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_one_w0_ghost_front_offline_certificate_20260815/01_JUDGMENT.json",
+      "sha256": "853c7aa9df3939e8eea97afebbf34c4c453a8e641d186ec75af82af291d0ebc3"
+    },
+    {
+      "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_one_w0_ghost_front_offline_certificate_20260815/02_PROOF.md",
+      "sha256": "2d8c5d608bdcf9c2ad80ba5561591d17679db52203a11cddbc76ab48486fedfb"
+    },
+    {
+      "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_one_w0_ghost_front_offline_certificate_20260815/03_check_w0_ghost_front_certificate.py",
+      "sha256": "c53e882ab7b2d6bfa96dacefd510ae708f926116475cb0d74aa18d3d40591ba7"
+    },
+    {
+      "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_one_w0_ghost_front_offline_certificate_20260815/04_COVERAGE_SNAPSHOT.json",
+      "sha256": "c9dc4c4f69b8c724c90a0d1081ab5e94efb77a9c63ef9057281f35d855b73caa"
+    },
+    {
+      "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/corpus_manifest.json",
+      "sha256": "8f7e33ffb477ebea7152f3163b7754eddcc64596fe67949b6f5bdfde8061de91"
+    },
+    {
+      "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/phase_minus1_harness.py",
+      "sha256": "81e8960738ba2c0b81f86cefb96bc87da9b2e2f81ac9073e2135192b7fb905c2"
+    },
+    {
+      "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/phase_minus1_harness_r3.py",
+      "sha256": "8aafe4016bd89649f31d466abab7edbd0f3fbe19c2beacfb4da29a6506221e28"
+    },
+    {
+      "path": "src/models/binding_subproblem.py",
+      "sha256": "1c89f6ee2cb958568c7365289a0b3d6e69a32f3162d4c925f02695705efc7ee9"
+    },
+    {
+      "path": "src/models/routing_subproblem.py",
+      "sha256": "7554b0f24176b86104095ee47b8ec8ed5dfc4098c3df2f661231b0cf2f0ae718"
+    },
+    {
+      "path": "rules/canonical_rules.json",
+      "sha256": "c3fc3a34e67b2321048a8861a9b178c744361698a838039b0361287c9fb542c0"
+    },
+    {
+      "path": "data/preprocessed/mandatory_exact_instances.json",
+      "sha256": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+    },
+    {
+      "path": "data/preprocessed/generic_io_requirements.json",
+      "sha256": "ad5125b50e607a7f3f3bf0b54fea64f93edf87cedb62e8d24f5590e1c895c44e"
+    }
+  ],
+  "evidence_root_files": [
+    {
+      "path": "data/preprocessed/candidate_placements.json",
+      "sha256": "f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3"
+    },
+    {
+      "path": ".artifacts/w0_fixrerun_20260804/band22_alignment/registration_placement_solution.json",
+      "sha256": "db85d3e18fd0fc12ba743e0fd86e38183262a24c90d28805634c952cf27103c7"
+    },
+    {
+      "path": ".artifacts/w0_fixrerun_20260804/band22_alignment/max_empty_rect_for_this_placement.json",
+      "sha256": "aeb3a046a23309db845c238372d3b0a8e442c2ac7c94eb9de18ab0f1d9420fc6"
+    }
+  ],
+  "baseline_frozen_prefix": {
+    "event_count": 1007,
+    "unique_selection_count": 1007,
+    "event_prefix_sha256": "e37da2d662a850529122e983c59ab569e0d48e9b9b93279af6bf41e0568d60a1",
+    "feedback_prefix_sha256": "be3632eb5bff560dd37a8a12f8325b88efb82e91ac10f4d38958d03b5ff326c0",
+    "primary_trigger_count": 1007,
+    "precheck_status_distribution": {
+      "front_blocked": 1007
+    },
+    "point_nogood_literal_count_each": 285,
+    "local_signature_digest_distribution": {
+      "0d8194771905654dc15db441534656a41e9ee54ed2ef36fc0104d89d828f659a": 3,
+      "4e4e78348b073f24e8898303544bd9b4a11e8fd322ff8ec1268750e898951b9d": 1001,
+      "b7a80464be5f967b6a86e4ada8051a616a22c8fb673fddc85921f7fd6b9f34f2": 3
+    }
+  },
+  "forbidden_nonempty_env": [
+    "EXACT_B1_BINDING_ALT_CAP",
+    "EXACT_B1_BYPASS_ROUTING_PRECHECK",
+    "EXACT_B1_ROUTING_AWARE_BINDING",
+    "EXACT_BINDING_USE_OVERLOAD_SEPARATION",
+    "EXACT_BINDING_DUMP_STATE",
+    "EXACT_CUT_FRAMEWORK_ATTACH",
+    "EXACT_B1_DELETION_CORE_CUT",
+    "EXACT_B1_LAZY_DEMAND_CUT"
+  ]
+}
