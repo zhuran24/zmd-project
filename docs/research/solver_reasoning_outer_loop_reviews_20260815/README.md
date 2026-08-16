@@ -37,6 +37,10 @@
 
 [`experiment_one_w0_ghost_front_offline_certificate_20260815/`](experiment_one_w0_ghost_front_offline_certificate_20260815/README.md) 保存第一号对象的完整研究包：以固定 W0 布局中的活动边界源口为单原子触发器，从 canonical 规则与 pinned 输入字节独立证明其前格和 strict-empty 矩形冲突，并在不把观测当证明的前提下测量冻结 1007 个 binding selection 的覆盖。该包不包含 solver integration、lowering、D3/D4、认证或发布动作。
 
+## 实验一续集：W0 一元 lowering 金丝雀
+
+[`experiment_two_w0_unary_lowering_canary_20260816/`](experiment_two_w0_unary_lowering_canary_20260816/README.md) 保存 owner 已窄解冻的第二层真实消费实验：只把已证 W0 Judgment 编译成研究面的一元 binding-domain 约束，运行 baseline／观测 no-op／treatment 三臂，并把局部 family 塌缩、热点迁移、资源轨迹与终点中性分账。该实验不解冻通用 D3/D4，不修改 `src/`，不产生认证或发布效力。
+
 ## 已知字节保真 lint debt
 
 **状态：** `ACCEPTED_KNOWN_LINT_DEBT`。
