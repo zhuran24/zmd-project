@@ -385,7 +385,24 @@ def test_artifact_boundary_separates_git_workspace_and_external_evidence() -> No
     )
 
     assert boundary.dossier_registry == "data/knowledge/dossiers.json"
-    assert len(boundary.registered_roots) == 57
+    inputs = json.loads(
+        (assets.ROOT / artifact_evidence.DEFAULT_INPUTS).read_text(encoding="utf-8")
+    )
+    workspace = inputs["workspace_untracked"]
+    dossiers = json.loads(
+        (assets.ROOT / workspace["dossier_registry"]).read_text(encoding="utf-8")
+    )
+    expected_registered_roots = tuple(
+        sorted(
+            f"{path}/"
+            for record in dossiers["records"]
+            if isinstance((path := record.get("path")), str)
+            and path.startswith(boundary.root_prefix)
+            and record.get("tracked_state")
+            == workspace["required_dossier_tracked_state"]
+        )
+    )
+    assert boundary.registered_roots == expected_registered_roots
     assert len(boundary.tracked_root_files) == 7
     assert len(boundary.tracked_prefixes) == 9
     assert len(boundary.tracked_files) == 1
