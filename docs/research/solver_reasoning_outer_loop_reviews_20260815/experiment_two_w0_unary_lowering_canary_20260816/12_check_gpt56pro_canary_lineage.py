@@ -14,6 +14,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import re
 import subprocess
 import sys
 import time
@@ -27,15 +28,17 @@ APPARATUS_RUN_ID = "w0-unary-canary-20260816T170830Z-edf13896a8"
 SCIENTIFIC_RUN_ID = "w0-unary-canary-20260816T171013Z-d3ad19d479"
 AGGREGATE_NAME = "CANARY_AGGREGATE_GPT56PRO.json"
 EXPECTED_SEQUENCE_SHA256 = "9cc4637b444bc66ac2def1151441bc703802f1433c99db456c2fa81225e94f64"
-REQUIRED_ENVELOPE_FIELDS = (
-    "result_kind",
-    "outcome",
-    "subject_identity",
-    "verified_scope",
-    "authority_basis",
-    "granted_effects",
-    "non_implications",
-    "contract_identity",
+CANARY_MANIFEST_RELATIVE_PATH = (
+    "docs/research/solver_reasoning_outer_loop_reviews_20260815/"
+    "experiment_two_w0_unary_lowering_canary_20260816/03_CANARY_MANIFEST.json"
+)
+RECEIPT_SCHEMA_RELATIVE_PATH = (
+    "docs/research/solver_reasoning_outer_loop_reviews_20260815/"
+    "experiment_two_w0_unary_lowering_canary_20260816/03B_RECEIPT_ENVELOPE_SCHEMA_V1.json"
+)
+LINEAGE_MANIFEST_RELATIVE_PATH = (
+    ".artifacts/solver_reasoning_outer_loop_w0_unary_canary_20260816/"
+    "EVIDENCE_MANIFEST_GPT56PRO_LINEAGE.json"
 )
 COMMIT_CHAIN = (
     "57a17a7672cf879fc39e0e67a044590a85cb47a2",
@@ -125,21 +128,96 @@ def verify_commit_chain() -> list[dict[str, str]]:
     return values
 
 
+def schema_location(path: Sequence[str | int]) -> str:
+    return "/".join(str(part) for part in path) or "<root>"
+
+
+def schema_type_matches(value: Any, expected_type: str) -> bool:
+    if expected_type == "object":
+        return isinstance(value, Mapping)
+    if expected_type == "array":
+        return isinstance(value, list)
+    if expected_type == "string":
+        return isinstance(value, str)
+    if expected_type == "integer":
+        return isinstance(value, int) and not isinstance(value, bool)
+    if expected_type == "number":
+        return isinstance(value, (int, float)) and not isinstance(value, bool)
+    if expected_type == "boolean":
+        return isinstance(value, bool)
+    if expected_type == "null":
+        return value is None
+    raise CheckError(f"unsupported receipt-schema type: {expected_type}")
+
+
+def validate_schema_value(
+    value: Any,
+    schema: Mapping[str, Any],
+    *,
+    path: tuple[str | int, ...] = (),
+) -> None:
+    location = schema_location(path)
+
+    if "const" in schema:
+        require(value == schema["const"], f"receipt schema const mismatch at {location}")
+
+    expected_type = schema.get("type")
+    if expected_type is not None:
+        require(isinstance(expected_type, str), f"invalid receipt-schema type at {location}")
+        require(
+            schema_type_matches(value, expected_type),
+            f"receipt schema type mismatch at {location}: expected {expected_type}",
+        )
+
+    if isinstance(value, Mapping):
+        min_properties = schema.get("minProperties")
+        if min_properties is not None:
+            require(len(value) >= int(min_properties), f"too few properties at {location}")
+
+        required = schema.get("required", [])
+        require(isinstance(required, list), f"invalid required list in schema at {location}")
+        missing = [field for field in required if field not in value]
+        require(not missing, f"receipt schema missing fields at {location}: {missing}")
+
+        properties = schema.get("properties", {})
+        require(isinstance(properties, Mapping), f"invalid properties map in schema at {location}")
+        for field, child_schema in properties.items():
+            if field not in value:
+                continue
+            require(isinstance(child_schema, Mapping), f"invalid child schema at {location}/{field}")
+            validate_schema_value(value[field], child_schema, path=(*path, str(field)))
+
+        if schema.get("additionalProperties") is False:
+            extras = sorted(set(value) - set(properties))
+            require(not extras, f"unexpected receipt fields at {location}: {extras}")
+
+    if isinstance(value, list):
+        min_items = schema.get("minItems")
+        if min_items is not None:
+            require(len(value) >= int(min_items), f"too few items at {location}")
+        if schema.get("uniqueItems") is True:
+            for index, item in enumerate(value):
+                require(item not in value[:index], f"duplicate array item at {location}/{index}")
+        item_schema = schema.get("items")
+        if item_schema is not None:
+            require(isinstance(item_schema, Mapping), f"invalid item schema at {location}")
+            for index, item in enumerate(value):
+                validate_schema_value(item, item_schema, path=(*path, index))
+
+    if isinstance(value, str):
+        min_length = schema.get("minLength")
+        if min_length is not None:
+            require(len(value) >= int(min_length), f"string too short at {location}")
+        pattern = schema.get("pattern")
+        if pattern is not None:
+            require(isinstance(pattern, str), f"invalid regex pattern in schema at {location}")
+            require(re.search(pattern, value) is not None, f"string pattern mismatch at {location}")
+
+
 def verify_envelope(receipt: Mapping[str, Any], *, expected_kind: str) -> None:
-    missing = [field for field in REQUIRED_ENVELOPE_FIELDS if field not in receipt]
-    require(not missing, f"receipt lacks envelope fields: {missing}")
+    schema = read_json(ROOT / RECEIPT_SCHEMA_RELATIVE_PATH)
+    validate_schema_value(receipt, schema)
     require(receipt["result_kind"] == expected_kind, f"wrong receipt kind: {receipt.get('result_kind')}")
-    require(isinstance(receipt["subject_identity"], dict), "subject_identity is not an object")
-    require(isinstance(receipt["verified_scope"], dict), "verified_scope is not an object")
-    require(isinstance(receipt["authority_basis"], dict), "authority_basis is not an object")
-    require(isinstance(receipt["granted_effects"], list), "granted_effects is not an array")
-    require(isinstance(receipt["non_implications"], list), "non_implications is not an array")
-    require(isinstance(receipt["contract_identity"], dict), "contract_identity is not an object")
-    require(
-        receipt["authority_basis"].get("authority_class")
-        == "research_only_non_authorizing",
-        "receipt authority class drift",
-    )
 
 
 def event_projection(record: Mapping[str, Any]) -> dict[str, Any]:
@@ -416,6 +494,9 @@ def build_receipt() -> dict[str, Any]:
         "contract_identity": {
             "protocol_freeze_commit": COMMIT_CHAIN[0],
             "prelaunch_revision_commit": COMMIT_CHAIN[1],
+            "manifest_path": CANARY_MANIFEST_RELATIVE_PATH,
+            "receipt_schema_path": RECEIPT_SCHEMA_RELATIVE_PATH,
+            "lineage_manifest_path": LINEAGE_MANIFEST_RELATIVE_PATH,
             "implementation_commits": list(COMMIT_CHAIN[2:]),
             "aggregate_path": str((run_dir / AGGREGATE_NAME).relative_to(ROOT)),
             "aggregate_sha256": aggregate_summary["aggregate_sha256"],
@@ -482,6 +563,9 @@ def main(argv: list[str] | None = None) -> int:
             "contract_identity": {
                 "protocol_freeze_commit": COMMIT_CHAIN[0],
                 "prelaunch_revision_commit": COMMIT_CHAIN[1],
+                "manifest_path": CANARY_MANIFEST_RELATIVE_PATH,
+                "receipt_schema_path": RECEIPT_SCHEMA_RELATIVE_PATH,
+                "lineage_manifest_path": LINEAGE_MANIFEST_RELATIVE_PATH,
                 "checker_path": str(Path(__file__).resolve().relative_to(ROOT)),
             },
             "schema_version": "zmd_gpt56pro_w0_canary_postrun_check_v1",

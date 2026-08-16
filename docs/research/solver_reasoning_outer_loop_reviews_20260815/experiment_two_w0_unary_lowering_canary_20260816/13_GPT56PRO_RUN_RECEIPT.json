@@ -92,15 +92,18 @@
     "aggregate_path": ".artifacts/solver_reasoning_outer_loop_w0_unary_canary_20260816/w0-unary-canary-20260816T171013Z-d3ad19d479/CANARY_AGGREGATE_GPT56PRO.json",
     "aggregate_sha256": "0b44662f1bd52c09a25b38007f0db70dedf08e66645401ac4fa36b87316b4c6b",
     "checker_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816/12_check_gpt56pro_canary_lineage.py",
-    "checker_sha256": "a385ac95e79e96e4652f806ce9570a7b18b849303ed861fc6a1759ec17bbcf31",
+    "checker_sha256": "d8313fe64b4a1b27ab99d3b860d0657b57c7ae74b7af12c0b43ca46a51fbb0cb",
     "implementation_commits": [
       "edf13896a867ae14be8d5add3f08a41c0f4c5322",
       "d3ad19d479eb5ea696ccda374fee655b81f6cfab",
       "fe60db52b65eaa5c3664ad758a06b4427447b4a6",
       "4ce4e7ea7f8e44ab6a0f451d33ba61b4daf948bf"
     ],
+    "lineage_manifest_path": ".artifacts/solver_reasoning_outer_loop_w0_unary_canary_20260816/EVIDENCE_MANIFEST_GPT56PRO_LINEAGE.json",
+    "manifest_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816/03_CANARY_MANIFEST.json",
     "prelaunch_revision_commit": "988d1b787778c211f5e8b930b7f6cf093581aed8",
-    "protocol_freeze_commit": "57a17a7672cf879fc39e0e67a044590a85cb47a2"
+    "protocol_freeze_commit": "57a17a7672cf879fc39e0e67a044590a85cb47a2",
+    "receipt_schema_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816/03B_RECEIPT_ENVELOPE_SCHEMA_V1.json"
   },
   "granted_effects": [
     "permits_tracked_report_to_record_INCONCLUSIVE",
@@ -155,5 +158,5 @@
     "runtime_family_collapse_observed": false,
     "scientific_verdict": "INCONCLUSIVE"
   },
-  "wall_seconds": 0.02977985900361091
+  "wall_seconds": 0.029503601021133363
 }
