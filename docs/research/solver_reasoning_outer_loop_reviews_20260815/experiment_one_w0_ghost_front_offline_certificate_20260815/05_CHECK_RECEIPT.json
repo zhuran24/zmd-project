@@ -1,0 +1,79 @@
+{
+  "schema_version": "zmd_offline_semantic_certificate_check_receipt_v1",
+  "status": "PASS",
+  "captured_on": "2026-08-15",
+  "command": ".venv/bin/python docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_one_w0_ghost_front_offline_certificate_20260815/03_check_w0_ghost_front_certificate.py --coverage required",
+  "checker_sha256": "102dfe3483432acc6c1b6af55a640a55b4b72cf511564448660dc3996149a840",
+  "checker_independence": {
+    "standard_library_only": true,
+    "project_module_imports": [],
+    "phase_minus1_harness_imports": [],
+    "solver_or_model_imports": []
+  },
+  "proof": {
+    "judgment_id": "J-W0-GHOST-FRONT-BOUNDARY-041-V1",
+    "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
+    "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27",
+    "contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded",
+    "fixed_layout_instance_count": 291,
+    "fixed_layout_body_cell_count": 3644,
+    "fixed_rectangle": {
+      "x0": 1,
+      "x1": 6,
+      "y0": 51,
+      "y1": 57,
+      "w": 6,
+      "h": 7
+    },
+    "fixed_rectangle_body_intersection_count": 0,
+    "target_front_cell": [
+      1,
+      53
+    ],
+    "target_front_inside_strict_empty_rectangle": true,
+    "active_front_requires_belt": true,
+    "strict_empty_rectangle_forbids_belt": true,
+    "conclusion": "TRIGGERED_BINDING_SELECTION_UNROUTABLE",
+    "semantic_fact_count": 6,
+    "trigger_atom_count": 1,
+    "proof_step_count": 6,
+    "experiment_data_used_as_proof_premise": false,
+    "redundant_sibling_front_cell": [
+      1,
+      56
+    ]
+  },
+  "coverage": {
+    "snapshot_id": "W0-DEEP-PREFIX-1007-20260815",
+    "event_prefix_sha256": "e37da2d662a850529122e983c59ab569e0d48e9b9b93279af6bf41e0568d60a1",
+    "feedback_prefix_sha256": "be3632eb5bff560dd37a8a12f8325b88efb82e91ac10f4d38958d03b5ff326c0",
+    "observed_distinct_binding_selection_count": 1007,
+    "observed_Ext_J_count": 1007,
+    "observed_Ext_J_denominator": 1007,
+    "observed_Ext_J_fraction": 1.0,
+    "point_nogood_literal_count_total": 286995,
+    "certificate_atom_count": 7,
+    "coarse_point_literal_to_certificate_atom_ratio": 40999.28571428572,
+    "ln_Ext_per_proof_step": 1.1524551487864272,
+    "ln_Ext_per_certificate_atom": 0.9878186989597947,
+    "coverage_is_a_proof_premise": false
+  },
+  "single_run_timing_seconds": {
+    "identity": 0.02550910197896883,
+    "proof": 0.5109632639796473,
+    "coverage": 0.02147326900740154,
+    "total": 0.6153144389973022
+  },
+  "seven_run_external_benchmark_seconds": {
+    "proof_only_median": 0.6298508929903619,
+    "proof_only_max": 0.6450422579946462,
+    "proof_plus_coverage_median": 0.6434103159990627,
+    "proof_plus_coverage_max": 0.6516242630023044
+  },
+  "watchdog_comparison": {
+    "phase_minus1_v1_watchdog_seconds": 180.0,
+    "proof_plus_coverage_median_as_percent_of_watchdog": 0.35745017555503483,
+    "watchdog_to_checker_median_ratio": 279.7592695114049,
+    "comparability_note": "This is a cost-scale comparison, not an A/B speedup claim. The offline checker and the 180-second search window perform different tasks."
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "schema_version": "zmd_offline_certificate_coverage_snapshot_v1",
+  "snapshot_id": "W0-DEEP-PREFIX-1007-20260815",
+  "status": "OBSERVATIONAL_MEASUREMENT_ONLY",
+  "created_on": "2026-08-15",
+  "proof_dependency": false,
+  "scope_note": "This snapshot measures Ext(J) after the proof was derived. No event or feedback field is a theorem premise.",
+  "source_run": {
+    "run_id": "DEEP-W0-ALIGNMENT",
+    "layout_id": "W0-ALIGNMENT",
+    "root": ".artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815/phase-minus1-v2-r1-20260815/deep/DEEP-W0-ALIGNMENT"
+  },
+  "event_prefix": {
+    "path": ".artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815/phase-minus1-v2-r1-20260815/deep/DEEP-W0-ALIGNMENT/events.jsonl",
+    "record_count": 1007,
+    "first_event_index": 1,
+    "last_event_index": 1007,
+    "prefix_size_bytes": 2748821,
+    "prefix_sha256": "e37da2d662a850529122e983c59ab569e0d48e9b9b93279af6bf41e0568d60a1",
+    "unique_selection_digest_count": 1007
+  },
+  "feedback_prefix": {
+    "path": ".artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815/phase-minus1-v2-r1-20260815/deep/DEEP-W0-ALIGNMENT/feedback.jsonl",
+    "record_count": 2014,
+    "first_event_index": 1,
+    "last_event_index": 1007,
+    "prefix_size_bytes": 899858,
+    "prefix_sha256": "be3632eb5bff560dd37a8a12f8325b88efb82e91ac10f4d38958d03b5ff326c0",
+    "feedback_applied_count": 1007,
+    "feedback_outcome_count": 1007,
+    "point_nogood_literal_count_each": 285,
+    "point_nogood_literal_count_total": 286995,
+    "effect_true_count": 1007,
+    "effect_no_terminal_count": 1007
+  },
+  "primary_trigger_measurement": {
+    "judgment_id": "J-W0-GHOST-FRONT-BOUNDARY-041-V1",
+    "instance_id": "boundary_port_041",
+    "expected_front_cell": [
+      1,
+      53
+    ],
+    "expected_direction": "E",
+    "matching_record_count": 1007,
+    "coverage_denominator": 1007,
+    "coverage_fraction": 1.0,
+    "commodity_values_seen": [
+      "source_ore"
+    ],
+    "blocking_instance_ids_seen": [
+      "__ghost_rect__"
+    ]
+  },
+  "redundant_sibling_measurement": {
+    "instance_id": "boundary_port_042",
+    "expected_front_cell": [
+      1,
+      56
+    ],
+    "expected_direction": "E",
+    "matching_record_count": 1007,
+    "coverage_denominator": 1007,
+    "coverage_fraction": 1.0
+  },
+  "signature_distribution": {
+    "4e4e78348b073f24e8898303544bd9b4a11e8fd322ff8ec1268750e898951b9d": 1001,
+    "b7a80464be5f967b6a86e4ada8051a616a22c8fb673fddc85921f7fd6b9f34f2": 3,
+    "0d8194771905654dc15db441534656a41e9ee54ed2ef36fc0104d89d828f659a": 3
+  },
+  "interpretation_limit": "The 1007 records establish observed trigger coverage only. They do not prove that every mathematically possible binding selection for W0 activates boundary_port_041."
+}

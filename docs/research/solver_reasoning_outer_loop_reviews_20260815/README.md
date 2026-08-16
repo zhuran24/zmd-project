@@ -33,6 +33,10 @@
 
 [`phase_minus1/`](phase_minus1/README.md) 保存 owner 已授权开展、但仍不产生立项的 Phase -1 证据线。该线先冻结协议和 corpus，再运行无 cap 死因谱、producer→consumer 触达与外部布局终验 canary；实验结果只能进入 owner 的第二道立项闸。
 
+## 实验一：离线短证书
+
+[`experiment_one_w0_ghost_front_offline_certificate_20260815/`](experiment_one_w0_ghost_front_offline_certificate_20260815/README.md) 保存第一号对象的完整研究包：以固定 W0 布局中的活动边界源口为单原子触发器，从 canonical 规则与 pinned 输入字节独立证明其前格和 strict-empty 矩形冲突，并在不把观测当证明的前提下测量冻结 1007 个 binding selection 的覆盖。该包不包含 solver integration、lowering、D3/D4、认证或发布动作。
+
 ## 已知字节保真 lint debt
 
 **状态：** `ACCEPTED_KNOWN_LINT_DEBT`。

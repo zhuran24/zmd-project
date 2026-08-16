@@ -1,0 +1,122 @@
+{
+  "schema_version": "zmd_offline_semantic_judgment_v1",
+  "judgment_id": "J-W0-GHOST-FRONT-BOUNDARY-041-V1",
+  "status": "RESEARCH_ONLY_OFFLINE_THEOREM",
+  "authority": "evidence_only",
+  "created_on": "2026-08-15",
+  "non_implications": [
+    "no_solver_integration",
+    "no_lowering",
+    "no_D3_or_D4",
+    "no_certification_effect",
+    "no_claim_outside_the_pinned_context"
+  ],
+  "problem_identity": {
+    "hash_algorithm": "sha256",
+    "composite_material": "ordered UTF-8 lines of <path>:<actual_sha256> with a final newline",
+    "files": [
+      {
+        "role": "canonical_rules",
+        "path": "rules/canonical_rules.json",
+        "sha256": "c3fc3a34e67b2321048a8861a9b178c744361698a838039b0361287c9fb542c0",
+        "size_bytes": 59989
+      },
+      {
+        "role": "candidate_pool",
+        "path": "data/preprocessed/candidate_placements.json",
+        "sha256": "f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3",
+        "size_bytes": 54467709
+      },
+      {
+        "role": "fixed_layout",
+        "path": ".artifacts/w0_fixrerun_20260804/band22_alignment/registration_placement_solution.json",
+        "sha256": "db85d3e18fd0fc12ba743e0fd86e38183262a24c90d28805634c952cf27103c7",
+        "size_bytes": 88021
+      },
+      {
+        "role": "fixed_ghost_rectangle",
+        "path": ".artifacts/w0_fixrerun_20260804/band22_alignment/max_empty_rect_for_this_placement.json",
+        "sha256": "aeb3a046a23309db845c238372d3b0a8e442c2ac7c94eb9de18ab0f1d9420fc6",
+        "size_bytes": 1127
+      }
+    ],
+    "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912"
+  },
+  "objective_context": {
+    "objective": "max_lex_area_min_side",
+    "min_side_admissibility": 6,
+    "fixed_rect": {
+      "x0": 1,
+      "x1": 6,
+      "y0": 51,
+      "y1": 57,
+      "w": 6,
+      "h": 7
+    },
+    "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27"
+  },
+  "context": {
+    "fixed_layout_id": "W0-ALIGNMENT",
+    "quantified_component": "binding_selection_only",
+    "routing_semantics": "canonical_predicate_5",
+    "binders": [
+      {
+        "name": "b",
+        "sort": "binding_selection"
+      }
+    ],
+    "trigger": {
+      "predicate": "active_output_slot",
+      "instance_id": "boundary_port_041",
+      "slot_index": 0
+    },
+    "contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded"
+  },
+  "sequent": {
+    "premises": [
+      "the four problem-identity files match their pinned bytes",
+      "the fixed layout selects boundary_port_041 pose_idx 52",
+      "that candidate-pool pose has exactly one output front cell at (1,53)",
+      "the fixed empty rectangle contains (1,53)",
+      "canonical strict emptiness forbids belts and every other logistics occupant inside the rectangle",
+      "canonical front identity requires an active port's stored front cell to accept a belt"
+    ],
+    "turnstile": "|-",
+    "formula": "forall b: BindingSelection, active_output_slot(b, boundary_port_041, 0) -> not exists r: RoutingWitness, canonical_predicate_5_routable(W0_ALIGNMENT, fixed_rect, b, r)"
+  },
+  "trigger": {
+    "name": "W0_BOUNDARY_041_ACTIVE",
+    "check_cost": "one binding-map or selected-literal membership lookup",
+    "definition": "The binding selection marks the unique output slot of boundary_port_041 as an active source terminal for some commodity.",
+    "commodity_independent": true
+  },
+  "conclusion": {
+    "name": "W0_BINDING_SELECTION_UNROUTABLE",
+    "definition": "No routing witness can satisfy canonical predicate 5 together with the pinned strict empty rectangle for this fixed layout and binding selection."
+  },
+  "proof_object": {
+    "proof_kind": "finite_byte_recomputation_plus_one_cell_contradiction",
+    "target_instance_id": "boundary_port_041",
+    "expected_facility_type": "boundary_storage_port",
+    "expected_pose_idx": 52,
+    "expected_pose_id": "p_x00_y52_o0_m_left_base",
+    "expected_unique_output_front_cell": [
+      1,
+      53
+    ],
+    "expected_direction": "E",
+    "semantic_fact_count": 6,
+    "trigger_atom_count": 1,
+    "proof_step_count": 6,
+    "experiment_data_is_a_premise": false
+  },
+  "redundant_sibling_witness": {
+    "status": "independently_derivable_but_not_needed_by_primary_certificate",
+    "instance_id": "boundary_port_042",
+    "pose_idx": 55,
+    "unique_output_front_cell": [
+      1,
+      56
+    ]
+  }
+}
