@@ -802,7 +802,7 @@
       },
       "portability": {
         "manifest_path": ".artifacts/solver_reasoning_outer_loop_w0_unary_canary_20260816/EVIDENCE_MANIFEST_GPT56PRO_LINEAGE.json",
-        "manifest_sha256": "58914f3b71b4921067db2c0c9cc6f42575221a293d321ed3788d071493234653",
+        "manifest_sha256": "bb9832aee66c534242abc48ff758ecfc70026531079ef62d5a65ef88e09975f7",
         "recovery_instructions": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816/14_GPT56PRO_FINAL_REPORT.md",
         "source_locator": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816/13_GPT56PRO_RUN_RECEIPT.json"
       }
@@ -3363,6 +3363,26 @@
         "other"
       ],
       "summary": "Status: HISTORICALORPLAN（研究层设计稿，不改生产代码/锁面） Authored: 2026-07-04（v2，取代 v1；v2.1 = 本地核查回收；v3 = GPT Pro 终审回收——schema 分层 proposalcore/sealedpublic + 负向复验/seal digest 绑定链、独立性禁共享 canonical parser、seal-only handle 拒绝清单、一般域反链警告、O-1~O-16。终审总判定：引理层可靠（master 侧已被逐行独立验证）、合…"
+    },
+    {
+      "id": "DOSSIER-TRI-PLANE-MODEL-V2-20260816-71A3625ABB",
+      "path": "docs/research/tri_plane_model_v2_20260816",
+      "entry_file": "docs/research/tri_plane_model_v2_20260816/README.md",
+      "title": "三面防污染模型 v2 dossier",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "historical",
+      "curation": "auto_indexed",
+      "tracked_state": "tracked",
+      "date": "2026-08-16",
+      "topics": [
+        "other"
+      ],
+      "summary": "v1 三面模型解决了一个根病：同一个“收紧”动作在数学面与发布面上符号相反，语言混面会把发布侧“保守安全”的直觉错误搬进求解证明面。研究侧开始产出机器验证 theorem 并准备 lowering 后，污染风险从节点措辞扩展到消费链：一条正确 theorem 仍可能被错误 consumer、错误 runtime literal、过宽 scope、路径级 lifting 或越权 capability 使用。",
+      "workflow": {
+        "opened_at": "2026-08-16",
+        "closure": null
+      }
     },
     {
       "id": "DOSSIER-V10-WITNESS-PREFLIGHT-SMOKE-20260516-1FA7D0C7BB",

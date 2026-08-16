@@ -43,6 +43,7 @@
           "data/knowledge/current_state.json",
           "data/knowledge/claims.jsonl",
           "data/knowledge/decisions.jsonl",
+          "data/knowledge/dossiers.json",
           "devtools/build_knowledge_docs.py"
         ],
         "generator_action": "knowledge.build",
@@ -275,6 +276,7 @@
         "source_paths": [
           "data/knowledge/terminology.json",
           "data/knowledge/claims.jsonl",
+          "data/knowledge/dossiers.json",
           "devtools/build_knowledge_docs.py"
         ],
         "generator_action": "knowledge.build",
@@ -317,6 +319,7 @@
           "data/knowledge/claims.jsonl",
           "data/knowledge/topics.json",
           "data/knowledge/current_state.json",
+          "data/knowledge/dossiers.json",
           "devtools/build_knowledge_docs.py"
         ],
         "generator_action": "knowledge.build",

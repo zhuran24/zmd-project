@@ -171,17 +171,42 @@ def test_backfill_batches_preserve_generic_propagation_evidence_boundary() -> No
 def test_knowledge_census_is_the_single_numeric_acceptance_fixture() -> None:
     model = load_model(PROJECT_ROOT)
     census = _census(model)
+    reviewed_ids = {
+        str(record["dossier_id"])
+        for record in model.backfill_reviews
+        if record["status"] == "current"
+    }
+    triaged_ids = {
+        str(dossier_id)
+        for group in model.backfill_triage["groups"]
+        for dossier_id in group["dossier_ids"]
+    }
+    open_workflow_ids = {
+        str(record["id"])
+        for record in model.dossiers["records"]
+        if record.get("lifecycle") == "active"
+        and isinstance(record.get("workflow"), dict)
+        and record["workflow"].get("closure") is None
+    }
+    unreviewed_open_workflow_ids = open_workflow_ids - reviewed_ids
 
     assert census["claims_total"] == len(model.claims)
     assert census["decisions_total"] == len(model.decisions)
     assert census["dossiers_total"] == len(model.dossiers["records"])
     assert census["topics_total"] == len(model.topics["records"])
     assert census["terms_total"] == len(model.terminology["records"])
-    assert census["current_reviews"] + census["triaged_dossiers"] == census["dossiers_total"]
+    assert (
+        census["current_reviews"]
+        + census["triaged_dossiers"]
+        + len(unreviewed_open_workflow_ids)
+        == census["dossiers_total"]
+    )
     assert (
         census["semantic_review_dossiers"] + census["availability_review_dossiers"]
         == census["current_reviews"]
     )
+    assert len(reviewed_ids) == census["current_reviews"]
+    assert len(triaged_ids) == census["triaged_dossiers"]
 
 
 def test_knowledge_authority_interface_is_typed_and_executable() -> None:
@@ -649,6 +674,14 @@ def test_phase2_closure_separates_semantic_review_from_inventory_triage() -> Non
         for dossier_id in group["dossier_ids"]
     ]
     triaged_ids = set(triaged_sequence)
+    open_workflow_ids = {
+        str(record["id"])
+        for record in model.dossiers["records"]
+        if record.get("lifecycle") == "active"
+        and isinstance(record.get("workflow"), dict)
+        and record["workflow"].get("closure") is None
+    }
+    unreviewed_open_workflow_ids = open_workflow_ids - reviewed_ids
 
     assert len(all_dossiers) == _census(model)["dossiers_total"]
     assert len(reviewed_ids) == _census(model)["current_reviews"]
@@ -656,7 +689,11 @@ def test_phase2_closure_separates_semantic_review_from_inventory_triage() -> Non
     assert len(availability_ids) == _census(model)["availability_review_dossiers"]
     assert len(triaged_sequence) == len(triaged_ids) == _census(model)["triaged_dossiers"]
     assert reviewed_ids.isdisjoint(triaged_ids)
-    assert reviewed_ids | triaged_ids == all_dossiers
+    assert triaged_ids.isdisjoint(open_workflow_ids)
+    assert reviewed_ids | triaged_ids | open_workflow_ids == all_dossiers
+    assert reviewed_ids.isdisjoint(unreviewed_open_workflow_ids)
+    assert triaged_ids.isdisjoint(unreviewed_open_workflow_ids)
+    assert reviewed_ids | triaged_ids | unreviewed_open_workflow_ids == all_dossiers
     assert model.backfill_triage["triage_is_not_semantic_review"] is True
 
 

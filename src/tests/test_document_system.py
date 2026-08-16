@@ -932,6 +932,17 @@ def test_generated_knowledge_projections_are_write_through_only() -> None:
         assert marker in resolution.contract["invariant_refs"] or marker in resolution.contract["adr_refs"]
 
 
+def test_global_knowledge_digest_dependencies_are_declared_write_through_sources() -> None:
+    for path in (
+        "docs/CURRENT.md",
+        "docs/OPEN_QUESTIONS.md",
+        "docs/TERMINOLOGY.md",
+    ):
+        resolution = DocumentSystem(PROJECT_ROOT).resolve(path, "edit")
+        assert "data/knowledge/dossiers.json" in resolution.contract["source_paths"]
+        assert "devtools/build_knowledge_docs.py" in resolution.contract["source_paths"]
+
+
 def test_triaged_dossier_card_never_claims_semantic_review() -> None:
     resolution = DocumentSystem(PROJECT_ROOT).resolve(
         "docs/research/b1_pose_bool_phase0_20260517/README.md",

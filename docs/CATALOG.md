@@ -1,7 +1,7 @@
 # 项目知识目录
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:a908dba4370e8a96fd7058f3a13cecbee70b8ce19acc9ea5930d5ba6f6715502`。
+> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:ee6c19a8b49dc8eaea445d1a75116945ef0b562d9f83dbb9064b296eebd258e2`。
 
 这里登记稳定 ID。claim 回答“我们知道什么”，decision 回答“谁改变了什么规则或门”，
 dossier 回答“原始证据包在哪里”，validity profile 回答“旧结论为何失效、怎样换代、能否复用”。目录不把历史材料自动升级为当前权威。
@@ -11,7 +11,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 - claim：`92` 条，其中当前 / 开放 `73` 条，带 validity profile `32` 条。
 - decision：`8` 条。
 - backfill review：`54` 条，其中 current `44` 条。
-- dossier：`210` 个，其中 tracked `152` 个、local optional `58` 个、当前证据标记 `16` 个、人工精编 `31` 个。
+- dossier：`211` 个，其中 tracked `153` 个、local optional `58` 个、当前证据标记 `16` 个、人工精编 `31` 个。
 - `docs/research/` 的一级目录和一级 Markdown 已全登记；`.artifacts/` 只登记一级目录，其路径允许在轻量 checkout 中缺失。
 
 ## Claim 索引
@@ -127,7 +127,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 ## Topic 索引
 
 - `p1_2-proof-chain`：72 个 dossier。
-- `other`：43 个 dossier。
+- `other`：44 个 dossier。
 - `solver-experiment`：25 个 dossier。
 - `upper-bound`：24 个 dossier。
 - `cut-framework`：19 个 dossier。
@@ -234,6 +234,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
+| `DOSSIER-TRI-PLANE-MODEL-V2-20260816-71A3625ABB` | `2026-08-16` | [三面防污染模型 v2 dossier](<research/tri_plane_model_v2_20260816/README.md>)<br>v1 三面模型解决了一个根病：同一个“收紧”动作在数学面与发布面上符号相反，语言混面会把发布侧“保守安全”的直觉错误搬进求解证明面。研究侧开始产出机器验证 theorem 并准备 lowering 后，污染风险从节点措辞扩展到消费链：一条正确 theorem 仍可能被错误 consumer、错误 runtime li… | `other` | `active` | `historical` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99` | `2026-08-15` | [推理外环三轮外部评审归档（2026-08-15）](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)<br>三份外部评审正文逐字归档；同一 dossier 另登记仅在声明条件下可消费的 non_authorizing 设计约束与可证伪架构假设，二者均不构成立项或现行实现义务。 | `reasoning-system`, `solver-architecture`, `solver-rethink` | `active` | `historical` |
 | `DOSSIER-METHODOLOGY-COMPILATION-20260814-BF49D11CCD` | `2026-08-14` | [附录 E · 管线与归属方法论（项目既有方法论权威）](<research/methodology_compilation_20260814/APX_E_pipeline_methodology.snapshot.md>)<br>本附录是本项目科学面的方法论权威：一套关于「一条知识该住在计算管线的哪一层、管线本身该怎么切、 一个结构性预设该押在哪」的判据体系。 | `other` | `historical` | `historical` |
 | `DOSSIER-PLANE-MIXING-AUDIT-20260813-176281B3F4` | `2026-08-13` | [三面防污染架构审计——发现与挂账登记（2026-08-13）](<research/plane_mixing_audit_20260813/FINDINGS.md>) | `other` | `historical` | `historical` |
@@ -4364,7 +4365,7 @@ owner 允许归档三轮外部评审并以 non_authorizing 形态登记设计约
 
 - **明确不推出：** 原登记八条内容及本次评审修复新增的指针型登记项获得批准；推理外环获得立项；对现行树新增义务
 
-- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../../../.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
+- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
 
 <a id="decision-p1-2-close-20260707"></a>
 

@@ -292,6 +292,8 @@ legacy 投影重建
 
 禁止直接修改 `docs/CURRENT.md`、`docs/CATALOG.md`、`docs/REASONING_LEDGER.md`、`docs/VALIDITY_LEDGER.md`、`docs/BACKFILL_LEDGER.md`、`docs/TOPIC_INDEX.md`、`docs/TERMINOLOGY.md` 或 `docs/OPEN_QUESTIONS.md`。
 
+知识生成器写入的全局 source digest 也是生成页字节的一部分。任何 ledger 只要会改变某份投影的正文或 source digest，就必须列入该投影在 `DOC_POLICY.json` 中的 `source_paths`；不能因为正文语义未变而省略摘要依赖。新增知识源或调整摘要覆盖范围时，应逐份核对八个投影的 declared source，并用框架回归测试锁定穿透关系。
+
 ### 当前职责索引
 
 ```bash
