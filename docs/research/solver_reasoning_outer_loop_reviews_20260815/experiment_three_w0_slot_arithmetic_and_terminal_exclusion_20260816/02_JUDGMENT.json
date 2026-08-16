@@ -1,0 +1,119 @@
+{
+  "schema_version": "zmd_offline_semantic_judgment_v1",
+  "judgment_id": "J-W0-GENERIC-OUTPUT-SLOT-SATURATION-041-V1",
+  "status": "RESEARCH_ONLY_OFFLINE_THEOREM",
+  "authority": "evidence_only",
+  "created_on": "2026-08-16",
+  "title": "W0 generic-output 席位算术引理：041 必活动",
+  "problem_identity": {
+    "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
+    "manifest_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/01_CONTEXT_MANIFEST.json"
+  },
+  "objective_context": {
+    "objective": "max_lex_area_min_side",
+    "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27"
+  },
+  "context": {
+    "fixed_layout_id": "W0-ALIGNMENT",
+    "quantified_component": "binding_selection_only",
+    "base_contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded",
+    "binding_contractHash": "1b9676a810521fb0b13828a4e2f9eb402c414c5bd82e98a9e365302a38c66c45",
+    "contextHash": "f66d8a2c0334be01b419229da97d8c32fc19bfb4d5fa07e2cd6e370e40e79a28",
+    "context_relation": "the theorem-one base context plus pinned binding-contract premises",
+    "binders": [
+      {
+        "name": "b",
+        "sort": "W0LegalBindingSelection"
+      }
+    ]
+  },
+  "scope": {
+    "slot_universe": "46 boundary_port generic-output slots plus 6 protocol_core generic-output slots in the pinned W0 layout",
+    "slot_count": 52,
+    "labels_per_slot": [
+      "blue_iron_ore",
+      "source_ore",
+      "__unused__"
+    ],
+    "per_slot_constraint": "exactly one label",
+    "global_counts": {
+      "blue_iron_ore": 34,
+      "source_ore": 18
+    },
+    "target_slot_id": "boundary_port_041:out:0"
+  },
+  "condition": {
+    "name": "LEGAL_W0_BINDING_CONTRACT",
+    "definition": "b assigns exactly one of the three declared labels to every one of the 52 pinned generic-output slots and satisfies the two exact global commodity counts 34 and 18."
+  },
+  "conclusion": {
+    "name": "W0_BOUNDARY_041_MUST_BE_ACTIVE",
+    "definition": "Every legal W0 binding assigns boundary_port_041:out:0 either blue_iron_ore or source_ore; it never assigns __unused__.",
+    "formula": "forall b: W0LegalBindingSelection, active_output_slot(b, boundary_port_041, 0)"
+  },
+  "sequent": {
+    "premises": [
+      "the pinned canonical, candidate-pool, mandatory-instance, generic-I/O and W0 layout bytes match the context manifest",
+      "the 52-slot universe is independently re-derived from those bytes",
+      "the 34/18 external-boundary demand is independently re-derived from canonical recipes and mandatory instances and equals pinned generic I/O",
+      "each legal binding selects exactly one of blue_iron_ore, source_ore and __unused__ at every slot",
+      "the two global exact counts are 34 and 18"
+    ],
+    "turnstile": "|-",
+    "formula": "forall b: W0LegalBindingSelection, legal_w0_binding_contract(b) -> active_output_slot(b, boundary_port_041, 0)"
+  },
+  "proof_object": {
+    "proof_kind": "finite_slot_counting_and_nonnegative_zero_sum",
+    "boundary_slot_count": 46,
+    "protocol_core_slot_count": 6,
+    "total_slot_count": 52,
+    "blue_iron_ore_count": 34,
+    "source_ore_count": 18,
+    "forced_unused_total": 0,
+    "target_slot_id": "boundary_port_041:out:0",
+    "proof_step_count": 5,
+    "proof_step_count_source": "03_PROOF.md section 5 numbered list",
+    "experiment_data_is_a_premise": false
+  },
+  "consumption_contract": {
+    "polarity": "necessary_property_of_every_binding_accepted_by_the_pinned_current_model_contract",
+    "allowed_consumers": [
+      "offline theorem composition in this dossier",
+      "research candidate-state accounting for the one fixed W0 rectangle"
+    ],
+    "forbidden_consumers": [
+      "production solver lowering",
+      "certified frontier pruning",
+      "stable claim ledger",
+      "publisher or supervisor",
+      "cross-layout or cross-rectangle generalization"
+    ],
+    "context_transport": "Theorem one may be weakened into this stronger context because all theorem-one premises remain byte-identical and this context only adds binding-contract premises.",
+    "invalidation_triggers": [
+      "any pinned input SHA-256 changes",
+      "the generic-output slot universe changes",
+      "required_generic_outputs changes",
+      "the per-slot exactly-one contract changes",
+      "the model admits a source label outside the three-label domain",
+      "boundary_port_041:out:0 is removed or re-grounded"
+    ]
+  },
+  "coverage": {
+    "status": "POST_HOC_OBSERVATIONAL_ONLY",
+    "identity": "非前提,仅事后覆盖数据源",
+    "is_proof_premise": false,
+    "event_journal_path": ".artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815/phase-minus1-v2-r1-20260815/deep/DEEP-W0-ALIGNMENT/events.jsonl",
+    "frozen_prefix_record_count": 1007,
+    "frozen_prefix_sha256": "e37da2d662a850529122e983c59ab569e0d48e9b9b93279af6bf41e0568d60a1"
+  },
+  "non_implications": [
+    "no_certification_effect",
+    "no_exact_status_update",
+    "no_stable_claim_ledger_write",
+    "no_production_lowering",
+    "no_generic_D3_or_D4_unlock",
+    "no_claim_about_other_layouts_or_rectangles",
+    "no_claim_that_the_current_binding restriction equals full adjudicated game semantics",
+    "no_use_of_1007_observations_as_a_proof_premise"
+  ]
+}
