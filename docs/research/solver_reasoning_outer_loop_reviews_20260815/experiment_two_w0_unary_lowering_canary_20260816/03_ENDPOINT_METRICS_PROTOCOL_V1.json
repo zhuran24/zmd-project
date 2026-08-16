@@ -1,0 +1,143 @@
+{
+  "schema_version": "zmd_endpoint_metrics_protocol_v1",
+  "status": "FROZEN_PRE_IMPLEMENTATION",
+  "created_on": "2026-08-16",
+  "authority": "research_only",
+  "identity": {
+    "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
+    "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27",
+    "contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded",
+    "objective_order": ["area_descending", "min_side_descending"]
+  },
+  "typed_nulls": [
+    "MEASURED",
+    "ZERO_MEASURED",
+    "ZERO_BY_SCOPE",
+    "N_A_NOT_READY",
+    "UNKNOWN_UNMEASURED",
+    "CENSORED",
+    "NOT_REACHED",
+    "SENSOR_UNVALIDATED"
+  ],
+  "current_endpoint_sources": [
+    {
+      "role": "durable_exact_status",
+      "path": "data/solutions/exact_full_scale_status.json",
+      "sha256": "3e525b91e324e8e66abd52c5634fdb97c8957baef8dd49efd63b663f34d3e67e",
+      "expected_status": "OPEN",
+      "expected_best_certified_result": null
+    },
+    {
+      "role": "stable_claim_ledger",
+      "path": "data/knowledge/claims.jsonl",
+      "sha256": "6c3608b09d56e4a76de8a605bf30c71812b4152a0eb00c077e5abccd391f7483",
+      "required_claim_ids": [
+        "CLAIM-CERTIFIED-EXISTENCE-OPEN",
+        "CLAIM-SIX-PREDICATE-RESEARCH-LEDGER"
+      ]
+    },
+    {
+      "role": "research_upper_authority_entry",
+      "path": "docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md",
+      "sha256": "4da56e8e915bab83679926c5f264bfb8f116680b32fd2a90f74c1a73cf2a2816"
+    },
+    {
+      "role": "research_upper_execution_record",
+      "path": "docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/03_execution_record.md",
+      "sha256": "ebe9ad10131b9ca5887c6bd5482d59838f61239e15d09064a3367a5177149930"
+    }
+  ],
+  "protected_surfaces": [
+    {
+      "path": "PROJECT_LOCK.md",
+      "sha256": "105cd3794034f583232254d8645bd5b43a6b0bc7c2046799efd8cb745590f2d3"
+    },
+    {
+      "path": "scripts/run_supervisor_seal.py",
+      "sha256": "a60ce8a710a6f51efb63e7936ffd0f59c3fe1c04937c79b3cfa79fe3340ec780"
+    },
+    {
+      "path": "src/search/certified_surface.py",
+      "sha256": "9e76bed7a8a426466c3f5df97c512084295f08e99cb0c6baf12c43309c4d0354"
+    }
+  ],
+  "current_endpoint_expectation": {
+    "L_t": "ABSENT",
+    "U_t": [1188, 18],
+    "U_t_qualification": "conditional research upper ledger",
+    "M_t": "N_A_NOT_READY",
+    "delta_L": "ZERO_BY_SCOPE",
+    "delta_U": "ZERO_BY_SCOPE",
+    "delta_M": "ZERO_BY_SCOPE_WITH_M_T_N_A_NOT_READY",
+    "delta_certified_surface": "ZERO_BY_SCOPE"
+  },
+  "synthetic_fixture": {
+    "grid_width": 8,
+    "grid_height": 8,
+    "min_side": 2,
+    "contextHash": "synthetic-context-v1",
+    "initial_witness_score": [6, 2],
+    "initial_excluded_rectangles": []
+  },
+  "sensitivity_tests": [
+    {
+      "id": "SENS-01-HIGHER-AREA-WITNESS",
+      "mutation": "replace witness score (6,2) with (8,2)",
+      "expected": "L increases and M decreases"
+    },
+    {
+      "id": "SENS-02-SAME-AREA-HIGHER-MIN-SIDE",
+      "mutation": "replace witness score (8,2) with (8,4)",
+      "expected": "L increases under second lex key"
+    },
+    {
+      "id": "SENS-03-REMOVE-ONE-FROM-TOP-BAND",
+      "mutation": "exclude one but not all rectangles in top unresolved band",
+      "expected": "B decreases by one and U is unchanged"
+    },
+    {
+      "id": "SENS-04-CLOSE-TOP-BAND",
+      "mutation": "exclude all rectangles in top unresolved band",
+      "expected": "U moves to next band and G decreases by one"
+    },
+    {
+      "id": "SENS-05-IRRELEVANT-LOW-SCORE-EXCLUSION",
+      "mutation": "exclude one rectangle not lex-better than L",
+      "expected": "M, G, U and B unchanged"
+    },
+    {
+      "id": "SENS-06-IDEMPOTENT-DUPLICATE",
+      "mutation": "apply identical witness or exclusion twice",
+      "expected": "second application changes nothing"
+    },
+    {
+      "id": "SENS-07-STALE-CONTEXT",
+      "mutation": "submit exclusion with mismatching contextHash",
+      "expected": "fail closed and change nothing"
+    },
+    {
+      "id": "SENS-08-ABSENT-LOWER-BOUND",
+      "mutation": "remove all witnesses",
+      "expected": "M and G become N_A_NOT_READY"
+    },
+    {
+      "id": "SENS-09-HOTSPOT-MIGRATION",
+      "mutation": "move 10 cost units from binding to routing with total unchanged",
+      "expected": "stage shares change and total is unchanged"
+    },
+    {
+      "id": "SENS-10-NOT-REACHED",
+      "mutation": "mark routing stage as not entered",
+      "expected": "routing resource value is NOT_REACHED"
+    },
+    {
+      "id": "SENS-11-UNARY-DOMAIN-REMOVAL",
+      "mutation": "remove one value from a four-valued binding slot",
+      "expected": "BOX_DOMAIN cardinality changes from 4 to 3"
+    }
+  ],
+  "acceptance": {
+    "all_sensitivity_tests_must_pass": true,
+    "history_policy": "Future revisions create V2; V1 definitions and verdicts are not rewritten."
+  }
+}
