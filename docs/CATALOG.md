@@ -4359,7 +4359,7 @@ owner 允许归档三轮外部评审并以 non_authorizing 形态登记设计约
 
 - **明确不推出：** 原登记八条内容及本次评审修复新增的指针型登记项获得批准；推理外环获得立项；对现行树新增义务
 
-- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
+- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../../../.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
 
 <a id="decision-p1-2-close-20260707"></a>
 
