@@ -52,3 +52,9 @@ v2 不撤销 v1 三面本体，也不重写 v1 文件。本批关系如下：
 ## 快速阅读路径
 
 第一次阅读先看主文档第 0 至 10 节，建立“两轴坐标、节点与边、角色关系、三轴裁断、出生证与机器化节奏”；要看机器接口与状态体系，转第 11 至 20 节；要看跨认证边界，转第 21 至 22 节；要看治理成本与审计止步线，转第 23 至 24 节；要看 W0 具体实例、负 canary 与否决清单，转第 25 至 27 节。需要 owner 拍板时直接阅读 [`OWNER_DECISION_REQUEST.md`](OWNER_DECISION_REQUEST.md)，无需先掌握仓内批次坐标。
+
+## 方法实战记录
+
+2026-08-16，本方法第一次完整出生证查验完成于[实验三：W0 席位算术引理与固定矩形终局排除](../solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/README.md)：查验→发现义务簿记字面量缺陷→并案补丁→复验→出证，最终签发带 DEBT-B、DEBT-D1、DEBT-D2 三笔 `CONDITIONAL_DEBT` 的 `ISSUED_RESEARCH_ONLY` 出生证。
+
+本节仅作方法实例回指；出生证状态、条件债及其触发器的权威历史记录在实验三侧 [`14_BIRTH_CERTIFICATE_AND_CONDITIONAL_DEBTS.md`](../solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/14_BIRTH_CERTIFICATE_AND_CONDITIONAL_DEBTS.md)。
