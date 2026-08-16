@@ -85,7 +85,7 @@ checker 的 `--coverage off` 模式不读取 journal 仍可 PASS；因此覆盖�
 - context transport；
 - exact-status 与 stable claim ledger 不干扰。
 
-其中 LIFT-02/03/04/07/08 由对应机器布尔检查驱动为 `DISCHARGED`；LIFT-01 输入桥、LIFT-05 导出语义桥和 LIFT-06 第二入口否定只有源码身份、marker 或局部调用计数支持，状态为 `ARGUED_NOT_MACHINE_CHECKED`。当前计数为 5 条机器关闭、3 条人工论证、0 条 `OPEN`。
+其中 LIFT-02/03/04 由 snapshot 与 source-audit 的前置 `require` 硬门关闭；LIFT-07/08 分别由 context transport 与保护面哈希检查 fail-closed，随后写入的布尔值只是对已通过硬门的结构化复述，不是第二份独立观测。LIFT-01 输入桥、LIFT-05 导出语义桥和 LIFT-06 第二入口否定只有源码身份、marker 或局部调用计数支持，状态为 `ARGUED_NOT_MACHINE_CHECKED`。当前计数为 5 条机器关闭、3 条人工论证、0 条 `OPEN`；`path_obligations_open=0` 是这些状态硬约束通过后的结构常量。
 
 A_BASELINE snapshot 独立重算：
 
@@ -99,7 +99,7 @@ blue exact-count constraint = 287, domain [34,34]
 source exact-count constraint = 288, domain [18,18]
 ```
 
-终局 checker 杀死 6 个变体：context 错配、重开一条 lift 义务、删除目标 ExactlyOne、把 blue requirement 改为 33、把候选差分改成 0、把金丝雀历史判词改成 `INFEASIBLE`。
+终局 checker 杀死 6 个运行路径变体：context 错配、重开一条 lift 义务、删除目标 ExactlyOne、把 blue requirement 改为 33、把候选差分改成 0、把金丝雀历史判词改成 `INFEASIBLE`。[`15_test_receipt_contracts.py`](15_test_receipt_contracts.py) 另把 manifest 条数/ID/evidence 漂移、schema 收据变体、schema 字节篡改与 authority currency 固化为可重复运行的 tracked 负测。
 
 ## 6. 终点候选账
 
@@ -109,7 +109,7 @@ source exact-count constraint = 288, domain [18,18]
 
 ```text
 candidate = W0-ALIGNMENT | x=1,y=51,w=6,h=7
-state = UNKNOWN -> PROVED_EXCLUDED
+state = UNKNOWN -> PROVED_EXCLUDED_RESEARCH
 evidence = EXACT_SINGLETON_EXCLUSION_BY_COMPOSED_THEOREMS
 ΔM_bottom = -1
 global M_t = N_A_NOT_READY -> N_A_NOT_READY
@@ -140,7 +140,7 @@ INCONCLUSIVE
 | 把 current-model restriction 冒充完整游戏语义 | 未发生；Judgment 与终局文书反复限定 current pinned model |
 | 把单候选排除写成全局 `M_t` 或 bound 变化 | 未发生；全局 `M_t` 保持 `N_A_NOT_READY`，只记 `ΔM_bottom=-1` |
 | 用新证明倒签金丝雀 PASS | 未发生；历史判词保持 `INCONCLUSIVE` |
-| checker PASS 自动获得认证或发布权 | 未发生；八字段收据的 `granted_effects` 与 `non_implications` 分离 |
+| checker PASS 自动获得认证或发布权 | 未发生；schema-bound 收据把许可式 `granted_effects`、人读限界与 `non_implications` 分离 |
 
 ## 9. 保留风险与重开触发器
 

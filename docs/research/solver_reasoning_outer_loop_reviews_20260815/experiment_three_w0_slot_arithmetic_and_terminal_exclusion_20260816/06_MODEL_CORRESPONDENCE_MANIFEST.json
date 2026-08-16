@@ -17,9 +17,9 @@
     "proof_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/03_PROOF.md",
     "proof_sha256": "e511814998ceebe2867a5f2845a0a9ef6bfdd8a677e5da5964fe8f307a6f321d",
     "checker_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/04_check_w0_slot_arithmetic.py",
-    "checker_sha256": "23ad6392d689201439149b3f284882699e0ed2a084317d401d5b5c0a23948207",
+    "checker_sha256": "a533a13c84d03f377f1fa6cfdc240b705962915d4d434db63f71d0811a265643",
     "receipt_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/05_THEOREM_RECEIPT.json",
-    "receipt_sha256": "16ea187f91c32f84170e3054066bb710ea8905642c186e8beb3f4dc3700b05c4"
+    "receipt_sha256": "70ebc5eb20ea6a6185e2ec326f84272c744f06faded74d320c6f4487419035fe"
   },
   "shared_identity": {
     "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
@@ -61,6 +61,12 @@
       "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/phase_minus1_harness.py",
       "sha256": "81e8960738ba2c0b81f86cefb96bc87da9b2e2f81ac9073e2135192b7fb905c2",
       "size_bytes": 59180
+    },
+    {
+      "role": "receipt_schema",
+      "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/13_RECEIPT_ENVELOPE_SCHEMA_V1.json",
+      "sha256": "b6b5b4983dc8b9b493b75d6d1e695c509bb2d34e9a803d2841a3efb32181a478",
+      "size_bytes": 19067
     }
   ],
   "model_snapshot": {
@@ -155,6 +161,11 @@
       "path": "data/knowledge/claims.jsonl",
       "sha256": "6c3608b09d56e4a76de8a605bf30c71812b4152a0eb00c077e5abccd391f7483",
       "size_bytes": 239505
+    },
+    {
+      "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/13_RECEIPT_ENVELOPE_SCHEMA_V1.json",
+      "sha256": "b6b5b4983dc8b9b493b75d6d1e695c509bb2d34e9a803d2841a3efb32181a478",
+      "size_bytes": 19067
     }
   ],
   "canary_history": {

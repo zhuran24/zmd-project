@@ -23,7 +23,7 @@ Routable_{P5}(W0,R,b,r)
 \bigr).
 \]
 
-因此，固定 W0 布局中的该 6×7 矩形在研究候选账中由 `UNKNOWN` 转为 `PROVED_EXCLUDED`。
+因此，固定 W0 布局中的该 6×7 矩形在研究候选账中由 `UNKNOWN` 转为 `PROVED_EXCLUDED_RESEARCH`。
 
 ## 2. 前代定理一
 
@@ -84,7 +84,7 @@ f66d8a2c0334be01b419229da97d8c32fc19bfb4d5fa07e2cd6e370e40e79a28
 
 共享的 problem、objective、canonical rules、candidate pool、W0 layout 和 rectangle identity 均未变化。
 
-定理一原本对任意 binding selection 陈述条件式蕴含。把讨论域收窄到满足 `LegalW0Binding` 的 selection，不会使该蕴含失效。形式上是前提弱化的单调 transport：
+定理一原本对任意 binding selection 陈述条件式蕴含。把讨论域收窄到满足 `LegalW0Binding` 的 selection，不会使该蕴含失效。形式上是 context 增强（加入前提）下的单调 transport：
 
 \[
 \Gamma\vdash P\to Q
@@ -96,9 +96,9 @@ f66d8a2c0334be01b419229da97d8c32fc19bfb4d5fa07e2cd6e370e40e79a28
 
 ## 5. 路径级 lift 义务
 
-槽级算术要升到当前 fixed-layout binding+routing path，必须关闭 [`07_MODEL_CORRESPONDENCE.md`](07_MODEL_CORRESPONDENCE.md) 的八条义务。
+槽级算术要升到当前 fixed-layout binding+routing path，必须把 [`07_MODEL_CORRESPONDENCE.md`](07_MODEL_CORRESPONDENCE.md) 的八条义务全部入账，并明确区分机器关闭与人工论证。
 
-| ID | 关闭内容 | 证据类型 |
+| ID | 义务内容 | 证据类型 |
 |---|---|---|
 | `W0-LIFT-01` | W0 输入身份与定理二一致 | source hash + theorem checker |
 | `W0-LIFT-02` | 实际 binding model 构造 52 个 source slots | source AST/text audit + model snapshot |
@@ -108,6 +108,8 @@ f66d8a2c0334be01b419229da97d8c32fc19bfb4d5fa07e2cd6e370e40e79a28
 | `W0-LIFT-06` | port specs 与 strict rectangle 进入 exact routing path，无第二 binding bypass | Phase -1 fixed-layout harness audit + routing source identity |
 | `W0-LIFT-07` | 两定理 context transport 合法 | 两 checker PASS + shared identity check |
 | `W0-LIFT-08` | 研究排除不写 exact status/claim ledger | protected-surface hash check |
+
+当前画像为 LIFT-02/03/04/07/08 五条机器关闭，LIFT-01/05/06 三条显式人工论证且未被机器完整覆盖，零条 `OPEN`。人工论证不冒充机器证明，终局效力仍受本页与 Judgment 的 research-only 边界限制。
 
 A_BASELINE model snapshot 不是定理二的数学前提。它只独立确认当前 constructed CpModel 与抽象 contract 的对应：
 
@@ -130,7 +132,7 @@ A_BASELINE model snapshot 不是定理二的数学前提。它只独立确认当
 4. 这与反设的 `r` 矛盾。
 5. 因而对每个合法 binding `b`，都不存在 routing witness。
 6. 所以不存在任何合法 `(b,r)` 对。
-7. 八条路径义务把抽象 binding/routing 对应到当前 fixed-layout research path，故固定 W0 矩形在声明作用域内为 `PROVED_EXCLUDED_RESEARCH`。
+7. 路径账中五条机器义务已关闭，三条语义桥具有显式人工论证且零条义务 `OPEN`；在不把这三条论证冒充机器证明的前提下，固定 W0 矩形在声明的 research-only 作用域内记为 `PROVED_EXCLUDED_RESEARCH`。
 
 证毕。
 
@@ -153,7 +155,7 @@ M_t = N_A_NOT_READY
 | 字段 | 变化 |
 |---|---|
 | subject | `W0-ALIGNMENT | x=1,y=51,w=6,h=7` |
-| candidate state | `UNKNOWN → PROVED_EXCLUDED` |
+| candidate state | `UNKNOWN → PROVED_EXCLUDED_RESEARCH` |
 | evidence type | `EXACT_SINGLETON_EXCLUSION_BY_COMPOSED_THEOREMS` |
 | unresolved candidate mass without lower bound | `ΔM_bottom = -1` |
 | canonical global `M_t` | `N_A_NOT_READY → N_A_NOT_READY` |

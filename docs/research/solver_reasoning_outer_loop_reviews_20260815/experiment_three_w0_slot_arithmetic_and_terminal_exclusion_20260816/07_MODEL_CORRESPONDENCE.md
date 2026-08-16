@@ -81,7 +81,7 @@ Phase -1 固定布局路径先由 `_occupied_core` 把固定矩形的 42 个 cel
 Active_{041}(b)\Longrightarrow\neg\exists r\,Routable_{P5}(b,r).
 \]
 
-定理二的 context 保留定理一全部 problem、objective、layout、rectangle 和规则字节，只增加“`b` 满足 W0 binding contract”的前提。由前提弱化的单调性，定理一在增强 context 中仍成立。
+定理二的 context 保留定理一全部 problem、objective、layout、rectangle 和规则字节，只增加“`b` 满足 W0 binding contract”的前提。由 context 增强（加入前提）下的单调性，定理一在增强 context 中仍成立。
 
 该 transport 不是“两个 hash 看起来相似”；checker 必须验证：
 

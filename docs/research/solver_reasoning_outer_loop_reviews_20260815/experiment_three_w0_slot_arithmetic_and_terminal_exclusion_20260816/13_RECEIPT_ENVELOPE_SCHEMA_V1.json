@@ -10,6 +10,7 @@
     "verified_scope",
     "authority_basis",
     "granted_effects",
+    "granted_effects_scope",
     "non_implications",
     "contract_identity"
   ],
@@ -35,7 +36,48 @@
     },
     "verified_scope": {
       "type": "object",
-      "minProperties": 1
+      "minProperties": 1,
+      "properties": {
+        "completed": {"type": "boolean"},
+        "pinned_file_count": {"type": "integer"},
+        "slot_count": {"type": "integer"},
+        "boundary_slot_count": {"type": "integer"},
+        "protocol_core_slot_count": {"type": "integer"},
+        "slot_labels": {
+          "type": "array",
+          "items": {"type": "string"},
+          "uniqueItems": true
+        },
+        "blue_iron_ore_count": {"type": "integer"},
+        "source_ore_count": {"type": "integer"},
+        "required_total": {"type": "integer"},
+        "forced_unused_total": {"type": "integer"},
+        "target_must_be_active": {"type": "boolean"},
+        "proof_step_count": {"type": "integer"},
+        "negative_test_count": {"type": "integer"},
+        "coverage_mode": {"type": "string"},
+        "coverage_available": {"type": "boolean"},
+        "coverage_checked": {"type": "boolean"},
+        "coverage_is_a_proof_premise": {"type": "boolean"},
+        "theorem_one_pass": {"type": "boolean"},
+        "theorem_two_pass": {"type": "boolean"},
+        "theorem_identity_file_count": {"type": "integer"},
+        "path_obligation_count": {"type": "integer"},
+        "path_obligations_discharged": {"type": "integer"},
+        "path_obligations_argued_not_machine_checked": {"type": "integer"},
+        "path_obligations_open": {"type": "integer"},
+        "snapshot_slot_count": {"type": "integer"},
+        "snapshot_literal_count": {"type": "integer"},
+        "snapshot_blue_requirement": {"type": "integer"},
+        "snapshot_source_requirement": {"type": "integer"},
+        "candidate_state_before": {"type": "string"},
+        "candidate_state_after": {"type": "string"},
+        "delta_M_bottom": {"type": "integer"},
+        "global_M_t": {"type": "string"},
+        "canary_verdict_unchanged": {"type": "boolean"},
+        "protected_surfaces_unchanged": {"type": "boolean"}
+      },
+      "additionalProperties": false
     },
     "authority_basis": {
       "type": "object",
@@ -122,6 +164,10 @@
         "minLength": 1
       },
       "uniqueItems": true
+    },
+    "granted_effects_scope": {
+      "type": "string",
+      "const": "Permissions are confined to this pinned research dossier; they assert no completed ledger write and grant no exact-status, certification, production, release, supervisor, or publisher authority."
     },
     "blocking_scope": {
       "type": "array",
@@ -378,7 +424,8 @@
         "theorem_commit",
         "terminal_commit",
         "manifest_path",
-        "receipt_schema_path"
+        "receipt_schema_path",
+        "receipt_schema_sha256"
       ],
       "properties": {
         "protocol_freeze_commit": {
@@ -395,6 +442,11 @@
         },
         "receipt_schema_path": {
           "const": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/13_RECEIPT_ENVELOPE_SCHEMA_V1.json"
+        },
+        "receipt_schema_sha256": {
+          "type": "string",
+          "minLength": 64,
+          "maxLength": 64
         }
       },
       "additionalProperties": true
@@ -469,6 +521,12 @@
           },
           "blocking_scope": {
             "minItems": 1
+          },
+          "verified_scope": {
+            "required": ["completed"],
+            "properties": {
+              "completed": {"const": false}
+            }
           }
         }
       }
@@ -505,6 +563,40 @@
       "if": {
         "properties": {
           "outcome": {
+            "const": "W0_SLOT_ARITHMETIC_PASS"
+          }
+        },
+        "required": ["outcome"]
+      },
+      "then": {
+        "properties": {
+          "verified_scope": {
+            "required": [
+              "pinned_file_count",
+              "slot_count",
+              "boundary_slot_count",
+              "protocol_core_slot_count",
+              "slot_labels",
+              "blue_iron_ore_count",
+              "source_ore_count",
+              "required_total",
+              "forced_unused_total",
+              "target_must_be_active",
+              "proof_step_count",
+              "negative_test_count",
+              "coverage_mode",
+              "coverage_available",
+              "coverage_checked",
+              "coverage_is_a_proof_premise"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
             "const": "W0_TERMINAL_EXCLUSION_PASS"
           }
         },
@@ -520,11 +612,24 @@
         "properties": {
           "verified_scope": {
             "required": [
+              "theorem_one_pass",
+              "theorem_two_pass",
+              "theorem_identity_file_count",
               "path_obligation_count",
               "path_obligations_discharged",
               "path_obligations_argued_not_machine_checked",
               "path_obligations_open",
-              "candidate_state_after"
+              "snapshot_slot_count",
+              "snapshot_literal_count",
+              "snapshot_blue_requirement",
+              "snapshot_source_requirement",
+              "candidate_state_before",
+              "candidate_state_after",
+              "delta_M_bottom",
+              "global_M_t",
+              "canary_verdict_unchanged",
+              "negative_test_count",
+              "protected_surfaces_unchanged"
             ],
             "properties": {
               "path_obligation_count": {
@@ -545,7 +650,7 @@
               },
               "candidate_state_after": {
                 "type": "string",
-                "const": "PROVED_EXCLUDED"
+                "const": "PROVED_EXCLUDED_RESEARCH"
               }
             }
           }

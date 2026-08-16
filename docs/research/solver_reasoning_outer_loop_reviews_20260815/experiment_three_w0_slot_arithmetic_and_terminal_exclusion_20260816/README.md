@@ -4,7 +4,7 @@
 > **日期：** 2026-08-16
 > **性质：** `research_only / non_authorizing`
 > **定理二判词：** `PASS`
-> **固定候选判词：** `UNKNOWN → PROVED_EXCLUDED`
+> **固定候选判词：** `UNKNOWN → PROVED_EXCLUDED_RESEARCH`
 > **认证与发布效力：** 无。
 
 本目录承载实验一的第二条离线定理，以及它与第一条定理的组合终局主张。验收判据先于证明提交；两条独立 checker 均使用标准库并从钉死字节复算承重事实。
@@ -28,7 +28,7 @@
 | 范围、条件、结论、消费契约 | [`02_JUDGMENT.json`](02_JUDGMENT.json) |
 | 不依赖实验数据的证明 | [`03_PROOF.md`](03_PROOF.md) |
 | 纯标准库 checker | [`04_check_w0_slot_arithmetic.py`](04_check_w0_slot_arithmetic.py) |
-| 八字段 PASS 收据 | [`05_THEOREM_RECEIPT.json`](05_THEOREM_RECEIPT.json) |
+| schema-bound PASS 收据 | [`05_THEOREM_RECEIPT.json`](05_THEOREM_RECEIPT.json) |
 
 定理二 checker 独立重导：
 
@@ -51,9 +51,11 @@ forced unused total    0
 - [`08_TERMINAL_EXCLUSION_JUDGMENT.json`](08_TERMINAL_EXCLUSION_JUDGMENT.json)：固定候选的结构化终局 Judgment；
 - [`09_TERMINAL_EXCLUSION_PROOF.md`](09_TERMINAL_EXCLUSION_PROOF.md)：定理二 × 定理一的七步组合证明；
 - [`10_check_w0_terminal_exclusion.py`](10_check_w0_terminal_exclusion.py)：终局独立 checker；
-- [`11_TERMINAL_RECEIPT.json`](11_TERMINAL_RECEIPT.json)：八字段终局 PASS 收据；
+- [`11_TERMINAL_RECEIPT.json`](11_TERMINAL_RECEIPT.json)：schema-bound 终局 PASS 收据；
 - [`12_SELF_ASSESSMENT.md`](12_SELF_ASSESSMENT.md)：读者视角自评、什么不算、保留风险与重开触发器；
-- [`13_RECEIPT_ENVELOPE_SCHEMA_V1.json`](13_RECEIPT_ENVELOPE_SCHEMA_V1.json)：定理与终局两份八字段收据共用的机器 envelope schema。
+- [`13_RECEIPT_ENVELOPE_SCHEMA_V1.json`](13_RECEIPT_ENVELOPE_SCHEMA_V1.json)：定理与终局两份收据共用且被 checker 摘要钉死的机器 envelope schema；
+- [`14_BIRTH_CERTIFICATE_AND_CONDITIONAL_DEBTS.md`](14_BIRTH_CERTIFICATE_AND_CONDITIONAL_DEBTS.md)：出生证裁定、同批清偿状态与条件债触发器史料；
+- [`15_test_receipt_contracts.py`](15_test_receipt_contracts.py)：manifest、schema、authority currency 与 schema 字节篡改的持久负测。
 
 终局 checker 重新运行两条 theorem checker，核验 6 份 theorem 身份文件，并从 A_BASELINE JSON snapshot 重算：
 
@@ -66,7 +68,8 @@ target ExactlyOne constraint         273
 blue exact-count constraint          287 = 34
 source exact-count constraint        288 = 18
 path obligations                 5 machine-discharged + 3 argued; 0 open
-terminal negative tests          6 / 6 killed
+terminal path negative tests     6 / 6 killed
+persistent contract test file    15_test_receipt_contracts.py
 ```
 
 ## 终点候选账
@@ -77,7 +80,7 @@ terminal negative tests          6 / 6 killed
 
 ```text
 candidate = W0-ALIGNMENT | x=1,y=51,w=6,h=7
-state = UNKNOWN -> PROVED_EXCLUDED
+state = UNKNOWN -> PROVED_EXCLUDED_RESEARCH
 evidence_type = EXACT_SINGLETON_EXCLUSION_BY_COMPOSED_THEOREMS
 ΔM_bottom = -1
 global M_t = N_A_NOT_READY -> N_A_NOT_READY

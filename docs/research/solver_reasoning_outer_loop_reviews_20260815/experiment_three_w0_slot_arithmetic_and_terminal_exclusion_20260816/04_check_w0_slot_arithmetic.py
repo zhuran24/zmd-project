@@ -34,8 +34,13 @@ THEOREM_COMMIT = "c8b69a03c8fae76a0b7b0864aa5bbea34e02fa0e"
 TERMINAL_COMMIT = "da43392c18b725b007095ce31b8f9ba6461ea483"
 OWNER_AUTHORIZATION_SHA256 = "e73af26bcb2a2184e3f83c93d79bdbac0563890c2a78bc506b914d844d2401b7"
 ACCEPTANCE_SHA256 = "905e0b531c777c0b5216f306f77a0cacac57bd6b4a9b8d951d45fb31b574d5b2"
+RECEIPT_SCHEMA_SHA256 = "b6b5b4983dc8b9b493b75d6d1e695c509bb2d34e9a803d2841a3efb32181a478"
 THEOREM_PASS_OUTCOME = "W0_SLOT_ARITHMETIC_PASS"
 THEOREM_FAIL_OUTCOME = "W0_SLOT_ARITHMETIC_FAIL"
+GRANTED_EFFECTS_SCOPE = (
+    "Permissions are confined to this pinned research dossier; they assert no completed ledger "
+    "write and grant no exact-status, certification, production, release, supervisor, or publisher authority."
+)
 class CheckError(RuntimeError):
     """The theorem or one of its pinned premises failed closed."""
 
@@ -149,6 +154,7 @@ def validate_json_schema_subset(instance: Any, schema: Any, *, path: str = "$") 
         "const",
         "enum",
         "minLength",
+        "maxLength",
         "minItems",
         "maxItems",
         "uniqueItems",
@@ -176,6 +182,8 @@ def validate_json_schema_subset(instance: Any, schema: Any, *, path: str = "$") 
         require(instance in enum_values, f"schema enum mismatch at {path}")
     if isinstance(instance, str) and "minLength" in schema:
         require(len(instance) >= int(schema["minLength"]), f"schema minLength mismatch at {path}")
+    if isinstance(instance, str) and "maxLength" in schema:
+        require(len(instance) <= int(schema["maxLength"]), f"schema maxLength mismatch at {path}")
 
     if isinstance(instance, Mapping):
         required = schema.get("required", [])
@@ -220,6 +228,13 @@ def validate_json_schema_subset(instance: Any, schema: Any, *, path: str = "$") 
 
 
 def validate_receipt_against_schema(receipt: Mapping[str, Any]) -> None:
+    schema_sha = verify_receipt_schema_digest()
+    contract_identity = receipt.get("contract_identity")
+    require(isinstance(contract_identity, Mapping), "receipt contract_identity is not an object")
+    require(
+        contract_identity.get("receipt_schema_sha256") == schema_sha,
+        "receipt schema digest identity drift",
+    )
     schema = read_json(RECEIPT_SCHEMA_PATH, label="receipt envelope schema")
     require(isinstance(schema, Mapping), "receipt envelope schema root is not an object")
     validate_json_schema_subset(receipt, schema)
@@ -240,6 +255,12 @@ def sha256_file(path: Path) -> tuple[str, int]:
     except OSError as exc:
         raise CheckError(f"cannot hash {path}: {exc}") from exc
     return digest.hexdigest(), size
+
+
+def verify_receipt_schema_digest(path: Path = RECEIPT_SCHEMA_PATH) -> str:
+    actual_sha, _ = sha256_file(path)
+    require(actual_sha == RECEIPT_SCHEMA_SHA256, "receipt envelope schema SHA-256 drift")
+    return actual_sha
 
 
 def canonical_json_sha256(value: Any) -> str:
@@ -824,6 +845,7 @@ def base_contract_identity() -> dict[str, Any]:
         "terminal_commit": TERMINAL_COMMIT,
         "manifest_path": str(MANIFEST_PATH.relative_to(DEFAULT_REPO_ROOT)),
         "receipt_schema_path": str(RECEIPT_SCHEMA_PATH.relative_to(DEFAULT_REPO_ROOT)),
+        "receipt_schema_sha256": RECEIPT_SCHEMA_SHA256,
     }
 
 
@@ -888,6 +910,7 @@ def make_receipt(
             if pass_outcome
             else []
         ),
+        "granted_effects_scope": GRANTED_EFFECTS_SCOPE,
         "blocking_scope": [] if pass_outcome else ["terminal_exclusion_composition"],
         "non_implications": [
             "no_certification_effect",
@@ -1049,7 +1072,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             details=details,
         )
         exit_code = 0
-    except (CheckError, OSError, UnicodeError, KeyError, TypeError, ValueError, IndexError) as exc:
+    except Exception as exc:
         contract_identity = {
             "judgment_path": str(JUDGMENT_PATH.relative_to(DEFAULT_REPO_ROOT)),
             "checker_sha256": sha256_file(Path(__file__).resolve())[0],

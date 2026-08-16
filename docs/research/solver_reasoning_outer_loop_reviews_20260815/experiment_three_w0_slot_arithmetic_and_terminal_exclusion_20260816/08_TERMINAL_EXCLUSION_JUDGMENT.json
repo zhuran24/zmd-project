@@ -44,7 +44,7 @@
     {
       "id": "MODEL-CORRESPONDENCE",
       "manifest_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/06_MODEL_CORRESPONDENCE_MANIFEST.json",
-      "statement": "All eight path-level obligations linking the abstract binding contract to the fixed W0 binding/routing research path are discharged.",
+      "statement": "The path-level ledger records five machine-discharged obligations, three explicitly argued but not machine-checked obligations, and zero open obligations for the fixed W0 binding/routing research path.",
       "required_outcome": "PASS"
     }
   ],
@@ -85,11 +85,11 @@
       "step": 4,
       "from": "no legal (b,r) pair exists for the fixed layout and rectangle",
       "to": "fixed W0 rectangle is PROVED_EXCLUDED_RESEARCH",
-      "basis": "all declared model-correspondence obligations discharged"
+      "basis": "five machine obligations discharged, three semantic bridges explicitly argued but not machine-checked, and zero obligations open"
     }
   ],
   "conclusion": {
-    "candidate_state": "PROVED_EXCLUDED",
+    "candidate_state": "PROVED_EXCLUDED_RESEARCH",
     "scope": "fixed W0 layout and fixed 6x7 rectangle in the pinned current binding+routing research model",
     "definition": "There is no binding selection accepted by the pinned W0 binding contract that admits a canonical predicate-5 routing witness for the fixed rectangle."
   },
@@ -97,7 +97,7 @@
     "evidence_type": "EXACT_SINGLETON_EXCLUSION_BY_COMPOSED_THEOREMS",
     "candidate_key": "W0-ALIGNMENT|x1-y51-w6-h7",
     "candidate_state_before": "UNKNOWN",
-    "candidate_state_after": "PROVED_EXCLUDED",
+    "candidate_state_after": "PROVED_EXCLUDED_RESEARCH",
     "delta_M_bottom": -1,
     "global_M_t_before": "N_A_NOT_READY",
     "global_M_t_after": "N_A_NOT_READY",

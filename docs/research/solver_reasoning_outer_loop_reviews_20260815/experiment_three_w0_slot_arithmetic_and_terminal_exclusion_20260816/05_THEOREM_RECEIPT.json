@@ -24,7 +24,7 @@
     "protocol_freeze_commit": "a517fa7492a34f881f46b0a4cc9aae98bd6729ad",
     "base_contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded",
     "binding_contractHash": "1b9676a810521fb0b13828a4e2f9eb402c414c5bd82e98a9e365302a38c66c45",
-    "checker_sha256": "23ad6392d689201439149b3f284882699e0ed2a084317d401d5b5c0a23948207",
+    "checker_sha256": "a533a13c84d03f377f1fa6cfdc240b705962915d4d434db63f71d0811a265643",
     "contextHash": "f66d8a2c0334be01b419229da97d8c32fc19bfb4d5fa07e2cd6e370e40e79a28",
     "judgment_sha256": "91307f7a4ac97c2a73537a3515363a395b171441880134bb11eb3b26513b8454",
     "manifest_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/01_CONTEXT_MANIFEST.json",
@@ -33,6 +33,7 @@
     "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
     "proof_sha256": "e511814998ceebe2867a5f2845a0a9ef6bfdd8a677e5da5964fe8f307a6f321d",
     "receipt_schema_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/13_RECEIPT_ENVELOPE_SCHEMA_V1.json",
+    "receipt_schema_sha256": "b6b5b4983dc8b9b493b75d6d1e695c509bb2d34e9a803d2841a3efb32181a478",
     "relation": "FREEZE_PRECEDES_THEOREM",
     "terminal_commit": "da43392c18b725b007095ce31b8f9ba6461ea483",
     "theorem_commit": "c8b69a03c8fae76a0b7b0864aa5bbea34e02fa0e"
@@ -74,6 +75,7 @@
     "permits_offline_composition_with_J-W0-GHOST-FRONT-BOUNDARY-041-V1",
     "permits_research_candidate_exclusion_review_for_the_fixed_W0_rectangle"
   ],
+  "granted_effects_scope": "Permissions are confined to this pinned research dossier; they assert no completed ledger write and grant no exact-status, certification, production, release, supervisor, or publisher authority.",
   "negative_tests": [
     {
       "killed": true,
