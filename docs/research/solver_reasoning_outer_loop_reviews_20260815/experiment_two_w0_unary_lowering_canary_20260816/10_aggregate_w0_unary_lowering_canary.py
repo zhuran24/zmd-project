@@ -280,7 +280,7 @@ def aggregate(run_dir: Path, run_id: str) -> dict[str, Any]:
         ],
         "NO_LOCAL_EFFECT": ["blocks_claim_that_W0_theorem_was_consumed_effectively"],
         "INCONCLUSIVE": [
-            "records_local_structural_effect_without_terminal_promotion",
+            "records_compiled_domain_effect_without_runtime_family_promotion",
             "preserves_existing_research_authorization_without_promotion",
         ],
         "PROTOCOL_VIOLATION": ["blocks_all_canary_promotion"],
@@ -307,12 +307,21 @@ def aggregate(run_dir: Path, run_id: str) -> dict[str, Any]:
             "treatment_censor_status": c["censor_status"],
             "treatment_raw_outcome": c["outcome"],
             "treatment_effective_outcome": c_effective_outcome,
-            "local_structural_effect_observed": (
-                len(b_events) == event_cap
-                and len(c_events) == 0
-                and int(c_counters["binding_proposals"]) == 0
-                and int(c_counters["routing_prechecks"]) == 0
+            "compiled_domain_effect_observed": (
+                int(
+                    b["model_snapshot_S2"]["generic_output_envelope"][
+                        "target_effective_domain_cardinality"
+                    ]
+                )
+                == 3
+                and int(
+                    c["model_snapshot_S2"]["generic_output_envelope"][
+                        "target_effective_domain_cardinality"
+                    ]
+                )
+                == 1
             ),
+            "runtime_family_collapse_observed": False,
             "endpoint_sources_unchanged": not any(
                 "endpoint identity changed" in value for value in hard_failures
             ),
@@ -328,12 +337,21 @@ def aggregate(run_dir: Path, run_id: str) -> dict[str, Any]:
                 "baseline_target_events": len(a_events),
                 "observer_target_events": len(b_events),
                 "treatment_target_events": len(c_events),
-                "point_nogoods_avoided_vs_observer": int(b["counters"]["point_nogoods"])
+                "raw_point_nogood_count_difference_vs_observer": int(
+                    b["counters"]["point_nogoods"]
+                )
                 - int(c["counters"]["point_nogoods"]),
-                "point_nogood_literals_avoided_vs_observer": int(
+                "raw_point_nogood_literal_difference_vs_observer": int(
                     b["counters"]["point_nogood_literals"]
                 )
                 - int(c["counters"]["point_nogood_literals"]),
+                "causal_avoidance_claimed": False,
+                "runtime_family_coverage_observed": False,
+                "runtime_family_coverage_reason": (
+                    "C produced zero binding proposals before the frozen solve cap; "
+                    "zero target events is therefore not a proposal-matched family "
+                    "collapse observation."
+                ),
                 "selection_sequence_sha256_A": a["selection_sequence"]["sha256"],
                 "selection_sequence_sha256_B": b["selection_sequence"]["sha256"],
                 "S2_target_domain_cardinality_before": int(
