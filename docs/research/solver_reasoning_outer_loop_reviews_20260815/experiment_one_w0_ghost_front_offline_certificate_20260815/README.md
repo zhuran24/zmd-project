@@ -24,7 +24,7 @@
 
 ### 覆盖数据源身份
 
-以下 journal 是**非前提，仅事后覆盖数据源**。它们只用于复核冻结的 \(|\operatorname{Ext}(J)|\)，删除后 `--coverage off` 的数学证明仍独立成立：
+以下 journal 是**非前提,仅事后覆盖数据源**。它们只用于复核冻结的 \(|\operatorname{Ext}(J)|\)，删除后 `--coverage off` 的数学证明仍独立成立：
 
 ```text
 root:
