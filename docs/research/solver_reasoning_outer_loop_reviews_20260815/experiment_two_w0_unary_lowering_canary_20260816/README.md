@@ -1,6 +1,6 @@
 # 实验二：W0 一元 lowering 金丝雀
 
-> **当前状态：** `IMPLEMENTED_READY_FOR_FROZEN_RUN`
+> **当前状态：** `COMPLETE_INCONCLUSIVE`
 > **日期：** 2026-08-16
 > **权限边界：** research-only；只验证一条已证 W0 Judgment 的静态 lowering 与真实消费，不解冻通用 D3/D4，不改 `src/`、认证或发布面。
 
@@ -23,6 +23,14 @@
 - [`10_launch_w0_unary_lowering_canary.py`](10_launch_w0_unary_lowering_canary.py)：三臂发射、聚合和 evidence manifest；
 - [`11_IMPLEMENTATION_SELF_RECEIPT.md`](11_IMPLEMENTATION_SELF_RECEIPT.md)：边界、proto、灵敏度与开发跑自检。
 
+## 运行与终判
+
+- [`12_check_canary_run.py`](12_check_canary_run.py)：纯标准库 post-run 独立复算；
+- [`13_RUN_RECEIPT.json`](13_RUN_RECEIPT.json)：从 36 份 local-optional evidence 文件重算的 compact receipt；
+- [`14_FINAL_REPORT.md`](14_FINAL_REPORT.md)：四格账、热点迁移和决策边界。
+
+冻结三臂已经完成，run `EXIT_CODE=0 / .DONE`，独立 checker 为 `PASS`，科学判词为 `INCONCLUSIVE`：A/B 完全复现 1007 个 `Active_041` 循环且 observer 不扰动；一元 lowering 的 reject set 与 theorem trigger 精确等值；C 在第一次 binding solve 的 20 秒 cap 内没有 proposal 或终态，因此 `J-trigger=0` 不能升级成真实 family 消费成功。
+
 ## 当前非蕴含
 
-lowering 与测量器官已实现并通过开发自检，但正式 1007-event 三臂尚未运行，金丝雀还没有最终判词。
+本结果不解冻通用 D3/D4，不证明跨布局家族性、endpoint compute gain、上下界进展、production promotion、认证或发布面变化。

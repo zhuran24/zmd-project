@@ -1,0 +1,125 @@
+{
+  "arms": {
+    "A_BASELINE": {
+      "censorStatus": "EVENT_CAP_REACHED",
+      "event_projection": {
+        "active_target_port_spec_total": 1007,
+        "distinct_selection_count": 1007,
+        "ordered_selection_digest_hash": "33851502e1c74cfab135beb4551c61367048558612c17696ecdbe6ea1b54b6b9",
+        "precheck_distribution": {
+          "front_blocked": 1007
+        },
+        "record_count": 1007,
+        "signature_distribution": {
+          "0d8194771905654dc15db441534656a41e9ee54ed2ef36fc0104d89d828f659a": 3,
+          "4e4e78348b073f24e8898303544bd9b4a11e8fd322ff8ec1268750e898951b9d": 1001,
+          "b7a80464be5f967b6a86e4ada8051a616a22c8fb673fddc85921f7fd6b9f34f2": 3
+        },
+        "trigger_true_count": 1007
+      },
+      "feedback_projection": {
+        "applied_count": 1007,
+        "literal_count_distribution": {
+          "285": 1007
+        },
+        "literal_total": 286995,
+        "outcome_count": 1006
+      },
+      "finalReason": "frozen_event_cap",
+      "j_trigger_true_count": 1007,
+      "selection_count": 1007,
+      "terminalStatus": "UNKNOWN",
+      "wall_seconds": 342.69927676499356
+    },
+    "B_OBSERVER_NOOP": {
+      "censorStatus": "EVENT_CAP_REACHED",
+      "event_projection": {
+        "active_target_port_spec_total": 1007,
+        "distinct_selection_count": 1007,
+        "ordered_selection_digest_hash": "33851502e1c74cfab135beb4551c61367048558612c17696ecdbe6ea1b54b6b9",
+        "precheck_distribution": {
+          "front_blocked": 1007
+        },
+        "record_count": 1007,
+        "signature_distribution": {
+          "0d8194771905654dc15db441534656a41e9ee54ed2ef36fc0104d89d828f659a": 3,
+          "4e4e78348b073f24e8898303544bd9b4a11e8fd322ff8ec1268750e898951b9d": 1001,
+          "b7a80464be5f967b6a86e4ada8051a616a22c8fb673fddc85921f7fd6b9f34f2": 3
+        },
+        "trigger_true_count": 1007
+      },
+      "feedback_projection": {
+        "applied_count": 1007,
+        "literal_count_distribution": {
+          "285": 1007
+        },
+        "literal_total": 286995,
+        "outcome_count": 1006
+      },
+      "finalReason": "frozen_event_cap",
+      "j_trigger_true_count": 1007,
+      "selection_count": 1007,
+      "terminalStatus": "UNKNOWN",
+      "wall_seconds": 341.09847104904475
+    },
+    "C_UNARY_LOWERING": {
+      "censorStatus": "SOLVER_TIMEOUT_BINDING",
+      "event_projection": {
+        "active_target_port_spec_total": 0,
+        "distinct_selection_count": 0,
+        "ordered_selection_digest_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "precheck_distribution": {},
+        "record_count": 0,
+        "signature_distribution": {},
+        "trigger_true_count": 0
+      },
+      "feedback_projection": {
+        "applied_count": 0,
+        "literal_count_distribution": {},
+        "literal_total": 0,
+        "outcome_count": 0
+      },
+      "finalReason": "binding_solver_timeout",
+      "j_trigger_true_count": 0,
+      "selection_count": 0,
+      "terminalStatus": "UNKNOWN",
+      "wall_seconds": 21.20929820201127
+    }
+  },
+  "artifact_root": "/home/zhuran24/zmd-pj/.artifacts/solver_reasoning_outer_loop_w0_unary_canary_20260816",
+  "checker_sha256": "7af3b92198d19033320127ebefdc9a5d3aa29f82df86ea2a8a979aa29dc2838c",
+  "endpoint_sensitivity": {
+    "control_count": 11,
+    "status": "PASS"
+  },
+  "endpoint_transaction": {
+    "M_t": "N_A_NOT_READY",
+    "delta_L": "ZERO_BY_SCOPE",
+    "delta_M": "ZERO_BY_SCOPE",
+    "delta_U": "ZERO_BY_SCOPE",
+    "identity_unchanged": true
+  },
+  "evidence_manifest_sha256": "4cc99e4a505d6ea72f41c963c984b03f21d403c1b285730d7be0a3a113bd206a",
+  "implementation_code_head": "c2b240eb2e64014c3dabfb87ef5f68263063380f",
+  "interpretation": "The unary lowering is sound and the observer is inert, but the treatment was censored before its first binding proposal; zero observed J triggers is therefore not evidence of successful runtime family consumption.",
+  "lowering_contract": {
+    "added_constraint_count": 1,
+    "baseline_constraint_count": 289,
+    "baseline_variable_count": 17190,
+    "reject_set_relation": "EQUAL_TO_ACTIVE_041_TRIGGER_SET",
+    "status": "PASS",
+    "treatment_constraint_count": 290
+  },
+  "manifest_check": {
+    "file_count": 36,
+    "status": "PASS"
+  },
+  "observer_same_selection_sequence": true,
+  "protocol_freeze_commit": "0339c745b6c7f498fc989398de380a78578fc785",
+  "schema_version": "zmd_w0_unary_canary_independent_check_v1",
+  "standard_library_only": true,
+  "status": "PASS",
+  "tracked_manifest_sha256": "78066c20c6570572dbea7f8755cab7c6f94ceecc5aacceb6cb016fe2fa3459b3",
+  "verdict": "INCONCLUSIVE",
+  "wall_seconds": 0.05913277104264125
+}
