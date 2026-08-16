@@ -1,0 +1,50 @@
+{
+  "schema_version": "zmd_w0_unary_lowering_spec_v1",
+  "status": "IMPLEMENTATION_INPUT",
+  "research_only": true,
+  "protocol_freeze_commit": "57a17a7672cf879fc39e0e67a044590a85cb47a2",
+  "prelaunch_revision_commit": "988d1b787778c211f5e8b930b7f6cf093581aed8",
+  "judgment": {
+    "id": "J-W0-GHOST-FRONT-BOUNDARY-041-V1",
+    "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
+    "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27",
+    "contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded"
+  },
+  "scope": {
+    "layout_id": "W0-ALIGNMENT",
+    "normalized_layout_sha256": "d199c88e6d65582a269ec5142b33e3d9db9294eeb0b1a25f9ee05005ff1a26aa",
+    "ghost_rect": [1, 51, 6, 7],
+    "quantified_component": "binding_selection_only"
+  },
+  "trigger": {
+    "predicate": "active_output_slot",
+    "slot_id": "boundary_port_041:out:0",
+    "inactive_value": "__unused__",
+    "authorized_reject_values": [
+      "blue_iron_ore",
+      "source_ore"
+    ],
+    "expected_baseline_domain": [
+      "__unused__",
+      "blue_iron_ore",
+      "source_ore"
+    ]
+  },
+  "lowering": {
+    "kind": "force_generic_output_slot_value",
+    "slot_id": "boundary_port_041:out:0",
+    "forced_value": "__unused__",
+    "expected_new_constraint_count": 1,
+    "expected_new_constraint_type": "linear_unit_equality",
+    "expected_coefficient": 1,
+    "expected_domain": [1, 1]
+  },
+  "non_implications": [
+    "no_generic_family_compiler",
+    "no_cross_layout_claim",
+    "no_rectangle_level_exclusion",
+    "no_bound_update",
+    "no_certification_or_publication_effect",
+    "no_production_default"
+  ]
+}
