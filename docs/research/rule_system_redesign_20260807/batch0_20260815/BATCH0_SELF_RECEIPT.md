@@ -1,10 +1,10 @@
 # 规则系统重设计线批 0 自量凭据
 
-> 凭据版本：v1，2026-08-15
+> 凭据版本：v1.1，2026-08-15（批尾放行补记）
 >
 > 模板：`EIGHT_STEP_TEMPLATE_V1.md`
 >
-> 当前结论：`PRE_TAIL_PASS_WITH_CONDITIONALS`。五件主交付物、三条定向验收和本凭据均已完成；批尾共享文档三检尚未运行，必须按协调闸停在“批尾待命”，收到 owner 的“放行”后才能执行。
+> 当前结论：`FINAL_PASS_WITH_OPEN_DEBTS`。五件主交付物、三条定向验收、本凭据与批尾共享文档三检均已完成；owner 已放行，三检全绿，未产生共享生成页差异。开放欠账与“需要你拍板的八件”仍按各自状态保留，不因本批通过而关闭。
 >
 > 权威边界：本凭据是批 0 的自量与执行留痕，不是 owner 对“需要你拍板的八件”的逐项批准，不改 §0b，不建立 `rules/derived/`，不授权新增代码埋点，不执行 freeze-ritual。
 
@@ -14,13 +14,13 @@
 |---|---|
 | 批 id / 标题 | `RULE-SYSTEM-REDESIGN-BATCH0-20260815` / 工作规则上线 |
 | 日期 / 分支 / 起始基线 | 2026-08-15 / `main` / 开工时工作区已有并行线提交，批 0 首个提交父链包含 `fd276c2` |
-| 当前已提交 HEAD | `7a4df51811f74c2cb8722cd0204d39a6eb13256d` |
+| 批尾放行时共享 HEAD | `8375484`（含另一线最新提交）；批 0 三笔既有提交为 `80b5364` / `7a4df51` / `5b93084` |
 | 变更 pathspec | 仅 `docs/research/rule_system_redesign_20260807/batch0_20260815/*.md`，未触及 `rules/`、`src/`、`scripts/`、`data/` |
 | 一句话目标 | 把三条消费侧闸、八步模板、席位清单、外发登记和开放欠账做成可执行文书，并用本批与三份历史文书实测它们 |
 | Plan / 立论 | 本对话执行席，按权威批表拆件并落文 |
 | refute | 同一执行席的第二遍反向审查，加历史随机回测；不是人员独立席，故不把本凭据升级成科学结论的独立核签 |
 | 拒真 | 以“合法背景引用、合法检索使用、合法研究级参数使用”三类正例检查三闸是否过严；默认分席推荐仍待 owner 裁 |
-| 收批 | 本对话执行席仅作批 0 自量；最终协调收批仍在批尾三检与 owner 放行之后 |
+| 收批 | 本对话执行席完成批 0 自量；owner 已放行，批尾三检全绿，最终 verdict 见本文件末尾 |
 | owner 已给事实题答案 | 允许本线立项并按缺省批序先做批 0；立项不等于八件逐项批准 |
 | 本批明确不做 | 不改既有权威正文；不建 `rules/derived/`；不改代码和数据；不跑 freeze-ritual；不跑全树冻结门禁；不提前运行批尾三检 |
 | 本批证据等级上限 | docs 侧工作规则与历史证据；代码现态只读核验；不产生新的游戏事实或 certified 数学结论 |
@@ -375,24 +375,25 @@ algorithm     = Python random.Random(seed); G1/G2/G3 各抽一份；路径不得
 | ② 本批按新模板出完整凭据 | 本文件逐步覆盖 0 至 7、三闸、席位、方向暴露与失败后果 | PASS，仍受“非独立人员核签”边界约束 |
 | ③ 随机三份历史承重文书，三闸各至少命中一次 | 固定 seed；命中 2/1/3；G2 经一次修闸后同样本重测 | PASS |
 
-## D. 提交与待运行门
+## D. 提交与批尾三检
 
 已完成提交：
 
 1. `80b53640d6b7cfac6c4df71cf140c5407e8c3d6f`，五件主交付物。
 2. `7a4df51811f74c2cb8722cd0204d39a6eb13256d`，G2 历史兼容修闸。
+3. `5b93084ba0336b32465926e082948f6b6c81c710`，本批完整自量凭据。
 
-本凭据写成后将用精确 pathspec 单独提交。
+owner 放行时，另一线最新既有提交为 `8375484`。开跑前 `git status --short --untracked-files=no` 无 tracked 改动，`docs/CURRENT.md`、`docs/CATALOG.md` 等共享生成页无他人未提交差异，满足串行开跑条件。
 
-尚未运行，且不得提前运行：
+批尾三检命令与结果：
 
-```text
-.venv/bin/python devtools/docctl.py intake --changed
-.venv/bin/python devtools/docctl.py doctor
-.venv/bin/python devtools/check_knowledge_docs.py
-```
+| 检查 | 结果 |
+|---|---|
+| `.venv/bin/python devtools/docctl.py intake --changed` | exit 0；成功识别当前比较修订与 changed paths |
+| `.venv/bin/python devtools/docctl.py doctor` | `PASS: document system is self-consistent and compatibility projections are fresh` |
+| `.venv/bin/python devtools/check_knowledge_docs.py` | `PASS: knowledge spine is internally consistent and generated projections are fresh` |
 
-运行前必须先查 `git status`，若 `docs/CURRENT.md`、`docs/CATALOG.md` 等共享生成页有他人未提交改动，则停止并报告，不覆盖。
+三检后复查：tracked diff、staged diff、共享生成页 diff 均为空。`8375484` 所代表的另一线既有输入已在当前 HEAD 中，未出现需要覆盖或拆分的并发脏改动；本轮知识重建未产生额外生成页提交。当前这份批尾补记只按自身精确 pathspec 提交。
 
 ## E. 收批表
 
@@ -414,8 +415,8 @@ algorithm     = Python random.Random(seed); G1/G2/G3 各抽一份；路径不得
 - `NOT_ESTABLISHED`：全仓所有历史文书均过三闸、拒真席人员独立性、C-08 两个开放 call site、埋点库存与代码实施。
 - conditional：任何依赖 `OD-B0-C08-03`、`OD-B0-C08-04`、`OD-B0-INST-01`、`OD-B0-CHAIN-769` 的强结论。
 
-本批可合法发布的最高结论：批 0 五件工作文书已建立，三条自量验收在批尾三检前通过。
+本批可合法发布的最高结论：批 0 五件工作文书已建立，三条自量验收通过，批尾文档治理三检全绿；开放欠账继续按阻断范围约束后续强结论。
 
-不得发布的更强表述：八件已获批准、三闸已机器化、全仓历史已清洗、C-08 已全闭、规则闭包已饱和、批尾文档治理门已通过。
+不得发布的更强表述：八件已获批准、三闸已机器化、全仓历史已清洗、C-08 已全闭、规则闭包已饱和。
 
-收批席当前 verdict：`PRE_TAIL_PASS_WITH_CONDITIONALS`。批尾三检放行并通过后，才能更新为最终批 0 验收结论。
+收批席最终 verdict：`FINAL_PASS_WITH_OPEN_DEBTS`。
