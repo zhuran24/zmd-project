@@ -19,7 +19,7 @@
     "checker_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/04_check_w0_slot_arithmetic.py",
     "checker_sha256": "4a863834f5990d6cab4366f4b27fd32d0676c1563dd7c98859b1357b20a5cf6d",
     "receipt_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/05_THEOREM_RECEIPT.json",
-    "receipt_sha256": "20024a13dd7f74697f493b22d7525f7c818c0a29796cd911cc26c3deecc31949"
+    "receipt_sha256": "19efd8cc23a200eddd120fb7c0cba7633fc7f2c51ac7fb9fe54894e5dbaf4251"
   },
   "shared_identity": {
     "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",

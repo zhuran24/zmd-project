@@ -21,19 +21,24 @@
   },
   "contract_identity": {
     "file_hashes": {
-      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/06_MODEL_CORRESPONDENCE_MANIFEST.json": "243e2cb9d0f82620a1180bedd3a158a5e273ffa377fd4ad99997310f0cd1b0d2",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/06_MODEL_CORRESPONDENCE_MANIFEST.json": "0dc191d457dce0593a1ab6292a5c54e0b81b807db329c84683da5b3b6ba51a88",
       "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/07_MODEL_CORRESPONDENCE.md": "bfd4757df9c97cfcf846e50ce95aeda8d4dcab4af1f4a6e2755a08caa9247c58",
       "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/08_TERMINAL_EXCLUSION_JUDGMENT.json": "6210f921553a00f9001013ae9ad421ec59a78d2448557ebf4ade321bb97d89d9",
       "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/09_TERMINAL_EXCLUSION_PROOF.md": "476f538b479325a697ad40b7e7f9e7362c71f1e82a60e6972a782f7e8b006929",
       "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/10_check_w0_terminal_exclusion.py": "afa7ee66e90877fcf33dea4ed61eb1c7e64626466aa2397d24e66e8f8a7b48a6"
     },
+    "manifest_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/01_CONTEXT_MANIFEST.json",
     "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27",
     "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
+    "protocol_freeze_commit": "a517fa7492a34f881f46b0a4cc9aae98bd6729ad",
+    "receipt_schema_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/13_RECEIPT_ENVELOPE_SCHEMA_V1.json",
+    "terminal_commit": "da43392c18b725b007095ce31b8f9ba6461ea483",
+    "theorem_commit": "c8b69a03c8fae76a0b7b0864aa5bbea34e02fa0e",
     "theorem_one_contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded",
     "theorem_one_judgment_sha256": "853c7aa9df3939e8eea97afebbf34c4c453a8e641d186ec75af82af291d0ebc3",
     "theorem_two_contextHash": "f66d8a2c0334be01b419229da97d8c32fc19bfb4d5fa07e2cd6e370e40e79a28",
     "theorem_two_judgment_sha256": "91307f7a4ac97c2a73537a3515363a395b171441880134bb11eb3b26513b8454",
-    "theorem_two_receipt_sha256": "20024a13dd7f74697f493b22d7525f7c818c0a29796cd911cc26c3deecc31949"
+    "theorem_two_receipt_sha256": "19efd8cc23a200eddd120fb7c0cba7633fc7f2c51ac7fb9fe54894e5dbaf4251"
   },
   "endpoint_transaction": {
     "candidate_key": "W0-ALIGNMENT|x1-y51-w6-h7",

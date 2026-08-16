@@ -52,7 +52,8 @@ forced unused total    0
 - [`09_TERMINAL_EXCLUSION_PROOF.md`](09_TERMINAL_EXCLUSION_PROOF.md)：定理二 × 定理一的七步组合证明；
 - [`10_check_w0_terminal_exclusion.py`](10_check_w0_terminal_exclusion.py)：终局独立 checker；
 - [`11_TERMINAL_RECEIPT.json`](11_TERMINAL_RECEIPT.json)：八字段终局 PASS 收据；
-- [`12_SELF_ASSESSMENT.md`](12_SELF_ASSESSMENT.md)：读者视角自评、什么不算、保留风险与重开触发器。
+- [`12_SELF_ASSESSMENT.md`](12_SELF_ASSESSMENT.md)：读者视角自评、什么不算、保留风险与重开触发器；
+- [`13_RECEIPT_ENVELOPE_SCHEMA_V1.json`](13_RECEIPT_ENVELOPE_SCHEMA_V1.json)：定理与终局两份八字段收据共用的机器 envelope schema。
 
 终局 checker 重新运行两条 theorem checker，核验 6 份 theorem 身份文件，并从 A_BASELINE JSON snapshot 重算：
 

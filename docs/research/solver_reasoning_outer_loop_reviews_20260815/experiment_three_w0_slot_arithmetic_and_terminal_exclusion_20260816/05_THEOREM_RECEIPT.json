@@ -9,18 +9,21 @@
     ]
   },
   "contract_identity": {
-    "acceptance_freeze_commit": "a517fa7492a34f881f46b0a4cc9aae98bd6729ad",
+    "protocol_freeze_commit": "a517fa7492a34f881f46b0a4cc9aae98bd6729ad",
     "base_contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded",
     "binding_contractHash": "1b9676a810521fb0b13828a4e2f9eb402c414c5bd82e98a9e365302a38c66c45",
     "checker_sha256": "4a863834f5990d6cab4366f4b27fd32d0676c1563dd7c98859b1357b20a5cf6d",
     "contextHash": "f66d8a2c0334be01b419229da97d8c32fc19bfb4d5fa07e2cd6e370e40e79a28",
     "judgment_sha256": "91307f7a4ac97c2a73537a3515363a395b171441880134bb11eb3b26513b8454",
+    "manifest_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/01_CONTEXT_MANIFEST.json",
     "manifest_sha256": "af1bd09349b3031c9817b6bc628eb6d01e7097d3cac2c0b5ea55200ebf2115e1",
     "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27",
     "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
     "proof_sha256": "e511814998ceebe2867a5f2845a0a9ef6bfdd8a677e5da5964fe8f307a6f321d",
+    "receipt_schema_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/13_RECEIPT_ENVELOPE_SCHEMA_V1.json",
     "relation": "FREEZE_PRECEDES_THEOREM",
-    "theorem_introduction_commit": "c8b69a03c8fae76a0b7b0864aa5bbea34e02fa0e"
+    "terminal_commit": "da43392c18b725b007095ce31b8f9ba6461ea483",
+    "theorem_commit": "c8b69a03c8fae76a0b7b0864aa5bbea34e02fa0e"
   },
   "coverage": {
     "commodity_counts": {
