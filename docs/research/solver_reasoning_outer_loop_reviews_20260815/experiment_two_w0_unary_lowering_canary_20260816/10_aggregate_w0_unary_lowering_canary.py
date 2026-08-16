@@ -140,14 +140,25 @@ def aggregate(run_dir: Path, run_id: str) -> dict[str, Any]:
     b, b_events = arm_data["B_OBSERVER_NOOP"]
     c, c_events = arm_data["C_UNARY_LOWERING"]
     event_cap = int(manifest["run_parameters"]["baseline_target_complete_events"])
+    c_effective_outcome = (
+        "CENSORED"
+        if c["terminal_status"] == "UNKNOWN" and c["censor_status"] == "CENSORED"
+        else str(c["outcome"])
+    )
 
     hard_failures: list[str] = []
     if a["outcome"] != "ARM_TRACE_COMPLETE":
         hard_failures.append(f"A outcome={a['outcome']}")
     if b["outcome"] != "ARM_TRACE_COMPLETE":
         hard_failures.append(f"B outcome={b['outcome']}")
-    if c["outcome"] != "ARM_TERMINAL_INFEASIBLE":
-        hard_failures.append(f"C outcome={c['outcome']}")
+    if c_effective_outcome not in {
+        "ARM_TERMINAL_INFEASIBLE",
+        "CENSORED",
+        "NO_EFFECT",
+    }:
+        hard_failures.append(
+            f"C effective_outcome={c_effective_outcome}; raw_outcome={c['outcome']}"
+        )
 
     if len(a_events) != event_cap:
         hard_failures.append(f"A event_count={len(a_events)}")
@@ -185,8 +196,14 @@ def aggregate(run_dir: Path, run_id: str) -> dict[str, Any]:
         hard_failures.append("C reached routing precheck")
     if int(c_counters["point_nogoods"]) != 0:
         hard_failures.append("C emitted point nogood")
-    if c["terminal_status"] != "INFEASIBLE":
+    if c_effective_outcome == "ARM_TERMINAL_INFEASIBLE" and c["terminal_status"] != "INFEASIBLE":
         hard_failures.append(f"C terminal_status={c['terminal_status']}")
+    if c_effective_outcome == "CENSORED" and not (
+        c["terminal_status"] == "UNKNOWN" and c["censor_status"] == "CENSORED"
+    ):
+        hard_failures.append(
+            "C censored outcome lacks UNKNOWN/CENSORED terminal identity"
+        )
 
     for arm, receipt in (("A", a), ("B", b), ("C", c)):
         transaction = receipt["endpoint_transaction"]
@@ -195,23 +212,58 @@ def aggregate(run_dir: Path, run_id: str) -> dict[str, Any]:
         if receipt["output_surfaces_before"] != receipt["output_surfaces_after"]:
             hard_failures.append(f"{arm} public output surface changed")
 
-    endpoint_class, cost_account = classify_endpoint_resource(
-        baseline_wall=wall(a),
-        observer_wall=wall(b),
-        treatment_wall=wall(c),
-        observer_limit=float(manifest["pre_registered_predictions"]["observation_noop_wall_overhead_max_ratio"]),
-        treatment_limit=float(manifest["pre_registered_predictions"]["treatment_common_milestone_wall_regression_max_ratio"]),
-        treatment_stronger_terminal=c["terminal_status"] == "INFEASIBLE",
-    )
+    if c_effective_outcome == "CENSORED":
+        endpoint_class = "NOT_COMPARABLE_CENSORED"
+        baseline_wall = wall(a)
+        observer_wall = wall(b)
+        treatment_wall = wall(c)
+        cost_account = {
+            "baseline_wall_seconds": baseline_wall,
+            "observer_wall_seconds": observer_wall,
+            "treatment_wall_seconds": treatment_wall,
+            "observer_over_baseline_ratio": (
+                observer_wall / baseline_wall if baseline_wall > 0 else None
+            ),
+            "treatment_over_observer_ratio": (
+                treatment_wall / observer_wall if observer_wall > 0 else None
+            ),
+            "comparison_status": "NOT_COMPARABLE_CENSORED",
+            "reason": (
+                "C reached no binding proposal but did not prove INFEASIBLE within "
+                "the frozen 20-second solve budget; raw costs are reported without "
+                "a compute-gain verdict."
+            ),
+        }
+    else:
+        endpoint_class, cost_account = classify_endpoint_resource(
+            baseline_wall=wall(a),
+            observer_wall=wall(b),
+            treatment_wall=wall(c),
+            observer_limit=float(
+                manifest["pre_registered_predictions"][
+                    "observation_noop_wall_overhead_max_ratio"
+                ]
+            ),
+            treatment_limit=float(
+                manifest["pre_registered_predictions"][
+                    "treatment_common_milestone_wall_regression_max_ratio"
+                ]
+            ),
+            treatment_stronger_terminal=c["terminal_status"] == "INFEASIBLE",
+        )
 
     if any(receipt["outcome"] in {"PROTOCOL_VIOLATION", "FAIL_SOUNDNESS"} for receipt in (a, b, c)):
         final_outcome = "PROTOCOL_VIOLATION"
-    elif a["outcome"] == "CENSORED" or b["outcome"] == "CENSORED":
-        final_outcome = "INCONCLUSIVE"
-    elif c["outcome"] == "NO_EFFECT":
-        final_outcome = "NO_LOCAL_EFFECT"
     elif hard_failures:
         final_outcome = "PROTOCOL_VIOLATION"
+    elif (
+        a["outcome"] == "CENSORED"
+        or b["outcome"] == "CENSORED"
+        or c_effective_outcome == "CENSORED"
+    ):
+        final_outcome = "INCONCLUSIVE"
+    elif c_effective_outcome == "NO_EFFECT":
+        final_outcome = "NO_LOCAL_EFFECT"
     elif endpoint_class == "LOCAL_GAIN_COST_REGRESSION":
         final_outcome = "LOCAL_EFFECT_WITH_COST_REGRESSION"
     else:
@@ -227,7 +279,10 @@ def aggregate(run_dir: Path, run_id: str) -> dict[str, Any]:
             "blocks_expansion_until_cost_migration_is_resolved",
         ],
         "NO_LOCAL_EFFECT": ["blocks_claim_that_W0_theorem_was_consumed_effectively"],
-        "INCONCLUSIVE": ["preserves_existing_research_authorization_without_promotion"],
+        "INCONCLUSIVE": [
+            "records_local_structural_effect_without_terminal_promotion",
+            "preserves_existing_research_authorization_without_promotion",
+        ],
         "PROTOCOL_VIOLATION": ["blocks_all_canary_promotion"],
     }[final_outcome]
 
@@ -249,6 +304,15 @@ def aggregate(run_dir: Path, run_id: str) -> dict[str, Any]:
             "treatment_event_count": len(c_events),
             "A_B_semantic_sequence_equal": semantic_sequence_equal,
             "treatment_terminal_status": c["terminal_status"],
+            "treatment_censor_status": c["censor_status"],
+            "treatment_raw_outcome": c["outcome"],
+            "treatment_effective_outcome": c_effective_outcome,
+            "local_structural_effect_observed": (
+                len(b_events) == event_cap
+                and len(c_events) == 0
+                and int(c_counters["binding_proposals"]) == 0
+                and int(c_counters["routing_prechecks"]) == 0
+            ),
             "endpoint_sources_unchanged": not any(
                 "endpoint identity changed" in value for value in hard_failures
             ),
@@ -272,9 +336,37 @@ def aggregate(run_dir: Path, run_id: str) -> dict[str, Any]:
                 - int(c["counters"]["point_nogood_literals"]),
                 "selection_sequence_sha256_A": a["selection_sequence"]["sha256"],
                 "selection_sequence_sha256_B": b["selection_sequence"]["sha256"],
+                "S2_target_domain_cardinality_before": int(
+                    b["model_snapshot_S2"]["generic_output_envelope"][
+                        "target_effective_domain_cardinality"
+                    ]
+                ),
+                "S2_target_domain_cardinality_after": int(
+                    c["model_snapshot_S2"]["generic_output_envelope"][
+                        "target_effective_domain_cardinality"
+                    ]
+                ),
+                "S2_target_active_values_before": int(
+                    b["model_snapshot_S2"]["generic_output_envelope"][
+                        "target_effective_active_value_count"
+                    ]
+                ),
+                "S2_target_active_values_after": int(
+                    c["model_snapshot_S2"]["generic_output_envelope"][
+                        "target_effective_active_value_count"
+                    ]
+                ),
+                "terminal_effect_status": (
+                    "CENSORED"
+                    if c_effective_outcome == "CENSORED"
+                    else c["terminal_status"]
+                ),
             },
             "endpoint_transaction": c["endpoint_transaction"],
-            "arm_outcomes": {arm: arm_data[arm][0]["outcome"] for arm in ARMS},
+            "arm_outcomes": {
+                **{arm: arm_data[arm][0]["outcome"] for arm in ARMS},
+                "C_UNARY_LOWERING_EFFECTIVE": c_effective_outcome,
+            },
             "arm_terminal_statuses": {
                 arm: arm_data[arm][0]["terminal_status"] for arm in ARMS
             },

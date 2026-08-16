@@ -510,7 +510,12 @@ def run_arm(
     elif arm == "B_OBSERVER_NOOP":
         arm_outcome = "ARM_TRACE_COMPLETE" if terminal_status == "EVENT_CAP_REACHED" else "CENSORED"
     else:
-        arm_outcome = "ARM_TERMINAL_INFEASIBLE" if terminal_status == "INFEASIBLE" else "NO_EFFECT"
+        if terminal_status == "INFEASIBLE":
+            arm_outcome = "ARM_TERMINAL_INFEASIBLE"
+        elif censor_status == "CENSORED" or terminal_status == "UNKNOWN":
+            arm_outcome = "CENSORED"
+        else:
+            arm_outcome = "NO_EFFECT"
 
     receipt = make_receipt(
         result_kind="canary_arm_run",

@@ -155,22 +155,31 @@ def update_top_level_evidence_manifest(
     implementation_head: str,
 ) -> Path:
     path = artifact_root / "EVIDENCE_MANIFEST.json"
+    existing_runs: list[dict[str, Any]] = []
+    if path.is_file():
+        existing = read_json(path)
+        if existing.get("schema_version") == "zmd_w0_unary_canary_local_evidence_manifest_v1":
+            existing_runs = [
+                dict(record)
+                for record in existing.get("runs", [])
+                if str(record.get("run_id")) != run_id
+            ]
+    current_run = {
+        "run_id": run_id,
+        "run_dir": str(run_dir.relative_to(ROOT)),
+        "final_outcome": final_outcome,
+        "implementation_head": implementation_head,
+        "files": tree_manifest(run_dir),
+    }
     payload = {
         "schema_version": "zmd_w0_unary_canary_local_evidence_manifest_v1",
         "research_only": True,
         "artifact_root": str(artifact_root.relative_to(ROOT)),
         "protocol_freeze_commit": "57a17a7672cf879fc39e0e67a044590a85cb47a2",
         "prelaunch_revision_commit": "988d1b787778c211f5e8b930b7f6cf093581aed8",
-        "implementation_head": implementation_head,
+        "latest_implementation_head": implementation_head,
         "latest_run_id": run_id,
-        "runs": [
-            {
-                "run_id": run_id,
-                "run_dir": str(run_dir.relative_to(ROOT)),
-                "final_outcome": final_outcome,
-                "files": tree_manifest(run_dir),
-            }
-        ],
+        "runs": [*existing_runs, current_run],
     }
     write_json_atomic(path, payload)
     return path
@@ -241,8 +250,16 @@ def worker(run_dir: Path, run_id: str) -> int:
             timeout_seconds=arm_timeout[arm],
         )
         arm_exit_codes[arm] = rc
-        if rc != 0:
-            raise SuiteError(f"arm {arm} returned rc={rc}; later arms were not launched")
+        receipt_path = run_dir / arm / "arm_receipt.json"
+        require(receipt_path.is_file(), f"arm {arm} receipt is missing")
+        arm_receipt = read_json(receipt_path)
+        validate_receipt(arm_receipt)
+        require(
+            arm_receipt["result_kind"] == "canary_arm_run",
+            f"arm {arm} emitted wrong receipt kind",
+        )
+        if rc not in {0, 2}:
+            raise SuiteError(f"arm {arm} returned apparatus rc={rc}")
 
     aggregate_path = run_dir / "CANARY_AGGREGATE.json"
     aggregate_rc = run_command(
