@@ -4,7 +4,7 @@
 >
 > 模板：`docs/research/rule_system_redesign_20260807/batch0_20260815/EIGHT_STEP_TEMPLATE_V1.md`
 >
-> 当前结论：`PRE_TAIL_PASS_WITH_OPEN_DEBTS`。四件工具交付与五条定向验收均已完成，主工具批已精确提交；批尾共享文档三检尚未运行，必须按协调闸停在“批尾待命”，收到 owner 的“放行”后才能执行。
+> 当前结论：`FINAL_PASS_WITH_OPEN_DEBTS`。四件工具交付、五条定向验收与批尾共享文档三检均已完成；owner 已放行，三检全绿。开放欠账与其余七件待裁事项继续保留，不因本批通过而关闭。
 >
 > 权威边界：owner 已在 `OWNER_DECISION_SUMMARY.md` 头部 2026-08-15 裁定追记（提交 `3d34687cd244e82fda41ff18b88171e7b45298b1`）接受八件之第 4 件，故本批获准建立 `rules/derived/` 非冻结派生层。该裁定只批准目录形态；第 1 件③、第 2、3、5、6、7、8 件仍逐项待裁。本凭据不把 L2 条目、生成视图或工具输出升级为 canonical、owner authority 或 certified 结论。
 
@@ -15,11 +15,13 @@
 | 批 id / 标题 | `RULE-SYSTEM-REDESIGN-BATCH1-20260815` / 非冻结派生层与六视图工具批 |
 | 日期 / 分支 / 起始基线 | 2026-08-15 / `main` / `3d34687cd244e82fda41ff18b88171e7b45298b1` |
 | 当前主工具提交 | `368c3602b09b445de5a9bc2d241a68c40d6c9dff` |
+| 当前凭据提交 | `9b5128d39880969128b56b3216353ad7d2518b2c` |
+| 批尾共享基线 | `fd86ef8`；包含 owner 授权后的 `rules/derived/` 治理 carve-out、code-assets census 与硬编码根计数归一 |
 | 一句话目标 | 把编号索引、上游差集、L2 派生条目与 L3 检索视图变成 tracked、可冷启动重算、可故意打红的开发侧工具链 |
 | Plan / 立论 | 本对话执行席；按 `FINAL_DESIGN.md` §6 批 1 行逐项施工 |
 | refute | 同一执行席的第二遍反向审查 + 21 个专门测试；不冒充人员独立核签 |
 | 拒真 | 重点查四类误伤：`UNREVIEWED` 漂移是否被过度阻断、差集是否被误读成不可表达、视图是否被当权威、schema 是否偷钉 canonical SHA |
-| 收批 | 本对话执行席仅作批 1 自量；最终收批仍在 owner 放行后的批尾三检之后 |
+| 收批 | 本对话执行席完成批 1 自量；owner 已放行，批尾三检全绿，最终 verdict 见本文件末尾 |
 | owner 已裁事项 | 第 4 件 `rules/derived/` 非冻结子目录＝接受 |
 | owner 仍待裁事项 | 第 1 件③、2、3、5、6、7、8；本批不得顺手扩权 |
 | 本批明确不做 | 不改 `rules/` 既有文件；不改 `src/`、`scripts/`、`data/`；不碰 freeze-ritual；不钉 canonical schema SHA；不接 CI 硬门；不实施运行时埋点；不修改 §0b 正文 |
@@ -397,23 +399,30 @@ issue = value_at_derivation 2/1 does not match current source 1/1
 
 诚实边界：该替代证明独立 Python 冷进程、cwd、环境与 hash seed 不影响当前算法；没有证明跨两台物理主机或不同 Python 实现的兼容性。
 
-## D. 提交与待运行门
+## D. 提交与批尾三检
 
 已完成精确 pathspec 提交：
 
 1. `368c3602b09b445de5a9bc2d241a68c40d6c9dff`：工具、测试、`rules/derived/` 立架、V1–V6、批 0 现行门牌同步和 `OD-B1-PACKAGE-01`。
+2. `9b5128d39880969128b56b3216353ad7d2518b2c`：本凭据、批 0 现行总括句同步和 V2 自指 currency 修正；历史 `BATCH0_SELF_RECEIPT.md` 未修改。
 
-本凭据与三份批 0 现行工作文书的总括句同步，将以四个明确 pathspec 另行提交；历史 `BATCH0_SELF_RECEIPT.md` 不在提交中。
+待命期间共享 HEAD 推进到 `fd86ef8`。该提交在 owner 显式授权下完成 `rules/derived/` 治理 carve-out，并把 code-assets census 与一处硬编码根计数对账归一；其中两个本批 `devtools` 新文件已由共享治理提交登记，本批没有重复修改 census。
 
-批尾三检尚未运行，且不得提前运行：
+三检开跑前实测：tracked diff、staged diff与共享生成页 diff 均为空。另有一份属于并行实验线的 untracked 文书：
 
-```text
-.venv/bin/python devtools/docctl.py intake --changed
-.venv/bin/python devtools/docctl.py doctor
-.venv/bin/python devtools/check_knowledge_docs.py
-```
+`docs/research/solver_reasoning_outer_loop_reviews_20260815/REASONING_OUTER_LOOP_ARCHITECTURE_SKETCH.md`
 
-开跑前必须先检查共享生成页是否有他人未提交改动；发现则停下报告，不覆盖。
+本批未读取、修改、暂存或提交它。
+
+批尾三检命令与结果：
+
+| 命令 | 结果 |
+|---|---|
+| `.venv/bin/python devtools/docctl.py intake --changed` | 两次均 exit 0；首次 `changed paths: 11`，写入本收口补记后最终复跑为 `changed paths: 12`；均识别到上述并行线文书的 `DOC-EVENT-DOCUMENT-CREATED`，给出其所需 render/doctor 操作卡，但没有 BLOCK |
+| `.venv/bin/python devtools/docctl.py doctor` | `PASS: document system is self-consistent and compatibility projections are fresh` |
+| `.venv/bin/python devtools/check_knowledge_docs.py` | `PASS: knowledge spine is internally consistent and generated projections are fresh` |
+
+三检未产生共享生成页差异。本次收口只修改本凭据，并将用该单一路径作精确 pathspec 提交；不夹带并行线的 untracked 文书或其他工作区内容。
 
 ## E. 收批表
 
@@ -435,8 +444,8 @@ issue = value_at_derivation 2/1 does not match current source 1/1
 - `NOT_ESTABLISHED`：跨物理机器确定性、六谓词映射、孔审计机器台账、标准 package 自动接线、全仓能力表达力。
 - conditional：任何引用 `OD-B1-PACKAGE-01` 关闭前的“标准外审包自动含派生层”声明。
 
-本批可合法发布的最高结论：批 1 的四件开发工具已落 tracked 真址，五条验收在批尾三检前全部通过。
+本批可合法发布的最高结论：批 1 的四件开发工具已落 tracked 真址，五条验收与批尾三检全部通过；开放欠账和其余七件待裁事项仍按原状态保留。
 
-不得发布的更强表述：其余七件已批准、canonical schema 已钉、L2 条目已获 owner/canonical 权威、六视图可作承重前提、全部能力已审、代码消费者已穷尽、规则闭包已饱和、标准外审包已自动接线、批尾文档治理门已通过。
+不得发布的更强表述：其余七件已批准、canonical schema 已钉、L2 条目已获 owner/canonical 权威、六视图可作承重前提、全部能力已审、代码消费者已穷尽、规则闭包已饱和、标准外审包已自动接线。
 
-收批席当前 verdict：`PRE_TAIL_PASS_WITH_OPEN_DEBTS`。owner 放行且批尾三检全绿后，才能更新为最终批 1 验收结论。
+收批席最终 verdict：`FINAL_PASS_WITH_OPEN_DEBTS`。
