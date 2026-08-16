@@ -287,7 +287,7 @@ def run_arm(
     spec = load_lowering_spec(SPEC_PATH)
     verify_runtime_and_inputs(manifest)
     base, r3 = load_phase_modules()
-    base._enforce_environment()
+    base._assert_clean_environment()
 
     before_endpoint = capture_identity_snapshot(
         ROOT,
