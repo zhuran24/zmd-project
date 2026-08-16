@@ -754,6 +754,33 @@
       }
     },
     {
+      "id": "DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-V2-20260815-96E16B17C8",
+      "path": ".artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815",
+      "entry_file": null,
+      "title": "推理外环 Phase -1 v2 高预算本机运行证据包（2026-08-15）",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-15",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Local-optional evidence registered through docctl; semantic outcome is pending closure review.",
+      "workflow": {
+        "opened_at": "2026-08-15",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815/phase-minus1-v2-r1-20260815/CORPUS_ADMISSION.json",
+        "manifest_sha256": "e52ffb6ed56ac0f042f68773679e0f3bccd05091abbaf16764cb9fe713ec5bbc",
+        "recovery_instructions": "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1_v2/README.md",
+        "source_locator": "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1_v2/corpus_manifest_v2.json"
+      }
+    },
+    {
       "id": "DOSSIER-SOLVER-RETHINK-20260808-47BE0A3C3A",
       "path": ".artifacts/solver_rethink_20260808",
       "entry_file": ".artifacts/solver_rethink_20260808/DESIGN_DOC_v2.md",

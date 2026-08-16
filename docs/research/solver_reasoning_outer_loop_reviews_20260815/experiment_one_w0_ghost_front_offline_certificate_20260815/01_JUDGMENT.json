@@ -107,8 +107,18 @@
     "expected_direction": "E",
     "semantic_fact_count": 6,
     "trigger_atom_count": 1,
-    "proof_step_count": 6,
+    "proof_step_count": 5,
+    "proof_step_count_source": "02_PROOF.md section 5 numbered list",
     "experiment_data_is_a_premise": false
+  },
+  "coverage": {
+    "status": "POST_HOC_OBSERVATIONAL_ONLY",
+    "identity": "非前提,仅事后覆盖数据源",
+    "is_proof_premise": false,
+    "snapshot_contract": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_one_w0_ghost_front_offline_certificate_20260815/04_COVERAGE_SNAPSHOT.json",
+    "source_root": ".artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815/phase-minus1-v2-r1-20260815/deep/DEEP-W0-ALIGNMENT",
+    "event_journal_path": ".artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815/phase-minus1-v2-r1-20260815/deep/DEEP-W0-ALIGNMENT/events.jsonl",
+    "feedback_journal_path": ".artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815/phase-minus1-v2-r1-20260815/deep/DEEP-W0-ALIGNMENT/feedback.jsonl"
   },
   "redundant_sibling_witness": {
     "status": "independently_derivable_but_not_needed_by_primary_certificate",

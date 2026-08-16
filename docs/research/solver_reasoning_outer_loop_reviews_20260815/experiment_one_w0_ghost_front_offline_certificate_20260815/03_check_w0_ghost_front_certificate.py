@@ -14,6 +14,7 @@ import argparse
 import hashlib
 import json
 import math
+import re
 import sys
 import time
 from collections import Counter
@@ -87,6 +88,39 @@ def _read_jsonl_prefix(path: Path, record_count: int) -> tuple[list[dict[str, An
     return records, bytes(raw)
 
 
+def _count_numbered_proof_steps(path: Path) -> int:
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except (OSError, UnicodeError) as exc:
+        raise CheckError(f"cannot read proof Markdown {path}: {exc}") from exc
+
+    heading = "## 5. 反证"
+    try:
+        start = lines.index(heading)
+    except ValueError as exc:
+        raise CheckError(f"proof Markdown lacks exact heading {heading!r}: {path}") from exc
+
+    section: list[str] = []
+    for line in lines[start + 1 :]:
+        if line.startswith("## "):
+            break
+        section.append(line)
+
+    numbered_steps: list[int] = []
+    for line in section:
+        match = re.match(r"^(\d+)\.\s+", line)
+        if match is not None:
+            numbered_steps.append(int(match.group(1)))
+
+    _require(numbered_steps, "proof contradiction section has no numbered steps")
+    expected = list(range(1, len(numbered_steps) + 1))
+    _require(
+        numbered_steps == expected,
+        f"proof contradiction steps are not contiguous from 1: {numbered_steps}",
+    )
+    return len(numbered_steps)
+
+
 def _cell(value: Any, *, label: str) -> tuple[int, int]:
     _require(
         isinstance(value, (list, tuple)) and len(value) == 2,
@@ -145,6 +179,7 @@ def _verify_semantic_proof(
     paths: dict[str, Path],
     problem_hash: str,
     judgment: dict[str, Any],
+    proof_path: Path,
 ) -> tuple[dict[str, Any], dict[str, float]]:
     started = time.perf_counter()
     rules = _load_json(paths["canonical_rules"])
@@ -255,6 +290,11 @@ def _verify_semantic_proof(
     )
 
     proof_object = judgment["proof_object"]
+    proof_step_count = _count_numbered_proof_steps(proof_path)
+    _require(
+        proof_step_count == int(proof_object["proof_step_count"]),
+        "Judgment proof_step_count does not match 02_PROOF.md section 5",
+    )
     target_id = str(proof_object["target_instance_id"])
     _require(target_id in solution, f"target instance is absent: {target_id}")
     selected = solution[target_id]
@@ -322,11 +362,41 @@ def _verify_semantic_proof(
         "conclusion": "TRIGGERED_BINDING_SELECTION_UNROUTABLE",
         "semantic_fact_count": int(proof_object["semantic_fact_count"]),
         "trigger_atom_count": int(proof_object["trigger_atom_count"]),
-        "proof_step_count": int(proof_object["proof_step_count"]),
+        "proof_step_count": proof_step_count,
+        "proof_step_count_source": "02_PROOF.md section 5 numbered list",
         "experiment_data_used_as_proof_premise": False,
         "redundant_sibling_front_cell": list(sibling_front),
     }
     return proof_receipt, {"proof_seconds": time.perf_counter() - started}
+
+
+def _verify_coverage_contract(
+    judgment: dict[str, Any],
+    snapshot: dict[str, Any],
+) -> None:
+    coverage = judgment["coverage"]
+    _require(
+        coverage["status"] == "POST_HOC_OBSERVATIONAL_ONLY",
+        "Judgment coverage status is not post-hoc observational",
+    )
+    _require(
+        coverage["identity"] == "非前提,仅事后覆盖数据源",
+        "Judgment coverage identity drift",
+    )
+    _require(coverage["is_proof_premise"] is False, "coverage became a proof premise")
+    _require(snapshot["proof_dependency"] is False, "coverage snapshot became a proof premise")
+    _require(
+        coverage["source_root"] == snapshot["source_run"]["root"],
+        "coverage source-root path drift",
+    )
+    _require(
+        coverage["event_journal_path"] == snapshot["event_prefix"]["path"],
+        "coverage event-journal path drift",
+    )
+    _require(
+        coverage["feedback_journal_path"] == snapshot["feedback_prefix"]["path"],
+        "coverage feedback-journal path drift",
+    )
 
 
 def _matching_example(
@@ -349,6 +419,9 @@ def _matching_example(
 def _verify_coverage(
     repo_root: Path,
     snapshot: dict[str, Any],
+    *,
+    proof_step_count: int,
+    trigger_atom_count: int,
 ) -> tuple[dict[str, Any], dict[str, float]]:
     started = time.perf_counter()
     event_spec = snapshot["event_prefix"]
@@ -510,12 +583,17 @@ def _verify_coverage(
         )
 
     ext_count = primary_count
-    proof_steps = 6
-    trigger_atoms = 1
+    proof_steps = int(proof_step_count)
+    trigger_atoms = int(trigger_atom_count)
+    _require(proof_steps > 0, "proof-step count must be positive")
+    _require(trigger_atoms > 0, "trigger-atom count must be positive")
     certificate_atoms = proof_steps + trigger_atoms
     point_literals = int(feedback_spec["point_nogood_literal_count_total"])
     coverage_receipt = {
         "snapshot_id": snapshot["snapshot_id"],
+        "coverage_source_identity": "非前提,仅事后覆盖数据源",
+        "event_journal_path": event_spec["path"],
+        "feedback_journal_path": feedback_spec["path"],
         "event_prefix_sha256": event_spec["prefix_sha256"],
         "feedback_prefix_sha256": feedback_spec["prefix_sha256"],
         "observed_distinct_binding_selection_count": len(set(selection_digests)),
@@ -567,19 +645,35 @@ def main(argv: list[str] | None = None) -> int:
             "unexpected Judgment schema",
         )
         paths, problem_hash, identity_timing = _verify_problem_identity(repo_root, judgment)
-        proof_receipt, proof_timing = _verify_semantic_proof(paths, problem_hash, judgment)
+        proof_receipt, proof_timing = _verify_semantic_proof(
+            paths,
+            problem_hash,
+            judgment,
+            experiment_dir / "02_PROOF.md",
+        )
 
         coverage_receipt: dict[str, Any] | None = None
         coverage_timing = {"coverage_seconds": 0.0}
         snapshot = _load_json(experiment_dir / "04_COVERAGE_SNAPSHOT.json")
+        _verify_coverage_contract(judgment, snapshot)
         event_path = repo_root / snapshot["event_prefix"]["path"]
         feedback_path = repo_root / snapshot["feedback_prefix"]["path"]
         coverage_available = event_path.is_file() and feedback_path.is_file()
         if args.coverage == "required":
             _require(coverage_available, "frozen coverage journals are unavailable")
-            coverage_receipt, coverage_timing = _verify_coverage(repo_root, snapshot)
+            coverage_receipt, coverage_timing = _verify_coverage(
+                repo_root,
+                snapshot,
+                proof_step_count=int(proof_receipt["proof_step_count"]),
+                trigger_atom_count=int(proof_receipt["trigger_atom_count"]),
+            )
         elif args.coverage == "auto" and coverage_available:
-            coverage_receipt, coverage_timing = _verify_coverage(repo_root, snapshot)
+            coverage_receipt, coverage_timing = _verify_coverage(
+                repo_root,
+                snapshot,
+                proof_step_count=int(proof_receipt["proof_step_count"]),
+                trigger_atom_count=int(proof_receipt["trigger_atom_count"]),
+            )
 
         receipt = {
             "schema_version": "zmd_offline_semantic_certificate_check_receipt_v1",

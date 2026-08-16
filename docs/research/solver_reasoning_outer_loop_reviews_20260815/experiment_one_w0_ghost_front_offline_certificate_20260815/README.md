@@ -22,6 +22,23 @@
 - [`05_CHECK_RECEIPT.json`](05_CHECK_RECEIPT.json)：独立 checker PASS 与七次成本基准；
 - [`06_SELF_ASSESSMENT.md`](06_SELF_ASSESSMENT.md)：按冻结“看到什么才算数／什么不算”逐条判读。
 
+### 覆盖数据源身份
+
+以下 journal 是**非前提，仅事后覆盖数据源**。它们只用于复核冻结的 \(|\operatorname{Ext}(J)|\)，删除后 `--coverage off` 的数学证明仍独立成立：
+
+```text
+root:
+.artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815/phase-minus1-v2-r1-20260815/deep/DEEP-W0-ALIGNMENT
+
+event journal:
+.artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815/phase-minus1-v2-r1-20260815/deep/DEEP-W0-ALIGNMENT/events.jsonl
+
+feedback journal:
+.artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815/phase-minus1-v2-r1-20260815/deep/DEEP-W0-ALIGNMENT/feedback.jsonl
+```
+
+精确前缀行数、字节数和 SHA-256 由 [`04_COVERAGE_SNAPSHOT.json`](04_COVERAGE_SNAPSHOT.json) 冻结。
+
 ## 定理核
 
 固定 candidate pool 与布局给出：
@@ -49,13 +66,13 @@ fixed strict-empty rectangle = [1,6] × [51,57]
 .venv/bin/python docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_one_w0_ghost_front_offline_certificate_20260815/03_check_w0_ghost_front_certificate.py --coverage off
 ```
 
-checker 要求本机保留 Judgment 中钉死的两份 W0 local-optional 输入，以及 `--coverage required` 模式下的 v2 journal 前缀。缺失时 fail-closed；不会改用 harness 重新生成或猜测输入。
+checker 要求本机保留 Judgment 中钉死的两份 W0 local-optional 输入，以及 `--coverage required` 模式下上述两份精确 journal 前缀。缺失时 fail-closed；不会改用 harness 重新生成或猜测输入。
 
 ## 判词
 
 - 短语义证明存在性：**固定 W0 上局部阳性**；
 - 冻结观测覆盖：**1007/1007** 个不同 binding selection；
-- 独立 checker：**PASS**，证明加覆盖七次新进程外部墙钟中位数 **0.643410 s**；
+- 独立 checker：**PASS**，`--coverage required` 与 `--coverage off` 双模式均通过；证明加覆盖七次新进程外部墙钟中位数 **0.646711 s**；
 - 真实系统消费、lowering、holdout 家族性、低余量梯度与全局 lex 影响：**全部未测试**。
 
 因此本目录把经验高频障碍推进成了一个窄范围条件式定理，但不把第一层局部阳性升级为推理外环整体有效。

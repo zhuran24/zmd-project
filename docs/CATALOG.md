@@ -1,7 +1,7 @@
 # 项目知识目录
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:93ec9fbb2276ca124bcd29718efc2e04d3e246a3756c6ed0e11f23898bbdc7f8`。
+> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:7b327875a4e293dbdcefc36230ed833098341caeb25b667bf5e471acfce2d2da`。
 
 这里登记稳定 ID。claim 回答“我们知道什么”，decision 回答“谁改变了什么规则或门”，
 dossier 回答“原始证据包在哪里”，validity profile 回答“旧结论为何失效、怎样换代、能否复用”。目录不把历史材料自动升级为当前权威。
@@ -10,8 +10,8 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 - claim：`92` 条，其中当前 / 开放 `73` 条，带 validity profile `32` 条。
 - decision：`8` 条。
-- backfill review：`53` 条，其中 current `43` 条。
-- dossier：`208` 个，其中 tracked `152` 个、local optional `56` 个、当前证据标记 `16` 个、人工精编 `29` 个。
+- backfill review：`54` 条，其中 current `44` 条。
+- dossier：`209` 个，其中 tracked `152` 个、local optional `57` 个、当前证据标记 `16` 个、人工精编 `30` 个。
 - `docs/research/` 的一级目录和一级 Markdown 已全登记；`.artifacts/` 只登记一级目录，其路径允许在轻量 checkout 中缺失。
 
 ## Claim 索引
@@ -136,8 +136,8 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 - `rules-semantics`：12 个 dossier。
 - `industrial-delivery`：8 个 dossier。
 - `p2-throughput`：8 个 dossier。
-- `reasoning-system`：4 个 dossier。
-- `solver-architecture`：4 个 dossier。
+- `reasoning-system`：5 个 dossier。
+- `solver-architecture`：5 个 dossier。
 - `documentation-governance`：3 个 dossier。
 - `separation-telemetry`：2 个 dossier。
 - `solver-rethink`：2 个 dossier。
@@ -151,6 +151,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 |---|---|---|---|---|
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99` | [推理外环三轮外部评审归档（2026-08-15）](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)<br>三份外部评审正文逐字归档；同一 dossier 另登记仅在声明条件下可消费的 non_authorizing 设计约束与可证伪架构假设，二者均不构成立项或现行实现义务。 | — | [`DECISION-OUTER-LOOP-REVIEW-REGISTRATION-20260815`](#decision-outer-loop-review-registration-20260815) | [`REVIEW-20260815-SOLVER-REASONING-OUTER-LOOP-GPT-PRO`](#review-20260815-solver-reasoning-outer-loop-gpt-pro) |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-20260815-7FA2A0E225` | [推理外环 Phase -1 本机运行证据包（2026-08-15）](<../.artifacts/solver_reasoning_outer_loop_phase_minus1_20260815/phase-minus1-r1-20260815/BATCH_SUMMARY.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | — | — | [`REVIEW-20260815-PHASE-MINUS1-LOCAL-EVIDENCE-MECHANICAL-AUDIT`](#review-20260815-phase-minus1-local-evidence-mechanical-audit) |
+| `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-V2-20260815-96E16B17C8` | 推理外环 Phase -1 v2 高预算本机运行证据包（2026-08-15）<br><code>.artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815</code><br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | — | — | [`REVIEW-20260815-PHASE-MINUS1-V2-LOCAL-EVIDENCE-REGISTRATION`](#review-20260815-phase-minus1-v2-local-evidence-registration) |
 | `DOSSIER-SOLVER-RETHINK-20260808-47BE0A3C3A` | [推理外环 solver-rethink 设计与对抗收敛包](<../.artifacts/solver_rethink_20260808/DESIGN_DOC_v2.md>)<br>本机可选的推理外环、CP-SAT 内层、完备性口径、能力缺口与对抗收敛设计包；未立线、未获 production authority。 | [`CLAIM-BUDGET-EXHAUSTION-IS-UNKNOWN-NOT-FIXED-POINT`](#claim-budget-exhaustion-is-unknown-not-fixed-point)<br>[`CLAIM-FORWARD-COMPLETENESS-RELATIVE-TO-DECLARED-FRAGMENT`](#claim-forward-completeness-relative-to-declared-fragment)<br>[`CLAIM-GENERIC-CP-SAT-SEPARATION-IMPOSSIBILITY-OPEN`](#claim-generic-cp-sat-separation-impossibility-open)<br>[`CLAIM-SOLVER-RETHINK-G03-LACKS-SEPARATION-ORACLE`](#claim-solver-rethink-g03-lacks-separation-oracle)<br>[`CLAIM-SOLVER-RETHINK-PHASE1-OMITS-CONSTRUCTION-HALF`](#claim-solver-rethink-phase1-omits-construction-half) | — | [`REVIEW-20260811-SOLVER-RETHINK-BATCH3`](#review-20260811-solver-rethink-batch3) |
 | `DOSSIER-CANONICAL-BATCH-20260808-B2462129DF` | [BLOCKERS / 待定点（canonical 08-08 改稿草案 · v3）](<research/canonical_batch_20260808/BLOCKERS.md>)<br>--- | [`CLAIM-ADMISSION-PORT-OMISSION-SCOPE-RESTRICTION`](#claim-admission-port-omission-scope-restriction)<br>[`CLAIM-BINDING-SLOT-SINGLE-COMMODITY-SCOPE`](#claim-binding-slot-single-commodity-scope)<br>[`CLAIM-BOUNDARY-LOADER-EXCLUDED-FROZEN-INSTANCE`](#claim-boundary-loader-excluded-frozen-instance)<br>[`CLAIM-DESTINATION-FRONT-EXCLUSIVITY-TERMINAL-SENSITIVE`](#claim-destination-front-exclusivity-terminal-sensitive)<br>[`CLAIM-MIXED-TERMINAL-TRIPARTITION`](#claim-mixed-terminal-tripartition)<br>[`CLAIM-MODEL-STRICTER-FACES-SCOPE-DEBT`](#claim-model-stricter-faces-scope-debt)<br>[`CLAIM-PROVED-PREMODEL-EXCLUSION-PERMITS-MODEL-OMISSION`](#claim-proved-premodel-exclusion-permits-model-omission)<br>[`CLAIM-RATE-LEMMA-CONDITIONAL-PROFILE`](#claim-rate-lemma-conditional-profile)<br>[`CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT`](#claim-routing-reverification-extra-strict)<br>[`CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT-BOUNDARY`](#claim-routing-reverification-extra-strict-boundary)<br>[`CLAIM-SOURCE-FRONT-EXCLUSIVITY-OVERSTRICT`](#claim-source-front-exclusivity-overstrict)<br>[`CLAIM-STORAGE-BOX-ACCEPTANCE-INVARIANT-FROZEN`](#claim-storage-box-acceptance-invariant-frozen) | — | [`REVIEW-20260811-CANONICAL-BATCH-20260808`](#review-20260811-canonical-batch-20260808) |
 | `DOSSIER-RULE-SYSTEM-REDESIGN-20260807-9B23FA19D2` | [规则形态与推理流程重设计](<research/rule_system_redesign_20260807/FIRST_PRINCIPLES_DESIGN.md>)<br>低余量发现法、条件塌点、pairwise closure 反例、双向保真与 derived-rule 工作流的现行研究文书。 | [`CLAIM-BUDGET-EXHAUSTION-IS-UNKNOWN-NOT-FIXED-POINT`](#claim-budget-exhaustion-is-unknown-not-fixed-point)<br>[`CLAIM-DISCOVERY-AND-VALIDATION-SEPARATE-OBLIGATIONS`](#claim-discovery-and-validation-separate-obligations)<br>[`CLAIM-GENERIC-CP-SAT-SEPARATION-IMPOSSIBILITY-OPEN`](#claim-generic-cp-sat-separation-impossibility-open)<br>[`CLAIM-P2-FIVE-FULL-ONE-HALF-CONDITIONAL`](#claim-p2-five-full-one-half-conditional)<br>[`CLAIM-PAIRWISE-CLOSURE-INCOMPLETE`](#claim-pairwise-closure-incomplete)<br>[`CLAIM-PROVED-PREMODEL-EXCLUSION-PERMITS-MODEL-OMISSION`](#claim-proved-premodel-exclusion-permits-model-omission)<br>[`CLAIM-ZERO-SLACK-AUDIT-METHOD`](#claim-zero-slack-audit-method) | — | [`REVIEW-20260811-RULE-SYSTEM-REDESIGN`](#review-20260811-rule-system-redesign)<br>[`REVIEW-20260811-RULE-SYSTEM-REDESIGN-BATCH3`](#review-20260811-rule-system-redesign-batch3) |
@@ -199,6 +200,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 |---|---|---|---|---|---|
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99` | `2026-08-15` | [推理外环三轮外部评审归档（2026-08-15）](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)<br>三份外部评审正文逐字归档；同一 dossier 另登记仅在声明条件下可消费的 non_authorizing 设计约束与可证伪架构假设，二者均不构成立项或现行实现义务。 | `reasoning-system`, `solver-architecture`, `solver-rethink` | `active` | `historical` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-20260815-7FA2A0E225` | `2026-08-15` | [推理外环 Phase -1 本机运行证据包（2026-08-15）](<../.artifacts/solver_reasoning_outer_loop_phase_minus1_20260815/phase-minus1-r1-20260815/BATCH_SUMMARY.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
+| `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-V2-20260815-96E16B17C8` | `2026-08-15` | 推理外环 Phase -1 v2 高预算本机运行证据包（2026-08-15）<br><code>.artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815</code><br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-SOLVER-RETHINK-20260808-47BE0A3C3A` | `2026-08-08` | [推理外环 solver-rethink 设计与对抗收敛包](<../.artifacts/solver_rethink_20260808/DESIGN_DOC_v2.md>)<br>本机可选的推理外环、CP-SAT 内层、完备性口径、能力缺口与对抗收敛设计包；未立线、未获 production authority。 | `reasoning-system`, `solver-architecture`, `solver-rethink` | `historical` | `historical` |
 | `DOSSIER-RULE-SYSTEM-REDESIGN-20260807-9B23FA19D2` | `2026-08-07` | [规则形态与推理流程重设计](<research/rule_system_redesign_20260807/FIRST_PRINCIPLES_DESIGN.md>)<br>低余量发现法、条件塌点、pairwise closure 反例、双向保真与 derived-rule 工作流的现行研究文书。 | `reasoning-system`, `rules-semantics`, `separation-method` | `active` | `current_evidence` |
 | `DOSSIER-P2-0-SPECIALIZED-20260807-C40266E222` | `2026-08-07` | [P2.0 特化推理与反例重判](<research/p2_0_specialized_20260807/README.md>)<br>台间占空自由度、作物必分支、steel_block 反例和阶梯见证的主 dossier。 | `p2-throughput` | `active` | `current_evidence` |
@@ -391,6 +393,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-20260815-7FA2A0E225` | `2026-08-15` | [推理外环 Phase -1 本机运行证据包（2026-08-15）](<../.artifacts/solver_reasoning_outer_loop_phase_minus1_20260815/phase-minus1-r1-20260815/BATCH_SUMMARY.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
+| `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-V2-20260815-96E16B17C8` | `2026-08-15` | 推理外环 Phase -1 v2 高预算本机运行证据包（2026-08-15）<br><code>.artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815</code><br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-APX-E-GATE-REVIEW-20260810-1E0BCC6818` | `2026-08-10` | [【过堂表】推理外环求解器 · 附录 E 七问过堂](<../.artifacts/apx_e_gate_review_20260810/PASSTHROUGH_TABLE.md>)<br>--- | `other` | `historical` | `unreviewed` |
 | `DOSSIER-MEMSYS-MEETING-20260808-1BB4142581` | `2026-08-08` | [记忆系统全面复查会议 · 主持人终裁（2026-08-08）](<../.artifacts/memsys_meeting_20260808/FINAL_VERDICT.md>)<br>T1 判决：M-02「已越 25KB 字节上限」证伪。 六变体假 HOME 实验（决定性 F 臂：36,056 字节/12,360 JS 字符/150 行 → 零截断）钉死：eoe=25000 的单位是 JS 字符（UTF-16 code unit），展示时 ÷1024 印成 KB。真实 MEMORY.md = 15… | `other` | `historical` | `unreviewed` |
 | `DOSSIER-GPT-PRO-REVIEW-BATCH-20260808-A687A90BB0` | `2026-08-08` | [本包是什么 · 怎么读](<../.artifacts/gpt_pro_review_batch_20260808/9_architecture_holistic_review/pkg/README.md>)<br>本包是一套尚未动工的求解器架构设计的全部在案材料，交付给你做架构级审查。 | `other` | `historical` | `unreviewed` |
@@ -4359,7 +4362,7 @@ owner 允许归档三轮外部评审并以 non_authorizing 形态登记设计约
 
 - **明确不推出：** 原登记八条内容及本次评审修复新增的指针型登记项获得批准；推理外环获得立项；对现行树新增义务
 
-- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../../../.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
+- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
 
 <a id="decision-p1-2-close-20260707"></a>
 
@@ -5081,6 +5084,18 @@ owner 拍板认可 semantics 拆分「先实验后拍板」路线（按 fen5 核
 - **未决项：** 原始运行 payload 保持 local_optional；轻量 checkout 可以缺失，恢复或重跑须依照 tracked README 与 manifest。
 
 事后机械审计核对了本机 evidence package 的内部 manifest、r1/r3 终止标记、r2 observer-effect 终止收据、r3 九份 layout receipt，以及三组 append-only journal 的路径、SHA-256 与完整行计数；本 review 不评估科学结论，也不提升 verdict 或 authority。
+
+<a id="review-20260815-phase-minus1-v2-local-evidence-registration"></a>
+
+### REVIEW-20260815-PHASE-MINUS1-V2-LOCAL-EVIDENCE-REGISTRATION
+
+- **Dossier：** `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-V2-20260815-96E16B17C8`
+- **状态 / 结果：** `current` / `deferred`
+- **审阅日 / 范围：** `2026-08-15` / `availability_and_provenance`
+- **提炼 claim：** —
+- **未决项：** 高预算 v2 运行仍处于 active 状态；当前 portability anchor 是启动时 CORPUS_ADMISSION 收据，不是终态 evidence manifest。；原始 journals、logs 与 slice/deep receipts 保持 local_optional；轻量 checkout 可缺失。
+
+登记审计核对了 Phase -1 v2 本机证据包的启动 admission 收据、RUN_ID 与两份有限域 P1 slice receipt；tracked 协议、corpus 与恢复入口只作为 portability 坐标。本 review 不评估运行中的科学结论，也不提升判词或 authority。
 
 <a id="review-20260815-solver-reasoning-outer-loop-gpt-pro"></a>
 
