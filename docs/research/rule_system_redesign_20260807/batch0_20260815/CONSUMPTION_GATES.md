@@ -44,13 +44,15 @@
 
 1. `docs/generated/` 路径；
 2. 状态为 `UNREVIEWED` 的 L2 条目；
-3. `model_faces.candidates` 或等价的拒真候选条目。
+3. `model_faces.candidates` 或等价的拒真候选条目；
+4. 对本架构上线前的历史文书，出现 `LEGACY_GENERATED_EQUIVALENT`：收据、生成摘要、视图、索引或其自然语言字段并非被断言机制的机器真源，却被复制、压缩或当标签进入前提集。此兼容判读只用于识别 C-26 同型的历史消费污染，不把所有 receipt 引用一概判红。
 
 ### 判定
 
 - **BLOCK**：上述对象直接或经标签、摘要、复制值进入前提集。
 - `docs/generated/` 只允许出现在“检索记录”栏，用于指向随后回读的机器真源；最终前提必须改引真源路径与字段。
 - `UNREVIEWED` 与 `candidates` 可以进入待审队列、反例搜索或研究问题清单，但不得被下游写成既定事实。
+- 历史 `LEGACY_GENERATED_EQUIVALENT` 可以作为定位线索，但消费者必须回读逐字代码、冻结机器真源或相应权威载体；若只复述它的 `semantics`、summary、receipt explanation 等自然语言结论字段，仍为 BLOCK。
 - 文件头写着“非权威”、正文附 usage rule、或 reviewer 声称“只作索引”，都不能抵消实际消费行为。
 
 ### 最小凭据
