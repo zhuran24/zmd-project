@@ -1,0 +1,128 @@
+{
+  "schema_version": "zmd_w0_unary_lowering_canary_manifest_v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION",
+  "research_only": true,
+  "non_authorizing": true,
+  "created_on": "2026-08-16",
+  "repository_base_head": "8dfb5cb217741d23a33ab3d4c887cdb5bbab62d7",
+  "freeze_identity_rule": "The first Git commit containing this manifest and both protocol documents is the protocol freeze commit. Implementations and run receipts must record that commit; this manifest must not be edited after the freeze commit.",
+  "authorization_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816/00_OWNER_AUTHORIZATION_20260816.md",
+  "protocol_paths": [
+    "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816/01_W0_UNARY_LOWERING_CANARY_PROTOCOL_V1.md",
+    "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816/02_ENDPOINT_METRICS_PROTOCOL_V1.md",
+    "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816/02_ENDPOINT_METRICS_PROTOCOL_V1.json"
+  ],
+  "theorem_identity": {
+    "judgment_id": "J-W0-GHOST-FRONT-BOUNDARY-041-V1",
+    "judgment_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_one_w0_ghost_front_offline_certificate_20260815/01_JUDGMENT.json",
+    "judgment_sha256": "853c7aa9df3939e8eea97afebbf34c4c453a8e641d186ec75af82af291d0ebc3",
+    "proof_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_one_w0_ghost_front_offline_certificate_20260815/02_PROOF.md",
+    "proof_sha256": "2d8c5d608bdcf9c2ad80ba5561591d17679db52203a11cddbc76ab48486fedfb",
+    "checker_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_one_w0_ghost_front_offline_certificate_20260815/03_check_w0_ghost_front_certificate.py",
+    "checker_sha256": "c53e882ab7b2d6bfa96dacefd510ae708f926116475cb0d74aa18d3d40591ba7",
+    "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
+    "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27",
+    "contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded"
+  },
+  "frozen_inputs": {
+    "rules/canonical_rules.json": {
+      "sha256": "c3fc3a34e67b2321048a8861a9b178c744361698a838039b0361287c9fb542c0",
+      "size_bytes": 59989
+    },
+    "data/preprocessed/candidate_placements.json": {
+      "sha256": "f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3",
+      "size_bytes": 54467709
+    },
+    "data/preprocessed/mandatory_exact_instances.json": {
+      "sha256": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6",
+      "size_bytes": 88261
+    },
+    "data/preprocessed/generic_io_requirements.json": {
+      "sha256": "ad5125b50e607a7f3f3bf0b54fea64f93edf87cedb62e8d24f5590e1c895c44e",
+      "size_bytes": 561
+    },
+    ".artifacts/w0_fixrerun_20260804/band22_alignment/registration_placement_solution.json": {
+      "sha256": "db85d3e18fd0fc12ba743e0fd86e38183262a24c90d28805634c952cf27103c7",
+      "size_bytes": 88021
+    },
+    ".artifacts/w0_fixrerun_20260804/band22_alignment/max_empty_rect_for_this_placement.json": {
+      "sha256": "aeb3a046a23309db845c238372d3b0a8e442c2ac7c94eb9de18ab0f1d9420fc6",
+      "size_bytes": 1127
+    }
+  },
+  "production_source_identities": {
+    "src/models/binding_subproblem.py": "1c89f6ee2cb958568c7365289a0b3d6e69a32f3162d4c925f02695705efc7ee9",
+    "src/models/routing_subproblem.py": "7554b0f24176b86104095ee47b8ec8ed5dfc4098c3df2f661231b0cf2f0ae718"
+  },
+  "research_adapter_identities": {
+    "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/phase_minus1_harness.py": "81e8960738ba2c0b81f86cefb96bc87da9b2e2f81ac9073e2135192b7fb905c2",
+    "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/corpus_manifest.json": "8f7e33ffb477ebea7152f3163b7754eddcc64596fe67949b6f5bdfde8061de91"
+  },
+  "runtime_identity": {
+    "python_executable": "/home/zhuran24/zmd-pj/.venv/bin/python",
+    "python_version": "3.13.13",
+    "ortools_version": "9.15.6755",
+    "platform_observed": "Linux-7.1.8-1-cachyos-x86_64-with-glibc2.44"
+  },
+  "fixed_context": {
+    "layout_id": "W0-ALIGNMENT",
+    "normalized_layout_sha256": "d199c88e6d65582a269ec5142b33e3d9db9294eeb0b1a25f9ee05005ff1a26aa",
+    "ghost_rect": [1, 51, 6, 7],
+    "target_slot_id": "boundary_port_041:out:0",
+    "target_front_cell": [1, 53],
+    "target_baseline_values": [
+      "blue_iron_ore",
+      "source_ore",
+      "__unused__"
+    ],
+    "treatment_forced_value": "__unused__",
+    "generic_output_slot_count": 52,
+    "required_generic_output_count_total": 52,
+    "baseline_generic_output_domain_cardinality_sum": 156,
+    "treatment_generic_output_domain_cardinality_sum": 154,
+    "baseline_target_active_value_count": 2,
+    "treatment_target_active_value_count": 0
+  },
+  "run_parameters": {
+    "binding_workers": 1,
+    "routing_workers": 1,
+    "per_binding_solve_timeout_seconds": 20.0,
+    "per_routing_solve_timeout_seconds": 30.0,
+    "baseline_target_complete_events": 1007,
+    "minimal_baseline_arm_watchdog_seconds": 900.0,
+    "observation_noop_arm_watchdog_seconds": 900.0,
+    "treatment_arm_watchdog_seconds": 900.0,
+    "expected_point_nogood_literal_count_each": 285,
+    "expected_baseline_routing_solves": 0,
+    "artifact_root": ".artifacts/solver_reasoning_outer_loop_w0_unary_canary_20260816"
+  },
+  "pre_registered_predictions": {
+    "minimal_baseline_terminal_condition": "1007_COMPLETE_J_TRIGGERED_FRONT_BLOCKED_EVENTS",
+    "observation_noop_terminal_condition": "1007_COMPLETE_J_TRIGGERED_FRONT_BLOCKED_EVENTS",
+    "minimal_vs_noop_selection_sequence": "IDENTICAL",
+    "observation_noop_wall_overhead_max_ratio": 1.15,
+    "treatment_common_milestone_wall_regression_max_ratio": 1.25,
+    "treatment_binding_status": "INFEASIBLE",
+    "treatment_binding_proposals": 0,
+    "treatment_routing_prechecks": "NOT_REACHED",
+    "treatment_routing_solves": "NOT_REACHED",
+    "treatment_point_nogoods": 0,
+    "lower_bound_delta": "ZERO_BY_SCOPE",
+    "upper_bound_delta": "ZERO_BY_SCOPE",
+    "M_t_delta": "N_A_NOT_READY_L_ABSENT",
+    "M_bottom_delta": "ZERO_BY_SCOPE",
+    "G_t_delta": "ZERO_BY_SCOPE",
+    "B_t_delta": "ZERO_BY_SCOPE"
+  },
+  "forbidden_mutations": [
+    "src/**",
+    "scripts/**",
+    "rules/canonical_rules.json",
+    "data/preprocessed/**",
+    "data/checkpoints/**",
+    "data/solutions/**",
+    "data/blueprints/**",
+    "supervisor_or_publisher_state",
+    "old_phase_minus1_protocols_or_verdicts"
+  ]
+}

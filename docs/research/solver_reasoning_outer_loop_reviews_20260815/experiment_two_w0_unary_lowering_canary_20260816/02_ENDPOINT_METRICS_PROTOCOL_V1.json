@@ -1,0 +1,198 @@
+{
+  "schema_version": "zmd_endpoint_metrics_protocol_v1",
+  "status": "FROZEN_PRE_IMPLEMENTATION",
+  "created_on": "2026-08-16",
+  "authority": "research_only",
+  "purpose": "Define endpoint currencies, typed nulls, non-interference checks, and synthetic sensor-sensitivity tests for the W0 unary-lowering canary.",
+  "identity": {
+    "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
+    "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27",
+    "contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded",
+    "objective_order": [
+      "area_descending",
+      "min_side_descending"
+    ]
+  },
+  "typed_nulls": {
+    "ZERO_MEASURED": "The object, intervention, and evaluator exist and a zero difference was measured.",
+    "ZERO_BY_SCOPE": "A checked scope/non-interference argument proves the intervention cannot write or alter the named account.",
+    "N_A_NOT_READY": "The value has no current semantics because a required object or ledger is absent.",
+    "UNKNOWN_UNMEASURED": "The value is well-defined but was not measured.",
+    "CENSORED": "Measurement began but the frozen budget did not produce the target verdict.",
+    "SENSOR_UNVALIDATED": "The evaluator exists but has not passed synthetic sensitivity controls.",
+    "NOT_REACHED": "The execution stage was not entered; this must not be represented by numeric zero."
+  },
+  "rectangle_universe": {
+    "production_definition": "All integer axis-aligned rectangles inside the 70x70 grid with width>=6 and height>=6.",
+    "score": "(width*height, min(width,height))",
+    "strict_order": "R1 beats R2 iff area1>area2 or area1==area2 and min_side1>min_side2.",
+    "rectangle_identity": "(x,y,width,height); equal score does not merge coordinates."
+  },
+  "endpoint_currencies": {
+    "L_t": {
+      "definition": "Highest lex score with an admitted complete certified-exact witness.",
+      "current_expected": "ABSENT",
+      "current_type": "N_A_NOT_READY"
+    },
+    "U_t": {
+      "definition": "Highest lex score not covered by a current sound rectangle-level exclusion in the same context.",
+      "current_research_ledger_expected": [
+        1188,
+        18
+      ],
+      "qualification": "conditional research upper ledger, not production certified"
+    },
+    "M_t": {
+      "definition": "Count of coordinate-distinct admissible rectangles whose score is strictly lex-better than L_t and which are not soundly excluded.",
+      "current_expected": "N_A_NOT_READY",
+      "reason": "L_t is ABSENT; the canary must not invent a numeric sentinel."
+    },
+    "G_t": {
+      "definition": "Count of unresolved lex score bands strictly above L_t.",
+      "current_expected": "N_A_NOT_READY"
+    },
+    "B_t": {
+      "definition": "Count of unresolved coordinate-distinct rectangles in the current highest unresolved score band U_t.",
+      "current_expected": "UNKNOWN_UNMEASURED",
+      "reason": "No complete rectangle-level exclusion registry/evaluator is admitted for this canary."
+    },
+    "H_t": {
+      "definition": "Histogram of unresolved coordinate-distinct rectangles by lex score band.",
+      "current_expected": "UNKNOWN_UNMEASURED"
+    }
+  },
+  "current_endpoint_sources": [
+    {
+      "role": "durable_exact_status",
+      "path": "data/solutions/exact_full_scale_status.json",
+      "sha256": "3e525b91e324e8e66abd52c5634fdb97c8957baef8dd49efd63b663f34d3e67e",
+      "expected_assertions": {
+        "status": "OPEN",
+        "best_certified_result": null
+      }
+    },
+    {
+      "role": "stable_claim_ledger",
+      "path": "data/knowledge/claims.jsonl",
+      "sha256": "6c3608b09d56e4a76de8a605bf30c71812b4152a0eb00c077e5abccd391f7483",
+      "required_claim_ids": [
+        "CLAIM-CERTIFIED-EXISTENCE-OPEN",
+        "CLAIM-SIX-PREDICATE-RESEARCH-LEDGER"
+      ]
+    },
+    {
+      "role": "research_upper_authority_entry",
+      "path": "docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md",
+      "sha256": "4da56e8e915bab83679926c5f264bfb8f116680b32fd2a90f74c1a73cf2a2816"
+    },
+    {
+      "role": "research_upper_execution_record",
+      "path": "docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/03_execution_record.md",
+      "sha256": "ebe9ad10131b9ca5887c6bd5482d59838f61239e15d09064a3367a5177149930"
+    }
+  ],
+  "protected_surfaces": [
+    {
+      "path": "PROJECT_LOCK.md",
+      "sha256": "105cd3794034f583232254d8645bd5b43a6b0bc7c2046799efd8cb745590f2d3"
+    },
+    {
+      "path": "scripts/run_supervisor_seal.py",
+      "sha256": "a60ce8a710a6f51efb63e7936ffd0f59c3fe1c04937c79b3cfa79fe3340ec780"
+    },
+    {
+      "path": "src/search/certified_surface.py",
+      "sha256": "9e76bed7a8a426466c3f5df97c512084295f08e99cb0c6baf12c43309c4d0354"
+    }
+  ],
+  "canary_expected_transaction": {
+    "delta_L": "ZERO_BY_SCOPE",
+    "delta_U": "ZERO_BY_SCOPE",
+    "delta_M": "ZERO_BY_SCOPE_WITH_M_T_N_A_NOT_READY",
+    "delta_certified_surface": "ZERO_BY_SCOPE",
+    "justification": "The Judgment quantifies only binding selections under one fixed layout and fixed rectangle; it produces neither a complete witness nor a rectangle-level universal exclusion."
+  },
+  "search_envelope_types": {
+    "MODEL_SIZE": "Counts of model variables and constraints.",
+    "BOX_DOMAIN": "Per-variable marginal-domain cardinalities or their product/log proxy; not a count of jointly feasible assignments.",
+    "OBSERVED_TRACE": "Counts observed in the frozen execution trace; not a mathematical total family cardinality.",
+    "EXACT_CARDINALITY": "Used only when an explicitly finite domain has been exhaustively enumerated."
+  },
+  "synthetic_fixture": {
+    "grid_width": 8,
+    "grid_height": 8,
+    "min_side": 2,
+    "initial_witness_score": [
+      6,
+      2
+    ],
+    "initial_excluded_rectangles": []
+  },
+  "sensitivity_tests": [
+    {
+      "id": "SENS-01-HIGHER-AREA-WITNESS",
+      "mutation": "replace witness score (6,2) with (8,2)",
+      "expected": "L_t increases and M_t strictly decreases"
+    },
+    {
+      "id": "SENS-02-SAME-AREA-HIGHER-MIN-SIDE",
+      "mutation": "replace witness score (8,2) with (8,4)",
+      "expected": "L_t increases under the second lex key"
+    },
+    {
+      "id": "SENS-03-REMOVE-ONE-FROM-TOP-BAND",
+      "mutation": "exclude one but not all rectangles in the current highest unresolved score band",
+      "expected": "B_t decreases by one while U_t is unchanged"
+    },
+    {
+      "id": "SENS-04-CLOSE-TOP-BAND",
+      "mutation": "exclude every rectangle in the current highest unresolved score band",
+      "expected": "U_t moves to the next score band and G_t decreases by one"
+    },
+    {
+      "id": "SENS-05-IRRELEVANT-LOW-SCORE-EXCLUSION",
+      "mutation": "exclude one rectangle whose score is not strictly above L_t",
+      "expected": "M_t, G_t, U_t, and B_t remain unchanged"
+    },
+    {
+      "id": "SENS-06-IDEMPOTENT-DUPLICATE",
+      "mutation": "apply the same witness or exclusion twice",
+      "expected": "all endpoint currencies are unchanged on the second application"
+    },
+    {
+      "id": "SENS-07-STALE-CONTEXT",
+      "mutation": "submit an exclusion with a mismatching contextHash",
+      "expected": "fail closed; no endpoint currency changes"
+    },
+    {
+      "id": "SENS-08-ABSENT-LOWER-BOUND",
+      "mutation": "remove all witnesses",
+      "expected": "M_t and G_t become N_A_NOT_READY rather than numeric zero"
+    },
+    {
+      "id": "SENS-09-HOTSPOT-MIGRATION",
+      "mutation": "move 10 synthetic cost units from binding to routing with total cost unchanged",
+      "expected": "stage shares change while total cost remains unchanged"
+    },
+    {
+      "id": "SENS-10-NOT-REACHED",
+      "mutation": "mark routing stage as not entered",
+      "expected": "routing cost is NOT_REACHED rather than numeric zero"
+    },
+    {
+      "id": "SENS-11-UNARY-DOMAIN-REMOVAL",
+      "mutation": "remove one value from a four-valued binding slot",
+      "expected": "BOX_DOMAIN target cardinality changes from 4 to 3 while no exact joint-count claim is emitted"
+    }
+  ],
+  "acceptance": {
+    "all_sensitivity_tests_must_pass": true,
+    "production_endpoint_zero_requires": [
+      "sensitivity checker PASS",
+      "all current endpoint-source hashes unchanged",
+      "all protected-surface hashes unchanged",
+      "no tracked certified or publication artifact written"
+    ],
+    "history_policy": "Future metric revisions create V2; V1 definitions and historical verdicts are not rewritten."
+  }
+}
