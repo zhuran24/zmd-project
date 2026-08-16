@@ -1,0 +1,239 @@
+{
+  "authority_basis": {
+    "authority_class": "research_only_non_authorizing",
+    "source_paths": [
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/06_MODEL_CORRESPONDENCE_MANIFEST.json",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/07_MODEL_CORRESPONDENCE.md",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/08_TERMINAL_EXCLUSION_JUDGMENT.json",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/09_TERMINAL_EXCLUSION_PROOF.md"
+    ]
+  },
+  "canary_history": {
+    "current_action": "UNCHANGED",
+    "historical_verdict": "INCONCLUSIVE",
+    "relation": "independent_new_evidence_line; no historical rejudgment"
+  },
+  "context_transport": {
+    "objectiveHash_equal": true,
+    "problemHash_equal": true,
+    "theorem_two_base_equals_theorem_one_context": true,
+    "transport_rule": "premise strengthening preserves theorem-one conditional implication"
+  },
+  "contract_identity": {
+    "file_hashes": {
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/06_MODEL_CORRESPONDENCE_MANIFEST.json": "243e2cb9d0f82620a1180bedd3a158a5e273ffa377fd4ad99997310f0cd1b0d2",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/07_MODEL_CORRESPONDENCE.md": "bfd4757df9c97cfcf846e50ce95aeda8d4dcab4af1f4a6e2755a08caa9247c58",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/08_TERMINAL_EXCLUSION_JUDGMENT.json": "6210f921553a00f9001013ae9ad421ec59a78d2448557ebf4ade321bb97d89d9",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/09_TERMINAL_EXCLUSION_PROOF.md": "476f538b479325a697ad40b7e7f9e7362c71f1e82a60e6972a782f7e8b006929",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/10_check_w0_terminal_exclusion.py": "afa7ee66e90877fcf33dea4ed61eb1c7e64626466aa2397d24e66e8f8a7b48a6"
+    },
+    "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27",
+    "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
+    "theorem_one_contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded",
+    "theorem_one_judgment_sha256": "853c7aa9df3939e8eea97afebbf34c4c453a8e641d186ec75af82af291d0ebc3",
+    "theorem_two_contextHash": "f66d8a2c0334be01b419229da97d8c32fc19bfb4d5fa07e2cd6e370e40e79a28",
+    "theorem_two_judgment_sha256": "91307f7a4ac97c2a73537a3515363a395b171441880134bb11eb3b26513b8454",
+    "theorem_two_receipt_sha256": "20024a13dd7f74697f493b22d7525f7c818c0a29796cd911cc26c3deecc31949"
+  },
+  "endpoint_transaction": {
+    "candidate_key": "W0-ALIGNMENT|x1-y51-w6-h7",
+    "candidate_state_after": "PROVED_EXCLUDED",
+    "candidate_state_before": "UNKNOWN",
+    "delta_L": "ZERO_BY_SCOPE",
+    "delta_M_bottom": -1,
+    "delta_U": "ZERO_BY_SCOPE",
+    "evidence_type": "EXACT_SINGLETON_EXCLUSION_BY_COMPOSED_THEOREMS",
+    "global_M_t_after": "N_A_NOT_READY",
+    "global_M_t_before": "N_A_NOT_READY",
+    "global_M_t_reason": "L remains ABSENT; no numeric global M_t is invented",
+    "ledger_effect": "research candidate ledger only"
+  },
+  "granted_effects": [
+    "records_the_fixed_W0_rectangle_as_PROVED_EXCLUDED_in_the_research_candidate_ledger",
+    "records_delta_M_bottom_minus_one_with_global_M_t_still_N_A_NOT_READY"
+  ],
+  "negative_tests": [
+    {
+      "killed": true,
+      "name": "context_mismatch",
+      "reason": "synthetic context mismatch"
+    },
+    {
+      "killed": true,
+      "name": "reopened_path_obligation",
+      "reason": "synthetic open path obligation"
+    },
+    {
+      "killed": true,
+      "name": "missing_target_exactly_one",
+      "reason": "snapshot lacks ExactlyOne for boundary_port_041:out:0"
+    },
+    {
+      "killed": true,
+      "name": "blue_requirement_33",
+      "reason": "blue requirement equality domain drift"
+    },
+    {
+      "killed": true,
+      "name": "candidate_delta_zero",
+      "reason": "synthetic candidate delta drift"
+    },
+    {
+      "killed": true,
+      "name": "canary_rejudgment",
+      "reason": "synthetic canary rejudgment"
+    }
+  ],
+  "non_implications": [
+    "no_certification_effect",
+    "no_exact_status_update",
+    "no_stable_claim_ledger_write",
+    "no_production_lowering",
+    "no_generic_D3_or_D4_unlock",
+    "no_other_layout_or_rectangle_exclusion",
+    "no_global_bound_or_optimum_update",
+    "no_equivalence_to_full_adjudicated_game_semantics",
+    "no_rejudgment_of_the_W0_unary_lowering_canary",
+    "no_use_of_observational_coverage_as_proof"
+  ],
+  "outcome": "PASS",
+  "path_obligations": [
+    {
+      "evidence": [
+        "theorem-two checker PASS",
+        "fixed-layout harness source hash PASS"
+      ],
+      "id": "W0-LIFT-01-INPUT-IDENTITY",
+      "status": "DISCHARGED"
+    },
+    {
+      "evidence": [
+        "snapshot slots=52",
+        "binding source audit PASS"
+      ],
+      "id": "W0-LIFT-02-SLOT-COMPLETENESS",
+      "status": "DISCHARGED"
+    },
+    {
+      "evidence": [
+        "52 snapshot ExactlyOne groups",
+        "binding source AddExactlyOne marker PASS"
+      ],
+      "id": "W0-LIFT-03-PER-SLOT-EXACTLY-ONE",
+      "status": "DISCHARGED"
+    },
+    {
+      "evidence": [
+        "snapshot blue=34/source=18",
+        "requirement source marker PASS"
+      ],
+      "id": "W0-LIFT-04-GLOBAL-COUNTS",
+      "status": "DISCHARGED"
+    },
+    {
+      "evidence": [
+        "non-__unused__ generic output is emitted as an out port spec; __unused__ is skipped"
+      ],
+      "id": "W0-LIFT-05-ACTIVE-PORT-EXPORT",
+      "status": "DISCHARGED"
+    },
+    {
+      "evidence": [
+        "single fixed-layout binding entry",
+        "exact precheck and RoutingSubproblem markers PASS"
+      ],
+      "id": "W0-LIFT-06-ROUTING-CONSUMPTION",
+      "status": "DISCHARGED"
+    },
+    {
+      "evidence": [
+        "premise strengthening preserves theorem-one conditional implication"
+      ],
+      "id": "W0-LIFT-07-CONTEXT-TRANSPORT",
+      "status": "DISCHARGED"
+    },
+    {
+      "evidence": [
+        "protected files unchanged=True"
+      ],
+      "id": "W0-LIFT-08-ENDPOINT-NONINTERFERENCE",
+      "status": "DISCHARGED"
+    }
+  ],
+  "result_kind": "w0_terminal_exclusion_check",
+  "schema_version": "zmd_w0_terminal_exclusion_compact_receipt_v1",
+  "snapshot_summary": {
+    "blue_requirement": {
+      "coefficient_set": [
+        1
+      ],
+      "constraint_index": 287,
+      "domain": [
+        34,
+        34
+      ],
+      "variable_count": 52
+    },
+    "constraint_count": 289,
+    "generic_output_literal_count": 156,
+    "generic_output_slot_count": 52,
+    "snapshot_role": "independent path-correspondence corroboration; not a theorem-two premise",
+    "source_requirement": {
+      "coefficient_set": [
+        1
+      ],
+      "constraint_index": 288,
+      "domain": [
+        18,
+        18
+      ],
+      "variable_count": 52
+    },
+    "target_exactly_one_constraint_index": 273,
+    "target_literal_indices": {
+      "__unused__": 17156,
+      "blue_iron_ore": 17154,
+      "source_ore": 17155
+    },
+    "target_slot_id": "boundary_port_041:out:0",
+    "variable_count": 17190
+  },
+  "status": "PASS",
+  "subject_identity": {
+    "judgment_id": "J-W0-FIXED-RECT-BINDING-ROUTING-EXCLUDED-V1",
+    "layout_id": "W0-ALIGNMENT",
+    "rectangle": {
+      "h": 7,
+      "w": 6,
+      "x0": 1,
+      "y0": 51
+    }
+  },
+  "terminal_summary": {
+    "canary_verdict_unchanged": true,
+    "candidate_transition": "UNKNOWN -> PROVED_EXCLUDED",
+    "delta_M_bottom": -1,
+    "evidence_type": "EXACT_SINGLETON_EXCLUSION_BY_COMPOSED_THEOREMS",
+    "global_M_t": "N_A_NOT_READY",
+    "proof_step_count": 7,
+    "terminal_status": "PROVED_EXCLUDED_RESEARCH"
+  },
+  "verified_scope": {
+    "canary_verdict_unchanged": true,
+    "candidate_state_after": "PROVED_EXCLUDED",
+    "candidate_state_before": "UNKNOWN",
+    "delta_M_bottom": -1,
+    "global_M_t": "N_A_NOT_READY",
+    "negative_test_count": 6,
+    "path_obligation_count": 8,
+    "path_obligations_discharged": 8,
+    "protected_surfaces_unchanged": true,
+    "snapshot_blue_requirement": 34,
+    "snapshot_literal_count": 156,
+    "snapshot_slot_count": 52,
+    "snapshot_source_requirement": 18,
+    "theorem_one_pass": true,
+    "theorem_identity_file_count": 6,
+    "theorem_two_pass": true
+  }
+}

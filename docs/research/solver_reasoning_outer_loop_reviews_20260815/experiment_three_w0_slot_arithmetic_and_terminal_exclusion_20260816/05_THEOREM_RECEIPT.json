@@ -1,0 +1,164 @@
+{
+  "authority_basis": {
+    "authority_class": "research_only_non_authorizing",
+    "source_paths": [
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/00_ACCEPTANCE_CRITERIA_FROZEN.md",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/01_CONTEXT_MANIFEST.json",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/02_JUDGMENT.json",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/03_PROOF.md"
+    ]
+  },
+  "contract_identity": {
+    "acceptance_freeze_commit": "a517fa7492a34f881f46b0a4cc9aae98bd6729ad",
+    "base_contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded",
+    "binding_contractHash": "1b9676a810521fb0b13828a4e2f9eb402c414c5bd82e98a9e365302a38c66c45",
+    "checker_sha256": "4a863834f5990d6cab4366f4b27fd32d0676c1563dd7c98859b1357b20a5cf6d",
+    "contextHash": "f66d8a2c0334be01b419229da97d8c32fc19bfb4d5fa07e2cd6e370e40e79a28",
+    "judgment_sha256": "91307f7a4ac97c2a73537a3515363a395b171441880134bb11eb3b26513b8454",
+    "manifest_sha256": "af1bd09349b3031c9817b6bc628eb6d01e7097d3cac2c0b5ea55200ebf2115e1",
+    "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27",
+    "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
+    "proof_sha256": "e511814998ceebe2867a5f2845a0a9ef6bfdd8a677e5da5964fe8f307a6f321d",
+    "relation": "FREEZE_PRECEDES_THEOREM",
+    "theorem_introduction_commit": "c8b69a03c8fae76a0b7b0864aa5bbea34e02fa0e"
+  },
+  "coverage": {
+    "commodity_counts": {
+      "source_ore": 1007
+    },
+    "coverage_fraction": 1.0,
+    "event_journal_path": ".artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815/phase-minus1-v2-r1-20260815/deep/DEEP-W0-ALIGNMENT/events.jsonl",
+    "identity": "非前提,仅事后覆盖数据源",
+    "is_proof_premise": false,
+    "prefix_sha256": "e37da2d662a850529122e983c59ab569e0d48e9b9b93279af6bf41e0568d60a1",
+    "record_count": 1007,
+    "status": "PASS",
+    "target_active_count": 1007,
+    "unique_selection_digest_count": 1007
+  },
+  "demand_summary": {
+    "derived_required_generic_outputs": {
+      "blue_iron_ore": 34,
+      "source_ore": 18
+    },
+    "external_boundary_commodities": [
+      "blue_iron_ore",
+      "source_ore"
+    ],
+    "generic_io_required_generic_outputs": {
+      "blue_iron_ore": 34,
+      "source_ore": 18
+    },
+    "mandatory_operation_counts": {
+      "crusher_source": 18,
+      "refinery_blue_iron": 34
+    },
+    "required_generic_output_total": 52
+  },
+  "granted_effects": [
+    "permits_offline_composition_with_J-W0-GHOST-FRONT-BOUNDARY-041-V1",
+    "permits_research_candidate_exclusion_review_for_the_fixed_W0_rectangle"
+  ],
+  "negative_tests": [
+    {
+      "killed": true,
+      "name": "missing_slot",
+      "reason": "slot universe has 51, expected 52"
+    },
+    {
+      "killed": true,
+      "name": "extra_slot",
+      "reason": "demand total does not saturate the slot universe"
+    },
+    {
+      "killed": true,
+      "name": "demand_total_51",
+      "reason": "demand total does not saturate the slot universe"
+    },
+    {
+      "killed": true,
+      "name": "target_missing",
+      "reason": "target slot is absent from theorem universe"
+    },
+    {
+      "killed": true,
+      "name": "duplicate_slot",
+      "reason": "slot universe contains duplicates"
+    },
+    {
+      "killed": true,
+      "name": "recipe_coefficient_drift",
+      "reason": "canonical/mandatory demand re-derivation disagrees with generic I/O"
+    },
+    {
+      "killed": true,
+      "name": "stale_input_hash",
+      "reason": "SHA-256 drift: rules/canonical_rules.json"
+    },
+    {
+      "killed": true,
+      "name": "extra_domain_label",
+      "reason": "slot label domain drift"
+    }
+  ],
+  "non_implications": [
+    "no_certification_effect",
+    "no_exact_status_update",
+    "no_stable_claim_ledger_write",
+    "no_production_lowering",
+    "no_generic_D3_or_D4_unlock",
+    "no_cross_layout_or_cross_rectangle_generality",
+    "no_equivalence_to_full_adjudicated_game_semantics",
+    "no_use_of_observational_coverage_as_proof"
+  ],
+  "outcome": "PASS",
+  "proof_summary": {
+    "all_unused_indicators_forced_zero": true,
+    "blue_iron_ore_count": 34,
+    "forced_unused_total": 0,
+    "required_total": 52,
+    "slot_count": 52,
+    "source_ore_count": 18,
+    "target_must_be_active": true,
+    "target_slot_id": "boundary_port_041:out:0"
+  },
+  "result_kind": "w0_slot_arithmetic_theorem_check",
+  "schema_version": "zmd_w0_slot_arithmetic_theorem_compact_receipt_v1",
+  "slot_summary": {
+    "boundary_slot_count": 46,
+    "boundary_source_instance_count": 46,
+    "protocol_core_slot_count": 6,
+    "protocol_core_source_instance_count": 1,
+    "source_instance_count": 47,
+    "target_slot_id": "boundary_port_041:out:0",
+    "total_slot_count": 52
+  },
+  "status": "PASS",
+  "subject_identity": {
+    "judgment_id": "J-W0-GENERIC-OUTPUT-SLOT-SATURATION-041-V1",
+    "layout_id": "W0-ALIGNMENT",
+    "target_slot_id": "boundary_port_041:out:0"
+  },
+  "verified_scope": {
+    "blue_iron_ore_count": 34,
+    "boundary_slot_count": 46,
+    "coverage_available": true,
+    "coverage_checked": true,
+    "coverage_is_a_proof_premise": false,
+    "coverage_mode": "required",
+    "forced_unused_total": 0,
+    "negative_test_count": 8,
+    "pinned_file_count": 6,
+    "proof_step_count": 5,
+    "protocol_core_slot_count": 6,
+    "required_total": 52,
+    "slot_count": 52,
+    "slot_labels": [
+      "blue_iron_ore",
+      "source_ore",
+      "__unused__"
+    ],
+    "source_ore_count": 18,
+    "target_must_be_active": true
+  }
+}

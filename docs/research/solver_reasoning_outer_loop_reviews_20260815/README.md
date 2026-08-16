@@ -41,6 +41,10 @@
 
 [`experiment_two_w0_unary_lowering_canary_20260816/`](experiment_two_w0_unary_lowering_canary_20260816/README.md) 保存 owner 已窄解冻的第二层真实消费实验：只把已证 W0 Judgment 编译成研究面的一元 binding-domain 约束，运行 baseline／观测 no-op／treatment 三臂，并把局部 family 塌缩、热点迁移、资源轨迹与终点中性分账。该实验不解冻通用 D3/D4，不修改 `src/`，不产生认证或发布效力。
 
+## 实验三：W0 席位算术与固定矩形终局排除
+
+[`experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/`](experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/README.md) 保存 owner 已授权的第二条离线定理与组合终局主张：52 个供源席位恰被 34+18 的精确需求填满，因此 041 在每个合法 binding 中必活动；与实验一的一格冲突定理组合后，固定 `W0-ALIGNMENT` 布局中的 `x=1,y=51,w=6,h=7` 矩形在钉死 current binding+routing research model 下由 `UNKNOWN` 转为 `PROVED_EXCLUDED`。该候选级排除不改 exact-status、stable claim ledger、上下界或实验二的 `INCONCLUSIVE`。
+
 ## 已知字节保真 lint debt
 
 **状态：** `ACCEPTED_KNOWN_LINT_DEBT`。

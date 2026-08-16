@@ -1,0 +1,148 @@
+{
+  "schema_version": "zmd_w0_fixed_rectangle_terminal_exclusion_judgment_v1",
+  "judgment_id": "J-W0-FIXED-RECT-BINDING-ROUTING-EXCLUDED-V1",
+  "status": "PROVED_EXCLUDED_RESEARCH",
+  "authority": "evidence_only",
+  "created_on": "2026-08-16",
+  "title": "固定 W0 布局下 6x7 矩形的 binding+routing 终局排除",
+  "subject_identity": {
+    "layout_id": "W0-ALIGNMENT",
+    "normalized_layout_sha256": "d199c88e6d65582a269ec5142b33e3d9db9294eeb0b1a25f9ee05005ff1a26aa",
+    "rectangle": {
+      "x0": 1,
+      "y0": 51,
+      "w": 6,
+      "h": 7,
+      "x1": 6,
+      "y1": 57,
+      "score": [
+        42,
+        6
+      ]
+    }
+  },
+  "problem_identity": {
+    "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
+    "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27",
+    "theorem_one_contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded",
+    "theorem_two_contextHash": "f66d8a2c0334be01b419229da97d8c32fc19bfb4d5fa07e2cd6e370e40e79a28",
+    "context_relation": "theorem two extends theorem one with the pinned legal-binding contract"
+  },
+  "premises": [
+    {
+      "id": "THEOREM-ONE",
+      "judgment_id": "J-W0-GHOST-FRONT-BOUNDARY-041-V1",
+      "statement": "For any binding selection in the base context, Active_041 implies that no canonical predicate-5 routing witness exists for the fixed layout and rectangle.",
+      "required_outcome": "PASS"
+    },
+    {
+      "id": "THEOREM-TWO",
+      "judgment_id": "J-W0-GENERIC-OUTPUT-SLOT-SATURATION-041-V1",
+      "statement": "Every binding accepted by the pinned W0 legal-binding contract satisfies Active_041.",
+      "required_outcome": "PASS"
+    },
+    {
+      "id": "MODEL-CORRESPONDENCE",
+      "manifest_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/06_MODEL_CORRESPONDENCE_MANIFEST.json",
+      "statement": "All eight path-level obligations linking the abstract binding contract to the fixed W0 binding/routing research path are discharged.",
+      "required_outcome": "PASS"
+    }
+  ],
+  "sequent": {
+    "binders": [
+      {
+        "name": "b",
+        "sort": "W0LegalBindingSelection"
+      },
+      {
+        "name": "r",
+        "sort": "CanonicalPredicate5RoutingWitness"
+      }
+    ],
+    "turnstile": "|-",
+    "formula": "not exists b,r: legal_w0_binding_contract(b) and canonical_predicate_5_routable(W0_ALIGNMENT, rectangle_[1,6]x[51,57], b, r)"
+  },
+  "lift": [
+    {
+      "step": 1,
+      "from": "legal_w0_binding_contract(b)",
+      "to": "Active_041(b)",
+      "basis": "J-W0-GENERIC-OUTPUT-SLOT-SATURATION-041-V1"
+    },
+    {
+      "step": 2,
+      "from": "Active_041(b)",
+      "to": "not exists r: canonical_predicate_5_routable(W0, R, b, r)",
+      "basis": "J-W0-GHOST-FRONT-BOUNDARY-041-V1 transported into the stronger binding context"
+    },
+    {
+      "step": 3,
+      "from": "forall legal b, no routing witness for b",
+      "to": "no legal (b,r) pair exists",
+      "basis": "universal elimination plus existential negation"
+    },
+    {
+      "step": 4,
+      "from": "no legal (b,r) pair exists for the fixed layout and rectangle",
+      "to": "fixed W0 rectangle is PROVED_EXCLUDED_RESEARCH",
+      "basis": "all declared model-correspondence obligations discharged"
+    }
+  ],
+  "conclusion": {
+    "candidate_state": "PROVED_EXCLUDED",
+    "scope": "fixed W0 layout and fixed 6x7 rectangle in the pinned current binding+routing research model",
+    "definition": "There is no binding selection accepted by the pinned W0 binding contract that admits a canonical predicate-5 routing witness for the fixed rectangle."
+  },
+  "endpoint_transaction": {
+    "evidence_type": "EXACT_SINGLETON_EXCLUSION_BY_COMPOSED_THEOREMS",
+    "candidate_key": "W0-ALIGNMENT|x1-y51-w6-h7",
+    "candidate_state_before": "UNKNOWN",
+    "candidate_state_after": "PROVED_EXCLUDED",
+    "delta_M_bottom": -1,
+    "global_M_t_before": "N_A_NOT_READY",
+    "global_M_t_after": "N_A_NOT_READY",
+    "global_M_t_reason": "L remains ABSENT; no numeric global M_t is invented",
+    "delta_L": "ZERO_BY_SCOPE",
+    "delta_U": "ZERO_BY_SCOPE",
+    "ledger_effect": "research candidate ledger only"
+  },
+  "canary_relation": {
+    "canary_judgment": "experiment two W0 unary-lowering canary",
+    "historical_verdict": "INCONCLUSIVE",
+    "current_action": "UNCHANGED",
+    "explanation": "This terminal exclusion is a new static proof line. It explains the mathematical emptiness of the treatment residual domain but does not rewrite the canary's censored runtime observation as an observed solver terminal."
+  },
+  "consumption_contract": {
+    "allowed": [
+      "research candidate-state ledger for this one fixed layout and rectangle",
+      "offline architecture review",
+      "future owner decision package with all scope qualifiers intact"
+    ],
+    "forbidden": [
+      "production exact-status write",
+      "stable claim ledger write",
+      "certified frontier pruning",
+      "supervisor or publisher consumption",
+      "cross-layout or cross-rectangle generalization",
+      "adjudicated-game global optimality narrative"
+    ],
+    "invalidation_triggers": [
+      "either theorem becomes stale or fails recheck",
+      "any path-level model-correspondence obligation reopens",
+      "the fixed layout, rectangle, candidate pool, mandatory instances, generic I/O or canonical rules change",
+      "the current binding model's per-slot or global-count contract changes"
+    ]
+  },
+  "non_implications": [
+    "no_certification_effect",
+    "no_exact_status_update",
+    "no_stable_claim_ledger_write",
+    "no_production_lowering",
+    "no_generic_D3_or_D4_unlock",
+    "no_other_layout_or_rectangle_exclusion",
+    "no_global_bound_or_optimum_update",
+    "no_equivalence_between_current_binding_model_and_full_adjudicated_game_semantics",
+    "no_rejudgment_of_the_W0_unary_lowering_canary",
+    "no_use_of_1007_observations_as_a_proof_premise"
+  ]
+}

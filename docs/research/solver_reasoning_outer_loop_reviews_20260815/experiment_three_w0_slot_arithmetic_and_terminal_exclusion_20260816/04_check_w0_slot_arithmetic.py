@@ -421,18 +421,59 @@ def verify_judgment(
     context = judgment["context"]
     for field in ("base_contextHash", "binding_contractHash", "contextHash"):
         require(context[field] == identity[field], f"Judgment {field} drift")
-    require(judgment["scope"]["target_slot_id"] == arithmetic["target_slot_id"], "Judgment target slot drift")
-    require(int(judgment["scope"]["slot_count"]) == int(arithmetic["slot_count"]), "Judgment slot count drift")
-    require(judgment["scope"]["global_counts"] == {
+    scope = judgment["scope"]
+    require(scope["target_slot_id"] == arithmetic["target_slot_id"], "Judgment target slot drift")
+    require(int(scope["slot_count"]) == int(arithmetic["slot_count"]), "Judgment slot count drift")
+    require(
+        set(scope["labels_per_slot"])
+        == {"blue_iron_ore", "source_ore", "__unused__"},
+        "Judgment slot-label domain drift",
+    )
+    require(scope["per_slot_constraint"] == "exactly one label", "Judgment per-slot contract drift")
+    require(scope["global_counts"] == {
         "blue_iron_ore": arithmetic["blue_iron_ore_count"],
         "source_ore": arithmetic["source_ore_count"],
     }, "Judgment demand count drift")
+    condition = judgment["condition"]
+    require(condition["name"] == "LEGAL_W0_BINDING_CONTRACT", "Judgment condition identity drift")
+    conclusion = judgment["conclusion"]
+    require(conclusion["name"] == "W0_BOUNDARY_041_MUST_BE_ACTIVE", "Judgment conclusion identity drift")
+    require(
+        conclusion["formula"]
+        == "forall b: W0LegalBindingSelection, active_output_slot(b, boundary_port_041, 0)",
+        "Judgment conclusion formula drift",
+    )
+    require(
+        judgment["sequent"]["formula"]
+        == "forall b: W0LegalBindingSelection, legal_w0_binding_contract(b) -> active_output_slot(b, boundary_port_041, 0)",
+        "Judgment sequent drift",
+    )
     require(judgment["proof_object"]["experiment_data_is_a_premise"] is False, "experiment data became a premise")
     proof_steps = parse_numbered_proof_steps(proof_text)
     require(proof_steps == int(judgment["proof_object"]["proof_step_count"]), "proof-step count drift")
     coverage = judgment["coverage"]
     require(coverage["status"] == "POST_HOC_OBSERVATIONAL_ONLY", "coverage status drift")
     require(coverage["is_proof_premise"] is False, "coverage became a proof premise")
+    consumption = judgment["consumption_contract"]
+    require(
+        consumption["polarity"]
+        == "necessary_property_of_every_binding_accepted_by_the_pinned_current_model_contract",
+        "Judgment consumption polarity drift",
+    )
+    required_non_implications = {
+        "no_certification_effect",
+        "no_exact_status_update",
+        "no_stable_claim_ledger_write",
+        "no_production_lowering",
+        "no_generic_D3_or_D4_unlock",
+        "no_claim_about_other_layouts_or_rectangles",
+        "no_claim_that_the_current_binding restriction equals full adjudicated game semantics",
+        "no_use_of_1007_observations_as_a_proof_premise",
+    }
+    require(
+        required_non_implications <= set(judgment["non_implications"]),
+        "Judgment non-implication set drift",
+    )
     return {
         "proof_step_count": proof_steps,
         "experiment_data_is_a_premise": False,
@@ -457,8 +498,8 @@ def run_negative_tests(
     mandatory_instances: Sequence[Mapping[str, Any]],
     generic_io: Mapping[str, Any],
     expected: Mapping[str, Any],
-    pinned_path: Path,
-    pinned_sha: str,
+    data_root: Path,
+    manifest: Mapping[str, Any],
 ) -> list[dict[str, Any]]:
     results: list[dict[str, Any]] = []
 
@@ -508,8 +549,14 @@ def run_negative_tests(
         )
 
     def stale_hash() -> None:
-        actual, _size = sha256_file(pinned_path)
-        require(actual == ("0" * 64 if pinned_sha != "0" * 64 else "1" * 64), "synthetic stale hash was not rejected")
+        mutated = copy.deepcopy(manifest)
+        canonical_record = next(
+            record
+            for record in mutated["pinned_inputs"]
+            if record["role"] == "canonical_rules"
+        )
+        canonical_record["sha256"] = "0" * 64
+        verify_pinned_inputs(data_root, mutated)
 
     def extra_domain_label() -> None:
         mutated = dict(expected)
@@ -751,8 +798,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             mandatory_instances=mandatory,
             generic_io=generic_io,
             expected=expected,
-            pinned_path=resolved["canonical_rules"],
-            pinned_sha=next(item["sha256"] for item in manifest["pinned_inputs"] if item["role"] == "canonical_rules"),
+            data_root=data_root,
+            manifest=manifest,
         )
 
         coverage_available = (data_root / manifest["coverage"]["event_journal_path"]).is_file()

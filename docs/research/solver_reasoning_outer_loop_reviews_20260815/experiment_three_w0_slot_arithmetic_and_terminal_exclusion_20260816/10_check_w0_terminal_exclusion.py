@@ -130,10 +130,20 @@ def verify_theorems(
 ) -> dict[str, Any]:
     theorem_one = manifest["theorem_one"]
     theorem_two = manifest["theorem_two"]
+    one_judgment = repo_root / str(theorem_one["judgment_path"])
     one_checker = repo_root / str(theorem_one["checker_path"])
+    two_judgment = repo_root / str(theorem_two["judgment_path"])
+    two_proof = repo_root / str(theorem_two["proof_path"])
     two_checker = repo_root / str(theorem_two["checker_path"])
-    verify_file(one_checker, str(theorem_one["checker_sha256"]))
-    verify_file(two_checker, str(theorem_two["checker_sha256"]))
+    two_compact_receipt = repo_root / str(theorem_two["receipt_path"])
+    identity_checks = [
+        verify_file(one_judgment, str(theorem_one["judgment_sha256"])),
+        verify_file(one_checker, str(theorem_one["checker_sha256"])),
+        verify_file(two_judgment, str(theorem_two["judgment_sha256"])),
+        verify_file(two_proof, str(theorem_two["proof_sha256"])),
+        verify_file(two_checker, str(theorem_two["checker_sha256"])),
+        verify_file(two_compact_receipt, str(theorem_two["receipt_sha256"])),
+    ]
 
     one_receipt = run_json_command(
         [
@@ -166,15 +176,33 @@ def verify_theorems(
     require(two_receipt["verified_scope"]["target_must_be_active"] is True, "theorem two did not force target active")
     require(two_receipt["verified_scope"]["coverage_is_a_proof_premise"] is False, "theorem-two coverage became a premise")
 
-    compact = read_json(THEOREM_TWO_RECEIPT_PATH, label="theorem-two compact receipt")
+    compact = read_json(two_compact_receipt, label="theorem-two compact receipt")
     require(isinstance(compact, Mapping), "theorem-two compact receipt is not an object")
     require(compact.get("outcome") == "PASS", "theorem-two compact receipt did not PASS")
-    require(compact["contract_identity"]["checker_sha256"] == theorem_two["checker_sha256"], "theorem-two receipt/checker identity drift")
-    require(compact["proof_summary"]["target_must_be_active"] is True, "theorem-two compact proof summary drift")
+    compact_identity = compact["contract_identity"]
+    for field, expected in (
+        ("checker_sha256", theorem_two["checker_sha256"]),
+        ("judgment_sha256", theorem_two["judgment_sha256"]),
+        ("proof_sha256", theorem_two["proof_sha256"]),
+        ("problemHash", manifest["shared_identity"]["problemHash"]),
+        ("objectiveHash", manifest["shared_identity"]["objectiveHash"]),
+        ("contextHash", manifest["shared_identity"]["theorem_two_contextHash"]),
+    ):
+        require(compact_identity[field] == expected, f"theorem-two compact receipt {field} drift")
+    proof_summary = compact["proof_summary"]
+    require(proof_summary["target_must_be_active"] is True, "theorem-two compact proof summary drift")
+    require(int(proof_summary["slot_count"]) == 52, "theorem-two compact slot count drift")
+    require(int(proof_summary["required_total"]) == 52, "theorem-two compact demand total drift")
+    require(int(proof_summary["forced_unused_total"]) == 0, "theorem-two compact unused total drift")
+    coverage = compact["coverage"]
+    require(coverage["is_proof_premise"] is False, "theorem-two compact coverage became a premise")
+    require(int(coverage["record_count"]) == 1007, "theorem-two compact coverage count drift")
+    require(int(coverage["target_active_count"]) == 1007, "theorem-two compact active coverage drift")
     return {
         "theorem_one": one_receipt,
         "theorem_two": two_receipt,
         "theorem_two_compact_receipt": compact,
+        "identity_checks": identity_checks,
     }
 
 
@@ -516,6 +544,10 @@ def verify_terminal_judgment(
     obligations: Sequence[Mapping[str, Any]],
 ) -> dict[str, Any]:
     shared = manifest["shared_identity"]
+    require(
+        terminal["judgment_id"] == "J-W0-FIXED-RECT-BINDING-ROUTING-EXCLUDED-V1",
+        "terminal Judgment ID drift",
+    )
     require(terminal["status"] == "PROVED_EXCLUDED_RESEARCH", "terminal status drift")
     require(terminal["problem_identity"]["problemHash"] == shared["problemHash"], "terminal problemHash drift")
     require(terminal["problem_identity"]["objectiveHash"] == shared["objectiveHash"], "terminal objectiveHash drift")
@@ -524,8 +556,15 @@ def verify_terminal_judgment(
         **shared["fixed_rectangle"],
         "score": [42, 6],
     }, "terminal rectangle drift")
+    require(
+        terminal["sequent"]["formula"]
+        == "not exists b,r: legal_w0_binding_contract(b) and canonical_predicate_5_routable(W0_ALIGNMENT, rectangle_[1,6]x[51,57], b, r)",
+        "terminal sequent drift",
+    )
+    require([item["step"] for item in terminal["lift"]] == [1, 2, 3, 4], "terminal lift step sequence drift")
     require(terminal["lift"][0]["basis"] == manifest["theorem_two"]["judgment_id"], "terminal lift step 1 basis drift")
     require(manifest["theorem_one"]["judgment_id"] in terminal["lift"][1]["basis"], "terminal lift step 2 basis drift")
+    require(terminal["conclusion"]["candidate_state"] == "PROVED_EXCLUDED", "terminal conclusion state drift")
     require(all(item["status"] == "DISCHARGED" for item in obligations), "a path obligation is not discharged")
     transaction = terminal["endpoint_transaction"]
     require(transaction["candidate_state_before"] == "UNKNOWN", "candidate before-state drift")
@@ -533,12 +572,46 @@ def verify_terminal_judgment(
     require(int(transaction["delta_M_bottom"]) == -1, "candidate delta_M_bottom drift")
     require(transaction["global_M_t_before"] == "N_A_NOT_READY", "global M_t before type drift")
     require(transaction["global_M_t_after"] == "N_A_NOT_READY", "global M_t after type drift")
+    require(
+        transaction["evidence_type"]
+        == "EXACT_SINGLETON_EXCLUSION_BY_COMPOSED_THEOREMS",
+        "terminal evidence type drift",
+    )
     require(transaction["delta_L"] == "ZERO_BY_SCOPE", "delta_L drift")
     require(transaction["delta_U"] == "ZERO_BY_SCOPE", "delta_U drift")
+    require(transaction["ledger_effect"] == "research candidate ledger only", "terminal ledger-effect drift")
     require(terminal["canary_relation"]["historical_verdict"] == "INCONCLUSIVE", "terminal judgment rewrote canary verdict")
     require(terminal["canary_relation"]["current_action"] == "UNCHANGED", "terminal judgment changes canary history")
     require(theorem_receipts["theorem_one"]["status"] == "PASS", "theorem one receipt not PASS")
     require(theorem_receipts["theorem_two"]["outcome"] == "PASS", "theorem two receipt not PASS")
+    required_forbidden = {
+        "production exact-status write",
+        "stable claim ledger write",
+        "certified frontier pruning",
+        "supervisor or publisher consumption",
+        "cross-layout or cross-rectangle generalization",
+        "adjudicated-game global optimality narrative",
+    }
+    require(
+        required_forbidden <= set(terminal["consumption_contract"]["forbidden"]),
+        "terminal forbidden-consumer set drift",
+    )
+    required_non_implications = {
+        "no_certification_effect",
+        "no_exact_status_update",
+        "no_stable_claim_ledger_write",
+        "no_production_lowering",
+        "no_generic_D3_or_D4_unlock",
+        "no_other_layout_or_rectangle_exclusion",
+        "no_global_bound_or_optimum_update",
+        "no_equivalence_between_current_binding_model_and_full_adjudicated_game_semantics",
+        "no_rejudgment_of_the_W0_unary_lowering_canary",
+        "no_use_of_1007_observations_as_a_proof_premise",
+    }
+    require(
+        required_non_implications <= set(terminal["non_implications"]),
+        "terminal non-implication set drift",
+    )
     step_count = parse_numbered_steps(proof_text, "## 6. 组合证明")
     require(step_count == 7, f"terminal proof has {step_count} steps, expected 7")
     return {
@@ -812,6 +885,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         verified_scope = {
             "theorem_one_pass": True,
             "theorem_two_pass": True,
+            "theorem_identity_file_count": len(theorem_receipts["identity_checks"]),
             "path_obligation_count": len(obligations),
             "path_obligations_discharged": sum(item["status"] == "DISCHARGED" for item in obligations),
             "snapshot_slot_count": snapshot_audit["generic_output_slot_count"],
@@ -830,6 +904,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "schema_version": "zmd_w0_terminal_exclusion_receipt_v1",
             "status": "PASS",
             "theorem_checks": {
+                "identity_files": theorem_receipts["identity_checks"],
                 "theorem_one": {
                     "status": theorem_receipts["theorem_one"]["status"],
                     "judgment_id": manifest["theorem_one"]["judgment_id"],

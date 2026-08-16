@@ -1,0 +1,166 @@
+{
+  "schema_version": "zmd_w0_terminal_exclusion_correspondence_manifest_v1",
+  "status": "PINNED_FOR_OFFLINE_LIFT",
+  "created_on": "2026-08-16",
+  "authority": "research_only",
+  "theorem_one": {
+    "judgment_id": "J-W0-GHOST-FRONT-BOUNDARY-041-V1",
+    "judgment_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_one_w0_ghost_front_offline_certificate_20260815/01_JUDGMENT.json",
+    "judgment_sha256": "853c7aa9df3939e8eea97afebbf34c4c453a8e641d186ec75af82af291d0ebc3",
+    "checker_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_one_w0_ghost_front_offline_certificate_20260815/03_check_w0_ghost_front_certificate.py",
+    "checker_sha256": "c53e882ab7b2d6bfa96dacefd510ae708f926116475cb0d74aa18d3d40591ba7"
+  },
+  "theorem_two": {
+    "judgment_id": "J-W0-GENERIC-OUTPUT-SLOT-SATURATION-041-V1",
+    "judgment_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/02_JUDGMENT.json",
+    "judgment_sha256": "91307f7a4ac97c2a73537a3515363a395b171441880134bb11eb3b26513b8454",
+    "proof_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/03_PROOF.md",
+    "proof_sha256": "e511814998ceebe2867a5f2845a0a9ef6bfdd8a677e5da5964fe8f307a6f321d",
+    "checker_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/04_check_w0_slot_arithmetic.py",
+    "checker_sha256": "4a863834f5990d6cab4366f4b27fd32d0676c1563dd7c98859b1357b20a5cf6d",
+    "receipt_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/05_THEOREM_RECEIPT.json",
+    "receipt_sha256": "20024a13dd7f74697f493b22d7525f7c818c0a29796cd911cc26c3deecc31949"
+  },
+  "shared_identity": {
+    "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
+    "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27",
+    "theorem_one_contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded",
+    "theorem_two_contextHash": "f66d8a2c0334be01b419229da97d8c32fc19bfb4d5fa07e2cd6e370e40e79a28",
+    "context_relation": "theorem_two_is_structured_extension_of_theorem_one",
+    "layout_id": "W0-ALIGNMENT",
+    "normalized_layout_sha256": "d199c88e6d65582a269ec5142b33e3d9db9294eeb0b1a25f9ee05005ff1a26aa",
+    "fixed_rectangle": {
+      "x0": 1,
+      "y0": 51,
+      "w": 6,
+      "h": 7,
+      "x1": 6,
+      "y1": 57
+    },
+    "target_slot_id": "boundary_port_041:out:0",
+    "target_front_cell": [
+      1,
+      53
+    ]
+  },
+  "implementation_sources": [
+    {
+      "role": "binding_model",
+      "path": "src/models/binding_subproblem.py",
+      "sha256": "1c89f6ee2cb958568c7365289a0b3d6e69a32f3162d4c925f02695705efc7ee9",
+      "size_bytes": 70508
+    },
+    {
+      "role": "routing_model",
+      "path": "src/models/routing_subproblem.py",
+      "sha256": "7554b0f24176b86104095ee47b8ec8ed5dfc4098c3df2f661231b0cf2f0ae718",
+      "size_bytes": 84905
+    },
+    {
+      "role": "fixed_layout_research_path",
+      "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/phase_minus1_harness.py",
+      "sha256": "81e8960738ba2c0b81f86cefb96bc87da9b2e2f81ac9073e2135192b7fb905c2",
+      "size_bytes": 59180
+    }
+  ],
+  "model_snapshot": {
+    "path": ".artifacts/solver_reasoning_outer_loop_w0_unary_canary_20260816/w0-unary-canary-r1-20260816/A_BASELINE/model_snapshot.json",
+    "sha256": "f0dce520e9ee0cf4146d748e2c83a5b5dc014123ae8a47d675e9f074dcae5869",
+    "size_bytes": 3302178,
+    "role": "independent path-correspondence corroboration; not a theorem-two premise",
+    "expected": {
+      "variable_count": 17190,
+      "constraint_count": 289,
+      "generic_output_slot_count": 52,
+      "generic_output_literal_count": 156,
+      "target_exactly_one_constraint_index": 273,
+      "blue_requirement_constraint_index": 287,
+      "source_requirement_constraint_index": 288,
+      "blue_requirement": 34,
+      "source_requirement": 18
+    }
+  },
+  "path_obligations": [
+    {
+      "id": "W0-LIFT-01-INPUT-IDENTITY",
+      "claim": "The fixed research path consumes the pinned W0 layout, candidate pool, mandatory instances, generic I/O and canonical rules.",
+      "required_evidence": [
+        "theorem-two input checker",
+        "phase-minus1 harness source identity"
+      ]
+    },
+    {
+      "id": "W0-LIFT-02-SLOT-COMPLETENESS",
+      "claim": "The binding model constructs exactly the 52 physical generic-output slots re-derived by theorem two.",
+      "required_evidence": [
+        "binding source audit",
+        "A_BASELINE model snapshot"
+      ]
+    },
+    {
+      "id": "W0-LIFT-03-PER-SLOT-EXACTLY-ONE",
+      "claim": "Every generic-output slot has exactly the three declared labels and one ExactlyOne constraint.",
+      "required_evidence": [
+        "binding source audit",
+        "A_BASELINE model snapshot"
+      ]
+    },
+    {
+      "id": "W0-LIFT-04-GLOBAL-COUNTS",
+      "claim": "The binding model adds exact blue=34 and source=18 global equalities over all 52 source slots.",
+      "required_evidence": [
+        "binding source audit",
+        "A_BASELINE model snapshot"
+      ]
+    },
+    {
+      "id": "W0-LIFT-05-ACTIVE-PORT-EXPORT",
+      "claim": "A selected non-__unused__ generic-output label is exported as an active source port spec, while __unused__ is not exported.",
+      "required_evidence": [
+        "binding source audit"
+      ]
+    },
+    {
+      "id": "W0-LIFT-06-ROUTING-CONSUMPTION",
+      "claim": "The fixed-layout research path sends the binding model's port specs and the strict-empty placement core to exact routing precheck and routing solve without an alternate binding bypass.",
+      "required_evidence": [
+        "phase-minus1 harness source audit",
+        "routing source identity"
+      ]
+    },
+    {
+      "id": "W0-LIFT-07-CONTEXT-TRANSPORT",
+      "claim": "Theorem one remains valid after adding theorem two's binding-contract premises because shared problem, objective, layout, rectangle and base-context identities are unchanged.",
+      "required_evidence": [
+        "theorem-one checker PASS",
+        "theorem-two checker PASS",
+        "structured context relation check"
+      ]
+    },
+    {
+      "id": "W0-LIFT-08-ENDPOINT-NONINTERFERENCE",
+      "claim": "The research-only exclusion writes neither exact status nor stable claim ledger.",
+      "required_evidence": [
+        "protected surface hash check"
+      ]
+    }
+  ],
+  "protected_surfaces": [
+    {
+      "path": "data/solutions/exact_full_scale_status.json",
+      "sha256": "3e525b91e324e8e66abd52c5634fdb97c8957baef8dd49efd63b663f34d3e67e",
+      "size_bytes": 4599
+    },
+    {
+      "path": "data/knowledge/claims.jsonl",
+      "sha256": "6c3608b09d56e4a76de8a605bf30c71812b4152a0eb00c077e5abccd391f7483",
+      "size_bytes": 239505
+    }
+  ],
+  "canary_history": {
+    "final_report_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816/14_GPT56PRO_FINAL_REPORT.md",
+    "final_report_sha256": "6cc0dc74f95d75a99480417e5442b9ddc07095e6e03a496390853a37525ce397",
+    "frozen_verdict": "INCONCLUSIVE",
+    "relation": "independent_new_evidence_line; no historical rejudgment"
+  }
+}
