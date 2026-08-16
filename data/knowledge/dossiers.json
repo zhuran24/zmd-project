@@ -3326,7 +3326,7 @@
         "solver-architecture",
         "solver-rethink"
       ],
-      "summary": "三份外部评审正文逐字归档；同一 dossier 另登记仅在声明条件下可消费的 non_authorizing 设计约束与可证伪架构假设，二者均不构成立项或现行实现义务。",
+      "summary": "三份外部评审正文逐字归档；同一 active dossier 继续承载 Phase -1 观测、W0 离线短证书、一元 lowering 金丝雀及 2026-08-16 席位算术／固定矩形终局排除实验。所有实验均保持 research-only／non-authorizing：定理与候选排除不自动构成立项、production lowering、认证、exact-status、stable claim 或发布义务。",
       "workflow": {
         "opened_at": "2026-08-15",
         "closure": null
