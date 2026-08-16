@@ -1,6 +1,6 @@
 # Phase -1 v2：高预算死因谱
 
-> **状态：** 协议已在 `6c9fc1f4201c2eb79f0ea87b4e5530cfe245897a` 冻结；harness 已完成静态验证，尚未发射。
+> **状态：** `RUNNING`。协议已在 `6c9fc1f4201c2eb79f0ea87b4e5530cfe245897a` 冻结；harness 提交为 `4dd5f7daf64ddcedc325159c53ccee8bd8c0c168`；run id 为 `phase-minus1-v2-r1-20260815`。
 > **性质：** `non_authorizing / research_only`。本目录不产生推理外环立项、认证结论或发布权限。
 
 ## 冻结入口
@@ -9,6 +9,7 @@
 - [`corpus_manifest_v2.json`](corpus_manifest_v2.json)：三个 deep arms、六个 calibration slices、输入身份与执行参数。
 - [`phase_minus1_v2_harness.py`](phase_minus1_v2_harness.py)：deep 监控、正式 5000-event 饱和窗口、有限域 slice 与四并发 supervisor。
 - [`launch_phase_minus1_v2.sh`](launch_phase_minus1_v2.sh)：`setsid nohup` launcher；顶层与每个 arm 均写 `EXIT_CODE`、`.DONE` 和完整日志。
+- [`RUN_LAUNCH.md`](RUN_LAUNCH.md)：运行目录、PID、启动时 admission 与首批 slice sanity receipts。
 
 ## 前代
 
