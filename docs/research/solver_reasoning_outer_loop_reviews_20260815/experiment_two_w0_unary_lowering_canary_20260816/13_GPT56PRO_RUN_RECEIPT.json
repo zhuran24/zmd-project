@@ -1,0 +1,159 @@
+{
+  "aggregate": {
+    "aggregate_sha256": "0b44662f1bd52c09a25b38007f0db70dedf08e66645401ac4fa36b87316b4c6b",
+    "causal_avoidance_claimed": false,
+    "compiled_domain_effect_observed": true,
+    "endpoint_resource_classification": "NOT_COMPARABLE_CENSORED",
+    "runtime_family_collapse_observed": false,
+    "verdict": "INCONCLUSIVE"
+  },
+  "apparatus_history": {
+    "entered_first_binding_solve": false,
+    "outcome": "PROTOCOL_VIOLATION",
+    "run_id": "w0-unary-canary-20260816T170830Z-edf13896a8",
+    "scientific_evidence_effect": "NONE",
+    "suite_receipt_sha256": "56626ce28fe53c9dca191ad88f9c65eca2a3a404a277f58b701c0103905a53c3"
+  },
+  "arms": {
+    "A_BASELINE": {
+      "binding_solve_seconds": 329.531292036816,
+      "cpu_seconds": 339.48319919200003,
+      "event_count": 1007,
+      "journal_sha256": "6801fd7d61adc418742a5651bad5902d8e01cf49e989623da0277ef36045061a",
+      "peak_rss_bytes": 679079936,
+      "receipt_sha256": "85be0b78c3ab9b04015c5d57dde864261b0227a992e28bf168abeeada87e1665",
+      "sequence_sha256": "9cc4637b444bc66ac2def1151441bc703802f1433c99db456c2fa81225e94f64",
+      "trigger_evaluator_seconds": 0.0,
+      "wall_seconds": 339.0576129970141
+    },
+    "B_OBSERVER_NOOP": {
+      "binding_solve_seconds": 328.7226975247613,
+      "cpu_seconds": 339.061096545,
+      "event_count": 1007,
+      "journal_sha256": "6b7212e90e6e3a7c83671db19a96149e2872432ac11621cb8ae62ea4f4590220",
+      "peak_rss_bytes": 679174144,
+      "receipt_sha256": "7c5f795f57e36ab51558e3b4a2239086022989bdfc77885ebdf1123f5a12653d",
+      "sequence_sha256": "9cc4637b444bc66ac2def1151441bc703802f1433c99db456c2fa81225e94f64",
+      "trigger_evaluator_seconds": 0.01907163462601602,
+      "wall_seconds": 338.5433933410095
+    },
+    "C_UNARY_LOWERING": {
+      "active_values_after": 0,
+      "active_values_before": 2,
+      "binding_solve_seconds": 20.08874909800943,
+      "censor_status": "CENSORED",
+      "cpu_seconds": 23.050662557,
+      "effective_outcome": "CENSORED",
+      "peak_rss_bytes": 1592225792,
+      "proposal_count": 0,
+      "raw_outcome": "NO_EFFECT",
+      "receipt_sha256": "df15611f6668c526777c4de18d96aae8b32a3f0236d7e578b327a9552a878cd4",
+      "target_domain_after": 1,
+      "target_domain_before": 3,
+      "terminal_status": "UNKNOWN",
+      "wall_seconds": 21.827881390985567
+    }
+  },
+  "authority_basis": {
+    "authority_class": "research_only_non_authorizing",
+    "source_paths": [
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816/00_OWNER_AUTHORIZATION_20260816.md",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816/01_W0_UNARY_LOWERING_CANARY_PROTOCOL_V1.md",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816/03A_PRELAUNCH_PROTOCOL_ADDENDUM_V1_1.md"
+    ]
+  },
+  "commit_chain": [
+    {
+      "commit": "57a17a7672cf879fc39e0e67a044590a85cb47a2",
+      "subject": "docs(推理外环): 冻结 W0 一元 lowering 金丝雀协议"
+    },
+    {
+      "commit": "988d1b787778c211f5e8b930b7f6cf093581aed8",
+      "subject": "docs(推理外环): 冻结金丝雀发射前增补契约"
+    },
+    {
+      "commit": "edf13896a867ae14be8d5add3f08a41c0f4c5322",
+      "subject": "feat(推理外环): 实现 W0 一元 lowering 金丝雀"
+    },
+    {
+      "commit": "d3ad19d479eb5ea696ccda374fee655b81f6cfab",
+      "subject": "fix(推理外环): 修正金丝雀环境前闸调用"
+    },
+    {
+      "commit": "fe60db52b65eaa5c3664ad758a06b4427447b4a6",
+      "subject": "fix(推理外环): 区分金丝雀删失与无效判词"
+    },
+    {
+      "commit": "4ce4e7ea7f8e44ab6a0f451d33ba61b4daf948bf",
+      "subject": "fix(推理外环): 收紧金丝雀局部效果表述"
+    }
+  ],
+  "contract_identity": {
+    "aggregate_path": ".artifacts/solver_reasoning_outer_loop_w0_unary_canary_20260816/w0-unary-canary-20260816T171013Z-d3ad19d479/CANARY_AGGREGATE_GPT56PRO.json",
+    "aggregate_sha256": "0b44662f1bd52c09a25b38007f0db70dedf08e66645401ac4fa36b87316b4c6b",
+    "checker_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816/12_check_gpt56pro_canary_lineage.py",
+    "checker_sha256": "a385ac95e79e96e4652f806ce9570a7b18b849303ed861fc6a1759ec17bbcf31",
+    "implementation_commits": [
+      "edf13896a867ae14be8d5add3f08a41c0f4c5322",
+      "d3ad19d479eb5ea696ccda374fee655b81f6cfab",
+      "fe60db52b65eaa5c3664ad758a06b4427447b4a6",
+      "4ce4e7ea7f8e44ab6a0f451d33ba61b4daf948bf"
+    ],
+    "prelaunch_revision_commit": "988d1b787778c211f5e8b930b7f6cf093581aed8",
+    "protocol_freeze_commit": "57a17a7672cf879fc39e0e67a044590a85cb47a2"
+  },
+  "granted_effects": [
+    "permits_tracked_report_to_record_INCONCLUSIVE",
+    "records_compiled_domain_effect_without_runtime_family_promotion"
+  ],
+  "historical_suite_classifier_defect": {
+    "effect_on_scientific_verdict": "NONE_AFTER_IMMUTABLE_ARM_REAGGREGATION",
+    "raw_outcome": "PROTOCOL_VIOLATION",
+    "suite_receipt_sha256": "ef7d85d32ec024d542f875cf261f29d7b7c8f0a1f06cdded8dcb8572c5377e33"
+  },
+  "non_implications": [
+    "no_canary_PASS",
+    "no_runtime_family_collapse_claim",
+    "no_compute_gain_claim",
+    "no_generic_D3_or_D4_unlock",
+    "no_cross_layout_generality",
+    "no_bound_or_certified_status_update",
+    "no_production_or_publication_authority"
+  ],
+  "observer_effect": {
+    "trigger_evaluator_seconds_B": 0.01907163462601602,
+    "wall_ratio_B_over_A": 0.9984833856067726,
+    "within_15_percent_tolerance": true
+  },
+  "outcome": "PASS",
+  "preflight": {
+    "contract_receipt_sha256": "60e108ee6b4f51f0a2ccc008d80e4d220e843f1d23a60896bc378b50e0c79efa",
+    "mutation_canary_count": 4,
+    "proto_delta_exact": true,
+    "sensitivity_control_count": 11,
+    "sensitivity_receipt_sha256": "1724674def3549922a3a9c1173d93f285943c7661364d0f3ec1387f61110fbbe"
+  },
+  "result_kind": "gpt56pro_canary_postrun_check",
+  "schema_version": "zmd_gpt56pro_w0_canary_postrun_check_v1",
+  "scientific_verdict": "INCONCLUSIVE",
+  "status": "PASS",
+  "subject_identity": {
+    "apparatus_run_id": "w0-unary-canary-20260816T170830Z-edf13896a8",
+    "judgment_id": "J-W0-GHOST-FRONT-BOUNDARY-041-V1",
+    "lineage": "gpt56pro-57a17a7",
+    "scientific_run_id": "w0-unary-canary-20260816T171013Z-d3ad19d479"
+  },
+  "verified_scope": {
+    "A_B_semantic_sequence_equal": true,
+    "A_event_count": 1007,
+    "B_event_count": 1007,
+    "C_binding_proposals": 0,
+    "commit_count": 6,
+    "compiled_domain_effect_observed": true,
+    "endpoint_sensitivity_pass": true,
+    "preflight_contract_pass": true,
+    "runtime_family_collapse_observed": false,
+    "scientific_verdict": "INCONCLUSIVE"
+  },
+  "wall_seconds": 0.02977985900361091
+}
