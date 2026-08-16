@@ -216,6 +216,7 @@ git diff --cached --name-status
 - **环境变量残留**：certified 路径可能 fail closed；先检查当前 shell 和 `.env*` 的作用域。
 - **外部工件缺失**：先恢复真实 payload 和校验，不创建伪造占位物。
 - **预算耗尽**：只能陈述 UNKNOWN、NOT_EXHAUSTIVE、NOT_REACHED 或工具定义的等价状态。
+- **长跑测量两口径混用**：周期性 progress 快照是下界不是精确计数；事件精确计数一律以 append-only journal 的完整落盘行为真源，两口径不得混用或相加（在案先例：Phase -1 快照 840 vs journal 7578）。
 - **历史路径不存在**：研究日志可能引用已经退役或只在旧工作区存在的 `.codegraph/`、`.Codex/`、`cc_memory/`、`cc_memory_vnext/` 及旧脚本；`.claude/` 当前包含项目 skill，例如 `.claude/skills/solving-methodology/SKILL.md`，不能整目录按退役处理。先查看当前 `--help`、[`NAV_MAP`](../NAV_MAP.md) 和 Git 历史，不为修复旧引用重建未经 owner 设计的 authority surface。
 - **搜索假阴性**：承重的存在/不存在结论先用 `git grep` 检查全部 tracked 路径；`rg` 默认受 `.rgignore` 影响，完整 hash 还可能被拆成相邻字符串，同一 sha 也可能在不同文件使用不同大小写。查集合成员资格时优先导入机器定义或运行对应契约测试。
 - **生成页漂移**：修改 source 后运行声明的 generator；不要直接编辑输出。

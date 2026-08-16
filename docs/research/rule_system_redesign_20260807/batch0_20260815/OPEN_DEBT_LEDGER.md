@@ -28,8 +28,9 @@
 | OD-B0-CANON-17 | canonical 措辞 | C-17 箱槽位/接收不变量措辞 | CLOSED_AT_BOOTSTRAP | canonical 20260808 执行席 | 2026-08-08 | 措辞本体不阻断；下游理由重核见 CHAIN-769 |
 | OD-B0-CHAIN-769 | 连锁重写 | 定理 #21 与 U-01 箱口限制的理由重核 | OPEN_REVALIDATION | 批 0 连锁重写总责席 | 2026-08-22 | 两个下游结论不得沿用旧理由；删除动作被挡 |
 | OD-B1-PACKAGE-01 | 打包接线 | `rules/derived/` 白／黑名单接入 `scripts/package_review_snapshot.py` | OPEN | 外审快照接线席 | 2026-08-29 | 不得声称标准外审包已自动纳入非冻结派生层 |
+| OD-B1-THEOREM-REG-01 | 登记面耦合 | 未来 theorem registry 与 `rules/derived/` 状态机的形态对齐 | CONDITIONAL | 重设计线登记面对齐席（届时指派） | 无（触发器键控） | 触发前无阻断；触发后未对齐前不得声称两面登记机制同形态 |
 
-台账当前数据非空：`9` 条，其中开放/待复核 `5` 条，启动时已关闭 `4` 条。前 8 条是批 0 首批；`OD-B1-PACKAGE-01` 是 owner 2026-08-15 第 4 件裁定后的批 1 追加事件。
+台账当前数据非空：`10` 条，其中开放/待复核 `5` 条，条件项 `1` 条，启动时已关闭 `4` 条。前 8 条是批 0 首批；`OD-B1-PACKAGE-01` 是 owner 2026-08-15 第 4 件裁定后的批 1 追加事件；`OD-B1-THEOREM-REG-01` 是 2026-08-16 两线联合结论的追加事件。
 
 ## 3. C-08 四个 call site
 
@@ -168,11 +169,24 @@
 | 阻断范围 | 本欠账关闭前，不得写“标准 GPT Pro／外审快照会自动携带 L2 派生层”；若需外发，必须人工逐项对账并在外发台账注明临时组包路径 |
 | 本批边界 | 批 1 不修改 `scripts/`；只把名单声明落在 `rules/derived/manifest.json` 并建账 |
 
-## 8. 逾期与消费视图
+## 8. 联合结论条件项
+
+### OD-B1-THEOREM-REG-01：未来 theorem registry 与非冻结派生层的形态对齐
+
+| 字段 | 值 |
+|---|---|
+| 触发源 | 2026-08-16 两线联合结论：推理外环架构草案已引用 `rules/derived/` 的 UNREVIEWED 状态机／前提指纹／currency 测试为「未来定理登记面」的形态先例 |
+| 状态 | `CONDITIONAL`（触发器未到，无到期日） |
+| 触发器 | 编译器官（金丝雀 5 号/6 号）获 owner 批准转入常态消费，或任何「theorem registry 实例化」提案出现 |
+| 关闭动作 | 触发后两面对齐：research 侧 theorem registry 采用与 `rules/derived/` 同形态的状态机／指纹／currency／`_authority` 头，或显式登记分叉理由；结论回写本行 |
+| 阻断范围 | 触发前无阻断；触发后未对齐前，不得声称「两面登记机制同形态」 |
+
+## 9. 逾期与消费视图
 
 | 视图 | 当前值 |
 |---|---|
 | 开放或待复核 | `OD-B0-C08-03`、`OD-B0-C08-04`、`OD-B0-INST-01`、`OD-B0-CHAIN-769`、`OD-B1-PACKAGE-01` |
+| 条件项（触发器未到） | `OD-B1-THEOREM-REG-01` |
 | 已关闭但保留历史 | `OD-B0-C08-01`、`OD-B0-C08-02`、`OD-B0-CANON-15`、`OD-B0-CANON-17` |
 | 逾期 | 建册时 `0` |
 | 证明类结论默认动作 | 依赖开放行则标 `conditional`，方向暴露栏写欠账号 |

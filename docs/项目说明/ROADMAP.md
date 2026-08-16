@@ -66,6 +66,7 @@
 - **退出证据：** Phase -1 四类实验材料形成可复验的 go/no-go 证据包，随后由 owner 留下明确的立项或不立项裁决；任何工程实现均不得替代第二道闸。
 - **非目标：** 登记不等于立项；[设计约束](../research/solver_reasoning_outer_loop_reviews_20260815/REASONING_OUTER_LOOP_DESIGN_CONSTRAINTS.md) 保持 `non_authorizing`，不对现行树产生新增义务。
 - **坐标：** [三轮外部评审归档](../research/solver_reasoning_outer_loop_reviews_20260815/README.md)、[推理外环设计约束登记](../research/solver_reasoning_outer_loop_reviews_20260815/REASONING_OUTER_LOOP_DESIGN_CONSTRAINTS.md)。
+- **条件项（触发器键控；登记不改变未立项状态；2026-08-16 两线联合结论）：** ①外部 witness 准入面设计——触发器＝D5a 类路线立项或任何外部见证准入提案出现；现行终验链无该入口，不得随手开。②研究面反馈机制与认证面 cut 框架的关系裁定——触发器＝第三层家族普遍性通过，或任何「定理进认证路径」提案出现；现阶段按两套东西设计，合流是届时的 owner 开放题。③实验闸内任何「已证定理静态 lowering」活动的硬红线——lowering 入口与度量埋点一律落研究面模块，certified 源文件零改动，触 `src/` 即面边界事件、停下过审（已同步为金丝雀协议入场前件）。
 
 ## 开放残余：落地时仪表盘 §9 迁移
 
