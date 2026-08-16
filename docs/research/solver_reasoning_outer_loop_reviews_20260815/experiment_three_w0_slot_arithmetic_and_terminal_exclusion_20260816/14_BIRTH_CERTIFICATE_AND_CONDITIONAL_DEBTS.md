@@ -43,6 +43,7 @@
 - **状态：** `CONDITIONAL_DEBT`
 - **未清偿内容：** `10_check_w0_terminal_exclusion.py` 尚未读取 `08_TERMINAL_EXCLUSION_JUDGMENT.json` 的 `premises` 数组，也未校验 lift step 3/4 的 `basis`。step 4 从“无合法 `(b,r)` 对”跨到固定候选的 dossier-local research classification，包含本批唯一尚未机器核验的跨对象空间 basis。
 - **已完成的止血：** step-4 文字已改为 5 条机器关闭、3 条人工论证、0 条 open，不再把 argued 义务冒充 discharged。
+- **查验方定序附注（2026-08-16）：** `LIFT-05` 的“非 `__unused__` ⇔ 进入 routing port specs”双向等价是 `PROVED_EXCLUDED` 穷尽性结论的承重点；当前仅有源码 marker 支撑，状态为 `ARGUED_NOT_MACHINE_CHECKED`，只在 research-only 围栏内成立。本 dossier 将来若被援引支撑任何更强主张（升格、外推或 certified 方向），`LIFT-05` 的机器化必须先于 DEBT-B 清偿。定序来源：出生证查验方附注，2026-08-16。
 - **触发器：** 下次修改 `10_check_w0_terminal_exclusion.py`，或定理三立案；任一触发即必须读取 terminal premises，并逐项校验 lift step 3/4 basis 后才能交付。
 
 ### DEBT-C：契约负测、异常收敛与 schema 类型覆盖
