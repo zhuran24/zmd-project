@@ -1,0 +1,45 @@
+{
+  "_authority": {
+    "class": "NON_FROZEN_DERIVED",
+    "statement": "非冻结派生件；不属于 canonical、freeze-ritual 或 owner authority；未经审查不得承重消费。"
+  },
+  "id": "D-B1-SCAFFOLD-001",
+  "level": 1,
+  "kind": "parameter_derivation",
+  "statement": "批 1 currency fixture：记录当前 belt_capacity_per_tick 的精确来源值；这是立架样例，不是生产结论。",
+  "scope": "batch1_currency_fixture",
+  "premises": [
+    {
+      "kind": "source_value",
+      "ref": "canonical:globals.logistics.belt_capacity_per_tick",
+      "source": {
+        "path": "rules/canonical_rules.json",
+        "pointer": "/globals/logistics/belt_capacity_per_tick"
+      },
+      "value_at_derivation": {
+        "exact_rational": "1/1"
+      }
+    },
+    {
+      "kind": "assumption",
+      "ref": "assumption:batch1-fixture-only",
+      "statement": "本条目只用于批 1 currency 与视图闭包测试，不得作为 certified 前提。",
+      "assumption_version": "1"
+    }
+  ],
+  "premise_fingerprint": "4dcf493d32fab29d37f79996e5637bcd08aa51504b863c337d2eac32f679da13",
+  "derivation": {
+    "method": "direct_projection_fixture",
+    "receipt": "docs/research/rule_system_redesign_20260807/batch1_20260815/BATCH1_SELF_RECEIPT.md",
+    "recompute_cmd": ".venv/bin/python devtools/rule_system_tooling.py fingerprint rules/derived/entries/D-B1-SCAFFOLD-001.json"
+  },
+  "crystallization": {
+    "free_variable": "none (currency fixture)",
+    "collapsed_to": "exact source value",
+    "detector": "direct_projection"
+  },
+  "direction": "neutral",
+  "status": "UNREVIEWED",
+  "consumers": [],
+  "sentinel": "devtools/tests/test_rule_system_tooling.py::test_currency_mutation_turns_red"
+}

@@ -403,8 +403,8 @@
 
 ## 7.4 产出位置与 owner 待裁边界
 
-- `rules/derived/` 属于 `OWNER_DECISION_SUMMARY.md` 第 4 件，尚未批准，本批及使用本模板的 docs 过渡期不得创建。
-- 扫描产出暂存 docs 侧位置：`________________`
+- owner 已在 `OWNER_DECISION_SUMMARY.md` 头部 2026-08-15 裁定追记（`3d34687`）接受第 4 件：扫描产出应落 `rules/derived/` 非冻结派生层；该裁定只批准目录形态，不把条目内容升为 canonical 或 owner authority。
+- 扫描产出位置：`rules/derived/entries/<稳定 id>.json`；运行日志仍走 `.artifacts/` JSONL，不在多人之间共同改一只大文件。
 - 状态必须写 `UNREVIEWED`，不得被消费为既定前提；见消费闸 G2。
 - 形态 checker/凭据 checker 是否进 CI 及何时转硬门属于第 5 件，仍待 owner 拍板；本模板不声称已上线硬门。
 

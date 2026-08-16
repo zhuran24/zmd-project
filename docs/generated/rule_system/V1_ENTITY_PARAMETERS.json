@@ -1,0 +1,336 @@
+{
+  "_authority": {
+    "class": "GENERATED_VIEW_NON_AUTHORITY",
+    "statement": "非权威生成视图；只作检索与差异定位；不得进入承重前提集，消费时必须回读 source_refs。"
+  },
+  "format": "zmd-rule-view-v1",
+  "view_id": "V1",
+  "title": "实体参数表（MISSING 显式计数）",
+  "source_refs": [
+    "rules/canonical_rules.json#/facility_templates"
+  ],
+  "currency": {
+    "generator": "devtools/rule_system_tooling.py",
+    "rule": "tracked bytes must equal a cold regeneration"
+  },
+  "rows": [
+    {
+      "entity": "boundary_storage_port",
+      "fields": {
+        "dimensions": {
+          "value": {
+            "w": 1,
+            "h": 3
+          },
+          "source": "rules/canonical_rules.json#/facility_templates/boundary_storage_port/dimensions"
+        },
+        "rotatable": {
+          "value": true,
+          "source": "rules/canonical_rules.json#/facility_templates/boundary_storage_port/rotatable"
+        },
+        "needs_power": {
+          "value": false,
+          "source": "rules/canonical_rules.json#/facility_templates/boundary_storage_port/needs_power"
+        },
+        "is_solid_z": {
+          "value": true,
+          "source": "rules/canonical_rules.json#/facility_templates/boundary_storage_port/is_solid_z"
+        },
+        "port_rule": {
+          "value": "inward_facing",
+          "source": "rules/canonical_rules.json#/facility_templates/boundary_storage_port/port_rule"
+        },
+        "placement_rule": {
+          "value": "left_or_bottom_boundary",
+          "source": "rules/canonical_rules.json#/facility_templates/boundary_storage_port/placement_rule"
+        }
+      },
+      "missing": [
+        "power_coverage_radius",
+        "core_limits",
+        "physical_input_ports",
+        "physical_output_ports",
+        "buffer_slots",
+        "slot_capacity",
+        "cycle_seconds"
+      ],
+      "missing_count": {
+        "value": 7,
+        "source": "devtools/rule_system_tooling.py::render_view_v1(expected_fields - present_fields)"
+      }
+    },
+    {
+      "entity": "manufacturing_3x3",
+      "fields": {
+        "dimensions": {
+          "value": {
+            "w": 3,
+            "h": 3
+          },
+          "source": "rules/canonical_rules.json#/facility_templates/manufacturing_3x3/dimensions"
+        },
+        "rotatable": {
+          "value": true,
+          "source": "rules/canonical_rules.json#/facility_templates/manufacturing_3x3/rotatable"
+        },
+        "needs_power": {
+          "value": true,
+          "source": "rules/canonical_rules.json#/facility_templates/manufacturing_3x3/needs_power"
+        },
+        "is_solid_z": {
+          "value": true,
+          "source": "rules/canonical_rules.json#/facility_templates/manufacturing_3x3/is_solid_z"
+        },
+        "port_rule": {
+          "value": "opposite_parallel_sides",
+          "source": "rules/canonical_rules.json#/facility_templates/manufacturing_3x3/port_rule"
+        }
+      },
+      "missing": [
+        "placement_rule",
+        "power_coverage_radius",
+        "core_limits",
+        "physical_input_ports",
+        "physical_output_ports",
+        "buffer_slots",
+        "slot_capacity",
+        "cycle_seconds"
+      ],
+      "missing_count": {
+        "value": 8,
+        "source": "devtools/rule_system_tooling.py::render_view_v1(expected_fields - present_fields)"
+      }
+    },
+    {
+      "entity": "manufacturing_5x5",
+      "fields": {
+        "dimensions": {
+          "value": {
+            "w": 5,
+            "h": 5
+          },
+          "source": "rules/canonical_rules.json#/facility_templates/manufacturing_5x5/dimensions"
+        },
+        "rotatable": {
+          "value": true,
+          "source": "rules/canonical_rules.json#/facility_templates/manufacturing_5x5/rotatable"
+        },
+        "needs_power": {
+          "value": true,
+          "source": "rules/canonical_rules.json#/facility_templates/manufacturing_5x5/needs_power"
+        },
+        "is_solid_z": {
+          "value": true,
+          "source": "rules/canonical_rules.json#/facility_templates/manufacturing_5x5/is_solid_z"
+        },
+        "port_rule": {
+          "value": "opposite_parallel_sides",
+          "source": "rules/canonical_rules.json#/facility_templates/manufacturing_5x5/port_rule"
+        }
+      },
+      "missing": [
+        "placement_rule",
+        "power_coverage_radius",
+        "core_limits",
+        "physical_input_ports",
+        "physical_output_ports",
+        "buffer_slots",
+        "slot_capacity",
+        "cycle_seconds"
+      ],
+      "missing_count": {
+        "value": 8,
+        "source": "devtools/rule_system_tooling.py::render_view_v1(expected_fields - present_fields)"
+      }
+    },
+    {
+      "entity": "manufacturing_6x4",
+      "fields": {
+        "dimensions": {
+          "value": {
+            "w": 6,
+            "h": 4
+          },
+          "source": "rules/canonical_rules.json#/facility_templates/manufacturing_6x4/dimensions"
+        },
+        "rotatable": {
+          "value": true,
+          "source": "rules/canonical_rules.json#/facility_templates/manufacturing_6x4/rotatable"
+        },
+        "needs_power": {
+          "value": true,
+          "source": "rules/canonical_rules.json#/facility_templates/manufacturing_6x4/needs_power"
+        },
+        "is_solid_z": {
+          "value": true,
+          "source": "rules/canonical_rules.json#/facility_templates/manufacturing_6x4/is_solid_z"
+        },
+        "port_rule": {
+          "value": "long_sides",
+          "source": "rules/canonical_rules.json#/facility_templates/manufacturing_6x4/port_rule"
+        }
+      },
+      "missing": [
+        "placement_rule",
+        "power_coverage_radius",
+        "core_limits",
+        "physical_input_ports",
+        "physical_output_ports",
+        "buffer_slots",
+        "slot_capacity",
+        "cycle_seconds"
+      ],
+      "missing_count": {
+        "value": 8,
+        "source": "devtools/rule_system_tooling.py::render_view_v1(expected_fields - present_fields)"
+      }
+    },
+    {
+      "entity": "power_pole",
+      "fields": {
+        "dimensions": {
+          "value": {
+            "w": 2,
+            "h": 2
+          },
+          "source": "rules/canonical_rules.json#/facility_templates/power_pole/dimensions"
+        },
+        "rotatable": {
+          "value": false,
+          "source": "rules/canonical_rules.json#/facility_templates/power_pole/rotatable"
+        },
+        "needs_power": {
+          "value": false,
+          "source": "rules/canonical_rules.json#/facility_templates/power_pole/needs_power"
+        },
+        "is_solid_z": {
+          "value": true,
+          "source": "rules/canonical_rules.json#/facility_templates/power_pole/is_solid_z"
+        },
+        "port_rule": {
+          "value": "none",
+          "source": "rules/canonical_rules.json#/facility_templates/power_pole/port_rule"
+        },
+        "power_coverage_radius": {
+          "value": {
+            "exact_rational": "5/1"
+          },
+          "source": "rules/canonical_rules.json#/facility_templates/power_pole/power_coverage_radius"
+        }
+      },
+      "missing": [
+        "placement_rule",
+        "core_limits",
+        "physical_input_ports",
+        "physical_output_ports",
+        "buffer_slots",
+        "slot_capacity",
+        "cycle_seconds"
+      ],
+      "missing_count": {
+        "value": 7,
+        "source": "devtools/rule_system_tooling.py::render_view_v1(expected_fields - present_fields)"
+      }
+    },
+    {
+      "entity": "protocol_core",
+      "fields": {
+        "dimensions": {
+          "value": {
+            "w": 9,
+            "h": 9
+          },
+          "source": "rules/canonical_rules.json#/facility_templates/protocol_core/dimensions"
+        },
+        "rotatable": {
+          "value": true,
+          "source": "rules/canonical_rules.json#/facility_templates/protocol_core/rotatable"
+        },
+        "needs_power": {
+          "value": false,
+          "source": "rules/canonical_rules.json#/facility_templates/protocol_core/needs_power"
+        },
+        "is_solid_z": {
+          "value": true,
+          "source": "rules/canonical_rules.json#/facility_templates/protocol_core/is_solid_z"
+        },
+        "port_rule": {
+          "value": "core_specific",
+          "source": "rules/canonical_rules.json#/facility_templates/protocol_core/port_rule"
+        },
+        "core_limits": {
+          "value": {
+            "max_outputs": 6,
+            "max_inputs": 14
+          },
+          "source": "rules/canonical_rules.json#/facility_templates/protocol_core/core_limits"
+        }
+      },
+      "missing": [
+        "placement_rule",
+        "power_coverage_radius",
+        "physical_input_ports",
+        "physical_output_ports",
+        "buffer_slots",
+        "slot_capacity",
+        "cycle_seconds"
+      ],
+      "missing_count": {
+        "value": 7,
+        "source": "devtools/rule_system_tooling.py::render_view_v1(expected_fields - present_fields)"
+      }
+    },
+    {
+      "entity": "protocol_storage_box",
+      "fields": {
+        "dimensions": {
+          "value": {
+            "w": 3,
+            "h": 3
+          },
+          "source": "rules/canonical_rules.json#/facility_templates/protocol_storage_box/dimensions"
+        },
+        "rotatable": {
+          "value": true,
+          "source": "rules/canonical_rules.json#/facility_templates/protocol_storage_box/rotatable"
+        },
+        "needs_power": {
+          "value": true,
+          "source": "rules/canonical_rules.json#/facility_templates/protocol_storage_box/needs_power"
+        },
+        "is_solid_z": {
+          "value": true,
+          "source": "rules/canonical_rules.json#/facility_templates/protocol_storage_box/is_solid_z"
+        },
+        "port_rule": {
+          "value": "opposite_parallel_sides",
+          "source": "rules/canonical_rules.json#/facility_templates/protocol_storage_box/port_rule"
+        }
+      },
+      "missing": [
+        "placement_rule",
+        "power_coverage_radius",
+        "core_limits",
+        "physical_input_ports",
+        "physical_output_ports",
+        "buffer_slots",
+        "slot_capacity",
+        "cycle_seconds"
+      ],
+      "missing_count": {
+        "value": 8,
+        "source": "devtools/rule_system_tooling.py::render_view_v1(expected_fields - present_fields)"
+      }
+    }
+  ],
+  "summary": {
+    "entity_count": {
+      "value": 7,
+      "source": "rules/canonical_rules.json#/facility_templates (object key count)"
+    },
+    "missing_field_count": {
+      "value": 53,
+      "source": "devtools/rule_system_tooling.py::render_view_v1"
+    }
+  }
+}

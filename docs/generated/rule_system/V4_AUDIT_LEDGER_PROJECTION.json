@@ -1,0 +1,94 @@
+{
+  "_authority": {
+    "class": "GENERATED_VIEW_NON_AUTHORITY",
+    "statement": "非权威生成视图；只作检索与差异定位；不得进入承重前提集，消费时必须回读 source_refs。"
+  },
+  "format": "zmd-rule-view-v1",
+  "view_id": "V4",
+  "title": "孔／墙／界三类台账投影",
+  "source_refs": [
+    "rules/derived/ruling_index.jsonl",
+    "rules/derived/facility_template_gap.json",
+    "docs/research/rule_system_redesign_20260807/batch0_20260815/OPEN_DEBT_LEDGER.md"
+  ],
+  "currency": {
+    "generator": "devtools/rule_system_tooling.py",
+    "rule": "tracked bytes must equal a cold regeneration"
+  },
+  "ledgers": [
+    {
+      "ledger": "孔审计",
+      "projection_status": "NOT_ESTABLISHED",
+      "row_count": {
+        "value": 0,
+        "source": "批 1 未建立孔审计机器台账；沿用现行审计仅是后续批 6 事项"
+      },
+      "rows": []
+    },
+    {
+      "ledger": "墙审计 bootstrap 输入",
+      "projection_status": "INPUTS_ONLY_NO_VERDICT",
+      "row_count": {
+        "value": 141,
+        "source": "rules/derived/ruling_index.jsonl + rules/derived/facility_template_gap.json"
+      },
+      "components": {
+        "ruling_ids": 89,
+        "registry_candidate_gaps": 52
+      }
+    },
+    {
+      "ledger": "界审计 bootstrap 输入",
+      "projection_status": "OPEN_DEBT_PROJECTION_ONLY",
+      "row_count": {
+        "value": 9,
+        "source": "docs/research/rule_system_redesign_20260807/batch0_20260815/OPEN_DEBT_LEDGER.md (unique index rows)"
+      },
+      "status_counts": {
+        "CLOSED_AT_BOOTSTRAP": 4,
+        "OPEN": 2,
+        "OPEN_AUTHORIZATION_PENDING": 1,
+        "OPEN_REVALIDATION": 2
+      },
+      "rows": [
+        {
+          "id": "OD-B0-C08-01",
+          "status": "CLOSED_AT_BOOTSTRAP"
+        },
+        {
+          "id": "OD-B0-C08-02",
+          "status": "CLOSED_AT_BOOTSTRAP"
+        },
+        {
+          "id": "OD-B0-C08-03",
+          "status": "OPEN_REVALIDATION"
+        },
+        {
+          "id": "OD-B0-C08-04",
+          "status": "OPEN"
+        },
+        {
+          "id": "OD-B0-INST-01",
+          "status": "OPEN_AUTHORIZATION_PENDING"
+        },
+        {
+          "id": "OD-B0-CANON-15",
+          "status": "CLOSED_AT_BOOTSTRAP"
+        },
+        {
+          "id": "OD-B0-CANON-17",
+          "status": "CLOSED_AT_BOOTSTRAP"
+        },
+        {
+          "id": "OD-B0-CHAIN-769",
+          "status": "OPEN_REVALIDATION"
+        },
+        {
+          "id": "OD-B1-PACKAGE-01",
+          "status": "OPEN"
+        }
+      ]
+    }
+  ],
+  "interpretation_boundary": "V4 只投影可机械抽取的 bootstrap 输入与开放账，不产生墙/界/孔 verdict，也不把缺行解释为不存在。"
+}

@@ -27,8 +27,9 @@
 | OD-B0-CANON-15 | canonical 措辞 | C-15 `rate_lemma_scope` 占空前件与 usage | CLOSED_AT_BOOTSTRAP | canonical 20260808 执行席 | 2026-08-08 | 无，旧欠账保留为历史行 |
 | OD-B0-CANON-17 | canonical 措辞 | C-17 箱槽位/接收不变量措辞 | CLOSED_AT_BOOTSTRAP | canonical 20260808 执行席 | 2026-08-08 | 措辞本体不阻断；下游理由重核见 CHAIN-769 |
 | OD-B0-CHAIN-769 | 连锁重写 | 定理 #21 与 U-01 箱口限制的理由重核 | OPEN_REVALIDATION | 批 0 连锁重写总责席 | 2026-08-22 | 两个下游结论不得沿用旧理由；删除动作被挡 |
+| OD-B1-PACKAGE-01 | 打包接线 | `rules/derived/` 白／黑名单接入 `scripts/package_review_snapshot.py` | OPEN | 外审快照接线席 | 2026-08-29 | 不得声称标准外审包已自动纳入非冻结派生层 |
 
-首批数据非空：`8` 条，其中开放/待复核 `4` 条，启动时已关闭 `4` 条。
+台账当前数据非空：`9` 条，其中开放/待复核 `5` 条，启动时已关闭 `4` 条。前 8 条是批 0 首批；`OD-B1-PACKAGE-01` 是 owner 2026-08-15 第 4 件裁定后的批 1 追加事件。
 
 ## 3. C-08 四个 call site
 
@@ -152,11 +153,26 @@
 
 关闭条件：两份独立复核凭据均存在，引用者落四态，开放项有新阻断范围；只改一句摘要或把负责人写进表不算关闭。
 
-## 7. 逾期与消费视图
+## 7. 批 1 打包接线欠账
+
+### OD-B1-PACKAGE-01：非冻结派生层进入外审快照的显式名单
+
+| 字段 | 值 |
+|---|---|
+| 触发源 | `OWNER_DECISION_SUMMARY.md` 头部 2026-08-15 裁定追记（`3d34687`）：第 4 件＝接受；批 1 立架建真目录，打包脚本接线挂后批 |
+| 当前声明 | `rules/derived/manifest.json.package_declaration` 已列 include/exclude、目标脚本与本欠账号 |
+| 状态 | `OPEN` |
+| 临时负责人 | 外审快照接线席 |
+| 到期日 | 2026-08-29；角色级临时期限，不冒充 owner 对后续批优先级的逐项批准 |
+| 关闭动作 | 在独立后批修改 `scripts/package_review_snapshot.py`：显式读取或等价实现 manifest 的白／黑名单；增加 `unzip -l`／包清单回归，证明 `rules/derived/` 需要的文件在包内、canonical 既有冻结件未被误装成派生件；按当批边界重跑相应门禁 |
+| 阻断范围 | 本欠账关闭前，不得写“标准 GPT Pro／外审快照会自动携带 L2 派生层”；若需外发，必须人工逐项对账并在外发台账注明临时组包路径 |
+| 本批边界 | 批 1 不修改 `scripts/`；只把名单声明落在 `rules/derived/manifest.json` 并建账 |
+
+## 8. 逾期与消费视图
 
 | 视图 | 当前值 |
 |---|---|
-| 开放或待复核 | `OD-B0-C08-03`、`OD-B0-C08-04`、`OD-B0-INST-01`、`OD-B0-CHAIN-769` |
+| 开放或待复核 | `OD-B0-C08-03`、`OD-B0-C08-04`、`OD-B0-INST-01`、`OD-B0-CHAIN-769`、`OD-B1-PACKAGE-01` |
 | 已关闭但保留历史 | `OD-B0-C08-01`、`OD-B0-C08-02`、`OD-B0-CANON-15`、`OD-B0-CANON-17` |
 | 逾期 | 建册时 `0` |
 | 证明类结论默认动作 | 依赖开放行则标 `conditional`，方向暴露栏写欠账号 |

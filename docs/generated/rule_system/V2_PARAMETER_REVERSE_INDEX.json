@@ -1,0 +1,299 @@
+{
+  "_authority": {
+    "class": "GENERATED_VIEW_NON_AUTHORITY",
+    "statement": "非权威生成视图；只作检索与差异定位；不得进入承重前提集，消费时必须回读 source_refs。"
+  },
+  "format": "zmd-rule-view-v1",
+  "view_id": "V2",
+  "title": "参数反向索引",
+  "source_refs": [
+    "rules/canonical_rules.json#/globals",
+    "rules/canonical_rules.json#/facility_templates",
+    "rules/canonical_rules.json#/production_targets",
+    "rules/derived/entries/*.json#/premises"
+  ],
+  "currency": {
+    "generator": "devtools/rule_system_tooling.py",
+    "rule": "tracked bytes must equal a cold regeneration"
+  },
+  "columns": {
+    "parameter": "参数路径",
+    "canonical_source": "canonical 真源",
+    "l2_premise_refs": "L2 前提引用",
+    "frozen_artifact_refs": "冻结工件引用（仅显式登记）",
+    "code_call_sites_non_exhaustive": "代码 call site（非完备；仅 git grep 字面叶键扫描；拼接、别名、动态访问和 .rgignore 投影都可能漏）"
+  },
+  "completeness_boundary": "代码列明确非完备，不能被消费为全仓引用者全集；当前可机械闭合的列只有 canonical、L2 和显式冻结工件登记。",
+  "rows": [
+    {
+      "parameter_family": "globals.grid",
+      "value": {
+        "width": 70,
+        "height": 70
+      },
+      "canonical_source": "rules/canonical_rules.json#/globals/grid",
+      "l2_premise_refs": [],
+      "frozen_artifact_refs": [],
+      "code_call_sites_non_exhaustive": [
+        "devtools/build_knowledge_docs.py:1459",
+        "devtools/build_knowledge_docs.py:1461",
+        "devtools/build_knowledge_docs.py:1462"
+      ]
+    },
+    {
+      "parameter_family": "globals.time",
+      "value": {
+        "tick_interval_seconds": {
+          "exact_rational": "2/1"
+        }
+      },
+      "canonical_source": "rules/canonical_rules.json#/globals/time",
+      "l2_premise_refs": [],
+      "frozen_artifact_refs": [],
+      "code_call_sites_non_exhaustive": [
+        "devtools/artifact_evidence.py:385",
+        "devtools/artifact_evidence.py:386",
+        "devtools/artifact_evidence.py:413"
+      ]
+    },
+    {
+      "parameter_family": "globals.logistics",
+      "value": {
+        "belt_capacity_per_tick": {
+          "exact_rational": "1/1"
+        },
+        "port_max_throughput_per_tick": {
+          "exact_rational": "1/1"
+        },
+        "machine_min_clearance_cells": 1
+      },
+      "canonical_source": "rules/canonical_rules.json#/globals/logistics",
+      "l2_premise_refs": [
+        "D-B1-SCAFFOLD-001"
+      ],
+      "frozen_artifact_refs": [],
+      "code_call_sites_non_exhaustive": [
+        "src/adapters/industrial_planner/blueprint_validator.py:993",
+        "src/adapters/industrial_planner/compatibility_report.py:135",
+        "src/adapters/industrial_planner/mapping_registry.py:368"
+      ]
+    },
+    {
+      "parameter_family": "globals.empty_rectangle",
+      "value": {
+        "objective": "max_lex_area_min_side",
+        "min_side_admissibility": 6,
+        "emptiness": "no_occupant_of_any_kind",
+        "emptiness_adjudication": {
+          "decided_on": "2026-08-05",
+          "authority": "owner_manual_adjudication",
+          "source_doc": "docs/research/rules_audit_20260718/02_empty_rectangle_semantics_adjudication_20260805.md",
+          "statement": "No occupant of any kind may intersect the target empty rectangle: facility bodies, power poles, belts, cross-junction/bridge components and every other logistics part are forbidden. 'Empty' means completely clear ground; the earlier permissive reading that admitted routing components inside the rectangle is void."
+        }
+      },
+      "canonical_source": "rules/canonical_rules.json#/globals/empty_rectangle",
+      "l2_premise_refs": [],
+      "frozen_artifact_refs": [],
+      "code_call_sites_non_exhaustive": [
+        "devtools/build_knowledge_docs.py:1464",
+        "devtools/build_knowledge_docs.py:1465",
+        "devtools/build_knowledge_docs.py:1469"
+      ]
+    },
+    {
+      "parameter_family": "facility_templates.boundary_storage_port",
+      "value": {
+        "dimensions": {
+          "w": 1,
+          "h": 3
+        },
+        "rotatable": true,
+        "needs_power": false,
+        "is_solid_z": true,
+        "port_rule": "inward_facing",
+        "placement_rule": "left_or_bottom_boundary"
+      },
+      "canonical_source": "rules/canonical_rules.json#/facility_templates/boundary_storage_port",
+      "l2_premise_refs": [],
+      "frozen_artifact_refs": [],
+      "code_call_sites_non_exhaustive": [
+        "scripts/b_design_v2_exit_criteria.py:62",
+        "scripts/b_design_v2_exit_criteria.py:77",
+        "scripts/b_design_v2_exit_criteria.py:79"
+      ]
+    },
+    {
+      "parameter_family": "facility_templates.manufacturing_3x3",
+      "value": {
+        "dimensions": {
+          "w": 3,
+          "h": 3
+        },
+        "rotatable": true,
+        "needs_power": true,
+        "is_solid_z": true,
+        "port_rule": "opposite_parallel_sides"
+      },
+      "canonical_source": "rules/canonical_rules.json#/facility_templates/manufacturing_3x3",
+      "l2_premise_refs": [],
+      "frozen_artifact_refs": [],
+      "code_call_sites_non_exhaustive": [
+        "scripts/blueprint_to_master_hint.py:10",
+        "scripts/blueprint_to_master_hint.py:11",
+        "scripts/blueprint_to_master_hint.py:12"
+      ]
+    },
+    {
+      "parameter_family": "facility_templates.manufacturing_5x5",
+      "value": {
+        "dimensions": {
+          "w": 5,
+          "h": 5
+        },
+        "rotatable": true,
+        "needs_power": true,
+        "is_solid_z": true,
+        "port_rule": "opposite_parallel_sides"
+      },
+      "canonical_source": "rules/canonical_rules.json#/facility_templates/manufacturing_5x5",
+      "l2_premise_refs": [],
+      "frozen_artifact_refs": [],
+      "code_call_sites_non_exhaustive": [
+        "scripts/blueprint_to_master_hint.py:14",
+        "scripts/blueprint_to_master_hint.py:15",
+        "scripts/blueprint_to_master_hint.py:61"
+      ]
+    },
+    {
+      "parameter_family": "facility_templates.manufacturing_6x4",
+      "value": {
+        "dimensions": {
+          "w": 6,
+          "h": 4
+        },
+        "rotatable": true,
+        "needs_power": true,
+        "is_solid_z": true,
+        "port_rule": "long_sides"
+      },
+      "canonical_source": "rules/canonical_rules.json#/facility_templates/manufacturing_6x4",
+      "l2_premise_refs": [],
+      "frozen_artifact_refs": [],
+      "code_call_sites_non_exhaustive": [
+        "scripts/blueprint_to_master_hint.py:16",
+        "scripts/blueprint_to_master_hint.py:17",
+        "scripts/blueprint_to_master_hint.py:18"
+      ]
+    },
+    {
+      "parameter_family": "facility_templates.power_pole",
+      "value": {
+        "dimensions": {
+          "w": 2,
+          "h": 2
+        },
+        "rotatable": false,
+        "needs_power": false,
+        "is_solid_z": true,
+        "port_rule": "none",
+        "power_coverage_radius": 5
+      },
+      "canonical_source": "rules/canonical_rules.json#/facility_templates/power_pole",
+      "l2_premise_refs": [],
+      "frozen_artifact_refs": [],
+      "code_call_sites_non_exhaustive": [
+        "scripts/blueprint_to_master_hint.py:21",
+        "scripts/blueprint_to_master_hint.py:22",
+        "scripts/check_p1_2_proof_obligations.py:109"
+      ]
+    },
+    {
+      "parameter_family": "facility_templates.protocol_core",
+      "value": {
+        "dimensions": {
+          "w": 9,
+          "h": 9
+        },
+        "rotatable": true,
+        "needs_power": false,
+        "is_solid_z": true,
+        "port_rule": "core_specific",
+        "core_limits": {
+          "max_outputs": 6,
+          "max_inputs": 14
+        }
+      },
+      "canonical_source": "rules/canonical_rules.json#/facility_templates/protocol_core",
+      "l2_premise_refs": [],
+      "frozen_artifact_refs": [],
+      "code_call_sites_non_exhaustive": [
+        "devtools/build_knowledge_docs.py:1326",
+        "devtools/build_knowledge_docs.py:1333",
+        "devtools/build_knowledge_docs.py:1336"
+      ]
+    },
+    {
+      "parameter_family": "facility_templates.protocol_storage_box",
+      "value": {
+        "dimensions": {
+          "w": 3,
+          "h": 3
+        },
+        "rotatable": true,
+        "needs_power": true,
+        "is_solid_z": true,
+        "port_rule": "opposite_parallel_sides"
+      },
+      "canonical_source": "rules/canonical_rules.json#/facility_templates/protocol_storage_box",
+      "l2_premise_refs": [],
+      "frozen_artifact_refs": [],
+      "code_call_sites_non_exhaustive": [
+        "scripts/blueprint_to_master_hint.py:199",
+        "scripts/blueprint_to_master_hint.py:20",
+        "scripts/blueprint_to_master_hint.py:204"
+      ]
+    },
+    {
+      "parameter_family": "production_targets.qiaoyu_capsule",
+      "value": {
+        "mode": "equivalent_full_speed_lines",
+        "value": {
+          "exact_rational": "11/4"
+        },
+        "final_recipe_id": "filling_capsule"
+      },
+      "canonical_source": "rules/canonical_rules.json#/production_targets/qiaoyu_capsule",
+      "l2_premise_refs": [],
+      "frozen_artifact_refs": [],
+      "code_call_sites_non_exhaustive": [
+        "scripts/cleanroom_strict/generate_bundle.py:261",
+        "scripts/cleanroom_strict/generate_bundle.py:66",
+        "scripts/ip_v2_blueprint_steady_state_lp.py:38"
+      ]
+    },
+    {
+      "parameter_family": "production_targets.valley_battery",
+      "value": {
+        "mode": "equivalent_full_speed_lines",
+        "value": {
+          "exact_rational": "3/1"
+        },
+        "final_recipe_id": "packaging_battery"
+      },
+      "canonical_source": "rules/canonical_rules.json#/production_targets/valley_battery",
+      "l2_premise_refs": [],
+      "frozen_artifact_refs": [],
+      "code_call_sites_non_exhaustive": [
+        "scripts/cleanroom_strict/generate_bundle.py:261",
+        "scripts/cleanroom_strict/generate_bundle.py:95",
+        "src/adapters/endfield_calc/semantic_mapping.py:93"
+      ]
+    }
+  ],
+  "summary": {
+    "parameter_row_count": {
+      "value": 13,
+      "source": "devtools/rule_system_tooling.py::render_view_v2(selected canonical top sections)"
+    }
+  }
+}

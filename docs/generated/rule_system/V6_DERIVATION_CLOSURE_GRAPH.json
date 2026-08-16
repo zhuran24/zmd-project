@@ -1,0 +1,50 @@
+{
+  "_authority": {
+    "class": "GENERATED_VIEW_NON_AUTHORITY",
+    "statement": "非权威生成视图；只作检索与差异定位；不得进入承重前提集，消费时必须回读 source_refs。"
+  },
+  "format": "zmd-rule-view-v1",
+  "view_id": "V6",
+  "title": "派生闭包图",
+  "source_refs": [
+    "rules/derived/entries/*.json",
+    "rules/derived/derived_rule.schema.json"
+  ],
+  "currency": {
+    "generator": "devtools/rule_system_tooling.py",
+    "rule": "tracked bytes must equal a cold regeneration"
+  },
+  "nodes": [
+    {
+      "id": "D-B1-SCAFFOLD-001",
+      "level": 1,
+      "status": "UNREVIEWED",
+      "currency": "CURRENT",
+      "stored_fingerprint": "4dcf493d32fab29d37f79996e5637bcd08aa51504b863c337d2eac32f679da13",
+      "computed_fingerprint": "4dcf493d32fab29d37f79996e5637bcd08aa51504b863c337d2eac32f679da13",
+      "source": "rules/derived/entries/D-B1-SCAFFOLD-001.json"
+    }
+  ],
+  "edges": [
+    {
+      "from": "canonical:globals.logistics.belt_capacity_per_tick",
+      "to": "D-B1-SCAFFOLD-001"
+    },
+    {
+      "from": "assumption:batch1-fixture-only",
+      "to": "D-B1-SCAFFOLD-001"
+    }
+  ],
+  "stale_or_broken_edges": [],
+  "summary": {
+    "node_count": {
+      "value": 1,
+      "source": "rules/derived/entries/*.json (one-entry-per-file count)"
+    },
+    "edge_count": {
+      "value": 2,
+      "source": "rules/derived/entries/*.json#/premises"
+    }
+  },
+  "interpretation_boundary": "level 只是深度，不是已扫尽证明；UNREVIEWED 节点不得被下游消费，预算终止不得写成饱和。"
+}

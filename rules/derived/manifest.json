@@ -1,0 +1,95 @@
+{
+  "_authority": {
+    "class": "NON_FROZEN_DERIVED",
+    "statement": "非冻结派生件；不属于 canonical、freeze-ritual 或 owner authority；未经审查不得承重消费。"
+  },
+  "format": "zmd-non-frozen-derived-manifest-v1",
+  "owner_authorization": {
+    "decision": "OWNER_DECISION_SUMMARY.md 2026-08-15 裁定追记，第 4 件＝接受",
+    "commit": "3d34687cd244e82fda41ff18b88171e7b45298b1",
+    "scope": "仅授权 rules/derived/ 作为非冻结派生子目录；不改变 rules/ 既有冻结件的 owner-only 边界。"
+  },
+  "schema": "rules/derived/derived_rule.schema.json",
+  "entry_glob": "rules/derived/entries/*.json",
+  "one_entry_per_file": true,
+  "initial_status": "UNREVIEWED",
+  "status_transitions": {
+    "UNREVIEWED": [
+      "ACTIVE",
+      "RETIRED",
+      "SUPERSEDED"
+    ],
+    "ACTIVE": [
+      "STALE",
+      "RETIRED",
+      "SUPERSEDED",
+      "PROMOTED"
+    ],
+    "STALE": [
+      "ACTIVE",
+      "RETIRED",
+      "SUPERSEDED",
+      "PROMOTED"
+    ],
+    "RETIRED": [],
+    "SUPERSEDED": [],
+    "PROMOTED": []
+  },
+  "fingerprint_specification": {
+    "version": "zmd-premise-fingerprint-v1",
+    "loader": "src.io.strict_json.load_strict_json_exact_decimal",
+    "object_keys": "Unicode code-point order after NFC normalization",
+    "array_order": "preserved",
+    "strings": "NFC; CRLF/CR normalized to LF",
+    "numbers": "all JSON integer/decimal tokens and exact_rational p/q objects reduce to signed numerator/positive denominator",
+    "source_value_premise": "fingerprint current source path + JSON pointer + current exact value; value_at_derivation is independently compared for drift",
+    "assumption_premise": "fingerprint normalized statement + explicit assumption_version; assumptions never receive an invented numeric value",
+    "derived_premise": "fingerprint referenced entry id + declared level + referenced premise_fingerprint",
+    "premise_order": "sort by kind, then ref",
+    "excluded_inputs": [
+      "canonical schema SHA",
+      "semantics._epoch",
+      "filesystem mtime",
+      "absolute checkout path",
+      "locale",
+      "Python hash randomization"
+    ]
+  },
+  "tracked_products": {
+    "ruling_index": "rules/derived/ruling_index.jsonl",
+    "facility_template_gap": "rules/derived/facility_template_gap.json",
+    "sample_entry": "rules/derived/entries/D-B1-SCAFFOLD-001.json",
+    "generated_views": [
+      "docs/generated/rule_system/V1_ENTITY_PARAMETERS.json",
+      "docs/generated/rule_system/V2_PARAMETER_REVERSE_INDEX.json",
+      "docs/generated/rule_system/V3_ENTRY_PREDICATE_MATRIX.json",
+      "docs/generated/rule_system/V4_AUDIT_LEDGER_PROJECTION.json",
+      "docs/generated/rule_system/V5_CAPABILITY_COVERAGE.json",
+      "docs/generated/rule_system/V6_DERIVATION_CLOSURE_GRAPH.json"
+    ]
+  },
+  "package_declaration": {
+    "purpose": "声明后续外审快照的显式白/黑名单意图；本批不接线打包脚本。",
+    "include": [
+      "rules/derived/README.md",
+      "rules/derived/derived_rule.schema.json",
+      "rules/derived/manifest.json",
+      "rules/derived/entries/*.json",
+      "rules/derived/ruling_index.jsonl",
+      "rules/derived/facility_template_gap.json"
+    ],
+    "exclude": [
+      "rules/canonical_rules.json",
+      "rules/canonical_rules.schema.json",
+      "rules/preprocess_plan.json",
+      "rules/preprocess_plan.schema.json",
+      "rules/derived/**/*.tmp",
+      "rules/derived/**/*.bak",
+      "rules/derived/**/__pycache__/**"
+    ],
+    "script_target": "scripts/package_review_snapshot.py",
+    "script_connection_status": "DEFERRED_OPEN_DEBT",
+    "debt_id": "OD-B1-PACKAGE-01"
+  },
+  "canonical_schema_pin": "OUT_OF_SCOPE_BATCH_2_OWNER_DECISION_PENDING"
+}

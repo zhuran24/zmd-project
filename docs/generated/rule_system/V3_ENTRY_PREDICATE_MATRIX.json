@@ -1,0 +1,184 @@
+{
+  "_authority": {
+    "class": "GENERATED_VIEW_NON_AUTHORITY",
+    "statement": "非权威生成视图；只作检索与差异定位；不得进入承重前提集，消费时必须回读 source_refs。"
+  },
+  "format": "zmd-rule-view-v1",
+  "view_id": "V3",
+  "title": "条目－六谓词矩阵",
+  "source_refs": [
+    "rules/canonical_rules.json#/semantics",
+    "docs/research/rule_system_redesign_20260807/FINAL_DESIGN.md#3.8"
+  ],
+  "currency": {
+    "generator": "devtools/rule_system_tooling.py",
+    "rule": "tracked bytes must equal a cold regeneration"
+  },
+  "interpretation_boundary": "批 1 只机械枚举条目与保留 axis_without_axiom 行；六谓词映射尚未裁定，全部 fail-closed 为 NOT_ASSESSED。",
+  "rows": [
+    {
+      "entry": "axiom_kernel",
+      "predicate_1": "NOT_ASSESSED",
+      "predicate_2": "NOT_ASSESSED",
+      "predicate_3": "NOT_ASSESSED",
+      "predicate_4": "NOT_ASSESSED",
+      "predicate_5": "NOT_ASSESSED",
+      "predicate_6": "NOT_ASSESSED",
+      "declared_predicate_status": "MISSING",
+      "source": "rules/canonical_rules.json#/semantics/axiom_kernel"
+    },
+    {
+      "entry": "boundary_placement",
+      "predicate_1": "NOT_ASSESSED",
+      "predicate_2": "NOT_ASSESSED",
+      "predicate_3": "NOT_ASSESSED",
+      "predicate_4": "NOT_ASSESSED",
+      "predicate_5": "NOT_ASSESSED",
+      "predicate_6": "NOT_ASSESSED",
+      "declared_predicate_status": "MISSING",
+      "source": "rules/canonical_rules.json#/semantics/boundary_placement"
+    },
+    {
+      "entry": "connectivity_quantifier",
+      "predicate_1": "NOT_ASSESSED",
+      "predicate_2": "NOT_ASSESSED",
+      "predicate_3": "NOT_ASSESSED",
+      "predicate_4": "NOT_ASSESSED",
+      "predicate_5": "NOT_ASSESSED",
+      "predicate_6": "NOT_ASSESSED",
+      "declared_predicate_status": "MISSING",
+      "source": "rules/canonical_rules.json#/semantics/connectivity_quantifier"
+    },
+    {
+      "entry": "item_admission_port_exclusion",
+      "predicate_1": "NOT_ASSESSED",
+      "predicate_2": "NOT_ASSESSED",
+      "predicate_3": "NOT_ASSESSED",
+      "predicate_4": "NOT_ASSESSED",
+      "predicate_5": "NOT_ASSESSED",
+      "predicate_6": "NOT_ASSESSED",
+      "declared_predicate_status": "MISSING",
+      "source": "rules/canonical_rules.json#/semantics/item_admission_port_exclusion"
+    },
+    {
+      "entry": "machine_min_clearance",
+      "predicate_1": "NOT_ASSESSED",
+      "predicate_2": "NOT_ASSESSED",
+      "predicate_3": "NOT_ASSESSED",
+      "predicate_4": "NOT_ASSESSED",
+      "predicate_5": "NOT_ASSESSED",
+      "predicate_6": "NOT_ASSESSED",
+      "declared_predicate_status": "non_predicate",
+      "source": "rules/canonical_rules.json#/semantics/machine_min_clearance"
+    },
+    {
+      "entry": "mixed_commodity_flow",
+      "predicate_1": "NOT_ASSESSED",
+      "predicate_2": "NOT_ASSESSED",
+      "predicate_3": "NOT_ASSESSED",
+      "predicate_4": "NOT_ASSESSED",
+      "predicate_5": "NOT_ASSESSED",
+      "predicate_6": "NOT_ASSESSED",
+      "declared_predicate_status": "MISSING",
+      "source": "rules/canonical_rules.json#/semantics/mixed_commodity_flow"
+    },
+    {
+      "entry": "port_commodity_scope",
+      "predicate_1": "NOT_ASSESSED",
+      "predicate_2": "NOT_ASSESSED",
+      "predicate_3": "NOT_ASSESSED",
+      "predicate_4": "NOT_ASSESSED",
+      "predicate_5": "NOT_ASSESSED",
+      "predicate_6": "NOT_ASSESSED",
+      "declared_predicate_status": "MISSING",
+      "source": "rules/canonical_rules.json#/semantics/port_commodity_scope"
+    },
+    {
+      "entry": "power_coverage_stencil",
+      "predicate_1": "NOT_ASSESSED",
+      "predicate_2": "NOT_ASSESSED",
+      "predicate_3": "NOT_ASSESSED",
+      "predicate_4": "NOT_ASSESSED",
+      "predicate_5": "NOT_ASSESSED",
+      "predicate_6": "NOT_ASSESSED",
+      "declared_predicate_status": "MISSING",
+      "source": "rules/canonical_rules.json#/semantics/power_coverage_stencil"
+    },
+    {
+      "entry": "power_source_note",
+      "predicate_1": "NOT_ASSESSED",
+      "predicate_2": "NOT_ASSESSED",
+      "predicate_3": "NOT_ASSESSED",
+      "predicate_4": "NOT_ASSESSED",
+      "predicate_5": "NOT_ASSESSED",
+      "predicate_6": "NOT_ASSESSED",
+      "declared_predicate_status": "MISSING",
+      "source": "rules/canonical_rules.json#/semantics/power_source_note"
+    },
+    {
+      "entry": "protocol_storage_box_wireless",
+      "predicate_1": "NOT_ASSESSED",
+      "predicate_2": "NOT_ASSESSED",
+      "predicate_3": "NOT_ASSESSED",
+      "predicate_4": "NOT_ASSESSED",
+      "predicate_5": "NOT_ASSESSED",
+      "predicate_6": "NOT_ASSESSED",
+      "declared_predicate_status": "MISSING",
+      "source": "rules/canonical_rules.json#/semantics/protocol_storage_box_wireless"
+    },
+    {
+      "entry": "rate_lemma_scope",
+      "predicate_1": "NOT_ASSESSED",
+      "predicate_2": "NOT_ASSESSED",
+      "predicate_3": "NOT_ASSESSED",
+      "predicate_4": "NOT_ASSESSED",
+      "predicate_5": "NOT_ASSESSED",
+      "predicate_6": "NOT_ASSESSED",
+      "declared_predicate_status": "non_predicate",
+      "source": "rules/canonical_rules.json#/semantics/rate_lemma_scope"
+    },
+    {
+      "entry": "routing_cross_junction",
+      "predicate_1": "NOT_ASSESSED",
+      "predicate_2": "NOT_ASSESSED",
+      "predicate_3": "NOT_ASSESSED",
+      "predicate_4": "NOT_ASSESSED",
+      "predicate_5": "NOT_ASSESSED",
+      "predicate_6": "NOT_ASSESSED",
+      "declared_predicate_status": "MISSING",
+      "source": "rules/canonical_rules.json#/semantics/routing_cross_junction"
+    },
+    {
+      "entry": "warehouse_bridge_exclusion",
+      "predicate_1": "NOT_ASSESSED",
+      "predicate_2": "NOT_ASSESSED",
+      "predicate_3": "NOT_ASSESSED",
+      "predicate_4": "NOT_ASSESSED",
+      "predicate_5": "NOT_ASSESSED",
+      "predicate_6": "NOT_ASSESSED",
+      "declared_predicate_status": "MISSING",
+      "source": "rules/canonical_rules.json#/semantics/warehouse_bridge_exclusion"
+    },
+    {
+      "entry": "axis_without_axiom",
+      "predicate_1": "NOT_ASSESSED",
+      "predicate_2": "NOT_ASSESSED",
+      "predicate_3": "NOT_ASSESSED",
+      "predicate_4": "NOT_ASSESSED",
+      "predicate_5": "NOT_ASSESSED",
+      "predicate_6": "NOT_ASSESSED",
+      "declared_predicate_status": "GENERATED_SENTINEL_ROW",
+      "source": "docs/research/rule_system_redesign_20260807/FINAL_DESIGN.md#3.8"
+    }
+  ],
+  "summary": {
+    "semantic_entry_count": {
+      "value": 13,
+      "source": "rules/canonical_rules.json#/semantics (excluding underscore-prefixed metadata)"
+    },
+    "matrix_row_count_including_axis_without_axiom": {
+      "value": 14,
+      "source": "devtools/rule_system_tooling.py::render_view_v3"
+    }
+  }
+}
