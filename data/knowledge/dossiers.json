@@ -1,6 +1,6 @@
 {
   "schema_version": "zmd_dossiers_v1",
-  "ledger_reviewed_at": "2026-08-15",
+  "ledger_reviewed_at": "2026-08-16",
   "records": [
     {
       "id": "DOSSIER-AB16-ARMS-20260802-DC229C4539",
@@ -778,6 +778,33 @@
         "manifest_sha256": "e52ffb6ed56ac0f042f68773679e0f3bccd05091abbaf16764cb9fe713ec5bbc",
         "recovery_instructions": "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1_v2/README.md",
         "source_locator": "docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1_v2/corpus_manifest_v2.json"
+      }
+    },
+    {
+      "id": "DOSSIER-SOLVER-REASONING-OUTER-LOOP-W0-UNARY-CANARY-20260816-40F7F16A22",
+      "path": ".artifacts/solver_reasoning_outer_loop_w0_unary_canary_20260816",
+      "entry_file": null,
+      "title": "W0 一元 lowering 金丝雀共享本机证据根（GPT-5.6 Pro lineage，2026-08-16）",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-16",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Local-optional evidence registered through docctl; semantic outcome is pending closure review.",
+      "workflow": {
+        "opened_at": "2026-08-16",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/solver_reasoning_outer_loop_w0_unary_canary_20260816/EVIDENCE_MANIFEST_GPT56PRO_LINEAGE.json",
+        "manifest_sha256": "58914f3b71b4921067db2c0c9cc6f42575221a293d321ed3788d071493234653",
+        "recovery_instructions": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816/14_GPT56PRO_FINAL_REPORT.md",
+        "source_locator": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816/13_GPT56PRO_RUN_RECEIPT.json"
       }
     },
     {

@@ -1,7 +1,7 @@
 # 项目知识目录
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:7b327875a4e293dbdcefc36230ed833098341caeb25b667bf5e471acfce2d2da`。
+> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:a908dba4370e8a96fd7058f3a13cecbee70b8ce19acc9ea5930d5ba6f6715502`。
 
 这里登记稳定 ID。claim 回答“我们知道什么”，decision 回答“谁改变了什么规则或门”，
 dossier 回答“原始证据包在哪里”，validity profile 回答“旧结论为何失效、怎样换代、能否复用”。目录不把历史材料自动升级为当前权威。
@@ -11,7 +11,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 - claim：`92` 条，其中当前 / 开放 `73` 条，带 validity profile `32` 条。
 - decision：`8` 条。
 - backfill review：`54` 条，其中 current `44` 条。
-- dossier：`209` 个，其中 tracked `152` 个、local optional `57` 个、当前证据标记 `16` 个、人工精编 `30` 个。
+- dossier：`210` 个，其中 tracked `152` 个、local optional `58` 个、当前证据标记 `16` 个、人工精编 `31` 个。
 - `docs/research/` 的一级目录和一级 Markdown 已全登记；`.artifacts/` 只登记一级目录，其路径允许在轻量 checkout 中缺失。
 
 ## Claim 索引
@@ -136,8 +136,8 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 - `rules-semantics`：12 个 dossier。
 - `industrial-delivery`：8 个 dossier。
 - `p2-throughput`：8 个 dossier。
-- `reasoning-system`：5 个 dossier。
-- `solver-architecture`：5 个 dossier。
+- `reasoning-system`：6 个 dossier。
+- `solver-architecture`：6 个 dossier。
 - `documentation-governance`：3 个 dossier。
 - `separation-telemetry`：2 个 dossier。
 - `solver-rethink`：2 个 dossier。
@@ -198,6 +198,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
+| `DOSSIER-SOLVER-REASONING-OUTER-LOOP-W0-UNARY-CANARY-20260816-40F7F16A22` | `2026-08-16` | W0 一元 lowering 金丝雀共享本机证据根（GPT-5.6 Pro lineage，2026-08-16）<br><code>.artifacts/solver_reasoning_outer_loop_w0_unary_canary_20260816</code><br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99` | `2026-08-15` | [推理外环三轮外部评审归档（2026-08-15）](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)<br>三份外部评审正文逐字归档；同一 dossier 另登记仅在声明条件下可消费的 non_authorizing 设计约束与可证伪架构假设，二者均不构成立项或现行实现义务。 | `reasoning-system`, `solver-architecture`, `solver-rethink` | `active` | `historical` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-20260815-7FA2A0E225` | `2026-08-15` | [推理外环 Phase -1 本机运行证据包（2026-08-15）](<../.artifacts/solver_reasoning_outer_loop_phase_minus1_20260815/phase-minus1-r1-20260815/BATCH_SUMMARY.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-V2-20260815-96E16B17C8` | `2026-08-15` | 推理外环 Phase -1 v2 高预算本机运行证据包（2026-08-15）<br><code>.artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815</code><br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
@@ -392,6 +393,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
+| `DOSSIER-SOLVER-REASONING-OUTER-LOOP-W0-UNARY-CANARY-20260816-40F7F16A22` | `2026-08-16` | W0 一元 lowering 金丝雀共享本机证据根（GPT-5.6 Pro lineage，2026-08-16）<br><code>.artifacts/solver_reasoning_outer_loop_w0_unary_canary_20260816</code><br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-20260815-7FA2A0E225` | `2026-08-15` | [推理外环 Phase -1 本机运行证据包（2026-08-15）](<../.artifacts/solver_reasoning_outer_loop_phase_minus1_20260815/phase-minus1-r1-20260815/BATCH_SUMMARY.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-V2-20260815-96E16B17C8` | `2026-08-15` | 推理外环 Phase -1 v2 高预算本机运行证据包（2026-08-15）<br><code>.artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815</code><br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-APX-E-GATE-REVIEW-20260810-1E0BCC6818` | `2026-08-10` | [【过堂表】推理外环求解器 · 附录 E 七问过堂](<../.artifacts/apx_e_gate_review_20260810/PASSTHROUGH_TABLE.md>)<br>--- | `other` | `historical` | `unreviewed` |
@@ -4362,7 +4364,7 @@ owner 允许归档三轮外部评审并以 non_authorizing 形态登记设计约
 
 - **明确不推出：** 原登记八条内容及本次评审修复新增的指针型登记项获得批准；推理外环获得立项；对现行树新增义务
 
-- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
+- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../../../.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
 
 <a id="decision-p1-2-close-20260707"></a>
 
