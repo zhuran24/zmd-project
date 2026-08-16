@@ -104,7 +104,7 @@
     "global_M_t_reason": "L remains ABSENT; no numeric global M_t is invented",
     "delta_L": "ZERO_BY_SCOPE",
     "delta_U": "ZERO_BY_SCOPE",
-    "ledger_effect": "research candidate ledger only"
+    "ledger_effect": "no ledger write; dossier-local research classification only"
   },
   "canary_relation": {
     "canary_judgment": "experiment two W0 unary-lowering canary",

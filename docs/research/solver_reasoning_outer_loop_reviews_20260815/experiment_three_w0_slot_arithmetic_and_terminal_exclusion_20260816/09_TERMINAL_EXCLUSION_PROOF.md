@@ -23,7 +23,7 @@ Routable_{P5}(W0,R,b,r)
 \bigr).
 \]
 
-因此，固定 W0 布局中的该 6×7 矩形在研究候选账中由 `UNKNOWN` 转为 `PROVED_EXCLUDED_RESEARCH`。
+因此，本 dossier 在 research-only 作用域内把该固定 6×7 矩形分类为 `PROVED_EXCLUDED_RESEARCH`；这是一项局部 Judgment，不表示已经写入某个候选账实体。
 
 ## 2. 前代定理一
 
@@ -136,7 +136,7 @@ A_BASELINE model snapshot 不是定理二的数学前提。它只独立确认当
 
 证毕。
 
-## 7. 终点候选账
+## 7. 终点候选分类与度量注记
 
 当前下界仍是：
 
@@ -150,7 +150,7 @@ L = ABSENT
 M_t = N_A_NOT_READY
 ```
 
-本批登记的是候选级交易，而不是伪造全局 `M_t`：
+本批给出的是 dossier-local 候选分类与度量注记，不是已完成的账务交易，也不伪造全局 `M_t`：
 
 | 字段 | 变化 |
 |---|---|
@@ -162,7 +162,7 @@ M_t = N_A_NOT_READY
 | `ΔL` | `ZERO_BY_SCOPE` |
 | `ΔU` | `ZERO_BY_SCOPE` |
 
-这是本路线第一笔非零的固定候选排除交易，但不是 research upper ledger、certified frontier 或 exact-status 更新。
+这是本路线第一项非零的固定候选排除注记；当前没有候选账实体或写入协议，因此它不是已完成 ledger transaction，也不是 research upper ledger、certified frontier 或 exact-status 更新。`delta_M_bottom=-1` 在 `M_bottom` 获得形式定义前只保留为未授权消费的描述字段。
 
 ## 8. 与金丝雀 `INCONCLUSIVE` 的关系
 

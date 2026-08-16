@@ -5,6 +5,10 @@ This checker is standard-library only.  It re-runs both theorem checkers,
 audits the current fixed-layout binding/routing path, reconstructs the relevant
 CpModel constraints from a frozen JSON snapshot, checks context transport and
 protected-surface non-interference, and then validates the terminal Judgment.
+
+Conditional-debt trigger: any future edit to this checker must first resolve
+DEBT-B in 14_BIRTH_CERTIFICATE_AND_CONDITIONAL_DEBTS.md by consuming the
+terminal premises and validating lift-step 3/4 bases.
 """
 
 from __future__ import annotations
@@ -37,7 +41,7 @@ THEOREM_COMMIT = "c8b69a03c8fae76a0b7b0864aa5bbea34e02fa0e"
 TERMINAL_COMMIT = "da43392c18b725b007095ce31b8f9ba6461ea483"
 OWNER_AUTHORIZATION_SHA256 = "e73af26bcb2a2184e3f83c93d79bdbac0563890c2a78bc506b914d844d2401b7"
 ACCEPTANCE_SHA256 = "905e0b531c777c0b5216f306f77a0cacac57bd6b4a9b8d951d45fb31b574d5b2"
-RECEIPT_SCHEMA_SHA256 = "b6b5b4983dc8b9b493b75d6d1e695c509bb2d34e9a803d2841a3efb32181a478"
+RECEIPT_SCHEMA_SHA256 = "b0e4275b54c5923899fc01e0c7737bf651df3743c039d9d87d9b182f917f6544"
 THEOREM_PASS_OUTCOME = "W0_SLOT_ARITHMETIC_PASS"
 TERMINAL_PASS_OUTCOME = "W0_TERMINAL_EXCLUSION_PASS"
 TERMINAL_FAIL_OUTCOME = "W0_TERMINAL_EXCLUSION_FAIL"
@@ -917,7 +921,10 @@ def verify_terminal_judgment(
     )
     require(transaction["delta_L"] == "ZERO_BY_SCOPE", "delta_L drift")
     require(transaction["delta_U"] == "ZERO_BY_SCOPE", "delta_U drift")
-    require(transaction["ledger_effect"] == "research candidate ledger only", "terminal ledger-effect drift")
+    require(
+        transaction["ledger_effect"] == "no ledger write; dossier-local research classification only",
+        "terminal ledger-effect drift",
+    )
     require(terminal["canary_relation"]["historical_verdict"] == "INCONCLUSIVE", "terminal judgment rewrote canary verdict")
     require(terminal["canary_relation"]["current_action"] == "UNCHANGED", "terminal judgment changes canary history")
     require(theorem_receipts["theorem_one"]["status"] == "PASS", "theorem one receipt not PASS")
@@ -1127,8 +1134,8 @@ def make_receipt(
         "authority_basis": authority_basis(defensive=not passed),
         "granted_effects": (
             [
-                "permits_research_candidate_ledger_recording_of_fixed_W0_rectangle_as_PROVED_EXCLUDED_RESEARCH",
-                "permits_research_candidate_ledger_recording_of_delta_M_bottom_minus_one_with_global_M_t_still_N_A_NOT_READY",
+                "permits_dossier_local_classification_of_fixed_W0_rectangle_as_PROVED_EXCLUDED_RESEARCH",
+                "permits_research_note_that_one_fixed_candidate_was_excluded_while_global_M_t_remains_N_A_NOT_READY",
             ]
             if passed
             else []

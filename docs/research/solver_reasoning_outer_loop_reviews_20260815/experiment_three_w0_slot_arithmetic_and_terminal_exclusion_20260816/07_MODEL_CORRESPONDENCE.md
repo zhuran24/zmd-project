@@ -24,7 +24,7 @@
 | `W0-LIFT-05-ACTIVE-PORT-EXPORT` | 非 `__unused__` 选择导出活动 source port spec，`__unused__` 不导出。 | `extract_selection` 与 `extract_port_specs` 的源码 marker 支持该解释；当前 checker 未执行 selection 到 port-spec 的语义桥。 | `ARGUED_NOT_MACHINE_CHECKED` |
 | `W0-LIFT-06-ROUTING-CONSUMPTION` | 固定路径把这些 port specs 与包含 strict rectangle 的 placement core 送入 exact routing precheck/solve，且不存在另一个绕过当前 binding model 的入口。 | Phase -1 单链源码 marker、`_new_binding_model` 调用计数与 routing source hash 支持该论证；这些局部检查不能穷尽证明不存在第二入口。 | `ARGUED_NOT_MACHINE_CHECKED` |
 | `W0-LIFT-07-CONTEXT-TRANSPORT` | 定理一可在定理二的增强 context 中继续使用。 | 两定理 problem/objective/layout 身份相同；定理二 `base_contextHash` 等于定理一 `contextHash`；新增前提只收窄合法 binding 集，不改变定理一的一格矛盾。 | `DISCHARGED` |
-| `W0-LIFT-08-ENDPOINT-NONINTERFERENCE` | 本批只更新研究候选账，不改 exact status 或 stable claim ledger。 | 两份保护面当前 SHA-256 与 manifest 冻结值一致。 | `DISCHARGED` |
+| `W0-LIFT-08-ENDPOINT-NONINTERFERENCE` | 本批只形成 dossier-local research classification；不写候选账，也不改 exact status 或 stable claim ledger。 | 两份保护面当前 SHA-256 与 manifest 冻结值一致。 | `DISCHARGED` |
 
 `DISCHARGED` 仅表示该义务对应的已登记机器布尔检查全部为真；`ARGUED_NOT_MACHINE_CHECKED` 表示当前证据支持研究论证，但 checker 没有覆盖完整语义桥。两者都不授予 production 或 certification authority。
 

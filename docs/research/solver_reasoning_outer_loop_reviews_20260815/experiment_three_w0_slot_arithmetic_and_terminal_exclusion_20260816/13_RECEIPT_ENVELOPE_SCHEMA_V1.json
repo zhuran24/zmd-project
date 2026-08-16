@@ -88,8 +88,7 @@
       ],
       "properties": {
         "authority_class": {
-          "type": "string",
-          "minLength": 1
+          "const": "research_only_non_authorizing"
         },
         "source_paths": {
           "type": "array",
@@ -160,8 +159,12 @@
     "granted_effects": {
       "type": "array",
       "items": {
-        "type": "string",
-        "minLength": 1
+        "enum": [
+          "permits_offline_composition_with_J-W0-GHOST-FRONT-BOUNDARY-041-V1",
+          "permits_research_candidate_exclusion_review_for_the_fixed_W0_rectangle",
+          "permits_dossier_local_classification_of_fixed_W0_rectangle_as_PROVED_EXCLUDED_RESEARCH",
+          "permits_research_note_that_one_fixed_candidate_was_excluded_while_global_M_t_remains_N_A_NOT_READY"
+        ]
       },
       "uniqueItems": true
     },
@@ -589,6 +592,16 @@
               "coverage_checked",
               "coverage_is_a_proof_premise"
             ]
+          },
+          "granted_effects": {
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "enum": [
+                "permits_offline_composition_with_J-W0-GHOST-FRONT-BOUNDARY-041-V1",
+                "permits_research_candidate_exclusion_review_for_the_fixed_W0_rectangle"
+              ]
+            }
           }
         }
       }
@@ -652,6 +665,16 @@
                 "type": "string",
                 "const": "PROVED_EXCLUDED_RESEARCH"
               }
+            }
+          },
+          "granted_effects": {
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "enum": [
+                "permits_dossier_local_classification_of_fixed_W0_rectangle_as_PROVED_EXCLUDED_RESEARCH",
+                "permits_research_note_that_one_fixed_candidate_was_excluded_while_global_M_t_remains_N_A_NOT_READY"
+              ]
             }
           }
         }

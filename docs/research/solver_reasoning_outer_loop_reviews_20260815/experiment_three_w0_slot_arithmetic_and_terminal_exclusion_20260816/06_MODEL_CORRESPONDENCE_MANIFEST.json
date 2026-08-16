@@ -17,9 +17,9 @@
     "proof_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/03_PROOF.md",
     "proof_sha256": "e511814998ceebe2867a5f2845a0a9ef6bfdd8a677e5da5964fe8f307a6f321d",
     "checker_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/04_check_w0_slot_arithmetic.py",
-    "checker_sha256": "a533a13c84d03f377f1fa6cfdc240b705962915d4d434db63f71d0811a265643",
+    "checker_sha256": "0cbaeae5ae57e77612f88c93e6ca190720f35353a90c555bf65d636ea97e7027",
     "receipt_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/05_THEOREM_RECEIPT.json",
-    "receipt_sha256": "70ebc5eb20ea6a6185e2ec326f84272c744f06faded74d320c6f4487419035fe"
+    "receipt_sha256": "f97de40c63ef05c6bf82366358051bdd1b5d941a54ba16756312ea803ca95a96"
   },
   "shared_identity": {
     "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
@@ -65,8 +65,8 @@
     {
       "role": "receipt_schema",
       "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/13_RECEIPT_ENVELOPE_SCHEMA_V1.json",
-      "sha256": "b6b5b4983dc8b9b493b75d6d1e695c509bb2d34e9a803d2841a3efb32181a478",
-      "size_bytes": 19067
+      "sha256": "b0e4275b54c5923899fc01e0c7737bf651df3743c039d9d87d9b182f917f6544",
+      "size_bytes": 20165
     }
   ],
   "model_snapshot": {
@@ -164,8 +164,8 @@
     },
     {
       "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/13_RECEIPT_ENVELOPE_SCHEMA_V1.json",
-      "sha256": "b6b5b4983dc8b9b493b75d6d1e695c509bb2d34e9a803d2841a3efb32181a478",
-      "size_bytes": 19067
+      "sha256": "b0e4275b54c5923899fc01e0c7737bf651df3743c039d9d87d9b182f917f6544",
+      "size_bytes": 20165
     }
   ],
   "canary_history": {

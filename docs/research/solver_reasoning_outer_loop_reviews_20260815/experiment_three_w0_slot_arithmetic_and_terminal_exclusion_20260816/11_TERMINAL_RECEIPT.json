@@ -21,89 +21,352 @@
     ]
   },
   "blocking_scope": [],
-  "canary_history": {
-    "current_action": "UNCHANGED",
-    "historical_verdict": "INCONCLUSIVE",
-    "relation": "independent_new_evidence_line; no historical rejudgment"
-  },
-  "context_transport": {
-    "objectiveHash_equal": true,
-    "problemHash_equal": true,
-    "theorem_two_base_equals_theorem_one_context": true,
-    "transport_rule": "premise strengthening preserves theorem-one conditional implication"
-  },
   "contract_identity": {
     "file_hashes": {
-      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/06_MODEL_CORRESPONDENCE_MANIFEST.json": "7d7ad4c4ccce095619a5b61b3cfb5078cbfbc9e81f89b59b30211f70fba50967",
-      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/07_MODEL_CORRESPONDENCE.md": "7dbcccabafa05f8a8c0a68d7815248764be2029055f2237cb0800608cc3a91e4",
-      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/08_TERMINAL_EXCLUSION_JUDGMENT.json": "77f3e1e5690341efae05a77ca01a39cc0fc3a9e23717f32c84698cf4aebee0c6",
-      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/09_TERMINAL_EXCLUSION_PROOF.md": "8da61e47357cf2bde9fa07bd99dfadffc840c1710560534624e95a2c352d313f",
-      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/10_check_w0_terminal_exclusion.py": "2ccc354e99a0943dcb45ea915b4655b4482d15962ae2ddcff222b9f1c65da975"
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/06_MODEL_CORRESPONDENCE_MANIFEST.json": "bb65020dc9f11eb7e61e655c5e061bd72fb503486bac6b8c2f8b6b5d42790f5d",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/07_MODEL_CORRESPONDENCE.md": "6b2629c50a8cc6a03103657c58182642dda8a17998d52de57942e6a7d56b1570",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/08_TERMINAL_EXCLUSION_JUDGMENT.json": "51f3f111fc12c39d62d0e9ca0949801b8d64dd17ad561421ce9092d473817269",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/09_TERMINAL_EXCLUSION_PROOF.md": "ba351aad21df51ec5a5367dc96e15543051c088a793aac0874cad54b78e0a20d",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/10_check_w0_terminal_exclusion.py": "842be507520b704fecad8039a3854e616bc687e25e441a5e93cb23e02ded006e"
     },
     "manifest_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/01_CONTEXT_MANIFEST.json",
     "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27",
     "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
     "protocol_freeze_commit": "a517fa7492a34f881f46b0a4cc9aae98bd6729ad",
     "receipt_schema_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/13_RECEIPT_ENVELOPE_SCHEMA_V1.json",
-    "receipt_schema_sha256": "b6b5b4983dc8b9b493b75d6d1e695c509bb2d34e9a803d2841a3efb32181a478",
+    "receipt_schema_sha256": "b0e4275b54c5923899fc01e0c7737bf651df3743c039d9d87d9b182f917f6544",
     "terminal_commit": "da43392c18b725b007095ce31b8f9ba6461ea483",
     "theorem_commit": "c8b69a03c8fae76a0b7b0864aa5bbea34e02fa0e",
     "theorem_one_contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded",
     "theorem_one_judgment_sha256": "853c7aa9df3939e8eea97afebbf34c4c453a8e641d186ec75af82af291d0ebc3",
     "theorem_two_contextHash": "f66d8a2c0334be01b419229da97d8c32fc19bfb4d5fa07e2cd6e370e40e79a28",
     "theorem_two_judgment_sha256": "91307f7a4ac97c2a73537a3515363a395b171441880134bb11eb3b26513b8454",
-    "theorem_two_receipt_sha256": "70ebc5eb20ea6a6185e2ec326f84272c744f06faded74d320c6f4487419035fe"
+    "theorem_two_receipt_sha256": "f97de40c63ef05c6bf82366358051bdd1b5d941a54ba16756312ea803ca95a96"
   },
-  "endpoint_transaction": {
-    "candidate_key": "W0-ALIGNMENT|x1-y51-w6-h7",
-    "candidate_state_after": "PROVED_EXCLUDED_RESEARCH",
-    "candidate_state_before": "UNKNOWN",
-    "delta_L": "ZERO_BY_SCOPE",
-    "delta_M_bottom": -1,
-    "delta_U": "ZERO_BY_SCOPE",
-    "evidence_type": "EXACT_SINGLETON_EXCLUSION_BY_COMPOSED_THEOREMS",
-    "global_M_t_after": "N_A_NOT_READY",
-    "global_M_t_before": "N_A_NOT_READY",
-    "global_M_t_reason": "L remains ABSENT; no numeric global M_t is invented",
-    "ledger_effect": "research candidate ledger only"
+  "details": {
+    "canary_history": {
+      "current_action": "UNCHANGED",
+      "historical_verdict": "INCONCLUSIVE",
+      "relation": "independent_new_evidence_line; no historical rejudgment"
+    },
+    "context_transport": {
+      "objectiveHash_equal": true,
+      "problemHash_equal": true,
+      "theorem_two_base_equals_theorem_one_context": true,
+      "transport_rule": "premise strengthening preserves theorem-one conditional implication"
+    },
+    "endpoint_transaction": {
+      "candidate_key": "W0-ALIGNMENT|x1-y51-w6-h7",
+      "candidate_state_after": "PROVED_EXCLUDED_RESEARCH",
+      "candidate_state_before": "UNKNOWN",
+      "delta_L": "ZERO_BY_SCOPE",
+      "delta_M_bottom": -1,
+      "delta_U": "ZERO_BY_SCOPE",
+      "evidence_type": "EXACT_SINGLETON_EXCLUSION_BY_COMPOSED_THEOREMS",
+      "global_M_t_after": "N_A_NOT_READY",
+      "global_M_t_before": "N_A_NOT_READY",
+      "global_M_t_reason": "L remains ABSENT; no numeric global M_t is invented",
+      "ledger_effect": "no ledger write; dossier-local research classification only"
+    },
+    "negative_tests": [
+      {
+        "killed": true,
+        "name": "context_mismatch",
+        "reason": "theorem-two contextHash drift"
+      },
+      {
+        "killed": true,
+        "name": "reopened_path_obligation",
+        "reason": "machine obligation is not discharged: W0-LIFT-02-SLOT-COMPLETENESS: OPEN"
+      },
+      {
+        "killed": true,
+        "name": "missing_target_exactly_one",
+        "reason": "snapshot lacks ExactlyOne for boundary_port_041:out:0"
+      },
+      {
+        "killed": true,
+        "name": "blue_requirement_33",
+        "reason": "blue requirement equality domain drift"
+      },
+      {
+        "killed": true,
+        "name": "candidate_delta_zero",
+        "reason": "candidate delta_M_bottom drift"
+      },
+      {
+        "killed": true,
+        "name": "canary_rejudgment",
+        "reason": "terminal judgment rewrote canary verdict"
+      }
+    ],
+    "protected_surfaces": {
+      "files": [
+        {
+          "path": "/home/zhuran24/zmd-pj/data/solutions/exact_full_scale_status.json",
+          "sha256": "3e525b91e324e8e66abd52c5634fdb97c8957baef8dd49efd63b663f34d3e67e",
+          "size_bytes": 4599
+        },
+        {
+          "path": "/home/zhuran24/zmd-pj/data/knowledge/claims.jsonl",
+          "sha256": "6c3608b09d56e4a76de8a605bf30c71812b4152a0eb00c077e5abccd391f7483",
+          "size_bytes": 239505
+        },
+        {
+          "path": "/home/zhuran24/zmd-pj/docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/13_RECEIPT_ENVELOPE_SCHEMA_V1.json",
+          "sha256": "b0e4275b54c5923899fc01e0c7737bf651df3743c039d9d87d9b182f917f6544",
+          "size_bytes": 20165
+        }
+      ],
+      "unchanged": true
+    },
+    "schema_version": "zmd_w0_terminal_exclusion_receipt_v1",
+    "snapshot_audit": {
+      "blue_requirement": {
+        "coefficient_set": [
+          1
+        ],
+        "constraint_index": 287,
+        "domain": [
+          34,
+          34
+        ],
+        "variable_count": 52
+      },
+      "constraint_count": 289,
+      "generic_output_literal_count": 156,
+      "generic_output_slot_count": 52,
+      "slot_exactly_one_constraint_indices": {
+        "boundary_port_001:out:0": 233,
+        "boundary_port_002:out:0": 234,
+        "boundary_port_003:out:0": 235,
+        "boundary_port_004:out:0": 236,
+        "boundary_port_005:out:0": 237,
+        "boundary_port_006:out:0": 238,
+        "boundary_port_007:out:0": 239,
+        "boundary_port_008:out:0": 240,
+        "boundary_port_009:out:0": 241,
+        "boundary_port_010:out:0": 242,
+        "boundary_port_011:out:0": 243,
+        "boundary_port_012:out:0": 244,
+        "boundary_port_013:out:0": 245,
+        "boundary_port_014:out:0": 246,
+        "boundary_port_015:out:0": 247,
+        "boundary_port_016:out:0": 248,
+        "boundary_port_017:out:0": 249,
+        "boundary_port_018:out:0": 250,
+        "boundary_port_019:out:0": 251,
+        "boundary_port_020:out:0": 252,
+        "boundary_port_021:out:0": 253,
+        "boundary_port_022:out:0": 254,
+        "boundary_port_023:out:0": 255,
+        "boundary_port_024:out:0": 256,
+        "boundary_port_025:out:0": 257,
+        "boundary_port_026:out:0": 258,
+        "boundary_port_027:out:0": 259,
+        "boundary_port_028:out:0": 260,
+        "boundary_port_029:out:0": 261,
+        "boundary_port_030:out:0": 262,
+        "boundary_port_031:out:0": 263,
+        "boundary_port_032:out:0": 264,
+        "boundary_port_033:out:0": 265,
+        "boundary_port_034:out:0": 266,
+        "boundary_port_035:out:0": 267,
+        "boundary_port_036:out:0": 268,
+        "boundary_port_037:out:0": 269,
+        "boundary_port_038:out:0": 270,
+        "boundary_port_039:out:0": 271,
+        "boundary_port_040:out:0": 272,
+        "boundary_port_041:out:0": 273,
+        "boundary_port_042:out:0": 274,
+        "boundary_port_043:out:0": 275,
+        "boundary_port_044:out:0": 276,
+        "boundary_port_045:out:0": 277,
+        "boundary_port_046:out:0": 278,
+        "protocol_core_001:out:0": 279,
+        "protocol_core_001:out:1": 280,
+        "protocol_core_001:out:2": 281,
+        "protocol_core_001:out:3": 282,
+        "protocol_core_001:out:4": 283,
+        "protocol_core_001:out:5": 284
+      },
+      "snapshot_role": "independent path-correspondence corroboration; not a theorem-two premise",
+      "source_requirement": {
+        "coefficient_set": [
+          1
+        ],
+        "constraint_index": 288,
+        "domain": [
+          18,
+          18
+        ],
+        "variable_count": 52
+      },
+      "target_exactly_one_constraint_index": 273,
+      "target_literal_indices": {
+        "__unused__": 17156,
+        "blue_iron_ore": 17154,
+        "source_ore": 17155
+      },
+      "target_slot_id": "boundary_port_041:out:0",
+      "variable_count": 17190
+    },
+    "source_audit": {
+      "active_export_contract": "non-__unused__ generic output is emitted as an out port spec; __unused__ is skipped",
+      "active_export_markers_checked": true,
+      "binding_methods_checked": [
+        "__init__",
+        "_add_generic_input_requirements",
+        "_add_generic_output_requirements",
+        "_add_search_guidance",
+        "_add_storage_box_overload_nogoods",
+        "_build_fixed_operation_domains",
+        "_build_generic_input_domains",
+        "_build_generic_output_domains",
+        "_filter_pose_binding_domain",
+        "_generic_input_slot_capacity_map",
+        "_has_invalid_binding_input",
+        "_load_overload_classification",
+        "_mark_invalid_binding_input_summary",
+        "_materialize_pose_optional_instances",
+        "_maybe_dump_state",
+        "_ordered_generic_slot_commodities",
+        "_record_ignored_placement_marker",
+        "_record_invalid_instance_metadata",
+        "_record_missing_instance_id",
+        "_resolve_instance",
+        "_resolve_pose",
+        "_validate_instance_metadata_consistency",
+        "_validate_placement_instance_metadata",
+        "add_nogood_cut",
+        "build",
+        "extract_conflict_summary",
+        "extract_empty_binding_domain_instances",
+        "extract_port_specs",
+        "extract_routing_aware_certificates",
+        "extract_selection",
+        "solve"
+      ],
+      "exactly_one_marker_checked": true,
+      "global_requirement_marker_checked": true,
+      "harness_functions_checked": [
+        "_aggregate",
+        "_apply_feedback",
+        "_assert_clean_environment",
+        "_assert_protocol_ancestor",
+        "_binding_status_name",
+        "_build_parser",
+        "_canonical_digest",
+        "_child_environment",
+        "_complete_feedback_receipt",
+        "_event",
+        "_git",
+        "_json_pointer",
+        "_json_safe",
+        "_load_frozen_inputs",
+        "_load_layout",
+        "_load_manifest",
+        "_new_binding_model",
+        "_occupied_core",
+        "_precheck_projection",
+        "_read_json",
+        "_record_by_id",
+        "_resolve_ghost_rect",
+        "_run_batch",
+        "_run_injected",
+        "_run_injected_command",
+        "_run_layout",
+        "_run_layout_command",
+        "_selection_digest",
+        "_selection_literal_count",
+        "_sha256_bytes",
+        "_sha256_file",
+        "_source_identity_receipt",
+        "_synthetic_error_result",
+        "_synthetic_timeout_result",
+        "_validate_corpus",
+        "_validate_excluded_candidates",
+        "_verify_side_record",
+        "_write_json",
+        "_write_text",
+        "main"
+      ],
+      "routing_chain_markers_checked": true,
+      "single_binding_entry_in_run_layout": true,
+      "slot_builder_markers_checked": true,
+      "source_files": {
+        "binding_model": {
+          "path": "/home/zhuran24/zmd-pj/src/models/binding_subproblem.py",
+          "sha256": "1c89f6ee2cb958568c7365289a0b3d6e69a32f3162d4c925f02695705efc7ee9",
+          "size_bytes": 70508
+        },
+        "fixed_layout_research_path": {
+          "path": "/home/zhuran24/zmd-pj/docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/phase_minus1_harness.py",
+          "sha256": "81e8960738ba2c0b81f86cefb96bc87da9b2e2f81ac9073e2135192b7fb905c2",
+          "size_bytes": 59180
+        },
+        "receipt_schema": {
+          "path": "/home/zhuran24/zmd-pj/docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/13_RECEIPT_ENVELOPE_SCHEMA_V1.json",
+          "sha256": "b0e4275b54c5923899fc01e0c7737bf651df3743c039d9d87d9b182f917f6544",
+          "size_bytes": 20165
+        },
+        "routing_model": {
+          "path": "/home/zhuran24/zmd-pj/src/models/routing_subproblem.py",
+          "sha256": "7554b0f24176b86104095ee47b8ec8ed5dfc4098c3df2f661231b0cf2f0ae718",
+          "size_bytes": 84905
+        }
+      }
+    },
+    "theorem_checks": {
+      "identity_files": [
+        {
+          "path": "/home/zhuran24/zmd-pj/docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_one_w0_ghost_front_offline_certificate_20260815/01_JUDGMENT.json",
+          "sha256": "853c7aa9df3939e8eea97afebbf34c4c453a8e641d186ec75af82af291d0ebc3",
+          "size_bytes": 5275
+        },
+        {
+          "path": "/home/zhuran24/zmd-pj/docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_one_w0_ghost_front_offline_certificate_20260815/03_check_w0_ghost_front_certificate.py",
+          "sha256": "c53e882ab7b2d6bfa96dacefd510ae708f926116475cb0d74aa18d3d40591ba7",
+          "size_bytes": 27347
+        },
+        {
+          "path": "/home/zhuran24/zmd-pj/docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/02_JUDGMENT.json",
+          "sha256": "91307f7a4ac97c2a73537a3515363a395b171441880134bb11eb3b26513b8454",
+          "size_bytes": 5381
+        },
+        {
+          "path": "/home/zhuran24/zmd-pj/docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/03_PROOF.md",
+          "sha256": "e511814998ceebe2867a5f2845a0a9ef6bfdd8a677e5da5964fe8f307a6f321d",
+          "size_bytes": 5962
+        },
+        {
+          "path": "/home/zhuran24/zmd-pj/docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/04_check_w0_slot_arithmetic.py",
+          "sha256": "0cbaeae5ae57e77612f88c93e6ca190720f35353a90c555bf65d636ea97e7027",
+          "size_bytes": 48342
+        },
+        {
+          "path": "/home/zhuran24/zmd-pj/docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/05_THEOREM_RECEIPT.json",
+          "sha256": "f97de40c63ef05c6bf82366358051bdd1b5d941a54ba16756312ea803ca95a96",
+          "size_bytes": 7469
+        }
+      ],
+      "theorem_one": {
+        "judgment_id": "J-W0-GHOST-FRONT-BOUNDARY-041-V1",
+        "status": "PASS"
+      },
+      "theorem_two": {
+        "coverage_checked": true,
+        "judgment_id": "J-W0-GENERIC-OUTPUT-SLOT-SATURATION-041-V1",
+        "outcome": "W0_SLOT_ARITHMETIC_PASS"
+      }
+    },
+    "timing_seconds": 2.060013240959961
   },
   "granted_effects": [
-    "permits_research_candidate_ledger_recording_of_fixed_W0_rectangle_as_PROVED_EXCLUDED_RESEARCH",
-    "permits_research_candidate_ledger_recording_of_delta_M_bottom_minus_one_with_global_M_t_still_N_A_NOT_READY"
+    "permits_dossier_local_classification_of_fixed_W0_rectangle_as_PROVED_EXCLUDED_RESEARCH",
+    "permits_research_note_that_one_fixed_candidate_was_excluded_while_global_M_t_remains_N_A_NOT_READY"
   ],
   "granted_effects_scope": "Permissions are confined to this pinned research dossier; they assert no completed ledger write and grant no exact-status, certification, production, release, supervisor, or publisher authority.",
-  "negative_tests": [
-    {
-      "killed": true,
-      "name": "context_mismatch",
-      "reason": "theorem-two contextHash drift"
-    },
-    {
-      "killed": true,
-      "name": "reopened_path_obligation",
-      "reason": "machine obligation is not discharged: W0-LIFT-02-SLOT-COMPLETENESS: OPEN"
-    },
-    {
-      "killed": true,
-      "name": "missing_target_exactly_one",
-      "reason": "snapshot lacks ExactlyOne for boundary_port_041:out:0"
-    },
-    {
-      "killed": true,
-      "name": "blue_requirement_33",
-      "reason": "blue requirement equality domain drift"
-    },
-    {
-      "killed": true,
-      "name": "candidate_delta_zero",
-      "reason": "candidate delta_M_bottom drift"
-    },
-    {
-      "killed": true,
-      "name": "canary_rejudgment",
-      "reason": "terminal judgment rewrote canary verdict"
-    }
-  ],
   "non_implications": [
     "no_certification_effect",
     "no_exact_status_update",
@@ -228,43 +491,6 @@
     }
   ],
   "result_kind": "w0_terminal_exclusion_check",
-  "schema_version": "zmd_w0_terminal_exclusion_compact_receipt_v1",
-  "snapshot_summary": {
-    "blue_requirement": {
-      "coefficient_set": [
-        1
-      ],
-      "constraint_index": 287,
-      "domain": [
-        34,
-        34
-      ],
-      "variable_count": 52
-    },
-    "constraint_count": 289,
-    "generic_output_literal_count": 156,
-    "generic_output_slot_count": 52,
-    "snapshot_role": "independent path-correspondence corroboration; not a theorem-two premise",
-    "source_requirement": {
-      "coefficient_set": [
-        1
-      ],
-      "constraint_index": 288,
-      "domain": [
-        18,
-        18
-      ],
-      "variable_count": 52
-    },
-    "target_exactly_one_constraint_index": 273,
-    "target_literal_indices": {
-      "__unused__": 17156,
-      "blue_iron_ore": 17154,
-      "source_ore": 17155
-    },
-    "target_slot_id": "boundary_port_041:out:0",
-    "variable_count": 17190
-  },
   "subject_identity": {
     "judgment_id": "J-W0-FIXED-RECT-BINDING-ROUTING-EXCLUDED-V1",
     "layout_id": "W0-ALIGNMENT",

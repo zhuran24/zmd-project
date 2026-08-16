@@ -72,11 +72,11 @@ terminal path negative tests     6 / 6 killed
 persistent contract test file    15_test_receipt_contracts.py
 ```
 
-## 终点候选账
+## 终点候选分类与度量注记
 
 当前 `L=ABSENT`，所以全局 `M_t` 继续是 `N_A_NOT_READY`，没有制造数值 sentinel。
 
-本批只登记固定候选交易：
+本批只给出固定候选的 dossier-local 分类与度量注记；当前没有候选账实体或写入协议：
 
 ```text
 candidate = W0-ALIGNMENT | x=1,y=51,w=6,h=7
@@ -87,6 +87,12 @@ global M_t = N_A_NOT_READY -> N_A_NOT_READY
 ΔL = ZERO_BY_SCOPE
 ΔU = ZERO_BY_SCOPE
 ```
+
+`delta_M_bottom=-1` 在 `M_bottom` 获得形式定义前只是未授权消费的描述字段，不进入任何 production、certified 或稳定 ledger。
+
+## 条件债触发器
+
+以下任一工作开始前必须先读取 [`14_BIRTH_CERTIFICATE_AND_CONDITIONAL_DEBTS.md`](14_BIRTH_CERTIFICATE_AND_CONDITIONAL_DEBTS.md)：再次修改 `10_check_w0_terminal_exclusion.py`、定理三立案，或 Endpoint Metrics Protocol 修订。前两类工作必须处理 DEBT-B/DEBT-D1；度量协议工作必须处理 DEBT-D2。
 
 ## 与实验二金丝雀的关系
 

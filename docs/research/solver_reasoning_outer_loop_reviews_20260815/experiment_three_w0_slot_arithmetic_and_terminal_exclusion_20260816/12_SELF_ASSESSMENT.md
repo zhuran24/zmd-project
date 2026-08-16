@@ -14,7 +14,7 @@
 | 证明 | [`03_PROOF.md`](03_PROOF.md) §4–§5 | 两条独立计数链 + 五步非负零和证明；实验数据不是前提 |
 | 消费契约 | [`02_JUDGMENT.json`](02_JUDGMENT.json) `consumption_contract` | 只准离线组合与固定候选研究账；禁止 production/certified/跨域消费 |
 
-独立 checker 为 [`04_check_w0_slot_arithmetic.py`](04_check_w0_slot_arithmetic.py)，八字段收据为 [`05_THEOREM_RECEIPT.json`](05_THEOREM_RECEIPT.json)。
+独立 checker 为 [`04_check_w0_slot_arithmetic.py`](04_check_w0_slot_arithmetic.py)，schema-bound 收据为 [`05_THEOREM_RECEIPT.json`](05_THEOREM_RECEIPT.json)。
 
 ## 2. 定理二独立复算
 
@@ -101,11 +101,11 @@ source exact-count constraint = 288, domain [18,18]
 
 终局 checker 杀死 6 个运行路径变体：context 错配、重开一条 lift 义务、删除目标 ExactlyOne、把 blue requirement 改为 33、把候选差分改成 0、把金丝雀历史判词改成 `INFEASIBLE`。[`15_test_receipt_contracts.py`](15_test_receipt_contracts.py) 另把 manifest 条数/ID/evidence 漂移、schema 收据变体、schema 字节篡改与 authority currency 固化为可重复运行的 tracked 负测。
 
-## 6. 终点候选账
+## 6. 终点候选分类与度量注记
 
 当前下界仍为 `L=ABSENT`，所以全局 `M_t` 继续是 `N_A_NOT_READY`。本批没有虚构数值基线。
 
-实际登记：
+dossier-local 分类与注记：
 
 ```text
 candidate = W0-ALIGNMENT | x=1,y=51,w=6,h=7
@@ -117,7 +117,7 @@ global M_t = N_A_NOT_READY -> N_A_NOT_READY
 ΔU = ZERO_BY_SCOPE
 ```
 
-这是一笔 fixed-candidate research transaction，不是上下界账、certified frontier 或 exact-status 写入。
+这是一项 fixed-candidate research classification 与未授权消费的度量注记，不是已完成 transaction、上下界账、certified frontier 或 exact-status 写入；当前不存在候选账实体或写入协议。
 
 ## 7. 与金丝雀的关系
 
@@ -136,9 +136,9 @@ INCONCLUSIVE
 | 把 1007 个样本当全称证明 | 未发生；coverage off 独立 PASS |
 | 把 selection hash 黑名单包装成定理 | 未发生；证明对象只有 52/34/18 与 ExactlyOne |
 | 只引用 model snapshot，不从规则与输入重导 | 未发生；slot 与 demand 各有独立字节重导链 |
-| 定理成立但 consumer/lift 未核 | 未发生静默遗漏；八条义务均入账，其中 5 条机器关闭、3 条明确标为仅人工论证、0 条 `OPEN` |
+| 定理成立但 consumer/lift 未核 | 部分发生并已显式降级：5 条机器关闭、3 条仅人工论证；terminal premises 与 lift step 3/4 basis 仍是 DEBT-B，禁止把当前 PASS 解读为这些桥已机核 |
 | 把 current-model restriction 冒充完整游戏语义 | 未发生；Judgment 与终局文书反复限定 current pinned model |
-| 把单候选排除写成全局 `M_t` 或 bound 变化 | 未发生；全局 `M_t` 保持 `N_A_NOT_READY`，只记 `ΔM_bottom=-1` |
+| 把单候选排除写成全局 `M_t` 或 bound 变化 | 未发生；全局 `M_t` 保持 `N_A_NOT_READY`，`ΔM_bottom=-1` 只保留为未授权消费的描述字段 |
 | 用新证明倒签金丝雀 PASS | 未发生；历史判词保持 `INCONCLUSIVE` |
 | checker PASS 自动获得认证或发布权 | 未发生；schema-bound 收据把许可式 `granted_effects`、人读限界与 `non_implications` 分离 |
 

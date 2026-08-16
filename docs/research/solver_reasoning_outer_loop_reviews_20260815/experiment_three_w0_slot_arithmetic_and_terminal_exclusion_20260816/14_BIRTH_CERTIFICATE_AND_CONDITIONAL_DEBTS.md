@@ -35,38 +35,38 @@
 ### DEBT-A：authority currency 与 owner authorization 链
 
 - **状态：** `RESOLVED`
-- **已闭合内容：** `00_OWNER_AUTHORIZATION_20260816.md` 与 `00_ACCEPTANCE_CRITERIA_FROZEN.md` 均进入两份收据的 `authority_basis`；schema 钉死路径与 SHA-256；PASS 路径实时重算文件摘要；[`15_test_receipt_contracts.py`](15_test_receipt_contracts.py) 持久验证磁盘字节、checker 常量与两份收据一致。
+- **已闭合内容：** `00_OWNER_AUTHORIZATION_20260816.md` 与 `00_ACCEPTANCE_CRITERIA_FROZEN.md` 均进入两份收据的 `authority_basis`；schema 钉死 `authority_class`、authority 路径与 SHA-256；PASS 路径实时重算文件摘要；[`15_test_receipt_contracts.py`](15_test_receipt_contracts.py) 持久验证磁盘字节、checker 常量与两份收据一致。
 - **清偿提交：** `6ee8b42ff035324d935f028eed83ae7329dfa81f` 完成 authority path/SHA 绑定；本文件所在同批提交补齐 currency 与 schema-root 持久测试。
 
 ### DEBT-B：terminal premises 与 lift basis 的机器消费
 
 - **状态：** `CONDITIONAL_DEBT`
-- **未清偿内容：** `10_check_w0_terminal_exclusion.py` 尚未读取 `08_TERMINAL_EXCLUSION_JUDGMENT.json` 的 `premises` 数组，也未校验 lift step 3/4 的 `basis`。step 4 从“无合法 `(b,r)` 对”跨到固定候选 research ledger 状态，包含本批唯一尚未机器核验的跨对象空间 basis。
+- **未清偿内容：** `10_check_w0_terminal_exclusion.py` 尚未读取 `08_TERMINAL_EXCLUSION_JUDGMENT.json` 的 `premises` 数组，也未校验 lift step 3/4 的 `basis`。step 4 从“无合法 `(b,r)` 对”跨到固定候选的 dossier-local research classification，包含本批唯一尚未机器核验的跨对象空间 basis。
 - **已完成的止血：** step-4 文字已改为 5 条机器关闭、3 条人工论证、0 条 open，不再把 argued 义务冒充 discharged。
 - **触发器：** 下次修改 `10_check_w0_terminal_exclusion.py`，或定理三立案；任一触发即必须读取 terminal premises，并逐项校验 lift step 3/4 basis 后才能交付。
 
 ### DEBT-C：契约负测、异常收敛与 schema 类型覆盖
 
 - **状态：** `RESOLVED`
-- **已闭合内容：** [`15_test_receipt_contracts.py`](15_test_receipt_contracts.py) 持久登记 manifest 条数/ID/required-evidence 漂移、13 类收据 schema 变体、schema 摘要 identity 漂移、schema 字节降格篡改、未知 keyword 与 authority currency；两个 checker 顶层均以 `Exception` 收敛为 typed FAIL；`verified_scope` 已列出允许字段、字段类型、PASS 必填集与 `additionalProperties: false`。
+- **已闭合内容：** [`15_test_receipt_contracts.py`](15_test_receipt_contracts.py) 持久登记 manifest 条数/ID/required-evidence 漂移、15 类收据 schema 变体、schema 摘要 identity 漂移、schema 字节降格篡改、未知 keyword 与 authority currency；两个 checker 顶层均以 `Exception` 收敛为 typed FAIL；`verified_scope` 已列出允许字段、字段类型、PASS 必填集与 `additionalProperties: false`。
 - **清偿提交：** 本文件所在同批 Git commit。
 
 ### DEBT-D1：object space 与复合角色关系式
 
 - **状态：** `CONDITIONAL_DEBT`
-- **未清偿内容：** 本 dossier 尚未给 theorem、model-path rejector 与 candidate-ledger updater 的 `object_space` 具名，也未写出 rejector 与 ledger-updater 的角色关系式。当前 terminal Judgment 同时承载“不存在 `(b,r)`”与“候选状态交易”，二者边界仅由散文作用域限制。
+- **未清偿内容：** 本 dossier 尚未给 theorem、model-path rejector 与 candidate-ledger updater 的 `object_space` 具名，也未写出 rejector 与 ledger-updater 的角色关系式。当前 terminal Judgment 同时承载“不存在 `(b,r)`”与 dossier-local 候选分类，二者的 object-space 关系仍只有显式散文边界，尚无机器可核的角色关系式。
 - **触发器：** 终点度量协议修订，或定理三立案；触发后须引用三面模型的 object-space/transport 规则，并显式区分 rejector 结论与 ledger-updater 许可。
 
 ### DEBT-D2：`M_bottom` 形式定义
 
 - **状态：** `CONDITIONAL_DEBT`
-- **未清偿内容：** 当前引用的 Endpoint Metrics Protocol v1 只定义 `M_t`，未形式定义 `M_bottom`；本 dossier 的 `delta_M_bottom=-1` 只有“无下界时未解决候选质量减少一”的文字解释，不能冒充协议内已定义量。
+- **未清偿内容：** 当前引用的 Endpoint Metrics Protocol v1 只定义 `M_t`，未形式定义 `M_bottom`；本 dossier 的 `delta_M_bottom=-1` 只有“无下界时未解决候选质量减少一”的文字解释，只能保留为未授权消费的描述字段，不能冒充协议内已定义量或进入 granted effects。
 - **触发器：** Endpoint Metrics Protocol 修订，或定理三立案；触发后须先给出 `M_bottom` 的对象域、计数单位、基线、更新律与它和 `M_t` 的关系，再允许继续消费该字段。
 
 ### DEBT-E：research 后缀与 granted effects 限界
 
 - **状态：** `RESOLVED`
-- **已闭合内容：** mutable dossier 的候选状态统一为 `PROVED_EXCLUDED_RESEARCH`；冻结验收件不回改。两份收据都带人读 `granted_effects_scope`；终局 effects 使用许可式 `permits_*`，不再以 `records_*` 声称已经发生不存在实体的 ledger write。
+- **已闭合内容：** mutable dossier 的候选状态统一为 `PROVED_EXCLUDED_RESEARCH`；冻结验收件不回改。两份收据都带人读 `granted_effects_scope`；schema 按 outcome 精确限制 effect 枚举；终局 effects 只许可 dossier-local classification 与 research note，不再声称不存在实体的 ledger write，也不许可消费未定义的 `M_bottom`。
 - **清偿提交：** 本文件所在同批 Git commit。
 
 ## 4. 重开规则

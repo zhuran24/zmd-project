@@ -67,6 +67,14 @@ def receipt_schema_mutations() -> list[tuple[str, dict[str, Any]]]:
     cases.append(("authority_digest_drift", mutated))
 
     mutated = copy.deepcopy(theorem)
+    mutated["authority_basis"]["authority_class"] = "production_authorizing"
+    cases.append(("authority_class_escalation", mutated))
+
+    mutated = copy.deepcopy(theorem)
+    mutated["granted_effects"][0] = "permits_production_exact_status_write"
+    cases.append(("forged_granted_effect", mutated))
+
+    mutated = copy.deepcopy(theorem)
     mutated["outcome"] = "W0_SLOT_ARITHMETIC_FAIL"
     cases.append(("fail_with_granted_effects", mutated))
 
