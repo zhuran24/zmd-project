@@ -3162,6 +3162,28 @@
       }
     },
     {
+      "id": "DOSSIER-P4-BLOCKADE-FAMILY-ABSTRACTION-20260817-284FD8D3B0",
+      "path": "docs/research/p4_blockade_family_abstraction_20260817",
+      "entry_file": "docs/research/p4_blockade_family_abstraction_20260817/README.md",
+      "title": "P4 区域供电封锁 family 抽象与定理化（2026-08-17）",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-08-17",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "P4 将 P1b/P3 的局部供电封锁机制拆为水平边界中间 target、双边界角 target 与 5×5/6×4/4×6 混合矩形三类 group-pose family。水平类通过 1,728 个正例与 6,708 个系统反例并具备 2 个自然 occurrence，技术义务已闭合到只剩 owner lowering gate；角落类收缩为四事件 2×2 定理但无自然 hit；混合类保留为 664 条已核有限证书。全批未 attach cut、未写 claim、未触碰 certified 或 canonical endpoint。",
+      "workflow": {
+        "opened_at": "2026-08-17",
+        "closure": null
+      }
+    },
+    {
       "id": "DOSSIER-PARADIGM-SEARCH-REVIEW-V12-WITH-CODE-20260520-FC02CE09A5",
       "path": "docs/research/paradigm_search_review_v12_with_code_20260520",
       "entry_file": "docs/research/paradigm_search_review_v12_with_code_20260520/README.md",
