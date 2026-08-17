@@ -786,6 +786,34 @@
       }
     },
     {
+      "id": "DOSSIER-P5-HORIZONTAL-CANARY-20260817-44EADE5C7E",
+      "path": ".artifacts/p5_horizontal_canary_20260817",
+      "entry_file": ".artifacts/p5_horizontal_canary_20260817/REPORT.md",
+      "title": "P5 水平边界供电封锁 lowering 金丝雀本地证据包（2026-08-17）",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-17",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "P5 本机证据包保存 owner 授权、消费点对账、三臂 body-generation run、六份 binary CpModel proto、producer 外独立 replay、编译义务闭合、typed endpoint 与终局报告。静态 lowering PASS；三臂均在首 incumbent 前删失，runtime 判词 INCONCLUSIVE。Payload 不授予 production、certified、canonical、coordinate attach 或通用 compiler 权限。",
+      "workflow": {
+        "opened_at": "2026-08-17",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p5_horizontal_canary_20260817/MANIFEST.json",
+        "manifest_sha256": "344174c5be64ee0196f481a54249778ede4519779eae1edd6278b8f990c08ae4",
+        "recovery_instructions": "docs/research/p5_horizontal_lowering_canary_20260817/README.md",
+        "source_locator": ".artifacts/p5_horizontal_canary_20260817/REPORT.md"
+      }
+    },
+    {
       "id": "DOSSIER-PHASE3B-ACCEL-TUNING-64039CA2F2",
       "path": ".artifacts/phase3b_accel_tuning",
       "entry_file": null,
@@ -3227,7 +3255,7 @@
         "solver-architecture",
         "witness-lower-bound"
       ],
-      "summary": "Owner 已授权 HORIZONTAL-BOUNDARY-MIDDLE-TARGET-SHELL-V1 的 research-only pose-bool lowering canary。协议冻结为三臂 body-generation 实验与 producer 外 proto replay；本阶段只开 research canary，不开 production、certified、canonical claim 或 endpoint 权限。",
+      "summary": "P5 已执行 HORIZONTAL-BOUNDARY-MIDDLE-TARGET-SHELL-V1 的 research-only pose-bool lowering canary：六个 group-pose 事件被精确编译为一条 sum<=5 约束，producer 外重建与 proto replay 逐字节通过，P3 五项编译义务全部关闭；A/B/C 均在首 incumbent 前 UNKNOWN/CENSORED，runtime pruning 保持 INCONCLUSIVE。Production、certified、canonical 与 coordinate attach 权限未打开。",
       "workflow": {
         "opened_at": "2026-08-17",
         "closure": null
