@@ -1,18 +1,18 @@
 # 历史知识回填与长尾覆盖
 
 > 本页由 `data/knowledge/backfill_reviews.jsonl`、`backfill_triage.json` 与 dossier registry 自动生成；禁止手工修改。
-> 账本审阅日：`2026-08-15`；源摘要：`sha256:63983e39de1102264c42d463ecec82af92c91c1a384276c615b690655c65cddd`。
+> 账本审阅日：`2026-08-15`；源摘要：`sha256:8c6c6fb106649503c738250a6e789f902c794306e2a3b925ee346b7ce20b8ada`。
 
 这里把两件经常被混写的事情分开：**semantic review** 表示实际读取了声明路径并提炼知识；**inventory triage** 只保证尚未审阅的 dossier 仍可发现、只落入一个队列，并带有重开条件。分诊从不等价于 `no_reusable_claim`。
 
 ## 收口概览
 
-- dossier 总数：`212`。
+- dossier 总数：`214`。
 - current review：`44`，其中语义审阅 `41`，availability/provenance-only `3`。
 - 尚无 current review、但已进入唯一 triage group：`165`。
-- 新写入流程中尚未关闭的 active dossier：`6`；其中已有 current review `3`；open workflow 不进入历史 triage。
-- inventory coverage：`212/212`。
-- semantic review coverage：`41/212`。这个比例不会被 triage 人为抬高。
+- 新写入流程中尚未关闭的 active dossier：`8`；其中已有 current review `3`；open workflow 不进入历史 triage。
+- inventory coverage：`214/214`。
+- semantic review coverage：`41/214`。这个比例不会被 triage 人为抬高。
 
 ## Current review
 
@@ -68,6 +68,8 @@
 | Dossier | 路径 | 打开日 | 生命周期 |
 |---|---|---|---|
 | `DOSSIER-OUTER-LOOP-RECON-20260817-A3301A1D74` | `.artifacts/outer_loop_recon_20260817` | `2026-08-17` | `active` |
+| `DOSSIER-P1-RESTRICTED-WITNESS-CONSTRUCTION-20260817-39AB02A7C6` | `docs/research/p1_restricted_witness_construction_20260817` | `2026-08-17` | `active` |
+| `DOSSIER-P1-WITNESS-CONSTRUCTION-20260817-D06675346E` | `.artifacts/p1_witness_construction_20260817` | `2026-08-17` | `active` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-20260815-7FA2A0E225` | `.artifacts/solver_reasoning_outer_loop_phase_minus1_20260815` | `2026-08-15` | `active` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-V2-20260815-96E16B17C8` | `.artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815` | `2026-08-15` | `active` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99` | `docs/research/solver_reasoning_outer_loop_reviews_20260815` | `2026-08-15` | `active` |

@@ -658,6 +658,34 @@
       }
     },
     {
+      "id": "DOSSIER-P1-WITNESS-CONSTRUCTION-20260817-D06675346E",
+      "path": ".artifacts/p1_witness_construction_20260817",
+      "entry_file": ".artifacts/p1_witness_construction_20260817/REPORT.md",
+      "title": "P1 受限 witness 构造本地证据包（2026-08-17）",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-17",
+      "topics": [
+        "reasoning-system",
+        "witness-lower-bound",
+        "solver-architecture"
+      ],
+      "summary": "Local-optional evidence registered through docctl; semantic outcome is pending closure review.",
+      "workflow": {
+        "opened_at": "2026-08-17",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p1_witness_construction_20260817/MANIFEST.json",
+        "manifest_sha256": "1f85c96304a8f4e5af6add1eababbb323e54fa808c0475a662d86a28abb8f426",
+        "recovery_instructions": "docs/research/p1_restricted_witness_construction_20260817/README.md",
+        "source_locator": ".artifacts/p1_witness_construction_20260817/REPORT.md"
+      }
+    },
+    {
       "id": "DOSSIER-P2-0-REFRESH-20260805-627C980F03",
       "path": ".artifacts/p2_0_refresh_20260805",
       "entry_file": ".artifacts/p2_0_refresh_20260805/AREA_BOUND_UPGRADE_PLAN.md",
@@ -2800,6 +2828,28 @@
         "solver-experiment"
       ],
       "summary": "增量 attach 形态与容量 sizing 的工程 GO；明确不证明收敛、P1.3 完成或 production promotion。"
+    },
+    {
+      "id": "DOSSIER-P1-RESTRICTED-WITNESS-CONSTRUCTION-20260817-39AB02A7C6",
+      "path": "docs/research/p1_restricted_witness_construction_20260817",
+      "entry_file": "docs/research/p1_restricted_witness_construction_20260817/README.md",
+      "title": "P1 受限 witness 构造与供电死因谱（2026-08-17）",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-08-17",
+      "topics": [
+        "reasoning-system",
+        "witness-lower-bound",
+        "solver-architecture"
+      ],
+      "summary": "Active research dossier opened through docctl; semantic outcome is pending closure review.",
+      "workflow": {
+        "opened_at": "2026-08-17",
+        "closure": null
+      }
     },
     {
       "id": "DOSSIER-P2-0-AREA-BOUND-20260806-6016501B5F",
