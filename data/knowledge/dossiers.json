@@ -730,6 +730,34 @@
       "summary": "P2.0 面积界与复核脚本的本机可选收据根。"
     },
     {
+      "id": "DOSSIER-P3-POWER-BLOCKADE-VALIDATION-20260817-DA81BA8459",
+      "path": ".artifacts/p3_power_blockade_validation_20260817",
+      "entry_file": ".artifacts/p3_power_blockade_validation_20260817/REPORT.md",
+      "title": "P3 区域供电封锁 family 验证本地证据包（2026-08-17）",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-17",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "P3 本机证据包保存 42 文件样本盘点、37 个近失配、1098 个纵向／target 换位、7 个 mixed-template 正样本、两种 master 的只读 literal 审计与 typed 终局。payload 可缺失；其存在不授予 claim、cut、certified、下界或 production authority。",
+      "workflow": {
+        "opened_at": "2026-08-17",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p3_power_blockade_validation_20260817/MANIFEST.json",
+        "manifest_sha256": "e535433d738ae75c5053906ea10cbc4a1a8dd361dc73c615c55de6d731b48c67",
+        "recovery_instructions": "docs/research/p3_power_blockade_validation_20260817/README.md",
+        "source_locator": ".artifacts/p3_power_blockade_validation_20260817/REPORT.md"
+      }
+    },
+    {
       "id": "DOSSIER-PHASE3B-ACCEL-TUNING-64039CA2F2",
       "path": ".artifacts/phase3b_accel_tuning",
       "entry_file": null,
