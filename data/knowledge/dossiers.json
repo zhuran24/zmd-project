@@ -686,6 +686,34 @@
       }
     },
     {
+      "id": "DOSSIER-P1B-JOINT-POWER-REPAIR-20260817-8F6B7DFD94",
+      "path": ".artifacts/p1b_joint_power_repair_20260817",
+      "entry_file": ".artifacts/p1b_joint_power_repair_20260817/REPORT.md",
+      "title": "P1b 九窗口联合修复与区域供电封锁候选本地证据包（2026-08-17）",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-17",
+      "topics": [
+        "reasoning-system",
+        "witness-lower-bound",
+        "solver-architecture"
+      ],
+      "summary": "P1b 本机证据包保存 33×35 top-right body incumbent、exact power 分析、266→6 最小核、56 平移结构 checker、九窗口受限修复收据与 typed 终局。payload 可在轻量 checkout 缺失；其存在不授予 claim、cut、certified、下界或 production authority。",
+      "workflow": {
+        "opened_at": "2026-08-17",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p1b_joint_power_repair_20260817/MANIFEST.json",
+        "manifest_sha256": "30245c53c4e3fb7bd83c6f4ac85141d302752249fa7690dfe9a01ec1dbc3110e",
+        "recovery_instructions": "docs/research/p1b_joint_power_repair_20260817/README.md",
+        "source_locator": ".artifacts/p1b_joint_power_repair_20260817/REPORT.md"
+      }
+    },
+    {
       "id": "DOSSIER-P2-0-REFRESH-20260805-627C980F03",
       "path": ".artifacts/p2_0_refresh_20260805",
       "entry_file": ".artifacts/p2_0_refresh_20260805/AREA_BOUND_UPGRADE_PLAN.md",
@@ -2867,7 +2895,7 @@
         "witness-lower-bound",
         "solver-architecture"
       ],
-      "summary": "P1b 在未取得完整 witness、完整 verifier 未到达且 canonical L 保持 absent 的边界下，将 P1 family A 的 266 实例供电 nogood 收缩为 6 姿态全局最小局部核，并提出经 56 个水平平移独立复算的底边 5×5 六块 Hall 型封锁候选。该对象仅为 P3/P4 candidate，不是 claim、cut、certified 或 production authority。", 
+      "summary": "P1b 在未取得完整 witness、完整 verifier 未到达且 canonical L 保持 absent 的边界下，将 P1 family A 的 266 实例供电 nogood 收缩为 6 姿态全局最小局部核，并提出经 56 个水平平移独立复算的底边 5×5 六块 Hall 型封锁候选。该对象仅为 P3/P4 candidate，不是 claim、cut、certified 或 production authority。",
       "workflow": {
         "opened_at": "2026-08-17",
         "closure": null
