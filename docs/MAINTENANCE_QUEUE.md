@@ -9,7 +9,7 @@
 
 | 严重度 | 数量 |
 |---|---:|
-| error | 7 |
+| error | 9 |
 | warning | 0 |
 | info | 76 |
 
@@ -22,6 +22,8 @@
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-P1-WITNESS-CONSTRUCTION-20260817-D06675346E` | active dossier 的 opened_at 2026-08-17 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-P1B-JOINT-POWER-REPAIR-20260817-8F6B7DFD94` | active dossier 的 opened_at 2026-08-17 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-P1B-JOINT-POWER-REPAIR-20260817-C459AE609C` | active dossier 的 opened_at 2026-08-17 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
+| `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-P3-POWER-BLOCKADE-VALIDATION-20260817-3DC75D9C7A` | active dossier 的 opened_at 2026-08-17 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
+| `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-P3-POWER-BLOCKADE-VALIDATION-20260817-DA81BA8459` | active dossier 的 opened_at 2026-08-17 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-W0-UNARY-CANARY-20260816-40F7F16A22` | active dossier 的 opened_at 2026-08-16 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-TRI-PLANE-MODEL-V2-20260816-71A3625ABB` | active dossier 的 opened_at 2026-08-16 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
 | `info` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-B1-SIDEWISE-MARKED-MEMBRANE-FRESH-AUTHORITY-20260727-EA260C6D6B` | active dossier 已打开 19 天；应继续工作、更新 next action，或以 typed outcome 关闭。 | `docsystem.intake`<br>`knowledge.build` |

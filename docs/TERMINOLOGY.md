@@ -1,7 +1,7 @@
 # 核心术语与禁止混同边界
 
 > 本页由 `data/knowledge/terminology.json` 自动生成；禁止手工修改。
-> 账本审阅日：`2026-08-12`；源摘要：`sha256:73ea900b873ad9619896621314e4cec6dd5f73cbf984312b76ba4f259cd7682b`。
+> 账本审阅日：`2026-08-12`；源摘要：`sha256:617970beb92f037ecad2bbfc7037c19b338b6cded2c6450a64672456d4a7d50e`。
 
 术语表统一名称和类推边界，但不覆盖 canonical rules、claim statement 或 owner decision。别名只帮助检索，不表示两个更细概念在所有上下文中等价。
 
