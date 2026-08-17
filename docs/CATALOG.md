@@ -1,7 +1,7 @@
 # 项目知识目录
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:a10c25d431acb9fccd556de28b93360e6c61758424ca761a4d779048a035e427`。
+> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:f2dc46b1d8ac2d35890c2702a383022beb1d2aeef08db398c8995708c3fb8949`。
 
 这里登记稳定 ID。claim 回答“我们知道什么”，decision 回答“谁改变了什么规则或门”，
 dossier 回答“原始证据包在哪里”，validity profile 回答“旧结论为何失效、怎样换代、能否复用”。目录不把历史材料自动升级为当前权威。
@@ -11,7 +11,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 - claim：`92` 条，其中当前 / 开放 `73` 条，带 validity profile `32` 条。
 - decision：`8` 条。
 - backfill review：`54` 条，其中 current `44` 条。
-- dossier：`220` 个，其中 tracked `157` 个、local optional `63` 个、当前证据标记 `16` 个、人工精编 `40` 个。
+- dossier：`222` 个，其中 tracked `158` 个、local optional `64` 个、当前证据标记 `16` 个、人工精编 `42` 个。
 - `docs/research/` 的一级目录和一级 Markdown 已全登记；`.artifacts/` 只登记一级目录，其路径允许在轻量 checkout 中缺失。
 
 ## Claim 索引
@@ -129,11 +129,11 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 - `p1_2-proof-chain`：72 个 dossier。
 - `other`：44 个 dossier。
 - `solver-experiment`：25 个 dossier。
+- `witness-lower-bound`：25 个 dossier。
 - `upper-bound`：24 个 dossier。
-- `witness-lower-bound`：23 个 dossier。
 - `cut-framework`：19 个 dossier。
-- `reasoning-system`：15 个 dossier。
-- `solver-architecture`：15 个 dossier。
+- `reasoning-system`：17 个 dossier。
+- `solver-architecture`：17 个 dossier。
 - `formal-verification`：12 个 dossier。
 - `rules-semantics`：12 个 dossier。
 - `industrial-delivery`：8 个 dossier。
@@ -199,6 +199,8 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
 | `DOSSIER-OUTER-LOOP-RECON-20260817-A3301A1D74` | `2026-08-17` | [推理外环三实验对账裁断全文（2026-08-17）](<../.artifacts/outer_loop_recon_20260817/B_VERDICT_FULL_20260817.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
+| `DOSSIER-P5-HORIZONTAL-LOWERING-CANARY-20260817-3DBC7800A0` | `2026-08-17` | [P5 水平边界供电封锁 lowering 金丝雀（2026-08-17）](<research/p5_horizontal_lowering_canary_20260817/README.md>)<br>P5 已执行 HORIZONTAL-BOUNDARY-MIDDLE-TARGET-SHELL-V1 的 research-only pose-bool lowering canary：六个 group-pose 事件被精确编译为一条 sum<=5 约束，producer 外重建与 proto replay 逐字节通过… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
+| `DOSSIER-P5-HORIZONTAL-CANARY-20260817-44EADE5C7E` | `2026-08-17` | [P5 水平边界供电封锁 lowering 金丝雀本地证据包（2026-08-17）](<../.artifacts/p5_horizontal_canary_20260817/REPORT.md>)<br>P5 本机证据包保存 owner 授权、消费点对账、三臂 body-generation run、六份 binary CpModel proto、producer 外独立 replay、编译义务闭合、typed endpoint 与终局报告。静态 lowering PASS；三臂均在首 incumbent 前删失，r… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P4-BLOCKADE-FAMILY-ABSTRACTION-20260817-284FD8D3B0` | `2026-08-17` | [P4 区域供电封锁 family 抽象与定理化（2026-08-17）](<research/p4_blockade_family_abstraction_20260817/README.md>)<br>P4 将 P1b/P3 的局部供电封锁机制拆为水平边界中间 target、双边界角 target 与 5×5/6×4/4×6 混合矩形三类 group-pose family。水平类通过 1,728 个正例与 6,708 个系统反例并具备 2 个自然 occurrence，技术义务已闭合到只剩 owner lower… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P4-BLOCKADE-FAMILY-ABSTRACTION-20260817-5B9F642CB4` | `2026-08-17` | [P4 区域供电封锁 family 抽象与定理化本地证据包（2026-08-17）](<../.artifacts/p4_blockade_family_abstraction_20260817/REPORT.md>)<br>P4 本机证据包保存三类 Judgment、三个独立标准库 checker、1,728／48／664 条正域证据、6,708／136／142 条 near-miss 结果、九布局 corpus 投影、编译义务、水平类 owner-gated canary 草案与 typed 终局。payload 可在轻量 check… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P3-POWER-BLOCKADE-VALIDATION-20260817-3DC75D9C7A` | `2026-08-17` | [P3 区域供电封锁 family 验证（2026-08-17）](<research/p3_power_blockade_validation_20260817/README.md>)<br>P3 对 P1b 底边六块供电封锁候选做小样本 incidence、37 个近失配、1098 个纵向／target 换位、双 master 只读 literal 审计与 5×5/6×4/4×6 混合模板探针。候选被收窄为网格边界壳机制并获得扩展正样本，但仍未晋升为 claim、cut、certified 或 prod… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
@@ -243,6 +245,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
+| `DOSSIER-P5-HORIZONTAL-LOWERING-CANARY-20260817-3DBC7800A0` | `2026-08-17` | [P5 水平边界供电封锁 lowering 金丝雀（2026-08-17）](<research/p5_horizontal_lowering_canary_20260817/README.md>)<br>P5 已执行 HORIZONTAL-BOUNDARY-MIDDLE-TARGET-SHELL-V1 的 research-only pose-bool lowering canary：六个 group-pose 事件被精确编译为一条 sum<=5 约束，producer 外重建与 proto replay 逐字节通过… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P4-BLOCKADE-FAMILY-ABSTRACTION-20260817-284FD8D3B0` | `2026-08-17` | [P4 区域供电封锁 family 抽象与定理化（2026-08-17）](<research/p4_blockade_family_abstraction_20260817/README.md>)<br>P4 将 P1b/P3 的局部供电封锁机制拆为水平边界中间 target、双边界角 target 与 5×5/6×4/4×6 混合矩形三类 group-pose family。水平类通过 1,728 个正例与 6,708 个系统反例并具备 2 个自然 occurrence，技术义务已闭合到只剩 owner lower… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P3-POWER-BLOCKADE-VALIDATION-20260817-3DC75D9C7A` | `2026-08-17` | [P3 区域供电封锁 family 验证（2026-08-17）](<research/p3_power_blockade_validation_20260817/README.md>)<br>P3 对 P1b 底边六块供电封锁候选做小样本 incidence、37 个近失配、1098 个纵向／target 换位、双 master 只读 literal 审计与 5×5/6×4/4×6 混合模板探针。候选被收窄为网格边界壳机制并获得扩展正样本，但仍未晋升为 claim、cut、certified 或 prod… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P1B-JOINT-POWER-REPAIR-20260817-C459AE609C` | `2026-08-17` | [P1b 九窗口联合修复与区域供电封锁候选（2026-08-17）](<research/p1b_joint_power_repair_20260817/README.md>)<br>P1b 在未取得完整 witness、完整 verifier 未到达且 canonical L 保持 absent 的边界下，将 P1 family A 的 266 实例供电 nogood 收缩为 6 姿态全局最小局部核，并提出经 56 个水平平移独立复算的底边 5×5 六块 Hall 型封锁候选。该对象仅为 P3/… | `reasoning-system`, `witness-lower-bound`, `solver-architecture` | `active` | `unreviewed` |
@@ -408,6 +411,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
 | `DOSSIER-OUTER-LOOP-RECON-20260817-A3301A1D74` | `2026-08-17` | [推理外环三实验对账裁断全文（2026-08-17）](<../.artifacts/outer_loop_recon_20260817/B_VERDICT_FULL_20260817.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
+| `DOSSIER-P5-HORIZONTAL-CANARY-20260817-44EADE5C7E` | `2026-08-17` | [P5 水平边界供电封锁 lowering 金丝雀本地证据包（2026-08-17）](<../.artifacts/p5_horizontal_canary_20260817/REPORT.md>)<br>P5 本机证据包保存 owner 授权、消费点对账、三臂 body-generation run、六份 binary CpModel proto、producer 外独立 replay、编译义务闭合、typed endpoint 与终局报告。静态 lowering PASS；三臂均在首 incumbent 前删失，r… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P4-BLOCKADE-FAMILY-ABSTRACTION-20260817-5B9F642CB4` | `2026-08-17` | [P4 区域供电封锁 family 抽象与定理化本地证据包（2026-08-17）](<../.artifacts/p4_blockade_family_abstraction_20260817/REPORT.md>)<br>P4 本机证据包保存三类 Judgment、三个独立标准库 checker、1,728／48／664 条正域证据、6,708／136／142 条 near-miss 结果、九布局 corpus 投影、编译义务、水平类 owner-gated canary 草案与 typed 终局。payload 可在轻量 check… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P3-POWER-BLOCKADE-VALIDATION-20260817-DA81BA8459` | `2026-08-17` | [P3 区域供电封锁 family 验证本地证据包（2026-08-17）](<../.artifacts/p3_power_blockade_validation_20260817/REPORT.md>)<br>P3 本机证据包保存 42 文件样本盘点、37 个近失配、1098 个纵向／target 换位、7 个 mixed-template 正样本、两种 master 的只读 literal 审计与 typed 终局。payload 可缺失；其存在不授予 claim、cut、certified、下界或 production… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P1B-JOINT-POWER-REPAIR-20260817-8F6B7DFD94` | `2026-08-17` | [P1b 九窗口联合修复与区域供电封锁候选本地证据包（2026-08-17）](<../.artifacts/p1b_joint_power_repair_20260817/REPORT.md>)<br>P1b 本机证据包保存 33×35 top-right body incumbent、exact power 分析、266→6 最小核、56 平移结构 checker、九窗口受限修复收据与 typed 终局。payload 可在轻量 checkout 缺失；其存在不授予 claim、cut、certified、下界或… | `reasoning-system`, `witness-lower-bound`, `solver-architecture` | `active` | `unreviewed` |
