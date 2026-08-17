@@ -758,6 +758,34 @@
       }
     },
     {
+      "id": "DOSSIER-P4-BLOCKADE-FAMILY-ABSTRACTION-20260817-5B9F642CB4",
+      "path": ".artifacts/p4_blockade_family_abstraction_20260817",
+      "entry_file": ".artifacts/p4_blockade_family_abstraction_20260817/REPORT.md",
+      "title": "P4 区域供电封锁 family 抽象与定理化本地证据包（2026-08-17）",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-17",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "P4 本机证据包保存三类 Judgment、三个独立标准库 checker、1,728／48／664 条正域证据、6,708／136／142 条 near-miss 结果、九布局 corpus 投影、编译义务、水平类 owner-gated canary 草案与 typed 终局。payload 可在轻量 checkout 缺失；其存在不授予 claim、cut、certified、下界或 production authority。",
+      "workflow": {
+        "opened_at": "2026-08-17",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p4_blockade_family_abstraction_20260817/MANIFEST.json",
+        "manifest_sha256": "773fcc59ec4ba7e88100ad18a25a7961acb5059cd65fe84a47053886874c51a3",
+        "recovery_instructions": "docs/research/p4_blockade_family_abstraction_20260817/README.md",
+        "source_locator": ".artifacts/p4_blockade_family_abstraction_20260817/REPORT.md"
+      }
+    },
+    {
       "id": "DOSSIER-PHASE3B-ACCEL-TUNING-64039CA2F2",
       "path": ".artifacts/phase3b_accel_tuning",
       "entry_file": null,
