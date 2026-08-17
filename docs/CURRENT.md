@@ -2,7 +2,7 @@
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
 > 机器状态从冻结规则、义务、gate 与 exact-status 文件直接读取；研究结论从稳定 ID 账本投影。
-> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:617970beb92f037ecad2bbfc7037c19b338b6cded2c6450a64672456d4a7d50e`。
+> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:a10c25d431acb9fccd556de28b93360e6c61758424ca761a4d779048a035e427`。
 
 ## 权威边界
 
