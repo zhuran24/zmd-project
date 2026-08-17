@@ -29,6 +29,16 @@
 
 [`REASONING_OUTER_LOOP_DESIGN_CONSTRAINTS.md`](REASONING_OUTER_LOOP_DESIGN_CONSTRAINTS.md) 保存条件式设计约束和可证伪架构假设。归档与 `non_authorizing` 登记动作的许可及其非蕴含边界，只以 [`DECISION-OUTER-LOOP-REVIEW-REGISTRATION-20260815`](../../../data/knowledge/decisions.jsonl) 为准；证据链为该 decision → [`OWNER_INSTRUCTION_20260815.md`](OWNER_INSTRUCTION_20260815.md) 窄存录 → 存录内所列仓外会话转录。
 
+## 推理外环架构与账本对账制度
+
+[`REASONING_OUTER_LOOP_ARCHITECTURE_SKETCH.md`](REASONING_OUTER_LOOP_ARCHITECTURE_SKETCH.md) 现按七器官描述外环，并登记 2026-08-17 记分卡：⓪目标路由／账本对账 `FAIL`；①观察、③证明、④验证通过；②只在一个已知答案闭卷案例上通过且人工占比高；⑤编译的结构／健全性通过但运行时效用 `INCONCLUSIVE`；⑥ observer／evaluator 通过但因果 endpoint 效果 `INCONCLUSIVE`；家族普遍性与全局面貌均未测试。
+
+[`LEDGER_RECONCILIATION_PROTOCOL_V1.md`](LEDGER_RECONCILIATION_PROTOCOL_V1.md) 把对账挂到协议冻结、预算、稳定命题身份、endpoint 写入、lowering、claim ledger 与认证／发布／owner 决策包等消费点；草稿推理、猜想与可丢弃探索永远自由。真正盲测采用密封选择器；已知答案校准必须预标 `KNOWN-ANSWER CLOSED-BOOK BENCHMARK`。
+
+[`LEDGER_RECONCILIATION_ERRATUM_RECEIPT_20260817.json`](LEDGER_RECONCILIATION_ERRATUM_RECEIPT_20260817.json) 对实验一、二、三逐项登记 current claim 关系、canonical before-state、允许效力和待回挂 evidence。`data/knowledge/claims.jsonl` 在本批保持只读。
+
+本批裁断全文是 local-optional 包 `.artifacts/outer_loop_recon_20260817/B_VERDICT_FULL_20260817.md`，SHA-256=`16a2c6b3db19cbce6747c7169c31e5743c69934613c9bee9df6e6212b80c7bdc`。轻量 checkout 缺失该 payload 时，从 owner 提供的 2026-08-17 推理外环对撞裁断会话重新导出并对拍摘要；本节、对账协议、机器收据与实验三勘误是其 tracked 操作性后继，不能反向伪装成全文逐字副本。
+
 ## Phase -1 立项前实验闸
 
 [`phase_minus1/`](phase_minus1/README.md) 保存 owner 已授权开展、但仍不产生立项的 Phase -1 证据线。该线先冻结协议和 corpus，再运行无 cap 死因谱、producer→consumer 触达与外部布局终验 canary；实验结果只能进入 owner 的第二道立项闸。
@@ -43,7 +53,7 @@
 
 ## 实验三：W0 席位算术与固定矩形终局排除
 
-[`experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/`](experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/README.md) 保存 owner 已授权的第二条离线定理与组合终局主张：52 个供源席位恰被 34+18 的精确需求填满，因此 041 在每个合法 binding 中必活动；与实验一的一格冲突定理组合后，固定 `W0-ALIGNMENT` 布局中的 `x=1,y=51,w=6,h=7` 矩形在钉死 current binding+routing research model 下由 `UNKNOWN` 转为 `PROVED_EXCLUDED`。该候选级排除不改 exact-status、stable claim ledger、上下界或实验二的 `INCONCLUSIVE`。
+[`experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/`](experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/README.md) 保存第二条离线定理与组合终局主张：52 个供源席位恰被 34+18 的精确需求填满，因此 041 在每个合法 binding 中必活动；与实验一的一格冲突定理组合后，本地证明线排除了固定 `W0-ALIGNMENT` 的 `x=1,y=51,w=6,h=7` 矩形。2026-08-17 对账确认 current claims 在实验前已经覆盖该数学与候选：本地状态为 `UNPROVED_IN_THIS_LINE → PROVED_IN_THIS_LINE`，canonical candidate 状态为 `PROVED_EXCLUDED → PROVED_EXCLUDED`，canonical `ΔM=0`。“第一笔非零候选排除交易”已撤回，详见该目录的 [`16_CANONICAL_STATE_ERRATUM_20260817.md`](experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/16_CANONICAL_STATE_ERRATUM_20260817.md)。
 
 ## 已知字节保真 lint debt
 
@@ -53,4 +63,4 @@
 
 ## Provenance
 
-执行席位＝GPT-5.6-Sol（CC harness），commit trailer 使用 harness 模板名义；评审席＝GPT Pro（浏览器接入）。
+2026-08-15 原始执行席位＝GPT-5.6-Sol（CC harness），评审席＝GPT Pro（浏览器接入）。2026-08-17 勘误与账本对账制度执行席位＝GPT-5.6 Pro，提交使用对应 `Co-Authored-By` trailer。

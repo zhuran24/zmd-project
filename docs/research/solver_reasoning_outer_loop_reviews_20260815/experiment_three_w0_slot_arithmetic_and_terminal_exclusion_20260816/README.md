@@ -1,13 +1,14 @@
 # 实验三：W0 席位算术引理与固定矩形终局排除
 
-> **当前状态：** `COMPLETE_RESEARCH_ONLY / PROVED_EXCLUDED_RESEARCH`
-> **日期：** 2026-08-16
+> **当前状态：** `COMPLETE_RESEARCH_ONLY / PROVED_IN_LOCAL_LINE / CANONICAL_ALREADY_PROVED_EXCLUDED`
+> **日期：** 2026-08-16；2026-08-17 完成 canonical 对账勘误。
 > **性质：** `research_only / non_authorizing`
-> **定理二判词：** `PASS`
-> **固定候选判词：** `UNKNOWN → PROVED_EXCLUDED_RESEARCH`
+> **定理二判词：** `PASS`；相对于 current ledger 为 `EQUIVALENT_TO` 既有槽饱和 claim。
+> **固定候选判词：** 本地证明线 `UNPROVED_IN_THIS_LINE → PROVED_IN_THIS_LINE`；canonical candidate `PROVED_EXCLUDED → PROVED_EXCLUDED`。
+> **勘误入口：** [`16_CANONICAL_STATE_ERRATUM_20260817.md`](16_CANONICAL_STATE_ERRATUM_20260817.md)。
 > **认证与发布效力：** 无。
 
-本目录承载实验一的第二条离线定理，以及它与第一条定理的组合终局主张。验收判据先于证明提交；两条独立 checker 均使用标准库并从钉死字节复算承重事实。
+本目录承载实验一的第二条离线定理，以及它与第一条定理的组合终局主张。验收判据先于证明提交；两条独立 checker 均使用标准库并从钉死字节复算承重事实。2026-08-17 对账确认这些数学和固定候选在实验前已由 current claims 覆盖，因此本包的增量属于机械化、assurance 与 replay capability，不属于新 claim truth 或 canonical endpoint movement。
 
 ## 一句话结果
 
@@ -55,7 +56,8 @@ forced unused total    0
 - [`12_SELF_ASSESSMENT.md`](12_SELF_ASSESSMENT.md)：读者视角自评、什么不算、保留风险与重开触发器；
 - [`13_RECEIPT_ENVELOPE_SCHEMA_V1.json`](13_RECEIPT_ENVELOPE_SCHEMA_V1.json)：定理与终局两份收据共用且被 checker 摘要钉死的机器 envelope schema；
 - [`14_BIRTH_CERTIFICATE_AND_CONDITIONAL_DEBTS.md`](14_BIRTH_CERTIFICATE_AND_CONDITIONAL_DEBTS.md)：出生证裁定、同批清偿状态与条件债触发器史料；
-- [`15_test_receipt_contracts.py`](15_test_receipt_contracts.py)：manifest、schema、authority currency 与 schema 字节篡改的持久负测。
+- [`15_test_receipt_contracts.py`](15_test_receipt_contracts.py)：manifest、schema、authority currency 与 schema 字节篡改的持久负测；
+- [`16_CANONICAL_STATE_ERRATUM_20260817.md`](16_CANONICAL_STATE_ERRATUM_20260817.md)：在不回写历史 Judgment、checker 与收据的前提下，订正 canonical/local 状态与 endpoint 账目。
 
 终局 checker 重新运行两条 theorem checker，核验 6 份 theorem 身份文件，并从 A_BASELINE JSON snapshot 重算：
 
@@ -72,27 +74,38 @@ terminal path negative tests     6 / 6 killed
 persistent contract test file    15_test_receipt_contracts.py
 ```
 
-## 终点候选分类与度量注记
+## 终点候选分类与 canonical 对账
 
 当前 `L=ABSENT`，所以全局 `M_t` 继续是 `N_A_NOT_READY`，没有制造数值 sentinel。
 
-本批只给出固定候选的 dossier-local 分类与度量注记；当前没有候选账实体或写入协议：
+2026-08-17 对账后的唯一现行口径是：
 
 ```text
 candidate = W0-ALIGNMENT | x=1,y=51,w=6,h=7
-state = UNKNOWN -> PROVED_EXCLUDED_RESEARCH
-evidence_type = EXACT_SINGLETON_EXCLUSION_BY_COMPOSED_THEOREMS
-ΔM_bottom = -1
+local proof line = UNPROVED_IN_THIS_LINE -> PROVED_IN_THIS_LINE
+canonical candidate = PROVED_EXCLUDED -> PROVED_EXCLUDED
+evidence_type = ALTERNATE_MECHANIZED_PROOF_FOR_NAMED_6X7_CANDIDATE
+canonical ΔM = 0
 global M_t = N_A_NOT_READY -> N_A_NOT_READY
-ΔL = ZERO_BY_SCOPE
-ΔU = ZERO_BY_SCOPE
+ΔL = ZERO
+ΔU = ZERO
 ```
 
-`delta_M_bottom=-1` 在 `M_bottom` 获得形式定义前只是未授权消费的描述字段，不进入任何 production、certified 或稳定 ledger。
+历史冻结件、terminal Judgment、checker 与 receipt 中的 `UNKNOWN → PROVED_EXCLUDED_RESEARCH` 和 `delta_M_bottom=-1` 保留原字节，只能按当时 dossier-local 认识口径读取。它们不再具有 canonical candidate transition 或 endpoint metric 含义；“第一笔非零候选排除交易”已撤回。
+
+## 与 current claims 的关系
+
+| 对象 | 关系 | current claim | 新增价值 |
+|---|---|---|---|
+| 实验一定理一的 041 一格冲突 | `INSTANCE_COROLLARY_OF` | `CLAIM-STRICT-HOLE-AVOIDS-X1-Y1` | `MECHANIZED_ONE-PORT_COROLLARY` |
+| 实验三定理二的 52=52 槽账 | `EQUIVALENT_TO` | `CLAIM-BOUNDARY-GENERIC-OUTPUT-SLOTS-SATURATED` | `MECHANIZED_REPROOF` |
+| 实验三固定 6×7 候选终局 | `SUBSUMED_BY` | `CLAIM-BAND22-V0A-STRICT-HOLE-INCOMPATIBLE` | 命名候选的替代机械证明 |
+
+三项 semantic novelty 均为 `NONE`。完整逐实验账目见根目录 [`LEDGER_RECONCILIATION_ERRATUM_RECEIPT_20260817.json`](../LEDGER_RECONCILIATION_ERRATUM_RECEIPT_20260817.json)。
 
 ## 条件债触发器
 
-以下任一工作开始前必须先读取 [`14_BIRTH_CERTIFICATE_AND_CONDITIONAL_DEBTS.md`](14_BIRTH_CERTIFICATE_AND_CONDITIONAL_DEBTS.md)：再次修改 `10_check_w0_terminal_exclusion.py`、定理三立案，或 Endpoint Metrics Protocol 修订。前两类工作必须处理 DEBT-B/DEBT-D1；度量协议工作必须处理 DEBT-D2。
+以下任一工作开始前必须同时读取 [`14_BIRTH_CERTIFICATE_AND_CONDITIONAL_DEBTS.md`](14_BIRTH_CERTIFICATE_AND_CONDITIONAL_DEBTS.md) 与 [`16_CANONICAL_STATE_ERRATUM_20260817.md`](16_CANONICAL_STATE_ERRATUM_20260817.md)：再次修改 `10_check_w0_terminal_exclusion.py`、定理三立案，或 Endpoint Metrics Protocol 修订。前两类工作必须处理 DEBT-B/DEBT-D1；若未来重新引入 `M_bottom`，度量协议工作必须处理 DEBT-D2。当前 canonical 账不消费 `M_bottom`。
 
 ## 与实验二金丝雀的关系
 
@@ -105,6 +118,7 @@ global M_t = N_A_NOT_READY -> N_A_NOT_READY
 - production `CERTIFIED`、exact-status、supervisor、publisher 或 release 效力；
 - stable claim ledger 写入；
 - production lowering、通用 D3/D4 或 theorem registry 常态化；
+- 新的 canonical claim truth、candidate transition 或 endpoint movement；
 - 其他布局、其他矩形、score band、上下界或全局最优性结论；
 - current binding model 与完整 adjudicated-game 语义等价；
 - 1007 份观测的证明地位；

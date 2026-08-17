@@ -1,8 +1,9 @@
 # 实验三自评：W0 席位算术与固定矩形终局排除
 
-> **评估日期：** 2026-08-16
-> **当前科学判词：** `THEOREM_TWO_PASS / W0_FIXED_RECT_PROVED_EXCLUDED_RESEARCH`
-> **效力边界：** research-only、evidence-only；不产生 certification、exact-status、stable claim、production lowering 或发布效力。
+> **评估日期：** 2026-08-16；2026-08-17 完成 canonical 对账复评。
+> **当前科学判词：** `THEOREM_TWO_PASS / PROVED_IN_LOCAL_LINE / CANONICAL_ALREADY_PROVED_EXCLUDED`
+> **效力边界：** research-only、evidence-only；不产生新 canonical claim truth、candidate transition、endpoint movement、certification、exact-status、stable claim、production lowering 或发布效力。
+> **勘误入口：** [`16_CANONICAL_STATE_ERRATUM_20260817.md`](16_CANONICAL_STATE_ERRATUM_20260817.md)。
 
 ## 1. 五件套坐标
 
@@ -99,25 +100,28 @@ blue exact-count constraint = 287, domain [34,34]
 source exact-count constraint = 288, domain [18,18]
 ```
 
-终局 checker 杀死 6 个运行路径变体：context 错配、重开一条 lift 义务、删除目标 ExactlyOne、把 blue requirement 改为 33、把候选差分改成 0、把金丝雀历史判词改成 `INFEASIBLE`。[`15_test_receipt_contracts.py`](15_test_receipt_contracts.py) 另把 manifest 条数/ID/evidence 漂移、schema 收据变体、schema 字节篡改与 authority currency 固化为可重复运行的 tracked 负测。
+终局 checker 杀死 6 个运行路径变体：context 错配、重开一条 lift 义务、删除目标 ExactlyOne、把 blue requirement 改为 33、把历史 envelope 中的候选差分改成 0、把金丝雀历史判词改成 `INFEASIBLE`。[`15_test_receipt_contracts.py`](15_test_receipt_contracts.py) 另把 manifest 条数/ID/evidence 漂移、schema 收据变体、schema 字节篡改与 authority currency 固化为可重复运行的 tracked 负测。候选差分负测只证明旧 envelope 按旧契约自洽；2026-08-17 勘误后，它不再支撑 canonical `ΔM=-1`。
 
-## 6. 终点候选分类与度量注记
+## 6. 终点候选分类与 canonical 对账
 
 当前下界仍为 `L=ABSENT`，所以全局 `M_t` 继续是 `N_A_NOT_READY`。本批没有虚构数值基线。
 
-dossier-local 分类与注记：
+现行双层账目：
 
 ```text
 candidate = W0-ALIGNMENT | x=1,y=51,w=6,h=7
-state = UNKNOWN -> PROVED_EXCLUDED_RESEARCH
-evidence = EXACT_SINGLETON_EXCLUSION_BY_COMPOSED_THEOREMS
-ΔM_bottom = -1
+local proof line = UNPROVED_IN_THIS_LINE -> PROVED_IN_THIS_LINE
+canonical candidate = PROVED_EXCLUDED -> PROVED_EXCLUDED
+evidence = ALTERNATE_MECHANIZED_PROOF_FOR_NAMED_6X7_CANDIDATE
+canonical ΔM = 0
 global M_t = N_A_NOT_READY -> N_A_NOT_READY
-ΔL = ZERO_BY_SCOPE
-ΔU = ZERO_BY_SCOPE
+ΔL = ZERO
+ΔU = ZERO
 ```
 
-这是一项 fixed-candidate research classification 与未授权消费的度量注记，不是已完成 transaction、上下界账、certified frontier 或 exact-status 写入；当前不存在候选账实体或写入协议。
+实验前已有三条 current claims：定理一是 `CLAIM-STRICT-HOLE-AVOIDS-X1-Y1` 的 `INSTANCE_COROLLARY_OF`；定理二与 `CLAIM-BOUNDARY-GENERIC-OUTPUT-SLOTS-SATURATED` 为 `EQUIVALENT_TO`；固定候选终局被 `CLAIM-BAND22-V0A-STRICT-HOLE-INCOMPATIBLE` `SUBSUMED_BY`。因此 semantic novelty 为 `NONE`，真实增量是机械化、证据 assurance 与 replay capability。
+
+历史 Judgment、checker 与 receipt 中的 `UNKNOWN -> PROVED_EXCLUDED_RESEARCH` 和 `delta_M_bottom=-1` 保留为不可回写的旧 envelope 字段，不是 canonical transaction。当前不存在由本实验新写入的 candidate ledger 交易。
 
 ## 7. 与金丝雀的关系
 
@@ -138,13 +142,14 @@ INCONCLUSIVE
 | 只引用 model snapshot，不从规则与输入重导 | 未发生；slot 与 demand 各有独立字节重导链 |
 | 定理成立但 consumer/lift 未核 | 部分发生并已显式降级：5 条机器关闭、3 条仅人工论证；terminal premises 与 lift step 3/4 basis 仍是 DEBT-B，禁止把当前 PASS 解读为这些桥已机核 |
 | 把 current-model restriction 冒充完整游戏语义 | 未发生；Judgment 与终局文书反复限定 current pinned model |
-| 把单候选排除写成全局 `M_t` 或 bound 变化 | 未发生；全局 `M_t` 保持 `N_A_NOT_READY`，`ΔM_bottom=-1` 只保留为未授权消费的描述字段 |
+| 把本地无知写成 canonical `UNKNOWN`，并据此声称候选进展 | **历史上发生，已于 2026-08-17 勘误。** 正确口径为本地 `UNPROVED_IN_THIS_LINE → PROVED_IN_THIS_LINE`、canonical `PROVED_EXCLUDED → PROVED_EXCLUDED`、canonical `ΔM=0`；“第一笔非零候选排除交易”撤回。 |
+| 把单候选排除写成全局 `M_t` 或 bound 变化 | 全局 `M_t`、`L`、`U` 始终未变；旧 `delta_M_bottom=-1` 已撤回其 canonical metric 解释，只保留在历史 envelope 字节中。 |
 | 用新证明倒签金丝雀 PASS | 未发生；历史判词保持 `INCONCLUSIVE` |
 | checker PASS 自动获得认证或发布权 | 未发生；schema-bound 收据把许可式 `granted_effects`、人读限界与 `non_implications` 分离 |
 
 ## 9. 保留风险与重开触发器
 
-最强保留边界是：终局排除依赖当前 binding contract 的模型忠实性，而该 contract 已知包含 current-model scope restrictions；本批没有证明它与完整 adjudicated-game 绑定语义等价。
+最强保留边界有两层：其一，终局排除依赖当前 binding contract 的模型忠实性，而该 contract 已知包含 current-model scope restrictions；本批没有证明它与完整 adjudicated-game 绑定语义等价。其二，本实验没有发现 current ledger 之外的新数学；若不先完成 canonical 对账，同一已知结论仍可能再次被误记为问题进展。
 
 以下任一变化必须使结论 stale：
 

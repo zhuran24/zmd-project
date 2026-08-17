@@ -1,6 +1,6 @@
 {
   "schema_version": "zmd_dossiers_v1",
-  "ledger_reviewed_at": "2026-08-15",
+  "ledger_reviewed_at": "2026-08-17",
   "records": [
     {
       "id": "DOSSIER-AB16-ARMS-20260802-DC229C4539",
@@ -629,6 +629,33 @@
         "p2-throughput"
       ],
       "summary": "状态：DONE。本席没有还能自己推进的工作项了。"
+    },
+    {
+      "id": "DOSSIER-OUTER-LOOP-RECON-20260817-A3301A1D74",
+      "path": ".artifacts/outer_loop_recon_20260817",
+      "entry_file": ".artifacts/outer_loop_recon_20260817/B_VERDICT_FULL_20260817.md",
+      "title": "推理外环三实验对账裁断全文（2026-08-17）",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-17",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Local-optional evidence registered through docctl; semantic outcome is pending closure review.",
+      "workflow": {
+        "opened_at": "2026-08-17",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/outer_loop_recon_20260817/B_VERDICT_FULL_20260817.md",
+        "manifest_sha256": "16a2c6b3db19cbce6747c7169c31e5743c69934613c9bee9df6e6212b80c7bdc",
+        "recovery_instructions": "docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md",
+        "source_locator": "owner-provided 2026-08-17 outer-loop reconciliation adjudication transcript; verify SHA-256 16a2c6b3db19cbce6747c7169c31e5743c69934613c9bee9df6e6212b80c7bdc"
+      }
     },
     {
       "id": "DOSSIER-P2-0-REFRESH-20260805-627C980F03",

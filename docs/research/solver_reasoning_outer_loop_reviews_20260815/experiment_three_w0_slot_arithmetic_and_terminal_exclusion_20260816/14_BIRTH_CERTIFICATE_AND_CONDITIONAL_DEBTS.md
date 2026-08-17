@@ -1,6 +1,6 @@
 # 实验三出生证与条件债务登记
 
-> **文书性质：** 截止 2026-08-16 的历史裁定与条件债台账；不是当前 exact-status、stable claim、release 或 production authority 真源。
+> **文书性质：** 主体为截止 2026-08-16 的历史裁定与条件债台账；2026-08-17 只追加后继勘误索引，不追溯改写原裁定。本文不是当前 exact-status、stable claim、release 或 production authority 真源。
 > **出生证状态：** `ISSUED_RESEARCH_ONLY`
 > **适用对象：** 实验三固定 `W0-ALIGNMENT`、固定矩形 `R=[1,6]×[51,57]` 的 theorem-two 与 terminal-exclusion dossier。
 > **查验记录：** 三面线查验；异源双线复验；结论零分歧。
@@ -79,3 +79,17 @@
 - terminal Judgment 增删 premise、lift step 或对象空间；
 - Endpoint Metrics Protocol 为 `M_bottom` 建立、修改或拒绝形式定义；
 - research candidate ledger 获得实体真源、写入协议或更高 authority。
+
+## 5. 2026-08-17 后继账本勘误索引
+
+2026-08-17 canonical ledger 对账确认：实验三开始前，current claims 已经覆盖槽饱和数学、x=1/y=1 禁碰轨道和固定 V0-A 6×7 候选排除。本文件前四节继续作为 2026-08-16 出生证与债务史料；它们不再单独决定 canonical candidate before-state 或 endpoint delta。
+
+现行解释必须同时读取：
+
+- [`16_CANONICAL_STATE_ERRATUM_20260817.md`](16_CANONICAL_STATE_ERRATUM_20260817.md)；
+- [`../LEDGER_RECONCILIATION_ERRATUM_RECEIPT_20260817.json`](../LEDGER_RECONCILIATION_ERRATUM_RECEIPT_20260817.json)；
+- [`../LEDGER_RECONCILIATION_PROTOCOL_V1.md`](../LEDGER_RECONCILIATION_PROTOCOL_V1.md)。
+
+后继裁断的账目是：本地证明线 `UNPROVED_IN_THIS_LINE → PROVED_IN_THIS_LINE`；canonical candidate `PROVED_EXCLUDED → PROVED_EXCLUDED`；canonical `ΔM=0`。“第一笔非零候选排除交易”已撤回。
+
+DEBT-D2 仍作为历史条件债保留，记录旧 envelope 曾出现未定义的 `M_bottom` 字段。当前 canonical 账已经停止消费该字段，所以本次勘误不需要、也不允许为它补造定义。只有后续协议明确重新引入 `M_bottom` 时，DEBT-D2 才按原触发器重开。

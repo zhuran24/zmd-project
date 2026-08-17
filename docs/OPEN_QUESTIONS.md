@@ -1,7 +1,7 @@
 # 当前开放问题
 
 > 本页由 claim ledger 与 `data/knowledge/topics.json` 自动生成；禁止手工修改。
-> 账本审阅日：`2026-08-15`；源摘要：`sha256:670688b2cd1ff9d704fe32fc5c71275f2dc8a7c5c9e4b6ea7a61a706cd6b33cd`。
+> 账本审阅日：`2026-08-15`；源摘要：`sha256:63983e39de1102264c42d463ecec82af92c91c1a384276c615b690655c65cddd`。
 
 本页只列 `status=open` 的稳定 claim。它不是全部未来工作，也不把“尚未证明”解释成“不可能”；阶段顺序见手工维护的 ROADMAP，当前事实仍以 CURRENT 和各自机器 authority 为准。
 

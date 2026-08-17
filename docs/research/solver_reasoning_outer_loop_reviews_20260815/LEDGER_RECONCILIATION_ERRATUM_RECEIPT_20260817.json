@@ -1,0 +1,391 @@
+{
+  "schema_version": "zmd_ledger_reconciliation_erratum_receipt_v1",
+  "receipt_id": "LRR-OUTER-LOOP-W0-EXPERIMENTS-20260817-V1",
+  "status": "ISSUED_RESEARCH_ONLY",
+  "issued_on": "2026-08-17",
+  "authority": "research_evidence_and_governance_only",
+  "source_verdict": {
+    "path": ".artifacts/outer_loop_recon_20260817/B_VERDICT_FULL_20260817.md",
+    "sha256": "16a2c6b3db19cbce6747c7169c31e5743c69934613c9bee9df6e6212b80c7bdc",
+    "size_bytes": 21770
+  },
+  "protocol": {
+    "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/LEDGER_RECONCILIATION_PROTOCOL_V1.md",
+    "version": "v1"
+  },
+  "ledger_snapshot": {
+    "path": "data/knowledge/claims.jsonl",
+    "digest_algorithm": "sha256",
+    "ledger_snapshot_digest": "6c3608b09d56e4a76de8a605bf30c71812b4152a0eb00c077e5abccd391f7483",
+    "selection_rule": "status=current",
+    "read_only": true
+  },
+  "queries_used": [
+    "CLAIM-BAND22-V0A-STRICT-HOLE-INCOMPATIBLE",
+    "CLAIM-BOUNDARY-GENERIC-OUTPUT-SLOTS-SATURATED",
+    "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1",
+    "boundary_port_041",
+    "W0-ALIGNMENT",
+    "x=1,y=51,w=6,h=7",
+    "52=52",
+    "UNKNOWN -> PROVED_EXCLUDED",
+    "delta_M_bottom",
+    "first nonzero candidate exclusion"
+  ],
+  "matched_claims": [
+    {
+      "id": "CLAIM-BAND22-V0A-STRICT-HOLE-INCOMPATIBLE",
+      "status": "current",
+      "snapshot_line": 10,
+      "line_sha256": "5ef5e604346843a284b5f062fb5e7679ad12f741580d9149a767b919374d55b8"
+    },
+    {
+      "id": "CLAIM-BOUNDARY-GENERIC-OUTPUT-SLOTS-SATURATED",
+      "status": "current",
+      "snapshot_line": 13,
+      "line_sha256": "40d576a48ec7dea42b40b9068fd41050bccc0d7e806aeb3782106b82918b3f25"
+    },
+    {
+      "id": "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1",
+      "status": "current",
+      "snapshot_line": 85,
+      "line_sha256": "1600a0433bd5a51138445197c34c9ba5bdcec02ec340d9187a84f4e8b1f11266"
+    }
+  ],
+  "reconciliations": [
+    {
+      "record_id": "RECON-EXP1-W0-GHOST-FRONT-041",
+      "experiment": "experiment_one_w0_ghost_front_offline_certificate_20260815",
+      "artifact_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_one_w0_ghost_front_offline_certificate_20260815",
+      "judgment_ids": [
+        "J-W0-GHOST-FRONT-BOUNDARY-041-V1"
+      ],
+      "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
+      "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27",
+      "contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded",
+      "canonical_subject_key": "W0-ALIGNMENT|R=[1,6]x[51,57]|boundary_port_041-active-implies-routing-incompatibility",
+      "ledger_snapshot_digest": "6c3608b09d56e4a76de8a605bf30c71812b4152a0eb00c077e5abccd391f7483",
+      "queries_used": [
+        "boundary_port_041",
+        "x=1",
+        "strict hole",
+        "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1"
+      ],
+      "matched_claim_ids": [
+        "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1"
+      ],
+      "target_lineage_status": "CURRENT_STRONGER_CLAIM_PREEXISTED_EXPERIMENT",
+      "relation": "STRONGER_CURRENT",
+      "semantic_relation_detail": [
+        {
+          "type": "INSTANCE_COROLLARY_OF",
+          "claim_id": "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1",
+          "scope_note": "The checker proves the boundary_port_041 one-cell instance, not the general x=1/y=1 orbit theorem."
+        }
+      ],
+      "before_state_source": "data/knowledge/claims.jsonl",
+      "before_state_digest": "6c3608b09d56e4a76de8a605bf30c71812b4152a0eb00c077e5abccd391f7483",
+      "before_state_claim_ids": [
+        "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1"
+      ],
+      "canonical_before_state": "ALREADY_KNOWN_CURRENT_CLAIM",
+      "local_line_before_state": "UNPROVED_IN_THIS_LINE",
+      "local_line_after_state": "PROVED_IN_THIS_LINE",
+      "canonical_after_state": "ALREADY_KNOWN_CURRENT_CLAIM",
+      "intended_experiment_role": "KNOWN_ANSWER_CLOSED_BOOK_RECONSTRUCTION_AND_MECHANIZATION",
+      "benchmark_label": "KNOWN-ANSWER CLOSED-BOOK BENCHMARK",
+      "benchmark_label_assignment": "RETROSPECTIVE_ERRATUM",
+      "theorem_novelty": "NONE",
+      "semantic_novelty": "NONE",
+      "evidence_increment": [
+        "MECHANIZED_ONE-PORT_COROLLARY"
+      ],
+      "allowed_effects": [
+        "evidence_assurance_upgrade",
+        "replay_capability_upgrade",
+        "known_answer_benchmark_registration"
+      ],
+      "canonical_endpoint_delta": {
+        "claim_truth": "UNCHANGED",
+        "candidate_state": "UNCHANGED",
+        "delta_L": "ZERO",
+        "delta_U": "ZERO",
+        "delta_M": "ZERO"
+      },
+      "non_implications": [
+        "no_new_general_orbit_theorem",
+        "no_canonical_candidate_transition",
+        "no_production_or_certified_effect"
+      ]
+    },
+    {
+      "record_id": "RECON-EXP2-W0-UNARY-LOWERING-CANARY",
+      "experiment": "experiment_two_w0_unary_lowering_canary_20260816",
+      "artifact_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816",
+      "judgment_ids": [
+        "J-W0-GHOST-FRONT-BOUNDARY-041-V1"
+      ],
+      "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
+      "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27",
+      "contextHash": "5e15112638b849e3b04b674be30fd4c0b7c8fd41f73caecfce5f05b44cc1bded",
+      "canonical_subject_key": "W0-ALIGNMENT|J-W0-GHOST-FRONT-BOUNDARY-041-V1|research-unary-lowering-consumption",
+      "ledger_snapshot_digest": "6c3608b09d56e4a76de8a605bf30c71812b4152a0eb00c077e5abccd391f7483",
+      "queries_used": [
+        "J-W0-GHOST-FRONT-BOUNDARY-041-V1",
+        "boundary_port_041",
+        "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1",
+        "lowering",
+        "observer",
+        "endpoint evaluator"
+      ],
+      "matched_claim_ids": [
+        "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1"
+      ],
+      "target_lineage_status": "CONSUMES_LOCAL_INSTANCE_COROLLARY_OF_CURRENT_STRONGER_CLAIM",
+      "relation": "STRONGER_CURRENT",
+      "semantic_relation_detail": [
+        {
+          "type": "INSTANCE_COROLLARY_OF",
+          "claim_id": "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1",
+          "applies_to": "consumed theorem J-W0-GHOST-FRONT-BOUNDARY-041-V1"
+        }
+      ],
+      "before_state_source": "data/knowledge/claims.jsonl",
+      "before_state_digest": "6c3608b09d56e4a76de8a605bf30c71812b4152a0eb00c077e5abccd391f7483",
+      "before_state_claim_ids": [
+        "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1"
+      ],
+      "canonical_before_state": "THEOREM_ALREADY_KNOWN_CURRENT_CLAIM",
+      "local_line_before_state": "PROVED_IN_PREDECESSOR_LINE",
+      "local_line_after_state": "CONSUMPTION_TESTED_IN_THIS_LINE",
+      "canonical_after_state": "THEOREM_ALREADY_KNOWN_CURRENT_CLAIM",
+      "intended_experiment_role": "CONSUMPTION_ORGAN_CANARY",
+      "benchmark_label": "KNOWN-ANSWER CLOSED-BOOK BENCHMARK",
+      "benchmark_label_assignment": "RETROSPECTIVE_ERRATUM",
+      "theorem_novelty": "NONE",
+      "semantic_novelty": "NONE",
+      "experiment_novelty": [
+        "theorem-to-unary-lowering contract",
+        "observer no-op",
+        "endpoint evaluator",
+        "runtime censoring behavior"
+      ],
+      "scientific_verdict": "INCONCLUSIVE_UNCHANGED",
+      "allowed_effects": [
+        "lowering_contract_evidence",
+        "observer_noninterference_evidence",
+        "endpoint_evaluator_evidence",
+        "runtime_censoring_evidence"
+      ],
+      "canonical_endpoint_delta": {
+        "claim_truth": "UNCHANGED",
+        "candidate_state": "UNCHANGED",
+        "delta_L": "ZERO_BY_SCOPE",
+        "delta_U": "ZERO_BY_SCOPE",
+        "delta_M": "ZERO_BY_SCOPE"
+      },
+      "non_implications": [
+        "no_theorem_novelty",
+        "no_runtime_family_collapse_claim",
+        "no_change_to_INCONCLUSIVE",
+        "no_production_or_certified_effect"
+      ]
+    },
+    {
+      "record_id": "RECON-EXP3-THEOREM-TWO-SLOT-SATURATION",
+      "experiment": "experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816",
+      "artifact_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816",
+      "judgment_ids": [
+        "J-W0-GENERIC-OUTPUT-SLOT-SATURATION-041-V1"
+      ],
+      "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
+      "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27",
+      "contextHash": "f66d8a2c0334be01b419229da97d8c32fc19bfb4d5fa07e2cd6e370e40e79a28",
+      "canonical_subject_key": "current-frozen-instance|generic-output-slots|52-demand-equals-52-supply",
+      "ledger_snapshot_digest": "6c3608b09d56e4a76de8a605bf30c71812b4152a0eb00c077e5abccd391f7483",
+      "queries_used": [
+        "52=52",
+        "generic output slots",
+        "34+18",
+        "CLAIM-BOUNDARY-GENERIC-OUTPUT-SLOTS-SATURATED"
+      ],
+      "matched_claim_ids": [
+        "CLAIM-BOUNDARY-GENERIC-OUTPUT-SLOTS-SATURATED"
+      ],
+      "target_lineage_status": "CURRENT_EQUIVALENT_CLAIM_PREEXISTED_EXPERIMENT",
+      "relation": "EQUIVALENT_CURRENT",
+      "semantic_relation_detail": [
+        {
+          "type": "EQUIVALENT_TO",
+          "claim_id": "CLAIM-BOUNDARY-GENERIC-OUTPUT-SLOTS-SATURATED"
+        }
+      ],
+      "before_state_source": "data/knowledge/claims.jsonl",
+      "before_state_digest": "6c3608b09d56e4a76de8a605bf30c71812b4152a0eb00c077e5abccd391f7483",
+      "before_state_claim_ids": [
+        "CLAIM-BOUNDARY-GENERIC-OUTPUT-SLOTS-SATURATED"
+      ],
+      "canonical_before_state": "ALREADY_KNOWN_CURRENT_CLAIM",
+      "local_line_before_state": "UNPROVED_IN_THIS_LINE",
+      "local_line_after_state": "PROVED_IN_THIS_LINE",
+      "canonical_after_state": "ALREADY_KNOWN_CURRENT_CLAIM",
+      "intended_experiment_role": "KNOWN_ANSWER_CLOSED_BOOK_RECONSTRUCTION_AND_MECHANIZATION",
+      "benchmark_label": "KNOWN-ANSWER CLOSED-BOOK BENCHMARK",
+      "benchmark_label_assignment": "RETROSPECTIVE_ERRATUM",
+      "theorem_novelty": "NONE",
+      "semantic_novelty": "NONE",
+      "evidence_increment": [
+        "MECHANIZED_REPROOF"
+      ],
+      "allowed_effects": [
+        "evidence_assurance_upgrade",
+        "replay_capability_upgrade",
+        "known_answer_benchmark_registration"
+      ],
+      "canonical_endpoint_delta": {
+        "claim_truth": "UNCHANGED",
+        "candidate_state": "UNCHANGED",
+        "delta_L": "ZERO",
+        "delta_U": "ZERO",
+        "delta_M": "ZERO"
+      },
+      "non_implications": [
+        "no_new_slot_saturation_theorem",
+        "no_canonical_candidate_transition",
+        "no_production_or_certified_effect"
+      ]
+    },
+    {
+      "record_id": "RECON-EXP3-TERMINAL-FIXED-RECT-EXCLUSION",
+      "experiment": "experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816",
+      "artifact_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816",
+      "judgment_ids": [
+        "J-W0-FIXED-RECT-BINDING-ROUTING-EXCLUDED-V1"
+      ],
+      "problemHash": "89382c25f90fab728e3650cc079f36de2ce9e5478978e5e15e9a496b83d03912",
+      "objectiveHash": "dae4e5b5d8b1ccf000e20ff1c27621161b16fda24a769683d2d97548c3b12a27",
+      "contextHash": "f66d8a2c0334be01b419229da97d8c32fc19bfb4d5fa07e2cd6e370e40e79a28",
+      "canonical_subject_key": "W0-ALIGNMENT|x=1,y=51,w=6,h=7|binding+routing-exclusion",
+      "ledger_snapshot_digest": "6c3608b09d56e4a76de8a605bf30c71812b4152a0eb00c077e5abccd391f7483",
+      "queries_used": [
+        "W0-ALIGNMENT",
+        "x=1,y=51,w=6,h=7",
+        "band22 V0-A strict hole incompatible",
+        "CLAIM-BAND22-V0A-STRICT-HOLE-INCOMPATIBLE",
+        "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1"
+      ],
+      "matched_claim_ids": [
+        "CLAIM-BAND22-V0A-STRICT-HOLE-INCOMPATIBLE",
+        "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1"
+      ],
+      "target_lineage_status": "CURRENT_STRONGER_AND_GENERAL_CLAIMS_PREEXISTED_EXPERIMENT",
+      "relation": "STRONGER_CURRENT",
+      "semantic_relation_detail": [
+        {
+          "type": "SUBSUMED_BY",
+          "claim_id": "CLAIM-BAND22-V0A-STRICT-HOLE-INCOMPATIBLE"
+        },
+        {
+          "type": "INSTANCE_COROLLARY_OF",
+          "claim_id": "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1"
+        }
+      ],
+      "before_state_source": "data/knowledge/claims.jsonl",
+      "before_state_digest": "6c3608b09d56e4a76de8a605bf30c71812b4152a0eb00c077e5abccd391f7483",
+      "before_state_claim_ids": [
+        "CLAIM-BAND22-V0A-STRICT-HOLE-INCOMPATIBLE",
+        "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1"
+      ],
+      "canonical_before_state": "CANONICAL_PROVED_EXCLUDED",
+      "local_line_before_state": "UNPROVED_IN_THIS_LINE",
+      "local_line_after_state": "PROVED_IN_THIS_LINE",
+      "canonical_after_state": "CANONICAL_PROVED_EXCLUDED",
+      "intended_experiment_role": "KNOWN_ANSWER_CLOSED_BOOK_RECONSTRUCTION_AND_ALTERNATE_PROOF",
+      "benchmark_label": "KNOWN-ANSWER CLOSED-BOOK BENCHMARK",
+      "benchmark_label_assignment": "RETROSPECTIVE_ERRATUM",
+      "theorem_novelty": "NONE",
+      "semantic_novelty": "NONE",
+      "evidence_increment": [
+        "ALTERNATE_MECHANIZED_PROOF_FOR_NAMED_6X7_CANDIDATE"
+      ],
+      "allowed_effects": [
+        "local_line_proof_completion",
+        "evidence_assurance_upgrade",
+        "replay_capability_upgrade",
+        "known_answer_benchmark_registration"
+      ],
+      "canonical_endpoint_delta": {
+        "claim_truth": "UNCHANGED",
+        "candidate_state": "PROVED_EXCLUDED_TO_PROVED_EXCLUDED",
+        "delta_L": "ZERO",
+        "delta_U": "ZERO",
+        "delta_M": "ZERO"
+      },
+      "non_implications": [
+        "no_first_nonzero_candidate_exclusion_transaction",
+        "no_canonical_UNKNOWN_to_PROVED_EXCLUDED_transition",
+        "no_complete_mechanization_of_all_W0_admissible_rectangles",
+        "no_complete_mechanization_of_the_general_x1_y1_orbit_theorem",
+        "no_production_or_certified_effect"
+      ]
+    }
+  ],
+  "global_corrections": {
+    "withdrawn_interpretations": [
+      "UNKNOWN -> PROVED_EXCLUDED as a canonical candidate transition",
+      "delta_M_bottom=-1 as a canonical endpoint delta",
+      "first nonzero candidate exclusion transaction"
+    ],
+    "correct_accounting": {
+      "local_line_state": "UNPROVED_IN_THIS_LINE -> PROVED_IN_THIS_LINE",
+      "canonical_candidate_state": "PROVED_EXCLUDED -> PROVED_EXCLUDED",
+      "canonical_delta_M": 0,
+      "delta_L": 0,
+      "delta_U": 0,
+      "global_M_t": "N_A_NOT_READY -> N_A_NOT_READY"
+    }
+  },
+  "historical_artifacts_not_rewritten": {
+    "paths": [
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/00_ACCEPTANCE_CRITERIA_FROZEN.md",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/05_THEOREM_RECEIPT.json",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/08_TERMINAL_EXCLUSION_JUDGMENT.json",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/10_check_w0_terminal_exclusion.py",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/11_TERMINAL_RECEIPT.json",
+      "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/13_RECEIPT_ENVELOPE_SCHEMA_V1.json"
+    ],
+    "legacy_interpretation": "LOCAL_LINE_LEGACY_NOTATION_ONLY",
+    "precedence_rule": "For canonical state and endpoint accounting, this erratum receipt and 16_CANONICAL_STATE_ERRATUM_20260817.md supersede the legacy fields without altering historical bytes."
+  },
+  "pending_obligations": [
+    {
+      "id": "PENDING-EVIDENCE-LINK-SLOT-SATURATION",
+      "status": "PENDING_STABLE_CLAIM_LEDGER_WRITE_AUTHORITY",
+      "claim_id": "CLAIM-BOUNDARY-GENERIC-OUTPUT-SLOTS-SATURATED",
+      "evidence_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/04_check_w0_slot_arithmetic.py",
+      "required_role": "mechanized reproof"
+    },
+    {
+      "id": "PENDING-EVIDENCE-LINK-X1Y1-INSTANCE",
+      "status": "PENDING_STABLE_CLAIM_LEDGER_WRITE_AUTHORITY",
+      "claim_id": "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1",
+      "evidence_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_one_w0_ghost_front_offline_certificate_20260815/03_check_w0_ghost_front_certificate.py",
+      "required_role": "instance-level mechanized corollary"
+    },
+    {
+      "id": "PENDING-EVIDENCE-LINK-BAND22-NAMED-CANDIDATE",
+      "status": "PENDING_STABLE_CLAIM_LEDGER_WRITE_AUTHORITY",
+      "claim_id": "CLAIM-BAND22-V0A-STRICT-HOLE-INCOMPATIBLE",
+      "evidence_path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_three_w0_slot_arithmetic_and_terminal_exclusion_20260816/10_check_w0_terminal_exclusion.py",
+      "required_role": "alternate proof for the named 6x7 candidate"
+    }
+  ],
+  "non_implications": [
+    "no_claim_statement_or_status_change",
+    "no_write_to_data/knowledge/claims.jsonl",
+    "no_new_canonical_mathematical_truth",
+    "no_canonical_endpoint_movement",
+    "no_retroactive_change_to_experiment_two_INCONCLUSIVE",
+    "no_production_or_certified_effect"
+  ]
+}

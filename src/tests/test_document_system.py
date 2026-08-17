@@ -412,6 +412,27 @@ def test_timing_receipt_fails_closed_when_a_measured_input_drifts(tmp_path: Path
     assert any("test timing receipt input drifted: src/tests/test_knowledge_docs.py" in value for value in failures)
 
 
+def test_maintenance_audit_regression_clock_covers_latest_active_dossier() -> None:
+    helper_text = (PROJECT_ROOT / "devtools/tests/test_document_maintenance_audit.py").read_text(encoding="utf-8")
+    marker = 'as_of: str = "'
+    assert helper_text.count(marker) == 1
+    regression_as_of = helper_text.split(marker, 1)[1].split('"', 1)[0]
+
+    dossier_payload = json.loads((PROJECT_ROOT / "data/knowledge/dossiers.json").read_text(encoding="utf-8"))
+    active_opened_dates: list[str] = []
+    for record in dossier_payload["records"]:
+        if record.get("lifecycle") != "active":
+            continue
+        workflow = record.get("workflow")
+        opened_at = workflow.get("opened_at") if isinstance(workflow, dict) else None
+        candidate = opened_at or record.get("date")
+        if isinstance(candidate, str) and candidate:
+            active_opened_dates.append(candidate)
+
+    assert active_opened_dates
+    assert regression_as_of >= max(active_opened_dates)
+
+
 def test_entrypoint_registry_is_the_structural_source_for_frontdoor_contracts() -> None:
     system = DocumentSystem(PROJECT_ROOT)
     registry = system.entrypoints_payload
