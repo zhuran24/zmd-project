@@ -1,7 +1,7 @@
 # 项目知识目录
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:8c6c6fb106649503c738250a6e789f902c794306e2a3b925ee346b7ce20b8ada`。
+> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:73ea900b873ad9619896621314e4cec6dd5f73cbf984312b76ba4f259cd7682b`。
 
 这里登记稳定 ID。claim 回答“我们知道什么”，decision 回答“谁改变了什么规则或门”，
 dossier 回答“原始证据包在哪里”，validity profile 回答“旧结论为何失效、怎样换代、能否复用”。目录不把历史材料自动升级为当前权威。
@@ -11,7 +11,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 - claim：`92` 条，其中当前 / 开放 `73` 条，带 validity profile `32` 条。
 - decision：`8` 条。
 - backfill review：`54` 条，其中 current `44` 条。
-- dossier：`214` 个，其中 tracked `154` 个、local optional `60` 个、当前证据标记 `16` 个、人工精编 `34` 个。
+- dossier：`216` 个，其中 tracked `155` 个、local optional `61` 个、当前证据标记 `16` 个、人工精编 `36` 个。
 - `docs/research/` 的一级目录和一级 Markdown 已全登记；`.artifacts/` 只登记一级目录，其路径允许在轻量 checkout 中缺失。
 
 ## Claim 索引
@@ -131,11 +131,11 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 - `solver-experiment`：25 个 dossier。
 - `upper-bound`：24 个 dossier。
 - `cut-framework`：19 个 dossier。
-- `witness-lower-bound`：17 个 dossier。
+- `witness-lower-bound`：19 个 dossier。
 - `formal-verification`：12 个 dossier。
 - `rules-semantics`：12 个 dossier。
-- `reasoning-system`：9 个 dossier。
-- `solver-architecture`：9 个 dossier。
+- `reasoning-system`：11 个 dossier。
+- `solver-architecture`：11 个 dossier。
 - `industrial-delivery`：8 个 dossier。
 - `p2-throughput`：8 个 dossier。
 - `documentation-governance`：3 个 dossier。
@@ -199,6 +199,8 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
 | `DOSSIER-OUTER-LOOP-RECON-20260817-A3301A1D74` | `2026-08-17` | [推理外环三实验对账裁断全文（2026-08-17）](<../.artifacts/outer_loop_recon_20260817/B_VERDICT_FULL_20260817.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
+| `DOSSIER-P1B-JOINT-POWER-REPAIR-20260817-C459AE609C` | `2026-08-17` | [P1b 九窗口联合修复与区域供电封锁候选（2026-08-17）](<research/p1b_joint_power_repair_20260817/README.md>)<br>P1b 在未取得完整 witness、完整 verifier 未到达且 canonical L 保持 absent 的边界下，将 P1 family A 的 266 实例供电 nogood 收缩为 6 姿态全局最小局部核，并提出经 56 个水平平移独立复算的底边 5×5 六块 Hall 型封锁候选。该对象仅为 P3/… | `reasoning-system`, `witness-lower-bound`, `solver-architecture` | `active` | `unreviewed` |
+| `DOSSIER-P1B-JOINT-POWER-REPAIR-20260817-8F6B7DFD94` | `2026-08-17` | [P1b 九窗口联合修复与区域供电封锁候选本地证据包（2026-08-17）](<../.artifacts/p1b_joint_power_repair_20260817/REPORT.md>)<br>P1b 本机证据包保存 33×35 top-right body incumbent、exact power 分析、266→6 最小核、56 平移结构 checker、九窗口受限修复收据与 typed 终局。payload 可在轻量 checkout 缺失；其存在不授予 claim、cut、certified、下界或… | `reasoning-system`, `witness-lower-bound`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-P1-WITNESS-CONSTRUCTION-20260817-D06675346E` | `2026-08-17` | [P1 受限 witness 构造本地证据包（2026-08-17）](<../.artifacts/p1_witness_construction_20260817/REPORT.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `witness-lower-bound`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-P1-RESTRICTED-WITNESS-CONSTRUCTION-20260817-39AB02A7C6` | `2026-08-17` | [P1 受限 witness 构造与供电死因谱（2026-08-17）](<research/p1_restricted_witness_construction_20260817/README.md>)<br>Active research dossier opened through docctl; semantic outcome is pending closure review. | `reasoning-system`, `witness-lower-bound`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-W0-UNARY-CANARY-20260816-40F7F16A22` | `2026-08-16` | W0 一元 lowering 金丝雀共享本机证据根（GPT-5.6 Pro lineage，2026-08-16）<br><code>.artifacts/solver_reasoning_outer_loop_w0_unary_canary_20260816</code><br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
@@ -237,6 +239,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
+| `DOSSIER-P1B-JOINT-POWER-REPAIR-20260817-C459AE609C` | `2026-08-17` | [P1b 九窗口联合修复与区域供电封锁候选（2026-08-17）](<research/p1b_joint_power_repair_20260817/README.md>)<br>P1b 在未取得完整 witness、完整 verifier 未到达且 canonical L 保持 absent 的边界下，将 P1 family A 的 266 实例供电 nogood 收缩为 6 姿态全局最小局部核，并提出经 56 个水平平移独立复算的底边 5×5 六块 Hall 型封锁候选。该对象仅为 P3/… | `reasoning-system`, `witness-lower-bound`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-P1-RESTRICTED-WITNESS-CONSTRUCTION-20260817-39AB02A7C6` | `2026-08-17` | [P1 受限 witness 构造与供电死因谱（2026-08-17）](<research/p1_restricted_witness_construction_20260817/README.md>)<br>Active research dossier opened through docctl; semantic outcome is pending closure review. | `reasoning-system`, `witness-lower-bound`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-TRI-PLANE-MODEL-V2-20260816-71A3625ABB` | `2026-08-16` | [三面防污染模型 v2 dossier](<research/tri_plane_model_v2_20260816/README.md>)<br>v1 三面模型解决了一个根病：同一个“收紧”动作在数学面与发布面上符号相反，语言混面会把发布侧“保守安全”的直觉错误搬进求解证明面。研究侧开始产出机器验证 theorem 并准备 lowering 后，污染风险从节点措辞扩展到消费链：一条正确 theorem 仍可能被错误 consumer、错误 runtime li… | `other` | `active` | `historical` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99` | `2026-08-15` | [推理外环三轮外部评审归档（2026-08-15）](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)<br>三份外部评审正文逐字归档；同一 active dossier 继续承载 Phase -1 观测、W0 离线短证书、一元 lowering 金丝雀及 2026-08-16 席位算术／固定矩形终局排除实验。所有实验均保持 research-only／non-authorizing：定理与候选排除不自动构成立项、produ… | `reasoning-system`, `solver-architecture`, `solver-rethink` | `active` | `historical` |
@@ -399,6 +402,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
 | `DOSSIER-OUTER-LOOP-RECON-20260817-A3301A1D74` | `2026-08-17` | [推理外环三实验对账裁断全文（2026-08-17）](<../.artifacts/outer_loop_recon_20260817/B_VERDICT_FULL_20260817.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
+| `DOSSIER-P1B-JOINT-POWER-REPAIR-20260817-8F6B7DFD94` | `2026-08-17` | [P1b 九窗口联合修复与区域供电封锁候选本地证据包（2026-08-17）](<../.artifacts/p1b_joint_power_repair_20260817/REPORT.md>)<br>P1b 本机证据包保存 33×35 top-right body incumbent、exact power 分析、266→6 最小核、56 平移结构 checker、九窗口受限修复收据与 typed 终局。payload 可在轻量 checkout 缺失；其存在不授予 claim、cut、certified、下界或… | `reasoning-system`, `witness-lower-bound`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-P1-WITNESS-CONSTRUCTION-20260817-D06675346E` | `2026-08-17` | [P1 受限 witness 构造本地证据包（2026-08-17）](<../.artifacts/p1_witness_construction_20260817/REPORT.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `witness-lower-bound`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-W0-UNARY-CANARY-20260816-40F7F16A22` | `2026-08-16` | W0 一元 lowering 金丝雀共享本机证据根（GPT-5.6 Pro lineage，2026-08-16）<br><code>.artifacts/solver_reasoning_outer_loop_w0_unary_canary_20260816</code><br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-20260815-7FA2A0E225` | `2026-08-15` | [推理外环 Phase -1 本机运行证据包（2026-08-15）](<../.artifacts/solver_reasoning_outer_loop_phase_minus1_20260815/phase-minus1-r1-20260815/BATCH_SUMMARY.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
@@ -4371,7 +4375,7 @@ owner 允许归档三轮外部评审并以 non_authorizing 形态登记设计约
 
 - **明确不推出：** 原登记八条内容及本次评审修复新增的指针型登记项获得批准；推理外环获得立项；对现行树新增义务
 
-- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../../home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
+- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../../../.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
 
 <a id="decision-p1-2-close-20260707"></a>
 
