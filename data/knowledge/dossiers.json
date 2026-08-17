@@ -3212,6 +3212,28 @@
       }
     },
     {
+      "id": "DOSSIER-P5-HORIZONTAL-LOWERING-CANARY-20260817-3DBC7800A0",
+      "path": "docs/research/p5_horizontal_lowering_canary_20260817",
+      "entry_file": "docs/research/p5_horizontal_lowering_canary_20260817/README.md",
+      "title": "P5 水平边界供电封锁 lowering 金丝雀（2026-08-17）",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-08-17",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "Owner 已授权 HORIZONTAL-BOUNDARY-MIDDLE-TARGET-SHELL-V1 的 research-only pose-bool lowering canary。协议冻结为三臂 body-generation 实验与 producer 外 proto replay；本阶段只开 research canary，不开 production、certified、canonical claim 或 endpoint 权限。",
+      "workflow": {
+        "opened_at": "2026-08-17",
+        "closure": null
+      }
+    },
+    {
       "id": "DOSSIER-PARADIGM-SEARCH-REVIEW-V12-WITH-CODE-20260520-FC02CE09A5",
       "path": "docs/research/paradigm_search_review_v12_with_code_20260520",
       "entry_file": "docs/research/paradigm_search_review_v12_with_code_20260520/README.md",
