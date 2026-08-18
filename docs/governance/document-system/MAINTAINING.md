@@ -452,7 +452,7 @@ docs/MAINTENANCE_QUEUE.md
 .venv/bin/python devtools/docctl.py render-maintenance --write
 ```
 
-新增 active dossier 时，若它的 `opened_at` 晚于 `devtools/tests/test_document_maintenance_audit.py` 的默认审计日，必须在同一事务把回归时钟滚动到该登记日；`src/tests/test_document_system.py` 负责验证该时钟不早于最新 active dossier。这个日期只是测试视界，不是 authority：不得借滚动测试时钟改写 `maintenance_audit.json::snapshot_as_of`，也不得倒签 dossier 来绕过 future-record 红测。
+维护回归的默认审计日不得早于全部 active dossier 的最新 `opened_at` / `date`。新增 active dossier 使该上界前移时，必须在同一事务把 `devtools/tests/test_document_maintenance_audit.py` 的回归时钟滚动到最新登记日；`src/tests/test_document_system.py` 以具名日期诊断验证这条不变量。这个日期只是测试视界，不是 authority：不得借滚动测试时钟改写 `maintenance_audit.json::snapshot_as_of`，也不得倒签 dossier 来绕过 future-record 红测。
 
 不要通过编辑 `MAINTENANCE_QUEUE.md` 或新增“已关闭 finding”账本消除待办。Git 最近触达日期只提示“该复核了”，不能替代 semantic review。修改 check、profile、阈值或严重度语义属于 framework-core 变化，必须同步 `DOC-INV-019`、[`DOC-ADR-015`](ADR/015-periodic-semantic-maintenance-audit.md)、runner、投影和红测。
 

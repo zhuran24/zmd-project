@@ -1,0 +1,275 @@
+{
+  "schema_version": "zmd_ledger_reconciliation_receipt_v1",
+  "receipt_id": "LRR-CFG-RELAXATION-UPPER-1170-30-20260818-V1",
+  "status": "ISSUED_RESEARCH_STRENGTHENING_ADMISSION",
+  "issued_on": "2026-08-18",
+  "authority": "research_governance_and_research_upper_only",
+  "protocol": {
+    "path": "docs/research/solver_reasoning_outer_loop_reviews_20260815/LEDGER_RECONCILIATION_PROTOCOL_V1.md",
+    "version": "v1"
+  },
+  "hash_encoding": "sha256 over UTF-8 json.dumps(object, ensure_ascii=False, sort_keys=True, separators=(',',':'))",
+  "identity_preimages": {
+    "problem": {
+      "base": "70x70 single-base frozen instance",
+      "predicate_scope": "current six-predicate research scope",
+      "subject": "strict empty-rectangle lexicographic research upper ledger",
+      "target_claim_id": "CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818"
+    },
+    "objective": {
+      "comparison": "lexicographic",
+      "coordinates": [
+        "empty_rectangle_area",
+        "min_side"
+      ],
+      "direction": "maximize",
+      "candidate_upper": [
+        1170,
+        30
+      ],
+      "exclusion_predicate": "score >_lex (1170,30)"
+    },
+    "context": {
+      "included": [
+        "current frozen strict facility/template vocabulary",
+        "weighted incidence total 738",
+        "outside body-free access-cell capacity divisor 4",
+        "body/access shared budget 1320",
+        "two final inputs allowance +2",
+        "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1 for the 17x69 root and its transpose"
+      ],
+      "excluded": [
+        "storage_box contact configurations",
+        "protocol-core inputs as contact configurations",
+        "P2.0 seventh-predicate throughput semantics",
+        "production, certified and release authority"
+      ]
+    }
+  },
+  "problemHash": "2f064a13bbc22a61a1a07e641265591d4385b8d5f1c78cda8198a0db048ee274",
+  "objectiveHash": "0986fc4263d36ecb4fda2f1f801b8891c0b7180368f57abb2c48234ee3dd9db4",
+  "contextHash": "5bc3a596437a1d649f2b1ae63af90df0c914c05b8c683ccb0de6279b8cfc06e2",
+  "canonical_subject_key": "research_ledger.six_predicate|max_lex(empty_rectangle_area,min_side)|U=(1170,30)",
+  "ledger_snapshot": {
+    "path": "data/knowledge/claims.jsonl",
+    "digest_algorithm": "sha256",
+    "ledger_snapshot_digest": "6c3608b09d56e4a76de8a605bf30c71812b4152a0eb00c077e5abccd391f7483",
+    "git_blob_sha1": "dd99246df21de3ea5b57114813ec499f52600bd2",
+    "selection_rule": "status=current",
+    "read_only_before_admission": true
+  },
+  "ledger_snapshot_digest": "6c3608b09d56e4a76de8a605bf30c71812b4152a0eb00c077e5abccd391f7483",
+  "queries_used": [
+    "id exact: CLAIM-SIX-PREDICATE-RESEARCH-LEDGER",
+    "structural field: status=current AND slot=research_ledger.six_predicate",
+    "title/statement/scope/tags synonyms: 六谓词 OR six-predicate OR research-upper-ledger OR upper-ledger",
+    "endpoint literals: (1188,18) OR 1188 OR (1170,30) OR 1170",
+    "lex lineage: lex-band OR upper-bound OR research_upper_update",
+    "dependency exact: CLAIM-STRICT-HOLE-AVOIDS-X1-Y1; synonyms strict hole OR x=1 OR y=1",
+    "premise constants/structure: 738 OR 1320 OR weighted access capacity 4 OR marked incidence 110",
+    "lineage fields: dependencies, supersedes, slot and status for every matched record"
+  ],
+  "matched_claim_ids": [
+    "CLAIM-SIX-PREDICATE-RESEARCH-LEDGER",
+    "CLAIM-SMM4-LEX-BAND-COMPOSITION-2086",
+    "CLAIM-BODY-ACCESS-BUDGET-1320",
+    "CLAIM-R4-LOCAL-WEIGHTED-ACCESS-CAPACITY-4",
+    "CLAIM-R4-MARKED-INCIDENCE-TOTAL-110",
+    "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1",
+    "CLAIM-CERTIFIED-THEOREM-SCOPE"
+  ],
+  "matched_claims": [
+    {
+      "id": "CLAIM-SIX-PREDICATE-RESEARCH-LEDGER",
+      "status": "current",
+      "snapshot_line": 73,
+      "line_sha256": "28edb3af532bf1bab881b79aa0330171b5fd6d0e6b51a573449f70878a28d09d",
+      "match_role": "canonical_before_state"
+    },
+    {
+      "id": "CLAIM-SMM4-LEX-BAND-COMPOSITION-2086",
+      "status": "current",
+      "snapshot_line": 79,
+      "line_sha256": "aa9af886de13d9264be05a81cca3226576268631158f0cfbadde78a2804f82de",
+      "match_role": "before_state_lineage"
+    },
+    {
+      "id": "CLAIM-BODY-ACCESS-BUDGET-1320",
+      "status": "current",
+      "snapshot_line": 12,
+      "line_sha256": "5bc0d515caffe4dd92a7d3839ea1ec410cd2e7ac0746c838a3b7125d0a0f5db8",
+      "match_role": "required_dependency"
+    },
+    {
+      "id": "CLAIM-R4-LOCAL-WEIGHTED-ACCESS-CAPACITY-4",
+      "status": "current",
+      "snapshot_line": 62,
+      "line_sha256": "c1bec012e00d878727ab1667a5d797ffdd9b1cea5de3dd433ad727aaabdfd2c3",
+      "match_role": "required_dependency"
+    },
+    {
+      "id": "CLAIM-R4-MARKED-INCIDENCE-TOTAL-110",
+      "status": "current",
+      "snapshot_line": 63,
+      "line_sha256": "f3918e7affe78aa3b7e7c8b4ae6bce302a02d66d06978323ae96b5bcff43f59d",
+      "match_role": "required_dependency"
+    },
+    {
+      "id": "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1",
+      "status": "current",
+      "snapshot_line": 85,
+      "line_sha256": "a12e3b53a551ebb2fe2b9e0364a4b00e99efb1cd8534968b7f50836d92aec92b",
+      "match_role": "required_dependency"
+    },
+    {
+      "id": "CLAIM-CERTIFIED-THEOREM-SCOPE",
+      "status": "current",
+      "snapshot_line": 17,
+      "line_sha256": "90fcee341c293d46780381ae49645f9c2d775a2406cdaec8f91af0000a6c3ce4",
+      "match_role": "required_dependency"
+    }
+  ],
+  "target_lineage_status": "CURRENT_WEAKER_RESEARCH_UPPER_EXISTS_AND_IS_SUPERSEDED_BY_THIS_STRENGTHENING",
+  "relation": "WEAKER_CURRENT",
+  "semantic_relation_detail": [
+    {
+      "type": "STRICT_STRENGTHENING_OF",
+      "claim_id": "CLAIM-SIX-PREDICATE-RESEARCH-LEDGER",
+      "detail": "The current ledger upper U=(1188,18) is weaker; excluding every score >_lex (1170,30) strictly tightens the same six-predicate research slot."
+    },
+    {
+      "type": "DEPENDS_ON",
+      "claim_id": "CLAIM-STRICT-HOLE-AVOIDS-X1-Y1",
+      "detail": "The configuration relaxation excludes 17 normalized roots; the remaining 17x69 root and its transpose are closed because every length-69 interval on a 70-cell axis contains coordinate 1."
+    }
+  ],
+  "before_state_source": "data/knowledge/claims.jsonl",
+  "before_state_digest": "6c3608b09d56e4a76de8a605bf30c71812b4152a0eb00c077e5abccd391f7483",
+  "before_state_claim_ids": [
+    "CLAIM-SIX-PREDICATE-RESEARCH-LEDGER"
+  ],
+  "local_line_before_state": "CANDIDATE_RESEARCH_UPPER_NOT_ADMITTED",
+  "canonical_before_state": "U=(1188,18); L=absent; authority=research_authority; production_certified=false",
+  "local_line_after_state": "PROVED_AND_ADMITTED_AS_RESEARCH_STRENGTHENING",
+  "canonical_after_state": "U=(1170,30); L=absent; authority=research_authority; production_certified=false",
+  "intended_experiment_role": "strengthening",
+  "strictly_new_effect": "exclude every score s with (1170,30) <_lex s <=_lex (1188,18) under the declared current six-predicate scope",
+  "allowed_effects": [
+    "mint CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818",
+    "supersede CLAIM-SIX-PREDICATE-RESEARCH-LEDGER in slot research_ledger.six_predicate",
+    "record nonzero research-only delta_U from (1188,18) to (1170,30)",
+    "rebuild knowledge projections"
+  ],
+  "canonical_endpoint_delta": {
+    "delta_U": {
+      "from": [
+        1188,
+        18
+      ],
+      "to": [
+        1170,
+        30
+      ],
+      "kind": "NONZERO_LEX_TIGHTENING"
+    },
+    "delta_L": "ZERO",
+    "claim_truth": "STRENGTHENED_WITH_NEW_STABLE_ID",
+    "production_certified": "UNCHANGED_FALSE"
+  },
+  "evidence_chain": [
+    {
+      "layer": 1,
+      "role": "double_independent_implementation_crosscheck",
+      "packages": [
+        {
+          "path": ".artifacts/cfg_relaxation_impl_A_20260817",
+          "report_path": ".artifacts/cfg_relaxation_impl_A_20260817/REPORT.md",
+          "report_sha256": "0711a4046284f8bc961fc6924278df5bddb579f3f21fb9181645d1be72fec214",
+          "manifest_path": ".artifacts/cfg_relaxation_impl_A_20260817/MANIFEST.json",
+          "manifest_sha256": "0f514a7088820f31f5c2dacfebf630fbae4d6fc4afb9f04535c8afe5baecd852",
+          "terminal": "54/54 OPTIMAL; all frozen targets MATCH"
+        },
+        {
+          "path": ".artifacts/cfg_relaxation_impl_B_20260817",
+          "report_path": ".artifacts/cfg_relaxation_impl_B_20260817/REPORT.md",
+          "report_sha256": "bf2bfefb9036620b15c2e1c573bddf44d59dc2685843e0acf1d7f93bec93d2e0",
+          "terminal": "61/61 OPTIMAL; all acceptance targets MATCH"
+        }
+      ],
+      "crosscheck_disposition": "The free/noncorner mark diagnostic differs, but joint raw support and all band decisions are unchanged."
+    },
+    {
+      "layer": 2,
+      "role": "pure_rational_dual_certificates",
+      "package_path": ".artifacts/cfg_relaxation_certificates_20260818",
+      "report_path": ".artifacts/cfg_relaxation_certificates_20260818/REPORT.md",
+      "report_sha256": "5cc7355cab72ae774de61f7a9ebe464d464d16af00a0fcc7603100f6fac3bee3",
+      "key_receipts": [
+        ".artifacts/cfg_relaxation_certificates_20260818/CERTIFICATE_INDEX.json",
+        ".artifacts/cfg_relaxation_certificates_20260818/CERTIFICATE_INDEX_B.json",
+        ".artifacts/cfg_relaxation_certificates_20260818/CHECKER_RESULT.json",
+        ".artifacts/cfg_relaxation_certificates_20260818/CHECKER_RESULT_B.json"
+      ],
+      "terminal": "34 certificates; 17 roots across A/B; exact Fraction checker; zero integrality loss"
+    },
+    {
+      "layer": 3,
+      "role": "negative_controls",
+      "package_path": ".artifacts/cfg_relaxation_certificates_20260818",
+      "receipt_paths": [
+        ".artifacts/cfg_relaxation_certificates_20260818/NEGATIVE_CONTROLS.json",
+        ".artifacts/cfg_relaxation_certificates_20260818/NEGATIVE_CONTROLS_B.json"
+      ],
+      "receipt_sha256": [
+        "9546be75f45623a5283681dce235ccf70ede6afee93362de8c9819e3be6f2c25",
+        "7c920c6a240a6b064b61fc6cb1d65499f071efcf59e6eec03fc95d50e4d0c816"
+      ],
+      "terminal": "204/204 mutations rejected, including rehashed-forger variants"
+    },
+    {
+      "layer": 4,
+      "role": "enumeration_completeness_closure_at_minimum_margin_root",
+      "package_path": ".artifacts/cfg_relaxation_enum_closure_23x51_20260818",
+      "report_path": ".artifacts/cfg_relaxation_enum_closure_23x51_20260818/REPORT.md",
+      "report_sha256": "8a6f3f586362b4b9b20031307ece5338d3687ea1fe2dc1593dd5605829748ef6",
+      "manifest_path": ".artifacts/cfg_relaxation_enum_closure_23x51_20260818/SHA256SUMS.txt",
+      "manifest_sha256": "94279a1a40d5c5eaaa05c71cd0d12c84aac3144afea6c2d38f8fc70c48668754",
+      "terminal": "46,278 first-principles physical configurations; A/B violations 0; 5/5 negative controls PASS; 81/81 SHA entries verified by package receipt"
+    },
+    {
+      "layer": 5,
+      "role": "heterogeneous_final_review",
+      "verdict_source_path": ".artifacts/cfg_relaxation_enum_closure_23x51_20260818/REPORT.md",
+      "verdict_source_sha256": "8a6f3f586362b4b9b20031307ece5338d3687ea1fe2dc1593dd5605829748ef6",
+      "frozen_verifier_path": ".artifacts/cfg_relaxation_enum_closure_23x51_20260818/verify_dual_feasibility.py",
+      "frozen_verifier_sha256": "87adec142d4bdad7240714c94d1c74a5e60de85169c7b52595dc04d47ca716aa",
+      "expected_frozen_verifier_sha256": "87adec142d4bdad7240714c94d1c74a5e60de85169c7b52595dc04d47ca716aa",
+      "verdict": "PASS_WITH_NO_BLOCKING_FINDING"
+    }
+  ],
+  "dossier_mapping": {
+    "policy": "one first-level evidence root maps to one dossier record",
+    "registered_ids": [
+      "DOSSIER-CFG-RELAXATION-IMPL-A-20260817-BE414F298A",
+      "DOSSIER-CFG-RELAXATION-IMPL-B-20260817-77A5280EF9",
+      "DOSSIER-CFG-RELAXATION-CERTIFICATES-20260818-76C8EC34D8",
+      "DOSSIER-CFG-RELAXATION-ENUM-CLOSURE-23X51-20260818-176509E438"
+    ],
+    "layer_to_root_note": "Layers 2 and 3 share the certificates root; layer 5 is frozen inside the enum-closure REPORT.md rather than fabricated as a duplicate dossier path."
+  },
+  "residual_risks": [
+    "①\"≤\"方向的枚举层由 46,278 配置封口于 23×51,其余 16 根余量 9-115 由清单级对偶证书覆盖(清单有双实现对拍但无逐根物理封口)",
+    "②规格常数(738/÷4/1320/+2)按既有命题消费未独立重审",
+    "③扩域禁令:storage_box 与 protocol-core inputs 不属当前命题,任何扩域须按 superset 重证"
+  ],
+  "downstream_todo": "P0 前沿投影的顶部改写留待独立后继批；本 admission 不重跑前沿图。",
+  "non_implications": [
+    "no certified or production upper",
+    "no release, supervisor or publisher authority",
+    "no attainability of (1170,30)",
+    "no lower bound or global optimum",
+    "no P2.0 throughput conclusion",
+    "no extension to storage_box or protocol-core input configurations",
+    "no P0 frontier projection rewrite in this batch"
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": "zmd_current_state_v2",
-  "ledger_reviewed_at": "2026-08-15",
+  "ledger_reviewed_at": "2026-08-18",
   "title": "ZMD 当前知识状态",
   "sources": {
     "project_lock": "PROJECT_LOCK.md",
@@ -84,7 +84,7 @@
       "id": "six_predicate_ledger",
       "title": "六谓词研究账本",
       "claim_ids": [
-        "CLAIM-SIX-PREDICATE-RESEARCH-LEDGER",
+        "CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818",
         "CLAIM-SMM4-LEX-BAND-COMPOSITION-2086",
         "CLAIM-SMM-209-EXCLUDES-22X54"
       ]
@@ -204,8 +204,8 @@
   },
   "coverage": {
     "dossiers": "已登记 docs/research 一级目录与一级 Markdown，以及本机存在或被承重证据引用的 .artifacts 一级目录。轻量 checkout 可缺少 local artifact root。",
-    "claims": "Phase 4 Batch 4 CP2 迁移后共 92 条稳定 claim；CURRENT 按 claim_selection_policy 只投影当前承重子集，完整账本由 CATALOG、topic、reasoning 与 validity 页面查询。",
-    "historical_claim_backfill": "第二阶段已收口：41 个 dossier 有 current review，其中 40 个为语义审阅、1 个为缺失外部根的 availability/provenance review；其余 165 个 dossier 全部且仅进入一个显式 triage group。100% inventory coverage 不等于 100% semantic review。"
+    "claims": "当前共 93 条稳定 claim；CURRENT 按 claim_selection_policy 只投影当前承重子集，完整账本由 CATALOG、topic、reasoning 与 validity 页面查询。",
+    "historical_claim_backfill": "44 个 dossier 有 current review，其中 41 个为语义审阅、3 个为 availability/provenance review；另有 165 个 dossier 全部且仅进入一个显式 triage group，17 个 active workflow 等待 typed closure。100% inventory coverage 不等于 100% semantic review。"
   },
   "generated_outputs": {
     "current": "docs/CURRENT.md",

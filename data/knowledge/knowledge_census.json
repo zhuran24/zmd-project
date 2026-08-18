@@ -1,27 +1,27 @@
 {
   "schema_version": "zmd_knowledge_census_v1",
-  "observed_at": "2026-08-17",
+  "observed_at": "2026-08-18",
   "purpose": "maintained_acceptance_census",
   "counts": {
-    "claims_total": 92,
+    "claims_total": 93,
     "decisions_total": 8,
     "backfill_reviews_total": 54,
     "current_reviews": 44,
     "current_evidence_dossiers": 16,
-    "reasoning_profiles": 81,
-    "derivation_profiles": 48,
-    "separation_profiles": 26,
-    "validity_profiles": 32,
-    "supersession_edges": 9,
+    "reasoning_profiles": 82,
+    "derivation_profiles": 49,
+    "separation_profiles": 27,
+    "validity_profiles": 34,
+    "supersession_edges": 10,
     "refuted_claims": 4,
-    "superseded_claims": 6,
-    "dossiers_total": 222,
+    "superseded_claims": 7,
+    "dossiers_total": 226,
     "semantic_review_dossiers": 41,
     "availability_review_dossiers": 3,
     "triaged_dossiers": 165,
     "topics_total": 13,
     "terms_total": 27,
-    "current_validity_review_dossiers": 25
+    "current_validity_review_dossiers": 27
   },
   "note": "This is the sole deliberately maintained numeric acceptance fixture for the knowledge layer. Generated pages compute their own counts; tests and checker compare them to this fixture instead of scattering literals."
 }

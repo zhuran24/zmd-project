@@ -1,17 +1,17 @@
 # 推理结论与知识回填账本
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:f2dc46b1d8ac2d35890c2702a383022beb1d2aeef08db398c8995708c3fb8949`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:7bf89736c622c09a4565b0d174979dab781d8adc0f6cbc9bf214a5446e398972`。
 
 本页把推理条件、操作效果、数学推导、选择/验证/消费机制与通用传播证据分开；历史结论为何失效、怎样换代和何时可复用则单列到 VALIDITY_LEDGER。
 `reasoning_profile` 描述操作效果，`derivation_profile` 描述证明角色、数学族和验证方式，`separation_profile` 描述候选来源、选择、验证、完备性和消费落点，`validity_profile` 描述反例、语义更正、实现失效、归因修正与重验；真正的关系图由 claim 的 `dependencies` 与 `supersedes` 连接。分类字段不会把 research-only 结论提升为规则、owner 决定或 production authority。
 
 ## 当前可回答的问题
 
-- 带 `reasoning_profile` 的 claim：`81` 条。
-- 带 `derivation_profile` 的 claim：`48` 条。
-- 带 `separation_profile` 的 claim：`26` 条。
-- 带 `validity_profile` 的 claim：`32` 条；完整谱系见 [VALIDITY_LEDGER](VALIDITY_LEDGER.md)。
+- 带 `reasoning_profile` 的 claim：`82` 条。
+- 带 `derivation_profile` 的 claim：`49` 条。
+- 带 `separation_profile` 的 claim：`27` 条。
+- 带 `validity_profile` 的 claim：`34` 条；完整谱系见 [VALIDITY_LEDGER](VALIDITY_LEDGER.md)。
 - 已正式证明“通用传播不能完成分离”的 claim：`0` 条。
 - 只有实验性通用传播对照证据的 claim：`2` 条。
 - 因此，在本批已审材料中，尚不能把“领域策略有效”直接改写成“CP-SAT 通用传播原则上不能做到”。前者已有多种实例，后者仍需要明确的传播系统、搜索预算和不可分离证明。
@@ -20,33 +20,33 @@
 
 - current backfill review：`44` 个 dossier。
 - tracked current-evidence dossier：`11/11` 已有 current review。
-- 全 dossier inventory：`44/222` 已有 current review。此分母只表示目录规模，不表示未审包都含有可复用 claim。
+- 全 dossier inventory：`44/226` 已有 current review。此分母只表示目录规模，不表示未审包都含有可复用 claim。
 - 当前优先覆盖承重 current-evidence、高价值数学推导链、选择/分离机制，以及历史反例、语义更正、实现失效和重验边界；术语归一与长尾材料仍待后续批次。
 
 ## 操作分类分布
 
-- **条件处置：** `conditional`=5；`discharged`=36；`inconclusive`=6；`method_only`=7；`refuted`=6；`scope_shifted`=21
-- **操作效果：** `bound_tightening`=14；`candidate_pruning`=24；`constraint_selection`=7；`constraint_strengthening`=22；`counterexample`=7；`discovery_method`=11；`experiment_boundary`=24；`pre_model_exclusion`=8；`scope_boundary`=37；`semantic_partition`=5；`semantic_permission`=1
-- **一般性：** `frozen_instance`=35；`game_semantics`=4；`model_domain`=13；`parameterized_family`=9；`research_process`=20
-- **solver 关系：** `candidate_filter`=27；`experimental_cut`=8；`model_constraint`=13；`not_applicable`=22；`pre_model_reduction`=11
-- **通用传播不可替代证据：** `experimental_only`=2；`none`=79
-- **发现方式：** `adversarial_review`=57；`formal_proof`=32；`incident_review`=11；`owner_adjudication`=12；`solver_experiment`=22；`systematic_rules_audit`=15；`targeted_derivation`=30；`zero_slack_audit`=8
+- **条件处置：** `conditional`=5；`discharged`=37；`inconclusive`=6；`method_only`=7；`refuted`=6；`scope_shifted`=21
+- **操作效果：** `bound_tightening`=15；`candidate_pruning`=25；`constraint_selection`=7；`constraint_strengthening`=22；`counterexample`=7；`discovery_method`=11；`experiment_boundary`=24；`pre_model_exclusion`=8；`scope_boundary`=37；`semantic_partition`=5；`semantic_permission`=1
+- **一般性：** `frozen_instance`=36；`game_semantics`=4；`model_domain`=13；`parameterized_family`=9；`research_process`=20
+- **solver 关系：** `candidate_filter`=27；`experimental_cut`=8；`model_constraint`=13；`not_applicable`=22；`pre_model_reduction`=12
+- **通用传播不可替代证据：** `experimental_only`=2；`none`=80
+- **发现方式：** `adversarial_review`=58；`formal_proof`=33；`incident_review`=11；`owner_adjudication`=12；`solver_experiment`=22；`systematic_rules_audit`=15；`targeted_derivation`=30；`zero_slack_audit`=9
 
 ## 推导结构分布
 
-- **推导角色：** `atomic_lemma`=8；`composite_theorem`=24；`counterexample`=3；`definition`=2；`ledger_projection`=3；`method`=4；`open_obligation`=4
-- **数学推导族：** `area_accounting`=9；`boundary_packing`=4；`branch_counting`=3；`budget_composition`=3；`closure_search`=7；`conditional_halo`=2；`crossing_counting`=1；`empty_rectangle_geometry`=7；`endpoint_budget`=5；`entity_census`=2；`feasible_set_monotonicity`=1；`finite_pb_proof`=4；`integer_rounding`=12；`lex_band_enumeration`=6；`local_access_capacity`=2；`marked_membrane`=5；`ordinary_membrane`=4；`power_coverage`=6；`research_ledger`=6；`route_footprint`=3；`slack_audit`=1；`slot_saturation`=4；`throughput_capacity`=5
-- **验证方式：** `adversarial_review`=29；`authority_admission`=9；`counterexample`=3；`exact_enumeration`=11；`independent_recomputation`=21；`machine_source_projection`=4；`optimization_certificate`=1；`paper_derivation`=26；`roundingsat_veripb`=4；`source_recomputation`=14
+- **推导角色：** `atomic_lemma`=8；`composite_theorem`=24；`counterexample`=3；`definition`=2；`ledger_projection`=4；`method`=4；`open_obligation`=4
+- **数学推导族：** `area_accounting`=9；`boundary_packing`=5；`branch_counting`=3；`budget_composition`=4；`closure_search`=7；`conditional_halo`=2；`crossing_counting`=1；`empty_rectangle_geometry`=8；`endpoint_budget`=5；`entity_census`=2；`feasible_set_monotonicity`=1；`finite_pb_proof`=4；`integer_rounding`=13；`lex_band_enumeration`=7；`local_access_capacity`=3；`marked_membrane`=5；`ordinary_membrane`=4；`power_coverage`=6；`research_ledger`=7；`route_footprint`=3；`slack_audit`=1；`slot_saturation`=4；`throughput_capacity`=5
+- **验证方式：** `adversarial_review`=30；`authority_admission`=10；`counterexample`=3；`exact_enumeration`=12；`independent_recomputation`=22；`machine_source_projection`=4；`optimization_certificate`=2；`paper_derivation`=26；`roundingsat_veripb`=4；`source_recomputation`=14
 
 ## 选择、分离与消费结构分布
 
-- **目标阶段：** `candidate_generation`=7；`knowledge_only`=4；`model_build`=1；`post_solve`=1；`pre_model`=4；`search_loop`=9
-- **候选来源：** `declared_inventory`=5；`explicit_finite`=5；`implicit_combinatorial`=5；`not_applicable`=1；`solver_events`=6；`supplied_candidate`=4
-- **选择方式：** `cut_registry_replay`=3；`finite_enumeration`=4；`goal_backward_search`=3；`manual_targeting`=7；`not_applicable`=4；`pairwise_closure`=2；`raw_event_separation`=6；`zero_slack_ranking`=4
-- **候选验证：** `complete_theory_solver`=1；`counterexample`=1；`direct_arithmetic`=7；`exact_enumeration`=1；`independent_validator`=10；`none`=4；`proof_object`=2；`terminal_replay`=9
-- **完备性：** `disproved`=1；`heuristic`=4；`not_applicable`=3；`open`=10；`proved_for_declared_domain`=5；`relative_to_declared_fragment`=3
-- **消费方式：** `candidate_filter`=5；`diagnostic_only`=12；`knowledge_only`=10；`model_constraint`=2；`model_omission`=3；`objective_bound`=2；`pre_model_filter`=3
-- **基线比较：** `controlled`=7；`formal`=12；`non_identifying`=3；`none`=4
+- **目标阶段：** `candidate_generation`=7；`knowledge_only`=4；`model_build`=1；`post_solve`=1；`pre_model`=5；`search_loop`=9
+- **候选来源：** `declared_inventory`=5；`explicit_finite`=6；`implicit_combinatorial`=5；`not_applicable`=1；`solver_events`=6；`supplied_candidate`=4
+- **选择方式：** `cut_registry_replay`=3；`finite_enumeration`=5；`goal_backward_search`=3；`manual_targeting`=7；`not_applicable`=4；`pairwise_closure`=2；`raw_event_separation`=6；`zero_slack_ranking`=4
+- **候选验证：** `complete_theory_solver`=1；`counterexample`=1；`direct_arithmetic`=8；`exact_enumeration`=2；`independent_validator`=11；`none`=4；`proof_object`=3；`terminal_replay`=9
+- **完备性：** `disproved`=1；`heuristic`=4；`not_applicable`=3；`open`=10；`proved_for_declared_domain`=6；`relative_to_declared_fragment`=3
+- **消费方式：** `candidate_filter`=5；`diagnostic_only`=12；`knowledge_only`=10；`model_constraint`=2；`model_omission`=3；`objective_bound`=3；`pre_model_filter`=4
+- **基线比较：** `controlled`=7；`formal`=13；`non_identifying`=3；`none`=4
 
 ## 已分类 claim
 
@@ -114,6 +114,7 @@
 | [`CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT`](<CATALOG.md#claim-routing-reverification-extra-strict>) | `superseded` | `scope_shifted` | `constraint_strengthening`<br>`scope_boundary` | `model_domain` | `model_constraint` | `none` |
 | [`CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT-BOUNDARY`](<CATALOG.md#claim-routing-reverification-extra-strict-boundary>) | `current` | `scope_shifted` | `constraint_strengthening`<br>`scope_boundary` | `model_domain` | `model_constraint` | `none` |
 | [`CLAIM-SHARED-ENCODING-AGREEMENT-NOT-INDEPENDENT-VALIDATION`](<CATALOG.md#claim-shared-encoding-agreement-not-independent-validation>) | `current` | `method_only` | `discovery_method`<br>`experiment_boundary` | `research_process` | `not_applicable` | `none` |
+| [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](<CATALOG.md#claim-six-predicate-research-ledger-20260818>) | `current` | `discharged` | `candidate_pruning`<br>`bound_tightening` | `frozen_instance` | `pre_model_reduction` | `none` |
 | [`CLAIM-SMM-209-EXCLUDES-22X54`](<CATALOG.md#claim-smm-209-excludes-22x54>) | `current` | `discharged` | `candidate_pruning`<br>`bound_tightening` | `parameterized_family` | `candidate_filter` | `none` |
 | [`CLAIM-SMM-COMBINED-CAP-209`](<CATALOG.md#claim-smm-combined-cap-209>) | `current` | `discharged` | `constraint_strengthening`<br>`candidate_pruning` | `frozen_instance` | `candidate_filter` | `none` |
 | [`CLAIM-SMM-ENDPOINT-TOP-EIGHT-BUDGET-19`](<CATALOG.md#claim-smm-endpoint-top-eight-budget-19>) | `current` | `discharged` | `constraint_strengthening` | `parameterized_family` | `candidate_filter` | `none` |
@@ -159,6 +160,7 @@
 | [`CLAIM-R1-1326-34-STRICT-UPPER-REVALIDATED`](<CATALOG.md#claim-r1-1326-34-strict-upper-revalidated>) | `knowledge_only` | `explicit_finite` | `finite_enumeration` | `independent_validator`<br>`proof_object` | `proved_for_declared_domain` | `objective_bound`<br>`knowledge_only` | `formal` |
 | [`CLAIM-RAW-ELIGIBLE-EVENTS-REQUIRED-FOR-SEPARATION-EVALUATION`](<CATALOG.md#claim-raw-eligible-events-required-for-separation-evaluation>) | `search_loop` | `solver_events` | `raw_event_separation` | `independent_validator` | `not_applicable` | `diagnostic_only` | `controlled` |
 | [`CLAIM-ROUND45-CORRECTED-PROFILE-UNKNOWN-NOT-STRUCTURAL-WALL`](<CATALOG.md#claim-round45-corrected-profile-unknown-not-structural-wall>) | `search_loop` | `declared_inventory` | `manual_targeting` | `independent_validator`<br>`terminal_replay` | `open` | `diagnostic_only`<br>`knowledge_only` | `controlled` |
+| [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](<CATALOG.md#claim-six-predicate-research-ledger-20260818>) | `pre_model` | `explicit_finite` | `finite_enumeration` | `direct_arithmetic`<br>`exact_enumeration`<br>`independent_validator`<br>`proof_object` | `proved_for_declared_domain` | `pre_model_filter`<br>`objective_bound` | `formal` |
 | [`CLAIM-SMM-209-EXCLUDES-22X54`](<CATALOG.md#claim-smm-209-excludes-22x54>) | `candidate_generation` | `explicit_finite` | `manual_targeting`<br>`goal_backward_search` | `direct_arithmetic` | `proved_for_declared_domain` | `candidate_filter`<br>`objective_bound` | `formal` |
 | [`CLAIM-SMT-MT-SYNTHETIC-GO-NOT-TRANSFERABLE-TO-REAL-INNER`](<CATALOG.md#claim-smt-mt-synthetic-go-not-transferable-to-real-inner>) | `search_loop` | `solver_events` | `raw_event_separation` | `direct_arithmetic`<br>`terminal_replay` | `heuristic` | `candidate_filter`<br>`diagnostic_only` | `controlled` |
 | [`CLAIM-SOLVER-RETHINK-G03-LACKS-SEPARATION-ORACLE`](<CATALOG.md#claim-solver-rethink-g03-lacks-separation-oracle>) | `candidate_generation` | `implicit_combinatorial` | `not_applicable` | `independent_validator` | `open` | `knowledge_only` | `formal` |
@@ -209,6 +211,7 @@
 | [`CLAIM-R4-MARKED-MEMBRANE-BOUND-S12`](<CATALOG.md#claim-r4-marked-membrane-bound-s12>) | `composite_theorem` | `marked_membrane`<br>`endpoint_budget` | [`CLAIM-R4-MARKED-INCIDENCE-TOTAL-110`](<CATALOG.md#claim-r4-marked-incidence-total-110>) | — | `paper_derivation`<br>`independent_recomputation`<br>`adversarial_review` |
 | [`CLAIM-R4-NECESSARY-DIMENSION-INEQUALITY`](<CATALOG.md#claim-r4-necessary-dimension-inequality>) | `composite_theorem` | `ordinary_membrane`<br>`marked_membrane`<br>`area_accounting`<br>`integer_rounding` | [`CLAIM-BODY-ACCESS-BUDGET-1320`](<CATALOG.md#claim-body-access-budget-1320>)<br>[`CLAIM-ORDINARY-MEMBRANE-TERMINAL-BOUND-S48`](<CATALOG.md#claim-ordinary-membrane-terminal-bound-s48>)<br>[`CLAIM-R4-LOCAL-WEIGHTED-ACCESS-CAPACITY-4`](<CATALOG.md#claim-r4-local-weighted-access-capacity-4>)<br>[`CLAIM-R4-MARKED-MEMBRANE-BOUND-S12`](<CATALOG.md#claim-r4-marked-membrane-bound-s12>) | — | `paper_derivation`<br>`independent_recomputation`<br>`adversarial_review` |
 | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>) | `ledger_projection` | `research_ledger`<br>`lex_band_enumeration` | [`CLAIM-CERTIFIED-THEOREM-SCOPE`](<CATALOG.md#claim-certified-theorem-scope>)<br>[`CLAIM-SMM4-LEX-BAND-COMPOSITION-2086`](<CATALOG.md#claim-smm4-lex-band-composition-2086>) | — | `authority_admission`<br>`machine_source_projection` |
+| [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](<CATALOG.md#claim-six-predicate-research-ledger-20260818>) | `ledger_projection` | `research_ledger`<br>`lex_band_enumeration`<br>`boundary_packing`<br>`local_access_capacity`<br>`budget_composition`<br>`integer_rounding`<br>`empty_rectangle_geometry` | [`CLAIM-BODY-ACCESS-BUDGET-1320`](<CATALOG.md#claim-body-access-budget-1320>)<br>[`CLAIM-CERTIFIED-THEOREM-SCOPE`](<CATALOG.md#claim-certified-theorem-scope>)<br>[`CLAIM-R4-LOCAL-WEIGHTED-ACCESS-CAPACITY-4`](<CATALOG.md#claim-r4-local-weighted-access-capacity-4>)<br>[`CLAIM-R4-MARKED-INCIDENCE-TOTAL-110`](<CATALOG.md#claim-r4-marked-incidence-total-110>)<br>[`CLAIM-STRICT-HOLE-AVOIDS-X1-Y1`](<CATALOG.md#claim-strict-hole-avoids-x1-y1>) | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>) | `exact_enumeration`<br>`optimization_certificate`<br>`independent_recomputation`<br>`adversarial_review`<br>`authority_admission` |
 | [`CLAIM-SMM-209-EXCLUDES-22X54`](<CATALOG.md#claim-smm-209-excludes-22x54>) | `composite_theorem` | `empty_rectangle_geometry`<br>`budget_composition`<br>`integer_rounding` | [`CLAIM-BODY-ACCESS-BUDGET-1320`](<CATALOG.md#claim-body-access-budget-1320>)<br>[`CLAIM-SMM-OUTSIDE-ACCESS-LOWER-133`](<CATALOG.md#claim-smm-outside-access-lower-133>) | — | `paper_derivation`<br>`independent_recomputation`<br>`adversarial_review` |
 | [`CLAIM-SMM-COMBINED-CAP-209`](<CATALOG.md#claim-smm-combined-cap-209>) | `composite_theorem` | `ordinary_membrane`<br>`marked_membrane`<br>`budget_composition` | [`CLAIM-ORDINARY-MEMBRANE-TERMINAL-BOUND-S48`](<CATALOG.md#claim-ordinary-membrane-terminal-bound-s48>)<br>[`CLAIM-SMM-MARKED-MEMBRANE-BOUND-85`](<CATALOG.md#claim-smm-marked-membrane-bound-85>) | — | `paper_derivation`<br>`independent_recomputation`<br>`adversarial_review` |
 | [`CLAIM-SMM-ENDPOINT-TOP-EIGHT-BUDGET-19`](<CATALOG.md#claim-smm-endpoint-top-eight-budget-19>) | `atomic_lemma` | `endpoint_budget`<br>`entity_census` | [`CLAIM-R4-MARKED-INCIDENCE-TOTAL-110`](<CATALOG.md#claim-r4-marked-incidence-total-110>) | — | `source_recomputation`<br>`paper_derivation`<br>`adversarial_review` |

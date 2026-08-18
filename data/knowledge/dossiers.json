@@ -1,6 +1,6 @@
 {
   "schema_version": "zmd_dossiers_v1",
-  "ledger_reviewed_at": "2026-08-17",
+  "ledger_reviewed_at": "2026-08-18",
   "records": [
     {
       "id": "DOSSIER-AB16-ARMS-20260802-DC229C4539",
@@ -309,6 +309,114 @@
         "rules-semantics"
       ],
       "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-CFG-RELAXATION-CERTIFICATES-20260818-76C8EC34D8",
+      "path": ".artifacts/cfg_relaxation_certificates_20260818",
+      "entry_file": ".artifacts/cfg_relaxation_certificates_20260818/REPORT.md",
+      "title": "配置松弛纯有理对偶证书与负控（2026-08-18）",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-18",
+      "topics": [
+        "upper-bound",
+        "formal-verification"
+      ],
+      "summary": "Local-optional evidence registered through docctl; semantic outcome is pending closure review.",
+      "workflow": {
+        "opened_at": "2026-08-18",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/cfg_relaxation_certificates_20260818/REPORT.md",
+        "manifest_sha256": "5cc7355cab72ae774de61f7a9ebe464d464d16af00a0fcc7603100f6fac3bee3",
+        "recovery_instructions": "docs/research/solver_reasoning_outer_loop_reviews_20260815/LEDGER_RECONCILIATION_RECEIPT_CFG_RELAXATION_UPPER_20260818.json",
+        "source_locator": ".artifacts/cfg_relaxation_certificates_20260818/REPORT.md"
+      }
+    },
+    {
+      "id": "DOSSIER-CFG-RELAXATION-ENUM-CLOSURE-23X51-20260818-176509E438",
+      "path": ".artifacts/cfg_relaxation_enum_closure_23x51_20260818",
+      "entry_file": ".artifacts/cfg_relaxation_enum_closure_23x51_20260818/REPORT.md",
+      "title": "23×51 配置松弛枚举完备性封口（2026-08-18）",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-18",
+      "topics": [
+        "upper-bound",
+        "formal-verification"
+      ],
+      "summary": "Local-optional evidence registered through docctl; semantic outcome is pending closure review.",
+      "workflow": {
+        "opened_at": "2026-08-18",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/cfg_relaxation_enum_closure_23x51_20260818/SHA256SUMS.txt",
+        "manifest_sha256": "94279a1a40d5c5eaaa05c71cd0d12c84aac3144afea6c2d38f8fc70c48668754",
+        "recovery_instructions": "docs/research/solver_reasoning_outer_loop_reviews_20260815/LEDGER_RECONCILIATION_RECEIPT_CFG_RELAXATION_UPPER_20260818.json",
+        "source_locator": ".artifacts/cfg_relaxation_enum_closure_23x51_20260818/REPORT.md"
+      }
+    },
+    {
+      "id": "DOSSIER-CFG-RELAXATION-IMPL-A-20260817-BE414F298A",
+      "path": ".artifacts/cfg_relaxation_impl_A_20260817",
+      "entry_file": ".artifacts/cfg_relaxation_impl_A_20260817/REPORT.md",
+      "title": "配置松弛 support 独立实现 A（2026-08-17）",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-17",
+      "topics": [
+        "upper-bound",
+        "formal-verification"
+      ],
+      "summary": "Local-optional evidence registered through docctl; semantic outcome is pending closure review.",
+      "workflow": {
+        "opened_at": "2026-08-17",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/cfg_relaxation_impl_A_20260817/MANIFEST.json",
+        "manifest_sha256": "0f514a7088820f31f5c2dacfebf630fbae4d6fc4afb9f04535c8afe5baecd852",
+        "recovery_instructions": "docs/research/solver_reasoning_outer_loop_reviews_20260815/LEDGER_RECONCILIATION_RECEIPT_CFG_RELAXATION_UPPER_20260818.json",
+        "source_locator": ".artifacts/cfg_relaxation_impl_A_20260817/REPORT.md"
+      }
+    },
+    {
+      "id": "DOSSIER-CFG-RELAXATION-IMPL-B-20260817-77A5280EF9",
+      "path": ".artifacts/cfg_relaxation_impl_B_20260817",
+      "entry_file": ".artifacts/cfg_relaxation_impl_B_20260817/REPORT.md",
+      "title": "配置松弛 support 独立实现 B（2026-08-17）",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-17",
+      "topics": [
+        "upper-bound",
+        "formal-verification"
+      ],
+      "summary": "Local-optional evidence registered through docctl; semantic outcome is pending closure review.",
+      "workflow": {
+        "opened_at": "2026-08-17",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/cfg_relaxation_impl_B_20260817/REPORT.md",
+        "manifest_sha256": "bf2bfefb9036620b15c2e1c573bddf44d59dc2685843e0acf1d7f93bec93d2e0",
+        "recovery_instructions": "docs/research/solver_reasoning_outer_loop_reviews_20260815/LEDGER_RECONCILIATION_RECEIPT_CFG_RELAXATION_UPPER_20260818.json",
+        "source_locator": ".artifacts/cfg_relaxation_impl_B_20260817/REPORT.md"
+      }
     },
     {
       "id": "DOSSIER-CLEANROOM-R3-ADVERSARIAL-A6B46333B2",

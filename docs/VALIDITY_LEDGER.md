@@ -1,27 +1,27 @@
 # 结论有效性与换代账本
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:f2dc46b1d8ac2d35890c2702a383022beb1d2aeef08db398c8995708c3fb8949`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:7bf89736c622c09a4565b0d174979dab781d8adc0f6cbc9bf214a5446e398972`。
 
 本页不把所有失败混成一个标签。它区分直接反例、语义替代、作用域修正、实现失效、实验装置失效、归因更正、路线撤回与修复后重验。
 `validity_profile` 回答的是一条 claim 在认知历史中的位置；claim 的数学内容、authority 和证据仍以 CATALOG 详情为准。
 
 ## 当前覆盖
 
-- 带 `validity_profile` 的 claim：`32` 条。
-- 显式 `supersedes` 边：`9` 条。
+- 带 `validity_profile` 的 claim：`34` 条。
+- 显式 `supersedes` 边：`10` 条。
 - `refuted` claim：`4` 条。
-- `superseded` claim：`6` 条，均必须有反向 successor。
-- current validity review：`25` 个 dossier。
+- `superseded` claim：`7` 条，均必须有反向 successor。
+- current validity review：`27` 个 dossier。
 
 ## 有效性事件分布
 
-- **事件类型：** `attribution_correction`=1；`experiment_invalidation`=3；`implementation_invalidation`=3；`refutation`=3；`revalidation`=3；`route_retirement`=4；`scope_correction`=9；`semantic_replacement`=6
-- **受影响层：** `candidate_inventory`=1；`canonical_semantics`=8；`documentation`=9；`experiment_design`=17；`model_encoding`=17；`proof_argument`=14；`research_strategy`=10；`solver_runtime`=7；`validator`=6
-- **判定依据：** `controlled_experiment`=12；`counterexample`=4；`differential_test`=8；`evidence_gap`=9；`incident_replay`=11；`independent_recomputation`=18；`owner_adjudication`=3；`proof_replay`=1
-- **复用策略：** `current_after_repair`=8；`do_not_reuse`=4；`historical_only`=9；`method_only`=4；`revalidate_before_use`=1；`unaffected_under_premises`=6
-- **修复状态：** `not_applicable`=4；`pending`=5；`revalidated`=23
-- **时间作用域：** `design_version`=14；`pre_fix_history`=5；`run_family`=7；`specific_artifact`=2；`universal_claim`=4
+- **事件类型：** `attribution_correction`=1；`experiment_invalidation`=3；`implementation_invalidation`=3；`refutation`=3；`revalidation`=3；`route_retirement`=4；`scope_correction`=9；`semantic_replacement`=8
+- **受影响层：** `candidate_inventory`=1；`canonical_semantics`=8；`documentation`=11；`experiment_design`=17；`model_encoding`=17；`proof_argument`=16；`research_strategy`=10；`solver_runtime`=7；`validator`=6
+- **判定依据：** `controlled_experiment`=12；`counterexample`=4；`differential_test`=8；`evidence_gap`=9；`incident_replay`=11；`independent_recomputation`=20；`owner_adjudication`=3；`proof_replay`=3
+- **复用策略：** `current_after_repair`=9；`do_not_reuse`=4；`historical_only`=10；`method_only`=4；`revalidate_before_use`=1；`unaffected_under_premises`=6
+- **修复状态：** `not_applicable`=4；`pending`=5；`revalidated`=25
+- **时间作用域：** `design_version`=16；`pre_fix_history`=5；`run_family`=7；`specific_artifact`=2；`universal_claim`=4
 
 ## 已分类 claim
 
@@ -54,6 +54,8 @@
 | [`CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT`](<CATALOG.md#claim-routing-reverification-extra-strict>) | `superseded` | `scope_correction` | `design_version` | `canonical_semantics`<br>`model_encoding`<br>`documentation` | `historical_only` | `revalidated` | `independent_recomputation`<br>`evidence_gap` |
 | [`CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT-BOUNDARY`](<CATALOG.md#claim-routing-reverification-extra-strict-boundary>) | `current` | `scope_correction` | `design_version` | `canonical_semantics`<br>`model_encoding`<br>`documentation` | `current_after_repair` | `revalidated` | `independent_recomputation`<br>`evidence_gap` |
 | [`CLAIM-SHARED-ENCODING-AGREEMENT-NOT-INDEPENDENT-VALIDATION`](<CATALOG.md#claim-shared-encoding-agreement-not-independent-validation>) | `current` | `implementation_invalidation` | `pre_fix_history` | `model_encoding`<br>`validator`<br>`experiment_design` | `method_only` | `revalidated` | `incident_replay`<br>`differential_test` |
+| [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>) | `superseded` | `semantic_replacement` | `design_version` | `proof_argument`<br>`documentation` | `historical_only` | `revalidated` | `independent_recomputation`<br>`proof_replay` |
+| [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](<CATALOG.md#claim-six-predicate-research-ledger-20260818>) | `current` | `semantic_replacement` | `design_version` | `proof_argument`<br>`documentation` | `current_after_repair` | `revalidated` | `independent_recomputation`<br>`proof_replay` |
 | [`CLAIM-SMT-MT-SYNTHETIC-GO-NOT-TRANSFERABLE-TO-REAL-INNER`](<CATALOG.md#claim-smt-mt-synthetic-go-not-transferable-to-real-inner>) | `current` | `scope_correction` | `run_family` | `solver_runtime`<br>`experiment_design`<br>`research_strategy` | `unaffected_under_premises` | `revalidated` | `controlled_experiment`<br>`differential_test` |
 | [`CLAIM-STRICTER-FEASIBLE-SET-PRESERVES-NEGATIVE-NOT-POSITIVE`](<CATALOG.md#claim-stricter-feasible-set-preserves-negative-not-positive>) | `current` | `scope_correction` | `design_version` | `canonical_semantics`<br>`proof_argument` | `unaffected_under_premises` | `revalidated` | `owner_adjudication`<br>`independent_recomputation` |
 | [`CLAIM-W0-ADJACENT-4X4-POWER-IMPOSSIBILITY-REFUTED`](<CATALOG.md#claim-w0-adjacent-4x4-power-impossibility-refuted>) | `refuted` | `refutation` | `universal_claim` | `proof_argument`<br>`research_strategy` | `do_not_reuse` | `not_applicable` | `counterexample`<br>`independent_recomputation` |
@@ -74,6 +76,7 @@
 | [`CLAIM-P2-FIVE-FULL-ONE-HALF-CONDITIONAL`](<CATALOG.md#claim-p2-five-full-one-half-conditional>) | [`CLAIM-P2-STEEL-BLOCK-17-LT-18-REFUTED`](<CATALOG.md#claim-p2-steel-block-17-lt-18-refuted>) | `refuted` | `current` |
 | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814`](<CATALOG.md#claim-p2-throughput-research-ledger-20260814>) | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER`](<CATALOG.md#claim-p2-throughput-research-ledger>) | `superseded` | `current` |
 | [`CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT-BOUNDARY`](<CATALOG.md#claim-routing-reverification-extra-strict-boundary>) | [`CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT`](<CATALOG.md#claim-routing-reverification-extra-strict>) | `superseded` | `current` |
+| [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](<CATALOG.md#claim-six-predicate-research-ledger-20260818>) | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>) | `superseded` | `current` |
 | [`CLAIM-W0-POWER-OBSTRUCTION-REQUIRES-DECLARED-HEIGHT-PURITY`](<CATALOG.md#claim-w0-power-obstruction-requires-declared-height-purity>) | [`CLAIM-W0-ADJACENT-4X4-POWER-IMPOSSIBILITY-REFUTED`](<CATALOG.md#claim-w0-adjacent-4x4-power-impossibility-refuted>) | `refuted` | `current` |
 
 ## 当前相关语义审阅
@@ -99,12 +102,14 @@
 | [`REVIEW-20260811-RAB-SEP-PROMOTION-BATCH4`](<CATALOG.md#review-20260811-rab-sep-promotion-batch4>) | `DOSSIER-RAB-SEP-PROMOTION-20260716-CF6D536C85` | `claims_promoted` | [`CLAIM-RAW-ELIGIBLE-EVENTS-REQUIRED-FOR-SEPARATION-EVALUATION`](<CATALOG.md#claim-raw-eligible-events-required-for-separation-evaluation>)<br>[`CLAIM-RAB-FCL-FRONT-DEPENDENT-PERFORMANCE-WITHDRAWN`](<CATALOG.md#claim-rab-fcl-front-dependent-performance-withdrawn>) | corrected-front 下同配置 RAB OFF/ON 与 front-clear lift 对照尚未形成可复核替代账本。<br>旧 package 中其余与 front 无关的工程事实若要晋升为独立 claim，仍需逐项证据审阅。 |
 | [`REVIEW-20260811-RULE-SYSTEM-REDESIGN-BATCH3`](<CATALOG.md#review-20260811-rule-system-redesign-batch3>) | `DOSSIER-RULE-SYSTEM-REDESIGN-20260807-9B23FA19D2` | `claims_promoted` | [`CLAIM-ZERO-SLACK-AUDIT-METHOD`](<CATALOG.md#claim-zero-slack-audit-method>)<br>[`CLAIM-P2-FIVE-FULL-ONE-HALF-CONDITIONAL`](<CATALOG.md#claim-p2-five-full-one-half-conditional>)<br>[`CLAIM-PAIRWISE-CLOSURE-INCOMPLETE`](<CATALOG.md#claim-pairwise-closure-incomplete>)<br>[`CLAIM-DISCOVERY-AND-VALIDATION-SEPARATE-OBLIGATIONS`](<CATALOG.md#claim-discovery-and-validation-separate-obligations>)<br>[`CLAIM-GENERIC-CP-SAT-SEPARATION-IMPOSSIBILITY-OPEN`](<CATALOG.md#claim-generic-cp-sat-separation-impossibility-open>)<br>[`CLAIM-PROVED-PREMODEL-EXCLUSION-PERMITS-MODEL-OMISSION`](<CATALOG.md#claim-proved-premodel-exclusion-permits-model-omission>)<br>[`CLAIM-BUDGET-EXHAUSTION-IS-UNKNOWN-NOT-FIXED-POINT`](<CATALOG.md#claim-budget-exhaustion-is-unknown-not-fixed-point>) | FINAL_DESIGN 的治理落地批次和 derived-rule registry 仍未实施。 |
 | [`REVIEW-20260811-RULES-AUDIT-BATCH4`](<CATALOG.md#review-20260811-rules-audit-batch4>) | `DOSSIER-RULES-AUDIT-20260718-A447D60E10` | `claims_promoted` | [`CLAIM-EMPTY-RECTANGLE-ROUTING-ALLOWED-SUPERSEDED`](<CATALOG.md#claim-empty-rectangle-routing-allowed-superseded>)<br>[`CLAIM-EMPTY-RECTANGLE-STRICT`](<CATALOG.md#claim-empty-rectangle-strict>)<br>[`CLAIM-STRICTER-FEASIBLE-SET-PRESERVES-NEGATIVE-NOT-POSITIVE`](<CATALOG.md#claim-stricter-feasible-set-preserves-negative-not-positive>)<br>[`CLAIM-WAREHOUSE-BRIDGE-EXCLUSION-TARGET-CONDITIONAL`](<CATALOG.md#claim-warehouse-bridge-exclusion-target-conditional>) | 其余 owner adjudication 尚未全量拆分为 validity chain。 |
+| [`REVIEW-20260811-SMM-FRESH-AUTHORITY-BATCH2`](<CATALOG.md#review-20260811-smm-fresh-authority-batch2>) | `DOSSIER-B1-SIDEWISE-MARKED-MEMBRANE-FRESH-AUTHORITY-20260727-EA260C6D6B` | `claims_promoted` | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>)<br>[`CLAIM-SMM-209-EXCLUDES-22X54`](<CATALOG.md#claim-smm-209-excludes-22x54>)<br>[`CLAIM-SMM4-LEX-BAND-COMPOSITION-2086`](<CATALOG.md#claim-smm4-lex-band-composition-2086>) | — |
 | [`REVIEW-20260811-SMT-MT-PHASE0-BATCH4`](<CATALOG.md#review-20260811-smt-mt-phase0-batch4>) | `DOSSIER-SMT-MT-OUTER-PRUNING-PHASE0-20260521-042BF3000C` | `claims_promoted` | [`CLAIM-SMT-MT-SYNTHETIC-GO-NOT-TRANSFERABLE-TO-REAL-INNER`](<CATALOG.md#claim-smt-mt-synthetic-go-not-transferable-to-real-inner>) | 不同真实 proof-producing inner 能否提供更高 INFEASIBLE fuel 仍开放。 |
 | [`REVIEW-20260811-SMT-MT-PHASE1-BATCH4`](<CATALOG.md#review-20260811-smt-mt-phase1-batch4>) | `DOSSIER-SMT-MT-OUTER-PRUNING-PHASE1-20260521-DF50598CC0` | `claims_promoted` | [`CLAIM-SMT-MT-SYNTHETIC-GO-NOT-TRANSFERABLE-TO-REAL-INNER`](<CATALOG.md#claim-smt-mt-synthetic-go-not-transferable-to-real-inner>) | outer pruning 是否在更高 INFEASIBLE 产率的 inner 上达到有效比例仍未验证。 |
 | [`REVIEW-20260811-W0-POWER-COUNTEREXAMPLE-BATCH4`](<CATALOG.md#review-20260811-w0-power-counterexample-batch4>) | `DOSSIER-W0-FRONT-AWARE-20260803-425794297E` | `claims_promoted` | [`CLAIM-W0-ADJACENT-4X4-POWER-IMPOSSIBILITY-REFUTED`](<CATALOG.md#claim-w0-adjacent-4x4-power-impossibility-refuted>)<br>[`CLAIM-W0-POWER-OBSTRUCTION-REQUIRES-DECLARED-HEIGHT-PURITY`](<CATALOG.md#claim-w0-power-obstruction-requires-declared-height-purity>) | 纯装家族的收窄版不可行定理尚未在账本中重新证明。 |
 | [`REVIEW-20260811-WITNESS-CONSTRUCTOR-BATCH4`](<CATALOG.md#review-20260811-witness-constructor-batch4>) | `DOSSIER-WITNESS-CONSTRUCTOR-20260717-5F04E123B3` | `claims_promoted` | [`CLAIM-CERTIFIED-EXISTENCE-OPEN`](<CATALOG.md#claim-certified-existence-open>)<br>[`CLAIM-WITNESS-RESTRICTED-POLE-DOMAINS-INFEASIBLE-FULL-DOMAIN-OPEN`](<CATALOG.md#claim-witness-restricted-pole-domains-infeasible-full-domain-open>) | 全 pole domain 与其他 shelf topology 尚无 geometry_ready 结果，routing-aware whole-layout witness 仍缺失。 |
 | [`REVIEW-20260812-GHOST-STRICT-FIX-BATCH5`](<CATALOG.md#review-20260812-ghost-strict-fix-batch5>) | `DOSSIER-GHOST-STRICT-FIX-20260805-0FBA53DB19` | `existing_claims_confirmed` | [`CLAIM-EMPTY-RECTANGLE-STRICT`](<CATALOG.md#claim-empty-rectangle-strict>) | M11 的第二次 occupancy digest 比较与 M12 的 owner 身份增量语义在该 mutation batch 中仍是预期 MISSED。<br>本 review 未把本地测试绿灯提升为新的 owner 或 production authority。 |
 | [`REVIEW-20260812-P2-REFRESH-BATCH5`](<CATALOG.md#review-20260812-p2-refresh-batch5>) | `DOSSIER-P2-0-REFRESH-20260805-627C980F03` | `existing_claims_confirmed` | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER`](<CATALOG.md#claim-p2-throughput-research-ledger>) | 本 review 没有逐份复跑本地脚本、receipt 与外部求解器交叉验证。<br>AREA_BOUND_UPGRADE_PLAN 是升格前计划，不得覆盖后续 tracked theorem report 的修订口径。 |
+| [`REVIEW-20260812-SMM4-LOCAL-AUTHORITY-AVAILABILITY-BATCH5`](<CATALOG.md#review-20260812-smm4-local-authority-availability-batch5>) | `DOSSIER-TRACK-B-B1-SIDEWISE-MARKED-MEMBRANE-FRESH-AUTHORITY-2026-2C7C3FCD74` | `deferred` | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>) | 需在拥有外部 root 的 checkout 中按 tracked hash/manifest 复核 payload 完整性。 |
 
 ## 复用纪律
 

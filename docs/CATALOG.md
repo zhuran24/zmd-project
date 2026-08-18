@@ -1,17 +1,17 @@
 # 项目知识目录
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:f2dc46b1d8ac2d35890c2702a383022beb1d2aeef08db398c8995708c3fb8949`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:7bf89736c622c09a4565b0d174979dab781d8adc0f6cbc9bf214a5446e398972`。
 
 这里登记稳定 ID。claim 回答“我们知道什么”，decision 回答“谁改变了什么规则或门”，
 dossier 回答“原始证据包在哪里”，validity profile 回答“旧结论为何失效、怎样换代、能否复用”。目录不把历史材料自动升级为当前权威。
 
 ## 覆盖概览
 
-- claim：`92` 条，其中当前 / 开放 `73` 条，带 validity profile `32` 条。
+- claim：`93` 条，其中当前 / 开放 `73` 条，带 validity profile `34` 条。
 - decision：`8` 条。
 - backfill review：`54` 条，其中 current `44` 条。
-- dossier：`222` 个，其中 tracked `158` 个、local optional `64` 个、当前证据标记 `16` 个、人工精编 `42` 个。
+- dossier：`226` 个，其中 tracked `158` 个、local optional `68` 个、当前证据标记 `16` 个、人工精编 `46` 个。
 - `docs/research/` 的一级目录和一级 Markdown 已全登记；`.artifacts/` 只登记一级目录，其路径允许在轻量 checkout 中缺失。
 
 ## Claim 索引
@@ -90,7 +90,8 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 | [`CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT`](#claim-routing-reverification-extra-strict) | routing reverification 的 no-orphan 与 selected-source-reaches-sink 超出游戏连通量词 | `superseded` | `rules_authority` | `defines_certified_scope` |
 | [`CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT-BOUNDARY`](#claim-routing-reverification-extra-strict-boundary) | routing reverification 的附加严格面不改写游戏连通量词 | `current` | `rules_authority` | `defines_certified_scope` |
 | [`CLAIM-SHARED-ENCODING-AGREEMENT-NOT-INDEPENDENT-VALIDATION`](#claim-shared-encoding-agreement-not-independent-validation) | 共享坐标 helper 的 oracle 与 validator 一致不构成独立验证 | `current` | `research_authority` | `negative_research_result` |
-| [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](#claim-six-predicate-research-ledger) | 六谓词 research ledger 为 U=(1188,18)、L=absent | `current` | `research_authority` | `research_upper_update` |
+| [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](#claim-six-predicate-research-ledger) | 六谓词 research ledger 为 U=(1188,18)、L=absent | `superseded` | `research_authority` | `research_upper_update` |
+| [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](#claim-six-predicate-research-ledger-20260818) | 六谓词 research 条件上界收紧为 U=(1170,30) | `current` | `research_authority` | `research_upper_update` |
 | [`CLAIM-SMM-209-EXCLUDES-22X54`](#claim-smm-209-excludes-22x54) | SMM-209 排除 22×54 与 54×22 | `current` | `research_authority` | `conditional_model_exclusion` |
 | [`CLAIM-SMM-COMBINED-CAP-209`](#claim-smm-combined-cap-209) | SMM-209 给出 T_in+M_in≤209 | `current` | `research_authority` | `conditional_model_exclusion` |
 | [`CLAIM-SMM-ENDPOINT-TOP-EIGHT-BUDGET-19`](#claim-smm-endpoint-top-eight-budget-19) | SMM entity-max 的八端点 top-eight budget 为 19 | `current` | `research_authority` | `conditional_model_exclusion` |
@@ -128,13 +129,13 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 - `p1_2-proof-chain`：72 个 dossier。
 - `other`：44 个 dossier。
+- `upper-bound`：28 个 dossier。
 - `solver-experiment`：25 个 dossier。
 - `witness-lower-bound`：25 个 dossier。
-- `upper-bound`：24 个 dossier。
 - `cut-framework`：19 个 dossier。
 - `reasoning-system`：17 个 dossier。
 - `solver-architecture`：17 个 dossier。
-- `formal-verification`：12 个 dossier。
+- `formal-verification`：16 个 dossier。
 - `rules-semantics`：12 个 dossier。
 - `industrial-delivery`：8 个 dossier。
 - `p2-throughput`：8 个 dossier。
@@ -149,7 +150,11 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 标题 / 入口 | Claims | Decisions | Backfill reviews |
 |---|---|---|---|---|
-| `DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99` | [推理外环三轮外部评审归档（2026-08-15）](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)<br>三份外部评审正文逐字归档；同一 active dossier 继续承载 Phase -1 观测、W0 离线短证书、一元 lowering 金丝雀及 2026-08-16 席位算术／固定矩形终局排除实验。所有实验均保持 research-only／non-authorizing：定理与候选排除不自动构成立项、produ… | — | [`DECISION-OUTER-LOOP-REVIEW-REGISTRATION-20260815`](#decision-outer-loop-review-registration-20260815) | [`REVIEW-20260815-SOLVER-REASONING-OUTER-LOOP-GPT-PRO`](#review-20260815-solver-reasoning-outer-loop-gpt-pro) |
+| `DOSSIER-CFG-RELAXATION-CERTIFICATES-20260818-76C8EC34D8` | [配置松弛纯有理对偶证书与负控（2026-08-18）](<../.artifacts/cfg_relaxation_certificates_20260818/REPORT.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](#claim-six-predicate-research-ledger-20260818) | — | — |
+| `DOSSIER-CFG-RELAXATION-ENUM-CLOSURE-23X51-20260818-176509E438` | [23×51 配置松弛枚举完备性封口（2026-08-18）](<../.artifacts/cfg_relaxation_enum_closure_23x51_20260818/REPORT.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](#claim-six-predicate-research-ledger-20260818) | — | — |
+| `DOSSIER-CFG-RELAXATION-IMPL-B-20260817-77A5280EF9` | [配置松弛 support 独立实现 B（2026-08-17）](<../.artifacts/cfg_relaxation_impl_B_20260817/REPORT.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](#claim-six-predicate-research-ledger-20260818) | — | — |
+| `DOSSIER-CFG-RELAXATION-IMPL-A-20260817-BE414F298A` | [配置松弛 support 独立实现 A（2026-08-17）](<../.artifacts/cfg_relaxation_impl_A_20260817/REPORT.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](#claim-six-predicate-research-ledger-20260818) | — | — |
+| `DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99` | [推理外环三轮外部评审归档（2026-08-15）](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)<br>三份外部评审正文逐字归档；同一 active dossier 继续承载 Phase -1 观测、W0 离线短证书、一元 lowering 金丝雀及 2026-08-16 席位算术／固定矩形终局排除实验。所有实验均保持 research-only／non-authorizing：定理与候选排除不自动构成立项、produ… | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](#claim-six-predicate-research-ledger-20260818) | [`DECISION-OUTER-LOOP-REVIEW-REGISTRATION-20260815`](#decision-outer-loop-review-registration-20260815) | [`REVIEW-20260815-SOLVER-REASONING-OUTER-LOOP-GPT-PRO`](#review-20260815-solver-reasoning-outer-loop-gpt-pro) |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-20260815-7FA2A0E225` | [推理外环 Phase -1 本机运行证据包（2026-08-15）](<../.artifacts/solver_reasoning_outer_loop_phase_minus1_20260815/phase-minus1-r1-20260815/BATCH_SUMMARY.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | — | — | [`REVIEW-20260815-PHASE-MINUS1-LOCAL-EVIDENCE-MECHANICAL-AUDIT`](#review-20260815-phase-minus1-local-evidence-mechanical-audit) |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-V2-20260815-96E16B17C8` | 推理外环 Phase -1 v2 高预算本机运行证据包（2026-08-15）<br><code>.artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815</code><br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | — | — | [`REVIEW-20260815-PHASE-MINUS1-V2-LOCAL-EVIDENCE-REGISTRATION`](#review-20260815-phase-minus1-v2-local-evidence-registration) |
 | `DOSSIER-SOLVER-RETHINK-20260808-47BE0A3C3A` | [推理外环 solver-rethink 设计与对抗收敛包](<../.artifacts/solver_rethink_20260808/DESIGN_DOC_v2.md>)<br>本机可选的推理外环、CP-SAT 内层、完备性口径、能力缺口与对抗收敛设计包；未立线、未获 production authority。 | [`CLAIM-BUDGET-EXHAUSTION-IS-UNKNOWN-NOT-FIXED-POINT`](#claim-budget-exhaustion-is-unknown-not-fixed-point)<br>[`CLAIM-FORWARD-COMPLETENESS-RELATIVE-TO-DECLARED-FRAGMENT`](#claim-forward-completeness-relative-to-declared-fragment)<br>[`CLAIM-GENERIC-CP-SAT-SEPARATION-IMPOSSIBILITY-OPEN`](#claim-generic-cp-sat-separation-impossibility-open)<br>[`CLAIM-SOLVER-RETHINK-G03-LACKS-SEPARATION-ORACLE`](#claim-solver-rethink-g03-lacks-separation-oracle)<br>[`CLAIM-SOLVER-RETHINK-PHASE1-OMITS-CONSTRUCTION-HALF`](#claim-solver-rethink-phase1-omits-construction-half) | — | [`REVIEW-20260811-SOLVER-RETHINK-BATCH3`](#review-20260811-solver-rethink-batch3) |
@@ -198,6 +203,10 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
+| `DOSSIER-CFG-RELAXATION-CERTIFICATES-20260818-76C8EC34D8` | `2026-08-18` | [配置松弛纯有理对偶证书与负控（2026-08-18）](<../.artifacts/cfg_relaxation_certificates_20260818/REPORT.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `upper-bound`, `formal-verification` | `active` | `unreviewed` |
+| `DOSSIER-CFG-RELAXATION-ENUM-CLOSURE-23X51-20260818-176509E438` | `2026-08-18` | [23×51 配置松弛枚举完备性封口（2026-08-18）](<../.artifacts/cfg_relaxation_enum_closure_23x51_20260818/REPORT.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `upper-bound`, `formal-verification` | `active` | `unreviewed` |
+| `DOSSIER-CFG-RELAXATION-IMPL-B-20260817-77A5280EF9` | `2026-08-17` | [配置松弛 support 独立实现 B（2026-08-17）](<../.artifacts/cfg_relaxation_impl_B_20260817/REPORT.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `upper-bound`, `formal-verification` | `active` | `unreviewed` |
+| `DOSSIER-CFG-RELAXATION-IMPL-A-20260817-BE414F298A` | `2026-08-17` | [配置松弛 support 独立实现 A（2026-08-17）](<../.artifacts/cfg_relaxation_impl_A_20260817/REPORT.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `upper-bound`, `formal-verification` | `active` | `unreviewed` |
 | `DOSSIER-OUTER-LOOP-RECON-20260817-A3301A1D74` | `2026-08-17` | [推理外环三实验对账裁断全文（2026-08-17）](<../.artifacts/outer_loop_recon_20260817/B_VERDICT_FULL_20260817.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-P5-HORIZONTAL-LOWERING-CANARY-20260817-3DBC7800A0` | `2026-08-17` | [P5 水平边界供电封锁 lowering 金丝雀（2026-08-17）](<research/p5_horizontal_lowering_canary_20260817/README.md>)<br>P5 已执行 HORIZONTAL-BOUNDARY-MIDDLE-TARGET-SHELL-V1 的 research-only pose-bool lowering canary：六个 group-pose 事件被精确编译为一条 sum<=5 约束，producer 外重建与 proto replay 逐字节通过… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P5-HORIZONTAL-CANARY-20260817-44EADE5C7E` | `2026-08-17` | [P5 水平边界供电封锁 lowering 金丝雀本地证据包（2026-08-17）](<../.artifacts/p5_horizontal_canary_20260817/REPORT.md>)<br>P5 本机证据包保存 owner 授权、消费点对账、三臂 body-generation run、六份 binary CpModel proto、producer 外独立 replay、编译义务闭合、typed endpoint 与终局报告。静态 lowering PASS；三臂均在首 incumbent 前删失，r… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
@@ -410,6 +419,10 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
+| `DOSSIER-CFG-RELAXATION-CERTIFICATES-20260818-76C8EC34D8` | `2026-08-18` | [配置松弛纯有理对偶证书与负控（2026-08-18）](<../.artifacts/cfg_relaxation_certificates_20260818/REPORT.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `upper-bound`, `formal-verification` | `active` | `unreviewed` |
+| `DOSSIER-CFG-RELAXATION-ENUM-CLOSURE-23X51-20260818-176509E438` | `2026-08-18` | [23×51 配置松弛枚举完备性封口（2026-08-18）](<../.artifacts/cfg_relaxation_enum_closure_23x51_20260818/REPORT.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `upper-bound`, `formal-verification` | `active` | `unreviewed` |
+| `DOSSIER-CFG-RELAXATION-IMPL-B-20260817-77A5280EF9` | `2026-08-17` | [配置松弛 support 独立实现 B（2026-08-17）](<../.artifacts/cfg_relaxation_impl_B_20260817/REPORT.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `upper-bound`, `formal-verification` | `active` | `unreviewed` |
+| `DOSSIER-CFG-RELAXATION-IMPL-A-20260817-BE414F298A` | `2026-08-17` | [配置松弛 support 独立实现 A（2026-08-17）](<../.artifacts/cfg_relaxation_impl_A_20260817/REPORT.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `upper-bound`, `formal-verification` | `active` | `unreviewed` |
 | `DOSSIER-OUTER-LOOP-RECON-20260817-A3301A1D74` | `2026-08-17` | [推理外环三实验对账裁断全文（2026-08-17）](<../.artifacts/outer_loop_recon_20260817/B_VERDICT_FULL_20260817.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-P5-HORIZONTAL-CANARY-20260817-44EADE5C7E` | `2026-08-17` | [P5 水平边界供电封锁 lowering 金丝雀本地证据包（2026-08-17）](<../.artifacts/p5_horizontal_canary_20260817/REPORT.md>)<br>P5 本机证据包保存 owner 授权、消费点对账、三臂 body-generation run、六份 binary CpModel proto、producer 外独立 replay、编译义务闭合、typed endpoint 与终局报告。静态 lowering PASS；三臂均在首 incumbent 前删失，r… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P4-BLOCKADE-FAMILY-ABSTRACTION-20260817-5B9F642CB4` | `2026-08-17` | [P4 区域供电封锁 family 抽象与定理化本地证据包（2026-08-17）](<../.artifacts/p4_blockade_family_abstraction_20260817/REPORT.md>)<br>P4 本机证据包保存三类 Judgment、三个独立标准库 checker、1,728／48／664 条正域证据、6,708／136／142 条 near-miss 结果、九布局 corpus 投影、编译义务、水平类 owner-gated canary 草案与 typed 终局。payload 可在轻量 check… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
@@ -3457,12 +3470,12 @@ front offset 事故中，构造器、oracle 与 validator 共享同一坐标解�
 ### 六谓词 research ledger 为 U=(1188,18)、L=absent
 
 - **Claim ID：** `CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`
-- **状态：** `current`
+- **状态：** `superseded`
 - **权威层：** `research_authority`
 - **权威依据：** `research_authority`
 - **表示角色：** `AUTHORITATIVE_CURRENT`
 - **权威作用：** `research_upper_update`
-- **更新时间：** `2026-07-27`
+- **更新时间：** `2026-08-18`
 
 当前六谓词研究账本为条件性上界 U=(1188,18)，下界 L=absent；production_certified=false。账本更新授权来自 SMM4 的 detached receipt 与 immutable closeout，而不是内部 formal receipt 本身。
 
@@ -3482,7 +3495,74 @@ front offset 事故中，构造器、oracle 与 validator 共享同一坐标解�
 - **数学推导族：** research_ledger；lex_band_enumeration
 - **验证方式：** authority_admission；machine_source_projection
 
+- **有效性事件：** `semantic_replacement`
+- **受影响层：** proof_argument；documentation
+- **判定依据：** independent_recomputation；proof_replay
+- **复用策略：** `historical_only`
+- **修复状态：** `revalidated`
+- **时间作用域：** `design_version`
+- **有效性注：** 该 ID 保留 U=(1188,18) 的 canonical before-state；同一 slot 的当前 research 条件上界由 CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818 严格收紧为 U=(1170,30)。
+
 - **证据：** [docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md](<research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md>)〔research upper-ledger authority〕；[docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/03_execution_record.md](<research/b1_sidewise_marked_membrane_fresh_authority_20260727/03_execution_record.md>)〔tracked execution and detached-receipt hashes〕；[.artifacts/track_b_b1_sidewise_marked_membrane_fresh_authority_20260727/run-20260726T211018Z-SMM4-14a491b](<../.artifacts/track_b_b1_sidewise_marked_membrane_fresh_authority_20260727/run-20260726T211018Z-SMM4-14a491b>)〔external authorization root named by the tracked authority report〕（工作区可选工件）
+
+<a id="claim-six-predicate-research-ledger-20260818"></a>
+
+### 六谓词 research 条件上界收紧为 U=(1170,30)
+
+- **Claim ID：** `CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`
+- **状态：** `current`
+- **权威层：** `research_authority`
+- **权威依据：** `research_authority`
+- **表示角色：** `AUTHORITATIVE_CURRENT`
+- **权威作用：** `research_upper_update`
+- **更新时间：** `2026-08-18`
+
+在 current 六谓词、70×70 冻结实例与 research-only 口径下，按 lexicographic maximize (empty_rectangle_area,min_side) 比较，所有得分严格大于 (1170,30) 的 admissible strict empty rectangle 均被排除，因此当前条件性 research upper 为 U=(1170,30)，L=absent，production_certified=false。配置 set-packing 安全松弛与纯有理对偶证书关闭 18 个归一化 minimal roots 中的 17 个；剩余 17×69 root 及其转置依赖 CLAIM-STRICT-HOLE-AVOIDS-X1-Y1 关闭。
+
+- **适用范围：** six-predicate；research-upper-ledger；strict-empty-rectangle；current-frozen-instance；lexicographic-area-min-side
+
+- **成立前提：** 目标顺序为先最大化 empty_rectangle_area、再最大化 min_side 的 lexicographic order；current strict instance 的 weighted incidence 总量 738、单个外部 body-free access cell 容量上界 4、body/access 共享预算 1320 与 final-input allowance +2 保持既有命题口径；配置松弛只保留真实二维 body nonoverlap 与 multiplicity，并舍弃地图边界、placement、供电、routing、storage_box、protocol-core inputs 及其他全局冲突，因此 contact support 是安全上界；lex>(1170,30) 的 18 个归一化 minimal roots 完整；其中 17 根满足 wh+ceil((738-U)/4)>1320；长度 69 的区间在 70 轴上必含坐标 1，且 CLAIM-STRICT-HOLE-AVOIDS-X1-Y1 对 17×69 及转置适用
+
+- **直接后果：** 同一六谓词 research ledger 的条件性上界由 U=(1188,18) 严格收紧为 U=(1170,30)；所有 lex>(1170,30) 的 strict-hole 尺寸可在声明口径内作为 research-only pre-model exclusion 使用；CLAIM-SIX-PREDICATE-RESEARCH-LEDGER 退为 superseded 历史 before-state
+
+- **明确不推出：** 存在或可达到得分 (1170,30) 的布局；任何 lower bound、global optimum 或完整 witness；production、certified、release、supervisor 或 publisher authority；P2.0 第七谓词吞吐语义下的上界发生变化；storage_box 或 protocol-core inputs 已进入配置域；任何 superset 扩域必须重新证明；P0 前沿图顶部已经按新上界重建
+
+- **依赖 claim：** CLAIM-BODY-ACCESS-BUDGET-1320；CLAIM-CERTIFIED-THEOREM-SCOPE；CLAIM-R4-LOCAL-WEIGHTED-ACCESS-CAPACITY-4；CLAIM-R4-MARKED-INCIDENCE-TOTAL-110；CLAIM-STRICT-HOLE-AVOIDS-X1-Y1
+
+- **取代 claim：** CLAIM-SIX-PREDICATE-RESEARCH-LEDGER
+
+- **权威源：** docs/research/solver_reasoning_outer_loop_reviews_20260815/LEDGER_RECONCILIATION_RECEIPT_CFG_RELAXATION_UPPER_20260818.json
+
+- **条件处置：** `discharged`
+- **操作效果：** candidate_pruning；bound_tightening
+- **一般性：** `frozen_instance`
+- **solver 关系：** `pre_model_reduction`
+- **通用传播不能完成分离的证据：** `none`
+- **发现方式：** zero_slack_audit；formal_proof；adversarial_review
+- **分类注：** ①"≤"方向的枚举层由 46,278 配置封口于 23×51,其余 16 根余量 9-115 由清单级对偶证书覆盖(清单有双实现对拍但无逐根物理封口);②规格常数(738/÷4/1320/+2)按既有命题消费未独立重审;③扩域禁令:storage_box 与 protocol-core inputs 不属当前命题,任何扩域须按 superset 重证。 下游待办：P0 前沿投影的顶部改写由独立后继批处理，本批不重跑前沿图。
+
+- **推导角色：** `ledger_projection`
+- **数学推导族：** research_ledger；lex_band_enumeration；boundary_packing；local_access_capacity；budget_composition；integer_rounding；empty_rectangle_geometry
+- **验证方式：** exact_enumeration；optimization_certificate；independent_recomputation；adversarial_review；authority_admission
+
+- **目标阶段：** `pre_model`
+- **候选来源：** `explicit_finite`
+- **选择方式：** finite_enumeration
+- **验证方式：** direct_arithmetic；exact_enumeration；independent_validator；proof_object
+- **完备性：** `proved_for_declared_domain`
+- **消费方式：** pre_model_filter；objective_bound
+- **基线比较：** `formal`
+- **分离注：** The 18 normalized lex-band roots are closed only for the declared current six-predicate configuration domain; storage_box and protocol-core input supersets are excluded.
+
+- **有效性事件：** `semantic_replacement`
+- **受影响层：** proof_argument；documentation
+- **判定依据：** independent_recomputation；proof_replay
+- **复用策略：** `current_after_repair`
+- **修复状态：** `revalidated`
+- **时间作用域：** `design_version`
+- **有效性注：** 该 ID 以五层验证后的严格 strengthening 接续同一六谓词 research ledger slot；旧 U=(1188,18) 只保留为 canonical before-state。
+
+- **证据：** [.artifacts/cfg_relaxation_impl_A_20260817/REPORT.md](<../.artifacts/cfg_relaxation_impl_A_20260817/REPORT.md>)〔evidence layer 1A: independent implementation A, 54/54 OPTIMAL with all frozen targets MATCH〕（工作区可选工件）；[.artifacts/cfg_relaxation_impl_B_20260817/REPORT.md](<../.artifacts/cfg_relaxation_impl_B_20260817/REPORT.md>)〔evidence layer 1B: independent implementation B, 61/61 OPTIMAL with all acceptance targets MATCH; joint raw support is insensitive to the free/noncorner mark diagnostic difference〕（工作区可选工件）；[.artifacts/cfg_relaxation_certificates_20260818/REPORT.md](<../.artifacts/cfg_relaxation_certificates_20260818/REPORT.md>)〔evidence layers 2 and 3: 34 pure-Fraction dual certificates over both A/B families plus NEGATIVE_CONTROLS{,_B}.json with 204/204 rejected mutations, including rehashed-forger variants〕（工作区可选工件）；[.artifacts/cfg_relaxation_enum_closure_23x51_20260818/REPORT.md](<../.artifacts/cfg_relaxation_enum_closure_23x51_20260818/REPORT.md>)〔evidence layers 4 and 5: 46,278-configuration physical enumeration closure at 23×51, A/B violations 0, 5/5 negative controls PASS, 81/81 SHA receipt, and heterogeneous final review PASS with no blocking finding at frozen verifier SHA 87adec142d4bdad7240714c94d1c74a5e60de85169c7b52595dc04d47ca716aa〕（工作区可选工件）；[docs/research/solver_reasoning_outer_loop_reviews_20260815/LEDGER_RECONCILIATION_RECEIPT_CFG_RELAXATION_UPPER_20260818.json](<research/solver_reasoning_outer_loop_reviews_20260815/LEDGER_RECONCILIATION_RECEIPT_CFG_RELAXATION_UPPER_20260818.json>)〔tracked consumption-point reconciliation receipt: canonical before-state U=(1188,18), relation WEAKER_CURRENT, five-layer file hashes, four-root dossier mapping, allowed effects and non-implications〕
 
 <a id="claim-smm-209-excludes-22x54"></a>
 
@@ -4387,7 +4467,7 @@ owner 允许归档三轮外部评审并以 non_authorizing 形态登记设计约
 
 - **明确不推出：** 原登记八条内容及本次评审修复新增的指针型登记项获得批准；推理外环获得立项；对现行树新增义务
 
-- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../../../.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
+- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../../home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
 
 <a id="decision-p1-2-close-20260707"></a>
 

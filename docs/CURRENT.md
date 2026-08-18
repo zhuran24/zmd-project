@@ -2,7 +2,7 @@
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
 > 机器状态从冻结规则、义务、gate 与 exact-status 文件直接读取；研究结论从稳定 ID 账本投影。
-> 账本人工审阅日：`2026-08-15`；源摘要：`sha256:f2dc46b1d8ac2d35890c2702a383022beb1d2aeef08db398c8995708c3fb8949`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:7bf89736c622c09a4565b0d174979dab781d8adc0f6cbc9bf214a5446e398972`。
 
 ## 权威边界
 
@@ -394,35 +394,62 @@ Predicate 5 的 connectivity_quantifier 是：逐 commodity，每个 SINK front 
 
 ## 六谓词研究账本
 
-### 六谓词 research ledger 为 U=(1188,18)、L=absent
+### 六谓词 research 条件上界收紧为 U=(1170,30)
 
-- **Claim ID：** `CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`
+- **Claim ID：** `CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`
 - **状态：** `current`
 - **权威层：** `research_authority`
 - **权威依据：** `research_authority`
 - **表示角色：** `AUTHORITATIVE_CURRENT`
 - **权威作用：** `research_upper_update`
-- **更新时间：** `2026-07-27`
+- **更新时间：** `2026-08-18`
 
-当前六谓词研究账本为条件性上界 U=(1188,18)，下界 L=absent；production_certified=false。账本更新授权来自 SMM4 的 detached receipt 与 immutable closeout，而不是内部 formal receipt 本身。
+在 current 六谓词、70×70 冻结实例与 research-only 口径下，按 lexicographic maximize (empty_rectangle_area,min_side) 比较，所有得分严格大于 (1170,30) 的 admissible strict empty rectangle 均被排除，因此当前条件性 research upper 为 U=(1170,30)，L=absent，production_certified=false。配置 set-packing 安全松弛与纯有理对偶证书关闭 18 个归一化 minimal roots 中的 17 个；剩余 17×69 root 及其转置依赖 CLAIM-STRICT-HOLE-AVOIDS-X1-Y1 关闭。
 
-- **适用范围：** six-predicate；research-upper-ledger；strict-empty-rectangle
+- **适用范围：** six-predicate；research-upper-ledger；strict-empty-rectangle；current-frozen-instance；lexicographic-area-min-side
 
-- **成立前提：** SMM4 fresh-authority root、A004/SMM-209 几何链与旧 band authority 均保持其冻结身份；引用时保留条件性标签
+- **成立前提：** 目标顺序为先最大化 empty_rectangle_area、再最大化 min_side 的 lexicographic order；current strict instance 的 weighted incidence 总量 738、单个外部 body-free access cell 容量上界 4、body/access 共享预算 1320 与 final-input allowance +2 保持既有命题口径；配置松弛只保留真实二维 body nonoverlap 与 multiplicity，并舍弃地图边界、placement、供电、routing、storage_box、protocol-core inputs 及其他全局冲突，因此 contact support 是安全上界；lex>(1170,30) 的 18 个归一化 minimal roots 完整；其中 17 根满足 wh+ceil((738-U)/4)>1320；长度 69 的区间在 70 轴上必含坐标 1，且 CLAIM-STRICT-HOLE-AVOIDS-X1-Y1 对 17×69 及转置适用
 
-- **直接后果：** lex>(1188,18) 的已登记研究 band 被关闭；当前研究上界可写作 U=(1188,18)
+- **直接后果：** 同一六谓词 research ledger 的条件性上界由 U=(1188,18) 严格收紧为 U=(1170,30)；所有 lex>(1170,30) 的 strict-hole 尺寸可在声明口径内作为 research-only pre-model exclusion 使用；CLAIM-SIX-PREDICATE-RESEARCH-LEDGER 退为 superseded 历史 before-state
 
-- **明确不推出：** 存在 (1188,18) 布局；U 可达；全局 production CERTIFIED；任何下界；吞吐语义下的最优值
+- **明确不推出：** 存在或可达到得分 (1170,30) 的布局；任何 lower bound、global optimum 或完整 witness；production、certified、release、supervisor 或 publisher authority；P2.0 第七谓词吞吐语义下的上界发生变化；storage_box 或 protocol-core inputs 已进入配置域；任何 superset 扩域必须重新证明；P0 前沿图顶部已经按新上界重建
 
-- **依赖 claim：** CLAIM-CERTIFIED-THEOREM-SCOPE；CLAIM-SMM4-LEX-BAND-COMPOSITION-2086
+- **依赖 claim：** CLAIM-BODY-ACCESS-BUDGET-1320；CLAIM-CERTIFIED-THEOREM-SCOPE；CLAIM-R4-LOCAL-WEIGHTED-ACCESS-CAPACITY-4；CLAIM-R4-MARKED-INCIDENCE-TOTAL-110；CLAIM-STRICT-HOLE-AVOIDS-X1-Y1
 
-- **权威源：** docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md；docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/03_execution_record.md
+- **取代 claim：** CLAIM-SIX-PREDICATE-RESEARCH-LEDGER
+
+- **权威源：** docs/research/solver_reasoning_outer_loop_reviews_20260815/LEDGER_RECONCILIATION_RECEIPT_CFG_RELAXATION_UPPER_20260818.json
+
+- **条件处置：** `discharged`
+- **操作效果：** candidate_pruning；bound_tightening
+- **一般性：** `frozen_instance`
+- **solver 关系：** `pre_model_reduction`
+- **通用传播不能完成分离的证据：** `none`
+- **发现方式：** zero_slack_audit；formal_proof；adversarial_review
+- **分类注：** ①"≤"方向的枚举层由 46,278 配置封口于 23×51,其余 16 根余量 9-115 由清单级对偶证书覆盖(清单有双实现对拍但无逐根物理封口);②规格常数(738/÷4/1320/+2)按既有命题消费未独立重审;③扩域禁令:storage_box 与 protocol-core inputs 不属当前命题,任何扩域须按 superset 重证。 下游待办：P0 前沿投影的顶部改写由独立后继批处理，本批不重跑前沿图。
 
 - **推导角色：** `ledger_projection`
-- **数学推导族：** research_ledger；lex_band_enumeration
-- **验证方式：** authority_admission；machine_source_projection
+- **数学推导族：** research_ledger；lex_band_enumeration；boundary_packing；local_access_capacity；budget_composition；integer_rounding；empty_rectangle_geometry
+- **验证方式：** exact_enumeration；optimization_certificate；independent_recomputation；adversarial_review；authority_admission
 
-- **证据：** [docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md](<research/b1_sidewise_marked_membrane_fresh_authority_20260727/README.md>)〔research upper-ledger authority〕；[docs/research/b1_sidewise_marked_membrane_fresh_authority_20260727/03_execution_record.md](<research/b1_sidewise_marked_membrane_fresh_authority_20260727/03_execution_record.md>)〔tracked execution and detached-receipt hashes〕；[.artifacts/track_b_b1_sidewise_marked_membrane_fresh_authority_20260727/run-20260726T211018Z-SMM4-14a491b](<../.artifacts/track_b_b1_sidewise_marked_membrane_fresh_authority_20260727/run-20260726T211018Z-SMM4-14a491b>)〔external authorization root named by the tracked authority report〕（工作区可选工件）
+- **目标阶段：** `pre_model`
+- **候选来源：** `explicit_finite`
+- **选择方式：** finite_enumeration
+- **验证方式：** direct_arithmetic；exact_enumeration；independent_validator；proof_object
+- **完备性：** `proved_for_declared_domain`
+- **消费方式：** pre_model_filter；objective_bound
+- **基线比较：** `formal`
+- **分离注：** The 18 normalized lex-band roots are closed only for the declared current six-predicate configuration domain; storage_box and protocol-core input supersets are excluded.
+
+- **有效性事件：** `semantic_replacement`
+- **受影响层：** proof_argument；documentation
+- **判定依据：** independent_recomputation；proof_replay
+- **复用策略：** `current_after_repair`
+- **修复状态：** `revalidated`
+- **时间作用域：** `design_version`
+- **有效性注：** 该 ID 以五层验证后的严格 strengthening 接续同一六谓词 research ledger slot；旧 U=(1188,18) 只保留为 canonical before-state。
+
+- **证据：** [.artifacts/cfg_relaxation_impl_A_20260817/REPORT.md](<../.artifacts/cfg_relaxation_impl_A_20260817/REPORT.md>)〔evidence layer 1A: independent implementation A, 54/54 OPTIMAL with all frozen targets MATCH〕（工作区可选工件）；[.artifacts/cfg_relaxation_impl_B_20260817/REPORT.md](<../.artifacts/cfg_relaxation_impl_B_20260817/REPORT.md>)〔evidence layer 1B: independent implementation B, 61/61 OPTIMAL with all acceptance targets MATCH; joint raw support is insensitive to the free/noncorner mark diagnostic difference〕（工作区可选工件）；[.artifacts/cfg_relaxation_certificates_20260818/REPORT.md](<../.artifacts/cfg_relaxation_certificates_20260818/REPORT.md>)〔evidence layers 2 and 3: 34 pure-Fraction dual certificates over both A/B families plus NEGATIVE_CONTROLS{,_B}.json with 204/204 rejected mutations, including rehashed-forger variants〕（工作区可选工件）；[.artifacts/cfg_relaxation_enum_closure_23x51_20260818/REPORT.md](<../.artifacts/cfg_relaxation_enum_closure_23x51_20260818/REPORT.md>)〔evidence layers 4 and 5: 46,278-configuration physical enumeration closure at 23×51, A/B violations 0, 5/5 negative controls PASS, 81/81 SHA receipt, and heterogeneous final review PASS with no blocking finding at frozen verifier SHA 87adec142d4bdad7240714c94d1c74a5e60de85169c7b52595dc04d47ca716aa〕（工作区可选工件）；[docs/research/solver_reasoning_outer_loop_reviews_20260815/LEDGER_RECONCILIATION_RECEIPT_CFG_RELAXATION_UPPER_20260818.json](<research/solver_reasoning_outer_loop_reviews_20260815/LEDGER_RECONCILIATION_RECEIPT_CFG_RELAXATION_UPPER_20260818.json>)〔tracked consumption-point reconciliation receipt: canonical before-state U=(1188,18), relation WEAKER_CURRENT, five-layer file hashes, four-root dossier mapping, allowed effects and non-implications〕
 
 ### SMM4 把旧 2084 band 与两个 SMM orientations 组合为完整 2086 band
 
@@ -1976,7 +2003,7 @@ owner 选择严格解释：空矩形内不得出现任何 occupant。该决定�
 ## 覆盖范围与欠账
 
 - **dossier 目录覆盖：** 已登记 docs/research 一级目录与一级 Markdown，以及本机存在或被承重证据引用的 .artifacts 一级目录。轻量 checkout 可缺少 local artifact root。
-- **claim 覆盖：** Phase 4 Batch 4 CP2 迁移后共 92 条稳定 claim；CURRENT 按 claim_selection_policy 只投影当前承重子集，完整账本由 CATALOG、topic、reasoning 与 validity 页面查询。
-- **历史 claim 回填：** 第二阶段已收口：41 个 dossier 有 current review，其中 40 个为语义审阅、1 个为缺失外部根的 availability/provenance review；其余 165 个 dossier 全部且仅进入一个显式 triage group。100% inventory coverage 不等于 100% semantic review。
+- **claim 覆盖：** 当前共 93 条稳定 claim；CURRENT 按 claim_selection_policy 只投影当前承重子集，完整账本由 CATALOG、topic、reasoning 与 validity 页面查询。
+- **历史 claim 回填：** 44 个 dossier 有 current review，其中 41 个为语义审阅、3 个为 availability/provenance review；另有 165 个 dossier 全部且仅进入一个显式 triage group，17 个 active workflow 等待 typed closure。100% inventory coverage 不等于 100% semantic review。
 
 完整 claim、decision 与 evidence package 目录见 [CATALOG](<CATALOG.md>)；推理分类与历史回填进度见 [REASONING_LEDGER](<REASONING_LEDGER.md>)；历史反例、语义更正、实现失效与重验谱系见 [VALIDITY_LEDGER](<VALIDITY_LEDGER.md>)；语义审阅、可用性核对与长尾分诊闭包见 [BACKFILL_LEDGER](<BACKFILL_LEDGER.md>)；按稳定主题坐标查询见 [TOPIC_INDEX](<TOPIC_INDEX.md>)；规范术语与别名见 [TERMINOLOGY](<TERMINOLOGY.md>)；当前开放问题见 [OPEN_QUESTIONS](<OPEN_QUESTIONS.md>)；按问题进入项目见 [START_HERE](<START_HERE.md>)。

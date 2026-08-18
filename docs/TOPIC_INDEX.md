@@ -1,7 +1,7 @@
 # 稳定主题索引
 
 > 本页由 `data/knowledge/topics.json` 自动生成；禁止手工修改。
-> 账本审阅日：`2026-08-14`；源摘要：`sha256:f2dc46b1d8ac2d35890c2702a383022beb1d2aeef08db398c8995708c3fb8949`。
+> 账本审阅日：`2026-08-18`；源摘要：`sha256:7bf89736c622c09a4565b0d174979dab781d8adc0f6cbc9bf214a5446e398972`。
 
 主题是读取路径，不是新的 authority。一个 claim 可以出现在多个主题中；topic membership 只表示相关性，不改变 statement、scope 或 status。
 
@@ -19,7 +19,7 @@
 | [`TOPIC-SOLVER-EXPERIMENTS-AND-NO-GO`](#topic-solver-experiments-and-no-go) | 保留 cheap gate、fixture、资源/参数归因和路线撤回的具体 scope，避免方法家族级过度外推。 | 13 | solver-experiment | 0 |
 | [`TOPIC-FORMAL-VERIFICATION`](#topic-formal-verification) | PB/VeriPB band、共享编码 common-mode 风险与 proof-producing sidecar 的证据坐标。 | 5 | formal-verification | 0 |
 | [`TOPIC-DISCOVERY-METHODS`](#topic-discovery-methods) | zero-slack、pairwise closure 反例、独立验证与发现/验证拆分等可复用方法层。 | 5 | other；reasoning-system | 0 |
-| [`TOPIC-HISTORICAL-VALIDITY`](#topic-historical-validity) | 统一查询 refutation、semantic replacement、scope correction、implementation/experiment invalidation、route retirement 与 revalid… | 32 | other | 0 |
+| [`TOPIC-HISTORICAL-VALIDITY`](#topic-historical-validity) | 统一查询 refutation、semantic replacement、scope correction、implementation/experiment invalidation、route retirement 与 revalid… | 33 | other | 0 |
 | [`TOPIC-DOCUMENTATION-GOVERNANCE`](#topic-documentation-governance) | 文档类型、继承 policy、current review、长尾 triage、生成页和 framework-core 自维护入口。 | 0 | documentation-governance | 0 |
 | [`TOPIC-INDUSTRIAL-DELIVERY`](#topic-industrial-delivery) | 把蓝图导出、manifest、local artifact 与 release authority 分开，供追溯而不抬升语义。 | 0 | industrial-delivery | 0 |
 
@@ -44,7 +44,7 @@
 | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814`](<CATALOG.md#claim-p2-throughput-research-ledger-20260814>) | `current` | P2.0 吞吐语义的独立条件账本 |
 | [`CLAIM-R4-BOUNDARY-23-23-FULL-SPAN-EXCLUSION`](<CATALOG.md#claim-r4-boundary-23-23-full-span-exclusion>) | `current` | 46 个 boundary bodies 强制 23+23，并排除 70 格 full-span hole |
 | [`CLAIM-R4-MARKED-INCIDENCE-TOTAL-110`](<CATALOG.md#claim-r4-marked-incidence-total-110>) | `current` | R4 marked-incidence census 的总数为 110 |
-| [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>) | `current` | 六谓词 research ledger 为 U=(1188,18)、L=absent |
+| [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](<CATALOG.md#claim-six-predicate-research-ledger-20260818>) | `current` | 六谓词 research 条件上界收紧为 U=(1170,30) |
 
 ### Open questions
 
@@ -102,7 +102,7 @@
 | [`CLAIM-R4-LOCAL-WEIGHTED-ACCESS-CAPACITY-4`](<CATALOG.md#claim-r4-local-weighted-access-capacity-4>) | `current` | R4 marked 账下每个外部 access cell 满足 t+m≤4 |
 | [`CLAIM-R4-MARKED-MEMBRANE-BOUND-S12`](<CATALOG.md#claim-r4-marked-membrane-bound-s12>) | `current` | R4 marked membrane 对 normalized w≥9 给出 M_in≤S+12 |
 | [`CLAIM-R4-NECESSARY-DIMENSION-INEQUALITY`](<CATALOG.md#claim-r4-necessary-dimension-inequality>) | `current` | R4 用 ordinary/marked 双账得到完整尺寸必要不等式 |
-| [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>) | `current` | 六谓词 research ledger 为 U=(1188,18)、L=absent |
+| [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](<CATALOG.md#claim-six-predicate-research-ledger-20260818>) | `current` | 六谓词 research 条件上界收紧为 U=(1170,30) |
 | [`CLAIM-SMM-209-EXCLUDES-22X54`](<CATALOG.md#claim-smm-209-excludes-22x54>) | `current` | SMM-209 排除 22×54 与 54×22 |
 | [`CLAIM-SMM-COMBINED-CAP-209`](<CATALOG.md#claim-smm-combined-cap-209>) | `current` | SMM-209 给出 T_in+M_in≤209 |
 | [`CLAIM-SMM-ENDPOINT-TOP-EIGHT-BUDGET-19`](<CATALOG.md#claim-smm-endpoint-top-eight-budget-19>) | `current` | SMM entity-max 的八端点 top-eight budget 为 19 |
@@ -213,7 +213,7 @@
 | Claim | 状态 | 标题 |
 |---|---|---|
 | [`CLAIM-CERTIFIED-EXISTENCE-OPEN`](<CATALOG.md#claim-certified-existence-open>) | `open` | 现行语义下 whole-layout 认证级存在性仍为 OPEN |
-| [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>) | `current` | 六谓词 research ledger 为 U=(1188,18)、L=absent |
+| [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>) | `superseded` | 六谓词 research ledger 为 U=(1188,18)、L=absent |
 | [`CLAIM-W0-ADJACENT-4X4-POWER-IMPOSSIBILITY-REFUTED`](<CATALOG.md#claim-w0-adjacent-4x4-power-impossibility-refuted>) | `refuted` | W0 相邻 4+4 宏族供电不可行定理已被坐标反例推翻 |
 | [`CLAIM-W0-POWER-OBSTRUCTION-REQUIRES-DECLARED-HEIGHT-PURITY`](<CATALOG.md#claim-w0-power-obstruction-requires-declared-height-purity>) | `current` | W0 供电阻塞证明只能在明示的模板到带高纯装前提下复用 |
 | [`CLAIM-WITNESS-RESTRICTED-POLE-DOMAINS-INFEASIBLE-FULL-DOMAIN-OPEN`](<CATALOG.md#claim-witness-restricted-pole-domains-infeasible-full-domain-open>) | `current` | witness 构造只排除了两个受限 pole 域，2,507 候选全域仍为 OPEN |
@@ -325,6 +325,7 @@
 | [`CLAIM-ROUND45-CORRECTED-PROFILE-UNKNOWN-NOT-STRUCTURAL-WALL`](<CATALOG.md#claim-round45-corrected-profile-unknown-not-structural-wall>) | `current` | 修正后的 Round 4/5 紧凑模型只支持预算内 UNKNOWN，不支持结构墙 |
 | [`CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT`](<CATALOG.md#claim-routing-reverification-extra-strict>) | `superseded` | routing reverification 的 no-orphan 与 selected-source-reaches-sink 超出游戏连通量词 |
 | [`CLAIM-SHARED-ENCODING-AGREEMENT-NOT-INDEPENDENT-VALIDATION`](<CATALOG.md#claim-shared-encoding-agreement-not-independent-validation>) | `current` | 共享坐标 helper 的 oracle 与 validator 一致不构成独立验证 |
+| [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>) | `superseded` | 六谓词 research ledger 为 U=(1188,18)、L=absent |
 | [`CLAIM-SMT-MT-SYNTHETIC-GO-NOT-TRANSFERABLE-TO-REAL-INNER`](<CATALOG.md#claim-smt-mt-synthetic-go-not-transferable-to-real-inner>) | `current` | SMT-MT synthetic GO 不能替代真实 inner fuel 的有效性验证 |
 | [`CLAIM-SOLVER-RETHINK-G03-LACKS-SEPARATION-ORACLE`](<CATALOG.md#claim-solver-rethink-g03-lacks-separation-oracle>) | `historical` | solver-rethink 的 G-03 只有 checker，缺自主 separator |
 | [`CLAIM-SOLVER-RETHINK-PHASE1-OMITS-CONSTRUCTION-HALF`](<CATALOG.md#claim-solver-rethink-phase1-omits-construction-half>) | `historical` | solver-rethink 一期不覆盖 witness/下界构造半边 |

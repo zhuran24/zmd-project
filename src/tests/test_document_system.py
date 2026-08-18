@@ -430,7 +430,11 @@ def test_maintenance_audit_regression_clock_covers_latest_active_dossier() -> No
             active_opened_dates.append(candidate)
 
     assert active_opened_dates
-    assert regression_as_of >= max(active_opened_dates)
+    latest_active_opened_at = max(active_opened_dates)
+    assert regression_as_of >= latest_active_opened_at, (
+        f"maintenance regression clock {regression_as_of} predates "
+        f"latest active dossier {latest_active_opened_at}"
+    )
 
 
 def test_entrypoint_registry_is_the_structural_source_for_frontdoor_contracts() -> None:

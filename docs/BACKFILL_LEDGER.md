@@ -1,18 +1,18 @@
 # 历史知识回填与长尾覆盖
 
 > 本页由 `data/knowledge/backfill_reviews.jsonl`、`backfill_triage.json` 与 dossier registry 自动生成；禁止手工修改。
-> 账本审阅日：`2026-08-15`；源摘要：`sha256:f2dc46b1d8ac2d35890c2702a383022beb1d2aeef08db398c8995708c3fb8949`。
+> 账本审阅日：`2026-08-15`；源摘要：`sha256:7bf89736c622c09a4565b0d174979dab781d8adc0f6cbc9bf214a5446e398972`。
 
 这里把两件经常被混写的事情分开：**semantic review** 表示实际读取了声明路径并提炼知识；**inventory triage** 只保证尚未审阅的 dossier 仍可发现、只落入一个队列，并带有重开条件。分诊从不等价于 `no_reusable_claim`。
 
 ## 收口概览
 
-- dossier 总数：`222`。
+- dossier 总数：`226`。
 - current review：`44`，其中语义审阅 `41`，availability/provenance-only `3`。
 - 尚无 current review、但已进入唯一 triage group：`165`。
-- 新写入流程中尚未关闭的 active dossier：`16`；其中已有 current review `3`；open workflow 不进入历史 triage。
-- inventory coverage：`222/222`。
-- semantic review coverage：`41/222`。这个比例不会被 triage 人为抬高。
+- 新写入流程中尚未关闭的 active dossier：`20`；其中已有 current review `3`；open workflow 不进入历史 triage。
+- inventory coverage：`226/226`。
+- semantic review coverage：`41/226`。这个比例不会被 triage 人为抬高。
 
 ## Current review
 
@@ -67,6 +67,10 @@
 
 | Dossier | 路径 | 打开日 | 生命周期 |
 |---|---|---|---|
+| `DOSSIER-CFG-RELAXATION-CERTIFICATES-20260818-76C8EC34D8` | `.artifacts/cfg_relaxation_certificates_20260818` | `2026-08-18` | `active` |
+| `DOSSIER-CFG-RELAXATION-ENUM-CLOSURE-23X51-20260818-176509E438` | `.artifacts/cfg_relaxation_enum_closure_23x51_20260818` | `2026-08-18` | `active` |
+| `DOSSIER-CFG-RELAXATION-IMPL-A-20260817-BE414F298A` | `.artifacts/cfg_relaxation_impl_A_20260817` | `2026-08-17` | `active` |
+| `DOSSIER-CFG-RELAXATION-IMPL-B-20260817-77A5280EF9` | `.artifacts/cfg_relaxation_impl_B_20260817` | `2026-08-17` | `active` |
 | `DOSSIER-OUTER-LOOP-RECON-20260817-A3301A1D74` | `.artifacts/outer_loop_recon_20260817` | `2026-08-17` | `active` |
 | `DOSSIER-P1-RESTRICTED-WITNESS-CONSTRUCTION-20260817-39AB02A7C6` | `docs/research/p1_restricted_witness_construction_20260817` | `2026-08-17` | `active` |
 | `DOSSIER-P1-WITNESS-CONSTRUCTION-20260817-D06675346E` | `.artifacts/p1_witness_construction_20260817` | `2026-08-17` | `active` |
