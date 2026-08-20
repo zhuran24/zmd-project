@@ -32,6 +32,16 @@
     "dossier_registry": "data/knowledge/dossiers.json",
     "required_dossier_tracked_state": "local_optional",
     "root_files": [
+      ".artifacts/ERRATA_p_blockade_clipmap_20260819_20260820.md",
+      ".artifacts/ERRATA_p_dnf_branch_soundness_minimal_core_20260819_20260820.md",
+      ".artifacts/ERRATA_p_dnf_realizable_completeness_20260819_20260820.md",
+      ".artifacts/ERRATA_p_dnf_realizable_enumeration_20260819_20260820.md",
+      ".artifacts/ERRATA_p_dnf_universal_completeness_20260819_20260820.md",
+      ".artifacts/ERRATA_p_interior_3x3_bound_20260819_20260820.md",
+      ".artifacts/ERRATA_p_interior_blockade_bound_20260819_20260820.md",
+      ".artifacts/ERRATA_p_zeropole_diagnosis_20260819_20260820.md",
+      ".artifacts/_relay_task_p4_blockade_lit_20260817.txt",
+      ".artifacts/_relay_task_wall5_20260817.txt",
       ".artifacts/canonical_merge_gate_20260807.DONE",
       ".artifacts/canonical_merge_gate_20260807_full.exit",
       ".artifacts/canonical_merge_gate_20260807_full.log",
@@ -42,6 +52,10 @@
       ".artifacts/canonical_merge_gate_20260807_r2_slow.log",
       ".artifacts/canonical_merge_gate_20260807_slow.exit",
       ".artifacts/canonical_merge_gate_20260807_slow.log",
+      ".artifacts/codex_relay_task_halo_charging.md",
+      ".artifacts/codex_relay_task_lit_proto_horizontal_boundary.md",
+      ".artifacts/codex_relay_task_membrane_bound.md",
+      ".artifacts/codex_relay_wall1_task.txt",
       ".artifacts/full_fail_nodeids.txt",
       ".artifacts/full_rerun_20260725.log",
       ".artifacts/merge_rulecut_20260725T104539Z.log",
@@ -55,7 +69,8 @@
       ".artifacts/preflight_full_sealbatch_20260806.log",
       ".artifacts/preflight_merge_final_20260725T201740Z.log",
       ".artifacts/preflight_merge_final_LAST.log",
-      ".artifacts/preflight_slow_sealbatch_20260806.log"
+      ".artifacts/preflight_slow_sealbatch_20260806.log",
+      ".artifacts/relay_task_lexband_20260817.txt"
     ]
   },
   "external_root": {

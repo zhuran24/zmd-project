@@ -1,18 +1,18 @@
 # 历史知识回填与长尾覆盖
 
 > 本页由 `data/knowledge/backfill_reviews.jsonl`、`backfill_triage.json` 与 dossier registry 自动生成；禁止手工修改。
-> 账本审阅日：`2026-08-15`；源摘要：`sha256:7bf89736c622c09a4565b0d174979dab781d8adc0f6cbc9bf214a5446e398972`。
+> 账本审阅日：`2026-08-15`；源摘要：`sha256:deb13488720d91ebb586d677fdce2123cf1a52db5580fcd7fd39b4163bd19ad7`。
 
 这里把两件经常被混写的事情分开：**semantic review** 表示实际读取了声明路径并提炼知识；**inventory triage** 只保证尚未审阅的 dossier 仍可发现、只落入一个队列，并带有重开条件。分诊从不等价于 `no_reusable_claim`。
 
 ## 收口概览
 
-- dossier 总数：`226`。
+- dossier 总数：`269`。
 - current review：`44`，其中语义审阅 `41`，availability/provenance-only `3`。
 - 尚无 current review、但已进入唯一 triage group：`165`。
-- 新写入流程中尚未关闭的 active dossier：`20`；其中已有 current review `3`；open workflow 不进入历史 triage。
-- inventory coverage：`226/226`。
-- semantic review coverage：`41/226`。这个比例不会被 triage 人为抬高。
+- 新写入流程中尚未关闭的 active dossier：`63`；其中已有 current review `3`；open workflow 不进入历史 triage。
+- inventory coverage：`269/269`。
+- semantic review coverage：`41/269`。这个比例不会被 triage 人为抬高。
 
 ## Current review
 
@@ -67,11 +67,52 @@
 
 | Dossier | 路径 | 打开日 | 生命周期 |
 |---|---|---|---|
+| `DOSSIER-CANDIDATE-CONDITION-MATRIX-V1-20260818-780443B8C2` | `.artifacts/candidate_condition_matrix_v1_20260818` | `2026-08-18` | `active` |
 | `DOSSIER-CFG-RELAXATION-CERTIFICATES-20260818-76C8EC34D8` | `.artifacts/cfg_relaxation_certificates_20260818` | `2026-08-18` | `active` |
 | `DOSSIER-CFG-RELAXATION-ENUM-CLOSURE-23X51-20260818-176509E438` | `.artifacts/cfg_relaxation_enum_closure_23x51_20260818` | `2026-08-18` | `active` |
 | `DOSSIER-CFG-RELAXATION-IMPL-A-20260817-BE414F298A` | `.artifacts/cfg_relaxation_impl_A_20260817` | `2026-08-17` | `active` |
 | `DOSSIER-CFG-RELAXATION-IMPL-B-20260817-77A5280EF9` | `.artifacts/cfg_relaxation_impl_B_20260817` | `2026-08-17` | `active` |
+| `DOSSIER-CPU-L3-PERF-MEASUREMENT-20260820-212859A058` | `.artifacts/cpu_l3_perf_measurement_20260820` | `2026-08-20` | `active` |
+| `DOSSIER-GPT-HARVEST-20260818-85692BD024` | `.artifacts/gpt_harvest_20260818` | `2026-08-18` | `active` |
+| `DOSSIER-NP-LITERATURE-RECON-20260817-C6D0998D78` | `.artifacts/np_literature_recon_20260817` | `2026-08-17` | `active` |
+| `DOSSIER-NP-THEOREM-CORRESPONDENCE-20260817-6ADFE32DF1` | `.artifacts/np_theorem_correspondence_20260817` | `2026-08-17` | `active` |
 | `DOSSIER-OUTER-LOOP-RECON-20260817-A3301A1D74` | `.artifacts/outer_loop_recon_20260817` | `2026-08-17` | `active` |
+| `DOSSIER-P-BLOCKADE-CLIPMAP-20260819-5F53E26B00` | `.artifacts/p_blockade_clipmap_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-BRIDGE-LIVENESS-PROBE-20260819-799812E3E4` | `.artifacts/p_bridge_liveness_probe_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-CLIPMAP-AUDIT-20260819-0CC22B0448` | `.artifacts/p_clipmap_audit_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-CORE-SHELL-PROPOSITION-20260818-C3CC2E9F4F` | `.artifacts/p_core_shell_proposition_20260818` | `2026-08-18` | `active` |
+| `DOSSIER-P-CSPACE-BLOCKADE-COMPILER-20260818-F304516884` | `.artifacts/p_cspace_blockade_compiler_20260818` | `2026-08-18` | `active` |
+| `DOSSIER-P-DNF-BRANCH-SOUNDNESS-MINIMAL-CORE-20260819-99AFD08610` | `.artifacts/p_dnf_branch_soundness_minimal_core_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-DNF-COMPLETENESS-AUDIT-20260819-8A148379D6` | `.artifacts/p_dnf_completeness_audit_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-DNF-ENUMERATION-AUDIT-20260819-AC4209EBC5` | `.artifacts/p_dnf_enumeration_audit_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-DNF-REALIZABLE-AUDIT-20260819-9056A4CF0C` | `.artifacts/p_dnf_realizable_audit_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-DNF-REALIZABLE-COMPLETENESS-20260819-F79B0B2A8C` | `.artifacts/p_dnf_realizable_completeness_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-DNF-REALIZABLE-ENUMERATION-20260819-796C6E270A` | `.artifacts/p_dnf_realizable_enumeration_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-DNF-UNIVERSAL-AUDIT-20260819-B7FD9D9756` | `.artifacts/p_dnf_universal_audit_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-DNF-UNIVERSAL-COMPLETENESS-20260819-26F6F7EF75` | `.artifacts/p_dnf_universal_completeness_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-EMITTER-PROVENANCE-RECONCILIATION-20260818-8050D1C018` | `.artifacts/p_emitter_provenance_reconciliation_20260818` | `2026-08-18` | `active` |
+| `DOSSIER-P-GHOSTFRONT-FAMILY-JUDGMENT-20260818-2441DB4B52` | `.artifacts/p_ghostfront_family_judgment_20260818` | `2026-08-18` | `active` |
+| `DOSSIER-P-INTERIOR-3X3-AUDIT-20260819-AB3571C590` | `.artifacts/p_interior_3x3_audit_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-INTERIOR-3X3-BOUND-20260819-3503337709` | `.artifacts/p_interior_3x3_bound_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-INTERIOR-BLOCKADE-BOUND-20260819-7F5A5AA51B` | `.artifacts/p_interior_blockade_bound_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-INTERIOR-BOUND-AUDIT-20260819-54D94C5C37` | `.artifacts/p_interior_bound_audit_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-LBBD-30X39-MULTI-INCUMBENT-20260818-0C7F9B4622` | `.artifacts/p_lbbd_30x39_multi_incumbent_20260818` | `2026-08-18` | `active` |
+| `DOSSIER-P-LBBD-MINIMAL-CORE-TOOLKIT-20260818-8B00079DD2` | `.artifacts/p_lbbd_minimal_core_toolkit_20260818` | `2026-08-18` | `active` |
+| `DOSSIER-P-MIXED-ENDPOINT-CLOSED-FORM-20260818-2E5F56A8F8` | `.artifacts/p_mixed_endpoint_closed_form_20260818` | `2026-08-18` | `active` |
+| `DOSSIER-P-MUS-LANDSCAPE-20260820-CC6900A234` | `.artifacts/p_mus_landscape_20260820` | `2026-08-20` | `active` |
+| `DOSSIER-P-NARROW-CORE-READMISSION-20260819-CD8FDB7CD0` | `.artifacts/p_narrow_core_readmission_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-NOVELTY-L3-CONTRACT-HARDENING-20260818-304523520A` | `.artifacts/p_novelty_l3_contract_hardening_20260818` | `2026-08-18` | `active` |
+| `DOSSIER-P-NOVELTY-STAGNATION-WINDOWS-20260818-570D7BA230` | `.artifacts/p_novelty_stagnation_windows_20260818` | `2026-08-18` | `active` |
+| `DOSSIER-P-REINSERTION-AUDIT-20260820-8BB5417ED3` | `.artifacts/p_reinsertion_audit_20260820` | `2026-08-20` | `active` |
+| `DOSSIER-P-REINSERTION-GAP-20260819-2C69D7570F` | `.artifacts/p_reinsertion_gap_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-SIGNATURE-COOCCURRENCE-MATRIX-20260819-51366B1E18` | `.artifacts/p_signature_cooccurrence_matrix_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-TRUE-REPAIR-CHAIN-HARDENING-20260818-AF82028E42` | `.artifacts/p_true_repair_chain_hardening_20260818` | `2026-08-18` | `active` |
+| `DOSSIER-P-TRUE-REPAIR-CONFLICT-EXTRACTION-20260819-DAB640A917` | `.artifacts/p_true_repair_conflict_extraction_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-TRUE-REPLACEMENT-REPAIR-20260818-3044681953` | `.artifacts/p_true_replacement_repair_20260818` | `2026-08-18` | `active` |
+| `DOSSIER-P-ZEROPOLE-AUDIT-20260819-7D071A5EF4` | `.artifacts/p_zeropole_audit_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P-ZEROPOLE-DIAGNOSIS-20260819-442FFB6551` | `.artifacts/p_zeropole_diagnosis_20260819` | `2026-08-19` | `active` |
+| `DOSSIER-P0-FRONTIER-PROJECTION-20260817-1B1E6F4CB4` | `.artifacts/p0_frontier_projection_20260817` | `2026-08-17` | `active` |
+| `DOSSIER-P0-FRONTIER-RERUN-20260818-DDAC26E3F1` | `.artifacts/p0_frontier_rerun_20260818` | `2026-08-18` | `active` |
 | `DOSSIER-P1-RESTRICTED-WITNESS-CONSTRUCTION-20260817-39AB02A7C6` | `docs/research/p1_restricted_witness_construction_20260817` | `2026-08-17` | `active` |
 | `DOSSIER-P1-WITNESS-CONSTRUCTION-20260817-D06675346E` | `.artifacts/p1_witness_construction_20260817` | `2026-08-17` | `active` |
 | `DOSSIER-P1B-JOINT-POWER-REPAIR-20260817-8F6B7DFD94` | `.artifacts/p1b_joint_power_repair_20260817` | `2026-08-17` | `active` |
@@ -82,6 +123,8 @@
 | `DOSSIER-P4-BLOCKADE-FAMILY-ABSTRACTION-20260817-5B9F642CB4` | `.artifacts/p4_blockade_family_abstraction_20260817` | `2026-08-17` | `active` |
 | `DOSSIER-P5-HORIZONTAL-CANARY-20260817-44EADE5C7E` | `.artifacts/p5_horizontal_canary_20260817` | `2026-08-17` | `active` |
 | `DOSSIER-P5-HORIZONTAL-LOWERING-CANARY-20260817-3DBC7800A0` | `docs/research/p5_horizontal_lowering_canary_20260817` | `2026-08-17` | `active` |
+| `DOSSIER-POSTMEM-BLIND-COLLISION-20260818-4DB4F7129F` | `.artifacts/postmem_blind_collision_20260818` | `2026-08-18` | `active` |
+| `DOSSIER-POSTMEM-BLIND-SAMPLING-20260817-2127AF445D` | `.artifacts/postmem_blind_sampling_20260817` | `2026-08-17` | `active` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-20260815-7FA2A0E225` | `.artifacts/solver_reasoning_outer_loop_phase_minus1_20260815` | `2026-08-15` | `active` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-V2-20260815-96E16B17C8` | `.artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815` | `2026-08-15` | `active` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99` | `docs/research/solver_reasoning_outer_loop_reviews_20260815` | `2026-08-15` | `active` |

@@ -431,8 +431,8 @@ def test_maintenance_audit_regression_clock_covers_latest_active_dossier() -> No
 
     assert active_opened_dates
     latest_active_opened_at = max(active_opened_dates)
-    assert regression_as_of >= latest_active_opened_at, (
-        f"maintenance regression clock {regression_as_of} predates "
+    assert regression_as_of == latest_active_opened_at, (
+        f"maintenance regression clock {regression_as_of} does not equal "
         f"latest active dossier {latest_active_opened_at}"
     )
 

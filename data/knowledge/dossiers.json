@@ -1,6 +1,6 @@
 {
   "schema_version": "zmd_dossiers_v1",
-  "ledger_reviewed_at": "2026-08-18",
+  "ledger_reviewed_at": "2026-08-20",
   "records": [
     {
       "id": "DOSSIER-AB16-ARMS-20260802-DC229C4539",
@@ -295,6 +295,33 @@
       "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
     },
     {
+      "id": "DOSSIER-CANDIDATE-CONDITION-MATRIX-V1-20260818-780443B8C2",
+      "path": ".artifacts/candidate_condition_matrix_v1_20260818",
+      "entry_file": ".artifacts/candidate_condition_matrix_v1_20260818/REPORT.md",
+      "title": "常设候选×条件值矩阵 v1",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-18",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：PASS。验收状态：包内终态已封装；集中台账未给出可定位的独立异源终结节；出处：REVIEW_CHECKLIST.md 未显式记录。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-18",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/candidate_condition_matrix_v1_20260818/MANIFEST.json",
+        "manifest_sha256": "7fe98411d8e11541496d9de2f32379d72edd0ffbfba4d97eda617beb8dc5b33e",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md 未给出独立异源终结节"
+      }
+    },
+    {
       "id": "DOSSIER-CANONICAL-RESEAL-20260808-126986753E",
       "path": ".artifacts/canonical_reseal_20260808",
       "entry_file": null,
@@ -451,6 +478,32 @@
       "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
     },
     {
+      "id": "DOSSIER-CPU-L3-PERF-MEASUREMENT-20260820-212859A058",
+      "path": ".artifacts/cpu_l3_perf_measurement_20260820",
+      "entry_file": ".artifacts/cpu_l3_perf_measurement_20260820/REPORT.md",
+      "title": "CPU 大三缓选购 perf 实测批 — REPORT",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-20",
+      "topics": [
+        "solver-experiment"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：COMPLETE_RESEARCH_ONLY_NON_AUTHORIZING。验收状态：包内状态 COMPLETE_RESEARCH_ONLY_NON_AUTHORIZING；REVIEW_CHECKLIST 无对应异源验收节；出处：无对应 REVIEW_CHECKLIST 节。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-20",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/cpu_l3_perf_measurement_20260820/MANIFEST.json",
+        "manifest_sha256": "41aac2c56da79dc41724083763116c2945252ef66fde8fb29a8283c4a8f1b8a6",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": "无对应 REVIEW_CHECKLIST 节"
+      }
+    },
+    {
       "id": "DOSSIER-DOC-SWEEP-20260717-54167D9495",
       "path": ".artifacts/doc_sweep_20260717",
       "entry_file": null,
@@ -545,6 +598,33 @@
         "other"
       ],
       "summary": "---"
+    },
+    {
+      "id": "DOSSIER-GPT-HARVEST-20260818-85692BD024",
+      "path": ".artifacts/gpt_harvest_20260818",
+      "entry_file": ".artifacts/gpt_harvest_20260818/A1_FINAL_MESSAGE.md",
+      "title": "A1 真重排修复走廊补链批 —— GPT 终稿",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-18",
+      "topics": [
+        "documentation-governance",
+        "reasoning-system"
+      ],
+      "summary": "本地 research/support evidence inventory；包内终态判词/状态：NO_EXPLICIT_TERMINAL_VERDICT_RECORDED；验收状态：未见集中台账中的独立异源终结节。仅作为 active open workflow 进入 inventory，不进入 historical triage，也不构成 semantic review、结论采信或 authority 提升。",
+      "workflow": {
+        "opened_at": "2026-08-18",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md",
+        "manifest_sha256": "de1a2445bf3f1437e5396ed94bd0ea0feff751a24852c06a1707966c7e000215",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/A1_FINAL_MESSAGE.md"
+      }
     },
     {
       "id": "DOSSIER-GPT-PRO-REVIEW-BATCH-20260807-2DAE56A307",
@@ -739,6 +819,60 @@
       "summary": "状态：DONE。本席没有还能自己推进的工作项了。"
     },
     {
+      "id": "DOSSIER-NP-LITERATURE-RECON-20260817-C6D0998D78",
+      "path": ".artifacts/np_literature_recon_20260817",
+      "entry_file": ".artifacts/np_literature_recon_20260817/GPT_MATH_RECON.md",
+      "title": "数学文献侦察：六堵墙的同族成果与三条高价值外环模板",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-17",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "本地 research/support evidence inventory；包内终态判词/状态：NO_EXPLICIT_TERMINAL_VERDICT_RECORDED；验收状态：未见集中台账中的独立异源终结节。仅作为 active open workflow 进入 inventory，不进入 historical triage，也不构成 semantic review、结论采信或 authority 提升。",
+      "workflow": {
+        "opened_at": "2026-08-17",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/np_literature_recon_20260817/GPT_MATH_RECON.md",
+        "manifest_sha256": "668fbc35efd1fd5e24242bcc0d83104d39097c32ed4f146eb597c2086da3d564",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/np_literature_recon_20260817/GPT_MATH_RECON.md"
+      }
+    },
+    {
+      "id": "DOSSIER-NP-THEOREM-CORRESPONDENCE-20260817-6ADFE32DF1",
+      "path": ".artifacts/np_theorem_correspondence_20260817",
+      "entry_file": ".artifacts/np_theorem_correspondence_20260817/GPT_CORRESPONDENCE.md",
+      "title": "自产结构定理与数学文献对应关系",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-17",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "本地 research/support evidence inventory；包内终态判词/状态：NO_EXPLICIT_TERMINAL_VERDICT_RECORDED；验收状态：未见集中台账中的独立异源终结节。仅作为 active open workflow 进入 inventory，不进入 historical triage，也不构成 semantic review、结论采信或 authority 提升。",
+      "workflow": {
+        "opened_at": "2026-08-17",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/np_theorem_correspondence_20260817/GPT_CORRESPONDENCE.md",
+        "manifest_sha256": "a14fd39600c915ab7e6561e01bb0ee4dcd064aca96fc742e4dc1eaae82d73067",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/np_theorem_correspondence_20260817/GPT_CORRESPONDENCE.md"
+      }
+    },
+    {
       "id": "DOSSIER-OUTER-LOOP-RECON-20260817-A3301A1D74",
       "path": ".artifacts/outer_loop_recon_20260817",
       "entry_file": ".artifacts/outer_loop_recon_20260817/B_VERDICT_FULL_20260817.md",
@@ -763,6 +897,60 @@
         "manifest_sha256": "16a2c6b3db19cbce6747c7169c31e5743c69934613c9bee9df6e6212b80c7bdc",
         "recovery_instructions": "docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md",
         "source_locator": "owner-provided 2026-08-17 outer-loop reconciliation adjudication transcript; verify SHA-256 16a2c6b3db19cbce6747c7169c31e5743c69934613c9bee9df6e6212b80c7bdc"
+      }
+    },
+    {
+      "id": "DOSSIER-P0-FRONTIER-PROJECTION-20260817-1B1E6F4CB4",
+      "path": ".artifacts/p0_frontier_projection_20260817",
+      "entry_file": ".artifacts/p0_frontier_projection_20260817/REPORT.md",
+      "title": "P0：current claim 账本到 production 矩形前沿的保守投影",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-17",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：MANIFEST_SEALED_NO_TOP_LEVEL_STATUS。验收状态：包内终态已封装；集中台账未给出可定位的独立异源终结节；出处：REVIEW_CHECKLIST.md 未显式记录。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-17",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p0_frontier_projection_20260817/MANIFEST.json",
+        "manifest_sha256": "f8398be41beacac5a212778aadced9b292c1ae096a6e6b80e81fd6cab2d5c253",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md 未给出独立异源终结节"
+      }
+    },
+    {
+      "id": "DOSSIER-P0-FRONTIER-RERUN-20260818-DDAC26E3F1",
+      "path": ".artifacts/p0_frontier_rerun_20260818",
+      "entry_file": ".artifacts/p0_frontier_rerun_20260818/REPORT.md",
+      "title": "P0：current claim 账本到 production 矩形前沿的保守投影",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-18",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：MANIFEST_SEALED_NO_TOP_LEVEL_STATUS。验收状态：包内终态已封装；集中台账未给出可定位的独立异源终结节；出处：REVIEW_CHECKLIST.md 未显式记录。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-18",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p0_frontier_rerun_20260818/MANIFEST.json",
+        "manifest_sha256": "b9b852ea508db43ddc6b4f08d4612867c34c2c2f58e8150724019777c612ea48",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md 未给出独立异源终结节"
       }
     },
     {
@@ -922,6 +1110,935 @@
       }
     },
     {
+      "id": "DOSSIER-P-BLOCKADE-CLIPMAP-20260819-5F53E26B00",
+      "path": ".artifacts/p_blockade_clipmap_20260819",
+      "entry_file": ".artifacts/p_blockade_clipmap_20260819/REPORT.md",
+      "title": "BCLIPMAP：全网格 ghost-free 最小封锁数图",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：PASS_COMPLETE_GHOST_FREE_CLIPMAP_GHOST_OVERLAY_AND_CATALOG_RECONCILIATION。验收状态：异源验收总判词 NEEDS_CORRECTION；数值零分歧，声明层勘误；出处：REVIEW_CHECKLIST.md lines 544-571。 勘误后解释入口：.artifacts/ERRATA_p_blockade_clipmap_20260819_20260820.md；原判词/数字按勘误声明的效力边界保留。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_blockade_clipmap_20260819/MANIFEST.json",
+        "manifest_sha256": "296d1a6ade46446561513d1a5d874f71d0898c612eec9a8f9eed000fcfb4e821",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 544-571"
+      }
+    },
+    {
+      "id": "DOSSIER-P-BRIDGE-LIVENESS-PROBE-20260819-799812E3E4",
+      "path": ".artifacts/p_bridge_liveness_probe_20260819",
+      "entry_file": null,
+      "title": "p bridge liveness probe 20260819",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "other"
+      ],
+      "summary": "本地 research/support evidence inventory；包内终态判词/状态：NO_EXPLICIT_TERMINAL_VERDICT_RECORDED；验收状态：未见集中台账中的独立异源终结节。仅作为 active open workflow 进入 inventory，不进入 historical triage，也不构成 semantic review、结论采信或 authority 提升。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_bridge_liveness_probe_20260819/VERIFICATION_RECEIPT.json",
+        "manifest_sha256": "4289207e955c568495281659fbfbd9a688000eec39dac62280b03f93c7d1b493",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/p_bridge_liveness_probe_20260819/VERIFICATION_RECEIPT.json"
+      }
+    },
+    {
+      "id": "DOSSIER-P-CLIPMAP-AUDIT-20260819-0CC22B0448",
+      "path": ".artifacts/p_clipmap_audit_20260819",
+      "entry_file": ".artifacts/p_clipmap_audit_20260819/AUDIT_REPORT.md",
+      "title": "BCLIPMAP 异源验收报告",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "异源验收证据包；包内总判词/状态：NEEDS_CORRECTION；全部独立重算数值零分歧，修正限于声明层。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified 或 production authority。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_clipmap_audit_20260819/AUDIT_REPORT.md",
+        "manifest_sha256": "793e36d7f8e51bc7df1740545d1b61b3cd5daa4d613a76ad7c09b717a256082b",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/p_clipmap_audit_20260819/AUDIT_REPORT.md"
+      }
+    },
+    {
+      "id": "DOSSIER-P-CORE-SHELL-PROPOSITION-20260818-C3CC2E9F4F",
+      "path": ".artifacts/p_core_shell_proposition_20260818",
+      "entry_file": ".artifacts/p_core_shell_proposition_20260818/REPORT.md",
+      "title": "deep v2 事件固定核心 ⊕ 可变壳层命题",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-18",
+      "topics": [
+        "other"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：PASS。验收状态：异源勘误闭合；按包内 ERRATA 与边界声明图解释；出处：REVIEW_CHECKLIST.md lines 92-173。 勘误后解释入口：.artifacts/p_core_shell_proposition_20260818/ERRATA_20260819.md；原判词/数字按勘误声明的效力边界保留。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-18",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_core_shell_proposition_20260818/MANIFEST.json",
+        "manifest_sha256": "6ded2ffbbb14dd13b03bc423b2bec34df1b05a2c12e2aaab3b2bdc7514153dad",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 92-173"
+      }
+    },
+    {
+      "id": "DOSSIER-P-CSPACE-BLOCKADE-COMPILER-20260818-F304516884",
+      "path": ".artifacts/p_cspace_blockade_compiler_20260818",
+      "entry_file": ".artifacts/p_cspace_blockade_compiler_20260818/REPORT.md",
+      "title": "构型空间供电封锁编译器试点三",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-18",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：PASS_REUSABLE_CSPACE_BLOCKADE_COMPILER_RESEARCH_ONLY。验收状态：包内终态已封装；集中台账未给出可定位的独立异源终结节；出处：REVIEW_CHECKLIST.md 未显式记录。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-18",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_cspace_blockade_compiler_20260818/MANIFEST.json",
+        "manifest_sha256": "8d4024997c912fd45bfb90bc4aa96eced13844e43ca134ea8f487223f42a2f0a",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md 未给出独立异源终结节"
+      }
+    },
+    {
+      "id": "DOSSIER-P-DNF-BRANCH-SOUNDNESS-MINIMAL-CORE-20260819-99AFD08610",
+      "path": ".artifacts/p_dnf_branch_soundness_minimal_core_20260819",
+      "entry_file": ".artifacts/p_dnf_branch_soundness_minimal_core_20260819/REPORT.md",
+      "title": "九支 DNF：分支级普适 soundness 与端点原子最小核",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：PASS_ALL_NINE_UNIVERSALLY_SOUND_FULL_DROP_ONE_COMPLETE。验收状态：异源验收确认核心结论，声明层按勘误收窄；出处：REVIEW_CHECKLIST.md lines 270-286。 勘误后解释入口：.artifacts/ERRATA_p_dnf_branch_soundness_minimal_core_20260819_20260820.md；原判词/数字按勘误声明的效力边界保留。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_dnf_branch_soundness_minimal_core_20260819/MANIFEST.json",
+        "manifest_sha256": "0077a995abaa6408dbe2d1de3d6adbbd00815c6eb1f552703e768726edb691d4",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 270-286"
+      }
+    },
+    {
+      "id": "DOSSIER-P-DNF-COMPLETENESS-AUDIT-20260819-8A148379D6",
+      "path": ".artifacts/p_dnf_completeness_audit_20260819",
+      "entry_file": ".artifacts/p_dnf_completeness_audit_20260819/AUDIT.md",
+      "title": "异源验收：BDNF 普适 completeness 证据包审计",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "异源验收证据包；包内总判词/状态：三条头条结论在各自声明域内均正确；证据选择与若干解释项 NEEDS_CORRECTION。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified 或 production authority。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_dnf_completeness_audit_20260819/AUDIT.md",
+        "manifest_sha256": "b81909b538da5481d439922bba37eebdb88d8f54f16db097894705fc1a88f445",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/p_dnf_completeness_audit_20260819/AUDIT.md"
+      }
+    },
+    {
+      "id": "DOSSIER-P-DNF-ENUMERATION-AUDIT-20260819-AC4209EBC5",
+      "path": ".artifacts/p_dnf_enumeration_audit_20260819",
+      "entry_file": ".artifacts/p_dnf_enumeration_audit_20260819/AUDIT.md",
+      "title": "异源验收：BDNFENUMERATE 可实现封锁构型完整枚举包审计",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "异源验收证据包；包内总判词/状态：CONFIRMED（全部数值）+ NEEDS_CORRECTION（作用域叙述）。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified 或 production authority。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_dnf_enumeration_audit_20260819/AUDIT.md",
+        "manifest_sha256": "d224cd3a7f9fa258a91d1e0683ee331cf87f63b7c3cfc081468e72d947a54ccf",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/p_dnf_enumeration_audit_20260819/AUDIT.md"
+      }
+    },
+    {
+      "id": "DOSSIER-P-DNF-REALIZABLE-AUDIT-20260819-9056A4CF0C",
+      "path": ".artifacts/p_dnf_realizable_audit_20260819",
+      "entry_file": ".artifacts/p_dnf_realizable_audit_20260819/AUDIT.md",
+      "title": "异源验收：BDNFREALIZABLE 可实现 completeness 证据包审计",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "异源验收证据包；包内总判词/状态：CONFIRMED（科学结论）+ NEEDS_CORRECTION（作用域叙述与独立性分层）。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified 或 production authority。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_dnf_realizable_audit_20260819/AUDIT.md",
+        "manifest_sha256": "63738fdc1b202f61e699547589faa90daf761a3bc2ee45ae544cd20f47029fa1",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/p_dnf_realizable_audit_20260819/AUDIT.md"
+      }
+    },
+    {
+      "id": "DOSSIER-P-DNF-REALIZABLE-COMPLETENESS-20260819-F79B0B2A8C",
+      "path": ".artifacts/p_dnf_realizable_completeness_20260819",
+      "entry_file": ".artifacts/p_dnf_realizable_completeness_20260819/REPORT.md",
+      "title": "BDNFREALIZABLE：可实现几何上的 completeness 与冻结模板代表性",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：REFUTED_REALIZABLE_COMPLETENESS_BOTH_ARITIES_EXACT_GEOMETRY_COUNTEREXAMPLES。验收状态：异源验收确认科学结论，作用域叙述与独立性需更正；出处：REVIEW_CHECKLIST.md lines 339-369。 勘误后解释入口：.artifacts/ERRATA_p_dnf_realizable_completeness_20260819_20260820.md；原判词/数字按勘误声明的效力边界保留。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_dnf_realizable_completeness_20260819/MANIFEST.json",
+        "manifest_sha256": "9a467a868db33f48b836ed7601b4400fdb2ed04820e31f2a75fb74664c676743",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 339-369"
+      }
+    },
+    {
+      "id": "DOSSIER-P-DNF-REALIZABLE-ENUMERATION-20260819-796C6E270A",
+      "path": ".artifacts/p_dnf_realizable_enumeration_20260819",
+      "entry_file": ".artifacts/p_dnf_realizable_enumeration_20260819/REPORT.md",
+      "title": "BDNFENUMERATE：可实现供电封锁构型的完整枚举",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：COMPLETE_BOTH_ARITIES_EXACT_REALIZABLE_BLOCKADE_CATALOG。验收状态：异源验收确认作用域内枚举，shape scope 与共模边界需勘误；出处：REVIEW_CHECKLIST.md lines 379-407。 勘误后解释入口：.artifacts/ERRATA_p_dnf_realizable_enumeration_20260819_20260820.md；原判词/数字按勘误声明的效力边界保留。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_dnf_realizable_enumeration_20260819/MANIFEST.json",
+        "manifest_sha256": "ee04e4ae9f433ad277ea3d7dd1a768ad209f246ba57197894076fdaa5452cbaf",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 379-407"
+      }
+    },
+    {
+      "id": "DOSSIER-P-DNF-UNIVERSAL-AUDIT-20260819-B7FD9D9756",
+      "path": ".artifacts/p_dnf_universal_audit_20260819",
+      "entry_file": ".artifacts/p_dnf_universal_audit_20260819/AUDIT.md",
+      "title": "异源验收：BDNF 普适 soundness 证据包审计",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "异源验收证据包；包内总判词/状态：两条头条结论均确认；另有三条叙述/工程卫生修正。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified 或 production authority。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_dnf_universal_audit_20260819/AUDIT.md",
+        "manifest_sha256": "304142bf18e0919a0165809bbd957d4afc6d8fa040f31abb9d5302eeda1b1773",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/p_dnf_universal_audit_20260819/AUDIT.md"
+      }
+    },
+    {
+      "id": "DOSSIER-P-DNF-UNIVERSAL-COMPLETENESS-20260819-26F6F7EF75",
+      "path": ".artifacts/p_dnf_universal_completeness_20260819",
+      "entry_file": ".artifacts/p_dnf_universal_completeness_20260819/REPORT.md",
+      "title": "BDNFCOMPLETE：九支 DNF 的普适 completeness 与冻结模板库隐式不变量",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：REFUTED_UNIVERSAL_COMPLETENESS_BOTH_ARITIES_FINITE_PARTITION_AND_LIBRARY_INVARIANTS_PROVED。验收状态：异源验收完成；反例与数值存活，作用域/证据归属需勘误；出处：REVIEW_CHECKLIST.md lines 307-327。 勘误后解释入口：.artifacts/ERRATA_p_dnf_universal_completeness_20260819_20260820.md；原判词/数字按勘误声明的效力边界保留。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_dnf_universal_completeness_20260819/MANIFEST.json",
+        "manifest_sha256": "3e465d634a3fd62761cf782b064b70d9cee6db4653c9c38873d40f6efee95436",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 307-327"
+      }
+    },
+    {
+      "id": "DOSSIER-P-EMITTER-PROVENANCE-RECONCILIATION-20260818-8050D1C018",
+      "path": ".artifacts/p_emitter_provenance_reconciliation_20260818",
+      "entry_file": null,
+      "title": "p emitter provenance reconciliation 20260818",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-18",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：MANIFEST_SEALED_NO_TOP_LEVEL_STATUS。验收状态：包内终态已封装；集中台账未给出可定位的独立异源终结节；出处：REVIEW_CHECKLIST.md 未显式记录。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-18",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_emitter_provenance_reconciliation_20260818/MANIFEST.json",
+        "manifest_sha256": "792c29796cc92416435e99b713e2610eedf3e98998d7cb719167fa51d328769d",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md 未给出独立异源终结节"
+      }
+    },
+    {
+      "id": "DOSSIER-P-GHOSTFRONT-FAMILY-JUDGMENT-20260818-2441DB4B52",
+      "path": ".artifacts/p_ghostfront_family_judgment_20260818",
+      "entry_file": ".artifacts/p_ghostfront_family_judgment_20260818/REPORT.md",
+      "title": "幽灵矩形前格封锁的四原子家族化 Judgment",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-18",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：PASS_FOUR_ATOM_PARAMETERIZED_FAMILY_JUDGMENT_RESEARCH_ONLY。验收状态：收割终稿已封账；REVIEW_CHECKLIST 的追溯终检项仍未显式勾销；出处：REVIEW_CHECKLIST.md lines 5-27; TASK2_FINAL_MESSAGE.md。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-18",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_ghostfront_family_judgment_20260818/MANIFEST.json",
+        "manifest_sha256": "646542f095061d41375ad3ed2ea8f5fe6af9a68e8558f9b525acc1ce22232565",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 5-27; TASK2_FINAL_MESSAGE.md"
+      }
+    },
+    {
+      "id": "DOSSIER-P-INTERIOR-3X3-AUDIT-20260819-AB3571C590",
+      "path": ".artifacts/p_interior_3x3_audit_20260819",
+      "entry_file": ".artifacts/p_interior_3x3_audit_20260819/AUDIT.md",
+      "title": "异源验收：.artifacts/pinterior3x3bound20260819",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "other"
+      ],
+      "summary": "异源验收证据包；包内总判词/状态：NEEDS_CORRECTION；全部数值结论 CONFIRMED。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified 或 production authority。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_interior_3x3_audit_20260819/AUDIT.md",
+        "manifest_sha256": "26ab2a95e90f656372061594da1a0f826778452b824efb80c4e8734a0990f7c0",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/p_interior_3x3_audit_20260819/AUDIT.md"
+      }
+    },
+    {
+      "id": "DOSSIER-P-INTERIOR-3X3-BOUND-20260819-3503337709",
+      "path": ".artifacts/p_interior_3x3_bound_20260819",
+      "entry_file": ".artifacts/p_interior_3x3_bound_20260819/REPORT.md",
+      "title": "B3X3：内部 3×3 需电目标的精确封锁下界与 pole 统一语义",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "other"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：PASS_EXACT_MINIMUM_SIX_AND_POLE_ACCOUNTING_RESOLVED。验收状态：异源验收总判词 NEEDS_CORRECTION；数值由独立第三模型复现；出处：REVIEW_CHECKLIST.md lines 453-493。 勘误后解释入口：.artifacts/ERRATA_p_interior_3x3_bound_20260819_20260820.md；原判词/数字按勘误声明的效力边界保留。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_interior_3x3_bound_20260819/MANIFEST.json",
+        "manifest_sha256": "7c1bd963f53fde46949917e260d3138a9440bf45b9b53fd04e1206f8217e21ce",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 453-493"
+      }
+    },
+    {
+      "id": "DOSSIER-P-INTERIOR-BLOCKADE-BOUND-20260819-7F5A5AA51B",
+      "path": ".artifacts/p_interior_blockade_bound_20260819",
+      "entry_file": ".artifacts/p_interior_blockade_bound_20260819/REPORT.md",
+      "title": "BINTERIOR：内部供电锚点封锁的完整容量定理与实例观测",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：PASS_EXACT_MINIMUM_SEVEN_AND_CORPUS_OBSERVED。验收状态：异源验收确认数值，语料解释、作用域和前提需勘误；出处：REVIEW_CHECKLIST.md lines 411-449。 勘误后解释入口：.artifacts/ERRATA_p_interior_blockade_bound_20260819_20260820.md；原判词/数字按勘误声明的效力边界保留。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_interior_blockade_bound_20260819/MANIFEST.json",
+        "manifest_sha256": "afdff3c84c951cf409cf4f6356275320c3bd36573321ec4821f63115ad93cecf",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 411-449"
+      }
+    },
+    {
+      "id": "DOSSIER-P-INTERIOR-BOUND-AUDIT-20260819-54D94C5C37",
+      "path": ".artifacts/p_interior_bound_audit_20260819",
+      "entry_file": ".artifacts/p_interior_bound_audit_20260819/AUDIT.md",
+      "title": "异源验收：BINTERIOR 内部封锁精确下界包审计",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "other"
+      ],
+      "summary": "异源验收证据包；包内总判词/状态：CONFIRMED（定理本体）+ NEEDS_CORRECTION（语料观测与 3×3 护栏）。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified 或 production authority。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_interior_bound_audit_20260819/AUDIT.md",
+        "manifest_sha256": "58cbbfbf15657a2df4b258d66e709d7a9422b9d22792ef59a7e18aa814dafc37",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/p_interior_bound_audit_20260819/AUDIT.md"
+      }
+    },
+    {
+      "id": "DOSSIER-P-LBBD-30X39-MULTI-INCUMBENT-20260818-0C7F9B4622",
+      "path": ".artifacts/p_lbbd_30x39_multi_incumbent_20260818",
+      "entry_file": ".artifacts/p_lbbd_30x39_multi_incumbent_20260818/REPORT.md",
+      "title": "30×39 多 incumbent 三层死因谱稳定性研究",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-18",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：PASS_WITH_TYPED_GEOMETRY_CENSORING。验收状态：包内终态已封装；集中台账未给出可定位的独立异源终结节；出处：REVIEW_CHECKLIST.md 未显式记录。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-18",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_lbbd_30x39_multi_incumbent_20260818/MANIFEST.json",
+        "manifest_sha256": "7b27a2dc4dddb75938645fe2d8c140e0e025e1561ad89f3389f7259d2238a380",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md 未给出独立异源终结节"
+      }
+    },
+    {
+      "id": "DOSSIER-P-LBBD-MINIMAL-CORE-TOOLKIT-20260818-8B00079DD2",
+      "path": ".artifacts/p_lbbd_minimal_core_toolkit_20260818",
+      "entry_file": ".artifacts/p_lbbd_minimal_core_toolkit_20260818/REPORT.md",
+      "title": "LBBD Layered Minimization Toolkit",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-18",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：COMPLETE。验收状态：包内终态已封装；集中台账未给出可定位的独立异源终结节；出处：REVIEW_CHECKLIST.md 未显式记录。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-18",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_lbbd_minimal_core_toolkit_20260818/MANIFEST.json",
+        "manifest_sha256": "9d3f6439a4e1dfb124559d4edc64678189cdf3990727cb5e0e4eb52bc0fbfb48",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md 未给出独立异源终结节"
+      }
+    },
+    {
+      "id": "DOSSIER-P-MIXED-ENDPOINT-CLOSED-FORM-20260818-2E5F56A8F8",
+      "path": ".artifacts/p_mixed_endpoint_closed_form_20260818",
+      "entry_file": ".artifacts/p_mixed_endpoint_closed_form_20260818/REPORT.md",
+      "title": "Mixed family 端点不等式显式闭式",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-18",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：PASS_NINE_BRANCH_CLOSED_FORM_AND_EXTENSION_PROBE_COMPLETE。验收状态：收割终稿已封账；REVIEW_CHECKLIST 未给出独立异源终结节；出处：REVIEW_CHECKLIST.md lines 5-27; TASK4_FINAL_MESSAGE.md。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-18",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_mixed_endpoint_closed_form_20260818/MANIFEST.json",
+        "manifest_sha256": "cb0c306f57f05eed0d0e2766645d8dbd7561cf983b4ed33a272c52a0573bea70",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 5-27; TASK4_FINAL_MESSAGE.md"
+      }
+    },
+    {
+      "id": "DOSSIER-P-MUS-LANDSCAPE-20260820-CC6900A234",
+      "path": ".artifacts/p_mus_landscape_20260820",
+      "entry_file": null,
+      "title": "p mus landscape 20260820",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-20",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "本地 research/support evidence inventory；包内终态判词/状态：NO_EXPLICIT_TERMINAL_VERDICT_RECORDED；验收状态：在途、未封账。仅作为 active open workflow 进入 inventory，不进入 historical triage，也不构成 semantic review、结论采信或 authority 提升。",
+      "workflow": {
+        "opened_at": "2026-08-20",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_mus_landscape_20260820/PROTOCOL.json",
+        "manifest_sha256": "3b6a79a31944c609d398fe4e08342a6991df7f6b50743709f10da5a9b7a166a6",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/p_mus_landscape_20260820/PROTOCOL.json"
+      }
+    },
+    {
+      "id": "DOSSIER-P-NARROW-CORE-READMISSION-20260819-CD8FDB7CD0",
+      "path": ".artifacts/p_narrow_core_readmission_20260819",
+      "entry_file": ".artifacts/p_narrow_core_readmission_20260819/REPORT.md",
+      "title": "窄核重准入与几何证书对账",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "other"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：COMPLETE_RESEARCH_ONLY（最终判词见 REPORT.md §1）。验收状态：REVIEW_CHECKLIST 仍列待终检项，未见独立异源终结节；出处：REVIEW_CHECKLIST.md lines 257-297。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_narrow_core_readmission_20260819/MANIFEST.json",
+        "manifest_sha256": "f469a76536666ac0c98fc16cc40582a2cfe36fc68ed0f7c2d74497f929a6f734",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 257-297"
+      }
+    },
+    {
+      "id": "DOSSIER-P-NOVELTY-L3-CONTRACT-HARDENING-20260818-304523520A",
+      "path": ".artifacts/p_novelty_l3_contract_hardening_20260818",
+      "entry_file": ".artifacts/p_novelty_l3_contract_hardening_20260818/REPORT.md",
+      "title": "L3 触发器证据契约补强",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-18",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：COMPLETE。验收状态：包内终态已封装；集中台账未给出可定位的独立异源终结节；出处：REVIEW_CHECKLIST.md 未显式记录。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-18",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_novelty_l3_contract_hardening_20260818/MANIFEST.json",
+        "manifest_sha256": "3244d546b2d40d9765b8ff7b5867e20e60ab1733867fe7a805b2b5faa8eb2e21",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md 未给出独立异源终结节"
+      }
+    },
+    {
+      "id": "DOSSIER-P-NOVELTY-STAGNATION-WINDOWS-20260818-570D7BA230",
+      "path": ".artifacts/p_novelty_stagnation_windows_20260818",
+      "entry_file": ".artifacts/p_novelty_stagnation_windows_20260818/REPORT.md",
+      "title": "死因谱新颖性停滞点与可压缩性梯度",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-18",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：PASS_OFFLINE_NOVELTY_STAGNATION_AND_COMPRESSIBILITY_GRADIENT_COMPLETE。验收状态：收割终稿已封账；REVIEW_CHECKLIST 的追溯终检项仍未显式勾销；出处：REVIEW_CHECKLIST.md lines 5-27; TASK1_FINAL_MESSAGE.md。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-18",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_novelty_stagnation_windows_20260818/MANIFEST.json",
+        "manifest_sha256": "7b8cafb3d271d760a344690ea25f995ce4eae2e75cb99c9898eb39cc1b65c9da",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 5-27; TASK1_FINAL_MESSAGE.md"
+      }
+    },
+    {
+      "id": "DOSSIER-P-REINSERTION-AUDIT-20260820-8BB5417ED3",
+      "path": ".artifacts/p_reinsertion_audit_20260820",
+      "entry_file": ".artifacts/p_reinsertion_audit_20260820/AUDIT_REPORT.md",
+      "title": "PREINSERTIONGAP 异源验收报告",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-20",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "异源验收证据包；包内总判词/状态：PASS_WITH_SCOPED_ERRATA_LOCALIZATION_UNDER_DETERMINED。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified 或 production authority。",
+      "workflow": {
+        "opened_at": "2026-08-20",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_reinsertion_audit_20260820/AUDIT_VERDICT.json",
+        "manifest_sha256": "896748eeba1dd3c0e3c275832f95b2bd64069cb2224e78e88fd4b710cf4fdf2b",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/p_reinsertion_audit_20260820/AUDIT_REPORT.md"
+      }
+    },
+    {
+      "id": "DOSSIER-P-REINSERTION-GAP-20260819-2C69D7570F",
+      "path": ".artifacts/p_reinsertion_gap_20260819",
+      "entry_file": ".artifacts/p_reinsertion_gap_20260819/REPORT.md",
+      "title": "AREINSERTIONGAP：13-event 走廊的重插入缺口机制",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：PASS_JOINT_COUPLING_TWO_ATOM_SELF_POWER_MUS。验收状态：异源验收 PASS_WITH_SCOPED_ERRATA_LOCALIZATION_UNDER_DETERMINED；出处：REVIEW_CHECKLIST.md lines 697-739。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_reinsertion_gap_20260819/MANIFEST.json",
+        "manifest_sha256": "8830f906bf4a71c5b57c22f032d2a649fde04f4b4a6c636ad08061b2aab1cafb",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 697-739"
+      }
+    },
+    {
+      "id": "DOSSIER-P-SIGNATURE-COOCCURRENCE-MATRIX-20260819-51366B1E18",
+      "path": ".artifacts/p_signature_cooccurrence_matrix_20260819",
+      "entry_file": ".artifacts/p_signature_cooccurrence_matrix_20260819/REPORT.md",
+      "title": "签名层逐事件成员集与共现矩阵",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：PASS。验收状态：包内 checker/负测封账；REVIEW_CHECKLIST 未给出后续独立异源终结节；出处：REVIEW_CHECKLIST.md lines 155-173。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_signature_cooccurrence_matrix_20260819/MANIFEST.json",
+        "manifest_sha256": "8c540b70197db1b4a6d7d29cff21f9b26109fa7c33a7c8e8a0f9ac42deb94d4a",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 155-173"
+      }
+    },
+    {
+      "id": "DOSSIER-P-TRUE-REPAIR-CHAIN-HARDENING-20260818-AF82028E42",
+      "path": ".artifacts/p_true_repair_chain_hardening_20260818",
+      "entry_file": ".artifacts/p_true_repair_chain_hardening_20260818/REPORT.md",
+      "title": "真重排修复走廊证据链补链批",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-18",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：PASS_TRUE_REPAIR_EVIDENCE_CHAIN_HARDENED。验收状态：异源验收完成；科学区间存活，能力抬头与独立性需收窄；出处：REVIEW_CHECKLIST.md lines 48-90。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-18",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_true_repair_chain_hardening_20260818/MANIFEST.json",
+        "manifest_sha256": "7a066c0870e54e76623ded46a5f97a3c4583f30e096bef8d0484bbe99fcdce7d",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 48-90"
+      }
+    },
+    {
+      "id": "DOSSIER-P-TRUE-REPAIR-CONFLICT-EXTRACTION-20260819-DAB640A917",
+      "path": ".artifacts/p_true_repair_conflict_extraction_20260819",
+      "entry_file": ".artifacts/p_true_repair_conflict_extraction_20260819/REPORT.md",
+      "title": "A3：真重排无条件 conflict 提炼环",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：REPORT_FINALIZED_NO_SEPARATE_TERMINAL_RECEIPT。验收状态：异源验收完成；科学结论成立，但招牌负面归因被包内库存推翻；出处：REVIEW_CHECKLIST.md lines 233-255。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_true_repair_conflict_extraction_20260819/MANIFEST.json",
+        "manifest_sha256": "0dac118179c16df20fcf26070246eb97f51d8d4db6a5552464f75be482befe5d",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 233-255"
+      }
+    },
+    {
+      "id": "DOSSIER-P-TRUE-REPLACEMENT-REPAIR-20260818-3044681953",
+      "path": ".artifacts/p_true_replacement_repair_20260818",
+      "entry_file": ".artifacts/p_true_replacement_repair_20260818/REPORT.md",
+      "title": "真重排语义下的供电修复走廊",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-18",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：PASS_TRUE_REPLACEMENT_INTERVALS_OPEN_WITH_TYPED_CENSORING。验收状态：异源结构与语义审计已完成，结论带六项链条缺口；出处：REVIEW_CHECKLIST.md lines 18-24。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-18",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_true_replacement_repair_20260818/MANIFEST.json",
+        "manifest_sha256": "3ca525c3ed72a86eb3b69a610945f89e707e224b9e66e486ed14f7770c314e91",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 18-24"
+      }
+    },
+    {
+      "id": "DOSSIER-P-ZEROPOLE-AUDIT-20260819-7D071A5EF4",
+      "path": ".artifacts/p_zeropole_audit_20260819",
+      "entry_file": ".artifacts/p_zeropole_audit_20260819/AUDIT_REPORT.md",
+      "title": "PZEROPOLE 异源验收报告",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "异源验收证据包；包内总判词/状态：CONFIRMED_WITH_CORRECTIONS。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified 或 production authority。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_zeropole_audit_20260819/SHA256SUMS.txt",
+        "manifest_sha256": "45a8b360c105d8cde62c8a008b53a570eadb802592b58345544caa8ff7c19232",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/p_zeropole_audit_20260819/AUDIT_REPORT.md"
+      }
+    },
+    {
+      "id": "DOSSIER-P-ZEROPOLE-DIAGNOSIS-20260819-442FFB6551",
+      "path": ".artifacts/p_zeropole_diagnosis_20260819",
+      "entry_file": ".artifacts/p_zeropole_diagnosis_20260819/REPORT.md",
+      "title": "GZEROPOLEDIAGNOSIS：30×39 重建布局的零 coverer target 归因",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-19",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：PASS_ZERO_COVERER_CAUSE_DISTRIBUTION_GEOMETRY_DOMINANT_NO_SELECTION_OPEN。验收状态：异源验收 CONFIRMED_WITH_CORRECTIONS；承重数字零偏差；出处：REVIEW_CHECKLIST.md lines 612-664。 勘误后解释入口：.artifacts/ERRATA_p_zeropole_diagnosis_20260819_20260820.md；原判词/数字按勘误声明的效力边界保留。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-19",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_zeropole_diagnosis_20260819/MANIFEST.json",
+        "manifest_sha256": "c232355dc39cb986779bc082087e19d26ff671d6de202a50dd0dd0de53f4dda6",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md lines 612-664"
+      }
+    },
+    {
       "id": "DOSSIER-PHASE3B-ACCEL-TUNING-64039CA2F2",
       "path": ".artifacts/phase3b_accel_tuning",
       "entry_file": null,
@@ -952,6 +2069,60 @@
         "other"
       ],
       "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-POSTMEM-BLIND-COLLISION-20260818-4DB4F7129F",
+      "path": ".artifacts/postmem_blind_collision_20260818",
+      "entry_file": ".artifacts/postmem_blind_collision_20260818/COLLISION_REPORT.md",
+      "title": "postmem 盲测 B 段对撞裁断",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-18",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "Inventory-only 登记。包内终态判词/状态：ARTIFACT 7 / NEW 2 / REDISCOVERED 1 / CONTRADICTS 1。验收状态：包内终态已封装；集中台账未给出可定位的独立异源终结节；出处：REVIEW_CHECKLIST.md 未显式记录。 勘误后解释入口：.artifacts/postmem_blind_collision_20260818/ERRATA_20260818.md；原判词/数字按勘误声明的效力边界保留。 本登记不是 knowledge semantic review，不新增或升格 claim。",
+      "workflow": {
+        "opened_at": "2026-08-18",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/postmem_blind_collision_20260818/COLLISION_REPORT.md",
+        "manifest_sha256": "55c74ed3b1a35f5fe33dee03573ecb2c04ba5e7eebe5c9684c9eed2903045c6e",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md 未给出独立异源终结节"
+      }
+    },
+    {
+      "id": "DOSSIER-POSTMEM-BLIND-SAMPLING-20260817-2127AF445D",
+      "path": ".artifacts/postmem_blind_sampling_20260817",
+      "entry_file": null,
+      "title": "postmem blind sampling 20260817",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-17",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture"
+      ],
+      "summary": "本地 research/support evidence inventory；包内终态判词/状态：NO_EXPLICIT_TERMINAL_VERDICT_RECORDED；验收状态：未见集中台账中的独立异源终结节。仅作为 active open workflow 进入 inventory，不进入 historical triage，也不构成 semantic review、结论采信或 authority 提升。",
+      "workflow": {
+        "opened_at": "2026-08-17",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/postmem_blind_sampling_20260817/SEALED_SELECTOR_RECEIPT.json",
+        "manifest_sha256": "53b3f4619113af428b54dfa251f1b413ea5d95a17c94b5215d88c40c79adb41a",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/postmem_blind_sampling_20260817/SEALED_SELECTOR_RECEIPT.json"
+      }
     },
     {
       "id": "DOSSIER-PROOF-SCOUT-20260718-7C6AD03F03",

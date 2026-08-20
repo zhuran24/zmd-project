@@ -406,7 +406,7 @@ def test_artifact_boundary_separates_git_workspace_and_external_evidence() -> No
     assert len(boundary.tracked_root_files) == 7
     assert len(boundary.tracked_prefixes) == 9
     assert len(boundary.tracked_files) == 1
-    assert len(boundary.workspace_root_files) == 24
+    assert boundary.workspace_root_files == tuple(workspace["root_files"])
     assert boundary.external_registry == "data/external_artifacts.json"
     assert boundary.expected_tracked_path_count == 117
     assert len(supplier_tracked) >= boundary.expected_tracked_path_count

@@ -1,7 +1,7 @@
 # 推理结论与知识回填账本
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:7bf89736c622c09a4565b0d174979dab781d8adc0f6cbc9bf214a5446e398972`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:deb13488720d91ebb586d677fdce2123cf1a52db5580fcd7fd39b4163bd19ad7`。
 
 本页把推理条件、操作效果、数学推导、选择/验证/消费机制与通用传播证据分开；历史结论为何失效、怎样换代和何时可复用则单列到 VALIDITY_LEDGER。
 `reasoning_profile` 描述操作效果，`derivation_profile` 描述证明角色、数学族和验证方式，`separation_profile` 描述候选来源、选择、验证、完备性和消费落点，`validity_profile` 描述反例、语义更正、实现失效、归因修正与重验；真正的关系图由 claim 的 `dependencies` 与 `supersedes` 连接。分类字段不会把 research-only 结论提升为规则、owner 决定或 production authority。
@@ -20,7 +20,7 @@
 
 - current backfill review：`44` 个 dossier。
 - tracked current-evidence dossier：`11/11` 已有 current review。
-- 全 dossier inventory：`44/226` 已有 current review。此分母只表示目录规模，不表示未审包都含有可复用 claim。
+- 全 dossier inventory：`44/269` 已有 current review。此分母只表示目录规模，不表示未审包都含有可复用 claim。
 - 当前优先覆盖承重 current-evidence、高价值数学推导链、选择/分离机制，以及历史反例、语义更正、实现失效和重验边界；术语归一与长尾材料仍待后续批次。
 
 ## 操作分类分布
