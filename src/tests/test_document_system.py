@@ -419,6 +419,8 @@ def test_maintenance_audit_regression_clock_covers_latest_active_dossier() -> No
     regression_as_of = helper_text.split(marker, 1)[1].split('"', 1)[0]
 
     dossier_payload = json.loads((PROJECT_ROOT / "data/knowledge/dossiers.json").read_text(encoding="utf-8"))
+    ledger_reviewed_at = str(dossier_payload["ledger_reviewed_at"])
+    assert regression_as_of == ledger_reviewed_at
     active_opened_dates: list[str] = []
     for record in dossier_payload["records"]:
         if record.get("lifecycle") != "active":

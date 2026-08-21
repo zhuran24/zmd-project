@@ -55,7 +55,7 @@
   },
   "test_timing_receipt": {
     "schema_version": "zmd_document_test_timing_receipt_v1",
-    "measured_at": "2026-08-20",
+    "measured_at": "2026-08-21",
     "threshold_call_seconds": 8.0,
     "execution_mode": "serial_no_concurrent_pytest",
     "python_requirement": ">=3.13",
@@ -77,7 +77,7 @@
     "measured_inputs": [
       {
         "path": "src/tests/test_document_system.py",
-        "sha256": "71f5f8a91787fa4649f2b77457a2024c2fff25b144c8f0e60191d6d62cf3aa6a"
+        "sha256": "28e91301fa9d694cba9a62836a583be3ba738708df792bffaeb52d98d4e18b5e"
       },
       {
         "path": "src/tests/test_knowledge_docs.py",
@@ -91,11 +91,11 @@
     "collected_tests": 89,
     "maximum_call": {
       "nodeid": "src/tests/test_document_system.py::test_real_repository_document_system_is_self_consistent",
-      "seconds": 3.25
+      "seconds": 3.29
     },
     "nodes_at_or_above_threshold": [],
     "slow_registry_action": "no_new_entries_required",
-    "raw_output_sha256": "0775466c4b098859db63fb2e89e26b229b6a349d2e9a5f84b844f09ffbfbcf0b"
+    "raw_output_sha256": "851ba3ad2dd5a3c8e2febd7c644acc3ba24f3583991fdb570ccaf0070c670462"
   },
   "intake_protocol": {
     "source": "data/repository_governance/document_system/intake.json",
