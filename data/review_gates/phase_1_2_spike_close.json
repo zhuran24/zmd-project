@@ -3,8 +3,8 @@
   "gate_id": "phase_1_2_spike_close",
   "phase": "Phase 1.2 spike close",
   "status": "closed_manual_owner_decision",
-  "updated_at": "2026-08-06",
-  "summary": "P1.2 re-closed on 2026-08-06 by explicit owner decision after the strict empty-rectangle semantics repair batch (f16a22c family), three external review rounds converging to two independent PASS_WITH_FINDINGS verdicts (F-03 terminal-chain closure confirmed by both), and the 2026-08-06 seal batch (a08ee02: ghost-helper fail-closed hardening, exception normalization, M11/M12 sentinels, LOCK I1 erratum, full reseal). The original 2026-07-07 close decision is preserved in informational_history. v99 remains the approved review anchor. Owner clean-review count remains outside the repo (owner ruled the streak restarts from zero under the new semantics).",
+  "updated_at": "2026-08-21",
+  "summary": "P1.2 re-closed on 2026-08-21 by explicit owner decision after the I1 common-mode binding independent-reverification batch, owner-approved scope A guard/anchor closure, six external audit rounds converging through R6B CLEAN_FOR_REOPEN, and a semantic review confirming the Stage-B coordinate-delegate alias digest drift contains no new alias-dataflow behavior. The sealed-authority parity floor is bound to the final benders_loop.py bytes. The stable owner_manual_decision object preserves the 2026-08-06 authority anchor required by the append-only decision register; the 2026-08-21 successor authority is recorded by the tracked owner companion and decision record. v99 remains the approved review anchor. Owner clean-review count remains outside the repo; owner exercised discretion to retain the streak because this reopen was the mechanical consequence of sink mutation policy rather than a soundness defect.",
   "current_review_anchor": "v99_p1_2_close_kernel_sealing",
   "manual_review_standard": {
     "required_consecutive_clean_full_reviews": 3,
@@ -27,7 +27,7 @@
     "owner_clean_count_status": "maintained_outside_repo",
     "repo_derives_clean_count_from_receipts": false,
     "current_review_anchor": "v99_p1_2_close_kernel_sealing",
-    "note": "Owner re-closed P1.2 on 2026-08-06 after the strict-semantics repair line and seal batch; original 2026-07-07 close preserved in informational_history. The repo intentionally does not record or compute the clean-review count; the owner keeps it outside the repo (restarted from zero per owner ruling)."
+    "note": "P1.2 is owner-closed after the 2026-08-21 I1 re-close. The stable owner_manual_decision object preserves the 2026-08-06 authority anchor required by the append-only decision register; the 2026-08-21 successor authority is the tracked owner companion plus DECISION-P1-2-RECLOSE-20260821. The repo intentionally does not record or compute the clean-review count; the owner keeps it outside the repo and retained the streak by explicit discretion because the reopen was mechanical sink-drift handling rather than a soundness defect."
   },
   "owner_manual_decision": {
     "p1_3b_entry_allowed": true,
@@ -403,6 +403,24 @@
         ".artifacts/ghost_strict_fix_20260805/mutation_manifests_20260806/",
         ".artifacts/preflight_full_sealbatch_20260806.log",
         ".artifacts/preflight_slow_sealbatch_20260806.log"
+      ]
+    },
+    {
+      "package": "i1_common_mode_binding_reverify_reclose_20260821",
+      "classification": "owner_reclose_after_sink_mutation_reseal",
+      "summary": "The I1 line added artifact-bound independent binding reverification and scope A mutation/anchor closure. Sink source_sha256 drift mechanically reopened P1.2; six external audit rounds found no soundness break and R6B concluded CLEAN_FOR_REOPEN. Owner approved re-close on 2026-08-21, retained the clean-review streak by discretion, accepted the historical allowlist id suffix _295, and authorized the narrow tracked companion. Stage-B alias semantics were reviewed before resealing, and the sealed-authority floor now matches final benders_loop.py bytes.",
+      "evidence_paths": [
+        "docs/research/common_mode_binding_reverify_20260820/OWNER_AUTHORITY_COMPANION_20260821.md",
+        ".artifacts/i1_round4_self_check_20260820/ACLOSE_SELF_CHECK_20260820.json",
+        ".artifacts/i1_round4_self_check_20260820/ACLOSE_R6FIX_SELF_CHECK_20260820.json",
+        ".artifacts/i1_round4_self_check_20260820/ACLOSE_CLOSE_RECEIPT_20260821.json",
+        ".artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND1_20260820.md",
+        ".artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND2_20260820.md",
+        ".artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND3_20260820.md",
+        ".artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND4_20260820.md",
+        ".artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND5_20260820.md",
+        ".artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6_20260820.md",
+        ".artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6B_20260820.md"
       ]
     }
   ],

@@ -46,6 +46,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import inspect
 import itertools
 import json
 from collections import defaultdict
@@ -2552,7 +2553,7 @@ class ExactSearchSession:
             solve_mode=solve_mode,
         )
         from src.models.binding_subproblem import (
-            load_generic_input_slots_by_operation_from_text,
+            load_binding_plan_semantics_from_text,
             load_generic_io_requirements_from_text,
         )
 
@@ -2567,10 +2568,17 @@ class ExactSearchSession:
                 "Missing preprocess_plan artifact for generic-input binding "
                 "（缺少 preprocess_plan，无法绑定通用实体输入槽）"
             )
-        generic_input_slots_by_operation = (
-            load_generic_input_slots_by_operation_from_text(
-                text=preprocess_plan_text
-            )
+        binding_plan_semantics = load_binding_plan_semantics_from_text(
+            text=preprocess_plan_text
+        )
+        generic_input_slots_by_operation = dict(
+            binding_plan_semantics["generic_input_slots_by_operation"]
+        )
+        generic_output_slots_by_operation = dict(
+            binding_plan_semantics["generic_output_slots_by_operation"]
+        )
+        utility_operation_by_template = dict(
+            binding_plan_semantics["utility_operation_by_template"]
         )
         core_started = time.perf_counter()
         core = MasterPlacementModel.build_exact_core(
@@ -2579,6 +2587,8 @@ class ExactSearchSession:
             rules,
             generic_io_requirements=generic_io_requirements,
             generic_input_slots_by_operation=generic_input_slots_by_operation,
+            generic_output_slots_by_operation=generic_output_slots_by_operation,
+            utility_operation_by_template=utility_operation_by_template,
             master_search_profile=master_search_profile,
         )
         return cls(
@@ -6590,36 +6600,64 @@ class LBBDController:
             raise RuntimeError(
                 "certified binding requires normalized master generic IO sections"
             )
-        kwargs: Dict[str, Any] = {
-            "required_generic_outputs": dict(required_generic_outputs),
-            "required_generic_inputs": dict(required_generic_inputs),
-        }
-        if required_generic_inputs:
-            slot_map = getattr(
-                self.master,
-                "generic_input_slots_by_operation",
-                None,
-            )
-            if not isinstance(slot_map, Mapping):
+
+        def _strict_slot_map(attribute: str, label: str) -> Dict[str, int]:
+            raw_map = getattr(self.master, attribute, None)
+            if not isinstance(raw_map, Mapping):
                 raise RuntimeError(
-                    "certified binding requires the master "
-                    "generic_input_slots_by_operation snapshot"
+                    f"certified binding requires the master {attribute} snapshot"
                 )
-            normalized_slot_map: Dict[str, int] = {}
-            for operation_type, raw_slots in slot_map.items():
+            normalized: Dict[str, int] = {}
+            for operation_type, raw_slots in raw_map.items():
                 if isinstance(raw_slots, bool) or not isinstance(raw_slots, int):
                     raise RuntimeError(
-                        "certified binding requires strict integer generic-input "
-                        f"capacity for operation {operation_type!r}"
+                        f"certified binding requires strict integer {label} capacity "
+                        f"for operation {operation_type!r}"
                     )
                 if raw_slots < 0:
                     raise RuntimeError(
-                        "certified binding requires non-negative generic-input "
-                        f"capacity for operation {operation_type!r}"
+                        f"certified binding requires non-negative {label} capacity "
+                        f"for operation {operation_type!r}"
                     )
-                normalized_slot_map[str(operation_type)] = int(raw_slots)
-            kwargs["generic_input_slots_by_operation"] = normalized_slot_map
-        return kwargs
+                normalized[str(operation_type)] = int(raw_slots)
+            return normalized
+
+        raw_utility_map = getattr(
+            self.master,
+            "utility_operation_by_template",
+            None,
+        )
+        if not isinstance(raw_utility_map, Mapping):
+            raise RuntimeError(
+                "certified binding requires the master "
+                "utility_operation_by_template snapshot"
+            )
+        utility_map: Dict[str, str] = {}
+        for raw_template, raw_operation in raw_utility_map.items():
+            template = str(raw_template)
+            operation = str(raw_operation)
+            if not template or not operation:
+                raise RuntimeError(
+                    "certified binding requires non-empty plan-derived utility "
+                    "template/operation identities"
+                )
+            utility_map[template] = operation
+
+        return {
+            "required_generic_outputs": dict(required_generic_outputs),
+            "required_generic_inputs": dict(required_generic_inputs),
+            "generic_input_slots_by_operation": _strict_slot_map(
+                "generic_input_slots_by_operation",
+                "generic-input",
+            ),
+            "generic_output_slots_by_operation": _strict_slot_map(
+                "generic_output_slots_by_operation",
+                "generic-output",
+            ),
+            "utility_operation_by_template": dict(
+                sorted(utility_map.items())
+            ),
+        }
 
     def _binding_canonical_rules_kwargs(self) -> Dict[str, Any]:
         if getattr(self, "solve_mode", None) != "certified_exact":
@@ -6635,6 +6673,103 @@ class LBBDController:
         kwargs = self._binding_generic_requirements_kwargs()
         kwargs.update(self._binding_canonical_rules_kwargs())
         return kwargs
+
+    def _binding_reverify_semantics_contract(
+        self,
+        *,
+        binding_model: PortBindingModel,
+        source_rejected_selection_count: int,
+    ) -> Dict[str, Any]:
+        """Bind I1 capability claims to the model that produced INFEASIBLE.
+
+        These fields are runtime observations, not configuration promises.  I1
+        currently rejects routing-filtered, overload-separated, or selection-
+        nogood-constrained models.  The routing filter is monotone deletion, so
+        the unfiltered arithmetic model remains a safe relaxation, but the v1
+        contract deliberately fails closed until that relaxation is an explicit
+        admitted capability rather than an implicit argument.
+        """
+
+        snapshot_kwargs = LBBDController._binding_snapshot_kwargs(self)
+        summary = binding_model.extract_conflict_summary()
+
+        routing_context_enabled = summary.get("routing_context_enabled")
+        if not isinstance(routing_context_enabled, bool):
+            raise RuntimeError(
+                "binding reverify contract requires observed bool "
+                "routing_context_enabled"
+            )
+        if routing_context_enabled is not (binding_model.routing_context is not None):
+            raise RuntimeError(
+                "binding reverify routing-context observation disagrees with model state"
+            )
+
+        overload_separation_enabled = summary.get("overload_separation_enabled")
+        if not isinstance(overload_separation_enabled, bool):
+            raise RuntimeError(
+                "binding reverify contract requires observed bool "
+                "overload_separation_enabled"
+            )
+
+        raw_nogood_count = summary.get("selection_nogood_count")
+        if isinstance(raw_nogood_count, bool) or not isinstance(raw_nogood_count, int):
+            raise RuntimeError(
+                "binding reverify contract requires strict observed selection_nogood_count"
+            )
+        if raw_nogood_count < 0:
+            raise RuntimeError(
+                "binding reverify contract requires non-negative selection_nogood_count"
+            )
+        if (
+            isinstance(source_rejected_selection_count, bool)
+            or not isinstance(source_rejected_selection_count, int)
+            or source_rejected_selection_count < 0
+        ):
+            raise RuntimeError(
+                "binding reverify contract requires non-negative strict "
+                "source_rejected_selection_count"
+            )
+        if int(raw_nogood_count) != int(source_rejected_selection_count):
+            raise RuntimeError(
+                "binding reverify observed selection nogood count disagrees with "
+                "source rejected-selection ledger"
+            )
+
+        return {
+            "schema": "binding_semantics_contract_v1",
+            "constructor_parameters": sorted(
+                name
+                for name in inspect.signature(PortBindingModel.__init__).parameters
+                if name != "self"
+            ),
+            "build_parameters": sorted(
+                name
+                for name in inspect.signature(PortBindingModel.build).parameters
+                if name != "self"
+            ),
+            "constraint_families": [
+                "fixed_pose_side_injection",
+                "generic_input_exact_cardinality",
+                "generic_output_exact_cardinality",
+            ],
+            "routing_context_enabled": routing_context_enabled,
+            "overload_separation_enabled": overload_separation_enabled,
+            "reverification_selection_nogood_count": int(raw_nogood_count),
+            "source_rejected_selection_count": int(
+                source_rejected_selection_count
+            ),
+            "generic_input_slot_policy": "plan_derived_physical_exact_count",
+            "generic_output_slot_policy": "plan_derived_physical_exact_count",
+            "plan_generic_input_slots_by_operation": dict(
+                snapshot_kwargs["generic_input_slots_by_operation"]
+            ),
+            "plan_generic_output_slots_by_operation": dict(
+                snapshot_kwargs["generic_output_slots_by_operation"]
+            ),
+            "plan_utility_operation_by_template": dict(
+                snapshot_kwargs["utility_operation_by_template"]
+            ),
+        }
 
     def _run_exact_binding_and_routing(
         self,
@@ -6963,6 +7098,8 @@ class LBBDController:
                 binding_exhausted=True,
                 routing_exhausted=False,
                 proof_summary=proof_summary,
+                binding_model=binding_model,
+                source_rejected_selection_count=0,
             )
             self.last_proof_summary = dict(proof_summary)
             if not cut_applied:
@@ -8183,6 +8320,8 @@ class LBBDController:
             binding_exhausted=True,
             routing_exhausted=True,
             proof_summary=proof_summary,
+            binding_model=binding_model,
+            source_rejected_selection_count=len(binding_rejected_selections),
         )
         self.last_proof_summary = dict(proof_summary)
         if not cut_applied:
@@ -9185,6 +9324,8 @@ class LBBDController:
         binding_exhausted: bool,
         routing_exhausted: bool,
         proof_summary: Mapping[str, Any],
+        binding_model: PortBindingModel,
+        source_rejected_selection_count: int,
     ) -> bool:
         # GPT v4 P0 #2 stop-gap: EXACT_POWER_PLACEMENT_SUBPROBLEM=1 时 master 不带
         # power_pole residual slots, 而 power subproblem feasible 后会把 synthetic
@@ -9224,6 +9365,16 @@ class LBBDController:
                 binding_exhausted=binding_exhausted,
                 routing_exhausted=routing_exhausted,
                 binding_kwargs=LBBDController._binding_snapshot_kwargs(self),
+                artifact_hashes=self.artifact_hashes,
+                binding_semantics_contract=(
+                    LBBDController._binding_reverify_semantics_contract(
+                        self,
+                        binding_model=binding_model,
+                        source_rejected_selection_count=(
+                            source_rejected_selection_count
+                        ),
+                    )
+                ),
                 time_limit_seconds=self.binding_seconds,
             )
         except Exception as exc:  # noqa: BLE001
@@ -9569,6 +9720,12 @@ def run_benders_for_ghost_rect(
                 generic_io_requirements=exact_session.core.generic_io_requirements,
                 generic_input_slots_by_operation=(
                     exact_session.core.generic_input_slots_by_operation
+                ),
+                generic_output_slots_by_operation=(
+                    exact_session.core.generic_output_slots_by_operation
+                ),
+                utility_operation_by_template=(
+                    exact_session.core.utility_operation_by_template
                 ),
                 exact_required_pose_optional_counts=_inferred_counts,
                 solve_mode="certified_exact",

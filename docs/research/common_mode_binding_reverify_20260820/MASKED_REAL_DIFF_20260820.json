@@ -1,0 +1,238 @@
+{
+  "schema": "zmd_i1_masked_real_diff_v1",
+  "baseline_head": "e73add14a286ddce16b217f8d2df3a1fcf0fea21",
+  "current_head": "e73add14a286ddce16b217f8d2df3a1fcf0fea21",
+  "candidate_sha256": "f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3",
+  "node_count": 47,
+  "baseline_returncode": 0,
+  "current_returncode": 1,
+  "baseline_outcomes": {
+    "passed": 47
+  },
+  "current_outcomes": {
+    "failure": 14,
+    "passed": 33
+  },
+  "outcome_changes": [
+    "src.tests.test_binding::test_binding_model_assigns_generic_box_sink_inputs",
+    "src.tests.test_binding::test_binding_model_extracts_concrete_port_specs",
+    "src.tests.test_binding::test_binding_model_ignores_ghost_pick_marker_without_invalidating",
+    "src.tests.test_binding::test_binding_model_keeps_generic_outputs_globally_pooled",
+    "src.tests.test_binding::test_binding_model_keeps_generic_slot_instances_out_of_pose_level_cache",
+    "src.tests.test_binding::test_binding_model_mismatched_operation_metadata_returns_invalid_input",
+    "src.tests.test_binding::test_binding_model_missing_instance_metadata_returns_invalid_input",
+    "src.tests.test_binding::test_binding_model_nogood_cut_forces_new_selection",
+    "src.tests.test_binding::test_binding_model_overload_separation_default_off",
+    "src.tests.test_binding::test_binding_model_overload_separation_when_enabled_records_summary",
+    "src.tests.test_binding::test_binding_model_reports_exact_search_guidance",
+    "src.tests.test_binding::test_binding_model_reports_pose_binding_domain_cache_reuse",
+    "src.tests.test_binding::test_binding_solver_worker_override_changes_only_solver_parameter",
+    "src.tests.test_binding::test_lbbd_retry_helper_replays_rejected_selections_after_overload_exhaustion"
+  ],
+  "baseline_pass_current_fail": [
+    "src.tests.test_binding::test_binding_model_assigns_generic_box_sink_inputs",
+    "src.tests.test_binding::test_binding_model_extracts_concrete_port_specs",
+    "src.tests.test_binding::test_binding_model_ignores_ghost_pick_marker_without_invalidating",
+    "src.tests.test_binding::test_binding_model_keeps_generic_outputs_globally_pooled",
+    "src.tests.test_binding::test_binding_model_keeps_generic_slot_instances_out_of_pose_level_cache",
+    "src.tests.test_binding::test_binding_model_mismatched_operation_metadata_returns_invalid_input",
+    "src.tests.test_binding::test_binding_model_missing_instance_metadata_returns_invalid_input",
+    "src.tests.test_binding::test_binding_model_nogood_cut_forces_new_selection",
+    "src.tests.test_binding::test_binding_model_overload_separation_default_off",
+    "src.tests.test_binding::test_binding_model_overload_separation_when_enabled_records_summary",
+    "src.tests.test_binding::test_binding_model_reports_exact_search_guidance",
+    "src.tests.test_binding::test_binding_model_reports_pose_binding_domain_cache_reuse",
+    "src.tests.test_binding::test_binding_solver_worker_override_changes_only_solver_parameter",
+    "src.tests.test_binding::test_lbbd_retry_helper_replays_rejected_selections_after_overload_exhaustion"
+  ],
+  "per_node": {
+    "src.tests.test_batch4_reconstructed_prod_ab::test_input_records_include_current_candidate_and_certified_inputs": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_binding::test_binding_model_assigns_generic_box_sink_inputs": {
+      "baseline": "passed",
+      "current": "failure"
+    },
+    "src.tests.test_binding::test_binding_model_extracts_concrete_port_specs": {
+      "baseline": "passed",
+      "current": "failure"
+    },
+    "src.tests.test_binding::test_binding_model_ignores_ghost_pick_marker_without_invalidating": {
+      "baseline": "passed",
+      "current": "failure"
+    },
+    "src.tests.test_binding::test_binding_model_keeps_generic_outputs_globally_pooled": {
+      "baseline": "passed",
+      "current": "failure"
+    },
+    "src.tests.test_binding::test_binding_model_keeps_generic_slot_instances_out_of_pose_level_cache": {
+      "baseline": "passed",
+      "current": "failure"
+    },
+    "src.tests.test_binding::test_binding_model_mismatched_operation_metadata_returns_invalid_input": {
+      "baseline": "passed",
+      "current": "failure"
+    },
+    "src.tests.test_binding::test_binding_model_missing_instance_metadata_returns_invalid_input": {
+      "baseline": "passed",
+      "current": "failure"
+    },
+    "src.tests.test_binding::test_binding_model_nogood_cut_forces_new_selection": {
+      "baseline": "passed",
+      "current": "failure"
+    },
+    "src.tests.test_binding::test_binding_model_overload_separation_default_off": {
+      "baseline": "passed",
+      "current": "failure"
+    },
+    "src.tests.test_binding::test_binding_model_overload_separation_when_enabled_records_summary": {
+      "baseline": "passed",
+      "current": "failure"
+    },
+    "src.tests.test_binding::test_binding_model_reports_exact_search_guidance": {
+      "baseline": "passed",
+      "current": "failure"
+    },
+    "src.tests.test_binding::test_binding_model_reports_pose_binding_domain_cache_reuse": {
+      "baseline": "passed",
+      "current": "failure"
+    },
+    "src.tests.test_binding::test_binding_solver_worker_override_changes_only_solver_parameter": {
+      "baseline": "passed",
+      "current": "failure"
+    },
+    "src.tests.test_binding::test_lbbd_retry_helper_replays_rejected_selections_after_overload_exhaustion": {
+      "baseline": "passed",
+      "current": "failure"
+    },
+    "src.tests.test_master::test_load_project_data_separates_exact_and_exploratory": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_noncert_cuts_ab16_campaign_bootstrap_v1::test_candidate_placements_preregistration_replays_tracked_manifest_and_bytes": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_preprocess_golden::test_preprocess_chain_regenerates_frozen_artifacts_from_source_code": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_public_viewer_certified_status_guard::test_public_viewer_legacy_payload_is_non_proof_bearing": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_regression::test_frozen_counts_align_with_new_split": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_regression::test_preprocessed_artifacts_exist_and_are_nonempty": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_routing::test_crusher_sandleaf_pose_binding_domain": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_routing::test_generic_hub_binding_is_not_locally_enumerable": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_routing::test_packaging_battery_pose_binding_domain": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_v102_locked_exact_artifact_contract::test_v102_checked_in_frozen_inputs_match_runtime_contract": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_campaign::test_current_core_final_input_policy_is_south_only": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_campaign::test_routed_result_recomputes_port_specs_from_bound_placements": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_campaign::test_routed_result_rejects_missing_post_solve_revalidation": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_campaign::test_routed_result_repeats_structural_reachability_and_objective_gates": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_campaign::test_routed_result_requires_exact_fields_digests_and_production_gates[<lambda>-ROUTER_CGROUP_GATE]": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_campaign::test_routed_result_requires_exact_fields_digests_and_production_gates[<lambda>-ROUTER_CLAIM_BOUNDARY]": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_campaign::test_routed_result_requires_exact_fields_digests_and_production_gates[<lambda>-ROUTER_GEOMETRY_HASH]": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_campaign::test_routed_result_requires_exact_fields_digests_and_production_gates[<lambda>-ROUTER_RESULT_FIELDS0]": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_campaign::test_routed_result_requires_exact_fields_digests_and_production_gates[<lambda>-ROUTER_RESULT_FIELDS1]": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_campaign::test_routed_result_requires_exact_fields_digests_and_production_gates[<lambda>-ROUTER_ROUTE_DIGEST_MISMATCH]": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_fixed_geometry_router.FixedGeometryRouterWorkerTests::test_production_input_snapshot_reconciles_pinned_dependency_hashes": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_geometry::test_candidate_front_coordinate_is_identity_not_direction_plus_one": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_routing_contract::test_mode_front_parity_uses_candidate_identity_semantics": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_routing_contract::test_real_inputs_reconcile_to_independent_counts": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_shelf_constructor::test_boundary_slots_use_only_legal_69_0_pattern": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_shelf_constructor::test_core_north_only_inputs_are_rejected_even_when_outputs_are_on_network": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_shelf_constructor::test_current_pool_contains_fixed_boundary_core_and_representative_shelf_poses": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_shelf_constructor::test_off_network_but_free_manufacturing_front_is_rejected": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_shelf_constructor::test_operation_slots_are_assigned_inside_all_17_groups": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_shelf_constructor::test_replay_rejects_partial_cgroup_telemetry_schema": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_shelf_power_topology::test_solver_model_has_collapsed_domains_and_static_component_audit": {
+      "baseline": "passed",
+      "current": "passed"
+    },
+    "src.tests.test_witness_shelf_power_topology::test_upper_core_body_is_clear_and_all_fixed_terminals_attach": {
+      "baseline": "passed",
+      "current": "passed"
+    }
+  }
+}

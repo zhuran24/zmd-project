@@ -2,9 +2,9 @@
   "schema_version": 1,
   "gate_id": "p1_2_proof_obligation_consolidation",
   "status": "active_fail_closed_contract",
-  "updated_at": "2026-07-03",
+  "updated_at": "2026-08-20",
   "review_anchor": "v99_p1_2_close_kernel_sealing",
-  "semantic_projection_sha256": "01417c60a776c460ad2123af6f5f558e86cb33259a6a38e704048c6059fec262",
+  "semantic_projection_sha256": "cc5ed8abbef16c95e4c7e4b758e9478ba7b414bc8cad30a327dde72283f02e94",
   "summary": "P1.2 remains fail-closed. Proof-bearing CERTIFIED / INFEASIBLE candidate states are untrusted claims until each certified sink independently replays a data-only, candidate/project/source/artifact-bound request in a fresh isolated certified_exact interpreter whose Python bytecode is forced to compile from source covered by certified_exact_source_tree. The close kernel seals that replay authority path and rejects missing, drifted, bypassed, or unreplayable strong-status evidence.",
   "phase_gate_required_anchor": "v99_p1_2_close_kernel_sealing",
   "step_7_contract": {
@@ -748,7 +748,7 @@
     },
     {
       "id": "PO-INDEPENDENT-INFEASIBILITY-REVERIFY",
-      "title": "Whole-layout INFEASIBLE nogoods require independent fail-closed re-verification before minting",
+      "title": "Whole-layout binding-INFEASIBLE nogoods require an artifact-bound, production-independent arithmetic certificate before minting",
       "v_findings": [
         "p1_2_i1_whole_layout_nogood_reverify_gap",
         "p1_2_fix_4_phase_1_independent_infeasibility_reverify"
@@ -759,18 +759,105 @@
         "test_independent_infeasibility_reverify_timeout_blocks_cut_unknown",
         "test_independent_infeasibility_reverify_exception_blocks_cut_unknown",
         "test_independent_infeasibility_reverify_routing_exhaustion_without_binding_confirmation_unknown",
+        "test_independent_binding_arithmetic_confirms_generic_output_deficit",
+        "test_independent_binding_arithmetic_confirms_generic_input_deficit",
+        "test_independent_binding_arithmetic_constructs_feasible_assignment",
+        "test_independent_binding_arithmetic_matches_production_capacity_matrix",
+        "test_independent_binding_arithmetic_rejects_generic_input_port_count_drift",
+        "test_independent_binding_arithmetic_rejects_selected_pose_drift",
+        "test_independent_binding_arithmetic_rejects_missing_mandatory_placement",
+        "test_independent_binding_arithmetic_rejects_generic_role_overlap",
+        "test_independent_binding_arithmetic_rejects_authority_snapshot_drift",
+        "test_independent_binding_arithmetic_rejects_unmodeled_binding_semantics",
+        "test_explicit_witness_checker_rejects_tampered_assignment",
+        "test_explicit_witness_checker_rejects_bool_integer_alias",
+        "test_constructor_surface_drift_fails_closed",
+        "test_utility_operation_map_drift_fails_closed",
+        "test_plan_provider_drift_fails_closed",
+        "test_capsule_enforces_real_wall_timeout",
+        "test_p1_2_checker_rejects_production_model_import_in_reverifier",
+        "test_p1_2_checker_rejects_arithmetic_analyzer_bypass",
         "test_p1_2_checker_rejects_whole_layout_reverify_gate_removal",
         "test_p1_2_checker_rejects_inflight_cache_read_in_infeasibility_reverifier",
-        "test_p1_2_checker_rejects_env_reader_in_infeasibility_reverifier"
+        "test_p1_2_checker_rejects_env_reader_in_infeasibility_reverifier",
+        "test_package_checker_rejects_dynamic_import_bypasses",
+        "test_package_checker_rejects_constant_runtime_contract_fields",
+        "test_package_checker_rejects_production_provider_hardcode",
+        "test_package_checker_rejects_production_input_provider_hardcode",
+        "test_package_checker_rejects_pr2_output_map_drop",
+        "test_package_checker_seals_pr2_utility_snapshot_wiring",
+        "test_package_checker_seals_heuristic_nonauthority_boundary",
+        "test_generic_input_exact_physical_count_is_accepted_by_both_encodings",
+        "test_generic_input_count_drift_is_rejected_by_both_encodings",
+        "test_canonical_checker_accepts_exact_generic_input_physical_count",
+        "test_canonical_checker_rejects_generic_input_shortfall_and_surplus",
+        "test_real_protocol_core_and_pose_optional_box_match_production_cp_sat",
+        "test_capability_contract_uses_observed_production_runtime_state",
+        "test_routing_context_is_certificate_bound_monotone_relaxation",
+        "test_capsule_accepts_observed_routing_context_as_monotone_relaxation",
+        "test_certificate_checker_rejects_runtime_relaxation_tamper",
+        "test_observed_overload_separation_fails_closed",
+        "test_observed_selection_nogoods_fail_closed",
+        "test_package_checker_rejects_hardcoded_runtime_capability_field",
+        "test_package_checker_seals_primary_and_retry_binding_snapshot_wiring",
+        "test_package_checker_requires_plan_derived_generic_input_admission",
+        "test_real_artifact_output_deficit_matches_production_cp_sat",
+        "test_round3_checker_rejects_constant_runtime_observation",
+        "test_round3_checker_rejects_generic_input_plan_bypass",
+        "test_round3_checker_enumerates_non_controller_binding_constructors",
+        "test_round3_checker_requires_runtime_relaxation_validation",
+        "test_round3_certificate_checker_rejects_runtime_relaxation_tamper",
+        "test_round3_pose_optional_synthesis_loads_plan_utility_map",
+        "test_round3_exact_session_carries_plan_utility_operation_map",
+        "test_round3_checker_requires_evaluator_non_authority_exemption"
       ],
       "evidence_paths": [
-        "src/search/independent_infeasibility_reverifier.py",
+        "src/models/binding_subproblem.py",
+        "src/models/master_model.py",
         "src/search/benders_loop.py",
+        "src/search/pr2_l0_fixed_witness_core.py",
+        "src/search/heuristic_feasible_finder.py",
+        "src/search/independent_infeasibility_reverifier.py",
+        "src/search/independent_binding_reverify/__init__.py",
+        "src/search/independent_binding_reverify/api.py",
+        "src/search/independent_binding_reverify/artifacts.py",
+        "src/search/independent_binding_reverify/capsule.py",
+        "src/search/independent_binding_reverify/certificate.py",
+        "src/search/independent_binding_reverify/protocol.py",
+        "src/search/independent_binding_reverify/semantics.py",
+        "src/search/independent_binding_reverify/theorem.py",
+        "src/search/independent_binding_reverify/transport.py",
         "src/tests/test_p1_2_independent_infeasibility_reverifier.py",
+        "src/tests/test_binding.py",
+        "src/tests/test_exact_contract.py",
+        "src/tests/test_p1_2_fix_5_toctou_atomic_snapshot.py",
+        "src/tests/test_independent_binding_arithmetic_parity.py",
+        "src/tests/test_independent_binding_real_artifact_parity.py",
+        "src/tests/test_binding_sidecar_projection_parity.py",
+        "certside/sidecar/frontend.py",
+        "certside/sidecar/emitter.py",
+        "certside/sidecar/canonical_witness_checker.py",
+        "certside/sidecar/parity_check.py",
+        "certside/sidecar/run_acceptance.py",
         "scripts/check_p1_2_proof_obligations.py",
-        "docs/项目说明/soundness_gap_roadmap.md"
+        "docs/research/common_mode_binding_reverify_20260820/README.md",
+        "docs/research/common_mode_binding_reverify_20260820/BASELINE_ATTRIBUTION_20260820.md",
+        "docs/research/common_mode_binding_reverify_20260820/MASKED_REAL_DIFF_20260820.json",
+        "docs/research/common_mode_binding_reverify_20260820/ROUND1_LOW_DISPOSITIONS_20260820.md",
+        "docs/research/common_mode_binding_reverify_20260820/EXTERNAL_AUDIT_HANDOFF_20260820.md",
+        "docs/research/common_mode_binding_reverify_20260820/MASKED_REAL_DIFF_POSTFIX_20260820.json"
       ],
-      "policy": "Before _add_exact_whole_layout_nogood may mint a proof-bearing whole-layout cut, the certified path must call independent_infeasibility_reverifier. Binding-INFEASIBLE is confirmed only by a freshly constructed binding feasibility model solved by an independent heterogeneous CP-SAT solver. Independent FEASIBLE, TIMEOUT, exception, malformed input, or unsupported routing-exhaustion proof returns fail-closed UNKNOWN and emits no cut. Phase 1 intentionally treats routing ALL-INFEASIBLE conservatively: without a full independent exhaustion proof, the cut is skipped even when the original routing exhaustion may be legitimate."
+      "policy": "Before _add_exact_whole_layout_nogood may mint a proof-bearing whole-layout cut, the certified path must send a data-only request through the closed-world independent_binding_reverify package in a fresh python -I/-B subprocess with a real wall-clock timeout. The child strict-reads and hash-binds canonical_rules.json, preprocess_plan.json, generic_io_requirements.json, candidate_placements.json and mandatory_exact_instances.json; independently reconstructs operation profiles, plan-derived generic input/output capacities and the facility-template to utility-operation mapping; binds every selected pose to authority bytes; and checks a versioned runtime capability contract. The contract must be populated from the actual PortBindingModel extract_conflict_summary observations for routing_context_enabled, overload_separation_enabled and reverification_selection_nogood_count. A routing-aware filter is admissible only as the explicitly certified monotone domain-deletion relaxation D_r subseteq D; the certificate must carry the corresponding runtime_relaxations token. Overload separation or any accumulated selection nogood remains unsupported and returns UNKNOWN. Only an independently checked physical-slot deficit may confirm infeasibility. Capacity sufficiency creates a concrete port-by-port witness checked by a module that does not import the theorem builder. Constructor/plan/artifact/pose/role/certificate/timeout, routing-only, future-semantic or missing-runtime-observation drift returns fail-closed UNKNOWN. All two LBBDController constructors, the certified terminal fixed-witness constructor, and the exploratory heuristic constructor are structurally enumerated; the heuristic is explicitly non-authoritative. The old sealed-authority floor remains open until external audit and owner re-close.",
+      "test_anchors": [
+        "test_round3_checker_rejects_constant_runtime_observation",
+        "test_round3_checker_rejects_generic_input_plan_bypass",
+        "test_round3_checker_enumerates_non_controller_binding_constructors",
+        "test_round3_checker_requires_runtime_relaxation_validation",
+        "test_round3_certificate_checker_rejects_runtime_relaxation_tamper",
+        "test_round3_pose_optional_synthesis_loads_plan_utility_map",
+        "test_round3_exact_session_carries_plan_utility_operation_map",
+        "test_round3_checker_requires_evaluator_non_authority_exemption"
+      ]
     },
     {
       "id": "PO-CERTIFIED-POWER-POLE-DOMINANCE-NORMALIZATION",
@@ -936,6 +1023,16 @@
       "src/io/delivery_manifest.py",
       "src/render/industrial_planner_exact_status.py",
       "src/search/benders_loop.py",
+      "src/search/independent_infeasibility_reverifier.py",
+      "src/search/independent_binding_reverify/__init__.py",
+      "src/search/independent_binding_reverify/api.py",
+      "src/search/independent_binding_reverify/artifacts.py",
+      "src/search/independent_binding_reverify/capsule.py",
+      "src/search/independent_binding_reverify/certificate.py",
+      "src/search/independent_binding_reverify/protocol.py",
+      "src/search/independent_binding_reverify/semantics.py",
+      "src/search/independent_binding_reverify/theorem.py",
+      "src/search/independent_binding_reverify/transport.py",
       "src/search/candidate_proof_replay.py",
       "src/search/certified_artifact_contract.py",
       "src/search/certified_frontier.py",
@@ -1013,7 +1110,7 @@
           "PR2_L0_MICRO_VERIFIER_PATH",
           "PR2_L0_TRUE_VERIFIER_CHILD_PATH"
         ],
-        "source_sha256": "8c80708625727b1b567a4bfcf062d72820d1a965442b50dad9e4e08ff7c73bb4",
+        "source_sha256": "d1f05c70fc90b78f0e4662fb7a0757b320bad63feda9a5924eb8e6de17910c80",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1030,7 +1127,7 @@
           "_locked_close_kernel_checker_ast_anchor_violation",
           "LOCKED_P1_2_CHECKER_PROTECTED_CALLEES"
         ],
-        "source_sha256": "06ed35fce3f77fa94662c49a03186db824f57b9bf33ed8872893465f5352b315",
+        "source_sha256": "3bc22369557d2547a40f098e1094da8121ba0ec2ee9c531079c250598bb5e591",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1303,7 +1400,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "1c89f6ee2cb958568c7365289a0b3d6e69a32f3162d4c925f02695705efc7ee9",
+        "source_sha256": "b5c6ebf84b31ef35a73e596d34eab96e2609f08e43cd3c2ff322e369646c5eba",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1413,7 +1510,7 @@
         "required_guard_tokens": [
           "INFEASIBLE"
         ],
-        "source_sha256": "761890e0c799c3c0f6f19832d7b7031e93c9898d7a6a10188afc8ed59cb5daf7",
+        "source_sha256": "d1ada57bc6dcef1818341b26dfd482fb7c1623d106734b8f1a49061c2e7c1371",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1624,7 +1721,7 @@
           "_CERTIFIED_PROOF_SEMANTICS_ENV_BLOCKER_CODE",
           "_CERTIFIED_SUBPROBLEM_PARAM_BLOCKER_CODE"
         ],
-        "source_sha256": "34e198fc475ea2c7ea74ec05371fe59f8749a1e228ae68147577bd719be96a4e",
+        "source_sha256": "461fc6875ca16781c1d0d81720aee98747a3d2c984a4c1bf1afda4f384af1bc3",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1815,7 +1912,112 @@
           "CERTIFIED",
           "INFEASIBLE"
         ],
-        "source_sha256": "0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903",
+        "source_sha256": "5c885eca5c683e37e41163a53f3bb5f4c9c5f759ce0f52db7e8d0cc5c779770d",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/independent_binding_reverify/__init__.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-INDEPENDENT-INFEASIBILITY-REVERIFY",
+        "terms": [
+          "CONFIRMED_INFEASIBLE",
+          "DIVERGED_FEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "reverify_whole_layout_infeasibility",
+          "STATUS_CONFIRMED_INFEASIBLE",
+          "STATUS_DIVERGED_FEASIBLE"
+        ],
+        "source_sha256": "7fd71f197586e19a9bb19a55f9d1b2b0e2958e0a8f8c06f2a021c59b0e4f91cc",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/independent_binding_reverify/api.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-INDEPENDENT-INFEASIBILITY-REVERIFY",
+        "terms": [
+          "CONFIRMED_INFEASIBLE",
+          "DIVERGED_FEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "invoke_capsule",
+          "artifact_hashes",
+          "binding_semantics_contract",
+          "certificate_check",
+          "request_digest"
+        ],
+        "source_sha256": "2e312e17c1b93efbfbd10d8cd2e27a5fa439810ec3633bd917ad80695cb0f28e",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/independent_binding_reverify/capsule.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-INDEPENDENT-INFEASIBILITY-REVERIFY",
+        "terms": [
+          "CONFIRMED_INFEASIBLE",
+          "ARITHMETIC_INFEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "load_authority_artifacts",
+          "build_semantic_model",
+          "build_binding_certificate",
+          "verify_binding_certificate",
+          "routing_exhaustion_phase1_conservative_unknown"
+        ],
+        "source_sha256": "c923eb7ab9a858dac549ed083fbc4efaaa289f97131a1fddc2c916d29b896f7d",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/independent_binding_reverify/certificate.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-INDEPENDENT-INFEASIBILITY-REVERIFY",
+        "terms": [
+          "ARITHMETIC_INFEASIBLE",
+          "CONSTRUCTIVE_FEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "verify_binding_certificate",
+          "certificate_digest",
+          "witness_digest",
+          "_strict_witness_int"
+        ],
+        "source_sha256": "5144ad29f2d92444f0b74143587afc9d4866fa951b0781b4a89b31b74b24bf83",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/independent_binding_reverify/protocol.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-INDEPENDENT-INFEASIBILITY-REVERIFY",
+        "terms": [
+          "CONFIRMED_INFEASIBLE",
+          "DIVERGED_FEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "REQUEST_SCHEMA",
+          "RESPONSE_SCHEMA",
+          "SEMANTICS_CONTRACT_SCHEMA",
+          "CERTIFICATE_SCHEMA",
+          "VERIFIER_AUTHORITY"
+        ],
+        "source_sha256": "16aeea60711fbf7dab8a2c7d7d2109ea18e7ab0e081d6e4c53f6d4bc4af02f1e",
+        "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
+      },
+      {
+        "path": "src/search/independent_binding_reverify/theorem.py",
+        "classification": "p1_2_certified_path",
+        "obligation_id": "PO-INDEPENDENT-INFEASIBILITY-REVERIFY",
+        "terms": [
+          "ARITHMETIC_INFEASIBLE",
+          "CONSTRUCTIVE_FEASIBLE"
+        ],
+        "required_guard_tokens": [
+          "build_binding_certificate",
+          "fixed_assignments",
+          "generic_input_assignments",
+          "generic_output_assignments",
+          "solver_dependency"
+        ],
+        "source_sha256": "b3b63bac981b4d17f6efa43dd110ae3ce76f7fb7f6d2aed74545034eb1beceb5",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1827,14 +2029,12 @@
           "CONFIRMED_INFEASIBLE"
         ],
         "required_guard_tokens": [
+          "src.search.independent_binding_reverify.api",
           "reverify_whole_layout_infeasibility",
           "REVERIFY_STATUS_CONFIRMED_INFEASIBLE",
-          "REVERIFY_STATUS_DIVERGED_FEASIBLE",
-          "routing_exhaustion_phase1_conservative_unknown",
-          "_solve_with_independent_cp_sat",
-          "PORTFOLIO_SEARCH"
+          "REVERIFY_STATUS_DIVERGED_FEASIBLE"
         ],
-        "source_sha256": "a71cc162bad123a5d68070dfa7eb4c127d2cd47ddc7781640b8e368d2bab63f9",
+        "source_sha256": "831fab66ee48baa387e06d0aa3dd7af5a9acd85554d2361698bb141995cbdf8f",
         "mutation_policy": "source_sha256_drift_reopens_p1_2_close_claim"
       },
       {
@@ -1898,7 +2098,7 @@
       {
         "path": "src/search/pr2_l0_fixed_witness_core.py",
         "classification": "p1_2_certified_path",
-        "source_sha256": "265963175a1c8facda251fa0bc1e39781c800bcbaff7084c2bb8a382566ee17c",
+        "source_sha256": "eae892a25f2e97c8f8cca4f58c205c8c18e829c7deba3407628aeab69c79eda1",
         "obligation_id": "PO-CERTIFIED-FRONTIER-TERMINAL-EVIDENCE",
         "terms": [
           "CERTIFIED",

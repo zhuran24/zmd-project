@@ -14,8 +14,9 @@ from typing import AbstractSet, Any, Dict, Mapping, MutableMapping, Optional, Se
 from src.io.strict_json import loads_strict_json
 from src.models.binding_subproblem import (
     PortBindingModel,
+    load_binding_plan_semantics,
+    load_generic_input_slots_by_operation,  # noqa: F401 - compatibility re-export
     load_generic_io_requirements,
-    load_generic_input_slots_by_operation,
 )
 from src.models.routing_subproblem import (
     GHOST_RESERVED_OWNER_ID,
@@ -1252,11 +1253,18 @@ def verify_terminal_fixed_witness(
                 mandatory_instances=instances,
             )
         )
-        generic_input_slots_by_operation = None
-        if io_requirements.get("required_generic_inputs", {}):
-            generic_input_slots_by_operation = load_generic_input_slots_by_operation(
-                project_root=project_root,
-            )
+        binding_plan_semantics = load_binding_plan_semantics(
+            project_root=project_root,
+        )
+        generic_input_slots_by_operation = dict(
+            binding_plan_semantics["generic_input_slots_by_operation"]
+        )
+        generic_output_slots_by_operation = dict(
+            binding_plan_semantics["generic_output_slots_by_operation"]
+        )
+        utility_operation_by_template = dict(
+            binding_plan_semantics["utility_operation_by_template"]
+        )
 
         occupied_owner_by_cell, occupied_cells = _extract_pose_resolved_occupancy(
             solution=solution,
@@ -1280,6 +1288,8 @@ def verify_terminal_fixed_witness(
                     {},
                 ),
                 generic_input_slots_by_operation=generic_input_slots_by_operation,
+                generic_output_slots_by_operation=generic_output_slots_by_operation,
+                utility_operation_by_template=utility_operation_by_template,
             )
             binding_model.build()
             dominance_setup_reason, dominance_setup_details = (

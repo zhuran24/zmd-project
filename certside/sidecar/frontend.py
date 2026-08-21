@@ -102,6 +102,34 @@ def _strict_pos_int(value: Any, field: str) -> int:
 
 
 # ---------------------------------------------------------------- profile 独立重推
+def derive_utility_operation_by_template(
+    plan: Mapping[str, Any],
+) -> Dict[str, str]:
+    """Derive the complete facility-template → utility-operation plan map."""
+
+    result: Dict[str, str] = {}
+    for raw_operation, raw_utility in sorted(
+        dict(plan.get("utility_operations") or {}).items()
+    ):
+        operation = str(raw_operation).strip()
+        facility_type = str(dict(raw_utility or {}).get("facility_type", "")).strip()
+        if not operation or not facility_type:
+            raise EmitterReject(
+                "INPUT_INVALID",
+                "BAD_UTILITY_OPERATION_IDENTITY",
+                f"operation={operation!r} facility_type={facility_type!r}",
+            )
+        previous = result.get(facility_type)
+        if previous is not None and previous != operation:
+            raise EmitterReject(
+                "INPUT_INVALID",
+                "AMBIGUOUS_UTILITY_FACILITY_TYPE",
+                f"{facility_type}: {previous}, {operation}",
+            )
+        result[facility_type] = operation
+    return dict(sorted(result.items()))
+
+
 def derive_operation_profiles(
     rules: Mapping[str, Any], plan: Mapping[str, Any]
 ) -> Dict[str, Dict[str, Any]]:
@@ -169,6 +197,7 @@ def build_model_input(
     mand, h_mand = load_artifact(root / "data" / "preprocessed" / "mandatory_exact_instances.json")
 
     profiles = derive_operation_profiles(rules, plan)
+    utility_operation_by_template = derive_utility_operation_by_template(plan)
 
     generic_input_slots_by_operation = {
         operation_type: int(profile["generic_input_slots"])
@@ -200,6 +229,7 @@ def build_model_input(
             gio.get("required_generic_inputs"), "required_generic_inputs"
         ),
         "generic_input_slots_by_operation": generic_input_slots_by_operation,
+        "plan_utility_operation_by_template": utility_operation_by_template,
         "commodity_metadata": dict(rules.get("commodity_metadata") or {}),
         "operation_profiles": profiles,
         "artifact_hashes": {

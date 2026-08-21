@@ -17,22 +17,30 @@
 | `sidecar/runner.py` | WSL 求解检查链（判定协议：结论行 anchored 唯一匹配，禁退出码判定） |
 | `sidecar/witness_checker.py` | OPB-level witness 独立复验（不调用 emitter 约束生成） |
 | `sidecar/canonical_witness_checker.py` | canonical-level witness 复验（从原始输入语义独立验证；应有对象集合第二实现；SAT 二段升级 → DIVERGED_CANDIDATE） |
-| `sidecar/run_acceptance.py` | 合成验收 harness（30 checks：UNSAT/canaries/INPUT_INVALID/双向突变/工具链与 canonical-checker 红测） |
+| `sidecar/run_acceptance.py` | 合成验收 harness（31 checks：UNSAT/canaries/INPUT_INVALID/双向突变/工具链与 canonical-checker 红测） |
 | `sidecar/frontend.py` | 冻结工件解析前端（**零 import src/**；strict-JSON exact-decimal + operation profile 独立重推 + 五工件全长 sha256） |
 | `sidecar/parity_check.py` | profiles 对拍脚本（⚠ 刻意 import 生产当 oracle，是验证 harness 非 sidecar 组件；PARITY OK: 21/21 profiles 精确一致） |
 | `sidecar/real_sample.py` | 真实工件端到端样本（mandatory 实例全放；R1 core-only、R2 core+box，均应 SAT+witness） |
 | `sidecar/patch_rs_logger.py` | RoundingSat 上游缺陷本地补丁（见下） |
 
-## 状态（2026-07-18，Batch 3+5 语义迁移）
+## 状态（2026-08-20，Batch 3+5 迁移后的 common-mode 对账）
 
-- **迁移后结构验收 30/30 全绿**（本机 OR-Tools solver shim，覆盖 emitter、OPB、
+- **验收矩阵已扩为 31 项**：2026-08-20 对账发现 sidecar 的 generic-input
+  实体口检查只拒绝 shortfall、却会静默截断 surplus；生产模型要求
+  `physical_ports == declared_slots`。emitter 已改为精确相等，并新增 surplus
+  反例与生产/sidecar 双编码 parity sentinel。本工作树已跑新增的
+  INPUT_INVALID emitter-only 12/12 与 parity pytest 3/3；Windows→WSL 的完整
+  31 项 proof-chain 本批未重跑，因此不能把它记成新的 31/31 工具链收据。
+  该修复不改变 sidecar 的 diagnostic-only 权限，只消除“两个绿灯验证不同
+  输入契约”的投影漂移。
+- **此前结构验收 30/30 全绿**（本机 OR-Tools solver shim，覆盖 emitter、OPB、
   双层 witness checker 与全部红测；输出仅在 `/tmp`）。Windows→WSL 专用的
   RoundingSat→VeriPB→CakePB 完整 proof 链仍须在对应工具链环境复跑；
   `run_acceptance.py` 的正式输出目录 `work/` 为生成产物、不入库。
 - 覆盖：UNSAT 4 类（计数鸽笼/多商品溢出/正需求零槽哨兵编码）全 CONFIRMED
   （正式 proof 链复跑后才可重新声明 proof-backed）；FEASIBLE canaries 6 全
   SAT + 双层 witness 复验（OPB-level + canonical-level）升 `DIVERGED_CANDIDATE`；
-  另含 protocol_core 14 实体进口 canary；非法输入 11 类全 fail-closed 拒绝；
+  另含 protocol_core 14 实体进口 canary；非法输入现为 12 类全 fail-closed 拒绝；
   双向突变红测 4/4 被抓（含 over-constraint
   使 canary 翻 UNSAT——sidecar 最危险 bug 类的哨兵）；canonical checker 自身
   红测 5/5（篡改计数/双选/binding cell 或 generic slot 出 pose/漏变量全被精准拒）。
@@ -82,3 +90,11 @@ proof-log 模式要求扩展 OPB 头且 `#equal=` 必须精确等于等式行数
 ```powershell
 python certside/sidecar/run_acceptance.py   # 需上述 WSL 工具链就位
 ```
+
+### 2026-08-20 I1 round-1 audit follow-up
+
+The sidecar no longer owns a handwritten pose-optional template-to-operation table.  Its model input carries `plan_utility_operation_by_template`, derived from the frozen preprocess plan; emitter and canonical witness checker independently validate that map against operation profiles and subtract operations already represented by authoritative instances before synthesizing pose-optional placements.
+
+Generic input and generic output are now symmetric physical-capacity contracts: provider admission is plan-derived and the selected pose must expose exactly the declared number of physical ports.  Shortfall and surplus both reject before OPB emission or canonical witness admission.
+
+This Linux worktree re-runs emitter/canonical-checker parity and mutation tests only.  It does not claim a fresh Windows-to-WSL RoundingSat/VeriPB/CakePB chain receipt.

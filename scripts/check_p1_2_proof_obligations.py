@@ -61,15 +61,32 @@ PR2_DEPENDENCY_FLOOR_GENERATOR_SHA256 = (
     "9efbc3f2f32a56e6b9746604346efd7b6e1ef394fdd3ac9fa6fa7ece3ad33d8c"
 )
 STRONG_STATUS_WRITE_ALLOWLIST_SHA256 = (
-    "7472bba0be7f4de3dc4881ffe5c300ea81b163d9865c0d296b238f91169947c8"
+    "0ca803f1b2a512eb8967ac5eed2b9ffbcf0b3435e8102a4a17f0c7fd5f0799b7"
 )
-STRONG_STATUS_WRITE_ALLOWLIST_SIZE = 51908
+STRONG_STATUS_WRITE_ALLOWLIST_SIZE = 49756
 TERMINAL_FIXED_WITNESS_CAPSULE_PATH = (
     PROJECT_ROOT / "src" / "search" / "terminal_fixed_witness_capsule.py"
 )
 INDEPENDENT_INFEASIBILITY_REVERIFIER_PATH = (
     PROJECT_ROOT / "src" / "search" / "independent_infeasibility_reverifier.py"
 )
+INDEPENDENT_BINDING_REVERIFY_PACKAGE_PATH = (
+    PROJECT_ROOT / "src" / "search" / "independent_binding_reverify"
+)
+BINDING_SUBPROBLEM_PATH = PROJECT_ROOT / "src" / "models" / "binding_subproblem.py"
+HEURISTIC_FEASIBLE_FINDER_PATH = (
+    PROJECT_ROOT / "src" / "search" / "heuristic_feasible_finder.py"
+)
+P2_14_EVALUATOR_PATH = (
+    PROJECT_ROOT / "scripts" / "p2_14_evaluator" / "run_eval_v1_baseline.py"
+)
+PORT_BINDING_CONSTRUCTOR_NON_AUTHORITY_EXEMPTIONS = {
+    "scripts/p2_14_evaluator/run_eval_v1_baseline.py": (
+        "exploratory_evaluation_non_authority",
+        "offline baseline/hint timing evaluator; it cannot mint certified cuts, "
+        "proofs, or publication state",
+    ),
+}
 OUTER_SEARCH_PATH = PROJECT_ROOT / "src" / "search" / "outer_search.py"
 BENDERS_LOOP_PATH = PROJECT_ROOT / "src" / "search" / "benders_loop.py"
 DELIVERY_MANIFEST_PATH = PROJECT_ROOT / "src" / "io" / "delivery_manifest.py"
@@ -129,9 +146,56 @@ REQUIRED_TESTS_BY_OBLIGATION_ID = {
             "test_independent_infeasibility_reverify_timeout_blocks_cut_unknown",
             "test_independent_infeasibility_reverify_exception_blocks_cut_unknown",
             "test_independent_infeasibility_reverify_routing_exhaustion_without_binding_confirmation_unknown",
+            "test_independent_binding_arithmetic_confirms_generic_output_deficit",
+            "test_independent_binding_arithmetic_confirms_generic_input_deficit",
+            "test_independent_binding_arithmetic_constructs_feasible_assignment",
+            "test_independent_binding_arithmetic_matches_production_capacity_matrix",
+            "test_independent_binding_arithmetic_rejects_generic_input_port_count_drift",
+            "test_independent_binding_arithmetic_rejects_selected_pose_drift",
+            "test_independent_binding_arithmetic_rejects_missing_mandatory_placement",
+            "test_independent_binding_arithmetic_rejects_generic_role_overlap",
+            "test_independent_binding_arithmetic_rejects_authority_snapshot_drift",
+            "test_independent_binding_arithmetic_rejects_unmodeled_binding_semantics",
+            "test_explicit_witness_checker_rejects_tampered_assignment",
+            "test_explicit_witness_checker_rejects_bool_integer_alias",
+            "test_constructor_surface_drift_fails_closed",
+            "test_utility_operation_map_drift_fails_closed",
+            "test_plan_provider_drift_fails_closed",
+            "test_capsule_enforces_real_wall_timeout",
+            "test_p1_2_checker_rejects_production_model_import_in_reverifier",
+            "test_p1_2_checker_rejects_arithmetic_analyzer_bypass",
             "test_p1_2_checker_rejects_whole_layout_reverify_gate_removal",
             "test_p1_2_checker_rejects_inflight_cache_read_in_infeasibility_reverifier",
             "test_p1_2_checker_rejects_env_reader_in_infeasibility_reverifier",
+            "test_package_checker_rejects_dynamic_import_bypasses",
+            "test_package_checker_rejects_constant_runtime_contract_fields",
+            "test_package_checker_rejects_production_provider_hardcode",
+            "test_package_checker_rejects_production_input_provider_hardcode",
+            "test_package_checker_rejects_pr2_output_map_drop",
+            "test_package_checker_seals_pr2_utility_snapshot_wiring",
+            "test_package_checker_seals_heuristic_nonauthority_boundary",
+            "test_generic_input_exact_physical_count_is_accepted_by_both_encodings",
+            "test_generic_input_count_drift_is_rejected_by_both_encodings",
+            "test_canonical_checker_accepts_exact_generic_input_physical_count",
+            "test_canonical_checker_rejects_generic_input_shortfall_and_surplus",
+            "test_real_protocol_core_and_pose_optional_box_match_production_cp_sat",
+            "test_round3_checker_rejects_constant_runtime_observation",
+            "test_round3_checker_rejects_generic_input_plan_bypass",
+            "test_round3_checker_enumerates_non_controller_binding_constructors",
+            "test_round3_checker_requires_runtime_relaxation_validation",
+            "test_round3_certificate_checker_rejects_runtime_relaxation_tamper",
+            "test_round3_pose_optional_synthesis_loads_plan_utility_map",
+            "test_round3_exact_session_carries_plan_utility_operation_map",
+            "test_capability_contract_uses_observed_production_runtime_state",
+            "test_routing_context_is_certificate_bound_monotone_relaxation",
+            "test_capsule_accepts_observed_routing_context_as_monotone_relaxation",
+            "test_certificate_checker_rejects_runtime_relaxation_tamper",
+            "test_observed_overload_separation_fails_closed",
+            "test_observed_selection_nogoods_fail_closed",
+            "test_package_checker_rejects_hardcoded_runtime_capability_field",
+            "test_package_checker_seals_primary_and_retry_binding_snapshot_wiring",
+            "test_package_checker_requires_plan_derived_generic_input_admission",
+            "test_real_artifact_output_deficit_matches_production_cp_sat",
         }
     ),
     "PO-CANDIDATE-SINK-REPLAY-AUTHORITY": frozenset(
@@ -3131,7 +3195,7 @@ def _check_evidence_and_tests(manifest: dict[str, Any]) -> list[str]:
 
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELD = "semantic_projection_sha256"
 P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_SHA256 = (
-    "01417c60a776c460ad2123af6f5f558e86cb33259a6a38e704048c6059fec262"
+    "cc5ed8abbef16c95e4c7e4b758e9478ba7b414bc8cad30a327dde72283f02e94"
 )
 _P1_2_PROOF_OBLIGATION_SEMANTIC_PROJECTION_FIELDS = (
     "schema_version",
@@ -3563,16 +3627,14 @@ def _errors_name_reference_is_whitelisted(
             and parent.value is node
             and parent.attr == "append"
         )
-    if _statement_is_errors_failure_gate(stmt):
-        if isinstance(stmt, ast.If) and stmt.test is node:
-            return True
-        if (
+    if _is_print_errors_call(stmt):
+        return (
             isinstance(parent, ast.Call)
             and _call_func_name(parent) == "_print_p1_2_errors"
             and parent.args == [node]
-        ):
-            return True
-        return False
+        )
+    if _statement_is_errors_failure_gate(stmt):
+        return isinstance(stmt, ast.If) and stmt.test is node
     if function_name == "_check_candidate_sink_replay_contract":
         return isinstance(stmt, ast.Return) and stmt.value is node
     return False
@@ -4234,11 +4296,29 @@ def _check_main_error_reporting_shape(
         if not (
             isinstance(handler.type, ast.Name)
             and handler.type.id == "CheckError"
-            and handler.name is None
+            and handler.name in {None, "exc"}
         ):
             errors.append("proof-obligation checker main exception handler must catch only CheckError")
-        if len(handler.body) != 1 or not _direct_return_value(handler.body[0], 2):
-            errors.append("proof-obligation checker main CheckError handler must only return 2")
+        handler_has_diagnostic = (
+            handler.name == "exc"
+            and len(handler.body) == 2
+            and isinstance(handler.body[0], ast.Expr)
+            and isinstance(handler.body[0].value, ast.Call)
+            and _call_func_name(handler.body[0].value) == "_print_p1_2_errors"
+            and len(handler.body[0].value.args) == 1
+            and not handler.body[0].value.keywords
+            and _direct_return_value(handler.body[1], 2)
+        )
+        handler_has_direct_return = (
+            handler.name is None
+            and len(handler.body) == 1
+            and _direct_return_value(handler.body[0], 2)
+        )
+        if not (handler_has_diagnostic or handler_has_direct_return):
+            errors.append(
+                "proof-obligation checker main CheckError handler must print one "
+                "diagnostic then return 2, or directly return 2"
+            )
     return_zero_lines: list[int] = []
     for node in ast.walk(main_fn):
         if isinstance(node, ast.Return):
@@ -12860,6 +12940,12 @@ CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH = {
     'src/search/exact_campaign_inspector.py': 'p1_2_public_surface',
     'src/search/exact_parallel_scheduler.py': 'p1_2_certified_path',
     'src/search/heuristic_feasible_finder.py': 'exploratory_or_heuristic_non_authority',
+    'src/search/independent_binding_reverify/__init__.py': 'p1_2_certified_path',
+    'src/search/independent_binding_reverify/api.py': 'p1_2_certified_path',
+    'src/search/independent_binding_reverify/capsule.py': 'p1_2_certified_path',
+    'src/search/independent_binding_reverify/certificate.py': 'p1_2_certified_path',
+    'src/search/independent_binding_reverify/protocol.py': 'p1_2_certified_path',
+    'src/search/independent_binding_reverify/theorem.py': 'p1_2_certified_path',
     'src/search/independent_infeasibility_reverifier.py': 'p1_2_certified_path',
     'src/search/outer_search.py': 'p1_2_certified_path',
     'src/search/patch_conflict_separator.py': 'p1_2_certified_path',
@@ -12896,6 +12982,16 @@ CLOSE_KERNEL_V99_REQUIRED_CRITICAL_GATE_FILES = frozenset(
         "src/search/outer_search.py",
         "src/search/exact_parallel_scheduler.py",
         "src/search/benders_loop.py",
+        "src/search/independent_infeasibility_reverifier.py",
+        "src/search/independent_binding_reverify/__init__.py",
+        "src/search/independent_binding_reverify/api.py",
+        "src/search/independent_binding_reverify/artifacts.py",
+        "src/search/independent_binding_reverify/capsule.py",
+        "src/search/independent_binding_reverify/certificate.py",
+        "src/search/independent_binding_reverify/protocol.py",
+        "src/search/independent_binding_reverify/semantics.py",
+        "src/search/independent_binding_reverify/theorem.py",
+        "src/search/independent_binding_reverify/transport.py",
         "src/search/terminal_fixed_witness_capsule.py",
         "src/render/industrial_planner_exact_status.py",
         "scripts/build_industrial_planner_single_base_delivery_release.py",
@@ -12909,9 +13005,21 @@ CLOSE_KERNEL_V99_REQUIRED_CRITICAL_GATE_FILES = frozenset(
 # the V99 source-hash floor below.
 CLOSE_KERNEL_V99_STRUCTURAL_GATE_SOURCE_PATHS = frozenset(
     {
+        "src/models/binding_subproblem.py",
+        "src/search/benders_loop.py",
         "src/search/certified_frontier.py",
         "src/search/certified_surface.py",
         "src/search/exact_campaign.py",
+        "src/search/independent_infeasibility_reverifier.py",
+        "src/search/independent_binding_reverify/__init__.py",
+        "src/search/independent_binding_reverify/api.py",
+        "src/search/independent_binding_reverify/artifacts.py",
+        "src/search/independent_binding_reverify/capsule.py",
+        "src/search/independent_binding_reverify/certificate.py",
+        "src/search/independent_binding_reverify/protocol.py",
+        "src/search/independent_binding_reverify/semantics.py",
+        "src/search/independent_binding_reverify/theorem.py",
+        "src/search/independent_binding_reverify/transport.py",
         "src/search/pr2_l0_fixed_witness_core.py",
         "src/search/pr2_l0_micro_verifier_core.py",
         "src/search/pr2_l0_true_verifier_child.py",
@@ -12982,7 +13090,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/io/strict_json.py': '65293ed7c0a108e906b16bee206acb1ca7f598040aa85b372023dc954574c45a',
     'src/models/_cpsat_compat.py': 'c8e4ae4b9df87bb7b3bb3f823974b940a6c10e4d651ab811be13ca1d10810d89',
     'src/models/abstract_routing_layer.py': '2e58b99dc54ca9a6dc917fe9c0515516eda8e54cfb9d7bdbf572291c0b21f520',
-    'src/models/binding_subproblem.py': '1c89f6ee2cb958568c7365289a0b3d6e69a32f3162d4c925f02695705efc7ee9',
+    'src/models/binding_subproblem.py': 'b5c6ebf84b31ef35a73e596d34eab96e2609f08e43cd3c2ff322e369646c5eba',
     'src/models/cp_sat_worker_config.py': '4f9a4847f179f1ed15d61b17bcdc2340c82c1ec2494abd1eb7402f919c84ba50',
     'src/models/cpsat_minimum_model.py': '92d9e9eed88dbf6672db12766a8a1422c660e8314480b9fa599ce4b0e71b7104',
     'src/models/cut_manager.py': '50b46f98cd2ca1947b807262a78a2460f822b6755d94c0845749d2c02c416a01',
@@ -12991,7 +13099,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/models/flow_subproblem.py': '948c4fee4495264c339c335b353de1925a9c7b5f9ebc12e1088ac2d0a7c3d06a',
     'src/models/highs_candidate_evaluator.py': '1709e1536a49f11ed057ab6dc1e904d9acac8d25c910c4299789b5309986f419',
     'src/models/highs_master_model.py': 'ab366573359ec1db835c6c78e03f9ecd7387abc3ea5bb0aaa31cebaed64f191a',
-    'src/models/master_model.py': '761890e0c799c3c0f6f19832d7b7031e93c9898d7a6a10188afc8ed59cb5daf7',
+    'src/models/master_model.py': 'd1ada57bc6dcef1818341b26dfd482fb7c1623d106734b8f1a49061c2e7c1371',
     'src/models/patch_routing_core.py': '8e7f147c4779716dc721ef7add1d17b92be75efd29d8089de424389534affd2d',
     'src/models/port_binding.py': '9ed6c34873c5d8e3f7640a8507021e48ca2d850de2edc429482f3699700adc53',
     'src/models/pose_bool_exact_master.py': '8991b7f98b95ee255c4967b13fc2d22bf6eed5ec54ad1f0e48377a44db0dbd90',
@@ -13014,13 +13122,13 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/render/report_builder.py': '860ff758d6c64ac0029f2e22ad087c6b520d37d40e0264a8b464302a36c7cff6',
     'src/render/serve.py': '45a03f847c80595ef72b3e859eeccf01169ed16e87faebd7b75be4c788ff7262',
     'src/runtime/subproblem_invocation_counter.py': '6f5ac40b2674a1a2b99d9932dc262e4c57c2f622e27e4b83dc39d9bcc270c759',
-    'src/search/benders_loop.py': '34e198fc475ea2c7ea74ec05371fe59f8749a1e228ae68147577bd719be96a4e',
+    'src/search/benders_loop.py': '461fc6875ca16781c1d0d81720aee98747a3d2c984a4c1bf1afda4f384af1bc3',
     'src/search/f5_binding_empty_domain_adapter.py': '76d072161b85f8ce5e87682769434291b5c7ccdb005623dc8a3265fb4c48b6df',
     'src/search/orbit_homogeneity.py': '633d41eae5a2b6db987a350ca6862324df9a8551dd0191f1f3ffa264b71cc4c9',
     'src/search/campaign_telemetry.py': 'b6582c452b39c444d32a07e9f949fbbfc16558b5d99e9a0a3824d86cdc4e76f6',
     'src/search/campaign_triage.py': '0ce473249d0a78e4dd837df140a218f1a109c4e304a223910dd2c918109dd376',
     'src/search/candidate_proof_replay.py': '0a6dd3089cda9e0229cac482737b000b724f51acac51085e345f533c1238547b',
-    'src/search/certified_artifact_contract.py': '06ed35fce3f77fa94662c49a03186db824f57b9bf33ed8872893465f5352b315',
+    'src/search/certified_artifact_contract.py': '3bc22369557d2547a40f098e1094da8121ba0ec2ee9c531079c250598bb5e591',
     'src/search/certified_frontier.py': 'b823ba698b66850e626ad474eb83511a98c128401972f0ea44dc30c2c3947aa0',
     'src/search/certified_surface.py': '9e76bed7a8a426466c3f5df97c512084295f08e99cb0c6baf12c43309c4d0354',
     'src/search/commodity_throughput.py': '2379bd1d48071ce11ca5444797e760860986e8cf5789afea9563dc71fea61e89',
@@ -13028,8 +13136,17 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/exact_campaign.py': 'd893e59a9f1bd573208a39905bdb7d677046f97367543958cc201a90b21d1a04',
     'src/search/exact_campaign_inspector.py': 'ca16b9a7272d633a6ca19d8257cfde73d5c1858711b503aa222fd7d5c7dd53da',
     'src/search/exact_parallel_scheduler.py': 'e07c926505e030ed2ab4220afe612c7a187e0e19c222c841c5f68a0d02f7c441',
-    'src/search/heuristic_feasible_finder.py': '0f9723671ddee8dd8b53659ae204f2ca1d7967d2ad3d63db0c093f8586302903',
-    'src/search/independent_infeasibility_reverifier.py': 'a71cc162bad123a5d68070dfa7eb4c127d2cd47ddc7781640b8e368d2bab63f9',
+    'src/search/heuristic_feasible_finder.py': '5c885eca5c683e37e41163a53f3bb5f4c9c5f759ce0f52db7e8d0cc5c779770d',
+    'src/search/independent_binding_reverify/__init__.py': '7fd71f197586e19a9bb19a55f9d1b2b0e2958e0a8f8c06f2a021c59b0e4f91cc',
+    'src/search/independent_binding_reverify/api.py': '2e312e17c1b93efbfbd10d8cd2e27a5fa439810ec3633bd917ad80695cb0f28e',
+    'src/search/independent_binding_reverify/artifacts.py': '0dfa71cd1e74100e2d030263d79762bf570ea8139b37eebc68a029f086c49180',
+    'src/search/independent_binding_reverify/capsule.py': 'c923eb7ab9a858dac549ed083fbc4efaaa289f97131a1fddc2c916d29b896f7d',
+    'src/search/independent_binding_reverify/certificate.py': '5144ad29f2d92444f0b74143587afc9d4866fa951b0781b4a89b31b74b24bf83',
+    'src/search/independent_binding_reverify/protocol.py': '16aeea60711fbf7dab8a2c7d7d2109ea18e7ab0e081d6e4c53f6d4bc4af02f1e',
+    'src/search/independent_binding_reverify/semantics.py': '9582cf325c60e861293cdbf8146672b4ab089c3a9c11d639bbe33ba478acf22e',
+    'src/search/independent_binding_reverify/theorem.py': 'b3b63bac981b4d17f6efa43dd110ae3ce76f7fb7f6d2aed74545034eb1beceb5',
+    'src/search/independent_binding_reverify/transport.py': '16c7c1158220ee7d4ebf3110f270390c84fd1795b34ef65b043da5d94aa6d5de',
+    'src/search/independent_infeasibility_reverifier.py': '831fab66ee48baa387e06d0aa3dd7af5a9acd85554d2361698bb141995cbdf8f',
     'src/search/master_hint_persistence.py': '2c1c51977a6eff577e08ac62ef97eee7605e05fdbd51ea9328f13e99c405ff4e',
     'src/search/outer_search.py': 'f7082617304e8c733ac669f9e8ba5b5fe98e980db4ea4966bb3390a04af681e1',
     'src/search/patch_conflict_separator.py': '42368fc82b79b6fe5f31186ba197accecd73d425dce2ae5fad3316f6388e64e5',
@@ -13038,7 +13155,7 @@ CLOSE_KERNEL_V99_REQUIRED_SOURCE_SHA256_BY_PATH = {
     'src/search/phase3b/anchor119/guarded_precheck_spec.py': '2a8c414eedaf42e6685a58922a9812e8a531821cadbe5fdfce860948fea3f86c',
     'src/placement/placement_generator.py': '01f48f8025f2261a685c9c6813d25e28b08a6370ea0653a003d4d57aeb51c44d',
     'src/search/pr2_l0_artifact_core.py': '4db9e77b03e8176fbec399c3bafc78239597d960a252174afab8d0af649a33c7',
-    'src/search/pr2_l0_fixed_witness_core.py': '265963175a1c8facda251fa0bc1e39781c800bcbaff7084c2bb8a382566ee17c',
+    'src/search/pr2_l0_fixed_witness_core.py': 'eae892a25f2e97c8f8cca4f58c205c8c18e829c7deba3407628aeab69c79eda1',
     'src/search/pr2_l0_frontier_core.py': 'b658d418908b686061281dde24b9c1b89333c1659faa736cf082dcd7bbdb109b',
     'src/search/pr2_l0_micro_verifier_core.py': 'df37936427ac6d2ffb0f4163963cc1adf9f28daa4b7dc11947a0a5f78546edbb',
     'src/search/pr2_l0_replay_core.py': 'f41d06064aa09ac92f24086076b7948f638e6ebba10385232236a061d7f50df2',
@@ -13967,8 +14084,19 @@ def _check_independent_infeasibility_reverifier_contract(
     *,
     benders_loop_path: Path = BENDERS_LOOP_PATH,
     reverifier_path: Path = INDEPENDENT_INFEASIBILITY_REVERIFIER_PATH,
+    package_path: Path = INDEPENDENT_BINDING_REVERIFY_PACKAGE_PATH,
+    binding_subproblem_path: Path = BINDING_SUBPROBLEM_PATH,
+    pr2_fixed_witness_path: Path = PR2_L0_FIXED_WITNESS_CORE_PATH,
+    heuristic_finder_path: Path = HEURISTIC_FEASIBLE_FINDER_PATH,
+    p2_14_evaluator_path: Path = P2_14_EVALUATOR_PATH,
 ) -> list[str]:
-    """Require whole-layout nogoods to pass independent ∀ re-verification first."""
+    """Seal the package boundary, capsule transport, and admission dataflow.
+
+    Internal helper names are deliberately not the contract.  The gate pins a
+    small public surface, a closed import graph, the independent certificate
+    checker, the isolated process boundary, and the production constraint-family
+    capability contract.
+    """
 
     errors: list[str] = []
     benders_tree = _parse_python(benders_loop_path)
@@ -13978,8 +14106,7 @@ def _check_independent_infeasibility_reverifier_contract(
         name="reverify_whole_layout_infeasibility",
     ):
         errors.append(
-            "whole-layout nogood funnel must import reverify_whole_layout_infeasibility "
-            "from src.search.independent_infeasibility_reverifier without aliasing"
+            "whole-layout nogood funnel must import the stable binding reverify facade"
         )
     else:
         errors.extend(
@@ -14034,80 +14161,700 @@ def _check_independent_infeasibility_reverifier_contract(
     reverify_pos = funnel_source.find("reverify_whole_layout_infeasibility(")
     mint_pos = funnel_source.find("self._add_exact_persisted_nogood(")
     if reverify_pos < 0:
-        errors.append(
-            "whole-layout nogood funnel must call independent infeasibility reverifier"
-        )
+        errors.append("whole-layout nogood funnel must call the independent capsule")
     if mint_pos < 0:
         errors.append("whole-layout nogood funnel no longer calls persisted nogood mint")
     if reverify_pos >= 0 and mint_pos >= 0 and reverify_pos > mint_pos:
-        errors.append(
-            "whole-layout nogood funnel must call independent reverifier before "
-            "_add_exact_persisted_nogood"
-        )
-    for token in (
-        "independent_infeasibility_reverifier",
+        errors.append("whole-layout nogood must be independently admitted before minting")
+    for required_source in (
+        "artifact_hashes=self.artifact_hashes",
+        "binding_semantics_contract=(",
         "whole_layout_nogood_independent_reverify_divergence",
         "whole_layout_nogood_independent_reverify_unknown",
         "fail_closed_unknown",
     ):
-        if token not in funnel_source:
-            errors.append(f"whole-layout nogood reverify gate missing token: {token}")
+        if required_source not in funnel_source:
+            errors.append(f"whole-layout capsule admission missing boundary: {required_source}")
 
-    reverifier_tree = _parse_python(reverifier_path)
-    reverifier_source = reverifier_path.read_text(encoding="utf-8")
-    for function_name in (
-        "reverify_whole_layout_infeasibility",
-        "_reverify_binding_infeasible",
-        "_solve_with_independent_cp_sat",
+    binding_constructor_calls = [
+        node
+        for node in ast.walk(controller_class)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == "PortBindingModel"
+    ]
+    if len(binding_constructor_calls) < 2:
+        errors.append("certified binding path lost its primary or retry construction point")
+    for call in binding_constructor_calls:
+        call_source = _source_text(benders_loop_path, call)
+        if "_binding_snapshot_kwargs(self)" not in call_source:
+            errors.append(
+                "every certified PortBindingModel construction must consume the same snapshot helper"
+            )
+    contract_fn = _method_def(
+        controller_class,
+        "_binding_reverify_semantics_contract",
+        path=benders_loop_path,
+    )
+    contract_source = _source_text(benders_loop_path, contract_fn)
+    for required_source in (
+        "inspect.signature(PortBindingModel.__init__)",
+        "inspect.signature(PortBindingModel.build)",
+        '"binding_semantics_contract_v1"',
+        '"plan_generic_input_slots_by_operation"',
+        '"plan_generic_output_slots_by_operation"',
+        '"plan_utility_operation_by_template"',
+        '"plan_derived_physical_exact_count"',
     ):
-        _function_def(reverifier_tree, function_name, path=reverifier_path)
-    for token in (
-        "NAMED-TCB",
-        "∀ = INFEASIBLE",
-        "PortBindingModel(",
-        "cp_model.CpSolver()",
-        "cp_model.PORTFOLIO_SEARCH",
-        "random_seed",
-        "randomize_search",
-        "num_search_workers",
-        "routing_exhaustion_phase1_conservative_unknown",
-    ):
-        if token not in reverifier_source:
-            errors.append(f"independent infeasibility reverifier missing token: {token}")
-    if ".solve(" in reverifier_source:
+        if required_source not in contract_source:
+            errors.append(f"binding capability contract missing: {required_source}")
+    if not _direct_calls_attr(contract_fn, "extract_conflict_summary"):
         errors.append(
-            "independent infeasibility reverifier must not call subproblem solve(); "
-            "it must use its own heterogeneous CpSolver"
+            "binding capability contract must observe the producing binding model summary"
         )
-    for child in ast.walk(reverifier_tree):
-        if isinstance(child, ast.Import):
-            for alias in child.names:
-                if alias.name == "os":
+    argument_names = {
+        argument.arg
+        for argument in (
+            list(contract_fn.args.posonlyargs)
+            + list(contract_fn.args.args)
+            + list(contract_fn.args.kwonlyargs)
+        )
+    }
+    for required_argument in (
+        "binding_model",
+        "source_rejected_selection_count",
+    ):
+        if required_argument not in argument_names:
+            errors.append(
+                "binding capability contract missing runtime observation argument: "
+                + required_argument
+            )
+    contract_dicts = [
+        node.value
+        for node in ast.walk(contract_fn)
+        if isinstance(node, ast.Return) and isinstance(node.value, ast.Dict)
+    ]
+    if len(contract_dicts) != 1:
+        errors.append(
+            "binding capability contract must return exactly one literal contract object"
+        )
+    else:
+        contract_fields: dict[str, ast.AST] = {}
+        for key_node, value_node in zip(
+            contract_dicts[0].keys,
+            contract_dicts[0].values,
+        ):
+            if isinstance(key_node, ast.Constant) and isinstance(key_node.value, str):
+                contract_fields[str(key_node.value)] = value_node
+        observed_field_names = {
+            "routing_context_enabled": "routing_context_enabled",
+            "overload_separation_enabled": "overload_separation_enabled",
+            "reverification_selection_nogood_count": "raw_nogood_count",
+            "source_rejected_selection_count": "source_rejected_selection_count",
+        }
+        for field_name, required_name in observed_field_names.items():
+            value_node = contract_fields.get(field_name)
+            if value_node is None:
+                errors.append(
+                    f"binding capability contract missing observed field: {field_name}"
+                )
+                continue
+            if isinstance(value_node, ast.Constant):
+                errors.append(
+                    f"binding capability contract field must not be a constant: {field_name}"
+                )
+                continue
+            if not any(
+                isinstance(child, ast.Name) and child.id == required_name
+                for child in ast.walk(value_node)
+            ):
+                errors.append(
+                    "binding capability contract field is not wired to its runtime "
+                    f"observation: {field_name}->{required_name}"
+                )
+
+    facade_tree = _parse_python(reverifier_path)
+    if not _top_level_imports_exact_name(
+        facade_tree,
+        module="src.search.independent_binding_reverify.api",
+        name="reverify_whole_layout_infeasibility",
+    ):
+        errors.append("legacy reverifier facade must re-export the package API")
+    if any(isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) for node in facade_tree.body):
+        errors.append("legacy reverifier facade must not retain proof implementation logic")
+
+    expected_files = {
+        "__init__.py",
+        "api.py",
+        "artifacts.py",
+        "capsule.py",
+        "certificate.py",
+        "protocol.py",
+        "semantics.py",
+        "theorem.py",
+        "transport.py",
+    }
+    if not package_path.is_dir():
+        return [*errors, "independent binding reverify package is missing"]
+    actual_files = {path.name for path in package_path.glob("*.py")}
+    if actual_files != expected_files:
+        errors.append(
+            "independent binding package file set drifted: "
+            f"missing={sorted(expected_files - actual_files)};"
+            f"extra={sorted(actual_files - expected_files)}"
+        )
+
+    trees: dict[str, ast.Module] = {}
+    forbidden_modules = {"builtins", "importlib", "os", "ortools"}
+    forbidden_dynamic_names = {
+        "__import__",
+        "compile",
+        "eval",
+        "exec",
+        "globals",
+        "locals",
+        "vars",
+    }
+    package_modules = {name.removesuffix(".py") for name in expected_files}
+    for filename in sorted(actual_files & expected_files):
+        path = package_path / filename
+        tree = _parse_python(path)
+        trees[filename] = tree
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    root_name = alias.name.split(".", 1)[0]
+                    if root_name in forbidden_modules or root_name == "src":
+                        errors.append(
+                            f"{filename}: closed proof package imports forbidden module {alias.name}"
+                        )
+                    elif root_name not in sys.stdlib_module_names:
+                        errors.append(
+                            f"{filename}: closed proof package imports non-stdlib module {alias.name}"
+                        )
+            elif isinstance(node, ast.ImportFrom):
+                if node.level > 0:
+                    relative_root = str(node.module or "").split(".", 1)[0]
+                    if relative_root and relative_root not in package_modules:
+                        errors.append(
+                            f"{filename}: relative import escapes closed package: {node.module}"
+                        )
+                else:
+                    imported = str(node.module or "")
+                    root_name = imported.split(".", 1)[0]
+                    if root_name in forbidden_modules or root_name == "src":
+                        errors.append(
+                            f"{filename}: closed proof package imports forbidden module {imported}"
+                        )
+                    elif root_name not in sys.stdlib_module_names:
+                        errors.append(
+                            f"{filename}: closed proof package imports non-stdlib module {imported}"
+                        )
+            elif isinstance(node, ast.Call):
+                if isinstance(node.func, ast.Name) and node.func.id in forbidden_dynamic_names:
                     errors.append(
-                        "independent infeasibility reverifier must not import os or "
-                        "read EXACT_* env"
+                        f"{filename}: dynamic execution/import primitive forbidden: {node.func.id}"
                     )
-        if isinstance(child, ast.ImportFrom) and child.module == "os":
-            errors.append(
-                "independent infeasibility reverifier must not import os env helpers"
-            )
-        if (
-            isinstance(child, ast.Attribute)
-            and isinstance(child.value, ast.Name)
-            and child.value.id == "os"
-            and child.attr in {"environ", "getenv"}
+                if isinstance(node.func, ast.Attribute) and node.func.attr in {
+                    "import_module",
+                    "__import__",
+                }:
+                    errors.append(
+                        f"{filename}: dynamic import attribute forbidden: {node.func.attr}"
+                    )
+                if (
+                    isinstance(node.func, ast.Name)
+                    and node.func.id in {"getattr", "setattr"}
+                    and len(node.args) >= 2
+                    and isinstance(node.args[1], ast.Constant)
+                    and node.args[1].value
+                    in {"__import__", "import_module", "modules"}
+                ):
+                    errors.append(
+                        f"{filename}: dynamic attribute import bypass forbidden: "
+                        f"{node.func.id}({node.args[1].value!r})"
+                    )
+            elif isinstance(node, ast.Name) and node.id in {
+                "__builtins__",
+                "importlib",
+            }:
+                errors.append(f"{filename}: dynamic import namespace forbidden: {node.id}")
+            elif isinstance(node, ast.Constant) and node.value == "__import__":
+                errors.append(f"{filename}: dynamic import string forbidden")
+            elif (
+                isinstance(node, ast.Attribute)
+                and isinstance(node.value, ast.Name)
+                and node.value.id == "sys"
+                and node.attr == "modules"
+            ):
+                errors.append(f"{filename}: sys.modules access is forbidden")
+            elif (
+                isinstance(node, ast.Attribute)
+                and isinstance(node.value, ast.Name)
+                and node.value.id == "self"
+                and node.attr in {"master", "_solver"}
+            ):
+                errors.append(
+                    f"{filename}: in-flight production authority access forbidden: self.{node.attr}"
+                )
+
+    required_public_functions = {
+        "api.py": ("reverify_whole_layout_infeasibility",),
+        "artifacts.py": ("load_authority_artifacts",),
+        "capsule.py": ("execute_capsule_request", "isolated_capsule_main"),
+        "certificate.py": ("verify_binding_certificate",),
+        "semantics.py": ("build_semantic_model",),
+        "theorem.py": ("build_binding_certificate",),
+        "transport.py": ("invoke_capsule",),
+    }
+    for filename, function_names in required_public_functions.items():
+        tree = trees.get(filename)
+        if tree is None:
+            continue
+        for function_name in function_names:
+            try:
+                _function_def(tree, function_name, path=package_path / filename)
+            except CheckError as exc:
+                errors.append(str(exc))
+
+    api_tree = trees.get("api.py")
+    capsule_tree = trees.get("capsule.py")
+    certificate_tree = trees.get("certificate.py")
+    transport_tree = trees.get("transport.py")
+    if api_tree is not None:
+        api_fn = _function_def(
+            api_tree,
+            "reverify_whole_layout_infeasibility",
+            path=package_path / "api.py",
+        )
+        if not _direct_calls_name(api_fn, "invoke_capsule"):
+            errors.append("binding reverify API must invoke the isolated capsule directly")
+    if capsule_tree is not None:
+        execute_fn = _function_def(
+            capsule_tree,
+            "execute_capsule_request",
+            path=package_path / "capsule.py",
+        )
+        for required_call in (
+            "load_authority_artifacts",
+            "build_semantic_model",
+            "build_binding_certificate",
+            "verify_binding_certificate",
         ):
-            errors.append("independent infeasibility reverifier must not read EXACT_* env")
-        if (
-            isinstance(child, ast.Attribute)
-            and child.attr in {"master", "_solver"}
-            and isinstance(child.value, ast.Name)
-            and child.value.id == "self"
+            if not _direct_calls_name(execute_fn, required_call):
+                errors.append(f"capsule child executor must call {required_call}")
+    if certificate_tree is not None:
+        for node in ast.walk(certificate_tree):
+            if isinstance(node, ast.ImportFrom) and str(node.module or "").endswith("theorem"):
+                errors.append("independent certificate checker must not import theorem builder")
+    if transport_tree is not None:
+        transport_source = (package_path / "transport.py").read_text(encoding="utf-8")
+        for token in ('"-I"', '"-B"', "pycache_prefix=", "timeout=float(timeout_seconds)"):
+            if token not in transport_source:
+                errors.append(f"binding capsule transport missing isolation boundary: {token}")
+        if "shell=True" in transport_source:
+            errors.append("binding capsule transport must never use shell=True")
+
+    binding_tree = _parse_python(binding_subproblem_path)
+    binding_class = _class_def(
+        binding_tree,
+        "PortBindingModel",
+        path=binding_subproblem_path,
+    )
+    build_fn = _method_def(binding_class, "build", path=binding_subproblem_path)
+    actual_constraint_calls = {
+        node.func.attr
+        for node in ast.walk(build_fn)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and isinstance(node.func.value, ast.Name)
+        and node.func.value.id == "self"
+        and (
+            node.func.attr.startswith("_build_")
+            or node.func.attr.startswith("_add_")
+            or node.func.attr == "_mark_invalid_binding_input_summary"
+        )
+    }
+    expected_constraint_calls = {
+        "_build_fixed_operation_domains",
+        "_build_generic_input_domains",
+        "_build_generic_output_domains",
+        "_add_generic_input_requirements",
+        "_add_generic_output_requirements",
+        "_mark_invalid_binding_input_summary",
+        "_add_search_guidance",
+        "_add_storage_box_overload_nogoods",
+    }
+    if actual_constraint_calls != expected_constraint_calls:
+        errors.append(
+            "PortBindingModel.build constraint family surface drifted: "
+            f"missing={sorted(expected_constraint_calls - actual_constraint_calls)};"
+            f"extra={sorted(actual_constraint_calls - expected_constraint_calls)}"
+        )
+    input_domain_fn = _method_def(
+        binding_class,
+        "_build_generic_input_domains",
+        path=binding_subproblem_path,
+    )
+    if not _direct_calls_attr(input_domain_fn, "_generic_input_slot_capacity_map"):
+        errors.append("production generic-input provider admission must be plan-derived")
+    output_domain_fn = _method_def(
+        binding_class,
+        "_build_generic_output_domains",
+        path=binding_subproblem_path,
+    )
+    if not _direct_calls_attr(output_domain_fn, "_generic_output_slot_capacity_map"):
+        errors.append("production generic-output provider admission must be plan-derived")
+
+    forbidden_provider_literals = {
+        "boundary_io",
+        "protocol_core",
+    }
+    for node in ast.walk(binding_tree):
+        if isinstance(node, (ast.Set, ast.List, ast.Tuple)):
+            literal_values = {
+                str(item.value)
+                for item in node.elts
+                if isinstance(item, ast.Constant) and isinstance(item.value, str)
+            }
+            if forbidden_provider_literals <= literal_values:
+                errors.append(
+                    "production generic provider admission must not use a literal "
+                    "boundary_io/protocol_core collection"
+                )
+        elif isinstance(node, ast.Dict):
+            literal_keys = {
+                str(item.value)
+                for item in node.keys
+                if isinstance(item, ast.Constant) and isinstance(item.value, str)
+            }
+            if forbidden_provider_literals <= literal_keys:
+                errors.append(
+                    "production generic provider admission must not use a literal "
+                    "boundary_io/protocol_core mapping"
+                )
+
+    pr2_tree = _parse_python(pr2_fixed_witness_path)
+    pr2_verify_fn = _function_def(
+        pr2_tree,
+        "verify_terminal_fixed_witness",
+        path=pr2_fixed_witness_path,
+    )
+    if not _direct_calls_name(pr2_verify_fn, "load_binding_plan_semantics"):
+        errors.append(
+            "terminal fixed-witness binding reconstruction must load one "
+            "plan-derived binding semantics snapshot"
+        )
+    pr2_binding_calls = [
+        node
+        for node in ast.walk(pr2_verify_fn)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == "PortBindingModel"
+    ]
+    if len(pr2_binding_calls) != 1:
+        errors.append(
+            "terminal fixed-witness verifier must construct exactly one PortBindingModel"
+        )
+    else:
+        keyword_names = {
+            str(keyword.arg)
+            for keyword in pr2_binding_calls[0].keywords
+            if keyword.arg is not None
+        }
+        for required_keyword in (
+            "generic_input_slots_by_operation",
+            "generic_output_slots_by_operation",
+            "utility_operation_by_template",
         ):
-            errors.append(
-                "independent infeasibility reverifier must not read in-flight "
-                f"cache authority: self.{child.attr}"
+            if required_keyword not in keyword_names:
+                errors.append(
+                    "terminal fixed-witness PortBindingModel missing plan-derived "
+                    f"keyword: {required_keyword}"
+                )
+
+    heuristic_tree = _parse_python(heuristic_finder_path)
+    heuristic_verify_fn = _function_def(
+        heuristic_tree,
+        "_verify_binding",
+        path=heuristic_finder_path,
+    )
+    heuristic_binding_calls = [
+        node
+        for node in ast.walk(heuristic_verify_fn)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == "PortBindingModel"
+    ]
+    if len(heuristic_binding_calls) != 1:
+        errors.append(
+            "heuristic non-authority path must retain exactly one explicit "
+            "PortBindingModel construction"
+        )
+    heuristic_relative_path = "src/search/heuristic_feasible_finder.py"
+    if (
+        CLOSE_KERNEL_V99_REQUIRED_SINK_CLASSIFICATION_BY_PATH.get(
+            heuristic_relative_path
+        )
+        != "exploratory_or_heuristic_non_authority"
+    ):
+        errors.append(
+            "heuristic PortBindingModel constructor must remain explicitly classified "
+            "as non-authoritative"
+        )
+    if any(
+        isinstance(node, ast.Call)
+        and (
+            (isinstance(node.func, ast.Name) and node.func.id == "reverify_whole_layout_infeasibility")
+            or (
+                isinstance(node.func, ast.Attribute)
+                and node.func.attr == "_add_exact_persisted_nogood"
             )
+        )
+        for node in ast.walk(heuristic_tree)
+    ):
+        errors.append(
+            "heuristic PortBindingModel path must not enter a proof-bearing cut or "
+            "independent reverify funnel"
+        )
+
+    # Round-2 audit G0/F1/F3/F4: seal observations and every production constructor.
+    contract_calls = [
+        node
+        for node in ast.walk(contract_fn)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and isinstance(node.func.value, ast.Name)
+        and node.func.value.id == "binding_model"
+        and node.func.attr == "extract_conflict_summary"
+    ]
+    if len(contract_calls) != 1:
+        errors.append(
+            "binding capability contract must read exactly one production "
+            "extract_conflict_summary observation"
+        )
+    contract_dicts = [node for node in ast.walk(contract_fn) if isinstance(node, ast.Dict)]
+    contract_dict = next(
+        (
+            node
+            for node in contract_dicts
+            if any(
+                isinstance(key, ast.Constant)
+                and key.value == "routing_context_enabled"
+                for key in node.keys
+            )
+        ),
+        None,
+    )
+    if contract_dict is None:
+        errors.append("binding capability contract return object is missing")
+    else:
+        field_values = {
+            str(key.value): value
+            for key, value in zip(contract_dict.keys, contract_dict.values)
+            if isinstance(key, ast.Constant) and isinstance(key.value, str)
+        }
+        for field in (
+            "routing_context_enabled",
+            "overload_separation_enabled",
+            "reverification_selection_nogood_count",
+        ):
+            value = field_values.get(field)
+            if value is None:
+                errors.append(f"binding capability contract missing runtime field: {field}")
+            elif isinstance(value, ast.Constant):
+                errors.append(f"binding capability contract field must not be a constant: {field}")
+        for field in (
+            "plan_generic_input_slots_by_operation",
+            "plan_generic_output_slots_by_operation",
+            "plan_utility_operation_by_template",
+        ):
+            if field not in field_values:
+                errors.append(f"binding capability contract missing plan field: {field}")
+
+    input_domain_fn = _method_def(
+        binding_class,
+        "_build_generic_input_domains",
+        path=binding_subproblem_path,
+    )
+    if not _direct_calls_attr(input_domain_fn, "_generic_input_slot_capacity_map"):
+        errors.append("production generic-input provider admission must be plan-derived")
+    output_domain_fn = _method_def(
+        binding_class,
+        "_build_generic_output_domains",
+        path=binding_subproblem_path,
+    )
+    if not _direct_calls_attr(output_domain_fn, "_generic_output_slot_capacity_map"):
+        errors.append("production generic-output provider admission must be plan-derived")
+
+    operation_map_attrs = [
+        node
+        for node in ast.walk(binding_class)
+        if isinstance(node, ast.Attribute)
+        and isinstance(node.value, ast.Name)
+        and node.value.id == "self"
+        and "operation_by_template" in node.attr
+    ]
+    operation_map_names = {node.attr for node in operation_map_attrs}
+    if operation_map_names != {"utility_operation_by_template"}:
+        errors.append(
+            "PortBindingModel must expose exactly one consumed utility operation map; "
+            f"found {sorted(operation_map_names)}"
+        )
+    else:
+        loads = sum(
+            isinstance(node.ctx, ast.Load)
+            for node in operation_map_attrs
+            if node.attr == "utility_operation_by_template"
+        )
+        stores = sum(
+            isinstance(node.ctx, ast.Store)
+            for node in operation_map_attrs
+            if node.attr == "utility_operation_by_template"
+        )
+        if stores != 1 or loads < 1:
+            errors.append(
+                "PortBindingModel utility_operation_by_template must be assigned once "
+                "and consumed by synthesis"
+            )
+
+    init_fn = _method_def(binding_class, "__init__", path=binding_subproblem_path)
+    init_source = _source_text(binding_subproblem_path, init_fn)
+    if "load_utility_operation_by_template(" not in init_source:
+        errors.append(
+            "PortBindingModel fallback must load utility operation mapping from preprocess_plan"
+        )
+    if "OPERATION_PORT_PROFILES" in init_source:
+        errors.append(
+            "PortBindingModel utility operation fallback must not derive from "
+            "OPERATION_PORT_PROFILES"
+        )
+
+    def _binding_constructor_calls(tree: ast.AST) -> list[ast.Call]:
+        return [
+            node
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Name)
+            and node.func.id == "PortBindingModel"
+        ]
+
+    benders_calls = _binding_constructor_calls(controller_class)
+    if len(benders_calls) != 2:
+        errors.append(
+            "LBBDController must contain exactly two PortBindingModel constructors "
+            f"covered by the snapshot funnel; found {len(benders_calls)}"
+        )
+    for call in benders_calls:
+        has_snapshot_unpack = any(
+            keyword.arg is None
+            and isinstance(keyword.value, ast.Call)
+            and isinstance(keyword.value.func, ast.Attribute)
+            and keyword.value.func.attr == "_binding_snapshot_kwargs"
+            for keyword in call.keywords
+        )
+        if not has_snapshot_unpack:
+            errors.append(
+                "every LBBDController PortBindingModel constructor must unpack "
+                "_binding_snapshot_kwargs"
+            )
+
+    evaluator_relative_path = "scripts/p2_14_evaluator/run_eval_v1_baseline.py"
+    evaluator_exemption = PORT_BINDING_CONSTRUCTOR_NON_AUTHORITY_EXEMPTIONS.get(
+        evaluator_relative_path
+    )
+    expected_evaluator_exemption = (
+        "exploratory_evaluation_non_authority",
+        "offline baseline/hint timing evaluator; it cannot mint certified cuts, "
+        "proofs, or publication state",
+    )
+    if evaluator_exemption != expected_evaluator_exemption:
+        errors.append(
+            "P2 #14 evaluator PortBindingModel constructor must retain its explicit "
+            "exploratory/evaluation non-authority exemption and reason"
+        )
+    evaluator_tree = _parse_python(p2_14_evaluator_path)
+    evaluator_build_fn = _function_def(
+        evaluator_tree,
+        "build_binding_model",
+        path=p2_14_evaluator_path,
+    )
+    if any(
+        isinstance(node, ast.Call)
+        and (
+            (
+                isinstance(node.func, ast.Name)
+                and node.func.id == "reverify_whole_layout_infeasibility"
+            )
+            or (
+                isinstance(node.func, ast.Attribute)
+                and node.func.attr == "_add_exact_persisted_nogood"
+            )
+        )
+        for node in ast.walk(evaluator_tree)
+    ):
+        errors.append(
+            "P2 #14 evaluator exemption is invalid if the script enters a proof-bearing "
+            "cut or independent reverify funnel"
+        )
+
+    for path, label, authority, scope in (
+        (
+            pr2_fixed_witness_path,
+            "terminal fixed-witness",
+            "certified_path",
+            None,
+        ),
+        (
+            heuristic_finder_path,
+            "heuristic feasible finder",
+            "exploratory_non_authority",
+            None,
+        ),
+        (
+            p2_14_evaluator_path,
+            "P2 #14 evaluator",
+            "exploratory_evaluation_non_authority",
+            evaluator_build_fn,
+        ),
+    ):
+        search_root: ast.AST = _parse_python(path) if scope is None else scope
+        calls = _binding_constructor_calls(search_root)
+        if len(calls) != 1:
+            errors.append(
+                f"{label} must contain exactly one enumerated PortBindingModel "
+                f"constructor; found {len(calls)}"
+            )
+            continue
+        keyword_names = {
+            str(keyword.arg) for keyword in calls[0].keywords if keyword.arg is not None
+        }
+        for required_keyword in (
+            "generic_input_slots_by_operation",
+            "generic_output_slots_by_operation",
+            "utility_operation_by_template",
+        ):
+            if required_keyword not in keyword_names:
+                errors.append(
+                    f"{label} ({authority}) PortBindingModel constructor missing "
+                    f"plan-derived keyword: {required_keyword}"
+                )
+
+    certificate_path = package_path / "certificate.py"
+    theorem_path = package_path / "theorem.py"
+    if certificate_path.is_file() and theorem_path.is_file():
+        certificate_source = certificate_path.read_text(encoding="utf-8")
+        theorem_source = theorem_path.read_text(encoding="utf-8")
+        if '"runtime_relaxations"' in theorem_source and '"runtime_relaxations"' not in certificate_source:
+            errors.append(
+                "independent certificate checker must validate theorem runtime_relaxations"
+            )
+        if "runtime_relaxations do not match reconstructed production relaxation state" not in certificate_source:
+            errors.append(
+                "independent certificate checker must compare runtime_relaxations "
+                "to the reconstructed semantic model"
+            )
+
     return errors
 
 
@@ -14339,10 +15086,12 @@ def main() -> int:
         errors.extend(_check_phase_anchor(manifest))
         errors.extend(_check_exact_session_atomic_snapshot_contract())
         errors.extend(_check_independent_infeasibility_reverifier_contract())
-    except CheckError:
+    except CheckError as exc:
+        _print_p1_2_errors([f"checker exception: {exc}"])
         return 2
 
     if errors:
+        _print_p1_2_errors(errors)
         return 1
 
     obligations = len(manifest.get("obligations", []))

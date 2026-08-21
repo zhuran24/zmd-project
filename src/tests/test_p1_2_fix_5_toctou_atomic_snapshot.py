@@ -214,6 +214,10 @@ def test_fix5_canonical_role_validation_uses_snapshot_after_disk_swap(
         required_generic_outputs=requirements["required_generic_outputs"],
         required_generic_inputs=requirements["required_generic_inputs"],
         generic_input_slots_by_operation={"box_sink": 3, "protocol_core": 14},
+        utility_operation_by_template={
+            "protocol_storage_box": "box_sink",
+            "protocol_core": "protocol_core",
+        },
         canonical_rules_payload=snapshot_rules,
     )
     assert binding_model.generic_input_commodities == {"snapshot_input"}

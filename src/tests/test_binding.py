@@ -747,6 +747,16 @@ def test_lbbd_retry_helper_replays_rejected_selections_after_overload_exhaustion
         "box_sink": 3,
         "protocol_core": 14,
     }
+    stub.master.generic_output_slots_by_operation = {
+        "boundary_io": 1,
+        "protocol_core": 6,
+    }
+    stub.master.utility_operation_by_template = {
+        "boundary_storage_port": "boundary_io",
+        "power_pole": "power_supply",
+        "protocol_core": "protocol_core",
+        "protocol_storage_box": "box_sink",
+    }
     # P1.2-FIX-5 canonical: certified binding role-validates generic IO commodities
     # against the master canonical_rules snapshot; use the real project rules so every
     # commodity in generic_io_requirements is registered (matches production).
@@ -1119,6 +1129,8 @@ def test_binding_model_allows_unused_generic_output_slots(tmp_path):
         instances,
         required_generic_outputs={"source_ore": 1},
         required_generic_inputs={},
+        generic_output_slots_by_operation={"protocol_core": 2},
+        utility_operation_by_template={"protocol_core": "protocol_core"},
         project_root=tmp_path,
     )
     model.build()
@@ -1582,3 +1594,60 @@ def test_binding_uses_injected_provider_map_over_project_root_plan(tmp_path):
     assert model.solve(time_limit_seconds=5.0) == "FEASIBLE"
     assert len(model.generic_input_slots) == 3
     assert all({"x", "y", "dir"} <= slot.keys() for slot in model.generic_input_slots)
+
+
+def test_round3_pose_optional_synthesis_loads_plan_utility_map(
+    tmp_path: Path,
+) -> None:
+    from src.models.binding_subproblem import PortBindingModel
+
+    rules_dir = tmp_path / "rules"
+    rules_dir.mkdir(parents=True)
+    (rules_dir / "preprocess_plan.json").write_text(
+        json.dumps(
+            {
+                "utility_operations": {
+                    "power_supply": {
+                        "facility_type": "power_pole",
+                        "generic_input_slots": 0,
+                        "generic_output_slots": 0,
+                    }
+                }
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    placement = {
+        "pose_optional::power_pole::pole_0": {
+            "facility_type": "power_pole",
+            "pose_idx": 0,
+        }
+    }
+    pools = {
+        "power_pole": [
+            {
+                "pose_id": "pole_0",
+                "input_port_cells": [],
+                "output_port_cells": [],
+            }
+        ]
+    }
+
+    model = PortBindingModel(
+        placement_solution=placement,
+        facility_pools=pools,
+        instances=[],
+        project_root=tmp_path,
+        required_generic_outputs={},
+        required_generic_inputs={},
+        canonical_commodity_metadata={},
+    )
+    model.build(use_overload_separation=False)
+
+    assert model.instances_by_id["pose_optional::power_pole::pole_0"]["operation_type"] == (
+        "power_supply"
+    )
+    assert model.extract_conflict_summary()["synthesized_instances"] == [
+        "pose_optional::power_pole::pole_0"
+    ]

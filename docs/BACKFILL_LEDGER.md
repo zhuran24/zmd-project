@@ -1,18 +1,18 @@
 # 历史知识回填与长尾覆盖
 
 > 本页由 `data/knowledge/backfill_reviews.jsonl`、`backfill_triage.json` 与 dossier registry 自动生成；禁止手工修改。
-> 账本审阅日：`2026-08-15`；源摘要：`sha256:14beb25b97ba68e3ec5ab0db3d82500164ae5bbcc7e920d88910cd1e76d1368c`。
+> 账本审阅日：`2026-08-15`；源摘要：`sha256:dabb13ea6cf1772f629c8591f70e0d867e3779db5bea04a24879ba485acd394e`。
 
 这里把两件经常被混写的事情分开：**semantic review** 表示实际读取了声明路径并提炼知识；**inventory triage** 只保证尚未审阅的 dossier 仍可发现、只落入一个队列，并带有重开条件。分诊从不等价于 `no_reusable_claim`。
 
 ## 收口概览
 
-- dossier 总数：`270`。
-- current review：`44`，其中语义审阅 `41`，availability/provenance-only `3`。
+- dossier 总数：`272`。
+- current review：`45`，其中语义审阅 `42`，availability/provenance-only `3`。
 - 尚无 current review、但已进入唯一 triage group：`165`。
-- 新写入流程中尚未关闭的 active dossier：`64`；其中已有 current review `3`；open workflow 不进入历史 triage。
-- inventory coverage：`270/270`。
-- semantic review coverage：`41/270`。这个比例不会被 triage 人为抬高。
+- 新写入流程中尚未关闭的 active dossier：`66`；其中已有 current review `4`；open workflow 不进入历史 triage。
+- inventory coverage：`272/272`。
+- semantic review coverage：`42/272`。这个比例不会被 triage 人为抬高。
 
 ## Current review
 
@@ -62,6 +62,7 @@
 | [`REVIEW-20260815-PHASE-MINUS1-LOCAL-EVIDENCE-MECHANICAL-AUDIT`](<CATALOG.md#review-20260815-phase-minus1-local-evidence-mechanical-audit>) | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-20260815-7FA2A0E225` | `availability_and_provenance` | `deferred` | — | 原始运行 payload 保持 local_optional；轻量 checkout 可以缺失，恢复或重跑须依照 tracked README 与 manifest。 |
 | [`REVIEW-20260815-PHASE-MINUS1-V2-LOCAL-EVIDENCE-REGISTRATION`](<CATALOG.md#review-20260815-phase-minus1-v2-local-evidence-registration>) | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-V2-20260815-96E16B17C8` | `availability_and_provenance` | `deferred` | — | 高预算 v2 运行仍处于 active 状态；当前 portability anchor 是启动时 CORPUS_ADMISSION 收据，不是终态 evidence manif…<br>原始 journals、logs 与 slice/deep receipts 保持 local_optional；轻量 checkout 可缺失。 |
 | [`REVIEW-20260815-SOLVER-REASONING-OUTER-LOOP-GPT-PRO`](<CATALOG.md#review-20260815-solver-reasoning-outer-loop-gpt-pro>) | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99` | `targeted_files` | `deferred` | — | 逐字归档与条件式约束登记是否在 typed closure 时拆成两个 dossier 尚未裁决。<br>语义可压缩性、接口可压缩性与构造可分解性仍是待实验的可证伪假设。 |
+| [`REVIEW-20260821-COMMON-MODE-BINDING-REVERIFY-RECLOSE`](<CATALOG.md#review-20260821-common-mode-binding-reverify-reclose>) | `DOSSIER-COMMON-MODE-BINDING-REVERIFY-20260820-0268E9394D` | `targeted_files` | `deferred` | — | 维护登记（已接受例外，不是待修项）：strong-status allowlist id 尾号 _295 不作坐标承诺；仅当下游开始把 id 尾号解释为坐标、或 SHA+size…<br>P1.2 proof gate 继续恰 1 issue：production 与 I1 的 pose-optional operation-map 过滤 parity 断言归后批…<br>checker 48 处零 mutation 覆盖、generic-output 重复守卫、token-lock 内鬼模型硬化、strict/closed-package typ… |
 
 ## Open intake workflow
 
@@ -72,8 +73,10 @@
 | `DOSSIER-CFG-RELAXATION-ENUM-CLOSURE-23X51-20260818-176509E438` | `.artifacts/cfg_relaxation_enum_closure_23x51_20260818` | `2026-08-18` | `active` |
 | `DOSSIER-CFG-RELAXATION-IMPL-A-20260817-BE414F298A` | `.artifacts/cfg_relaxation_impl_A_20260817` | `2026-08-17` | `active` |
 | `DOSSIER-CFG-RELAXATION-IMPL-B-20260817-77A5280EF9` | `.artifacts/cfg_relaxation_impl_B_20260817` | `2026-08-17` | `active` |
+| `DOSSIER-COMMON-MODE-BINDING-REVERIFY-20260820-0268E9394D` | `docs/research/common_mode_binding_reverify_20260820` | `2026-08-20` | `active` |
 | `DOSSIER-CPU-L3-PERF-MEASUREMENT-20260820-212859A058` | `.artifacts/cpu_l3_perf_measurement_20260820` | `2026-08-20` | `active` |
 | `DOSSIER-GPT-HARVEST-20260818-85692BD024` | `.artifacts/gpt_harvest_20260818` | `2026-08-18` | `active` |
+| `DOSSIER-I1-ROUND4-SELF-CHECK-20260820-0CFC3F056C` | `.artifacts/i1_round4_self_check_20260820` | `2026-08-20` | `active` |
 | `DOSSIER-NP-LITERATURE-RECON-20260817-C6D0998D78` | `.artifacts/np_literature_recon_20260817` | `2026-08-17` | `active` |
 | `DOSSIER-NP-THEOREM-CORRESPONDENCE-20260817-6ADFE32DF1` | `.artifacts/np_theorem_correspondence_20260817` | `2026-08-17` | `active` |
 | `DOSSIER-OUTER-LOOP-RECON-20260817-A3301A1D74` | `.artifacts/outer_loop_recon_20260817` | `2026-08-17` | `active` |

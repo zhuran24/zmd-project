@@ -1,12 +1,10 @@
-"""Depth-defense: binding overload separation can be forced OFF by caller, and
-I1 independent reverify does force it OFF regardless of env.
+"""Depth-defense for the production overload-separation switch.
 
-Before this, PortBindingModel.build() only read EXACT_BINDING_USE_OVERLOAD_SEPARATION
-from the env, so I1's independently-rebuilt binding model inherited the same
-heuristic HARD nogood (which can cut feasible solutions) whenever that env was
-set — a depth-defense gap (the env is not on the certified operational allowlist,
-so it is fail-closed at the certified entry, but I1 should not depend on that).
-build() now takes an explicit override; I1 passes use_overload_separation=False.
+``PortBindingModel.build()`` still supports an explicit override so certified
+fallback code can re-run the production model without the heuristic HARD
+nogoods.  I1 no longer rebuilds this model at all: its capability contract reads
+the producing model's observed ``overload_separation_enabled`` field and the
+closed-world verifier rejects ``True`` fail-closed.
 """
 
 from __future__ import annotations
@@ -56,25 +54,12 @@ def test_build_none_reads_env(monkeypatch):
     assert off.extract_conflict_summary()["overload_separation_enabled"] is False
 
 
-def test_i1_reverify_binding_forces_overload_off(monkeypatch):
-    """I1's independent binding rebuild must pass use_overload_separation=False
-    even when the env is set on (so the reverifier never inherits the nogood)."""
+def test_i1_reverify_binding_has_no_production_model_or_env_dependency(monkeypatch):
+    """I1 no longer rebuilds the production model, so the overload env is inert."""
+
     monkeypatch.setenv("EXACT_BINDING_USE_OVERLOAD_SEPARATION", "1")
-    captured = {}
-    original_build = PortBindingModel.build
-
-    def spy_build(self, *, use_overload_separation=None):
-        captured["use_overload_separation"] = use_overload_separation
-        return original_build(self, use_overload_separation=use_overload_separation)
-
-    monkeypatch.setattr(PortBindingModel, "build", spy_build)
-
-    iir._reverify_binding_infeasible(
-        solution={},
-        facility_pools={},
-        instances=[],
-        project_root=_REPO_ROOT,
-        binding_kwargs=None,
-        time_limit_seconds=5.0,
-    )
-    assert captured.get("use_overload_separation") is False
+    assert not hasattr(iir, "PortBindingModel")
+    source = Path(iir.__file__).read_text(encoding="utf-8")
+    assert "from src.models" not in source
+    assert "from ortools" not in source
+    assert "os.environ" not in source

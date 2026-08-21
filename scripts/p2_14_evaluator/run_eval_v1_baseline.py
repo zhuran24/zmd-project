@@ -23,7 +23,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from ortools.sat.python import cp_model
-from src.models.binding_subproblem import PortBindingModel
+from src.models.binding_subproblem import PortBindingModel, load_binding_plan_semantics
 
 
 def load_facility_pools(project_root: Path) -> dict:
@@ -43,7 +43,12 @@ def load_dumps(jsonl_path: Path, limit: int | None = None):
             yield json.loads(line)
 
 
-def build_binding_model(dump: dict, facility_pools: dict, project_root: Path) -> PortBindingModel:
+def build_binding_model(
+    dump: dict,
+    facility_pools: dict,
+    project_root: Path,
+) -> PortBindingModel:
+    binding_plan_semantics = load_binding_plan_semantics(project_root=project_root)
     model = PortBindingModel(
         placement_solution=dump["placement_solution"],
         facility_pools=facility_pools,
@@ -51,6 +56,15 @@ def build_binding_model(dump: dict, facility_pools: dict, project_root: Path) ->
         required_generic_outputs=dump["required_generic_outputs"],
         required_generic_inputs=dump["required_generic_inputs"],
         project_root=project_root,
+        generic_input_slots_by_operation=dict(
+            binding_plan_semantics["generic_input_slots_by_operation"]
+        ),
+        generic_output_slots_by_operation=dict(
+            binding_plan_semantics["generic_output_slots_by_operation"]
+        ),
+        utility_operation_by_template=dict(
+            binding_plan_semantics["utility_operation_by_template"]
+        ),
     )
     model.build()
     return model

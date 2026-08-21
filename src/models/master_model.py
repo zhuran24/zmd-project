@@ -79,12 +79,6 @@ from src.preprocess.operation_profiles import OPERATION_PORT_PROFILES
 
 ModeToken = Tuple[str, str]
 POSE_LEVEL_OPTIONAL_TEMPLATES = {"power_pole", "protocol_storage_box"}
-# 批 5 (2026-07-18): 协议箱 operation 改名 box_sink（成品=真 routed 商品，
-# "无线"仅箱→仓库段；与 binding_subproblem.POSE_OPTIONAL_OPERATION_BY_TEMPLATE 同步）。
-POSE_LEVEL_OPTIONAL_OPERATIONS = {
-    "power_pole": "power_supply",
-    "protocol_storage_box": "box_sink",
-}
 DIR_DELTA = {"N": (0, 1), "S": (0, -1), "E": (1, 0), "W": (-1, 0)}
 BOUNDARY_STORAGE_PORT_SCREEN_GROUP_ID = "group::boundary_storage_port::boundary_io::0"
 EXACT_MANDATORY_RECTANGLE_PRECHECK_MAX_ANCHORS = 64
@@ -2010,11 +2004,7 @@ def _normalize_generic_input_slot_capacity(value: Any, *, field: str) -> int:
 def _resolve_generic_input_slots_by_operation(
     generic_input_slots_by_operation: Optional[Mapping[str, Any]],
 ) -> Dict[str, int]:
-    """解析 op→generic-input 槽容量映射（默认从 operation profiles 取）。
-
-    批 5 (2026-07-18)：sink 槽供给来自两类实体口——box_sink（协议箱 3 进）
-    与 protocol_core（中枢 14 进）。旧的单值 wireless_sink 标量已废。
-    """
+    """解析 op→generic-input 槽容量映射（默认从 operation profiles 取）。"""
     if generic_input_slots_by_operation is None:
         return {
             str(op): int(profile.generic_input_slots)
@@ -2027,6 +2017,86 @@ def _resolve_generic_input_slots_by_operation(
         )
         for op, slots in generic_input_slots_by_operation.items()
     }
+
+
+def _resolve_utility_operation_by_template(
+    utility_operation_by_template: Optional[Mapping[str, Any]],
+) -> Dict[str, str]:
+    """Resolve pose-optional identities from plan-derived operation profiles."""
+
+    if utility_operation_by_template is None:
+        result: Dict[str, str] = {}
+        for template in sorted(POSE_LEVEL_OPTIONAL_TEMPLATES):
+            matches = sorted(
+                str(operation_type)
+                for operation_type, profile in OPERATION_PORT_PROFILES.items()
+                if str(profile.facility_type) == template
+            )
+            if len(matches) != 1:
+                raise ValueError(
+                    "pose-optional facility template must map to exactly one plan-derived "
+                    f"operation: {template!r} -> {matches}"
+                )
+            result[template] = matches[0]
+        return result
+    normalized: Dict[str, str] = {}
+    for raw_template, raw_operation in utility_operation_by_template.items():
+        template = str(raw_template)
+        operation = str(raw_operation)
+        if not template or not operation:
+            raise ValueError(
+                "utility_operation_by_template keys and values must be non-empty"
+            )
+        normalized[template] = operation
+    return dict(sorted(normalized.items()))
+
+
+# Compatibility export for consumers that only need the canonical plan-derived
+# identity table.  The bytes are computed from OPERATION_PORT_PROFILES rather
+# than maintained as a second template→operation truth table.
+POSE_LEVEL_OPTIONAL_OPERATIONS = _resolve_utility_operation_by_template(None)
+
+
+def _resolve_generic_output_slots_by_operation(
+    generic_output_slots_by_operation: Optional[Mapping[str, Any]],
+) -> Dict[str, int]:
+    """解析 plan 派生的 op→generic-output 实体槽容量映射。"""
+    if generic_output_slots_by_operation is None:
+        return {
+            str(op): int(profile.generic_output_slots)
+            for op, profile in OPERATION_PORT_PROFILES.items()
+            if int(profile.generic_output_slots) > 0
+        }
+    return {
+        str(op): _normalize_generic_input_slot_capacity(
+            slots, field=f"generic_output_slots_by_operation[{op}]"
+        )
+        for op, slots in generic_output_slots_by_operation.items()
+    }
+
+
+def _resolve_utility_operation_by_template(
+    value: Optional[Mapping[str, Any]],
+) -> Dict[str, str]:
+    if value is None:
+        candidates: Dict[str, Set[str]] = {}
+        for operation_type, profile in OPERATION_PORT_PROFILES.items():
+            facility_type = str(profile.facility_type)
+            if facility_type:
+                candidates.setdefault(facility_type, set()).add(str(operation_type))
+        return {
+            facility_type: next(iter(operation_types))
+            for facility_type, operation_types in sorted(candidates.items())
+            if len(operation_types) == 1
+        }
+    result: Dict[str, str] = {}
+    for raw_template, raw_operation in value.items():
+        facility_type = str(raw_template)
+        operation_type = str(raw_operation)
+        if not facility_type or not operation_type:
+            raise ValueError("utility_operation_by_template contains an empty identifier")
+        result[facility_type] = operation_type
+    return dict(sorted(result.items()))
 
 
 def infer_certified_optional_lower_bounds(
@@ -2053,9 +2123,10 @@ def infer_certified_optional_lower_bounds(
         slot_map = _resolve_generic_input_slots_by_operation(
             generic_input_slots_by_operation
         )
-        slots_per_box = int(
-            slot_map.get(POSE_LEVEL_OPTIONAL_OPERATIONS["protocol_storage_box"], 0)
-        )
+        box_operation = _resolve_utility_operation_by_template(None)[
+            "protocol_storage_box"
+        ]
+        slots_per_box = int(slot_map.get(box_operation, 0))
         required_slots = sum(
             int(v)
             for v in normalized_requirements.get("required_generic_inputs", {}).values()
@@ -2112,9 +2183,10 @@ def infer_certified_optional_lower_bounds_for_instances(
     slot_map = _resolve_generic_input_slots_by_operation(
         generic_input_slots_by_operation
     )
-    slots_per_box = int(
-        slot_map.get(POSE_LEVEL_OPTIONAL_OPERATIONS["protocol_storage_box"], 0)
-    )
+    box_operation = _resolve_utility_operation_by_template(None)[
+        "protocol_storage_box"
+    ]
+    slots_per_box = int(slot_map.get(box_operation, 0))
     if slots_per_box <= 0:
         return {}
 
@@ -2248,7 +2320,13 @@ def _load_all_facility_instances(data_dir: Path) -> List[Dict[str, Any]]:
                 {
                     "instance_id": f"{prefix}_{index:03d}",
                     "facility_type": facility_type,
-                    "operation_type": spec.get("operation_type", POSE_LEVEL_OPTIONAL_OPERATIONS.get(facility_type, facility_type)),
+                    "operation_type": spec.get(
+                        "operation_type",
+                        _resolve_utility_operation_by_template(None).get(
+                            facility_type,
+                            facility_type,
+                        ),
+                    ),
                     "is_mandatory": False,
                     "bound_type": spec.get("bound_type", "provisional"),
                 }
@@ -2325,6 +2403,9 @@ class ExactMasterCore:
     rules: Mapping[str, Any]
     generic_io_requirements: Mapping[str, Mapping[str, int]]
     generic_input_slots_by_operation: Mapping[str, int]
+    generic_output_slots_by_operation: Mapping[str, int]
+    utility_operation_by_template: Mapping[str, str]
+    utility_operation_by_template: Mapping[str, str]
     exact_required_pose_optional_counts: Mapping[str, int]
     build_stats: Mapping[str, Any]
     z_var_indices: Dict[str, Dict[int, int]]
@@ -2354,6 +2435,8 @@ class MasterPlacementModel:
         enable_symmetry_breaking: bool = True,
         generic_io_requirements: Optional[Mapping[str, Any]] = None,
         generic_input_slots_by_operation: Optional[Mapping[str, Any]] = None,
+        generic_output_slots_by_operation: Optional[Mapping[str, Any]] = None,
+        utility_operation_by_template: Optional[Mapping[str, Any]] = None,
         exact_required_pose_optional_counts: Optional[Mapping[str, Any]] = None,
         exact_mode: Optional[bool] = None,
         solve_mode: Optional[str] = None,
@@ -2403,6 +2486,21 @@ class MasterPlacementModel:
         self.generic_input_slots_by_operation = _resolve_generic_input_slots_by_operation(
             generic_input_slots_by_operation
         )
+        self.generic_output_slots_by_operation = _resolve_generic_output_slots_by_operation(
+            generic_output_slots_by_operation
+        )
+        self.utility_operation_by_template = _resolve_utility_operation_by_template(
+            utility_operation_by_template
+        )
+        self.utility_operation_by_template = {
+            template: self.utility_operation_by_template[template]
+            for template in sorted(POSE_LEVEL_OPTIONAL_TEMPLATES)
+            if template in self.utility_operation_by_template
+        }
+        # A utility identity is required when a pose-optional facility is actually
+        # selected, not merely because a dormant candidate pool exists.  Solution
+        # extraction below fails closed on a selected template without an identity;
+        # this keeps degenerate exact fixtures with an empty utility plan usable.
         self._exact_required_pose_optional_counts = {
             str(k): int(v)
             for k, v in dict(exact_required_pose_optional_counts or {}).items()
@@ -2669,6 +2767,8 @@ class MasterPlacementModel:
         enable_symmetry_breaking: bool = True,
         generic_io_requirements: Optional[Mapping[str, Any]] = None,
         generic_input_slots_by_operation: Optional[Mapping[str, Any]] = None,
+        generic_output_slots_by_operation: Optional[Mapping[str, Any]] = None,
+        utility_operation_by_template: Optional[Mapping[str, Any]] = None,
         exact_required_pose_optional_counts: Optional[Mapping[str, Any]] = None,
         master_search_profile: str = DEFAULT_EXACT_COORDINATE_MASTER_SEARCH_PROFILE,
     ) -> ExactMasterCore:
@@ -2683,6 +2783,8 @@ class MasterPlacementModel:
             enable_symmetry_breaking=enable_symmetry_breaking,
             generic_io_requirements=generic_io_requirements,
             generic_input_slots_by_operation=generic_input_slots_by_operation,
+            generic_output_slots_by_operation=generic_output_slots_by_operation,
+            utility_operation_by_template=utility_operation_by_template,
             exact_required_pose_optional_counts=exact_required_pose_optional_counts,
             solve_mode="certified_exact",
             master_search_profile=master_search_profile,
@@ -2740,6 +2842,8 @@ class MasterPlacementModel:
             rules=model.rules,
             generic_io_requirements=model.generic_io_requirements,
             generic_input_slots_by_operation=dict(model.generic_input_slots_by_operation),
+            generic_output_slots_by_operation=dict(model.generic_output_slots_by_operation),
+            utility_operation_by_template=dict(model.utility_operation_by_template),
             exact_required_pose_optional_counts=dict(model._exact_required_pose_optional_counts),
             build_stats=build_stats,
             z_var_indices=model._current_z_var_indices(),
@@ -2878,6 +2982,8 @@ class MasterPlacementModel:
             enable_symmetry_breaking=core.enable_symmetry_breaking,
             generic_io_requirements=core.generic_io_requirements,
             generic_input_slots_by_operation=core.generic_input_slots_by_operation,
+            generic_output_slots_by_operation=core.generic_output_slots_by_operation,
+            utility_operation_by_template=core.utility_operation_by_template,
             exact_required_pose_optional_counts=exact_required_pose_optional_counts_for_overlay,
             solve_mode="certified_exact",
             master_search_profile=normalized_master_search_profile,
@@ -5495,7 +5601,11 @@ class MasterPlacementModel:
             "required_generic_input_slots": int(required_generic_input_slots),
             "slots_per_pose": int(
                 self.generic_input_slots_by_operation.get(
-                    POSE_LEVEL_OPTIONAL_OPERATIONS["protocol_storage_box"], 0
+                    self.utility_operation_by_template.get(
+                        "protocol_storage_box",
+                        "",
+                    ),
+                    0,
                 )
             ),
             "lower": int(protocol_storage_box_count),
@@ -12106,7 +12216,16 @@ class MasterPlacementModel:
                 }
 
         for tpl, vars_by_pose in self.optional_pose_vars.items():
-            operation_type = POSE_LEVEL_OPTIONAL_OPERATIONS[tpl]
+            operation_type = self.utility_operation_by_template.get(tpl)
+            if operation_type is None and any(
+                self._solver.Value(var) == 1 for var in vars_by_pose.values()
+            ):
+                raise RuntimeError(
+                    "selected pose-optional template lacks plan-derived operation: "
+                    f"{tpl}"
+                )
+            if operation_type is None:
+                continue
             for pose_idx, var in vars_by_pose.items():
                 if self._solver.Value(var) != 1:
                     continue

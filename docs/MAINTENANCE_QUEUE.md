@@ -9,9 +9,9 @@
 
 | 严重度 | 数量 |
 |---|---:|
-| error | 61 |
+| error | 63 |
 | warning | 0 |
-| info | 76 |
+| info | 77 |
 
 ## Findings
 
@@ -22,8 +22,10 @@
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-CFG-RELAXATION-ENUM-CLOSURE-23X51-20260818-176509E438` | active dossier 的 opened_at 2026-08-18 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-CFG-RELAXATION-IMPL-A-20260817-BE414F298A` | active dossier 的 opened_at 2026-08-17 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-CFG-RELAXATION-IMPL-B-20260817-77A5280EF9` | active dossier 的 opened_at 2026-08-17 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
+| `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-COMMON-MODE-BINDING-REVERIFY-20260820-0268E9394D` | active dossier 的 opened_at 2026-08-20 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-CPU-L3-PERF-MEASUREMENT-20260820-212859A058` | active dossier 的 opened_at 2026-08-20 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-GPT-HARVEST-20260818-85692BD024` | active dossier 的 opened_at 2026-08-18 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
+| `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-I1-ROUND4-SELF-CHECK-20260820-0CFC3F056C` | active dossier 的 opened_at 2026-08-20 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-NP-LITERATURE-RECON-20260817-C6D0998D78` | active dossier 的 opened_at 2026-08-17 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-NP-THEOREM-CORRESPONDENCE-20260817-6ADFE32DF1` | active dossier 的 opened_at 2026-08-17 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-OUTER-LOOP-RECON-20260817-A3301A1D74` | active dossier 的 opened_at 2026-08-17 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
@@ -135,6 +137,7 @@
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260815-PHASE-MINUS1-LOCAL-EVIDENCE-MECHANICAL-AUDIT` | current review 保留 1 个未决项；重审触发：evidence manifest 或 payload hash 变化、运行包迁移，或 Phase -1 dossier 进入 typed closure 时。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260815-PHASE-MINUS1-V2-LOCAL-EVIDENCE-REGISTRATION` | current review 保留 2 个未决项；重审触发：v2 顶层终态收据或最终 evidence manifest 形成、payload 路径或 admission hash 变化，或 dossier 进入 closure review 时。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260815-SOLVER-REASONING-OUTER-LOOP-GPT-PRO` | current review 保留 2 个未决项；重审触发：typed closure 决定 dossier 是否拆分，或 Phase -1 tracked 实验协议进入评审时。 | `knowledge.build`<br>`knowledge.check` |
+| `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260821-COMMON-MODE-BINDING-REVERIFY-RECLOSE` | current review 保留 3 个未决项；重审触发：production/I1 operation-map parity 断言进入后批、checker-wide mutation/typing/refresh-dossiers 任一后批启动，或任何消费者把 allowlist id 尾号当成坐标承诺或改变 SHA+size pin 语义时复审。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-SNAPSHOT-AGE` | `maintenance-snapshot` | 维护投影快照日期为 2026-08-15，距本次审计 0 天。 | `docsystem.render_maintenance`<br>`docsystem.audit` |
 | `info` | `DOC-AUDIT-TERMINOLOGY-COLLISION` | `terminology-summary` | 27 个 term 的 canonical label 与 alias 没有跨 ID 碰撞。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TOPIC-COVERAGE` | `topic-summary` | 13 个 topic 的 claim、term、entry 与 open-claim 坐标完整。 | `knowledge.build`<br>`knowledge.check` |

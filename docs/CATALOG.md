@@ -1,7 +1,7 @@
 # 项目知识目录
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:14beb25b97ba68e3ec5ab0db3d82500164ae5bbcc7e920d88910cd1e76d1368c`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:dabb13ea6cf1772f629c8591f70e0d867e3779db5bea04a24879ba485acd394e`。
 
 这里登记稳定 ID。claim 回答“我们知道什么”，decision 回答“谁改变了什么规则或门”，
 dossier 回答“原始证据包在哪里”，validity profile 回答“旧结论为何失效、怎样换代、能否复用”。目录不把历史材料自动升级为当前权威。
@@ -9,9 +9,9 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 ## 覆盖概览
 
 - claim：`93` 条，其中当前 / 开放 `73` 条，带 validity profile `34` 条。
-- decision：`8` 条。
-- backfill review：`54` 条，其中 current `44` 条。
-- dossier：`270` 个，其中 tracked `158` 个、local optional `112` 个、当前证据标记 `16` 个、人工精编 `90` 个。
+- decision：`10` 条。
+- backfill review：`57` 条，其中 current `45` 条。
+- dossier：`272` 个，其中 tracked `159` 个、local optional `113` 个、当前证据标记 `17` 个、人工精编 `92` 个。
 - `docs/research/` 的一级目录和一级 Markdown 已全登记；`.artifacts/` 只登记一级目录，其路径允许在轻量 checkout 中缺失。
 
 ## Claim 索引
@@ -121,15 +121,17 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 | [`DECISION-LEDGER-AUTHORITY-INTERFACES-20260813`](#decision-ledger-authority-interfaces-20260813) | 文档补丁链两接口点联合结论四条通过 | `current` | `2026-08-13` | `research_governance` |
 | [`DECISION-OUTER-LOOP-REVIEW-REGISTRATION-20260815`](#decision-outer-loop-review-registration-20260815) | 推理外环评审归档与约束登记许可 | `current` | `2026-08-15` | `research_governance` |
 | [`DECISION-P1-2-CLOSE-20260707`](#decision-p1-2-close-20260707) | P1.2 首次关闭并允许进入 P1.3 | `superseded` | `2026-07-07` | `phase_gate` |
+| [`DECISION-P1-2-I1-RANGE-A-20260821`](#decision-p1-2-i1-range-a-20260821) | I1 范围 A 与 allowlist 历史 id 处置 | `current` | `2026-08-21` | `scope_boundary` |
 | [`DECISION-P1-2-RECLOSE-20260806`](#decision-p1-2-reclose-20260806) | 严格语义修复后重新关闭 P1.2 | `current` | `2026-08-06` | `phase_gate` |
+| [`DECISION-P1-2-RECLOSE-20260821`](#decision-p1-2-reclose-20260821) | I1 common-mode 复验后重新关闭 P1.2 | `current` | `2026-08-21` | `phase_gate` |
 | [`DECISION-RULE-SYSTEM-REDESIGN-OPEN-20260813`](#decision-rule-system-redesign-open-20260813) | rule_system_redesign_20260807 线允许立项 | `current` | `2026-08-13` | `research_governance` |
 | [`DECISION-SEMANTICS-SPLIT-EXPERIMENT-FIRST-20260813`](#decision-semantics-split-experiment-first-20260813) | semantics 拆分走先实验后拍板路线 | `current` | `2026-08-13` | `research_governance` |
 
 ## Topic 索引
 
-- `p1_2-proof-chain`：72 个 dossier。
+- `p1_2-proof-chain`：74 个 dossier。
+- `solver-architecture`：55 个 dossier。
 - `reasoning-system`：54 个 dossier。
-- `solver-architecture`：53 个 dossier。
 - `other`：50 个 dossier。
 - `witness-lower-bound`：43 个 dossier。
 - `upper-bound`：28 个 dossier。
@@ -150,6 +152,8 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 标题 / 入口 | Claims | Decisions | Backfill reviews |
 |---|---|---|---|---|
+| `DOSSIER-COMMON-MODE-BINDING-REVERIFY-20260820-0268E9394D` | [Whole-layout binding common-mode hardening](<research/common_mode_binding_reverify_20260820/README.md>)<br>I1 已从复用生产 PortBindingModel 求解重写为纯标准库、闭式算术、artifact-bound 的独立 binding 复验包；该批使 P1.2 close-kernel 的 73 个 sealed sink 字节漂移，并按 source_sha256_drift_reopens_p1_2_clos… | — | [`DECISION-P1-2-I1-RANGE-A-20260821`](#decision-p1-2-i1-range-a-20260821)<br>[`DECISION-P1-2-RECLOSE-20260821`](#decision-p1-2-reclose-20260821) | [`REVIEW-20260820-COMMON-MODE-BINDING-REVERIFY`](#review-20260820-common-mode-binding-reverify)<br>[`REVIEW-20260820-COMMON-MODE-BINDING-REVERIFY-ROUND5-REOPEN`](#review-20260820-common-mode-binding-reverify-round5-reopen)<br>[`REVIEW-20260821-COMMON-MODE-BINDING-REVERIFY-RECLOSE`](#review-20260821-common-mode-binding-reverify-reclose) |
+| `DOSSIER-I1-ROUND4-SELF-CHECK-20260820-0CFC3F056C` | I1 第四轮自检收据与日志<br><code>.artifacts/i1_round4_self_check_20260820</code><br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | — | [`DECISION-P1-2-RECLOSE-20260821`](#decision-p1-2-reclose-20260821) | — |
 | `DOSSIER-CFG-RELAXATION-CERTIFICATES-20260818-76C8EC34D8` | [配置松弛纯有理对偶证书与负控（2026-08-18）](<../.artifacts/cfg_relaxation_certificates_20260818/REPORT.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](#claim-six-predicate-research-ledger-20260818) | — | — |
 | `DOSSIER-CFG-RELAXATION-ENUM-CLOSURE-23X51-20260818-176509E438` | [23×51 配置松弛枚举完备性封口（2026-08-18）](<../.artifacts/cfg_relaxation_enum_closure_23x51_20260818/REPORT.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](#claim-six-predicate-research-ledger-20260818) | — | — |
 | `DOSSIER-CFG-RELAXATION-IMPL-B-20260817-77A5280EF9` | [配置松弛 support 独立实现 B（2026-08-17）](<../.artifacts/cfg_relaxation_impl_B_20260817/REPORT.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](#claim-six-predicate-research-ledger-20260818) | — | — |
@@ -197,14 +201,16 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 | `DOSSIER-PARADIGM-SEARCH-REVIEW-V12-WITH-CODE-20260520-FC02CE09A5` | [v12 Paradigm Search Review (with code) — 2026-05-20](<research/paradigm_search_review_v12_with_code_20260520/README.md>)<br>项目在 CP-SAT + LBBD framework 内 24 lever 全 verdict 死之后, 调研了 32 个 paradigm 方向看是否有现成可调用的 algorithm 范式能 break. 4 个候选方向仍 alive, 其余 NO-GO. 包整理这些调研结果 + 24 lever 历史实施 +… | [`CLAIM-24-LEVER-FRAMEWORK-EXHAUSTED-SUPERSEDED`](#claim-24-lever-framework-exhausted-superseded)<br>[`CLAIM-LEVER-VERDICTS-ARE-ITEM-AND-REVISION-BOUNDED`](#claim-lever-verdicts-are-item-and-revision-bounded) | — | [`REVIEW-20260811-PARADIGM-LEVER-HISTORY-BATCH4`](#review-20260811-paradigm-lever-history-batch4) |
 | `DOSSIER-LEVER25-IHS-PHASE0-20260520-4194EBD09A` | [Lever 25 IHS (Implicit Hitting Set) — Phase 0 cheap gate](<research/lever25_ihs_phase0_20260520/README.md>)<br>Lever 25 explores the Implicit Hitting Set (IHS) paradigm as an alternative to standard LBBD cut accumulation. Instead of adding each oracle-extracted core dir… | [`CLAIM-IHS-SINGLETON-CORE-COMPRESSION-PHASE0-NO-GO`](#claim-ihs-singleton-core-compression-phase0-no-go) | — | [`REVIEW-20260811-IHS-PHASE0-BATCH4`](#review-20260811-ihs-phase0-batch4) |
 | `DOSSIER-PHASE0-LAZY-POWER-COMPLETION-20260517-2DD76729CA` | [Phase 0 mini-PoC verdict — Lazy Power Completion v1](<research/phase0_lazy_power_completion_20260517/README.md>)<br>GPT v11 提的 Lazy Power Completion 架构 (master 跳 coverage 留 pole slot + completion subproblem 解电杆) 的 Phase 0 止损 gate 实测. | [`CLAIM-LAZY-POWER-INSTANCE-POSE-CUT-ROUTE-NO-GO`](#claim-lazy-power-instance-pose-cut-route-no-go) | — | [`REVIEW-20260811-LAZY-POWER-PHASE0-BATCH4`](#review-20260811-lazy-power-phase0-batch4) |
-| `DOSSIER-P1-2-V99-CLOSE-KERNEL-SEALING-207F650E44` | [P1.2 V99 close-kernel sealing](<research/p1_2_v99_close_kernel_sealing.md>)<br>P1.2 proof-bearing sink 与 close-kernel 的 tracked review anchor。 | — | [`DECISION-P1-2-CLOSE-20260707`](#decision-p1-2-close-20260707)<br>[`DECISION-P1-2-RECLOSE-20260806`](#decision-p1-2-reclose-20260806) | [`REVIEW-20260811-P1-2-V99-CLOSE-KERNEL`](#review-20260811-p1-2-v99-close-kernel) |
+| `DOSSIER-P1-2-V99-CLOSE-KERNEL-SEALING-207F650E44` | [P1.2 V99 close-kernel sealing](<research/p1_2_v99_close_kernel_sealing.md>)<br>P1.2 proof-bearing sink 与 close-kernel 的 tracked review anchor。 | — | [`DECISION-P1-2-CLOSE-20260707`](#decision-p1-2-close-20260707)<br>[`DECISION-P1-2-RECLOSE-20260806`](#decision-p1-2-reclose-20260806)<br>[`DECISION-P1-2-RECLOSE-20260821`](#decision-p1-2-reclose-20260821) | [`REVIEW-20260811-P1-2-V99-CLOSE-KERNEL`](#review-20260811-p1-2-v99-close-kernel) |
 
 ## 人工精编 dossier
 
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
+| `DOSSIER-COMMON-MODE-BINDING-REVERIFY-20260820-0268E9394D` | `2026-08-20` | [Whole-layout binding common-mode hardening](<research/common_mode_binding_reverify_20260820/README.md>)<br>I1 已从复用生产 PortBindingModel 求解重写为纯标准库、闭式算术、artifact-bound 的独立 binding 复验包；该批使 P1.2 close-kernel 的 73 个 sealed sink 字节漂移，并按 source_sha256_drift_reopens_p1_2_clos… | `p1_2-proof-chain`, `solver-architecture` | `active` | `current_evidence` |
 | `DOSSIER-P-REINSERTION-AUDIT-20260820-8BB5417ED3` | `2026-08-20` | [PREINSERTIONGAP 异源验收报告](<../.artifacts/p_reinsertion_audit_20260820/AUDIT_REPORT.md>)<br>异源验收证据包；包内总判词/状态：PASS_WITH_SCOPED_ERRATA_LOCALIZATION_UNDER_DETERMINED。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P-MUS-LANDSCAPE-20260820-CC6900A234` | `2026-08-20` | p mus landscape 20260820<br><code>.artifacts/p_mus_landscape_20260820</code><br>本地 research/support evidence inventory；包内终态判词/状态：NO_EXPLICIT_TERMINAL_VERDICT_RECORDED；验收状态：在途、未封账。仅作为 active open workflow 进入 inventory，不进入 historical triage，… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
+| `DOSSIER-I1-ROUND4-SELF-CHECK-20260820-0CFC3F056C` | `2026-08-20` | I1 第四轮自检收据与日志<br><code>.artifacts/i1_round4_self_check_20260820</code><br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `p1_2-proof-chain`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-CPU-L3-PERF-MEASUREMENT-20260820-212859A058` | `2026-08-20` | [CPU 大三缓选购 perf 实测批 — REPORT](<../.artifacts/cpu_l3_perf_measurement_20260820/REPORT.md>)<br>Inventory-only 登记。包内终态判词/状态：COMPLETE_RESEARCH_ONLY_NON_AUTHORIZING。验收状态：包内状态 COMPLETE_RESEARCH_ONLY_NON_AUTHORIZING；REVIEW_CHECKLIST 无对应异源验收节；出处：无对应 REVIEW_CHE… | `solver-experiment` | `active` | `unreviewed` |
 | `DOSSIER-P-MUS-LANDSCAPE-ERRATA-20260820-4FB752F398` | `2026-08-20` | [A_MUS_LANDSCAPE 并列勘误包](<../.artifacts/p_mus_landscape_errata_20260820/ERRATA.md>)<br>Inventory-only 登记。该包是 DOSSIER-P-MUS-LANDSCAPE-20260820-CC6900A234 的并列勘误包（erratum_for），解释入口为 ERRATA.md。保持 active/unreviewed/local_optional，仅登记 inventory 与 prove… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P-SIGNATURE-COOCCURRENCE-MATRIX-20260819-51366B1E18` | `2026-08-19` | [签名层逐事件成员集与共现矩阵](<../.artifacts/p_signature_cooccurrence_matrix_20260819/REPORT.md>)<br>Inventory-only 登记。包内终态判词/状态：PASS。验收状态：包内 checker/负测封账；REVIEW_CHECKLIST 未给出后续独立异源终结节；出处：REVIEW_CHECKLIST.md lines 155-173。 本登记不是 knowledge semantic review，不新增或升… | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
@@ -298,6 +304,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
+| `DOSSIER-COMMON-MODE-BINDING-REVERIFY-20260820-0268E9394D` | `2026-08-20` | [Whole-layout binding common-mode hardening](<research/common_mode_binding_reverify_20260820/README.md>)<br>I1 已从复用生产 PortBindingModel 求解重写为纯标准库、闭式算术、artifact-bound 的独立 binding 复验包；该批使 P1.2 close-kernel 的 73 个 sealed sink 字节漂移，并按 source_sha256_drift_reopens_p1_2_clos… | `p1_2-proof-chain`, `solver-architecture` | `active` | `current_evidence` |
 | `DOSSIER-P5-HORIZONTAL-LOWERING-CANARY-20260817-3DBC7800A0` | `2026-08-17` | [P5 水平边界供电封锁 lowering 金丝雀（2026-08-17）](<research/p5_horizontal_lowering_canary_20260817/README.md>)<br>P5 已执行 HORIZONTAL-BOUNDARY-MIDDLE-TARGET-SHELL-V1 的 research-only pose-bool lowering canary：六个 group-pose 事件被精确编译为一条 sum<=5 约束，producer 外重建与 proto replay 逐字节通过… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P4-BLOCKADE-FAMILY-ABSTRACTION-20260817-284FD8D3B0` | `2026-08-17` | [P4 区域供电封锁 family 抽象与定理化（2026-08-17）](<research/p4_blockade_family_abstraction_20260817/README.md>)<br>P4 将 P1b/P3 的局部供电封锁机制拆为水平边界中间 target、双边界角 target 与 5×5/6×4/4×6 混合矩形三类 group-pose family。水平类通过 1,728 个正例与 6,708 个系统反例并具备 2 个自然 occurrence，技术义务已闭合到只剩 owner lower… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P3-POWER-BLOCKADE-VALIDATION-20260817-3DC75D9C7A` | `2026-08-17` | [P3 区域供电封锁 family 验证（2026-08-17）](<research/p3_power_blockade_validation_20260817/README.md>)<br>P3 对 P1b 底边六块供电封锁候选做小样本 incidence、37 个近失配、1098 个纵向／target 换位、双 master 只读 literal 审计与 5×5/6×4/4×6 混合模板探针。候选被收窄为网格边界壳机制并获得扩展正样本，但仍未晋升为 claim、cut、certified 或 prod… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
@@ -465,6 +472,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 |---|---|---|---|---|---|
 | `DOSSIER-P-REINSERTION-AUDIT-20260820-8BB5417ED3` | `2026-08-20` | [PREINSERTIONGAP 异源验收报告](<../.artifacts/p_reinsertion_audit_20260820/AUDIT_REPORT.md>)<br>异源验收证据包；包内总判词/状态：PASS_WITH_SCOPED_ERRATA_LOCALIZATION_UNDER_DETERMINED。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P-MUS-LANDSCAPE-20260820-CC6900A234` | `2026-08-20` | p mus landscape 20260820<br><code>.artifacts/p_mus_landscape_20260820</code><br>本地 research/support evidence inventory；包内终态判词/状态：NO_EXPLICIT_TERMINAL_VERDICT_RECORDED；验收状态：在途、未封账。仅作为 active open workflow 进入 inventory，不进入 historical triage，… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
+| `DOSSIER-I1-ROUND4-SELF-CHECK-20260820-0CFC3F056C` | `2026-08-20` | I1 第四轮自检收据与日志<br><code>.artifacts/i1_round4_self_check_20260820</code><br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `p1_2-proof-chain`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-CPU-L3-PERF-MEASUREMENT-20260820-212859A058` | `2026-08-20` | [CPU 大三缓选购 perf 实测批 — REPORT](<../.artifacts/cpu_l3_perf_measurement_20260820/REPORT.md>)<br>Inventory-only 登记。包内终态判词/状态：COMPLETE_RESEARCH_ONLY_NON_AUTHORIZING。验收状态：包内状态 COMPLETE_RESEARCH_ONLY_NON_AUTHORIZING；REVIEW_CHECKLIST 无对应异源验收节；出处：无对应 REVIEW_CHE… | `solver-experiment` | `active` | `unreviewed` |
 | `DOSSIER-P-MUS-LANDSCAPE-ERRATA-20260820-4FB752F398` | `2026-08-20` | [A_MUS_LANDSCAPE 并列勘误包](<../.artifacts/p_mus_landscape_errata_20260820/ERRATA.md>)<br>Inventory-only 登记。该包是 DOSSIER-P-MUS-LANDSCAPE-20260820-CC6900A234 的并列勘误包（erratum_for），解释入口为 ERRATA.md。保持 active/unreviewed/local_optional，仅登记 inventory 与 prove… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P-SIGNATURE-COOCCURRENCE-MATRIX-20260819-51366B1E18` | `2026-08-19` | [签名层逐事件成员集与共现矩阵](<../.artifacts/p_signature_cooccurrence_matrix_20260819/REPORT.md>)<br>Inventory-only 登记。包内终态判词/状态：PASS。验收状态：包内 checker/负测封账；REVIEW_CHECKLIST 未给出后续独立异源终结节；出处：REVIEW_CHECKLIST.md lines 155-173。 本登记不是 knowledge semantic review，不新增或升… | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
@@ -4555,7 +4563,7 @@ owner 允许归档三轮外部评审并以 non_authorizing 形态登记设计约
 
 - **明确不推出：** 原登记八条内容及本次评审修复新增的指针型登记项获得批准；推理外环获得立项；对现行树新增义务
 
-- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../../home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
+- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../../../.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
 
 <a id="decision-p1-2-close-20260707"></a>
 
@@ -4579,6 +4587,29 @@ owner 首次手动关闭 P1.2 并允许 P1.3 entry。该决定后来因严格空
 - **明确不推出：** 该 2026-07-07 决定仍是当前 gate authority
 
 - **证据：** [data/review_gates/phase_1_2_spike_close.json](<../data/review_gates/phase_1_2_spike_close.json>)〔informational history and supersede target〕；[docs/research/p1_2_v99_close_kernel_sealing.md](<research/p1_2_v99_close_kernel_sealing.md>)〔tracked close-kernel anchor〕
+
+<a id="decision-p1-2-i1-range-a-20260821"></a>
+
+### I1 范围 A 与 allowlist 历史 id 处置
+
+- **Decision ID：** `DECISION-P1-2-I1-RANGE-A-20260821`
+- **状态：** `current`
+- **登记角色：** `non_authorizing=true`
+- **权威作用：** `scope_boundary`
+- **决定人：** `zhuran24`
+- **决定日期：** `2026-08-21`
+- **外部决定 ID：** `owner-p1-2-i1-range-a-20260821`
+- **外部权威源：** `docs/research/common_mode_binding_reverify_20260820/OWNER_AUTHORITY_COMPANION_20260821.md`
+
+owner 批准 I1 范围 A 的指定 checker mutation 守卫与全部既定 test anchor 闭合，永久接受 strong-status allowlist 条目 id 尾号 _295 作为历史命名而非坐标承诺，并在逐处语义复核确认 coordinate-delegate alias dataflow 无新增行为后允许 Stage-B pin 重封。
+
+- **适用范围：** proof-obligations；certified-scope；p1_2；i1-range-a
+
+- **直接后果：** data/proof_obligations/p1_2_proof_obligations.json 的范围 A 守卫与 anchor 变更具有 owner companion；data/proof_obligations/strong_status_write_allowlist.json 可保留 id 尾号 _295、实际 line 309 的既有终态；Stage-B alias-use digest 可绑定到复核后的 c0e07e47… 最终实现态
+
+- **明确不推出：** proof gate 的双 operation-map parity 断言已补；allowlist id 尾号可被下游解释为坐标承诺；任何 production promotion、release closure 或 CERTIFIED 发布
+
+- **证据：** [data/proof_obligations/p1_2_proof_obligations.json](<../data/proof_obligations/p1_2_proof_obligations.json>)〔authority_change〕；[data/proof_obligations/strong_status_write_allowlist.json](<../data/proof_obligations/strong_status_write_allowlist.json>)〔authority_change〕；[docs/research/common_mode_binding_reverify_20260820/OWNER_AUTHORITY_COMPANION_20260821.md](<research/common_mode_binding_reverify_20260820/OWNER_AUTHORITY_COMPANION_20260821.md>)〔owner authority companion〕
 
 <a id="decision-p1-2-reclose-20260806"></a>
 
@@ -4604,6 +4635,29 @@ owner 在严格空地语义修复、三轮外审与 seal batch 后重新关闭 P
 - **取代决定：** DECISION-P1-2-CLOSE-20260707
 
 - **证据：** [data/review_gates/phase_1_2_spike_close.json](<../data/review_gates/phase_1_2_spike_close.json>)〔owner manual gate authority〕；[docs/research/p1_2_v99_close_kernel_sealing.md](<research/p1_2_v99_close_kernel_sealing.md>)〔tracked close-kernel anchor〕；[.artifacts/ghost_strict_fix_20260805/BLOCK_ADJUDICATION_20260806.md](<../.artifacts/ghost_strict_fix_20260805/BLOCK_ADJUDICATION_20260806.md>)〔strict-semantics repair adjudication〕（工作区可选工件）
+
+<a id="decision-p1-2-reclose-20260821"></a>
+
+### I1 common-mode 复验后重新关闭 P1.2
+
+- **Decision ID：** `DECISION-P1-2-RECLOSE-20260821`
+- **状态：** `current`
+- **登记角色：** `non_authorizing=true`
+- **权威作用：** `phase_gate`
+- **决定人：** `zhuran24`
+- **决定日期：** `2026-08-21`
+- **外部决定 ID：** `owner-p1-2-reclose-20260821`
+- **外部权威源：** `docs/research/common_mode_binding_reverify_20260820/OWNER_AUTHORITY_COMPANION_20260821.md`
+
+owner 在 I1 common-mode binding 独立复验、范围 A 守卫与锚点闭合、六轮外部审计收敛及 Stage-B 语义复核后重新关闭 P1.2；本次 mechanical reopen 不源于 soundness 缺陷，clean-review 连胜按 owner 裁量保留并继续在仓库外维护。
+
+- **适用范围：** phase-gate；p1_2；p1_3-entry
+
+- **直接后果：** P1.2 当前为 owner-closed；P1.3 entry 当前允许；sealed-authority parity floor 绑定最终 benders_loop.py 字节；clean-review 连胜按 owner 裁量保留且仍在仓库外维护
+
+- **明确不推出：** proof gate 的双 operation-map 结构缺陷已修复；仓库可从六轮报告或 receipt 推导 clean-review 数字；I1 外的 production promotion、release closure 或 CERTIFIED 发布
+
+- **证据：** [data/review_gates/phase_1_2_spike_close.json](<../data/review_gates/phase_1_2_spike_close.json>)〔authority_change〕；[docs/research/common_mode_binding_reverify_20260820/OWNER_AUTHORITY_COMPANION_20260821.md](<research/common_mode_binding_reverify_20260820/OWNER_AUTHORITY_COMPANION_20260821.md>)〔owner authority source〕；[docs/research/p1_2_v99_close_kernel_sealing.md](<research/p1_2_v99_close_kernel_sealing.md>)〔tracked close-kernel anchor〕；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND1_20260820.md](<../../../../zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND1_20260820.md>)〔external audit round1〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND2_20260820.md](<../../../../zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND2_20260820.md>)〔external audit round2〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND3_20260820.md](<../../../../zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND3_20260820.md>)〔external audit round3〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND4_20260820.md](<../../../../zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND4_20260820.md>)〔external audit round4〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND5_20260820.md](<../../../../zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND5_20260820.md>)〔external audit round5〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6_20260820.md](<../../../../zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6_20260820.md>)〔external audit round6〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6B_20260820.md](<../../../../zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6B_20260820.md>)〔external audit round6b〕（仓外可选证据）；[.artifacts/i1_round4_self_check_20260820/ACLOSE_SELF_CHECK_20260820.json](<../.artifacts/i1_round4_self_check_20260820/ACLOSE_SELF_CHECK_20260820.json>)〔initial ACLOSE receipt〕（工作区可选工件）；[.artifacts/i1_round4_self_check_20260820/ACLOSE_R6FIX_SELF_CHECK_20260820.json](<../.artifacts/i1_round4_self_check_20260820/ACLOSE_R6FIX_SELF_CHECK_20260820.json>)〔R6FIX receipt〕（工作区可选工件）；[.artifacts/i1_round4_self_check_20260820/ACLOSE_CLOSE_RECEIPT_20260821.json](<../.artifacts/i1_round4_self_check_20260820/ACLOSE_CLOSE_RECEIPT_20260821.json>)〔final re-close receipt〕（工作区可选工件）
 
 <a id="decision-rule-system-redesign-open-20260813"></a>
 
@@ -5301,6 +5355,42 @@ owner 拍板认可 semantics 拆分「先实验后拍板」路线（按 fen5 核
 - **未决项：** 逐字归档与条件式约束登记是否在 typed closure 时拆成两个 dossier 尚未裁决。；语义可压缩性、接口可压缩性与构造可分解性仍是待实验的可证伪假设。
 
 GPT Pro 浏览器只读审查复核了逐字归档身份、dossier intake、条件式约束转述、authority 指针与路线图衔接；本 review 不把评审内容提升为 claim。
+
+<a id="review-20260820-common-mode-binding-reverify"></a>
+
+### REVIEW-20260820-COMMON-MODE-BINDING-REVERIFY
+
+- **Dossier：** `DOSSIER-COMMON-MODE-BINDING-REVERIFY-20260820-0268E9394D`
+- **状态 / 结果：** `superseded` / `deferred`
+- **审阅日 / 范围：** `2026-08-20` / `targeted_files`
+- **提炼 claim：** —
+- **未决项：** 第二轮外部异源审计尚未形成 verdict；P1.2 close claim 显式 reopen 与 owner re-close 尚未执行。；两条 sealed-authority parity 测试按 owner 裁断继续保持红，不得在本批更新旧 authority floor。；Windows→WSL binding PB 完整 proof-chain 本批未重跑。；master INFEASIBLE、routing exhaustion、terminal fixed-witness 大核和部分 local cut family 仍保留各自 common-mode 面。；小模型 production/arithmetic/PB 三方系统穷举和 selected-pose membership index 留待后批。
+
+外审第一轮 FINDINGS_REQUIRE_FIX 已按 F0-F5 修复：47 个被大工件遮蔽的 nodeid 完成真实工件 A/B 真差分；能力合同改为生产运行态观测并显式登记 routing-filter 单调松弛；pose-optional 映射改为 plan/instance 派生；primary/retry 两构造点、input/output AST 义务对称封口；新增真实 53>52 负例。当前仅作为第二轮外审输入，不新增稳定 claim，不授予 re-close。
+
+<a id="review-20260820-common-mode-binding-reverify-round5-reopen"></a>
+
+### REVIEW-20260820-COMMON-MODE-BINDING-REVERIFY-ROUND5-REOPEN
+
+- **Dossier：** `DOSSIER-COMMON-MODE-BINDING-REVERIFY-20260820-0268E9394D`
+- **状态 / 结果：** `superseded` / `deferred`
+- **审阅日 / 范围：** `2026-08-20` / `targeted_files`
+- **提炼 claim：** —
+- **未决项：** owner 范围 A 已执行，但本批最终自验的 ACLOSE_SELF_CHECK 收据尚未落盘；在收据形成前，本 review 不以需要该收据背书的精确数字作为依据。；P1.2 owner re-close 尚未发生；review gate、owner re-close decision 与 re-close authority floor 仍待后续 owner 动作。；任何 receipt、测试绿灯或 CLEAN_FOR_REOPEN 外审判词都不能替代 owner re-close。
+
+本 review 将 I1 的纯标准库、闭式算术、artifact-bound 独立 binding 复验实现、P1.2 close-kernel sealed bytes 按 mutation policy 机械重开、五轮异源审计终判 CLEAN_FOR_REOPEN，以及 owner 范围 A 已执行定位为 re-close 的当前输入证据；这些材料支持继续完成 owner 收口，但不新增稳定 claim，也不授予或替代 owner re-close。
+
+<a id="review-20260821-common-mode-binding-reverify-reclose"></a>
+
+### REVIEW-20260821-COMMON-MODE-BINDING-REVERIFY-RECLOSE
+
+- **Dossier：** `DOSSIER-COMMON-MODE-BINDING-REVERIFY-20260820-0268E9394D`
+- **状态 / 结果：** `current` / `deferred`
+- **审阅日 / 范围：** `2026-08-21` / `targeted_files`
+- **提炼 claim：** —
+- **未决项：** 维护登记（已接受例外，不是待修项）：strong-status allowlist id 尾号 _295 不作坐标承诺；仅当下游开始把 id 尾号解释为坐标、或 SHA+size pin/语义元组核验规则变化时重新审查。；P1.2 proof gate 继续恰 1 issue：production 与 I1 的 pose-optional operation-map 过滤 parity 断言归后批，本次不得补逻辑。；checker 48 处零 mutation 覆盖、generic-output 重复守卫、token-lock 内鬼模型硬化、strict/closed-package typing 债、master_model 既存重复定义与 --refresh-dossiers 回归仍按既定后批处置。
+
+I1 re-close 收尾确认六轮外部审计经 R6B 收敛，owner 于 2026-08-21 批准范围 A、保留 clean-review 连胜并重新关闭 P1.2；Stage-B alias-use 逐处复核后重封，sealed-authority floor 绑定最终 benders_loop.py 字节。维护例外同步登记：allowlist id 尾号 _295 是历史命名、守卫实际位于 line 309，SHA+size 双 pin 不受影响，owner 永久接受且不要求重命名。
 
 ## 维护命令
 

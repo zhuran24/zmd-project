@@ -18,13 +18,7 @@ from typing import Any, Dict, List, Mapping, Sequence, Tuple
 
 SCHEMA_INPUT = "binding_sidecar_model_input_v1"
 
-# ---- 硬编码 TCB 层（binding_canonical_semantics_v1 §4.3：与生产共享，Phase 1 防不了）
-POSE_OPTIONAL_OPERATION_BY_TEMPLATE = {
-    "protocol_storage_box": "box_sink",
-    "power_pole": "power_supply",
-}
 NON_FACILITY_PLACEMENT_MARKER_IDS = {"ghost_pick"}
-GENERIC_OUTPUT_PROVIDER_OPERATIONS = {"boundary_io", "protocol_core"}
 UNUSED = "__unused__"
 
 # ---- 组合护栏默认上限（v2 §5.0-3）
@@ -43,6 +37,38 @@ class EmitterReject(Exception):
 
 
 # ---------------------------------------------------------------- strict JSON
+def _validate_utility_operation_map(
+    raw: Any,
+    profiles: Mapping[str, Mapping[str, Any]],
+    instances_by_id: Mapping[str, Mapping[str, Any]],
+) -> Dict[str, str]:
+    if not isinstance(raw, Mapping):
+        detail = "plan_utility_operation_by_template must be an object"
+        raise EmitterReject("INPUT_INVALID", "BAD_UTILITY_OPERATION_MAP", detail)
+    full_map: Dict[str, str] = {}
+    for raw_template, raw_operation in raw.items():
+        facility_type = str(raw_template)
+        operation_type = str(raw_operation)
+        if not facility_type or not operation_type:
+            detail = "utility operation map contains an empty identifier"
+            raise EmitterReject("INPUT_INVALID", "BAD_UTILITY_OPERATION_MAP", detail)
+        profile = profiles.get(operation_type)
+        if not isinstance(profile, Mapping) or str(profile.get("facility_type", "")) != facility_type:
+            detail = f"utility operation map/profile mismatch: {facility_type} -> {operation_type}"
+            raise EmitterReject("INPUT_INVALID", "BAD_UTILITY_OPERATION_MAP", detail)
+        full_map[facility_type] = operation_type
+    represented = {
+        str(instance.get("operation_type", ""))
+        for instance in instances_by_id.values()
+        if str(instance.get("operation_type", ""))
+    }
+    return {
+        facility_type: operation_type
+        for facility_type, operation_type in sorted(full_map.items())
+        if operation_type not in represented
+    }
+
+
 def strict_json_loads(text: str) -> Any:
     """独立实现的 strict JSON（semantics_v1 §1：拒重复 key/NaN/Inf/非有限 float）."""
 
@@ -83,6 +109,21 @@ def _validate_requirements(section: Mapping[str, Any], name: str) -> Dict[str, i
             raise EmitterReject("INPUT_INVALID", "UNUSED_SENTINEL_IN_REQUIREMENTS", name)
         out[c] = _require_int(count, f"{name}.{c}")
     return out
+
+
+def _generic_output_slot_map_from_profiles(
+    profiles: Mapping[str, Mapping[str, Any]],
+) -> Dict[str, int]:
+    """Independently derive provider admission from plan-derived profiles."""
+    result: Dict[str, int] = {}
+    for operation_type, profile in profiles.items():
+        count = _require_int(
+            profile.get("generic_output_slots", 0),
+            f"profile.{operation_type}.generic_output_slots",
+        )
+        if count > 0:
+            result[str(operation_type)] = count
+    return dict(sorted(result.items()))
 
 
 def _validate_generic_input_slot_map(
@@ -172,6 +213,7 @@ def _validate_generic_roles(
 def _synthesize_instances(
     placement: Mapping[str, Mapping[str, Any]],
     instances_by_id: Dict[str, Dict[str, Any]],
+    operation_by_template: Mapping[str, str],
 ) -> List[str]:
     """pose_optional 合成（semantics_v1 §4.1，含 `::` 反推）。缺映射 = INPUT_INVALID."""
     synthesized: List[str] = []
@@ -180,15 +222,24 @@ def _synthesize_instances(
             continue
         if instance_id in NON_FACILITY_PLACEMENT_MARKER_IDS:
             continue
-        facility_type = str(sol.get("facility_type", ""))
-        operation_type = POSE_OPTIONAL_OPERATION_BY_TEMPLATE.get(facility_type)
-        if operation_type is None and instance_id.startswith("pose_optional::"):
-            parts = instance_id.split("::")
-            if len(parts) >= 2:
-                inferred = parts[1]
-                operation_type = POSE_OPTIONAL_OPERATION_BY_TEMPLATE.get(inferred)
-                if operation_type is not None:
-                    facility_type = inferred
+        if not instance_id.startswith("pose_optional::"):
+            raise EmitterReject(
+                "INPUT_INVALID", "MISSING_INSTANCE_METADATA", instance_id
+            )
+        parts = instance_id.split("::")
+        if len(parts) < 3 or not parts[1]:
+            raise EmitterReject(
+                "INPUT_INVALID", "MISSING_INSTANCE_METADATA", instance_id
+            )
+        facility_type = parts[1]
+        solution_template = str(sol.get("facility_type", ""))
+        if solution_template and solution_template != facility_type:
+            raise EmitterReject(
+                "INPUT_INVALID",
+                "POSE_OPTIONAL_TEMPLATE_IDENTITY_MISMATCH",
+                f"{instance_id}: {solution_template}!={facility_type}",
+            )
+        operation_type = operation_by_template.get(facility_type)
         if operation_type is None:
             raise EmitterReject(
                 "INPUT_INVALID", "MISSING_INSTANCE_METADATA", instance_id
@@ -331,6 +382,11 @@ def emit(payload: Mapping[str, Any]) -> Dict[str, Any]:
         str(i["instance_id"]): dict(i) for i in payload["instances"]
     }
     profiles = {str(k): dict(v) for k, v in dict(payload["operation_profiles"]).items()}
+    pose_optional_operation_by_template = _validate_utility_operation_map(
+        payload.get("plan_utility_operation_by_template"),
+        profiles,
+        instances_by_id,
+    )
     commodity_metadata = dict(payload.get("commodity_metadata", {}))
 
     req_out = _validate_requirements(payload["required_generic_outputs"], "required_generic_outputs")
@@ -346,8 +402,15 @@ def emit(payload: Mapping[str, Any]) -> Dict[str, Any]:
         payload.get("generic_input_slots_by_operation"),
         profiles,
     )
+    generic_output_slots_by_operation = _generic_output_slot_map_from_profiles(
+        profiles
+    )
 
-    synthesized = _synthesize_instances(placement, instances_by_id)
+    synthesized = _synthesize_instances(
+        placement,
+        instances_by_id,
+        pose_optional_operation_by_template,
+    )
     _validate_metadata(placement, instances_by_id, facility_pools, profiles)
 
     # ---- 变量分配（v2 §3.1：确定性编号 + 结构化 varmap）
@@ -443,11 +506,20 @@ def emit(payload: Mapping[str, Any]) -> Dict[str, Any]:
             if instance_id in NON_FACILITY_PLACEMENT_MARKER_IDS:
                 continue
             inst = instances_by_id[instance_id]
-            if str(inst.get("operation_type") or "") not in GENERIC_OUTPUT_PROVIDER_OPERATIONS:
+            operation_type = str(inst.get("operation_type") or "")
+            declared_slots = generic_output_slots_by_operation.get(operation_type)
+            if declared_slots is None:
                 continue
             sol = placement[instance_id]
             pose = facility_pools[str(sol["facility_type"])][int(sol["pose_idx"])]
             output_ports = list(pose.get("output_port_cells", []) or [])
+            if len(output_ports) != declared_slots:
+                raise EmitterReject(
+                    "INPUT_INVALID",
+                    "GENERIC_OUTPUT_PORT_CAPACITY_DRIFT",
+                    f"{operation_type}/{instance_id}: declares {declared_slots}, "
+                    f"pose has {len(output_ports)} physical output ports",
+                )
             for local_idx, port in enumerate(output_ports):
                 x, y, direction = _physical_port_cell(
                     port, f"{instance_id}.output_port_cells[{local_idx}]"
@@ -475,14 +547,20 @@ def emit(payload: Mapping[str, Any]) -> Dict[str, Any]:
             sol = placement[instance_id]
             pose = facility_pools[str(sol["facility_type"])][int(sol["pose_idx"])]
             input_ports = list(pose.get("input_port_cells", []) or [])
-            if len(input_ports) < declared_slots:
+            # Production creates one generic-input slot for every physical pose
+            # input port, then independently requires the per-operation account
+            # to equal that physical count.  Accepting a surplus here and slicing
+            # it away would make the sidecar strictly stronger than production,
+            # exactly the kind of common-mode-adjacent projection drift this
+            # second encoding exists to catch.
+            if len(input_ports) != declared_slots:
                 raise EmitterReject(
                     "INPUT_INVALID",
                     "GENERIC_INPUT_PORT_CAPACITY_DRIFT",
                     f"{operation_type}/{instance_id}: declares {declared_slots}, "
                     f"pose has {len(input_ports)} physical input ports",
                 )
-            for local_idx, port in enumerate(input_ports[:declared_slots]):
+            for local_idx, port in enumerate(input_ports):
                 x, y, direction = _physical_port_cell(
                     port, f"{instance_id}.input_port_cells[{local_idx}]"
                 )
@@ -577,8 +655,9 @@ def emit(payload: Mapping[str, Any]) -> Dict[str, Any]:
         "generic_input_slots": len(in_slots),
         "synthesized_instances": synthesized,
         "tcb_shared_semantics": [
-            "POSE_OPTIONAL_OPERATION_BY_TEMPLATE", "NON_FACILITY_PLACEMENT_MARKER_IDS",
-            "GENERIC_OUTPUT_PROVIDER_OPERATIONS", "generic_input_slots_by_operation",
+            "plan_derived_utility_operation_by_template",
+            "NON_FACILITY_PLACEMENT_MARKER_IDS",
+            "plan_derived_generic_output_slots", "generic_input_slots_by_operation",
             "supports_exact_pose_level_binding_gate",
         ],
     }

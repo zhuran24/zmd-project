@@ -131,13 +131,13 @@ _BASELINE_SURFACE_SHA256 = {
 _PROTECTED_SURFACE_SHA256 = {
     **_BASELINE_SURFACE_SHA256,
     "scripts/preflight_gate.py": "1cecd1a6498aac4d7306e635c299429a11260f6df634a828a7d621da0e52dbfb",
-    "src/search/benders_loop.py": "34e198fc475ea2c7ea74ec05371fe59f8749a1e228ae68147577bd719be96a4e",
+    "src/search/benders_loop.py": "461fc6875ca16781c1d0d81720aee98747a3d2c984a4c1bf1afda4f384af1bc3",
 }
 
 _P1_2_SINK_SHA256 = {
     "src/cuts/lifecycle.py": "9b944572c3bc787317a2e9bfaaf4e3ce472ba8fd953269772b24535bbef1ac1a",
     "src/cuts/typed_platform.py": "cce881457c63647dbba58750e1c4884351a31987057ac72b9cd0aeecaf44b45b",
-    "src/search/benders_loop.py": "34e198fc475ea2c7ea74ec05371fe59f8749a1e228ae68147577bd719be96a4e",
+    "src/search/benders_loop.py": "461fc6875ca16781c1d0d81720aee98747a3d2c984a4c1bf1afda4f384af1bc3",
 }
 
 _WIRE_FIELDS = {

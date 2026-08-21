@@ -13,18 +13,63 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Mapping
 
-# 与 emitter 共享的硬编码 TCB 常量（semantics_v1 §4.3）——刻意重复声明而非 import，
-# 常量漂移会被 acceptance 的对照样本抓住。
-POSE_OPTIONAL_OPERATION_BY_TEMPLATE = {
-    "protocol_storage_box": "box_sink",
-    "power_pole": "power_supply",
-}
 NON_FACILITY_PLACEMENT_MARKER_IDS = {"ghost_pick"}
-GENERIC_OUTPUT_PROVIDER_OPERATIONS = {"boundary_io", "protocol_core"}
 UNUSED = "__unused__"
 
 
-def _resolve_instances(model_input: Mapping[str, Any]) -> Dict[str, Dict[str, Any]]:
+def _pose_optional_operation_map(
+    model_input: Mapping[str, Any],
+    profiles: Mapping[str, Mapping[str, Any]],
+) -> Dict[str, str]:
+    raw = model_input.get("plan_utility_operation_by_template")
+    if not isinstance(raw, Mapping):
+        raise ValueError("plan_utility_operation_by_template is not an object")
+    normalized: Dict[str, str] = {}
+    for raw_template, raw_operation in raw.items():
+        template = str(raw_template)
+        operation = str(raw_operation)
+        if not template or not operation:
+            raise ValueError("pose_optional operation map has an empty identity")
+        profile = profiles.get(operation)
+        if not isinstance(profile, Mapping) or str(profile.get("facility_type", "")) != template:
+            raise ValueError(
+                f"pose_optional operation map mismatch: {template}->{operation}"
+            )
+        normalized[template] = operation
+    expected: Dict[str, str] = {}
+    for operation, profile in profiles.items():
+        if dict(profile.get("input_slot_counts", {})) or dict(
+            profile.get("output_slot_counts", {})
+        ):
+            continue
+        template = str(profile.get("facility_type", ""))
+        previous = expected.get(template)
+        if previous is not None and previous != operation:
+            raise ValueError(
+                f"ambiguous utility facility type: {template}: {previous}, {operation}"
+            )
+        expected[template] = str(operation)
+    if normalized != expected:
+        raise ValueError(
+            f"utility operation map/profile mismatch: map={normalized} profiles={expected}"
+        )
+    represented = {
+        str(instance.get("operation_type", ""))
+        for instance in model_input.get("instances", [])
+        if isinstance(instance, Mapping)
+        and str(instance.get("operation_type", ""))
+    }
+    return {
+        template: operation
+        for template, operation in sorted(normalized.items())
+        if operation not in represented
+    }
+
+
+def _resolve_instances(
+    model_input: Mapping[str, Any],
+    operation_by_template: Mapping[str, str],
+) -> Dict[str, Dict[str, Any]]:
     """placement 实例解析 + pose_optional 合成（第二实现）。"""
     placement = dict(model_input["placement_solution"])
     by_id = {str(i["instance_id"]): dict(i) for i in model_input["instances"]}
@@ -34,14 +79,19 @@ def _resolve_instances(model_input: Mapping[str, Any]) -> Dict[str, Dict[str, An
             continue
         inst = by_id.get(instance_id)
         if inst is None:
-            facility_type = str(dict(sol).get("facility_type", ""))
-            op = POSE_OPTIONAL_OPERATION_BY_TEMPLATE.get(facility_type)
-            if op is None and instance_id.startswith("pose_optional::"):
-                parts = instance_id.split("::")
-                if len(parts) >= 2:
-                    op = POSE_OPTIONAL_OPERATION_BY_TEMPLATE.get(parts[1])
-                    if op is not None:
-                        facility_type = parts[1]
+            if not instance_id.startswith("pose_optional::"):
+                raise ValueError(f"unresolvable placement instance: {instance_id}")
+            parts = instance_id.split("::")
+            if len(parts) < 3 or not parts[1]:
+                raise ValueError(f"unresolvable placement instance: {instance_id}")
+            facility_type = parts[1]
+            solution_template = str(dict(sol).get("facility_type", ""))
+            if solution_template and solution_template != facility_type:
+                raise ValueError(
+                    f"pose_optional template mismatch: {instance_id}: "
+                    f"{solution_template}!={facility_type}"
+                )
+            op = operation_by_template.get(facility_type)
             if op is None:
                 raise ValueError(f"unresolvable placement instance: {instance_id}")
             inst = {"instance_id": instance_id, "facility_type": facility_type,
@@ -89,6 +139,16 @@ def check_canonical_witness(
             "generic input slot map/profile mismatch: "
             f"map={generic_input_slots_by_operation} profiles={expected_input_slot_map}"
         )
+    generic_output_slots_by_operation: Dict[str, int] = {}
+    for operation_type, profile in profiles.items():
+        raw_count = profile.get("generic_output_slots", 0)
+        if isinstance(raw_count, bool) or not isinstance(raw_count, int) or raw_count < 0:
+            failures.append(
+                f"profile generic output slot capacity for {operation_type!r} is not a non-negative integer"
+            )
+            continue
+        if raw_count > 0:
+            generic_output_slots_by_operation[str(operation_type)] = int(raw_count)
 
     # ---- 0. witness 完整性
     missing = [i + 1 for i in range(len(variables)) if witness.get(i + 1) not in (0, 1)]
@@ -127,7 +187,14 @@ def check_canonical_witness(
 
     # ---- 2. 应有对象集合（第二实现）与实际对照
     try:
-        instances = _resolve_instances(model_input)
+        operation_by_template = _pose_optional_operation_map(
+            model_input,
+            profiles,
+        )
+        instances = _resolve_instances(
+            model_input,
+            operation_by_template,
+        )
     except ValueError as exc:
         return {"ok": False, "failures": [str(exc)]}
 
@@ -143,10 +210,17 @@ def check_canonical_witness(
         go = int(profile.get("generic_output_slots", 0))
         if gi == 0 and go == 0:
             expected_binding[instance_id] = inst
-        if req_out and op in GENERIC_OUTPUT_PROVIDER_OPERATIONS:
+        declared_output_slots = generic_output_slots_by_operation.get(op)
+        if req_out and declared_output_slots is not None:
             sol = dict(placement[instance_id])
             pose = pools[str(sol["facility_type"])][int(sol["pose_idx"])]
-            for idx, port in enumerate(list(pose.get("output_port_cells", []) or [])):
+            output_ports = list(pose.get("output_port_cells", []) or [])
+            if len(output_ports) != declared_output_slots:
+                failures.append(
+                    f"{instance_id}: declares {declared_output_slots} generic output slots but pose "
+                    f"has {len(output_ports)} physical output ports"
+                )
+            for idx, port in enumerate(output_ports):
                 slot_id = f"{instance_id}:out:{idx}"
                 expected_out_slots[slot_id] = {
                     "slot_id": slot_id,
@@ -162,12 +236,12 @@ def check_canonical_witness(
             sol = dict(placement[instance_id])
             pose = pools[str(sol["facility_type"])][int(sol["pose_idx"])]
             input_ports = list(pose.get("input_port_cells", []) or [])
-            if len(input_ports) < declared_slots:
+            if len(input_ports) != declared_slots:
                 failures.append(
                     f"{instance_id}: declares {declared_slots} generic input slots but pose "
                     f"has {len(input_ports)} physical input ports"
                 )
-            for idx, port in enumerate(input_ports[:declared_slots]):
+            for idx, port in enumerate(input_ports):
                 slot_id = f"{instance_id}:in:{idx}"
                 expected_in_slots[slot_id] = {
                     "slot_id": slot_id,

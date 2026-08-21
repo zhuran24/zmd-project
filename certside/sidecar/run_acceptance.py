@@ -36,7 +36,7 @@ def cells(n, y=0, dir_="N"):
 
 
 def base_input() -> Dict[str, Any]:
-    return {
+    payload = {
         "schema": "binding_sidecar_model_input_v1",
         "placement_solution": {},
         "facility_pools": {},
@@ -44,9 +44,11 @@ def base_input() -> Dict[str, Any]:
         "required_generic_outputs": {},
         "required_generic_inputs": {},
         "generic_input_slots_by_operation": {},
+        "plan_utility_operation_by_template": {},
         "commodity_metadata": {},
         "operation_profiles": {},
     }
+    return payload
 
 
 def with_furnace(payload, instance_id="furnace_1", in_cells=3, need_ore=2, out_cells=1, need_ingot=1):
@@ -68,7 +70,11 @@ def with_furnace(payload, instance_id="furnace_1", in_cells=3, need_ore=2, out_c
 
 def with_dock(payload, instance_id="dock_1", out_cells=2):
     """generic output provider（boundary_io）."""
-    payload["operation_profiles"].setdefault("boundary_io", profile("dock"))
+    payload["operation_profiles"].setdefault(
+        "boundary_io",
+        profile("dock", go=out_cells),
+    )
+    payload["plan_utility_operation_by_template"]["dock"] = "boundary_io"
     payload["facility_pools"].setdefault("dock", []).append(
         {"pose_id": f"dp{len(payload['facility_pools'].get('dock', []))}",
          "input_port_cells": [], "output_port_cells": cells(out_cells, y=5)}
@@ -99,6 +105,9 @@ def with_sink(payload, instance_id="box_1", k=3, synthesize=False):
              "operation_type": "box_sink"}
         )
     payload["generic_input_slots_by_operation"]["box_sink"] = k
+    payload["plan_utility_operation_by_template"][
+        "protocol_storage_box"
+    ] = "box_sink"
     return payload
 
 
@@ -119,6 +128,9 @@ def with_core(payload, instance_id="core_1", k=14):
          "operation_type": "protocol_core", "is_mandatory": True}
     )
     payload["generic_input_slots_by_operation"]["protocol_core"] = k
+    payload["plan_utility_operation_by_template"]["protocol_core"] = (
+        "protocol_core"
+    )
     return payload
 
 
@@ -248,6 +260,14 @@ def build_samples() -> List[Dict[str, Any]]:
     p["wireless_sink_generic_input_slots"] = 3
     samples.append({"id": "I11_legacy_wireless_slot_field", "input": p,
                     "expect": "REJECT", "subcode": "LEGACY_WIRELESS_SLOT_FIELD"})
+
+    p = with_sink(base_input(), k=3)
+    in_commodity(p, "food", 1)
+    p["facility_pools"]["protocol_storage_box"][0]["input_port_cells"].append(
+        {"x": 99, "y": 7, "dir": "N"}
+    )
+    samples.append({"id": "I12_generic_input_physical_port_surplus", "input": p,
+                    "expect": "REJECT", "subcode": "GENERIC_INPUT_PORT_CAPACITY_DRIFT"})
 
     return samples
 

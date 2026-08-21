@@ -17,8 +17,15 @@ def main() -> int:
     project_root = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
     sys.path.insert(0, str(project_root))
 
-    from frontend import derive_operation_profiles, load_artifact  # noqa: E402
-    from src.models.binding_subproblem import load_generic_input_slots_by_operation  # noqa: E402
+    from frontend import (  # noqa: E402
+        derive_operation_profiles,
+        derive_utility_operation_by_template,
+        load_artifact,
+    )
+    from src.models.binding_subproblem import (  # noqa: E402
+        load_generic_input_slots_by_operation,
+        load_utility_operation_by_template,
+    )
     from src.preprocess.operation_profiles import OPERATION_PORT_PROFILES  # noqa: E402
 
     rules, _ = load_artifact(project_root / "rules" / "canonical_rules.json")
@@ -57,6 +64,16 @@ def main() -> int:
             f"  frontend={ours_generic_input_map}\n"
             f"  prod    ={prod_generic_input_map}"
         )
+    ours_utility_map = derive_utility_operation_by_template(plan)
+    prod_utility_map = load_utility_operation_by_template(
+        project_root=project_root
+    )
+    if ours_utility_map != prod_utility_map:
+        mismatches.append(
+            "DIFF utility_operation_by_template:\n"
+            f"  frontend={ours_utility_map}\n"
+            f"  prod    ={prod_utility_map}"
+        )
 
     if mismatches:
         print(f"PARITY FAIL ({len(mismatches)}):")
@@ -65,7 +82,8 @@ def main() -> int:
         return 1
     print(f"PARITY OK: {len(ours)} operation profiles identical "
           f"(recipes + utilities, slot counts exact); "
-          f"generic_input_slots_by_operation={ours_generic_input_map}")
+          f"generic_input_slots_by_operation={ours_generic_input_map}; "
+          f"utility_operation_by_template={ours_utility_map}")
     return 0
 
 

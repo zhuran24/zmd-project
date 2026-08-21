@@ -54,12 +54,9 @@ GENERIC_IO_REQUIREMENTS_PATH = (
 )
 PREPROCESS_PLAN_PATH = PROJECT_ROOT / "rules" / "preprocess_plan.json"
 
-# 批 5 (2026-07-18): 协议箱 operation 由 wireless_sink 改名 box_sink（owner 拍板）。
-# 语义同批翻转：箱有实体口、成品为真 routed 商品、"无线"仅箱→仓库段。
-POSE_OPTIONAL_OPERATION_BY_TEMPLATE = {
-    "protocol_storage_box": "box_sink",
-    "power_pole": "power_supply",
-}
+# Pose-optional template → operation 关系不在本模块手抄；它由
+# preprocess_plan.utility_operations[*].facility_type 反向派生并随 certified
+# snapshot 传入。缺失或漂移必须 fail closed。
 NON_FACILITY_PLACEMENT_MARKER_IDS = {"ghost_pick"}
 CANONICAL_PROFILE_FACILITY_TYPES = {
     str(profile.facility_type) for profile in OPERATION_PORT_PROFILES.values()
@@ -90,26 +87,36 @@ def _load_strict_json(path: Path) -> Any:
     return load_strict_json(path)
 
 
-def _normalize_generic_input_slot_count(
+def _normalize_generic_slot_count(
     raw_slot_count: Any,
     *,
     field: str,
 ) -> int:
     if isinstance(raw_slot_count, bool) or not isinstance(raw_slot_count, int):
-        raise TypeError(
-            f"{field} must be an integer "
-            "（通用收货槽位数必须是整数）"
-        )
+        raise TypeError(f"{field} must be an integer")
     slot_count = int(raw_slot_count)
     if slot_count < 0:
-        raise ValueError(
-            f"{field} must be non-negative "
-            f"（通用收货槽位数不能为负）: {slot_count}"
-        )
+        raise ValueError(f"{field} must be non-negative: {slot_count}")
     return slot_count
 
 
-def _generic_input_slot_map_from_payload(payload: Any) -> Dict[str, int]:
+def _normalize_generic_input_slot_count(
+    raw_slot_count: Any,
+    *,
+    field: str,
+) -> int:
+    return _normalize_generic_slot_count(raw_slot_count, field=field)
+
+
+def _normalize_generic_output_slot_count(
+    raw_slot_count: Any,
+    *,
+    field: str,
+) -> int:
+    return _normalize_generic_slot_count(raw_slot_count, field=field)
+
+
+def _generic_slot_map_from_payload(payload: Any, *, slot_field: str) -> Dict[str, int]:
     if not isinstance(payload, Mapping):
         raise TypeError(
             "preprocess_plan must be a JSON object "
@@ -118,7 +125,7 @@ def _generic_input_slot_map_from_payload(payload: Any) -> Dict[str, int]:
     utility_operations = payload.get("utility_operations")
     if not isinstance(utility_operations, Mapping):
         raise KeyError(
-            "preprocess_plan.utility_operations is required for generic input binding "
+            "preprocess_plan.utility_operations is required for generic binding "
             "（预处理计划缺少 utility_operations）"
         )
     slot_map: Dict[str, int] = {}
@@ -127,14 +134,81 @@ def _generic_input_slot_map_from_payload(payload: Any) -> Dict[str, int]:
             raise TypeError(
                 f"preprocess_plan.utility_operations.{operation_type} must be an object"
             )
-        raw = entry.get("generic_input_slots", 0)
-        slots = _normalize_generic_input_slot_count(
+        raw = entry.get(slot_field, 0)
+        slots = _normalize_generic_slot_count(
             raw,
-            field=f"{operation_type}.generic_input_slots",
+            field=f"{operation_type}.{slot_field}",
         )
         if slots > 0:
             slot_map[str(operation_type)] = slots
     return slot_map
+
+
+def _generic_input_slot_map_from_payload(payload: Any) -> Dict[str, int]:
+    return _generic_slot_map_from_payload(payload, slot_field="generic_input_slots")
+
+
+def _generic_output_slot_map_from_payload(payload: Any) -> Dict[str, int]:
+    return _generic_slot_map_from_payload(payload, slot_field="generic_output_slots")
+
+
+def _utility_operation_map_from_payload(payload: Any) -> Dict[str, str]:
+    """Derive facility-template → utility-operation from preprocess_plan.
+
+    This is intentionally the unfiltered utility map.  A binding model derives
+    pose-optional entries by subtracting operations represented by authoritative
+    instances, so mandatory boundary/core utilities are never silently synthesized.
+    """
+
+    if not isinstance(payload, Mapping):
+        raise TypeError("preprocess_plan must be a JSON object")
+    utility_operations = payload.get("utility_operations")
+    if not isinstance(utility_operations, Mapping):
+        raise KeyError("preprocess_plan.utility_operations is required")
+    by_template: Dict[str, str] = {}
+    for raw_operation, raw_entry in utility_operations.items():
+        operation_type = str(raw_operation)
+        if not operation_type or not isinstance(raw_entry, Mapping):
+            raise TypeError("preprocess_plan utility operation entry is invalid")
+        facility_type = raw_entry.get("facility_type")
+        if not isinstance(facility_type, str) or not facility_type:
+            raise TypeError(
+                f"preprocess_plan.utility_operations.{operation_type}.facility_type "
+                "must be a non-empty string"
+            )
+        previous = by_template.get(facility_type)
+        if previous is not None and previous != operation_type:
+            raise ValueError(
+                "preprocess_plan utility facility maps to multiple operations: "
+                f"{facility_type!r}: {previous!r}, {operation_type!r}"
+            )
+        by_template[facility_type] = operation_type
+    return dict(sorted(by_template.items()))
+
+
+def _pose_optional_operation_map_from_payload(payload: Any) -> Dict[str, str]:
+    """Compatibility alias for the complete plan-derived utility identity map."""
+
+    return _utility_operation_map_from_payload(payload)
+
+
+def load_pose_optional_operation_by_template(
+    *,
+    project_root: Optional[Path] = None,
+    path: Optional[Path] = None,
+) -> Dict[str, str]:
+    """Compatibility alias for the complete plan-derived utility identity map."""
+
+    return load_utility_operation_by_template(
+        project_root=project_root,
+        path=path,
+    )
+
+
+def load_pose_optional_operation_by_template_from_text(*, text: str) -> Dict[str, str]:
+    """Atomic compatibility alias for the complete utility identity map."""
+
+    return load_utility_operation_by_template_from_text(text=text)
 
 
 def load_generic_input_slots_by_operation(
@@ -167,14 +241,98 @@ def load_generic_input_slots_by_operation(
 
 
 def load_generic_input_slots_by_operation_from_text(*, text: str) -> Dict[str, int]:
-    """Atomic-snapshot variant of load_generic_input_slots_by_operation (P1.2-FIX-5).
-
-    Parses the preprocess_plan slot capacities from a pre-snapshotted artifact text
-    so the bytes build consumes are the bytes the session hashed (no second disk
-    read). 两条加载路径（磁盘/快照文本）必须严格同构。
-    """
+    """Atomic-snapshot variant of load_generic_input_slots_by_operation (P1.2-FIX-5)."""
 
     return _generic_input_slot_map_from_payload(_loads_strict_json(text))
+
+
+def load_generic_output_slots_by_operation(
+    *,
+    project_root: Optional[Path] = None,
+    path: Optional[Path] = None,
+) -> Dict[str, int]:
+    """Load plan-derived generic-output provider capacities.
+
+    Provider admission is data-driven: an operation participates exactly when
+    ``preprocess_plan.utility_operations[*].generic_output_slots`` is positive.
+    The selected pose must expose that exact number of physical output ports.
+    """
+
+    if path is None:
+        path = (
+            PREPROCESS_PLAN_PATH
+            if project_root is None
+            else project_root / "rules" / "preprocess_plan.json"
+        )
+    if not path.exists():
+        raise FileNotFoundError(
+            f"Missing preprocess_plan artifact（缺少预处理计划工件）: {path}"
+        )
+    return _generic_output_slot_map_from_payload(_load_strict_json(path))
+
+
+def load_generic_output_slots_by_operation_from_text(*, text: str) -> Dict[str, int]:
+    """Atomic-snapshot variant of load_generic_output_slots_by_operation."""
+
+    return _generic_output_slot_map_from_payload(_loads_strict_json(text))
+
+
+def load_utility_operation_by_template(
+    *,
+    project_root: Optional[Path] = None,
+    path: Optional[Path] = None,
+) -> Dict[str, str]:
+    if path is None:
+        path = (
+            PREPROCESS_PLAN_PATH
+            if project_root is None
+            else project_root / "rules" / "preprocess_plan.json"
+        )
+    if not path.exists():
+        raise FileNotFoundError(f"Missing preprocess_plan artifact: {path}")
+    return _utility_operation_map_from_payload(_load_strict_json(path))
+
+
+def load_utility_operation_by_template_from_text(*, text: str) -> Dict[str, str]:
+    return _utility_operation_map_from_payload(_loads_strict_json(text))
+
+
+def _binding_plan_semantics_from_payload(payload: Any) -> Dict[str, Dict[str, Any]]:
+    return {
+        "generic_input_slots_by_operation": _generic_input_slot_map_from_payload(
+            payload
+        ),
+        "generic_output_slots_by_operation": _generic_output_slot_map_from_payload(
+            payload
+        ),
+        "utility_operation_by_template": _utility_operation_map_from_payload(
+            payload
+        ),
+    }
+
+
+def load_binding_plan_semantics(
+    *,
+    project_root: Optional[Path] = None,
+    path: Optional[Path] = None,
+) -> Dict[str, Dict[str, Any]]:
+    """Read preprocess_plan once and derive all binding-facing plan maps."""
+
+    if path is None:
+        path = (
+            PREPROCESS_PLAN_PATH
+            if project_root is None
+            else project_root / "rules" / "preprocess_plan.json"
+        )
+    if not path.exists():
+        raise FileNotFoundError(f"Missing preprocess_plan artifact: {path}")
+    return _binding_plan_semantics_from_payload(_load_strict_json(path))
+
+
+def load_binding_plan_semantics_from_text(*, text: str) -> Dict[str, Dict[str, Any]]:
+    """Atomic-snapshot variant of load_binding_plan_semantics."""
+
+    return _binding_plan_semantics_from_payload(_loads_strict_json(text))
 
 
 def load_generic_io_requirements(
@@ -442,6 +600,8 @@ class PortBindingModel:
         project_root: Optional[Path] = None,
         io_requirements_path: Optional[Path] = None,
         generic_input_slots_by_operation: Optional[Mapping[str, int]] = None,
+        generic_output_slots_by_operation: Optional[Mapping[str, int]] = None,
+        utility_operation_by_template: Optional[Mapping[str, str]] = None,
         routing_context: Optional[Any] = None,  # RAB-SEP Phase 1: routing-aware filter
         canonical_rules_payload: Optional[Mapping[str, Any]] = None,
         canonical_commodity_metadata: Optional[Mapping[str, Any]] = None,
@@ -469,6 +629,15 @@ class PortBindingModel:
                 )
                 for op, slots in generic_input_slots_by_operation.items()
             }
+        if generic_output_slots_by_operation is None:
+            self._generic_output_slots_by_operation: Optional[Dict[str, int]] = None
+        else:
+            self._generic_output_slots_by_operation = {
+                str(op): _normalize_generic_output_slot_count(
+                    slots, field=f"generic_output_slots_by_operation[{op}]"
+                )
+                for op, slots in generic_output_slots_by_operation.items()
+            }
         self.placement_solution = {
             str(instance_id): dict(sol)
             for instance_id, sol in placement_solution.items()
@@ -477,6 +646,30 @@ class PortBindingModel:
         self.instances_by_id = {
             str(inst["instance_id"]): dict(inst)
             for inst in instances
+        }
+        instance_operations = {
+            str(instance.get("operation_type", ""))
+            for instance in self.instances_by_id.values()
+            if str(instance.get("operation_type", ""))
+        }
+        if utility_operation_by_template is None:
+            utility_operation_by_template = load_utility_operation_by_template(
+                project_root=self.project_root
+            )
+        normalized_utility_map: Dict[str, str] = {}
+        for raw_template, raw_operation in dict(utility_operation_by_template).items():
+            facility_type = str(raw_template)
+            operation_type = str(raw_operation)
+            if not facility_type or not operation_type:
+                raise ValueError("utility operation map contains an empty identifier")
+            normalized_utility_map[facility_type] = operation_type
+        self._utility_operation_by_template = dict(
+            sorted(normalized_utility_map.items())
+        )
+        self._pose_optional_operation_by_template = {
+            facility_type: operation_type
+            for facility_type, operation_type in self._utility_operation_by_template.items()
+            if operation_type not in instance_operations
         }
 
         if required_generic_outputs is None or required_generic_inputs is None:
@@ -578,7 +771,9 @@ class PortBindingModel:
         self.binding_domain_cache_hits = 0
         self.binding_domain_cache_misses = 0
         self.binding_domain_reused_instances: List[str] = []
+        self.selection_nogood_count = 0
         self._ignored_placement_marker_ids: List[str] = []
+        self._reverification_selection_nogood_count = 0
 
         # RAB-SEP Phase 1: routing-aware filter context (None when disabled)
         self.routing_context = routing_context
@@ -607,8 +802,12 @@ class PortBindingModel:
         self._materialize_pose_optional_instances()
         self._validate_placement_instance_metadata()
 
+    def _pose_optional_operation_map(self) -> Dict[str, str]:
+        return dict(self._pose_optional_operation_by_template)
+
     def _materialize_pose_optional_instances(self) -> None:
         synthesized: List[str] = []
+        operation_by_template = self._pose_optional_operation_map()
 
         for instance_id, sol in self.placement_solution.items():
             if instance_id in self.instances_by_id:
@@ -616,15 +815,26 @@ class PortBindingModel:
             if _is_non_facility_placement_marker(instance_id):
                 self._record_ignored_placement_marker(instance_id)
                 continue
+            if not instance_id.startswith("pose_optional::"):
+                self._record_missing_instance_id(instance_id)
+                continue
 
-            facility_type = str(sol.get("facility_type", ""))
-            operation_type = POSE_OPTIONAL_OPERATION_BY_TEMPLATE.get(facility_type)
-            if operation_type is None and instance_id.startswith("pose_optional::"):
-                _, inferred_tpl, *_rest = instance_id.split("::")
-                operation_type = POSE_OPTIONAL_OPERATION_BY_TEMPLATE.get(inferred_tpl)
-                if operation_type is not None:
-                    facility_type = inferred_tpl
-
+            parts = instance_id.split("::")
+            if len(parts) < 3 or not parts[1]:
+                self._record_missing_instance_id(instance_id)
+                continue
+            inferred_template = parts[1]
+            solution_template = str(sol.get("facility_type", ""))
+            if solution_template and solution_template != inferred_template:
+                self._record_invalid_instance_metadata(
+                    instance_id,
+                    "pose_optional_template_identity_mismatch",
+                    inferred_facility_type=inferred_template,
+                    solution_facility_type=solution_template,
+                )
+                continue
+            facility_type = inferred_template
+            operation_type = operation_by_template.get(facility_type)
             if operation_type is None:
                 self._record_missing_instance_id(instance_id)
                 continue
@@ -815,11 +1025,10 @@ class PortBindingModel:
         # high-prod-low-demand and low-prod-high-demand commodities in the
         # same storage box. Default OFF — requires caller-side fallback
         # ladder when enabled (handle INFEASIBLE by retrying without nogood).
-        # use_overload_separation overrides the env when not None: I1 independent
-        # reverify passes False to force this heuristic OFF regardless of env, so
-        # the independent binding model never carries a feasible-solution-cutting
-        # nogood (depth-defense — the reverifier must not inherit a heuristic that
-        # could turn a feasible layout into a heuristic-INFEASIBLE sealed as a cut).
+        # use_overload_separation overrides the env when not None. Certified callers
+        # use it for the env-off fallback. The isolated arithmetic I1 does not build
+        # this CP-SAT model; it observes overload_separation_enabled through
+        # extract_conflict_summary and returns UNKNOWN whenever the heuristic was on.
         if use_overload_separation is None:
             overload_env = os.environ.get(
                 "EXACT_BINDING_USE_OVERLOAD_SEPARATION", ""
@@ -1112,23 +1321,41 @@ class PortBindingModel:
             self.binding_domain_reused_instances
         )
 
+    def _generic_output_slot_capacity_map(self) -> Dict[str, int]:
+        if self._generic_output_slots_by_operation is None:
+            self._generic_output_slots_by_operation = load_generic_output_slots_by_operation(
+                project_root=self.project_root
+            )
+        return self._generic_output_slots_by_operation
+
     def _build_generic_output_domains(self) -> None:
         generic_commodities = sorted(self.required_generic_outputs.keys())
         if not generic_commodities:
             return
         slot_commodities = generic_commodities + ["__unused__"]
+        capacity_map = self._generic_output_slot_capacity_map()
 
         for instance_id, sol in self.placement_solution.items():
             inst = self._resolve_instance(instance_id)
             if not inst:
                 continue
             operation_type = str(inst.get("operation_type", ""))
-            if operation_type not in {"boundary_io", "protocol_core"}:
+            declared_slots = capacity_map.get(operation_type)
+            if declared_slots is None or declared_slots <= 0:
                 continue
 
             tpl = str(sol["facility_type"])
             pose = self._resolve_pose(tpl, int(sol["pose_idx"]))
-            for local_idx, port in enumerate(pose.get("output_port_cells", [])):
+            output_ports = list(pose.get("output_port_cells", []) or [])
+            if len(output_ports) != declared_slots:
+                raise ValueError(
+                    f"generic output capacity drift（容量漂移 fail-closed）: "
+                    f"operation {operation_type!r} instance {instance_id!r} declares "
+                    f"{declared_slots} generic output slots but selected pose "
+                    f"{tpl}[{int(sol['pose_idx'])}] has {len(output_ports)} "
+                    "physical output ports"
+                )
+            for local_idx, port in enumerate(output_ports):
                 self.routing_aware_filter_stats["generic_output_slots_pre_filter"] += 1
                 # RAB-SEP Phase 1: skip front-blocked generic output slot
                 if self.routing_context is not None:
@@ -1540,6 +1767,8 @@ class PortBindingModel:
         summary["binding_domain_cache_hits"] = int(self.binding_domain_cache_hits)
         summary["binding_domain_cache_misses"] = int(self.binding_domain_cache_misses)
         summary["binding_domain_reused_instances"] = list(self.binding_domain_reused_instances)
+        summary["routing_context_enabled"] = self.routing_context is not None
+        summary["selection_nogood_count"] = int(self.selection_nogood_count)
         summary["selection"] = self.extract_selection() if self._status in (cp_model.OPTIMAL, cp_model.FEASIBLE) else {}
         return summary
 
@@ -1565,3 +1794,5 @@ class PortBindingModel:
 
         if literals:
             self.model.Add(sum(literals) <= len(literals) - 1)
+            self._reverification_selection_nogood_count += 1
+            self.selection_nogood_count += 1

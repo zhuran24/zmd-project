@@ -784,7 +784,7 @@ def test_source_discovery_implementations_agree_and_exclude_devtools() -> None:
         digests = [str(module.compute_certified_exact_source_digest()) for module in modules]
         assert paths[0] == paths[1]
         assert digests[0] == digests[1]
-        assert len(paths[0]) == 804
+        assert len(paths[0]) == 813
         assert not any(path.startswith("devtools/") for path in paths[0])
         return
 

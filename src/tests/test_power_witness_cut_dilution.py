@@ -177,11 +177,29 @@ def test_whole_layout_nogood_fails_closed_when_flag_on_with_synthetic_pole():
             binding_exhausted=True,
             routing_exhausted=False,
             proof_summary={"mode": "certified_exact"},
+            binding_model=_binding_runtime_stub(),  # type: ignore[arg-type]
+            source_rejected_selection_count=0,
         )
     assert applied is False, (
         "flag on + synthetic pole 时 whole-layout cut 应 fail-closed 不产 cut. "
         "否则 cut 会丢 pole literal → 过切 pole alternatives."
     )
+
+
+class _ObservedBindingModel:
+    routing_context = None
+
+    @staticmethod
+    def extract_conflict_summary() -> dict[str, object]:
+        return {
+            "routing_context_enabled": False,
+            "overload_separation_enabled": False,
+            "selection_nogood_count": 0,
+        }
+
+
+def _binding_runtime_stub() -> _ObservedBindingModel:
+    return _ObservedBindingModel()
 
 
 def _force_confirmed_reverify(**kwargs):
@@ -255,6 +273,8 @@ def test_whole_layout_nogood_normal_path_flag_off():
             binding_exhausted=True,
             routing_exhausted=False,
             proof_summary={"mode": "certified_exact"},
+            binding_model=_binding_runtime_stub(),  # type: ignore[arg-type]
+            source_rejected_selection_count=0,
         )
     assert applied is True
 
@@ -293,6 +313,8 @@ def test_whole_layout_nogood_declined_when_reverify_unconfirmed():
             binding_exhausted=True,
             routing_exhausted=False,
             proof_summary={"mode": "certified_exact"},
+            binding_model=_binding_runtime_stub(),  # type: ignore[arg-type]
+            source_rejected_selection_count=0,
         )
     assert applied is False, (
         "reverify 未确认 INFEASIBLE 时 whole-layout cut 必须 fail-closed 不应用"
@@ -329,6 +351,8 @@ def test_whole_layout_nogood_propagates_master_rejection_for_unresolved_member()
         binding_exhausted=True,
         routing_exhausted=False,
         proof_summary={"mode": "certified_exact"},
+        binding_model=_binding_runtime_stub(),  # type: ignore[arg-type]
+        source_rejected_selection_count=0,
     )
 
     assert applied is False

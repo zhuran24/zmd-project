@@ -675,6 +675,33 @@
       "summary": "性质：research-only 执行记录 截止日期：2026-08-03 状态：H20ROWPOWERUNSATBOTHR1INTERPRETATIONS 冻结输入：Git 3b4e859a0ffe080edd88953e2ad24811b3ecdeb7；16 号文书 SHA-256 b3980eccdc629612c5371f862a1a31891b48f8b6530d6452512ee9d1dd25ca8f 状态边界：U=(1188,18)、L=absent 未改变。"
     },
     {
+      "id": "DOSSIER-I1-ROUND4-SELF-CHECK-20260820-0CFC3F056C",
+      "path": ".artifacts/i1_round4_self_check_20260820",
+      "entry_file": null,
+      "title": "I1 第四轮自检收据与日志",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-20",
+      "topics": [
+        "p1_2-proof-chain",
+        "solver-architecture"
+      ],
+      "summary": "Local-optional evidence registered through docctl; semantic outcome is pending closure review.",
+      "workflow": {
+        "opened_at": "2026-08-20",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/i1_round4_self_check_20260820/ROUND4B_SELF_CHECK_20260820.json",
+        "manifest_sha256": "d72c34a3a53c0b58c5cc54ab1805c106530dd8962e1bc0715c36c6b68c6312f6",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": "worktree-local audit receipts; reproduce from the commands recorded in each receipt"
+      }
+    },
+    {
       "id": "DOSSIER-IP-ADAPTER-V3-20260805-463C50D116",
       "path": ".artifacts/ip_adapter_v3_20260805",
       "entry_file": ".artifacts/ip_adapter_v3_20260805/CHANGES.md",
@@ -2754,6 +2781,27 @@
         "rules-semantics"
       ],
       "summary": "本交付包按 00ASK.md 完成九条充分限制的价签、前提集、撤退线和判定实验设计；authority=false，不登记任何界，账本不变。【已证明】"
+    },
+    {
+      "id": "DOSSIER-COMMON-MODE-BINDING-REVERIFY-20260820-0268E9394D",
+      "path": "docs/research/common_mode_binding_reverify_20260820",
+      "entry_file": "docs/research/common_mode_binding_reverify_20260820/README.md",
+      "title": "Whole-layout binding common-mode hardening",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "current_evidence",
+      "curation": "curated",
+      "tracked_state": "tracked",
+      "date": "2026-08-20",
+      "topics": [
+        "p1_2-proof-chain",
+        "solver-architecture"
+      ],
+      "summary": "I1 已从复用生产 PortBindingModel 求解重写为纯标准库、闭式算术、artifact-bound 的独立 binding 复验包；该批使 P1.2 close-kernel 的 73 个 sealed sink 字节漂移，并按 source_sha256_drift_reopens_p1_2_close_claim 机械重开 close claim。五轮外部异源审计终判 CLEAN_FOR_REOPEN，owner 裁定的范围 A 已执行并完成 reseal；P1.2 owner re-close 尚未发生，dossier 保持 active。",
+      "workflow": {
+        "opened_at": "2026-08-20",
+        "closure": null
+      }
     },
     {
       "id": "DOSSIER-CUT-FRAMEWORK-REVIEW-GPT56PRO-20260710-C6C896B93B",

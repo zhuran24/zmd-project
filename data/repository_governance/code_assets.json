@@ -37,8 +37,8 @@
       }
     },
     "expected_current_class_counts": {
-      "active_implementation": 390,
-      "test": 665,
+      "active_implementation": 399,
+      "test": 668,
       "common_infrastructure": 470,
       "authoritative_input": 4,
       "enforcement_control": 40,

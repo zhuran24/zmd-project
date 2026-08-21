@@ -466,6 +466,7 @@ def test_pose_bool_cell_pattern_cut_refuses_unused_generic_output_slot_overcut()
         instances,
         required_generic_outputs={"source_ore": 1},
         required_generic_inputs=CANONICAL_GENERIC_INPUTS,
+        generic_output_slots_by_operation={"protocol_core": 2},
         routing_context=routing_context,
     )
     binding_model.build()

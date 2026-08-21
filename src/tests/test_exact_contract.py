@@ -108,6 +108,9 @@ _MINIMAL_CERTIFIED_BINDING_RULES = {
 
 class _CertifiedBindingMasterRulesMixin:
     rules = _MINIMAL_CERTIFIED_BINDING_RULES
+    generic_input_slots_by_operation: dict[str, int] = {}
+    generic_output_slots_by_operation: dict[str, int] = {}
+    utility_operation_by_template: dict[str, str] = {}
 
 
 
@@ -229,6 +232,16 @@ def test_certified_binding_kwargs_use_master_generic_io_snapshot() -> None:
             "protocol_core": 14,
             "box_sink": 3,
         },
+        generic_output_slots_by_operation={
+            "boundary_io": 1,
+            "protocol_core": 6,
+        },
+        utility_operation_by_template={
+            "boundary_storage_port": "boundary_io",
+            "power_pole": "power_supply",
+            "protocol_core": "protocol_core",
+            "protocol_storage_box": "box_sink",
+        },
         rules={
             "commodity_metadata": {
                 "source_ore": {
@@ -249,6 +262,16 @@ def test_certified_binding_kwargs_use_master_generic_io_snapshot() -> None:
         "generic_input_slots_by_operation": {
             "protocol_core": 14,
             "box_sink": 3,
+        },
+        "generic_output_slots_by_operation": {
+            "boundary_io": 1,
+            "protocol_core": 6,
+        },
+        "utility_operation_by_template": {
+            "boundary_storage_port": "boundary_io",
+            "protocol_core": "protocol_core",
+            "protocol_storage_box": "box_sink",
+            "power_pole": "power_supply",
         },
     }
 
@@ -297,6 +320,16 @@ def test_certified_retry_binding_receives_master_generic_io_snapshot(
             "protocol_core": 14,
             "box_sink": 3,
         },
+        generic_output_slots_by_operation={
+            "boundary_io": 1,
+            "protocol_core": 6,
+        },
+        utility_operation_by_template={
+            "boundary_storage_port": "boundary_io",
+            "power_pole": "power_supply",
+            "protocol_core": "protocol_core",
+            "protocol_storage_box": "box_sink",
+        },
         rules={
             "commodity_metadata": {
                 "source_ore": {
@@ -324,6 +357,16 @@ def test_certified_retry_binding_receives_master_generic_io_snapshot(
         "protocol_core": 14,
         "box_sink": 3,
     }
+    assert captured_kwargs["generic_output_slots_by_operation"] == {
+        "boundary_io": 1,
+        "protocol_core": 6,
+    }
+    assert captured_kwargs["utility_operation_by_template"] == {
+        "boundary_storage_port": "boundary_io",
+        "power_pole": "power_supply",
+        "protocol_core": "protocol_core",
+        "protocol_storage_box": "box_sink",
+    }
 
 
 def test_certified_binding_kwargs_require_provider_slot_map_for_generic_inputs() -> None:
@@ -335,7 +378,10 @@ def test_certified_binding_kwargs_require_provider_slot_map_for_generic_inputs()
         generic_io_requirements={
             "required_generic_outputs": {},
             "required_generic_inputs": {"valley_battery": 1},
-        }
+        },
+        utility_operation_by_template={
+            "protocol_storage_box": "box_sink",
+        },
     )
 
     with pytest.raises(RuntimeError, match="generic_input_slots_by_operation snapshot"):
@@ -3912,7 +3958,13 @@ def test_binding_infeasible_generates_exact_safe_whole_layout_cut(monkeypatch, t
 
     class FakeBindingModel:
         def __init__(self, *args, **kwargs):
-            self._summary = {"fake": "binding_infeasible"}
+            self.routing_context = None
+            self._summary = {
+                "fake": "binding_infeasible",
+                "routing_context_enabled": False,
+                "overload_separation_enabled": False,
+                "selection_nogood_count": 0,
+            }
 
         def build(self) -> None:
             return None
@@ -3972,6 +4024,7 @@ def test_routing_exhaustion_generates_exact_safe_whole_layout_cut(monkeypatch, t
 
     class FakeBindingModel:
         def __init__(self, *args, **kwargs):
+            self.routing_context = None
             self.index = 0
             self.binding_vars = {"tiny_001": {0: object(), 1: object()}}
             self.generic_input_vars = {}
@@ -3996,7 +4049,12 @@ def test_routing_exhaustion_generates_exact_safe_whole_layout_cut(monkeypatch, t
             self.index += 1
 
         def extract_conflict_summary(self) -> dict:
-            return {"enumerated": self.index}
+            return {
+                "enumerated": self.index,
+                "routing_context_enabled": False,
+                "overload_separation_enabled": False,
+                "selection_nogood_count": self.index,
+            }
 
     class FakeRoutingGrid:
         def __init__(self, occupied_cells, port_specs):
@@ -10229,3 +10287,37 @@ def test_run_benders_malformed_precheck_outcome_falls_through(
         tmp_path,
         precheck_outcome,
     )
+
+
+def test_round3_exact_session_carries_plan_utility_operation_map(
+    tmp_path: Path,
+) -> None:
+    project_root = _build_toy_exact_project(tmp_path / "round3_utility_map")
+    _write_json(
+        project_root / "rules" / "preprocess_plan.json",
+        {
+            "utility_operations": {
+                "power_supply": {
+                    "facility_type": "power_pole",
+                    "generic_input_slots": 0,
+                    "generic_output_slots": 0,
+                }
+            }
+        },
+    )
+
+    session = benders_loop_module.create_exact_search_session(
+        project_root,
+        solve_mode="certified_exact",
+    )
+
+    assert session.core.utility_operation_by_template == {
+        "power_pole": "power_supply"
+    }
+    master = MasterPlacementModel.from_exact_core(
+        session.core,
+        ghost_rect=(1, 1),
+    )
+    assert master.utility_operation_by_template == {
+        "power_pole": "power_supply"
+    }

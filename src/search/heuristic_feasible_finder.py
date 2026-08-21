@@ -124,13 +124,27 @@ def _verify_binding(
 
     binding_model 在 FEASIBLE 时可调 extract_port_specs/extract_selection.
     """
-    from src.models.binding_subproblem import PortBindingModel
+    from src.models.binding_subproblem import (
+    PortBindingModel,
+    load_generic_input_slots_by_operation,
+    load_generic_output_slots_by_operation,
+    load_utility_operation_by_template,
+)
 
     model = PortBindingModel(
         placement_solution=placement_solution,
         facility_pools=facility_pools,
         instances=instances,
         project_root=project_root,
+        generic_input_slots_by_operation=(
+            load_generic_input_slots_by_operation(project_root=project_root)
+        ),
+        generic_output_slots_by_operation=(
+            load_generic_output_slots_by_operation(project_root=project_root)
+        ),
+        utility_operation_by_template=(
+            load_utility_operation_by_template(project_root=project_root)
+        ),
     )
     model.build()
     status = model.solve(time_limit_seconds=time_limit_seconds)

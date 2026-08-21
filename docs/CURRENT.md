@@ -2,7 +2,7 @@
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
 > 机器状态从冻结规则、义务、gate 与 exact-status 文件直接读取；研究结论从稳定 ID 账本投影。
-> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:14beb25b97ba68e3ec5ab0db3d82500164ae5bbcc7e920d88910cd1e76d1368c`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:dabb13ea6cf1772f629c8591f70e0d867e3779db5bea04a24879ba485acd394e`。
 
 ## 权威边界
 
@@ -34,11 +34,11 @@
 
 ## 阶段门与证明义务
 
-- **P1.2 gate：** `closed_manual_owner_decision`，机器更新时间 `2026-08-06`，review anchor `v99_p1_2_close_kernel_sealing`。
+- **P1.2 gate：** `closed_manual_owner_decision`，机器更新时间 `2026-08-21`，review anchor `v99_p1_2_close_kernel_sealing`。
 - **当前 owner 决定：** `owner-p1-2-reclose-20260806`，由 `zhuran24` 于 `2026-08-06` 作出。
 - **下一阶段入口：** `P1.3 production master integration (machine compatibility id: p1_3b)`，`allowed=true`。
 - **clean-review 计数：** `maintained_outside_repo`；仓库不从 receipt 推导计数，receipt 也不能打开下一阶段。
-- **P1.2 义务集：** `active_fail_closed_contract`，更新时间 `2026-07-03`，共 `15` 条，anchor `v99_p1_2_close_kernel_sealing`。
+- **P1.2 义务集：** `active_fail_closed_contract`，更新时间 `2026-08-20`，共 `15` 条，anchor `v99_p1_2_close_kernel_sealing`。
 - **机器源：** [data/review_gates/phase_1_2_spike_close.json](<../data/review_gates/phase_1_2_spike_close.json>)；[data/proof_obligations/p1_2_proof_obligations.json](<../data/proof_obligations/p1_2_proof_obligations.json>)。
 
 ## Checked-in durable exact 状态快照

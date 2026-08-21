@@ -53,3 +53,13 @@
 - owner 于 2026-08-15 解除与「三面防污染架构审计」线的落地协调义务；该线文档层前置工作已结束。
 - owner 的 GPT Pro 项目对话三轮外部评审以逐字正文归档进入 tracked 研究面，并登记推理外环设计约束；该登记为 `non_authorizing`，推理外环仍处于未立项／概念收敛状态。
 - owner 允许归档三轮外部评审并以 non_authorizing 形态登记设计约束；这是 2026-08-15 主线程口头许可经落地会话形成的 authority source，只允许归档与登记动作，不批准约束内容、不立项，也不对现行树新增义务。
+
+## 2026-08-20：I1 异源化触发 P1.2 close claim 机械重开
+
+- **批次身份**：I1（`independent_infeasibility_reverifier`）异源化批改变了 P1.2 close-kernel 的 sealed bytes。
+- **触发背景**：owner 对本批采用“不豁免治理、外审后再由 owner re-close”的边界，并于 2026-08-20 裁定范围 A：re-close 前补齐三组新 checker 守卫的 mutation 测试，使 required-test anchor 全部对应实存测试并进入强制层。
+- **认证承重面变化**：I1 从复用生产 `PortBindingModel` 求解，重写为纯标准库、闭式算术、artifact-bound 的独立 binding 复验包；本批使 73 个登记 close-kernel sink 的封印字节发生漂移。每个 sink 都声明 `mutation_policy: source_sha256_drift_reopens_p1_2_close_claim`，因此 source SHA-256 漂移按机器契约自动重开 P1.2 close claim。
+- **验证状态**：五轮外部异源审计已经完成，第五轮终判 `CLEAN_FOR_REOPEN`。范围 A 已执行完毕：新增 5 个 mutation 测试并取得 60/60 通过，`required_tests` 从 48 扩至 56，reseal 已完成，P1.2 proof gate 从 29 条 issue 收敛到 1 条；两条 sealed-authority parity 测试仍按 owner 边界保持 `2 failed`。
+- **显式状态转移**：P1.2 从既有 owner 手动关闭状态，因 sealed source SHA-256 漂移机械转为 **reopened**。该转移是 mutation policy 的自动后果，不是 owner decision，也不建立 `DECISION-P1-2-REOPEN-*` 记录。
+- **未完成的 owner 动作与边界**：本事件不表示 re-close 已发生；review gate、owner re-close decision 与 re-close authority floor 仍待后续 owner 动作。任何测试、receipt 或外审判词（包括 `CLEAN_FOR_REOPEN`）都不能替代该动作。
+- **证据坐标**：机器因果与 73 个 sink 见 `data/proof_obligations/p1_2_proof_obligations.json`；I1 终态见 `src/search/independent_infeasibility_reverifier.py` 与 `src/search/independent_binding_reverify/`；范围 A 与 reseal 执行见 `docs/research/common_mode_binding_reverify_20260820/ACLOSE_PROGRESS.md`；第五轮外审见 `/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND5_20260820.md`。
