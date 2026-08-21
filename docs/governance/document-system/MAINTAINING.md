@@ -452,7 +452,7 @@ docs/MAINTENANCE_QUEUE.md
 .venv/bin/python devtools/docctl.py render-maintenance --write
 ```
 
-维护回归的默认审计日必须精确等于全部 active dossier 中最新的 `opened_at` / `date`，并与 `data/knowledge/dossiers.json::ledger_reviewed_at` 相等。新增 active dossier 使该日期前移时，必须在同一事务把 `devtools/tests/test_document_maintenance_audit.py` 的回归时钟与 `ledger_reviewed_at` 一起滚动到最新登记日；`src/tests/test_document_system.py` 同时验证这两项精确相等，并在失败诊断中具名显示回归日期与最新登记日，既阻断过早时钟，也不允许用任意未来日期掩盖后续登记漂移。`devtools/tests/test_document_maintenance_audit.py` 另以具名 active dossier 验证早于其登记日的快照会报告陈旧。这个日期只是测试视界，不是 authority：不得借滚动测试时钟改写 `maintenance_audit.json::snapshot_as_of`，也不得倒签 dossier 来绕过 future-record 红测。
+维护回归的默认审计日必须精确等于全部 active dossier 中最新的 `opened_at` / `date`，并与 `data/knowledge/dossiers.json::ledger_reviewed_at` 相等。新增 active dossier 使该日期前移时，必须在同一事务把 `devtools/tests/test_document_maintenance_audit.py` 的回归时钟与 `ledger_reviewed_at` 一起滚动到最新登记日；`src/tests/test_document_system.py` 同时验证这两项精确相等，并在失败诊断中具名显示回归日期与最新登记日，既阻断过早时钟，也不允许用任意未来日期掩盖后续登记漂移。`devtools/tests/test_document_maintenance_audit.py` 另以具名 active dossier 验证早于其登记日的快照会报告陈旧。这个日期只是测试视界，不是 authority：不得借滚动测试时钟改写 `maintenance_audit.json::snapshot_as_of`，也不得倒签 dossier 来绕过 future-record 红测。`devtools/tests/test_document_maintenance_audit.py` 属 `framework_semantics` 面，滚动其回归时钟即触发框架伴随件闸，因此登记事务必须同批携带 `src/tests/test_document_system.py` 与本指南（或一份框架 ADR），否则 `docctl gate --profile changed` 阻断。
 
 不要通过编辑 `MAINTENANCE_QUEUE.md` 或新增“已关闭 finding”账本消除待办。Git 最近触达日期只提示“该复核了”，不能替代 semantic review。修改 check、profile、阈值或严重度语义属于 framework-core 变化，必须同步 `DOC-INV-019`、[`DOC-ADR-015`](ADR/015-periodic-semantic-maintenance-audit.md)、runner、投影和红测。
 

@@ -1,7 +1,7 @@
 # 项目知识目录
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:dabb13ea6cf1772f629c8591f70e0d867e3779db5bea04a24879ba485acd394e`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:64f72dbca2500c87cd7a21985e939ba1ef36104e8430b9679ad85252b463591e`。
 
 这里登记稳定 ID。claim 回答“我们知道什么”，decision 回答“谁改变了什么规则或门”，
 dossier 回答“原始证据包在哪里”，validity profile 回答“旧结论为何失效、怎样换代、能否复用”。目录不把历史材料自动升级为当前权威。
@@ -11,7 +11,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 - claim：`93` 条，其中当前 / 开放 `73` 条，带 validity profile `34` 条。
 - decision：`10` 条。
 - backfill review：`57` 条，其中 current `45` 条。
-- dossier：`272` 个，其中 tracked `159` 个、local optional `113` 个、当前证据标记 `17` 个、人工精编 `92` 个。
+- dossier：`273` 个，其中 tracked `159` 个、local optional `114` 个、当前证据标记 `17` 个、人工精编 `93` 个。
 - `docs/research/` 的一级目录和一级 Markdown 已全登记；`.artifacts/` 只登记一级目录，其路径允许在轻量 checkout 中缺失。
 
 ## Claim 索引
@@ -130,13 +130,13 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 ## Topic 索引
 
 - `p1_2-proof-chain`：74 个 dossier。
+- `reasoning-system`：55 个 dossier。
 - `solver-architecture`：55 个 dossier。
-- `reasoning-system`：54 个 dossier。
 - `other`：50 个 dossier。
 - `witness-lower-bound`：43 个 dossier。
 - `upper-bound`：28 个 dossier。
-- `solver-experiment`：26 个 dossier。
-- `cut-framework`：19 个 dossier。
+- `solver-experiment`：27 个 dossier。
+- `cut-framework`：20 个 dossier。
 - `formal-verification`：16 个 dossier。
 - `rules-semantics`：12 个 dossier。
 - `industrial-delivery`：8 个 dossier。
@@ -207,6 +207,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
+| `DOSSIER-POLE-GATE-CANARY-20260821-7F3338D139` | `2026-08-21` | [C 批供电桩证伪闸(外环阶梯第 2 层)](<../.artifacts/pole_gate_canary_20260821/AT_BUILD_PROGRESS.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-experiment`, `cut-framework` | `active` | `unreviewed` |
 | `DOSSIER-COMMON-MODE-BINDING-REVERIFY-20260820-0268E9394D` | `2026-08-20` | [Whole-layout binding common-mode hardening](<research/common_mode_binding_reverify_20260820/README.md>)<br>I1 已从复用生产 PortBindingModel 求解重写为纯标准库、闭式算术、artifact-bound 的独立 binding 复验包；该批使 P1.2 close-kernel 的 73 个 sealed sink 字节漂移，并按 source_sha256_drift_reopens_p1_2_clos… | `p1_2-proof-chain`, `solver-architecture` | `active` | `current_evidence` |
 | `DOSSIER-P-REINSERTION-AUDIT-20260820-8BB5417ED3` | `2026-08-20` | [PREINSERTIONGAP 异源验收报告](<../.artifacts/p_reinsertion_audit_20260820/AUDIT_REPORT.md>)<br>异源验收证据包；包内总判词/状态：PASS_WITH_SCOPED_ERRATA_LOCALIZATION_UNDER_DETERMINED。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P-MUS-LANDSCAPE-20260820-CC6900A234` | `2026-08-20` | p mus landscape 20260820<br><code>.artifacts/p_mus_landscape_20260820</code><br>本地 research/support evidence inventory；包内终态判词/状态：NO_EXPLICIT_TERMINAL_VERDICT_RECORDED；验收状态：在途、未封账。仅作为 active open workflow 进入 inventory，不进入 historical triage，… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
@@ -470,6 +471,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
+| `DOSSIER-POLE-GATE-CANARY-20260821-7F3338D139` | `2026-08-21` | [C 批供电桩证伪闸(外环阶梯第 2 层)](<../.artifacts/pole_gate_canary_20260821/AT_BUILD_PROGRESS.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-experiment`, `cut-framework` | `active` | `unreviewed` |
 | `DOSSIER-P-REINSERTION-AUDIT-20260820-8BB5417ED3` | `2026-08-20` | [PREINSERTIONGAP 异源验收报告](<../.artifacts/p_reinsertion_audit_20260820/AUDIT_REPORT.md>)<br>异源验收证据包；包内总判词/状态：PASS_WITH_SCOPED_ERRATA_LOCALIZATION_UNDER_DETERMINED。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P-MUS-LANDSCAPE-20260820-CC6900A234` | `2026-08-20` | p mus landscape 20260820<br><code>.artifacts/p_mus_landscape_20260820</code><br>本地 research/support evidence inventory；包内终态判词/状态：NO_EXPLICIT_TERMINAL_VERDICT_RECORDED；验收状态：在途、未封账。仅作为 active open workflow 进入 inventory，不进入 historical triage，… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-I1-ROUND4-SELF-CHECK-20260820-0CFC3F056C` | `2026-08-20` | I1 第四轮自检收据与日志<br><code>.artifacts/i1_round4_self_check_20260820</code><br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `p1_2-proof-chain`, `solver-architecture` | `active` | `unreviewed` |
@@ -4563,7 +4565,7 @@ owner 允许归档三轮外部评审并以 non_authorizing 形态登记设计约
 
 - **明确不推出：** 原登记八条内容及本次评审修复新增的指针型登记项获得批准；推理外环获得立项；对现行树新增义务
 
-- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../../../.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
+- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
 
 <a id="decision-p1-2-close-20260707"></a>
 
@@ -4657,7 +4659,7 @@ owner 在 I1 common-mode binding 独立复验、范围 A 守卫与锚点闭合�
 
 - **明确不推出：** proof gate 的双 operation-map 结构缺陷已修复；仓库可从六轮报告或 receipt 推导 clean-review 数字；I1 外的 production promotion、release closure 或 CERTIFIED 发布
 
-- **证据：** [data/review_gates/phase_1_2_spike_close.json](<../data/review_gates/phase_1_2_spike_close.json>)〔authority_change〕；[docs/research/common_mode_binding_reverify_20260820/OWNER_AUTHORITY_COMPANION_20260821.md](<research/common_mode_binding_reverify_20260820/OWNER_AUTHORITY_COMPANION_20260821.md>)〔owner authority source〕；[docs/research/p1_2_v99_close_kernel_sealing.md](<research/p1_2_v99_close_kernel_sealing.md>)〔tracked close-kernel anchor〕；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND1_20260820.md](<../../../../zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND1_20260820.md>)〔external audit round1〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND2_20260820.md](<../../../../zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND2_20260820.md>)〔external audit round2〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND3_20260820.md](<../../../../zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND3_20260820.md>)〔external audit round3〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND4_20260820.md](<../../../../zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND4_20260820.md>)〔external audit round4〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND5_20260820.md](<../../../../zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND5_20260820.md>)〔external audit round5〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6_20260820.md](<../../../../zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6_20260820.md>)〔external audit round6〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6B_20260820.md](<../../../../zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6B_20260820.md>)〔external audit round6b〕（仓外可选证据）；[.artifacts/i1_round4_self_check_20260820/ACLOSE_SELF_CHECK_20260820.json](<../.artifacts/i1_round4_self_check_20260820/ACLOSE_SELF_CHECK_20260820.json>)〔initial ACLOSE receipt〕（工作区可选工件）；[.artifacts/i1_round4_self_check_20260820/ACLOSE_R6FIX_SELF_CHECK_20260820.json](<../.artifacts/i1_round4_self_check_20260820/ACLOSE_R6FIX_SELF_CHECK_20260820.json>)〔R6FIX receipt〕（工作区可选工件）；[.artifacts/i1_round4_self_check_20260820/ACLOSE_CLOSE_RECEIPT_20260821.json](<../.artifacts/i1_round4_self_check_20260820/ACLOSE_CLOSE_RECEIPT_20260821.json>)〔final re-close receipt〕（工作区可选工件）
+- **证据：** [data/review_gates/phase_1_2_spike_close.json](<../data/review_gates/phase_1_2_spike_close.json>)〔authority_change〕；[docs/research/common_mode_binding_reverify_20260820/OWNER_AUTHORITY_COMPANION_20260821.md](<research/common_mode_binding_reverify_20260820/OWNER_AUTHORITY_COMPANION_20260821.md>)〔owner authority source〕；[docs/research/p1_2_v99_close_kernel_sealing.md](<research/p1_2_v99_close_kernel_sealing.md>)〔tracked close-kernel anchor〕；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND1_20260820.md](<../.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND1_20260820.md>)〔external audit round1〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND2_20260820.md](<../.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND2_20260820.md>)〔external audit round2〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND3_20260820.md](<../.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND3_20260820.md>)〔external audit round3〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND4_20260820.md](<../.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND4_20260820.md>)〔external audit round4〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND5_20260820.md](<../.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND5_20260820.md>)〔external audit round5〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6_20260820.md](<../.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6_20260820.md>)〔external audit round6〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6B_20260820.md](<../.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6B_20260820.md>)〔external audit round6b〕（仓外可选证据）；[.artifacts/i1_round4_self_check_20260820/ACLOSE_SELF_CHECK_20260820.json](<../.artifacts/i1_round4_self_check_20260820/ACLOSE_SELF_CHECK_20260820.json>)〔initial ACLOSE receipt〕（工作区可选工件）；[.artifacts/i1_round4_self_check_20260820/ACLOSE_R6FIX_SELF_CHECK_20260820.json](<../.artifacts/i1_round4_self_check_20260820/ACLOSE_R6FIX_SELF_CHECK_20260820.json>)〔R6FIX receipt〕（工作区可选工件）；[.artifacts/i1_round4_self_check_20260820/ACLOSE_CLOSE_RECEIPT_20260821.json](<../.artifacts/i1_round4_self_check_20260820/ACLOSE_CLOSE_RECEIPT_20260821.json>)〔final re-close receipt〕（工作区可选工件）
 
 <a id="decision-rule-system-redesign-open-20260813"></a>
 

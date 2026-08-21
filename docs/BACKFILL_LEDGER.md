@@ -1,18 +1,18 @@
 # 历史知识回填与长尾覆盖
 
 > 本页由 `data/knowledge/backfill_reviews.jsonl`、`backfill_triage.json` 与 dossier registry 自动生成；禁止手工修改。
-> 账本审阅日：`2026-08-15`；源摘要：`sha256:dabb13ea6cf1772f629c8591f70e0d867e3779db5bea04a24879ba485acd394e`。
+> 账本审阅日：`2026-08-15`；源摘要：`sha256:64f72dbca2500c87cd7a21985e939ba1ef36104e8430b9679ad85252b463591e`。
 
 这里把两件经常被混写的事情分开：**semantic review** 表示实际读取了声明路径并提炼知识；**inventory triage** 只保证尚未审阅的 dossier 仍可发现、只落入一个队列，并带有重开条件。分诊从不等价于 `no_reusable_claim`。
 
 ## 收口概览
 
-- dossier 总数：`272`。
+- dossier 总数：`273`。
 - current review：`45`，其中语义审阅 `42`，availability/provenance-only `3`。
 - 尚无 current review、但已进入唯一 triage group：`165`。
-- 新写入流程中尚未关闭的 active dossier：`66`；其中已有 current review `4`；open workflow 不进入历史 triage。
-- inventory coverage：`272/272`。
-- semantic review coverage：`42/272`。这个比例不会被 triage 人为抬高。
+- 新写入流程中尚未关闭的 active dossier：`67`；其中已有 current review `4`；open workflow 不进入历史 triage。
+- inventory coverage：`273/273`。
+- semantic review coverage：`42/273`。这个比例不会被 triage 人为抬高。
 
 ## Current review
 
@@ -127,6 +127,7 @@
 | `DOSSIER-P4-BLOCKADE-FAMILY-ABSTRACTION-20260817-5B9F642CB4` | `.artifacts/p4_blockade_family_abstraction_20260817` | `2026-08-17` | `active` |
 | `DOSSIER-P5-HORIZONTAL-CANARY-20260817-44EADE5C7E` | `.artifacts/p5_horizontal_canary_20260817` | `2026-08-17` | `active` |
 | `DOSSIER-P5-HORIZONTAL-LOWERING-CANARY-20260817-3DBC7800A0` | `docs/research/p5_horizontal_lowering_canary_20260817` | `2026-08-17` | `active` |
+| `DOSSIER-POLE-GATE-CANARY-20260821-7F3338D139` | `.artifacts/pole_gate_canary_20260821` | `2026-08-21` | `active` |
 | `DOSSIER-POSTMEM-BLIND-COLLISION-20260818-4DB4F7129F` | `.artifacts/postmem_blind_collision_20260818` | `2026-08-18` | `active` |
 | `DOSSIER-POSTMEM-BLIND-SAMPLING-20260817-2127AF445D` | `.artifacts/postmem_blind_sampling_20260817` | `2026-08-17` | `active` |
 | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-20260815-7FA2A0E225` | `.artifacts/solver_reasoning_outer_loop_phase_minus1_20260815` | `2026-08-15` | `active` |

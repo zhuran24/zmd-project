@@ -9,7 +9,7 @@
 
 | 严重度 | 数量 |
 |---|---:|
-| error | 63 |
+| error | 64 |
 | warning | 0 |
 | info | 77 |
 
@@ -76,6 +76,7 @@
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-P4-BLOCKADE-FAMILY-ABSTRACTION-20260817-5B9F642CB4` | active dossier 的 opened_at 2026-08-17 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-P5-HORIZONTAL-CANARY-20260817-44EADE5C7E` | active dossier 的 opened_at 2026-08-17 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-P5-HORIZONTAL-LOWERING-CANARY-20260817-3DBC7800A0` | active dossier 的 opened_at 2026-08-17 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
+| `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-POLE-GATE-CANARY-20260821-7F3338D139` | active dossier 的 opened_at 2026-08-21 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-POSTMEM-BLIND-COLLISION-20260818-4DB4F7129F` | active dossier 的 opened_at 2026-08-18 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-POSTMEM-BLIND-SAMPLING-20260817-2127AF445D` | active dossier 的 opened_at 2026-08-17 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |
 | `error` | `DOC-AUDIT-ACTIVE-DOSSIER-AGE` | `DOSSIER-SOLVER-REASONING-OUTER-LOOP-W0-UNARY-CANARY-20260816-40F7F16A22` | active dossier 的 opened_at 2026-08-16 晚于维护审计日期 2026-08-15（投影快照 2026-08-15）；记录晚于维护快照，快照陈旧，不能计算年龄。 | `docsystem.intake`<br>`knowledge.build` |

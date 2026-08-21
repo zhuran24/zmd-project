@@ -1,6 +1,6 @@
 {
   "schema_version": "zmd_dossiers_v1",
-  "ledger_reviewed_at": "2026-08-20",
+  "ledger_reviewed_at": "2026-08-21",
   "records": [
     {
       "id": "DOSSIER-AB16-ARMS-20260802-DC229C4539",
@@ -621,7 +621,7 @@
       },
       "portability": {
         "manifest_path": ".artifacts/gpt_harvest_20260818/REVIEW_CHECKLIST.md",
-        "manifest_sha256": "de1a2445bf3f1437e5396ed94bd0ea0feff751a24852c06a1707966c7e000215",
+        "manifest_sha256": "0ff62a0d488c291daff14bae769ec01cc6e5b0f47ee884317ac40694cbcf267a",
         "recovery_instructions": ".artifacts/README.md",
         "source_locator": ".artifacts/gpt_harvest_20260818/A1_FINAL_MESSAGE.md"
       }
@@ -2124,6 +2124,34 @@
         "other"
       ],
       "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-POLE-GATE-CANARY-20260821-7F3338D139",
+      "path": ".artifacts/pole_gate_canary_20260821",
+      "entry_file": ".artifacts/pole_gate_canary_20260821/AT_BUILD_PROGRESS.md",
+      "title": "C 批供电桩证伪闸(外环阶梯第 2 层)",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-21",
+      "topics": [
+        "reasoning-system",
+        "solver-experiment",
+        "cut-framework"
+      ],
+      "summary": "Local-optional evidence registered through docctl; semantic outcome is pending closure review.",
+      "workflow": {
+        "opened_at": "2026-08-21",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/pole_gate_canary_20260821/MANIFEST.json",
+        "manifest_sha256": "287899dfdabf3bfd5c32249dcd7b8c429efc902004a0f41b31d54a80869a7dc0",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/gpt_harvest_20260818/TASK_POLE_GATE_CLOSEOUT_20260821.md 与同目录 ADDENDUM;异源外审 EXTERNAL_AUDIT_C_POLE_20260821.md"
+      }
     },
     {
       "id": "DOSSIER-POSTMEM-BLIND-COLLISION-20260818-4DB4F7129F",

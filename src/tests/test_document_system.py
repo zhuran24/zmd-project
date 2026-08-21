@@ -420,7 +420,14 @@ def test_maintenance_audit_regression_clock_covers_latest_active_dossier() -> No
 
     dossier_payload = json.loads((PROJECT_ROOT / "data/knowledge/dossiers.json").read_text(encoding="utf-8"))
     ledger_reviewed_at = str(dossier_payload["ledger_reviewed_at"])
-    assert regression_as_of == ledger_reviewed_at
+    assert regression_as_of == ledger_reviewed_at, (
+        f"maintenance regression clock {regression_as_of} does not equal "
+        f"dossiers.json::ledger_reviewed_at {ledger_reviewed_at}; roll the clock in "
+        "devtools/tests/test_document_maintenance_audit.py within the same transaction. "
+        "That file is framework-semantic surface, so the same transaction must also carry "
+        "src/tests/test_document_system.py and docs/governance/document-system/MAINTAINING.md "
+        "(or a framework ADR), otherwise docctl gate --profile changed blocks."
+    )
     active_opened_dates: list[str] = []
     for record in dossier_payload["records"]:
         if record.get("lifecycle") != "active":
@@ -435,7 +442,8 @@ def test_maintenance_audit_regression_clock_covers_latest_active_dossier() -> No
     latest_active_opened_at = max(active_opened_dates)
     assert regression_as_of == latest_active_opened_at, (
         f"maintenance regression clock {regression_as_of} does not equal "
-        f"latest active dossier {latest_active_opened_at}"
+        f"latest active dossier {latest_active_opened_at}; roll the clock and its "
+        "framework companions in the same transaction (MAINTAINING.md section 11)."
     )
 
 

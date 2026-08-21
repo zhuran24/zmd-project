@@ -17,7 +17,7 @@ from devtools.document_governance_gate import capture_git_visible_state  # noqa:
 from devtools.document_maintenance_audit import run_maintenance_audit  # noqa: E402
 
 
-def _run(system: DocumentSystem, profile: str = "weekly", as_of: str = "2026-08-20"):
+def _run(system: DocumentSystem, profile: str = "weekly", as_of: str = "2026-08-21"):
     return run_maintenance_audit(system, profile=profile, as_of=date.fromisoformat(as_of))
 
 
