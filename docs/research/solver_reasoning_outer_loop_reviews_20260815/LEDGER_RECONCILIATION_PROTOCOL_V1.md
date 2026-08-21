@@ -192,3 +192,33 @@ KNOWN-ANSWER CLOSED-BOOK BENCHMARK
 - `NO_CURRENT_MATCH` 自动证明目标有价值、可证或值得高预算；
 - research receipt 可以写 production ledger、认证面或发布面；
 - 一次对账可以永久覆盖未来 ledger 漂移。
+
+## 11. 2026-08-21 修订：对账面必须包含冻结工件面
+
+本节是对 v1 的加法修订；正文保留其 2026-08-17 史料身份。自 2026-08-21 起，任何跨越 §3 消费点的对账，不得只查询 canonical claim ledger、current decisions 与 lineage，还必须查询与目标 subject 可达的冻结 research/evidence 工件面。
+
+“冻结工件面”至少包括：已登记 dossier 的 MANIFEST／SHA 清单、冻结输入包、批级 CLOSEOUT／receipt、前驱实验结果表，以及由目标维度、对象键、结果值、来源路径或摘要能够定位的相邻包。工件存在不等于 canonical claim；但工件中的先在结果会改变 novelty、来源归属与实验角色，不能因其尚未晋升 claim 而从对账中消失。
+
+### 11.1 收据增补字段
+
+继承本修订的 `LEDGER_RECONCILIATION_RECEIPT` 除 §4 字段外，至少还应记录：
+
+| 字段 | 约束 |
+|---|---|
+| `artifact_surface_snapshot` | 实际纳入对账的 dossier／冻结 root、各自身份摘要与查询时点；不得只写“已查工件”。 |
+| `artifact_queries_used` | 对目标键、维度、结果值、同义名称、来源路径与 predecessor lineage 执行的查询。 |
+| `matched_artifact_refs` | 所有命中的冻结路径及承重文件 SHA-256；允许空数组，但不得省略。 |
+| `artifact_prior_result_status` | 至少区分 `NO_FROZEN_MATCH`、`PREEXISTING_FROZEN_RESULT`、`PARTIAL_OR_SCOPE_MISMATCH`、`AMBIGUOUS`。 |
+| `source_provenance_disposition` | 说明拟产物是首次结果、独立复现、证书化、范围扩展、力竭分类或其它增量；若先在结果存在，不得继续写“首次发现”。 |
+
+`artifact_prior_result_status` 不替代 §5 的 `relation`：前者回答“冻结证据面是否已有同结果”，后者仍回答“拟研究目标相对于 current canonical ledger 的关系”。两面必须并列，禁止用“claims 无命中”推出“项目内无先在结果”。冻结命中本身也不授予 claim、endpoint、production 或 certified 效力。
+
+### 11.2 触发本修订的在案实例
+
+六谓词上界下一带批枚举了十二个新 root；其中 `30×39=140`、`26×45=142`、`18×65=158` 的 raw 最优值已经先在于 2026-08-17 两个冻结实现包。本批新增价值是十二带定位、双族证书化与 `RELAXATION_EXHAUSTED` 分类，不是首次发现这三个数。批内 `SOURCE_PROVENANCE` 的无先在结果陈述因此被证伪并在终态 CLOSEOUT 中订正。
+
+该实例说明：只查 canonical ledger 会漏掉尚未晋升 claim、但足以否定 novelty 归属的冻结结果。后继对账若未覆盖冻结工件面，`NO_CURRENT_MATCH` 只能说明 canonical claim 面无匹配，不能支撑“项目内首次”“无先在数值”或等价来源陈述。
+
+### 11.3 历史处置
+
+本修订不回写既有冻结协议、receipt、MANIFEST 或历史报告。发现旧来源陈述失实时，以 addendum、erratum 或后继 CLOSEOUT 加法订正，并在下一次消费动作的对账收据中携带修正后的来源归属。

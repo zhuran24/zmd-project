@@ -1,7 +1,7 @@
 # 项目知识目录
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:64f72dbca2500c87cd7a21985e939ba1ef36104e8430b9679ad85252b463591e`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:f8780ca01dc8cbbdabb6aa82214d692b0db9e2e9200dbcf1df7ab65338a40c9c`。
 
 这里登记稳定 ID。claim 回答“我们知道什么”，decision 回答“谁改变了什么规则或门”，
 dossier 回答“原始证据包在哪里”，validity profile 回答“旧结论为何失效、怎样换代、能否复用”。目录不把历史材料自动升级为当前权威。
@@ -11,7 +11,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 - claim：`93` 条，其中当前 / 开放 `73` 条，带 validity profile `34` 条。
 - decision：`10` 条。
 - backfill review：`57` 条，其中 current `45` 条。
-- dossier：`273` 个，其中 tracked `159` 个、local optional `114` 个、当前证据标记 `17` 个、人工精编 `93` 个。
+- dossier：`277` 个，其中 tracked `159` 个、local optional `118` 个、当前证据标记 `17` 个、人工精编 `97` 个。
 - `docs/research/` 的一级目录和一级 Markdown 已全登记；`.artifacts/` 只登记一级目录，其路径允许在轻量 checkout 中缺失。
 
 ## Claim 索引
@@ -130,13 +130,13 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 ## Topic 索引
 
 - `p1_2-proof-chain`：74 个 dossier。
-- `reasoning-system`：55 个 dossier。
+- `reasoning-system`：56 个 dossier。
 - `solver-architecture`：55 个 dossier。
 - `other`：50 个 dossier。
 - `witness-lower-bound`：43 个 dossier。
-- `upper-bound`：28 个 dossier。
+- `upper-bound`：29 个 dossier。
 - `solver-experiment`：27 个 dossier。
-- `cut-framework`：20 个 dossier。
+- `cut-framework`：22 个 dossier。
 - `formal-verification`：16 个 dossier。
 - `rules-semantics`：12 个 dossier。
 - `industrial-delivery`：8 个 dossier。
@@ -207,6 +207,10 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
+| `DOSSIER-SIXPRED-UPPER-NEXT-BAND-20260821-CAA91F9B9A` | `2026-08-21` | [六谓词上界下一带力竭收口](<../.artifacts/sixpred_upper_next_band_20260821/enum/REPORT.md>)<br>Inventory-only 登记。CLOSEOUT 终判 NO_STRICTLY_LOWER_U_PRIME_ESTABLISHED，条件性 research upper 保持 U=(1170,30)；十二带 A/B 共 24/24 为 RELAXATION_EXHAUSTED。严格方法天花板、经验外推、RHS 条… | `upper-bound` | `active` | `unreviewed` |
+| `DOSSIER-P5-RETRIAL-20260821-428061A300` | `2026-08-21` | [P5 水平封锁族 lowering 重审](<../.artifacts/p5_retrial_20260821/GATE_CARD_20260821.md>)<br>Inventory-only 登记。原 group-labeled lowering 经异源审计判为抽象层欠覆盖，ADDENDUM 以 pose 层 24-literal OR lowering 修正；冻结首解身份改变，但运行时性能不可分离，ΔL=0、ΔU=0，无 certified/production effec… | `cut-framework` | `active` | `unreviewed` |
+| `DOSSIER-GHOST-COND-DIVERGENCE-20260821-3D2338886C` | `2026-08-21` | [Ghost 条件域分歧计数静态测量](<../.artifacts/ghost_cond_divergence_20260821/GATE_CARD.md>)<br>Inventory-only 登记。包内终态判词/状态：MEASURED_FACE_ZERO_INCREMENT，作用域为单一 canonical case 的完整 30×39 anchor 域；异源审计未推翻零增量，ADDENDUM 已收窄重开闸并限定半构建字段与 aggregate coefficient 来源。… | `reasoning-system` | `active` | `unreviewed` |
+| `DOSSIER-GPT-CUT-SHAPES-20260821-745509BF6B` | `2026-08-21` | [Certified-native 供电联合约束形态与单 tuple 实验](<../.artifacts/gpt_cut_shapes_20260821/NATIVE_TUPLE_REPORT.md>)<br>Inventory-only 登记。包内终态判词/状态：PASS_SOUND_NATIVE_TUPLE / ROOT_GAP_CONFIRMED / SHORT_RUNTIME_EFFECT_NOT_SEPARABLE；异源审计 CONFIRMED，但短预算未进入搜索，不能写成运行时收益或无收益结论。研究对象是 ce… | `cut-framework` | `active` | `unreviewed` |
 | `DOSSIER-POLE-GATE-CANARY-20260821-7F3338D139` | `2026-08-21` | [C 批供电桩证伪闸(外环阶梯第 2 层)](<../.artifacts/pole_gate_canary_20260821/AT_BUILD_PROGRESS.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-experiment`, `cut-framework` | `active` | `unreviewed` |
 | `DOSSIER-COMMON-MODE-BINDING-REVERIFY-20260820-0268E9394D` | `2026-08-20` | [Whole-layout binding common-mode hardening](<research/common_mode_binding_reverify_20260820/README.md>)<br>I1 已从复用生产 PortBindingModel 求解重写为纯标准库、闭式算术、artifact-bound 的独立 binding 复验包；该批使 P1.2 close-kernel 的 73 个 sealed sink 字节漂移，并按 source_sha256_drift_reopens_p1_2_clos… | `p1_2-proof-chain`, `solver-architecture` | `active` | `current_evidence` |
 | `DOSSIER-P-REINSERTION-AUDIT-20260820-8BB5417ED3` | `2026-08-20` | [PREINSERTIONGAP 异源验收报告](<../.artifacts/p_reinsertion_audit_20260820/AUDIT_REPORT.md>)<br>异源验收证据包；包内总判词/状态：PASS_WITH_SCOPED_ERRATA_LOCALIZATION_UNDER_DETERMINED。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
@@ -471,6 +475,10 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
+| `DOSSIER-SIXPRED-UPPER-NEXT-BAND-20260821-CAA91F9B9A` | `2026-08-21` | [六谓词上界下一带力竭收口](<../.artifacts/sixpred_upper_next_band_20260821/enum/REPORT.md>)<br>Inventory-only 登记。CLOSEOUT 终判 NO_STRICTLY_LOWER_U_PRIME_ESTABLISHED，条件性 research upper 保持 U=(1170,30)；十二带 A/B 共 24/24 为 RELAXATION_EXHAUSTED。严格方法天花板、经验外推、RHS 条… | `upper-bound` | `active` | `unreviewed` |
+| `DOSSIER-P5-RETRIAL-20260821-428061A300` | `2026-08-21` | [P5 水平封锁族 lowering 重审](<../.artifacts/p5_retrial_20260821/GATE_CARD_20260821.md>)<br>Inventory-only 登记。原 group-labeled lowering 经异源审计判为抽象层欠覆盖，ADDENDUM 以 pose 层 24-literal OR lowering 修正；冻结首解身份改变，但运行时性能不可分离，ΔL=0、ΔU=0，无 certified/production effec… | `cut-framework` | `active` | `unreviewed` |
+| `DOSSIER-GHOST-COND-DIVERGENCE-20260821-3D2338886C` | `2026-08-21` | [Ghost 条件域分歧计数静态测量](<../.artifacts/ghost_cond_divergence_20260821/GATE_CARD.md>)<br>Inventory-only 登记。包内终态判词/状态：MEASURED_FACE_ZERO_INCREMENT，作用域为单一 canonical case 的完整 30×39 anchor 域；异源审计未推翻零增量，ADDENDUM 已收窄重开闸并限定半构建字段与 aggregate coefficient 来源。… | `reasoning-system` | `active` | `unreviewed` |
+| `DOSSIER-GPT-CUT-SHAPES-20260821-745509BF6B` | `2026-08-21` | [Certified-native 供电联合约束形态与单 tuple 实验](<../.artifacts/gpt_cut_shapes_20260821/NATIVE_TUPLE_REPORT.md>)<br>Inventory-only 登记。包内终态判词/状态：PASS_SOUND_NATIVE_TUPLE / ROOT_GAP_CONFIRMED / SHORT_RUNTIME_EFFECT_NOT_SEPARABLE；异源审计 CONFIRMED，但短预算未进入搜索，不能写成运行时收益或无收益结论。研究对象是 ce… | `cut-framework` | `active` | `unreviewed` |
 | `DOSSIER-POLE-GATE-CANARY-20260821-7F3338D139` | `2026-08-21` | [C 批供电桩证伪闸(外环阶梯第 2 层)](<../.artifacts/pole_gate_canary_20260821/AT_BUILD_PROGRESS.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-experiment`, `cut-framework` | `active` | `unreviewed` |
 | `DOSSIER-P-REINSERTION-AUDIT-20260820-8BB5417ED3` | `2026-08-20` | [PREINSERTIONGAP 异源验收报告](<../.artifacts/p_reinsertion_audit_20260820/AUDIT_REPORT.md>)<br>异源验收证据包；包内总判词/状态：PASS_WITH_SCOPED_ERRATA_LOCALIZATION_UNDER_DETERMINED。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P-MUS-LANDSCAPE-20260820-CC6900A234` | `2026-08-20` | p mus landscape 20260820<br><code>.artifacts/p_mus_landscape_20260820</code><br>本地 research/support evidence inventory；包内终态判词/状态：NO_EXPLICIT_TERMINAL_VERDICT_RECORDED；验收状态：在途、未封账。仅作为 active open workflow 进入 inventory，不进入 historical triage，… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
