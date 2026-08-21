@@ -1,18 +1,18 @@
 # 历史知识回填与长尾覆盖
 
 > 本页由 `data/knowledge/backfill_reviews.jsonl`、`backfill_triage.json` 与 dossier registry 自动生成；禁止手工修改。
-> 账本审阅日：`2026-08-15`；源摘要：`sha256:deb13488720d91ebb586d677fdce2123cf1a52db5580fcd7fd39b4163bd19ad7`。
+> 账本审阅日：`2026-08-15`；源摘要：`sha256:14beb25b97ba68e3ec5ab0db3d82500164ae5bbcc7e920d88910cd1e76d1368c`。
 
 这里把两件经常被混写的事情分开：**semantic review** 表示实际读取了声明路径并提炼知识；**inventory triage** 只保证尚未审阅的 dossier 仍可发现、只落入一个队列，并带有重开条件。分诊从不等价于 `no_reusable_claim`。
 
 ## 收口概览
 
-- dossier 总数：`269`。
+- dossier 总数：`270`。
 - current review：`44`，其中语义审阅 `41`，availability/provenance-only `3`。
 - 尚无 current review、但已进入唯一 triage group：`165`。
-- 新写入流程中尚未关闭的 active dossier：`63`；其中已有 current review `3`；open workflow 不进入历史 triage。
-- inventory coverage：`269/269`。
-- semantic review coverage：`41/269`。这个比例不会被 triage 人为抬高。
+- 新写入流程中尚未关闭的 active dossier：`64`；其中已有 current review `3`；open workflow 不进入历史 triage。
+- inventory coverage：`270/270`。
+- semantic review coverage：`41/270`。这个比例不会被 triage 人为抬高。
 
 ## Current review
 
@@ -100,6 +100,7 @@
 | `DOSSIER-P-LBBD-MINIMAL-CORE-TOOLKIT-20260818-8B00079DD2` | `.artifacts/p_lbbd_minimal_core_toolkit_20260818` | `2026-08-18` | `active` |
 | `DOSSIER-P-MIXED-ENDPOINT-CLOSED-FORM-20260818-2E5F56A8F8` | `.artifacts/p_mixed_endpoint_closed_form_20260818` | `2026-08-18` | `active` |
 | `DOSSIER-P-MUS-LANDSCAPE-20260820-CC6900A234` | `.artifacts/p_mus_landscape_20260820` | `2026-08-20` | `active` |
+| `DOSSIER-P-MUS-LANDSCAPE-ERRATA-20260820-4FB752F398` | `.artifacts/p_mus_landscape_errata_20260820` | `2026-08-20` | `active` |
 | `DOSSIER-P-NARROW-CORE-READMISSION-20260819-CD8FDB7CD0` | `.artifacts/p_narrow_core_readmission_20260819` | `2026-08-19` | `active` |
 | `DOSSIER-P-NOVELTY-L3-CONTRACT-HARDENING-20260818-304523520A` | `.artifacts/p_novelty_l3_contract_hardening_20260818` | `2026-08-18` | `active` |
 | `DOSSIER-P-NOVELTY-STAGNATION-WINDOWS-20260818-570D7BA230` | `.artifacts/p_novelty_stagnation_windows_20260818` | `2026-08-18` | `active` |

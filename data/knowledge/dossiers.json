@@ -1739,6 +1739,34 @@
       }
     },
     {
+      "id": "DOSSIER-P-MUS-LANDSCAPE-ERRATA-20260820-4FB752F398",
+      "path": ".artifacts/p_mus_landscape_errata_20260820",
+      "entry_file": ".artifacts/p_mus_landscape_errata_20260820/ERRATA.md",
+      "title": "A_MUS_LANDSCAPE 并列勘误包",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-20",
+      "topics": [
+        "reasoning-system",
+        "solver-architecture",
+        "witness-lower-bound"
+      ],
+      "summary": "Inventory-only 登记。该包是 DOSSIER-P-MUS-LANDSCAPE-20260820-CC6900A234 的并列勘误包（erratum_for），解释入口为 ERRATA.md。保持 active/unreviewed/local_optional，仅登记 inventory 与 provenance，不构成 semantic review，不新增或升格 claim、owner、certified 或 production authority。",
+      "workflow": {
+        "opened_at": "2026-08-20",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/p_mus_landscape_errata_20260820/PROTOCOL.json",
+        "manifest_sha256": "dcb7ca9098d5f5db2c5213108215426391d78579dccb5a266e159d83cf173347",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": "erratum_for DOSSIER-P-MUS-LANDSCAPE-20260820-CC6900A234; .artifacts/p_mus_landscape_errata_20260820/PROTOCOL.json"
+      }
+    },
+    {
       "id": "DOSSIER-P-NARROW-CORE-READMISSION-20260819-CD8FDB7CD0",
       "path": ".artifacts/p_narrow_core_readmission_20260819",
       "entry_file": ".artifacts/p_narrow_core_readmission_20260819/REPORT.md",

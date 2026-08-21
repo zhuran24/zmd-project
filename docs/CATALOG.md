@@ -1,7 +1,7 @@
 # 项目知识目录
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:deb13488720d91ebb586d677fdce2123cf1a52db5580fcd7fd39b4163bd19ad7`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:14beb25b97ba68e3ec5ab0db3d82500164ae5bbcc7e920d88910cd1e76d1368c`。
 
 这里登记稳定 ID。claim 回答“我们知道什么”，decision 回答“谁改变了什么规则或门”，
 dossier 回答“原始证据包在哪里”，validity profile 回答“旧结论为何失效、怎样换代、能否复用”。目录不把历史材料自动升级为当前权威。
@@ -11,7 +11,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 - claim：`93` 条，其中当前 / 开放 `73` 条，带 validity profile `34` 条。
 - decision：`8` 条。
 - backfill review：`54` 条，其中 current `44` 条。
-- dossier：`269` 个，其中 tracked `158` 个、local optional `111` 个、当前证据标记 `16` 个、人工精编 `89` 个。
+- dossier：`270` 个，其中 tracked `158` 个、local optional `112` 个、当前证据标记 `16` 个、人工精编 `90` 个。
 - `docs/research/` 的一级目录和一级 Markdown 已全登记；`.artifacts/` 只登记一级目录，其路径允许在轻量 checkout 中缺失。
 
 ## Claim 索引
@@ -128,10 +128,10 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 ## Topic 索引
 
 - `p1_2-proof-chain`：72 个 dossier。
-- `reasoning-system`：53 个 dossier。
-- `solver-architecture`：52 个 dossier。
+- `reasoning-system`：54 个 dossier。
+- `solver-architecture`：53 个 dossier。
 - `other`：50 个 dossier。
-- `witness-lower-bound`：42 个 dossier。
+- `witness-lower-bound`：43 个 dossier。
 - `upper-bound`：28 个 dossier。
 - `solver-experiment`：26 个 dossier。
 - `cut-framework`：19 个 dossier。
@@ -206,6 +206,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 | `DOSSIER-P-REINSERTION-AUDIT-20260820-8BB5417ED3` | `2026-08-20` | [PREINSERTIONGAP 异源验收报告](<../.artifacts/p_reinsertion_audit_20260820/AUDIT_REPORT.md>)<br>异源验收证据包；包内总判词/状态：PASS_WITH_SCOPED_ERRATA_LOCALIZATION_UNDER_DETERMINED。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P-MUS-LANDSCAPE-20260820-CC6900A234` | `2026-08-20` | p mus landscape 20260820<br><code>.artifacts/p_mus_landscape_20260820</code><br>本地 research/support evidence inventory；包内终态判词/状态：NO_EXPLICIT_TERMINAL_VERDICT_RECORDED；验收状态：在途、未封账。仅作为 active open workflow 进入 inventory，不进入 historical triage，… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-CPU-L3-PERF-MEASUREMENT-20260820-212859A058` | `2026-08-20` | [CPU 大三缓选购 perf 实测批 — REPORT](<../.artifacts/cpu_l3_perf_measurement_20260820/REPORT.md>)<br>Inventory-only 登记。包内终态判词/状态：COMPLETE_RESEARCH_ONLY_NON_AUTHORIZING。验收状态：包内状态 COMPLETE_RESEARCH_ONLY_NON_AUTHORIZING；REVIEW_CHECKLIST 无对应异源验收节；出处：无对应 REVIEW_CHE… | `solver-experiment` | `active` | `unreviewed` |
+| `DOSSIER-P-MUS-LANDSCAPE-ERRATA-20260820-4FB752F398` | `2026-08-20` | [A_MUS_LANDSCAPE 并列勘误包](<../.artifacts/p_mus_landscape_errata_20260820/ERRATA.md>)<br>Inventory-only 登记。该包是 DOSSIER-P-MUS-LANDSCAPE-20260820-CC6900A234 的并列勘误包（erratum_for），解释入口为 ERRATA.md。保持 active/unreviewed/local_optional，仅登记 inventory 与 prove… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P-SIGNATURE-COOCCURRENCE-MATRIX-20260819-51366B1E18` | `2026-08-19` | [签名层逐事件成员集与共现矩阵](<../.artifacts/p_signature_cooccurrence_matrix_20260819/REPORT.md>)<br>Inventory-only 登记。包内终态判词/状态：PASS。验收状态：包内 checker/负测封账；REVIEW_CHECKLIST 未给出后续独立异源终结节；出处：REVIEW_CHECKLIST.md lines 155-173。 本登记不是 knowledge semantic review，不新增或升… | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-P-NARROW-CORE-READMISSION-20260819-CD8FDB7CD0` | `2026-08-19` | [窄核重准入与几何证书对账](<../.artifacts/p_narrow_core_readmission_20260819/REPORT.md>)<br>Inventory-only 登记。包内终态判词/状态：COMPLETE_RESEARCH_ONLY（最终判词见 REPORT.md §1）。验收状态：REVIEW_CHECKLIST 仍列待终检项，未见独立异源终结节；出处：REVIEW_CHECKLIST.md lines 257-297。 本登记不是 knowl… | `other` | `active` | `unreviewed` |
 | `DOSSIER-P-INTERIOR-BOUND-AUDIT-20260819-54D94C5C37` | `2026-08-19` | [异源验收：BINTERIOR 内部封锁精确下界包审计](<../.artifacts/p_interior_bound_audit_20260819/AUDIT.md>)<br>异源验收证据包；包内总判词/状态：CONFIRMED（定理本体）+ NEEDS_CORRECTION（语料观测与 3×3 护栏）。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified 或 prod… | `other` | `active` | `unreviewed` |
@@ -465,6 +466,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 | `DOSSIER-P-REINSERTION-AUDIT-20260820-8BB5417ED3` | `2026-08-20` | [PREINSERTIONGAP 异源验收报告](<../.artifacts/p_reinsertion_audit_20260820/AUDIT_REPORT.md>)<br>异源验收证据包；包内总判词/状态：PASS_WITH_SCOPED_ERRATA_LOCALIZATION_UNDER_DETERMINED。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P-MUS-LANDSCAPE-20260820-CC6900A234` | `2026-08-20` | p mus landscape 20260820<br><code>.artifacts/p_mus_landscape_20260820</code><br>本地 research/support evidence inventory；包内终态判词/状态：NO_EXPLICIT_TERMINAL_VERDICT_RECORDED；验收状态：在途、未封账。仅作为 active open workflow 进入 inventory，不进入 historical triage，… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-CPU-L3-PERF-MEASUREMENT-20260820-212859A058` | `2026-08-20` | [CPU 大三缓选购 perf 实测批 — REPORT](<../.artifacts/cpu_l3_perf_measurement_20260820/REPORT.md>)<br>Inventory-only 登记。包内终态判词/状态：COMPLETE_RESEARCH_ONLY_NON_AUTHORIZING。验收状态：包内状态 COMPLETE_RESEARCH_ONLY_NON_AUTHORIZING；REVIEW_CHECKLIST 无对应异源验收节；出处：无对应 REVIEW_CHE… | `solver-experiment` | `active` | `unreviewed` |
+| `DOSSIER-P-MUS-LANDSCAPE-ERRATA-20260820-4FB752F398` | `2026-08-20` | [A_MUS_LANDSCAPE 并列勘误包](<../.artifacts/p_mus_landscape_errata_20260820/ERRATA.md>)<br>Inventory-only 登记。该包是 DOSSIER-P-MUS-LANDSCAPE-20260820-CC6900A234 的并列勘误包（erratum_for），解释入口为 ERRATA.md。保持 active/unreviewed/local_optional，仅登记 inventory 与 prove… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P-SIGNATURE-COOCCURRENCE-MATRIX-20260819-51366B1E18` | `2026-08-19` | [签名层逐事件成员集与共现矩阵](<../.artifacts/p_signature_cooccurrence_matrix_20260819/REPORT.md>)<br>Inventory-only 登记。包内终态判词/状态：PASS。验收状态：包内 checker/负测封账；REVIEW_CHECKLIST 未给出后续独立异源终结节；出处：REVIEW_CHECKLIST.md lines 155-173。 本登记不是 knowledge semantic review，不新增或升… | `reasoning-system`, `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-P-NARROW-CORE-READMISSION-20260819-CD8FDB7CD0` | `2026-08-19` | [窄核重准入与几何证书对账](<../.artifacts/p_narrow_core_readmission_20260819/REPORT.md>)<br>Inventory-only 登记。包内终态判词/状态：COMPLETE_RESEARCH_ONLY（最终判词见 REPORT.md §1）。验收状态：REVIEW_CHECKLIST 仍列待终检项，未见独立异源终结节；出处：REVIEW_CHECKLIST.md lines 257-297。 本登记不是 knowl… | `other` | `active` | `unreviewed` |
 | `DOSSIER-P-INTERIOR-BOUND-AUDIT-20260819-54D94C5C37` | `2026-08-19` | [异源验收：BINTERIOR 内部封锁精确下界包审计](<../.artifacts/p_interior_bound_audit_20260819/AUDIT.md>)<br>异源验收证据包；包内总判词/状态：CONFIRMED（定理本体）+ NEEDS_CORRECTION（语料观测与 3×3 护栏）。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified 或 prod… | `other` | `active` | `unreviewed` |
@@ -4553,7 +4555,7 @@ owner 允许归档三轮外部评审并以 non_authorizing 形态登记设计约
 
 - **明确不推出：** 原登记八条内容及本次评审修复新增的指针型登记项获得批准；推理外环获得立项；对现行树新增义务
 
-- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
+- **证据：** [docs/research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md](<research/solver_reasoning_outer_loop_reviews_20260815/OWNER_INSTRUCTION_20260815.md>)〔owner 登记许可的窄逐字存录与 authority source〕；[/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl](<../../../home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl>)〔owner 口述指令的仓外原始会话转录〕（仓外可选证据）；[docs/项目说明/HISTORY.md](<项目说明/HISTORY.md>)〔登记许可的 append-only 编年史投影〕；[docs/research/solver_reasoning_outer_loop_reviews_20260815/README.md](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>)〔登记许可所覆盖的 tracked dossier 入口〕
 
 <a id="decision-p1-2-close-20260707"></a>
 

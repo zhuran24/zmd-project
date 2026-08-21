@@ -63,10 +63,7 @@
     {
       "id": "manual_chronology",
       "match": {
-        "paths": [
-          "22_project_journey_plain_language.md",
-          "HISTORY.md"
-        ]
+        "path": "HISTORY.md"
       },
       "set": {
         "document_class": "historical_evidence",
@@ -89,6 +86,33 @@
         ]
       },
       "rationale": "Chronology grows by dated append, never by rewriting earlier narrative to match the present."
+    },
+    {
+      "id": "manual_story_chronology",
+      "match": {
+        "path": "22_project_journey_plain_language.md"
+      },
+      "set": {
+        "document_class": "historical_evidence",
+        "authority_role": "evidence_only",
+        "mutation": "governed",
+        "context_level": "L0",
+        "purpose": "Historical story chronology whose dated chapters remain append-only while its title, narrative cutoff and self-identification header stay maintainable.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-012"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": null
+        },
+        "section_refs": [
+          "project-manual",
+          "history-archive"
+        ]
+      },
+      "rationale": "The file's own maintenance convention requires the narrative cutoff to advance after major milestones, and the owner's 2026-08-21 naming instruction requires the maintained title and self-identification; prior chapters still change only through appended corrections."
     },
     {
       "id": "manual_compatibility_redirects",
