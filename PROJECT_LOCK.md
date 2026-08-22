@@ -1,7 +1,7 @@
 # PROJECT_LOCK.md
 
 **Status**: CURRENT_LOCK
-**Updated**: 2026-08-03 (AB16 completed 16/16 after the R11 runner-lifetime lock repair; final classification v2 remains non-authorizing; prior certified, W0, P1.2, and Stage B boundaries unchanged)
+**Updated**: 2026-08-06 (strict empty-rectangle semantics adjudication recorded; AB16 completed 16/16 after the R11 runner-lifetime lock repair; final classification v2 remains non-authorizing; prior certified, W0, P1.2, and Stage B boundaries otherwise unchanged)
 **Purpose**: Freeze exactness boundaries, source-of-truth rules, accepted invariants, and forbidden changes for the current repository state.
 **History**: Date-stamped engineering history lives in [CHANGELOG.md](CHANGELOG.md). If this file conflicts with older notes, this file wins. Symbol/function names are authoritative; numeric source-line anchors below are informational and were refreshed against snapshot `48901c5` on 2026-07-11.
 
@@ -711,10 +711,7 @@ Phase 0 23 round Gemini cross-check 后 frozen invariants. **Phase 1 实施
   `benders_loop.py::LBBDController._add_exact_whole_layout_nogood` — the single
   whole-layout nogood entry point — calls
   `independent_infeasibility_reverifier.reverify_whole_layout_infeasibility()` inline before a
-  proof-bearing whole-layout nogood may be added. (Erratum 2026-08-06, flagged by two
-  independent external reviews: an earlier revision of this entry cited a nonexistent
-  helper `_reverify_whole_layout_infeasibility_before_cut` and a stale line number; the
-  reference is now by symbol only.) The reverifier rebuilds the relevant binding or
+  proof-bearing whole-layout nogood may be added. The reverifier rebuilds the relevant binding or
   routing question through its own entry point; `confirmed=false`, a feasible divergence, malformed
   evidence, or an exception yields `UNKNOWN`/no cut. This closes the previously registered
   “same solver attests its own whole-layout conflict” implementation gap and is sealed by

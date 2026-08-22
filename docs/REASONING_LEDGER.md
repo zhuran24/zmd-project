@@ -1,7 +1,7 @@
 # 推理结论与知识回填账本
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:f8780ca01dc8cbbdabb6aa82214d692b0db9e2e9200dbcf1df7ab65338a40c9c`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:2720224c8cc41d4abfd1a1a30adf5c380a40c4458918601ced4695350f0983a8`。
 
 本页把推理条件、操作效果、数学推导、选择/验证/消费机制与通用传播证据分开；历史结论为何失效、怎样换代和何时可复用则单列到 VALIDITY_LEDGER。
 `reasoning_profile` 描述操作效果，`derivation_profile` 描述证明角色、数学族和验证方式，`separation_profile` 描述候选来源、选择、验证、完备性和消费落点，`validity_profile` 描述反例、语义更正、实现失效、归因修正与重验；真正的关系图由 claim 的 `dependencies` 与 `supersedes` 连接。分类字段不会把 research-only 结论提升为规则、owner 决定或 production authority。
@@ -9,9 +9,9 @@
 ## 当前可回答的问题
 
 - 带 `reasoning_profile` 的 claim：`82` 条。
-- 带 `derivation_profile` 的 claim：`49` 条。
+- 带 `derivation_profile` 的 claim：`50` 条。
 - 带 `separation_profile` 的 claim：`27` 条。
-- 带 `validity_profile` 的 claim：`34` 条；完整谱系见 [VALIDITY_LEDGER](VALIDITY_LEDGER.md)。
+- 带 `validity_profile` 的 claim：`35` 条；完整谱系见 [VALIDITY_LEDGER](VALIDITY_LEDGER.md)。
 - 已正式证明“通用传播不能完成分离”的 claim：`0` 条。
 - 只有实验性通用传播对照证据的 claim：`2` 条。
 - 因此，在本批已审材料中，尚不能把“领域策略有效”直接改写成“CP-SAT 通用传播原则上不能做到”。前者已有多种实例，后者仍需要明确的传播系统、搜索预算和不可分离证明。
@@ -34,9 +34,9 @@
 
 ## 推导结构分布
 
-- **推导角色：** `atomic_lemma`=8；`composite_theorem`=24；`counterexample`=3；`definition`=2；`ledger_projection`=4；`method`=4；`open_obligation`=4
-- **数学推导族：** `area_accounting`=9；`boundary_packing`=5；`branch_counting`=3；`budget_composition`=4；`closure_search`=7；`conditional_halo`=2；`crossing_counting`=1；`empty_rectangle_geometry`=8；`endpoint_budget`=5；`entity_census`=2；`feasible_set_monotonicity`=1；`finite_pb_proof`=4；`integer_rounding`=13；`lex_band_enumeration`=7；`local_access_capacity`=3；`marked_membrane`=5；`ordinary_membrane`=4；`power_coverage`=6；`research_ledger`=7；`route_footprint`=3；`slack_audit`=1；`slot_saturation`=4；`throughput_capacity`=5
-- **验证方式：** `adversarial_review`=30；`authority_admission`=10；`counterexample`=3；`exact_enumeration`=12；`independent_recomputation`=22；`machine_source_projection`=4；`optimization_certificate`=2；`paper_derivation`=26；`roundingsat_veripb`=4；`source_recomputation`=14
+- **推导角色：** `atomic_lemma`=8；`composite_theorem`=24；`counterexample`=3；`definition`=2；`ledger_projection`=5；`method`=4；`open_obligation`=4
+- **数学推导族：** `area_accounting`=10；`boundary_packing`=5；`branch_counting`=3；`budget_composition`=4；`closure_search`=7；`conditional_halo`=2；`crossing_counting`=1；`empty_rectangle_geometry`=8；`endpoint_budget`=5；`entity_census`=2；`feasible_set_monotonicity`=1；`finite_pb_proof`=4；`integer_rounding`=13；`lex_band_enumeration`=7；`local_access_capacity`=3；`marked_membrane`=5；`ordinary_membrane`=4；`power_coverage`=6；`research_ledger`=8；`route_footprint`=3；`slack_audit`=1；`slot_saturation`=4；`throughput_capacity`=6
+- **验证方式：** `adversarial_review`=30；`authority_admission`=11；`counterexample`=3；`exact_enumeration`=12；`independent_recomputation`=22；`machine_source_projection`=5；`optimization_certificate`=2；`paper_derivation`=26；`roundingsat_veripb`=4；`source_recomputation`=14
 
 ## 选择、分离与消费结构分布
 
@@ -199,6 +199,7 @@
 | [`CLAIM-P2-STEEL-BLOCK-17-LT-18-REFUTED`](<CATALOG.md#claim-p2-steel-block-17-lt-18-refuted>) | `counterexample` | `branch_counting` | [`CLAIM-P2-FIVE-FULL-ONE-HALF-CONDITIONAL`](<CATALOG.md#claim-p2-five-full-one-half-conditional>) | — | `counterexample`<br>`independent_recomputation` |
 | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER`](<CATALOG.md#claim-p2-throughput-research-ledger>) | `ledger_projection` | `research_ledger`<br>`area_accounting`<br>`throughput_capacity` | [`CLAIM-P2-AREA-BOUND-1167`](<CATALOG.md#claim-p2-area-bound-1167>)<br>[`CLAIM-P2-MIN-SIDE-UPPER-OPEN`](<CATALOG.md#claim-p2-min-side-upper-open>)<br>[`CLAIM-P2-SINGLE-LAYER-AREA-BOUND-1015`](<CATALOG.md#claim-p2-single-layer-area-bound-1015>) | — | `authority_admission`<br>`machine_source_projection` |
 | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814`](<CATALOG.md#claim-p2-throughput-research-ledger-20260814>) | `ledger_projection` | `research_ledger`<br>`area_accounting`<br>`throughput_capacity` | [`CLAIM-P2-AREA-BOUND-1167`](<CATALOG.md#claim-p2-area-bound-1167>)<br>[`CLAIM-P2-MIN-SIDE-UPPER-OPEN`](<CATALOG.md#claim-p2-min-side-upper-open>)<br>[`CLAIM-P2-SINGLE-LAYER-AREA-BOUND-1015`](<CATALOG.md#claim-p2-single-layer-area-bound-1015>) | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER`](<CATALOG.md#claim-p2-throughput-research-ledger>) | `authority_admission`<br>`machine_source_projection` |
+| [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260822`](<CATALOG.md#claim-p2-throughput-research-ledger-20260822>) | `ledger_projection` | `research_ledger`<br>`area_accounting`<br>`throughput_capacity` | [`CLAIM-P2-AREA-BOUND-1167`](<CATALOG.md#claim-p2-area-bound-1167>)<br>[`CLAIM-P2-MIN-SIDE-UPPER-OPEN`](<CATALOG.md#claim-p2-min-side-upper-open>)<br>[`CLAIM-P2-SINGLE-LAYER-AREA-BOUND-1015`](<CATALOG.md#claim-p2-single-layer-area-bound-1015>)<br>[`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](<CATALOG.md#claim-six-predicate-research-ledger-20260818>) | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814`](<CATALOG.md#claim-p2-throughput-research-ledger-20260814>) | `authority_admission`<br>`machine_source_projection` |
 | [`CLAIM-PAIRWISE-CLOSURE-INCOMPLETE`](<CATALOG.md#claim-pairwise-closure-incomplete>) | `counterexample` | `closure_search` | [`CLAIM-P2-FIVE-FULL-ONE-HALF-CONDITIONAL`](<CATALOG.md#claim-p2-five-full-one-half-conditional>) | — | `paper_derivation`<br>`counterexample`<br>`adversarial_review` |
 | [`CLAIM-POWER-HALO-POLE-LOWER-BOUND-NINE`](<CATALOG.md#claim-power-halo-pole-lower-bound-nine>) | `composite_theorem` | `power_coverage`<br>`integer_rounding` | — | — | `optimization_certificate`<br>`independent_recomputation`<br>`adversarial_review` |
 | [`CLAIM-PROVED-PREMODEL-EXCLUSION-PERMITS-MODEL-OMISSION`](<CATALOG.md#claim-proved-premodel-exclusion-permits-model-omission>) | `method` | `closure_search` | [`CLAIM-BOUNDARY-LOADER-EXCLUDED-FROZEN-INSTANCE`](<CATALOG.md#claim-boundary-loader-excluded-frozen-instance>)<br>[`CLAIM-ADMISSION-PORT-OMISSION-SCOPE-RESTRICTION`](<CATALOG.md#claim-admission-port-omission-scope-restriction>) | — | `source_recomputation`<br>`adversarial_review` |

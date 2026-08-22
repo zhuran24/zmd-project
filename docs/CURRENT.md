@@ -2,7 +2,7 @@
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
 > 机器状态从冻结规则、义务、gate 与 exact-status 文件直接读取；研究结论从稳定 ID 账本投影。
-> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:f8780ca01dc8cbbdabb6aa82214d692b0db9e2e9200dbcf1df7ab65338a40c9c`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:2720224c8cc41d4abfd1a1a30adf5c380a40c4458918601ced4695350f0983a8`。
 
 ## 权威边界
 
@@ -537,17 +537,17 @@ SMM4 composition gate 独立枚举确认 lex>(1188,18) 的完整 oriented band �
 
 ## P2.0 独立研究账本
 
-### P2.0 吞吐语义的独立条件账本
+### P2.0 吞吐语义的当前独立条件账本
 
-- **Claim ID：** `CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814`
+- **Claim ID：** `CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260822`
 - **状态：** `current`
 - **权威层：** `research_authority`
 - **权威依据：** `research_authority`
 - **表示角色：** `AUTHORITATIVE_CURRENT`
 - **权威作用：** `research_upper_update`
-- **更新时间：** `2026-08-14`
+- **更新时间：** `2026-08-22`
 
-在 P2.0 第七谓词语义下，无条件面积上界为 A≤1167；单层口径给出 A≤1015，但依赖待闭合的 OB6 条件；电杆下界 P≥9。max_lex 的 min_side 次坐标上界仍未建立。该账本与六谓词 U=(1188,18) 并存且禁止混写。
+在 P2.0 第七谓词语义下，无条件面积上界为 A≤1167；单层口径给出 A≤1015，但依赖待闭合的 OB6 条件；电杆下界 P≥9。max_lex 的 min_side 次坐标上界仍未建立。该账本与当前六谓词 U=(1170,30) 并存且禁止混写；U=(1188,18) 只作为六谓词账本收紧前的 superseded before-state 保留。
 
 - **适用范围：** p2_0；throughput-conservation；research-upper-bound
 
@@ -557,9 +557,9 @@ SMM4 composition gate 独立枚举确认 lex>(1188,18) 的完整 oriented band �
 
 - **明确不推出：** 六谓词上界发生变化；第七谓词已经证明改变全局最优解；A≤1015 是无条件结论；P2.0 的 max_lex 两个坐标已经闭合
 
-- **依赖 claim：** CLAIM-P2-AREA-BOUND-1167；CLAIM-P2-MIN-SIDE-UPPER-OPEN；CLAIM-P2-SINGLE-LAYER-AREA-BOUND-1015
+- **依赖 claim：** CLAIM-P2-AREA-BOUND-1167；CLAIM-P2-MIN-SIDE-UPPER-OPEN；CLAIM-P2-SINGLE-LAYER-AREA-BOUND-1015；CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818
 
-- **取代 claim：** CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER
+- **取代 claim：** CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814
 
 - **权威源：** docs/research/p2_0_area_bound_20260806/AREA_BOUND_THEOREM_REPORT.md；docs/research/p2_0_specialized_20260807/OWNER_DECISION_SUMMARY.md
 
@@ -569,13 +569,13 @@ SMM4 composition gate 独立枚举确认 lex>(1188,18) 的完整 oriented band �
 
 - **有效性事件：** `semantic_replacement`
 - **受影响层：** proof_argument；documentation
-- **判定依据：** independent_recomputation；evidence_gap
+- **判定依据：** independent_recomputation；proof_replay
 - **复用策略：** `current_after_repair`
 - **修复状态：** `revalidated`
 - **时间作用域：** `design_version`
-- **有效性注：** 以新稳定 ID 承载 Phase 2 Batch 2 后的保守语义，补回显式换代链。
+- **有效性注：** 该 ID 接续 CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814，将独立 P2.0 条件账本与当前六谓词 research upper U=(1170,30) 对账；旧 U=(1188,18) 仅保留为 historical before-state。
 
-- **证据：** [docs/research/p2_0_area_bound_20260806/AREA_BOUND_THEOREM_REPORT.md](<research/p2_0_area_bound_20260806/AREA_BOUND_THEOREM_REPORT.md>)〔P2.0 area-bound authority〕；[docs/research/p2_0_specialized_20260807/OWNER_DECISION_SUMMARY.md](<research/p2_0_specialized_20260807/OWNER_DECISION_SUMMARY.md>)〔specialized-line owner-facing adjudication summary〕；[.artifacts/p2_0_refresh_20260805/area_bound_work](<../.artifacts/p2_0_refresh_20260805/area_bound_work>)〔local receipts and review root〕（工作区可选工件）
+- **证据：** [docs/research/p2_0_area_bound_20260806/AREA_BOUND_THEOREM_REPORT.md](<research/p2_0_area_bound_20260806/AREA_BOUND_THEOREM_REPORT.md>)〔P2.0 area-bound authority〕；[docs/research/p2_0_specialized_20260807/OWNER_DECISION_SUMMARY.md](<research/p2_0_specialized_20260807/OWNER_DECISION_SUMMARY.md>)〔specialized-line owner-facing adjudication summary〕；[.artifacts/p2_0_refresh_20260805/area_bound_work](<../.artifacts/p2_0_refresh_20260805/area_bound_work>)〔local receipts and review root〕（工作区可选工件）；[docs/research/solver_reasoning_outer_loop_reviews_20260815/LEDGER_RECONCILIATION_RECEIPT_CFG_RELAXATION_UPPER_20260818.json](<research/solver_reasoning_outer_loop_reviews_20260815/LEDGER_RECONCILIATION_RECEIPT_CFG_RELAXATION_UPPER_20260818.json>)〔tracked six-predicate ledger reconciliation with canonical after-state U=(1170,30)〕
 
 ### P2.0 无条件容量计数面积上界为 A≤1167
 
@@ -2003,7 +2003,7 @@ owner 选择严格解释：空矩形内不得出现任何 occupant。该决定�
 ## 覆盖范围与欠账
 
 - **dossier 目录覆盖：** 已登记 docs/research 一级目录与一级 Markdown，以及本机存在或被承重证据引用的 .artifacts 一级目录。轻量 checkout 可缺少 local artifact root。
-- **claim 覆盖：** 当前共 93 条稳定 claim；CURRENT 按 claim_selection_policy 只投影当前承重子集，完整账本由 CATALOG、topic、reasoning 与 validity 页面查询。
-- **历史 claim 回填：** 44 个 dossier 有 current review，其中 41 个为语义审阅、3 个为 availability/provenance review；另有 165 个 dossier 全部且仅进入一个显式 triage group，17 个 active workflow 等待 typed closure。100% inventory coverage 不等于 100% semantic review。
+- **claim 覆盖：** 当前共 94 条稳定 claim；CURRENT 按 claim_selection_policy 只投影当前承重子集，完整账本由 CATALOG、topic、reasoning 与 validity 页面查询。
+- **历史 claim 回填：** 45 个 dossier 有 current review，其中 42 个为语义审阅、3 个为 availability/provenance review；另有 165 个 dossier 全部且仅进入一个显式 triage group，17 个 active workflow 等待 typed closure。100% inventory coverage 不等于 100% semantic review。
 
 完整 claim、decision 与 evidence package 目录见 [CATALOG](<CATALOG.md>)；推理分类与历史回填进度见 [REASONING_LEDGER](<REASONING_LEDGER.md>)；历史反例、语义更正、实现失效与重验谱系见 [VALIDITY_LEDGER](<VALIDITY_LEDGER.md>)；语义审阅、可用性核对与长尾分诊闭包见 [BACKFILL_LEDGER](<BACKFILL_LEDGER.md>)；按稳定主题坐标查询见 [TOPIC_INDEX](<TOPIC_INDEX.md>)；规范术语与别名见 [TERMINOLOGY](<TERMINOLOGY.md>)；当前开放问题见 [OPEN_QUESTIONS](<OPEN_QUESTIONS.md>)；按问题进入项目见 [START_HERE](<START_HERE.md>)。

@@ -1,7 +1,7 @@
 # 稳定主题索引
 
 > 本页由 `data/knowledge/topics.json` 自动生成；禁止手工修改。
-> 账本审阅日：`2026-08-18`；源摘要：`sha256:f8780ca01dc8cbbdabb6aa82214d692b0db9e2e9200dbcf1df7ab65338a40c9c`。
+> 账本审阅日：`2026-08-18`；源摘要：`sha256:2720224c8cc41d4abfd1a1a30adf5c380a40c4458918601ced4695350f0983a8`。
 
 主题是读取路径，不是新的 authority。一个 claim 可以出现在多个主题中；topic membership 只表示相关性，不改变 statement、scope 或 status。
 
@@ -19,7 +19,7 @@
 | [`TOPIC-SOLVER-EXPERIMENTS-AND-NO-GO`](#topic-solver-experiments-and-no-go) | 保留 cheap gate、fixture、资源/参数归因和路线撤回的具体 scope，避免方法家族级过度外推。 | 13 | solver-experiment | 0 |
 | [`TOPIC-FORMAL-VERIFICATION`](#topic-formal-verification) | PB/VeriPB band、共享编码 common-mode 风险与 proof-producing sidecar 的证据坐标。 | 5 | formal-verification | 0 |
 | [`TOPIC-DISCOVERY-METHODS`](#topic-discovery-methods) | zero-slack、pairwise closure 反例、独立验证与发现/验证拆分等可复用方法层。 | 5 | other；reasoning-system | 0 |
-| [`TOPIC-HISTORICAL-VALIDITY`](#topic-historical-validity) | 统一查询 refutation、semantic replacement、scope correction、implementation/experiment invalidation、route retirement 与 revalid… | 33 | other | 0 |
+| [`TOPIC-HISTORICAL-VALIDITY`](#topic-historical-validity) | 统一查询 refutation、semantic replacement、scope correction、implementation/experiment invalidation、route retirement 与 revalid… | 34 | other | 0 |
 | [`TOPIC-DOCUMENTATION-GOVERNANCE`](#topic-documentation-governance) | 文档类型、继承 policy、current review、长尾 triage、生成页和 framework-core 自维护入口。 | 0 | documentation-governance | 0 |
 | [`TOPIC-INDUSTRIAL-DELIVERY`](#topic-industrial-delivery) | 把蓝图导出、manifest、local artifact 与 release authority 分开，供追溯而不抬升语义。 | 0 | industrial-delivery | 0 |
 
@@ -41,7 +41,7 @@
 | [`CLAIM-CERTIFIED-EXISTENCE-OPEN`](<CATALOG.md#claim-certified-existence-open>) | `open` | 现行语义下 whole-layout 认证级存在性仍为 OPEN |
 | [`CLAIM-CUT-FRAMEWORK-PRODUCTION-STATUS`](<CATALOG.md#claim-cut-framework-production-status>) | `current` | cut framework 仍未获 production attach 授权 |
 | [`CLAIM-DURABLE-CERTIFIED-RESULT-ABSENT`](<CATALOG.md#claim-durable-certified-result-absent>) | `current` | checked-in durable CERTIFIED 结果当前不存在 |
-| [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814`](<CATALOG.md#claim-p2-throughput-research-ledger-20260814>) | `current` | P2.0 吞吐语义的独立条件账本 |
+| [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260822`](<CATALOG.md#claim-p2-throughput-research-ledger-20260822>) | `current` | P2.0 吞吐语义的当前独立条件账本 |
 | [`CLAIM-R4-BOUNDARY-23-23-FULL-SPAN-EXCLUSION`](<CATALOG.md#claim-r4-boundary-23-23-full-span-exclusion>) | `current` | 46 个 boundary bodies 强制 23+23，并排除 70 格 full-span hole |
 | [`CLAIM-R4-MARKED-INCIDENCE-TOTAL-110`](<CATALOG.md#claim-r4-marked-incidence-total-110>) | `current` | R4 marked-incidence census 的总数为 110 |
 | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](<CATALOG.md#claim-six-predicate-research-ledger-20260818>) | `current` | 六谓词 research 条件上界收紧为 U=(1170,30) |
@@ -135,7 +135,7 @@
 | [`CLAIM-P2-ROUTED-FLOW-LOWER-9135`](<CATALOG.md#claim-p2-routed-flow-lower-9135>) | `current` | P2.0 进入路由图的聚合流量至少为 9135 件/分钟 |
 | [`CLAIM-P2-SINGLE-LAYER-AREA-BOUND-1015`](<CATALOG.md#claim-p2-single-layer-area-bound-1015>) | `current` | P2.0 单层口径条件式面积上界为 A≤1015 |
 | [`CLAIM-P2-STEEL-BLOCK-17-LT-18-REFUTED`](<CATALOG.md#claim-p2-steel-block-17-lt-18-refuted>) | `refuted` | “steel_block 17<18 因而必分流”已被反例推翻 |
-| [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814`](<CATALOG.md#claim-p2-throughput-research-ledger-20260814>) | `current` | P2.0 吞吐语义的独立条件账本 |
+| [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260822`](<CATALOG.md#claim-p2-throughput-research-ledger-20260822>) | `current` | P2.0 吞吐语义的当前独立条件账本 |
 
 ### Open questions
 
@@ -319,6 +319,7 @@
 | [`CLAIM-P2-FIVE-FULL-ONE-HALF-CONDITIONAL`](<CATALOG.md#claim-p2-five-full-one-half-conditional>) | `current` | 钢块免分流前提下，六台制瓶机被迫为 5 满 1 半 |
 | [`CLAIM-P2-STEEL-BLOCK-17-LT-18-REFUTED`](<CATALOG.md#claim-p2-steel-block-17-lt-18-refuted>) | `refuted` | “steel_block 17<18 因而必分流”已被反例推翻 |
 | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER`](<CATALOG.md#claim-p2-throughput-research-ledger>) | `superseded` | P2.0 吞吐语义另有 A≤1167 / A≤1015 条件账本 |
+| [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814`](<CATALOG.md#claim-p2-throughput-research-ledger-20260814>) | `historical` | P2.0 吞吐语义的独立条件账本 |
 | [`CLAIM-R1-1326-34-STRICT-UPPER-REVALIDATED`](<CATALOG.md#claim-r1-1326-34-strict-upper-revalidated>) | `historical` | R1 strict `(1326,34)` 上界已由两段证明链重新验证 |
 | [`CLAIM-R3-LEX-BAND-2074-UNSAT-GIVEN-GEOMETRY`](<CATALOG.md#claim-r3-lex-band-2074-unsat-given-geometry>) | `historical` | 给定 R3 几何引理，2074 个 lex-better 尺寸的算术层为 UNSAT |
 | [`CLAIM-RAB-FCL-FRONT-DEPENDENT-PERFORMANCE-WITHDRAWN`](<CATALOG.md#claim-rab-fcl-front-dependent-performance-withdrawn>) | `current` | 旧 RAB/FCL 的 front-dependent 性能与收敛归因已撤回，复用前须按修正语义重验 |

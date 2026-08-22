@@ -120,7 +120,9 @@ owner: rules
 
 ### 3.3.7 空地目标与可采纳下限
 
-精确 certified 路径的空地目标为 `max_lex(area, min_side)`。其中 `min_side` 的项目级可采纳下限由 `rules/canonical_rules.json::globals.empty_rectangle.min_side_admissibility` 给出；当前生产项目取值为 `6`。该下限是发布可采纳性条件，不是目标函数的 tie-break 替代品。toy / 测试项目可以在 canonical schema 中显式声明更小的正整数下限。「空」本身的含义由同一块的 `emptiness = no_occupant_of_any_kind` 定义（owner 2026-08-05 裁决）：空矩形内不得存在任何占地物——设施机身、电杆、传送带、十字桥接件等全部物流件一律禁止，此前把物流件读作可穿孔的宽松读法作废；裁决出处记在 `emptiness_adjudication`，两个字段都是 schema 与 pydantic 双侧 required。
+精确 certified 路径的空地目标为 `max_lex(area, min_side)`。其中 `min_side` 的项目级可采纳下限由 `rules/canonical_rules.json::globals.empty_rectangle.min_side_admissibility` 给出；当前生产项目取值为 `6`。该下限是发布可采纳性条件，不是目标函数的 tie-break 替代品。toy / 测试项目可以在 canonical schema 中显式声明更小的正整数下限。「空」本身的含义由同一块的 `emptiness = no_occupant_of_any_kind` 定义（owner 2026-08-05 裁决）：空矩形内不得存在任何占地物——设施机身、电杆、传送带、物流桥等全部物流件一律禁止，此前把物流件读作可穿孔的宽松读法作废；裁决出处记在 `emptiness_adjudication`，两个字段都是 schema 与 pydantic 双侧 required。
+
+2026-08-22 已对本小节的 `globals.empty_rectangle` 分块完成复验：JSON Schema 与 `EmptyRectangleConfig` 双侧均把 `emptiness`、`emptiness_adjudication` 声明为 required，canonical payload 通过，分别删除任一字段的负例均被两侧拒收。该复验仅覆盖本分块，不更新本文件的整体 `last_verified_against`。
 
 ---
 

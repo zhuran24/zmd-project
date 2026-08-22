@@ -7,14 +7,14 @@ Dossier：`DOSSIER-COMMON-MODE-BINDING-REVERIFY-20260820-0268E9394D`
 ## 当前状态
 
 ```text
-ROUND3_READY_PENDING_EXTERNAL_AUDIT
-NOT_RE_CLOSED
-NOT_COMMITTED
+EXTERNAL_AUDIT_CONVERGED
+P1_2_RE_CLOSED
+COMMITTED bc6f8b1
 ```
 
 本 dossier 处理 whole-layout negative cut 的 binding I1 复验面，以及核对过程中发现的 binding PB sidecar 投影漂移。它不宣称关闭 master `INFEASIBLE`、routing exhaustion、terminal fixed-witness 或全部 local cut family 的 common-mode 风险。
 
-本批触碰 P1.2 close-kernel sealed 面。Owner 裁断为不豁免治理：合入前必须完整执行“重开 P1.2 close claim → 外部异源审计 → owner re-close”。本 worktree 中的 proof-obligation 重封只是待审草稿；两条旧 sealed-authority parity 测试必须保持红。
+本批触碰 P1.2 close-kernel sealed 面。六轮外部异源审计已经收敛，owner 已完成 re-close，最终字节与 authority companion 由 commit `bc6f8b1` 提交；P1.2 proof gate 保留的单一后批 issue 不改变本次 re-close 终态。
 
 ## 外审轮次
 
@@ -180,17 +180,17 @@ sha256 f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3
 
 ## F0 归因修正
 
-原始 `MASKED_REAL_DIFF_20260820.json` 如实记录修复前：
+`MASKED_REAL_DIFF_20260820.json` 记录修复前的真实差分：
 
 ```text
 outcome_changes             14
 baseline_pass_current_fail  14
 ```
 
-第一版终稿把它错写成零，且错误地从“缺工件时 baseline/current 同红”推断没有后续回归。14 条 stale test doubles 已修复；修后必须使用真实工件逐条重放原 47 个 nodeid，权威结果见：
+14 条变化均归因于 stale test doubles。修复后的 canonical 真实工件重放逐条执行原 47 个 nodeid，baseline/current 均为 47 passed、returncode 0，差分为零且临时普通文件副本已删除；权威结果为：
 
 ```text
-MASKED_REAL_DIFF_POSTFIX_20260820.json
+MASKED_REAL_DIFF_POSTFIX2_20260820.json
 ```
 
 详细方法和口径见 [`BASELINE_ATTRIBUTION_20260820.md`](BASELINE_ATTRIBUTION_20260820.md)。
@@ -211,7 +211,7 @@ Proof checker 现在同时锁定：
 
 ## 明确不推出
 
-本批不产生 production cut promotion，不改变求解上下界，不产生 durable/public `CERTIFIED`，不证明三方语义全等，也不证明 P1.2 已重新关闭。
+本批不产生 production cut promotion，不改变求解上下界，不产生 durable/public `CERTIFIED`，也不证明三方语义全等。P1.2 的重新关闭来自六轮外审后的 owner re-close 与 authority transaction，不由本 dossier 的自验结果自行授予。
 
 仍延期：
 

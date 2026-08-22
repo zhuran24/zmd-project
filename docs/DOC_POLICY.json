@@ -197,6 +197,7 @@
           "DOC-ADR-008"
         ],
         "source_paths": [
+          "data/knowledge/current_state.json",
           "data/knowledge/dossiers.json",
           "data/knowledge/backfill_reviews.jsonl",
           "data/knowledge/backfill_triage.json",

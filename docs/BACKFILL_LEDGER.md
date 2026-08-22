@@ -1,7 +1,7 @@
 # 历史知识回填与长尾覆盖
 
 > 本页由 `data/knowledge/backfill_reviews.jsonl`、`backfill_triage.json` 与 dossier registry 自动生成；禁止手工修改。
-> 账本审阅日：`2026-08-15`；源摘要：`sha256:f8780ca01dc8cbbdabb6aa82214d692b0db9e2e9200dbcf1df7ab65338a40c9c`。
+> 账本审阅日：`2026-08-15`；源摘要：`sha256:2720224c8cc41d4abfd1a1a30adf5c380a40c4458918601ced4695350f0983a8`。
 
 这里把两件经常被混写的事情分开：**semantic review** 表示实际读取了声明路径并提炼知识；**inventory triage** 只保证尚未审阅的 dossier 仍可发现、只落入一个队列，并带有重开条件。分诊从不等价于 `no_reusable_claim`。
 

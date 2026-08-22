@@ -332,7 +332,7 @@ legacy_doc_scan_base.json
 报告只验证文档职责层，不授予数学、phase、release 或 certification authority。生成报告和 `docctl doctor` 使用同一个审计函数，避免说明页与 checker 各写一套规则。
 
 ## 9.2 非变异治理门
-第三阶段解决了“检查什么”，第四阶段开始解决“绿色结果究竟对应哪棵树”。治理门的机器真源由 manifest 固定：
+治理门同时固定“检查什么”与“绿色结果对应哪棵输入树”。它的机器真源由 manifest 固定：
 
 ```text
 .docsystem/manifest.json

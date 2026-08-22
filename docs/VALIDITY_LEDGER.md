@@ -1,27 +1,27 @@
 # 结论有效性与换代账本
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:f8780ca01dc8cbbdabb6aa82214d692b0db9e2e9200dbcf1df7ab65338a40c9c`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:2720224c8cc41d4abfd1a1a30adf5c380a40c4458918601ced4695350f0983a8`。
 
 本页不把所有失败混成一个标签。它区分直接反例、语义替代、作用域修正、实现失效、实验装置失效、归因更正、路线撤回与修复后重验。
 `validity_profile` 回答的是一条 claim 在认知历史中的位置；claim 的数学内容、authority 和证据仍以 CATALOG 详情为准。
 
 ## 当前覆盖
 
-- 带 `validity_profile` 的 claim：`34` 条。
-- 显式 `supersedes` 边：`10` 条。
+- 带 `validity_profile` 的 claim：`35` 条。
+- 显式 `supersedes` 边：`11` 条。
 - `refuted` claim：`4` 条。
 - `superseded` claim：`7` 条，均必须有反向 successor。
 - current validity review：`27` 个 dossier。
 
 ## 有效性事件分布
 
-- **事件类型：** `attribution_correction`=1；`experiment_invalidation`=3；`implementation_invalidation`=3；`refutation`=3；`revalidation`=3；`route_retirement`=4；`scope_correction`=9；`semantic_replacement`=8
-- **受影响层：** `candidate_inventory`=1；`canonical_semantics`=8；`documentation`=11；`experiment_design`=17；`model_encoding`=17；`proof_argument`=16；`research_strategy`=10；`solver_runtime`=7；`validator`=6
-- **判定依据：** `controlled_experiment`=12；`counterexample`=4；`differential_test`=8；`evidence_gap`=9；`incident_replay`=11；`independent_recomputation`=20；`owner_adjudication`=3；`proof_replay`=3
-- **复用策略：** `current_after_repair`=9；`do_not_reuse`=4；`historical_only`=10；`method_only`=4；`revalidate_before_use`=1；`unaffected_under_premises`=6
-- **修复状态：** `not_applicable`=4；`pending`=5；`revalidated`=25
-- **时间作用域：** `design_version`=16；`pre_fix_history`=5；`run_family`=7；`specific_artifact`=2；`universal_claim`=4
+- **事件类型：** `attribution_correction`=1；`experiment_invalidation`=3；`implementation_invalidation`=3；`refutation`=3；`revalidation`=3；`route_retirement`=4；`scope_correction`=9；`semantic_replacement`=9
+- **受影响层：** `candidate_inventory`=1；`canonical_semantics`=8；`documentation`=12；`experiment_design`=17；`model_encoding`=17；`proof_argument`=17；`research_strategy`=10；`solver_runtime`=7；`validator`=6
+- **判定依据：** `controlled_experiment`=12；`counterexample`=4；`differential_test`=8；`evidence_gap`=9；`incident_replay`=11；`independent_recomputation`=21；`owner_adjudication`=3；`proof_replay`=4
+- **复用策略：** `current_after_repair`=9；`do_not_reuse`=4；`historical_only`=11；`method_only`=4；`revalidate_before_use`=1；`unaffected_under_premises`=6
+- **修复状态：** `not_applicable`=4；`pending`=5；`revalidated`=26
+- **时间作用域：** `design_version`=17；`pre_fix_history`=5；`run_family`=7；`specific_artifact`=2；`universal_claim`=4
 
 ## 已分类 claim
 
@@ -47,7 +47,8 @@
 | [`CLAIM-P2-FIVE-FULL-ONE-HALF-CONDITIONAL`](<CATALOG.md#claim-p2-five-full-one-half-conditional>) | `current` | `scope_correction` | `universal_claim` | `proof_argument` | `unaffected_under_premises` | `revalidated` | `counterexample`<br>`independent_recomputation` |
 | [`CLAIM-P2-STEEL-BLOCK-17-LT-18-REFUTED`](<CATALOG.md#claim-p2-steel-block-17-lt-18-refuted>) | `refuted` | `refutation` | `universal_claim` | `proof_argument` | `do_not_reuse` | `not_applicable` | `counterexample`<br>`independent_recomputation` |
 | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER`](<CATALOG.md#claim-p2-throughput-research-ledger>) | `superseded` | `semantic_replacement` | `design_version` | `proof_argument`<br>`documentation` | `historical_only` | `revalidated` | `evidence_gap`<br>`independent_recomputation` |
-| [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814`](<CATALOG.md#claim-p2-throughput-research-ledger-20260814>) | `current` | `semantic_replacement` | `design_version` | `proof_argument`<br>`documentation` | `current_after_repair` | `revalidated` | `independent_recomputation`<br>`evidence_gap` |
+| [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814`](<CATALOG.md#claim-p2-throughput-research-ledger-20260814>) | `historical` | `semantic_replacement` | `design_version` | `proof_argument`<br>`documentation` | `historical_only` | `revalidated` | `independent_recomputation`<br>`evidence_gap` |
+| [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260822`](<CATALOG.md#claim-p2-throughput-research-ledger-20260822>) | `current` | `semantic_replacement` | `design_version` | `proof_argument`<br>`documentation` | `current_after_repair` | `revalidated` | `independent_recomputation`<br>`proof_replay` |
 | [`CLAIM-R1-1326-34-STRICT-UPPER-REVALIDATED`](<CATALOG.md#claim-r1-1326-34-strict-upper-revalidated>) | `historical` | `revalidation` | `run_family` | `model_encoding`<br>`validator`<br>`proof_argument` | `historical_only` | `revalidated` | `proof_replay`<br>`independent_recomputation` |
 | [`CLAIM-RAB-FCL-FRONT-DEPENDENT-PERFORMANCE-WITHDRAWN`](<CATALOG.md#claim-rab-fcl-front-dependent-performance-withdrawn>) | `current` | `experiment_invalidation` | `pre_fix_history` | `canonical_semantics`<br>`model_encoding`<br>`solver_runtime`<br>`experiment_design`<br>`proof_argument`<br>`research_strategy` | `revalidate_before_use` | `pending` | `incident_replay`<br>`evidence_gap` |
 | [`CLAIM-ROUND45-CORRECTED-PROFILE-UNKNOWN-NOT-STRUCTURAL-WALL`](<CATALOG.md#claim-round45-corrected-profile-unknown-not-structural-wall>) | `current` | `revalidation` | `run_family` | `model_encoding`<br>`solver_runtime`<br>`experiment_design`<br>`proof_argument` | `current_after_repair` | `revalidated` | `controlled_experiment`<br>`independent_recomputation` |
@@ -74,7 +75,8 @@
 | [`CLAIM-LEVER-VERDICTS-ARE-ITEM-AND-REVISION-BOUNDED`](<CATALOG.md#claim-lever-verdicts-are-item-and-revision-bounded>) | [`CLAIM-24-LEVER-FRAMEWORK-EXHAUSTED-SUPERSEDED`](<CATALOG.md#claim-24-lever-framework-exhausted-superseded>) | `superseded` | `current` |
 | [`CLAIM-M5-DEATHS-REQUIRE-RESOURCE-BUILD-AND-PARAMETER-SEPARATION`](<CATALOG.md#claim-m5-deaths-require-resource-build-and-parameter-separation>) | [`CLAIM-M5-DEFAULT-SOLVE-PARAMETERS-PATHOLOGICAL-REFUTED`](<CATALOG.md#claim-m5-default-solve-parameters-pathological-refuted>) | `refuted` | `current` |
 | [`CLAIM-P2-FIVE-FULL-ONE-HALF-CONDITIONAL`](<CATALOG.md#claim-p2-five-full-one-half-conditional>) | [`CLAIM-P2-STEEL-BLOCK-17-LT-18-REFUTED`](<CATALOG.md#claim-p2-steel-block-17-lt-18-refuted>) | `refuted` | `current` |
-| [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814`](<CATALOG.md#claim-p2-throughput-research-ledger-20260814>) | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER`](<CATALOG.md#claim-p2-throughput-research-ledger>) | `superseded` | `current` |
+| [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814`](<CATALOG.md#claim-p2-throughput-research-ledger-20260814>) | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER`](<CATALOG.md#claim-p2-throughput-research-ledger>) | `superseded` | `historical` |
+| [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260822`](<CATALOG.md#claim-p2-throughput-research-ledger-20260822>) | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814`](<CATALOG.md#claim-p2-throughput-research-ledger-20260814>) | `historical` | `current` |
 | [`CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT-BOUNDARY`](<CATALOG.md#claim-routing-reverification-extra-strict-boundary>) | [`CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT`](<CATALOG.md#claim-routing-reverification-extra-strict>) | `superseded` | `current` |
 | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](<CATALOG.md#claim-six-predicate-research-ledger-20260818>) | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>) | `superseded` | `current` |
 | [`CLAIM-W0-POWER-OBSTRUCTION-REQUIRES-DECLARED-HEIGHT-PURITY`](<CATALOG.md#claim-w0-power-obstruction-requires-declared-height-purity>) | [`CLAIM-W0-ADJACENT-4X4-POWER-IMPOSSIBILITY-REFUTED`](<CATALOG.md#claim-w0-adjacent-4x4-power-impossibility-refuted>) | `refuted` | `current` |

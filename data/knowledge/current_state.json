@@ -93,7 +93,7 @@
       "id": "parallel_p2_ledger",
       "title": "P2.0 独立研究账本",
       "claim_ids": [
-        "CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260814",
+        "CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260822",
         "CLAIM-P2-AREA-BOUND-1167",
         "CLAIM-P2-MIN-SIDE-UPPER-OPEN",
         "CLAIM-P2-SINGLE-LAYER-AREA-BOUND-1015",
@@ -204,8 +204,8 @@
   },
   "coverage": {
     "dossiers": "已登记 docs/research 一级目录与一级 Markdown，以及本机存在或被承重证据引用的 .artifacts 一级目录。轻量 checkout 可缺少 local artifact root。",
-    "claims": "当前共 93 条稳定 claim；CURRENT 按 claim_selection_policy 只投影当前承重子集，完整账本由 CATALOG、topic、reasoning 与 validity 页面查询。",
-    "historical_claim_backfill": "44 个 dossier 有 current review，其中 41 个为语义审阅、3 个为 availability/provenance review；另有 165 个 dossier 全部且仅进入一个显式 triage group，17 个 active workflow 等待 typed closure。100% inventory coverage 不等于 100% semantic review。"
+    "claims": "当前共 94 条稳定 claim；CURRENT 按 claim_selection_policy 只投影当前承重子集，完整账本由 CATALOG、topic、reasoning 与 validity 页面查询。",
+    "historical_claim_backfill": "45 个 dossier 有 current review，其中 42 个为语义审阅、3 个为 availability/provenance review；另有 165 个 dossier 全部且仅进入一个显式 triage group，17 个 active workflow 等待 typed closure。100% inventory coverage 不等于 100% semantic review。"
   },
   "generated_outputs": {
     "current": "docs/CURRENT.md",

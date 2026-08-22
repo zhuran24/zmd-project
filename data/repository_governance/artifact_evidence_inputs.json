@@ -32,6 +32,7 @@
     "dossier_registry": "data/knowledge/dossiers.json",
     "required_dossier_tracked_state": "local_optional",
     "root_files": [
+      ".artifacts/ERRATA_gpt_cut_shapes_native_tuple_20260821_20260822.md",
       ".artifacts/ERRATA_p_blockade_clipmap_20260819_20260820.md",
       ".artifacts/ERRATA_p_dnf_branch_soundness_minimal_core_20260819_20260820.md",
       ".artifacts/ERRATA_p_dnf_realizable_completeness_20260819_20260820.md",
@@ -40,6 +41,7 @@
       ".artifacts/ERRATA_p_interior_3x3_bound_20260819_20260820.md",
       ".artifacts/ERRATA_p_interior_blockade_bound_20260819_20260820.md",
       ".artifacts/ERRATA_p_zeropole_diagnosis_20260819_20260820.md",
+      ".artifacts/ERRATA_sixpred_upper_next_band_exhaustion_20260821_20260822.md",
       ".artifacts/_relay_task_p4_blockade_lit_20260817.txt",
       ".artifacts/_relay_task_wall5_20260817.txt",
       ".artifacts/canonical_merge_gate_20260807.DONE",

@@ -211,3 +211,7 @@ status claims below are historical snapshots, not assertions about the current w
 - Formalized canonical output delivery with schema-backed blueprint export, blueprint-first render consumers, and a certified delivery manifest. [PROJECT_LOCK]
 - Locked campaign best-certified monotonicity, aligned the exact objective to `max_lex(area, min_side)`, and clarified that `50/10` is exploratory-only. [PROJECT_LOCK]
 - Added spec metadata, preprocess golden regeneration coverage, numeric artifact normalization, and runtime worker-profile discoverability. [FILE_STATUS]
+
+## 2026-08-06
+
+- Corrected the whole-layout independent-reverification lock entry to cite `independent_infeasibility_reverifier.reverify_whole_layout_infeasibility()` by symbol only after two independent external reviews flagged that an earlier revision cited the nonexistent helper `_reverify_whole_layout_infeasibility_before_cut` and a stale source-line anchor. [PROJECT_LOCK]

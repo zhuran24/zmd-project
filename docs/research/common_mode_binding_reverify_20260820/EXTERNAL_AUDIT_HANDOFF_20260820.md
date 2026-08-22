@@ -3,14 +3,12 @@
 日期：2026-08-21
 
 ```text
-status    ROUND6B_READY
-worktree  /home/zhuran24/.devspace/worktrees/zmd-pj-4dfe6504
-HEAD      aa517cd35e222672f5f6dcd88beba4689c69cf29
-commit    none
-re-close  no
+status    RE_CLOSED_COMMITTED
+commit    bc6f8b1
+re-close  yes — owner 2026-08-21
 ```
 
-本文件的 §1–§12 保留第三轮交接快照，§13 保留第四轮外审前终态，§14 保留第五轮输入，§15 保留 owner 范围 A 执行后的第六轮输入，§16 给出第六轮 finding 机械修复后的当前输入。它不是 owner re-close。
+本文件的 §1–§12 保留第三轮交接快照，§13 保留第四轮外审前终态，§14 保留第五轮输入，§15 保留 owner 范围 A 执行后的第六轮输入，§16 保留第六轮 finding 机械修复后的 ROUND6B 输入，§17 记录 owner re-close、authority transaction 与提交前快照。唯一当前状态由顶部现状块和 §17.1 给出；其余轮次均为带时点的历史证据。
 
 ## 1. 上轮报告
 
@@ -1213,19 +1211,17 @@ receipt    1787309220274695619
 | `src/tests/cuts/test_stage_b_contracts.py` | `75fcf7c0f5ffe07b3b8f7f988d1ab83fed614e4e2248566ae447cad61f371a31` | `c1ba003306669434be5cb65c4783946e62896f66d5b79af73dc4fc3d9d5005cb` |
 | `ACLOSE_R6FIX_SELF_CHECK_20260820.json` | 不存在 | `4c0474fa21e164dd10cc7bfbaaa96e128b4d627de7d2d92696fdab7a280b099c` |
 
-HANDOFF 不做自引用 SHA。当前合法状态为 `ROUND6B_READY / NOT_RE_CLOSED / NOT_COMMITTED`；Stage-B 语义裁断、四项 LOW 后批处置、owner re-close 与两条 authority parity floor 均保持开放。
+HANDOFF 不做自引用 SHA。§16 截止时的合法状态为 `ROUND6B_READY / NOT_RE_CLOSED / NOT_COMMITTED`；该历史截面中的 Stage-B 语义裁断、owner re-close 与两条 authority parity floor 尚未完成，后续终态见 §17。
 
-## 17. Owner re-close 终态与 READY_TO_COMMIT
+## 17. Owner re-close 与提交终态
 
 ### 17.1 当前状态
 
 ```text
-status    RE_CLOSED_PENDING_COMMIT
-terminal  READY_TO_COMMIT
+status    RE_CLOSED_COMMITTED
+terminal  COMMITTED
 owner     2026-08-21 session widget：范围 A、clean-review 连胜保留、P1.2 re-close、allowlist 历史 id 永久接受
-HEAD      aa517cd35e222672f5f6dcd88beba4689c69cf29（detached，未 commit）
-index     cached content 为空；仅 OWNER_AUTHORITY_COMPANION_20260821.md 为 intent-to-add
-main      tracked 与 cached content 均干净
+commit    bc6f8b1 — feat(certified): 收口 I1 binding 独立复验并重新关闭 P1.2
 ```
 
 六轮外部审计已由 R6B `CLEAN_FOR_REOPEN` 收敛。review gate 为 `closed_manual_owner_decision`、`updated_at=2026-08-21`；08-06 `owner_manual_decision` 对象保留为 append-only decision register 的稳定历史锚，08-21 successor authority 由窄 companion 与 `DECISION-P1-2-RECLOSE-20260821` 承载。
@@ -1280,7 +1276,7 @@ mtime     receipt 1787311823059192093 > max bearing input 1787311185768494458
 
 HANDOFF 继续不做自引用 SHA；本节写入位于 receipt 明确排除的 nonbearing 路径。
 
-### 17.6 两刀 commit 计划（仅计划，未执行）
+### 17.6 提交前两刀计划（历史快照）
 
 **刀一：早批文档系统 lane**
 
