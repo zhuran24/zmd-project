@@ -1,16 +1,16 @@
 # 项目知识目录
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:f89128ca73b3e30ae4b0994bd2619715dbe6904e44f76b2b5b04e2e8c3d32a1b`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:e60cead0a5729937f7a56b17d64f5e26530bde73944412cef43672c268ea959c`。
 
 这里登记稳定 ID。claim 回答“我们知道什么”，decision 回答“谁改变了什么规则或门”，
 dossier 回答“原始证据包在哪里”，validity profile 回答“旧结论为何失效、怎样换代、能否复用”。目录不把历史材料自动升级为当前权威。
 
 ## 覆盖概览
 
-- claim：`95` 条，其中当前 / 开放 `74` 条，带 validity profile `35` 条。
-- decision：`10` 条。
-- backfill review：`57` 条，其中 current `45` 条。
+- claim：`96` 条，其中当前 / 开放 `74` 条，带 validity profile `37` 条。
+- decision：`11` 条。
+- backfill review：`58` 条，其中 current `45` 条。
 - dossier：`277` 个，其中 tracked `159` 个、local optional `118` 个、当前证据标记 `17` 个、人工精编 `97` 个。
 - `docs/research/` 的一级目录和一级 Markdown 已全登记；`.artifacts/` 只登记一级目录，其路径允许在轻量 checkout 中缺失。
 
@@ -33,7 +33,8 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 | [`CLAIM-BOUNDARY-GENERIC-OUTPUT-SLOTS-SATURATED`](#claim-boundary-generic-output-slots-saturated) | generic output 槽账 52=52，46 个边界 raw 口全部被迫激活 | `current` | `research_only` | `conditional_model_exclusion` |
 | [`CLAIM-BOUNDARY-LOADER-EXCLUDED-FROZEN-INSTANCE`](#claim-boundary-loader-excluded-frozen-instance) | 冻结实例中 storage-side boundary loader 被 141>139 格数账排除 | `current` | `rules_authority` | `conditional_model_exclusion` |
 | [`CLAIM-BUDGET-EXHAUSTION-IS-UNKNOWN-NOT-FIXED-POINT`](#claim-budget-exhaustion-is-unknown-not-fixed-point) | 预算耗尽必须返回 UNKNOWN，不能冒充固定点 | `current` | `research_authority` | `negative_research_result` |
-| [`CLAIM-CERTIFIED-EXISTENCE-OPEN`](#claim-certified-existence-open) | 现行语义下 whole-layout 认证级存在性仍为 OPEN | `open` | `research_only` | `research_ledger_state` |
+| [`CLAIM-CERTIFIED-EXISTENCE-OPEN`](#claim-certified-existence-open) | 现行语义下 whole-layout 认证级存在性仍为 OPEN | `superseded` | `research_only` | `research_ledger_state` |
+| [`CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823`](#claim-certified-existence-open-20260823) | 现行语义下 whole-layout 认证级存在性仍为 OPEN | `open` | `research_only` | `research_ledger_state` |
 | [`CLAIM-CERTIFIED-THEOREM-SCOPE`](#claim-certified-theorem-scope) | CERTIFIED 的命题边界是六谓词与 lex 最优 | `current` | `machine` | `defines_certified_scope` |
 | [`CLAIM-COLUMN-GENERATION-PHASE2-SCALE-ROUTE-NO-GO`](#claim-column-generation-phase2-scale-route-no-go) | Column Generation Phase 2 的登记设计未跨过规模与重构门槛 | `historical` | `research_only` | `negative_research_result` |
 | [`CLAIM-CONNECTIVITY-QUANTIFIER-PER-COMMODITY-SOURCE-SINK`](#claim-connectivity-quantifier-per-commodity-source-sink) | 游戏连通量词是逐 commodity 的双向 source/sink 可达 | `current` | `rules_authority` | `rules_semantics` |
@@ -126,6 +127,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 | [`DECISION-P1-2-I1-RANGE-A-20260821`](#decision-p1-2-i1-range-a-20260821) | I1 范围 A 与 allowlist 历史 id 处置 | `current` | `2026-08-21` | `scope_boundary` |
 | [`DECISION-P1-2-RECLOSE-20260806`](#decision-p1-2-reclose-20260806) | 严格语义修复后重新关闭 P1.2 | `current` | `2026-08-06` | `phase_gate` |
 | [`DECISION-P1-2-RECLOSE-20260821`](#decision-p1-2-reclose-20260821) | I1 common-mode 复验后重新关闭 P1.2 | `current` | `2026-08-21` | `phase_gate` |
+| [`DECISION-RESEARCH-THREE-ARM-ALL-APPROVED-20260823`](#decision-research-three-arm-all-approved-20260823) | 三臂点火、供给侧立项与代谢实施全批 | `current` | `2026-08-23` | `research_governance` |
 | [`DECISION-RULE-SYSTEM-REDESIGN-OPEN-20260813`](#decision-rule-system-redesign-open-20260813) | rule_system_redesign_20260807 线允许立项 | `current` | `2026-08-13` | `research_governance` |
 | [`DECISION-SEMANTICS-SPLIT-EXPERIMENT-FIRST-20260813`](#decision-semantics-split-experiment-first-20260813) | semantics 拆分走先实验后拍板路线 | `current` | `2026-08-13` | `research_governance` |
 
@@ -188,7 +190,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 | `DOSSIER-CLEANROOM-REDERIVATION-20260718-41375BBFE3` | [R- 价签精算交付包](<research/cleanroom_rederivation_20260718/25_rstar_pricetag_delivery_20260804/README.md>)<br>本交付包按 00ASK.md 完成九条充分限制的价签、前提集、撤退线和判定实验设计；authority=false，不登记任何界，账本不变。【已证明】 | [`CLAIM-BAND22-V0A-STRICT-HOLE-INCOMPATIBLE`](#claim-band22-v0a-strict-hole-incompatible) | — | [`REVIEW-20260811-BAND22-CLEANROOM-V0A-BATCH2`](#review-20260811-band22-cleanroom-v0a-batch2) |
 | `DOSSIER-FRONT-OFFSET-INCIDENT-20260718-2B25E2B21B` | [front offset 本地复验收据](<../.artifacts/front_offset_incident_20260718/history.json>)<br>事故修复批的本机可选日志与结构化收据。 | [`CLAIM-FRONT-OFFSET-PRE-0718-SUPERSEDED`](#claim-front-offset-pre-0718-superseded)<br>[`CLAIM-R1-1326-34-STRICT-UPPER-REVALIDATED`](#claim-r1-1326-34-strict-upper-revalidated) | — | [`REVIEW-20260811-FRONT-OFFSET-ARTIFACT-BATCH4`](#review-20260811-front-offset-artifact-batch4) |
 | `DOSSIER-FRONT-OFFSET-INCIDENT-20260718-7F16095D41` | [front offset 事故与历史重判](<research/front_offset_incident_20260718/00_incident_survey_and_fix_plan.md>)<br>旧 front 坐标重复偏移的根因、修复与历史结论有效性边界。 | [`CLAIM-24-LEVER-FRAMEWORK-EXHAUSTED-SUPERSEDED`](#claim-24-lever-framework-exhausted-superseded)<br>[`CLAIM-FRONT-OFFSET-DOUBLE-STEP-SEMANTICS-SUPERSEDED`](#claim-front-offset-double-step-semantics-superseded)<br>[`CLAIM-FRONT-OFFSET-HISTORICAL-REJUDGMENT-40`](#claim-front-offset-historical-rejudgment-40)<br>[`CLAIM-FRONT-OFFSET-PRE-0718-SUPERSEDED`](#claim-front-offset-pre-0718-superseded)<br>[`CLAIM-LEVER-VERDICTS-ARE-ITEM-AND-REVISION-BOUNDED`](#claim-lever-verdicts-are-item-and-revision-bounded)<br>[`CLAIM-R1-1326-34-STRICT-UPPER-REVALIDATED`](#claim-r1-1326-34-strict-upper-revalidated)<br>[`CLAIM-RAB-FCL-FRONT-DEPENDENT-PERFORMANCE-WITHDRAWN`](#claim-rab-fcl-front-dependent-performance-withdrawn)<br>[`CLAIM-ROUND45-CORRECTED-PROFILE-UNKNOWN-NOT-STRUCTURAL-WALL`](#claim-round45-corrected-profile-unknown-not-structural-wall)<br>[`CLAIM-SHARED-ENCODING-AGREEMENT-NOT-INDEPENDENT-VALIDATION`](#claim-shared-encoding-agreement-not-independent-validation) | — | [`REVIEW-20260811-FRONT-OFFSET-INCIDENT`](#review-20260811-front-offset-incident)<br>[`REVIEW-20260811-FRONT-OFFSET-INCIDENT-BATCH4`](#review-20260811-front-offset-incident-batch4) |
-| `DOSSIER-WITNESS-CONSTRUCTOR-20260717-5F04E123B3` | [whole-layout witness constructor 线](<research/witness_constructor_20260717/07_routing_aware/README.md>)<br>当前 tracked witness 构造与 routing-aware 尝试入口；没有登记成功 lower witness。 | [`CLAIM-CERTIFIED-EXISTENCE-OPEN`](#claim-certified-existence-open)<br>[`CLAIM-WITNESS-RESTRICTED-POLE-DOMAINS-INFEASIBLE-FULL-DOMAIN-OPEN`](#claim-witness-restricted-pole-domains-infeasible-full-domain-open) | — | [`REVIEW-20260811-WITNESS-CONSTRUCTOR`](#review-20260811-witness-constructor)<br>[`REVIEW-20260811-WITNESS-CONSTRUCTOR-BATCH4`](#review-20260811-witness-constructor-batch4) |
+| `DOSSIER-WITNESS-CONSTRUCTOR-20260717-5F04E123B3` | [whole-layout witness constructor 线](<research/witness_constructor_20260717/07_routing_aware/README.md>)<br>当前 tracked witness 构造与 routing-aware 尝试入口；没有登记成功 lower witness。 | [`CLAIM-CERTIFIED-EXISTENCE-OPEN`](#claim-certified-existence-open)<br>[`CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823`](#claim-certified-existence-open-20260823)<br>[`CLAIM-WITNESS-RESTRICTED-POLE-DOMAINS-INFEASIBLE-FULL-DOMAIN-OPEN`](#claim-witness-restricted-pole-domains-infeasible-full-domain-open) | [`DECISION-RESEARCH-THREE-ARM-ALL-APPROVED-20260823`](#decision-research-three-arm-all-approved-20260823) | [`REVIEW-20260811-WITNESS-CONSTRUCTOR`](#review-20260811-witness-constructor)<br>[`REVIEW-20260811-WITNESS-CONSTRUCTOR-BATCH4`](#review-20260811-witness-constructor-batch4)<br>[`REVIEW-20260823-WITNESS-CONSTRUCTOR-OWNER-UNLOCK`](#review-20260823-witness-constructor-owner-unlock) |
 | `DOSSIER-RAB-SEP-PROMOTION-20260716-CF6D536C85` | [01 — ①′ 第一段：front-free 必要性 soundness 审查（v2 修订版，2026-07-16，对抗验证完成）](<research/rab_sep_promotion_20260716/01_front_free_necessity_soundness_review.md>)<br>RAB/front-clear separator 的 soundness、telemetry、promotion 与后续失效历史；batch3 只提炼 raw-event 评价原则。 | [`CLAIM-RAB-FCL-FRONT-DEPENDENT-PERFORMANCE-WITHDRAWN`](#claim-rab-fcl-front-dependent-performance-withdrawn)<br>[`CLAIM-RAW-ELIGIBLE-EVENTS-REQUIRED-FOR-SEPARATION-EVALUATION`](#claim-raw-eligible-events-required-for-separation-evaluation) | — | [`REVIEW-20260811-RAB-SEP-PROMOTION-BATCH3`](#review-20260811-rab-sep-promotion-batch3)<br>[`REVIEW-20260811-RAB-SEP-PROMOTION-BATCH4`](#review-20260811-rab-sep-promotion-batch4) |
 | `DOSSIER-BATCH-CE-ATTACH-HOST-20260712-D4A08ECB0B` | [Batch C/E attach-host evidence line](<research/batch_ce_attach_host_20260712/01_batch_c_execution_plan_draft.md>)<br>Cut attach-host、prod-form mirror 和 fail-closed 修复证据；证明 consumer 接线边界，不授权 autonomous separation 或 production attach。 | [`CLAIM-TYPED-CUT-PIPELINE-CONSUMES-KNOWN-CUTS-NOT-DISCOVERS-THEM`](#claim-typed-cut-pipeline-consumes-known-cuts-not-discovers-them) | — | [`REVIEW-20260811-BATCH-CE-ATTACH-HOST`](#review-20260811-batch-ce-attach-host)<br>[`REVIEW-20260811-BATCH-CE-ATTACH-HOST-BATCH3`](#review-20260811-batch-ce-attach-host-batch3) |
 | `DOSSIER-P1-3A-ATTACH-POWER-ON-SPIKE-20260710-25E1F679CB` | [P1.3A attach 通电 spike 规格书（主会话亲写定稿，2026-07-10 夜）](<research/p1_3a_attach_power_on_spike_20260710/02_spike_evidence.md>)<br>约 10K synthetic redundant F5 的真实 step-8 通电与 overhead 证据；只覆盖工程接线，不覆盖 cut 科学效力。 | [`CLAIM-ATTACH-SPIKES-ENGINEERING-NOT-CUT-EFFICACY`](#claim-attach-spikes-engineering-not-cut-efficacy) | — | [`REVIEW-20260811-P1-3A-ATTACH-POWER-ON-BATCH3`](#review-20260811-p1-3a-attach-power-on-batch3) |
@@ -1244,7 +1246,7 @@ binding 层把每个 port slot 绑定为恰好一种商品；游戏语义允许 
 ### 现行语义下 whole-layout 认证级存在性仍为 OPEN
 
 - **Claim ID：** `CLAIM-CERTIFIED-EXISTENCE-OPEN`
-- **状态：** `open`
+- **状态：** `superseded`
 - **权威层：** `research_only`
 - **权威依据：** `research_only`
 - **表示角色：** `AUTHORITATIVE_CURRENT`
@@ -1265,7 +1267,54 @@ binding 层把每个 port slot 绑定为恰好一种商品；游戏语义允许 
 
 - **权威源：** data/solutions/exact_full_scale_status.json；docs/research/witness_constructor_20260717/07_routing_aware/README.md
 
+- **有效性事件：** `semantic_replacement`
+- **受影响层：** documentation；research_strategy
+- **判定依据：** owner_adjudication
+- **复用策略：** `historical_only`
+- **修复状态：** `not_applicable`
+- **时间作用域：** `design_version`
+- **有效性注：** 2026-08-23 owner 解除了该记录所含 binding↔routing 枚举截停；当前 OPEN 状态由 successor 接续。
+
 - **证据：** [data/solutions/exact_full_scale_status.json](<../data/solutions/exact_full_scale_status.json>)〔checked-in durable exact status〕；[docs/research/witness_constructor_20260717/07_routing_aware/README.md](<research/witness_constructor_20260717/07_routing_aware/README.md>)〔latest tracked witness-construction line〕
+
+<a id="claim-certified-existence-open-20260823"></a>
+
+### 现行语义下 whole-layout 认证级存在性仍为 OPEN
+
+- **Claim ID：** `CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823`
+- **状态：** `open`
+- **权威层：** `research_only`
+- **权威依据：** `research_only`
+- **表示角色：** `AUTHORITATIVE_CURRENT`
+- **权威作用：** `research_ledger_state`
+- **更新时间：** `2026-08-23`
+
+当前没有被账本接受的完整可行布局或 whole-layout witness。binding↔routing 枚举截停已于 2026-08-23 解除，供三臂判别的基线臂使用；在新 witness 通过当前验收链前，lower ledger 仍为空。
+
+- **适用范围：** six-predicate；whole-layout-witness；current-candidate-pool；three-arm-baseline
+
+- **成立前提：** witness 必须经过当前 HEAD/input-pinned 验收链；UNKNOWN、超时以及解除截停本身都没有可行或不可行语义
+
+- **直接后果：** 不得把 master feasible 写成整例 feasible；下界继续记为 L=absent；binding↔routing 枚举可供三臂判别的基线臂继续推进
+
+- **明确不推出：** 全问题不可行；不存在可行布局；上界 U 已可达；解除截停已经产生完整 witness 或三臂判词
+
+- **依赖 claim：** CLAIM-EMPTY-RECTANGLE-STRICT；CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818
+
+- **取代 claim：** CLAIM-CERTIFIED-EXISTENCE-OPEN
+
+- **权威源：** data/solutions/exact_full_scale_status.json；docs/research/witness_constructor_20260717/07_routing_aware/README.md；docs/research/witness_constructor_20260717/OWNER_AUTHORITY_COMPANION_20260823.md
+- **关联决定：** DECISION-RESEARCH-THREE-ARM-ALL-APPROVED-20260823
+
+- **有效性事件：** `semantic_replacement`
+- **受影响层：** documentation；research_strategy
+- **判定依据：** owner_adjudication
+- **复用策略：** `current_after_repair`
+- **修复状态：** `revalidated`
+- **时间作用域：** `design_version`
+- **有效性注：** successor 保留 whole-layout existence OPEN，并将 binding↔routing 枚举截停更新为 2026-08-23 已解除。
+
+- **证据：** [data/solutions/exact_full_scale_status.json](<../data/solutions/exact_full_scale_status.json>)〔checked-in durable exact status〕；[docs/research/witness_constructor_20260717/07_routing_aware/README.md](<research/witness_constructor_20260717/07_routing_aware/README.md>)〔latest tracked witness-construction line〕；[docs/research/witness_constructor_20260717/OWNER_AUTHORITY_COMPANION_20260823.md](<research/witness_constructor_20260717/OWNER_AUTHORITY_COMPANION_20260823.md>)〔owner ruling companion for the binding↔routing enumeration stop release〕
 
 <a id="claim-certified-theorem-scope"></a>
 
@@ -4747,6 +4796,29 @@ owner 在 I1 common-mode binding 独立复验、范围 A 守卫与锚点闭合�
 
 - **证据：** [data/review_gates/phase_1_2_spike_close.json](<../data/review_gates/phase_1_2_spike_close.json>)〔authority_change〕；[docs/research/common_mode_binding_reverify_20260820/OWNER_AUTHORITY_COMPANION_20260821.md](<research/common_mode_binding_reverify_20260820/OWNER_AUTHORITY_COMPANION_20260821.md>)〔owner authority source〕；[docs/research/p1_2_v99_close_kernel_sealing.md](<research/p1_2_v99_close_kernel_sealing.md>)〔tracked close-kernel anchor〕；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND1_20260820.md](<../../../../../../../home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND1_20260820.md>)〔external audit round1〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND2_20260820.md](<../../../../../../../home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND2_20260820.md>)〔external audit round2〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND3_20260820.md](<../../../../../../../home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND3_20260820.md>)〔external audit round3〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND4_20260820.md](<../../../../../../../home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND4_20260820.md>)〔external audit round4〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND5_20260820.md](<../../../../../../../home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND5_20260820.md>)〔external audit round5〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6_20260820.md](<../../../../../../../home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6_20260820.md>)〔external audit round6〕（仓外可选证据）；[/home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6B_20260820.md](<../../../../../../../home/zhuran24/zmd-pj/.artifacts/gpt_harvest_20260818/EXTERNAL_AUDIT_I1_ROUND6B_20260820.md>)〔external audit round6b〕（仓外可选证据）；[.artifacts/i1_round4_self_check_20260820/ACLOSE_SELF_CHECK_20260820.json](<../.artifacts/i1_round4_self_check_20260820/ACLOSE_SELF_CHECK_20260820.json>)〔initial ACLOSE receipt〕（工作区可选工件）；[.artifacts/i1_round4_self_check_20260820/ACLOSE_R6FIX_SELF_CHECK_20260820.json](<../.artifacts/i1_round4_self_check_20260820/ACLOSE_R6FIX_SELF_CHECK_20260820.json>)〔R6FIX receipt〕（工作区可选工件）；[.artifacts/i1_round4_self_check_20260820/ACLOSE_CLOSE_RECEIPT_20260821.json](<../.artifacts/i1_round4_self_check_20260820/ACLOSE_CLOSE_RECEIPT_20260821.json>)〔final re-close receipt〕（工作区可选工件）
 
+<a id="decision-research-three-arm-all-approved-20260823"></a>
+
+### 三臂点火、供给侧立项与代谢实施全批
+
+- **Decision ID：** `DECISION-RESEARCH-THREE-ARM-ALL-APPROVED-20260823`
+- **状态：** `current`
+- **登记角色：** `non_authorizing=true`
+- **权威作用：** `research_governance`
+- **决定人：** `zhuran24`
+- **决定日期：** `2026-08-23`
+- **外部决定 ID：** `owner-research-three-arm-all-approved-20260823`
+- **外部权威源：** `docs/research/witness_constructor_20260717/OWNER_AUTHORITY_COMPANION_20260823.md`
+
+owner 于 2026-08-23 对三臂判别点火、供给侧立项、代谢②③实施起步三项候裁作出全批裁决；其中解除 binding↔routing 枚举截停，供三臂判别的基线臂使用。
+
+- **适用范围：** research-charter；three-arm-discrimination；whole-layout-baseline；supply-side-universal-proposition；metabolism-implementation
+
+- **直接后果：** 三臂判别获准点火；binding↔routing 枚举截停解除并供基线臂使用；供给侧立项获准；代谢②③实施起步获准
+
+- **明确不推出：** 任何完整 witness、三臂判词、数学结论或认证结论已经形成；本登记批已逐项改动其他 tracked 截停、冻结或候批记录；任何 production promotion、release closure 或 CERTIFIED 发布
+
+- **证据：** [docs/research/witness_constructor_20260717/OWNER_AUTHORITY_COMPANION_20260823.md](<research/witness_constructor_20260717/OWNER_AUTHORITY_COMPANION_20260823.md>)〔owner authority companion〕
+
 <a id="decision-rule-system-redesign-open-20260813"></a>
 
 ### rule_system_redesign_20260807 线允许立项
@@ -5365,7 +5437,7 @@ owner 拍板认可 semantics 拆分「先实验后拍板」路线（按 fen5 核
 ### REVIEW-20260811-WITNESS-CONSTRUCTOR-BATCH4
 
 - **Dossier：** `DOSSIER-WITNESS-CONSTRUCTOR-20260717-5F04E123B3`
-- **状态 / 结果：** `current` / `claims_promoted`
+- **状态 / 结果：** `superseded` / `claims_promoted`
 - **审阅日 / 范围：** `2026-08-11` / `entry_and_references`
 - **提炼 claim：** CLAIM-CERTIFIED-EXISTENCE-OPEN；CLAIM-WITNESS-RESTRICTED-POLE-DOMAINS-INFEASIBLE-FULL-DOMAIN-OPEN
 - **未决项：** 全 pole domain 与其他 shelf topology 尚无 geometry_ready 结果，routing-aware whole-layout witness 仍缺失。
@@ -5479,6 +5551,18 @@ GPT Pro 浏览器只读审查复核了逐字归档身份、dossier intake、条�
 - **未决项：** 维护登记（已接受例外，不是待修项）：strong-status allowlist id 尾号 _295 不作坐标承诺；仅当下游开始把 id 尾号解释为坐标、或 SHA+size pin/语义元组核验规则变化时重新审查。；P1.2 proof gate 继续恰 1 issue：production 与 I1 的 pose-optional operation-map 过滤 parity 断言归后批，本次不得补逻辑。；checker 48 处零 mutation 覆盖、generic-output 重复守卫、token-lock 内鬼模型硬化、strict/closed-package typing 债、master_model 既存重复定义与 --refresh-dossiers 回归仍按既定后批处置。
 
 I1 re-close 收尾确认六轮外部审计经 R6B 收敛，owner 于 2026-08-21 批准范围 A、保留 clean-review 连胜并重新关闭 P1.2；Stage-B alias-use 逐处复核后重封，sealed-authority floor 绑定最终 benders_loop.py 字节。维护例外同步登记：allowlist id 尾号 _295 是历史命名、守卫实际位于 line 309，SHA+size 双 pin 不受影响，owner 永久接受且不要求重命名。
+
+<a id="review-20260823-witness-constructor-owner-unlock"></a>
+
+### REVIEW-20260823-WITNESS-CONSTRUCTOR-OWNER-UNLOCK
+
+- **Dossier：** `DOSSIER-WITNESS-CONSTRUCTOR-20260717-5F04E123B3`
+- **状态 / 结果：** `current` / `claims_promoted`
+- **审阅日 / 范围：** `2026-08-23` / `targeted_files`
+- **提炼 claim：** CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823；CLAIM-WITNESS-RESTRICTED-POLE-DOMAINS-INFEASIBLE-FULL-DOMAIN-OPEN
+- **未决项：** 三臂基线臂尚未形成完整 witness 或终局判词。；全 pole domain 与其他 shelf topology 尚无 geometry_ready 结果。
+
+记录 2026-08-23 owner 三项全批裁决对 witness 线的窄投影：binding↔routing 枚举截停解除，供三臂判别的基线臂使用；whole-layout witness 仍未取得，存在性继续 OPEN。
 
 ## 维护命令
 

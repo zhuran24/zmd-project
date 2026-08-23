@@ -504,7 +504,7 @@ devtools/document_governance_gate.py
 5. pull request、push 和周期 CI 只调用共享 runner；workflow 不复制 lane 命令。
 6. 同步更新 `DOC-INV-017`、`DOC-ADR-013` 所要求的指南、doctor 和 `devtools/tests/test_document_governance_gate.py`。
 7. 默认并发上限保持为 4；确需调整时必须给出资源依据和对抗回归。单条 landing 回归 lane 的 timeout 是 300 秒，不得以缩短预算掩盖低速机器上的完整事务。
-8. 新增或实质修改 `src/tests/test_document_system.py`、`src/tests/test_knowledge_docs.py` 或集中 slow registry 后，串行运行 manifest `test_timing_receipt.command`，按 call phase 的 8 秒阈值更新输入摘要、最大节点和 slow registry 处置。不得用整文件总耗时代替单项 call-time。
+8. 新增或实质修改 `src/tests/test_document_system.py`、`src/tests/test_knowledge_docs.py` 或集中 slow registry 后，串行运行 manifest `test_timing_receipt.command`，按 call phase 的 8 秒阈值更新输入摘要、最大节点和 slow registry 处置。exact-ID fixture 或 current-guidance regression 随 claim successor 更新时也按实质修改处理，手写 current 文档不得继续锚定 superseded ID。不得用整文件总耗时代替单项 call-time。
 9. 先单独运行目标 lane，再运行 `changed` profile，并确认 gate 的前后 Git-visible fingerprint 相同。
 
 治理门可以并行运行 lane，但不能自动生成、格式化或修复源树。需要写入的 render 操作必须在 gate 之前作为显式事务完成。并发与慢测实测边界由 `DOC-ADR-019` 固定。

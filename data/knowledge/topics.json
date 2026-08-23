@@ -10,6 +10,7 @@
         "CLAIM-BAND22-V0A-STRICT-HOLE-INCOMPATIBLE",
         "CLAIM-BOUNDARY-LOADER-EXCLUDED-FROZEN-INSTANCE",
         "CLAIM-CERTIFIED-EXISTENCE-OPEN",
+        "CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823",
         "CLAIM-CUT-FRAMEWORK-PRODUCTION-STATUS",
         "CLAIM-DURABLE-CERTIFIED-RESULT-ABSENT",
         "CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260822",
@@ -34,7 +35,7 @@
         "docs/项目说明/30_research_charter.md"
       ],
       "open_question_claim_ids": [
-        "CLAIM-CERTIFIED-EXISTENCE-OPEN"
+        "CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823"
       ],
       "tags": [
         "governance",
@@ -253,6 +254,7 @@
       "summary": "whole-layout existence、受限候选域、W0 反例与局部构造证据的可复用边界。",
       "claim_ids": [
         "CLAIM-CERTIFIED-EXISTENCE-OPEN",
+        "CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823",
         "CLAIM-SIX-PREDICATE-RESEARCH-LEDGER",
         "CLAIM-W0-ADJACENT-4X4-POWER-IMPOSSIBILITY-REFUTED",
         "CLAIM-W0-POWER-OBSTRUCTION-REQUIRES-DECLARED-HEIGHT-PURITY",
@@ -272,7 +274,7 @@
         "docs/VALIDITY_LEDGER.md"
       ],
       "open_question_claim_ids": [
-        "CLAIM-CERTIFIED-EXISTENCE-OPEN"
+        "CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823"
       ],
       "tags": [
         "lower-bound",

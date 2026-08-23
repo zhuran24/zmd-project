@@ -1564,6 +1564,10 @@ def test_current_guidance_surface_is_explicit_and_fresh() -> None:
     assert history_payload.contract["document_class"] == "historical_evidence"
     assert history_payload.contract["mutation"] == "immutable"
 
+    roadmap_text = (PROJECT_ROOT / "docs/项目说明/ROADMAP.md").read_text(encoding="utf-8")
+    assert "CLAIM-CERTIFIED-EXISTENCE-OPEN" not in roadmap_text
+    assert "whole-layout existence 开放项" in roadmap_text
+
     actual = (PROJECT_ROOT / "docs/GUIDANCE_INDEX.md").read_text(encoding="utf-8")
     assert actual == system.render_guidance_projection()
     assert "docs/项目说明/ROADMAP.md" in actual

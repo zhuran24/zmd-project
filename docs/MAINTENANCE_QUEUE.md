@@ -99,7 +99,7 @@
 | `info` | `DOC-AUDIT-DEPRECATED-KNOWLEDGE-REFERENCES` | `deprecated-reference-summary` | 扫描 108 份 current 手写文档，没有发现无语境的失效 claim 引用。 | `docsystem.intake`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-EPHEMERAL-EXPIRY` | `ephemeral-registry` | 当前没有登记中的临时文档。 | `docsystem.intake`<br>`docsystem.doctor` |
 | `info` | `DOC-AUDIT-LIVING-FRESHNESS` | `living-freshness-summary` | 按 review_policy 检查了 103 份 current 文档；Git 日期仅作为重审触发器。 | `docsystem.intake`<br>`docsystem.doctor` |
-| `info` | `DOC-AUDIT-OPEN-CLAIM-QUEUE` | `CLAIM-CERTIFIED-EXISTENCE-OPEN` | 现行语义下 whole-layout 认证级存在性仍为 OPEN | `knowledge.build`<br>`knowledge.check` |
+| `info` | `DOC-AUDIT-OPEN-CLAIM-QUEUE` | `CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823` | 现行语义下 whole-layout 认证级存在性仍为 OPEN | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-OPEN-CLAIM-QUEUE` | `CLAIM-GENERIC-CP-SAT-SEPARATION-IMPOSSIBILITY-OPEN` | 通用 CP-SAT 传播不能替代领域分离的正式命题仍开放 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-OPEN-CLAIM-QUEUE` | `CLAIM-P2-MIN-SIDE-UPPER-OPEN` | P2.0 的 min_side 上界仍未建立 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-PHASE-BOUNDARY-SURFACE` | `phase-boundary-inventory` | 阶段边界必须逐项处置 active workflow、语义未决项、长尾分诊、开放命题与临时材料；清单不自动授予 close。 | `docsystem.audit_deep`<br>`docsystem.gate_full` |
@@ -135,7 +135,6 @@
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260811-SMT-MT-PHASE1-BATCH4` | current review 保留 1 个未决项；重审触发：真实 inner 的 terminal mix 或 proof closure 发生实质变化时。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260811-SOLVER-RETHINK-BATCH3` | current review 保留 1 个未决项；重审触发：owner 正式立线、否决该架构，或 local artifact 迁入 tracked evidence 时。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260811-W0-POWER-COUNTEREXAMPLE-BATCH4` | current review 保留 1 个未决项；重审触发：纯装定理完成重证，或 27 号完整 routing/port 层获得独立复核时。 | `knowledge.build`<br>`knowledge.check` |
-| `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260811-WITNESS-CONSTRUCTOR-BATCH4` | current review 保留 1 个未决项；重审触发：出现 geometry_ready attempt、完整 witness，或 pole candidate inventory 实质变化时。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260812-GHOST-STRICT-FIX-BATCH5` | current review 保留 2 个未决项；重审触发：ghost occupancy、routing digest、blocked-port cut 通道、canonical empty-rectangle 语义或 owner reseal 边界变化时。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260812-P2-REFRESH-BATCH5` | current review 保留 2 个未决项；重审触发：P2.0 area ledger、OB6 条件、route-state 计数或本地 receipt provenance 发生变化时。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260812-SMM4-LOCAL-AUTHORITY-AVAILABILITY-BATCH5` | current review 保留 1 个未决项；重审触发：外部 authority root 可用、其 manifest/hash 变化，或六谓词 research ledger 的 authority 链被重开时。 | `knowledge.build`<br>`knowledge.check` |
@@ -143,6 +142,7 @@
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260815-PHASE-MINUS1-V2-LOCAL-EVIDENCE-REGISTRATION` | current review 保留 2 个未决项；重审触发：v2 顶层终态收据或最终 evidence manifest 形成、payload 路径或 admission hash 变化，或 dossier 进入 closure review 时。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260815-SOLVER-REASONING-OUTER-LOOP-GPT-PRO` | current review 保留 2 个未决项；重审触发：typed closure 决定 dossier 是否拆分，或 Phase -1 tracked 实验协议进入评审时。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260821-COMMON-MODE-BINDING-REVERIFY-RECLOSE` | current review 保留 3 个未决项；重审触发：production/I1 operation-map parity 断言进入后批、checker-wide mutation/typing/refresh-dossiers 任一后批启动，或任何消费者把 allowlist id 尾号当成坐标承诺或改变 SHA+size pin 语义时复审。 | `knowledge.build`<br>`knowledge.check` |
+| `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260823-WITNESS-CONSTRUCTOR-OWNER-UNLOCK` | current review 保留 2 个未决项；重审触发：基线臂形成完整 witness、三臂判词落地，或 witness 候选域与验收链发生实质变化时。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-SNAPSHOT-AGE` | `maintenance-snapshot` | 维护投影快照日期为 2026-08-15，距本次审计 0 天。 | `docsystem.render_maintenance`<br>`docsystem.audit` |
 | `info` | `DOC-AUDIT-TERMINOLOGY-COLLISION` | `terminology-summary` | 29 个 term 的 canonical label 与 alias 没有跨 ID 碰撞。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TOPIC-COVERAGE` | `topic-summary` | 13 个 topic 的 claim、term、entry 与 open-claim 坐标完整。 | `knowledge.build`<br>`knowledge.check` |

@@ -1,7 +1,7 @@
 # 稳定主题索引
 
 > 本页由 `data/knowledge/topics.json` 自动生成；禁止手工修改。
-> 账本审阅日：`2026-08-18`；源摘要：`sha256:f89128ca73b3e30ae4b0994bd2619715dbe6904e44f76b2b5b04e2e8c3d32a1b`。
+> 账本审阅日：`2026-08-18`；源摘要：`sha256:e60cead0a5729937f7a56b17d64f5e26530bde73944412cef43672c268ea959c`。
 
 主题是读取路径，不是新的 authority。一个 claim 可以出现在多个主题中；topic membership 只表示相关性，不改变 statement、scope 或 status。
 
@@ -9,13 +9,13 @@
 
 | Topic | 摘要 | Claims | Dossier labels | Open |
 |---|---|---:|---|---:|
-| [`TOPIC-AUTHORITY-AND-CURRENT-STATE`](#topic-authority-and-current-state) | 从 machine/owner authority、current ledger、研究方向与 OPEN 边界进入项目，不把证据存在误读为现态。 | 10 | p1_2-proof-chain | 1 |
+| [`TOPIC-AUTHORITY-AND-CURRENT-STATE`](#topic-authority-and-current-state) | 从 machine/owner authority、current ledger、研究方向与 OPEN 边界进入项目，不把证据存在误读为现态。 | 11 | p1_2-proof-chain | 1 |
 | [`TOPIC-CERTIFIED-SCOPE-AND-SEMANTICS`](#topic-certified-scope-and-semantics) | 六谓词、严格空地、model-stricter face 与 terminal/routing 作用域的当前边界。 | 13 | rules-semantics | 0 |
 | [`TOPIC-SIX-PREDICATE-UPPER-BOUND`](#topic-six-predicate-upper-bound) | R3/R4、membrane、zero-slack、SMM 与 SMM4 的结构引理、有限 band 与研究账本。 | 21 | upper-bound | 0 |
 | [`TOPIC-P2-THROUGHPUT`](#topic-p2-throughput) | P2.0 第七谓词下的流量、route-state、面积界、条件界、反例与未闭 min_side。 | 11 | p2-throughput | 1 |
 | [`TOPIC-SELECTION-SEPARATION-AND-CUTS`](#topic-selection-separation-and-cuts) | 区分候选发现、soundness 验证、主动 separation、模型前排除和 solver 消费，并保留 generic CP-SAT 不可能性仍 OPEN 的边界。 | 10 | cut-framework；separation-method；separation-telemetry；solver-architecture；solver-rethink | 1 |
 | [`TOPIC-ROUTING-TERMINALS-AND-MIXFLOW`](#topic-routing-terminals-and-mixflow) | 物理 port、front/access、source/destination 排他、storage box、mixflow 与 front-offset 历史修正。 | 16 | rules-semantics；p2-throughput | 0 |
-| [`TOPIC-WITNESS-AND-LOWER-BOUND`](#topic-witness-and-lower-bound) | whole-layout existence、受限候选域、W0 反例与局部构造证据的可复用边界。 | 5 | witness-lower-bound | 1 |
+| [`TOPIC-WITNESS-AND-LOWER-BOUND`](#topic-witness-and-lower-bound) | whole-layout existence、受限候选域、W0 反例与局部构造证据的可复用边界。 | 6 | witness-lower-bound | 1 |
 | [`TOPIC-SOLVER-EXPERIMENTS-AND-NO-GO`](#topic-solver-experiments-and-no-go) | 保留 cheap gate、fixture、资源/参数归因和路线撤回的具体 scope，避免方法家族级过度外推。 | 13 | solver-experiment | 0 |
 | [`TOPIC-FORMAL-VERIFICATION`](#topic-formal-verification) | PB/VeriPB band、共享编码 common-mode 风险与 proof-producing sidecar 的证据坐标。 | 5 | formal-verification | 0 |
 | [`TOPIC-DISCOVERY-METHODS`](#topic-discovery-methods) | 研究线立项、具名前沿与朴素基线，以及 zero-slack、pairwise closure 反例、独立验证和发现/验证拆分等可复用方法层。 | 6 | other；reasoning-system | 0 |
@@ -38,7 +38,8 @@
 |---|---|---|
 | [`CLAIM-BAND22-V0A-STRICT-HOLE-INCOMPATIBLE`](<CATALOG.md#claim-band22-v0a-strict-hole-incompatible>) | `current` | 交付版 band22 V0-A 骨架与 strict hole 不相容 |
 | [`CLAIM-BOUNDARY-LOADER-EXCLUDED-FROZEN-INSTANCE`](<CATALOG.md#claim-boundary-loader-excluded-frozen-instance>) | `current` | 冻结实例中 storage-side boundary loader 被 141>139 格数账排除 |
-| [`CLAIM-CERTIFIED-EXISTENCE-OPEN`](<CATALOG.md#claim-certified-existence-open>) | `open` | 现行语义下 whole-layout 认证级存在性仍为 OPEN |
+| [`CLAIM-CERTIFIED-EXISTENCE-OPEN`](<CATALOG.md#claim-certified-existence-open>) | `superseded` | 现行语义下 whole-layout 认证级存在性仍为 OPEN |
+| [`CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823`](<CATALOG.md#claim-certified-existence-open-20260823>) | `open` | 现行语义下 whole-layout 认证级存在性仍为 OPEN |
 | [`CLAIM-CUT-FRAMEWORK-PRODUCTION-STATUS`](<CATALOG.md#claim-cut-framework-production-status>) | `current` | cut framework 仍未获 production attach 授权 |
 | [`CLAIM-DURABLE-CERTIFIED-RESULT-ABSENT`](<CATALOG.md#claim-durable-certified-result-absent>) | `current` | checked-in durable CERTIFIED 结果当前不存在 |
 | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260822`](<CATALOG.md#claim-p2-throughput-research-ledger-20260822>) | `current` | P2.0 吞吐语义的当前独立条件账本 |
@@ -49,7 +50,7 @@
 
 ### Open questions
 
-- [`CLAIM-CERTIFIED-EXISTENCE-OPEN`](<CATALOG.md#claim-certified-existence-open>)
+- [`CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823`](<CATALOG.md#claim-certified-existence-open-20260823>)
 
 <a id="topic-certified-scope-and-semantics"></a>
 ## 认证作用域与规则语义
@@ -213,7 +214,8 @@
 
 | Claim | 状态 | 标题 |
 |---|---|---|
-| [`CLAIM-CERTIFIED-EXISTENCE-OPEN`](<CATALOG.md#claim-certified-existence-open>) | `open` | 现行语义下 whole-layout 认证级存在性仍为 OPEN |
+| [`CLAIM-CERTIFIED-EXISTENCE-OPEN`](<CATALOG.md#claim-certified-existence-open>) | `superseded` | 现行语义下 whole-layout 认证级存在性仍为 OPEN |
+| [`CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823`](<CATALOG.md#claim-certified-existence-open-20260823>) | `open` | 现行语义下 whole-layout 认证级存在性仍为 OPEN |
 | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>) | `superseded` | 六谓词 research ledger 为 U=(1188,18)、L=absent |
 | [`CLAIM-W0-ADJACENT-4X4-POWER-IMPOSSIBILITY-REFUTED`](<CATALOG.md#claim-w0-adjacent-4x4-power-impossibility-refuted>) | `refuted` | W0 相邻 4+4 宏族供电不可行定理已被坐标反例推翻 |
 | [`CLAIM-W0-POWER-OBSTRUCTION-REQUIRES-DECLARED-HEIGHT-PURITY`](<CATALOG.md#claim-w0-power-obstruction-requires-declared-height-purity>) | `current` | W0 供电阻塞证明只能在明示的模板到带高纯装前提下复用 |
@@ -221,7 +223,7 @@
 
 ### Open questions
 
-- [`CLAIM-CERTIFIED-EXISTENCE-OPEN`](<CATALOG.md#claim-certified-existence-open>)
+- [`CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823`](<CATALOG.md#claim-certified-existence-open-20260823>)
 
 <a id="topic-solver-experiments-and-no-go"></a>
 ## 求解器实验、预算与路线 NO-GO

@@ -1,7 +1,7 @@
 # 推理结论与知识回填账本
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:f89128ca73b3e30ae4b0994bd2619715dbe6904e44f76b2b5b04e2e8c3d32a1b`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:e60cead0a5729937f7a56b17d64f5e26530bde73944412cef43672c268ea959c`。
 
 本页把推理条件、操作效果、数学推导、选择/验证/消费机制与通用传播证据分开；历史结论为何失效、怎样换代和何时可复用则单列到 VALIDITY_LEDGER。
 `reasoning_profile` 描述操作效果，`derivation_profile` 描述证明角色、数学族和验证方式，`separation_profile` 描述候选来源、选择、验证、完备性和消费落点，`validity_profile` 描述反例、语义更正、实现失效、归因修正与重验；真正的关系图由 claim 的 `dependencies` 与 `supersedes` 连接。分类字段不会把 research-only 结论提升为规则、owner 决定或 production authority。
@@ -11,7 +11,7 @@
 - 带 `reasoning_profile` 的 claim：`83` 条。
 - 带 `derivation_profile` 的 claim：`50` 条。
 - 带 `separation_profile` 的 claim：`27` 条。
-- 带 `validity_profile` 的 claim：`35` 条；完整谱系见 [VALIDITY_LEDGER](VALIDITY_LEDGER.md)。
+- 带 `validity_profile` 的 claim：`37` 条；完整谱系见 [VALIDITY_LEDGER](VALIDITY_LEDGER.md)。
 - 已正式证明“通用传播不能完成分离”的 claim：`0` 条。
 - 只有实验性通用传播对照证据的 claim：`2` 条。
 - 因此，在本批已审材料中，尚不能把“领域策略有效”直接改写成“CP-SAT 通用传播原则上不能做到”。前者已有多种实例，后者仍需要明确的传播系统、搜索预算和不可分离证明。
@@ -231,6 +231,7 @@
 
 | Review | Dossier | 审阅范围 | 结果 | 提炼 claim | 未决项 |
 |---|---|---|---|---|---|
+| `REVIEW-20260823-WITNESS-CONSTRUCTOR-OWNER-UNLOCK` | [DOSSIER-WITNESS-CONSTRUCTOR-20260717-5F04E123B3](<research/witness_constructor_20260717/07_routing_aware/README.md>) | `targeted_files` | `claims_promoted` | [`CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823`](<CATALOG.md#claim-certified-existence-open-20260823>)<br>[`CLAIM-WITNESS-RESTRICTED-POLE-DOMAINS-INFEASIBLE-FULL-DOMAIN-OPEN`](<CATALOG.md#claim-witness-restricted-pole-domains-infeasible-full-domain-open>) | 三臂基线臂尚未形成完整 witness 或终局判词。<br>全 pole domain 与其他 shelf topology 尚无 geometry_ready 结果。 |
 | `REVIEW-20260821-COMMON-MODE-BINDING-REVERIFY-RECLOSE` | [DOSSIER-COMMON-MODE-BINDING-REVERIFY-20260820-0268E9394D](<research/common_mode_binding_reverify_20260820/README.md>) | `targeted_files` | `deferred` | — | 维护登记（已接受例外，不是待修项）：strong-status allowlist id 尾号 _295 不作坐标承诺；仅当下游开始把 id 尾号解释为坐标、或 SHA+size…<br>P1.2 proof gate 继续恰 1 issue：production 与 I1 的 pose-optional operation-map 过滤 parity 断言归后批…<br>checker 48 处零 mutation 覆盖、generic-output 重复守卫、token-lock 内鬼模型硬化、strict/closed-package typ… |
 | `REVIEW-20260815-SOLVER-REASONING-OUTER-LOOP-GPT-PRO` | [DOSSIER-SOLVER-REASONING-OUTER-LOOP-REVIEWS-20260815-D26B592E99](<research/solver_reasoning_outer_loop_reviews_20260815/README.md>) | `targeted_files` | `deferred` | — | 逐字归档与条件式约束登记是否在 typed closure 时拆成两个 dossier 尚未裁决。<br>语义可压缩性、接口可压缩性与构造可分解性仍是待实验的可证伪假设。 |
 | `REVIEW-20260815-PHASE-MINUS1-V2-LOCAL-EVIDENCE-REGISTRATION` | [DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-V2-20260815-96E16B17C8](<../.artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815>) | `availability_and_provenance` | `deferred` | — | 高预算 v2 运行仍处于 active 状态；当前 portability anchor 是启动时 CORPUS_ADMISSION 收据，不是终态 evidence manif…<br>原始 journals、logs 与 slice/deep receipts 保持 local_optional；轻量 checkout 可缺失。 |
@@ -238,7 +239,6 @@
 | `REVIEW-20260812-SMM4-LOCAL-AUTHORITY-AVAILABILITY-BATCH5` | [DOSSIER-TRACK-B-B1-SIDEWISE-MARKED-MEMBRANE-FRESH-AUTHORITY-2026-2C7C3FCD74](<../.artifacts/track_b_b1_sidewise_marked_membrane_fresh_authority_20260727>) | `availability_and_provenance` | `deferred` | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>) | 需在拥有外部 root 的 checkout 中按 tracked hash/manifest 复核 payload 完整性。 |
 | `REVIEW-20260812-P2-REFRESH-BATCH5` | [DOSSIER-P2-0-REFRESH-20260805-627C980F03](<../.artifacts/p2_0_refresh_20260805/AREA_BOUND_UPGRADE_PLAN.md>) | `targeted_files` | `existing_claims_confirmed` | [`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER`](<CATALOG.md#claim-p2-throughput-research-ledger>) | 本 review 没有逐份复跑本地脚本、receipt 与外部求解器交叉验证。<br>AREA_BOUND_UPGRADE_PLAN 是升格前计划，不得覆盖后续 tracked theorem report 的修订口径。 |
 | `REVIEW-20260812-GHOST-STRICT-FIX-BATCH5` | [DOSSIER-GHOST-STRICT-FIX-20260805-0FBA53DB19](<../.artifacts/ghost_strict_fix_20260805/mutation_manifests_20260806/SUMMARY.md>) | `targeted_files` | `existing_claims_confirmed` | [`CLAIM-EMPTY-RECTANGLE-STRICT`](<CATALOG.md#claim-empty-rectangle-strict>) | M11 的第二次 occupancy digest 比较与 M12 的 owner 身份增量语义在该 mutation batch 中仍是预期 MISSED。<br>本 review 未把本地测试绿灯提升为新的 owner 或 production authority。 |
-| `REVIEW-20260811-WITNESS-CONSTRUCTOR-BATCH4` | [DOSSIER-WITNESS-CONSTRUCTOR-20260717-5F04E123B3](<research/witness_constructor_20260717/07_routing_aware/README.md>) | `entry_and_references` | `claims_promoted` | [`CLAIM-CERTIFIED-EXISTENCE-OPEN`](<CATALOG.md#claim-certified-existence-open>)<br>[`CLAIM-WITNESS-RESTRICTED-POLE-DOMAINS-INFEASIBLE-FULL-DOMAIN-OPEN`](<CATALOG.md#claim-witness-restricted-pole-domains-infeasible-full-domain-open>) | 全 pole domain 与其他 shelf topology 尚无 geometry_ready 结果，routing-aware whole-layout witness… |
 | `REVIEW-20260811-W0-POWER-COUNTEREXAMPLE-BATCH4` | [DOSSIER-W0-FRONT-AWARE-20260803-425794297E](<research/w0_front_aware_20260803/evidence/README.md>) | `targeted_files` | `claims_promoted` | [`CLAIM-W0-ADJACENT-4X4-POWER-IMPOSSIBILITY-REFUTED`](<CATALOG.md#claim-w0-adjacent-4x4-power-impossibility-refuted>)<br>[`CLAIM-W0-POWER-OBSTRUCTION-REQUIRES-DECLARED-HEIGHT-PURITY`](<CATALOG.md#claim-w0-power-obstruction-requires-declared-height-purity>) | 纯装家族的收窄版不可行定理尚未在账本中重新证明。 |
 | `REVIEW-20260811-SOLVER-RETHINK-BATCH3` | [DOSSIER-SOLVER-RETHINK-20260808-47BE0A3C3A](<../.artifacts/solver_rethink_20260808/DESIGN_DOC_v2.md>) | `targeted_files` | `claims_promoted` | [`CLAIM-FORWARD-COMPLETENESS-RELATIVE-TO-DECLARED-FRAGMENT`](<CATALOG.md#claim-forward-completeness-relative-to-declared-fragment>)<br>[`CLAIM-GENERIC-CP-SAT-SEPARATION-IMPOSSIBILITY-OPEN`](<CATALOG.md#claim-generic-cp-sat-separation-impossibility-open>)<br>[`CLAIM-SOLVER-RETHINK-G03-LACKS-SEPARATION-ORACLE`](<CATALOG.md#claim-solver-rethink-g03-lacks-separation-oracle>)<br>[`CLAIM-SOLVER-RETHINK-PHASE1-OMITS-CONSTRUCTION-HALF`](<CATALOG.md#claim-solver-rethink-phase1-omits-construction-half>)<br>[`CLAIM-BUDGET-EXHAUSTION-IS-UNKNOWN-NOT-FIXED-POINT`](<CATALOG.md#claim-budget-exhaustion-is-unknown-not-fixed-point>) | 该 local-optional 包的 DECISION_PACKAGE、内部 refute 与成本估计未在本 review 全量逐项回填。 |
 | `REVIEW-20260811-SMT-MT-PHASE1-BATCH4` | [DOSSIER-SMT-MT-OUTER-PRUNING-PHASE1-20260521-DF50598CC0](<research/smt_mt_outer_pruning_phase1_20260521/README.md>) | `entry_and_references` | `claims_promoted` | [`CLAIM-SMT-MT-SYNTHETIC-GO-NOT-TRANSFERABLE-TO-REAL-INNER`](<CATALOG.md#claim-smt-mt-synthetic-go-not-transferable-to-real-inner>) | outer pruning 是否在更高 INFEASIBLE 产率的 inner 上达到有效比例仍未验证。 |

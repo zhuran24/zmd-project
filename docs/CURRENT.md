@@ -2,7 +2,7 @@
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
 > 机器状态从冻结规则、义务、gate 与 exact-status 文件直接读取；研究结论从稳定 ID 账本投影。
-> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:f89128ca73b3e30ae4b0994bd2619715dbe6904e44f76b2b5b04e2e8c3d32a1b`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:e60cead0a5729937f7a56b17d64f5e26530bde73944412cef43672c268ea959c`。
 
 ## 权威边界
 
@@ -342,29 +342,40 @@ Predicate 5 的 connectivity_quantifier 是：逐 commodity，每个 SINK front 
 
 ### 现行语义下 whole-layout 认证级存在性仍为 OPEN
 
-- **Claim ID：** `CLAIM-CERTIFIED-EXISTENCE-OPEN`
+- **Claim ID：** `CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823`
 - **状态：** `open`
 - **权威层：** `research_only`
 - **权威依据：** `research_only`
 - **表示角色：** `AUTHORITATIVE_CURRENT`
 - **权威作用：** `research_ledger_state`
-- **更新时间：** `2026-08-11`
+- **更新时间：** `2026-08-23`
 
-当前没有被账本接受的完整可行布局或 whole-layout witness。现行池上的 master incumbent 与被 owner 截停的 binding↔routing 枚举都不足以建立认证级存在性，因此 lower ledger 仍为空。
+当前没有被账本接受的完整可行布局或 whole-layout witness。binding↔routing 枚举截停已于 2026-08-23 解除，供三臂判别的基线臂使用；在新 witness 通过当前验收链前，lower ledger 仍为空。
 
-- **适用范围：** six-predicate；whole-layout-witness；current-candidate-pool
+- **适用范围：** six-predicate；whole-layout-witness；current-candidate-pool；three-arm-baseline
 
-- **成立前提：** witness 必须经过当前 HEAD/input-pinned 验收链；UNKNOWN、超时与 owner 截停没有可行或不可行语义
+- **成立前提：** witness 必须经过当前 HEAD/input-pinned 验收链；UNKNOWN、超时以及解除截停本身都没有可行或不可行语义
 
-- **直接后果：** 不得把 master feasible 写成整例 feasible；下界继续记为 L=absent
+- **直接后果：** 不得把 master feasible 写成整例 feasible；下界继续记为 L=absent；binding↔routing 枚举可供三臂判别的基线臂继续推进
 
-- **明确不推出：** 全问题不可行；不存在可行布局；上界 U 已可达
+- **明确不推出：** 全问题不可行；不存在可行布局；上界 U 已可达；解除截停已经产生完整 witness 或三臂判词
 
-- **依赖 claim：** CLAIM-EMPTY-RECTANGLE-STRICT；CLAIM-SIX-PREDICATE-RESEARCH-LEDGER
+- **依赖 claim：** CLAIM-EMPTY-RECTANGLE-STRICT；CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818
 
-- **权威源：** data/solutions/exact_full_scale_status.json；docs/research/witness_constructor_20260717/07_routing_aware/README.md
+- **取代 claim：** CLAIM-CERTIFIED-EXISTENCE-OPEN
 
-- **证据：** [data/solutions/exact_full_scale_status.json](<../data/solutions/exact_full_scale_status.json>)〔checked-in durable exact status〕；[docs/research/witness_constructor_20260717/07_routing_aware/README.md](<research/witness_constructor_20260717/07_routing_aware/README.md>)〔latest tracked witness-construction line〕
+- **权威源：** data/solutions/exact_full_scale_status.json；docs/research/witness_constructor_20260717/07_routing_aware/README.md；docs/research/witness_constructor_20260717/OWNER_AUTHORITY_COMPANION_20260823.md
+- **关联决定：** DECISION-RESEARCH-THREE-ARM-ALL-APPROVED-20260823
+
+- **有效性事件：** `semantic_replacement`
+- **受影响层：** documentation；research_strategy
+- **判定依据：** owner_adjudication
+- **复用策略：** `current_after_repair`
+- **修复状态：** `revalidated`
+- **时间作用域：** `design_version`
+- **有效性注：** successor 保留 whole-layout existence OPEN，并将 binding↔routing 枚举截停更新为 2026-08-23 已解除。
+
+- **证据：** [data/solutions/exact_full_scale_status.json](<../data/solutions/exact_full_scale_status.json>)〔checked-in durable exact status〕；[docs/research/witness_constructor_20260717/07_routing_aware/README.md](<research/witness_constructor_20260717/07_routing_aware/README.md>)〔latest tracked witness-construction line〕；[docs/research/witness_constructor_20260717/OWNER_AUTHORITY_COMPANION_20260823.md](<research/witness_constructor_20260717/OWNER_AUTHORITY_COMPANION_20260823.md>)〔owner ruling companion for the binding↔routing enumeration stop release〕
 
 ### checked-in durable CERTIFIED 结果当前不存在
 

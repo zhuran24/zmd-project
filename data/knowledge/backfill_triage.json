@@ -273,11 +273,11 @@
       ],
       "rationale": "这些 W0/witness 本地探针与交付包属于构造证据长尾；whole-layout existence 仍 OPEN，局部可行/不可行不能外推。",
       "related_claim_ids": [
-        "CLAIM-CERTIFIED-EXISTENCE-OPEN",
+        "CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823",
         "CLAIM-W0-POWER-OBSTRUCTION-REQUIRES-DECLARED-HEIGHT-PURITY"
       ],
       "representative_review_ids": [
-        "REVIEW-20260811-WITNESS-CONSTRUCTOR-BATCH4",
+        "REVIEW-20260823-WITNESS-CONSTRUCTOR-OWNER-UNLOCK",
         "REVIEW-20260811-W0-POWER-COUNTEREXAMPLE-BATCH4"
       ],
       "reopen_triggers": [
@@ -480,11 +480,11 @@
       ],
       "rationale": "这些 tracked 构造、smoke、W0 与证据合同材料属于下界/见证长尾；whole-layout existence 仍 OPEN，已审 witness constructor 只覆盖明确列出的候选域与结果。",
       "related_claim_ids": [
-        "CLAIM-CERTIFIED-EXISTENCE-OPEN",
+        "CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823",
         "CLAIM-WITNESS-RESTRICTED-POLE-DOMAINS-INFEASIBLE-FULL-DOMAIN-OPEN"
       ],
       "representative_review_ids": [
-        "REVIEW-20260811-WITNESS-CONSTRUCTOR-BATCH4",
+        "REVIEW-20260823-WITNESS-CONSTRUCTOR-OWNER-UNLOCK",
         "REVIEW-20260811-W0-POWER-COUNTEREXAMPLE-BATCH4"
       ],
       "reopen_triggers": [

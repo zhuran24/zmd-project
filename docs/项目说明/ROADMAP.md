@@ -14,7 +14,7 @@
 - **前提：** canonical rules、命题 scope 与 terminal validator 保持显式一致。
 - **退出证据：** 满足 `PROJECT_LOCK.md` 的 proof-bearing terminal artifact，或形成新的 scoped claim 明确关闭更小问题。
 - **非目标：** research witness、局部 antecedent 或 solver FEASIBLE 不自动等于 production `CERTIFIED`。
-- **坐标：** [`CLAIM-CERTIFIED-EXISTENCE-OPEN`](../OPEN_QUESTIONS.md#claim-certified-existence-open)、[witness / lower-bound topic](../TOPIC_INDEX.md)。
+- **坐标：** [whole-layout existence 开放项](../OPEN_QUESTIONS.md)、[witness / lower-bound topic](../TOPIC_INDEX.md)。
 
 ## 工作线 B：cut framework 的 production promotion
 

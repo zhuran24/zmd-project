@@ -109,7 +109,7 @@ def test_open_questions_projection_is_exact_and_deduplicated() -> None:
     page = (PROJECT_ROOT / "docs/OPEN_QUESTIONS.md").read_text(encoding="utf-8")
 
     assert open_claim_ids == [
-        "CLAIM-CERTIFIED-EXISTENCE-OPEN",
+        "CLAIM-CERTIFIED-EXISTENCE-OPEN-20260823",
         "CLAIM-GENERIC-CP-SAT-SEPARATION-IMPOSSIBILITY-OPEN",
         "CLAIM-P2-MIN-SIDE-UPPER-OPEN",
     ]
