@@ -232,6 +232,49 @@
       ]
     },
     {
+      "id": "TERM-NAMED-FRONTIER",
+      "canonical_label": "具名前沿",
+      "aliases": [
+        "named frontier"
+      ],
+      "definition": "一条研究线明确承诺推动的具体边界或账本坐标，必须指出推进哪一侧、相对于哪个当前值。",
+      "distinctions": [
+        "不要把方法新颖度、文档完成或研究机器改良本身当成前沿移动。"
+      ],
+      "related_claim_ids": [
+        "CLAIM-RESEARCH-LINE-FRONTIER-BASELINE-EXIT-DISCIPLINE"
+      ],
+      "source_paths": [
+        "docs/项目说明/30_research_charter.md"
+      ],
+      "tags": [
+        "research-governance",
+        "research-method"
+      ]
+    },
+    {
+      "id": "TERM-NAIVE-BASELINE",
+      "canonical_label": "朴素基线",
+      "aliases": [
+        "同预算直接推进基线"
+      ],
+      "definition": "在同一具名前沿与同一预算下，不增加新方法而直接推进该前沿的对照路线。",
+      "distinctions": [
+        "两条精巧路线彼此比较，不能替代与朴素基线的同场比较。"
+      ],
+      "related_claim_ids": [
+        "CLAIM-RESEARCH-LINE-FRONTIER-BASELINE-EXIT-DISCIPLINE"
+      ],
+      "source_paths": [
+        "docs/项目说明/30_research_charter.md"
+      ],
+      "tags": [
+        "baseline",
+        "research-governance",
+        "research-method"
+      ]
+    },
+    {
       "id": "TERM-STRICT-EMPTY-RECTANGLE",
       "canonical_label": "strict empty rectangle",
       "aliases": [

@@ -1,14 +1,14 @@
 # 推理结论与知识回填账本
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:2720224c8cc41d4abfd1a1a30adf5c380a40c4458918601ced4695350f0983a8`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:f89128ca73b3e30ae4b0994bd2619715dbe6904e44f76b2b5b04e2e8c3d32a1b`。
 
 本页把推理条件、操作效果、数学推导、选择/验证/消费机制与通用传播证据分开；历史结论为何失效、怎样换代和何时可复用则单列到 VALIDITY_LEDGER。
 `reasoning_profile` 描述操作效果，`derivation_profile` 描述证明角色、数学族和验证方式，`separation_profile` 描述候选来源、选择、验证、完备性和消费落点，`validity_profile` 描述反例、语义更正、实现失效、归因修正与重验；真正的关系图由 claim 的 `dependencies` 与 `supersedes` 连接。分类字段不会把 research-only 结论提升为规则、owner 决定或 production authority。
 
 ## 当前可回答的问题
 
-- 带 `reasoning_profile` 的 claim：`82` 条。
+- 带 `reasoning_profile` 的 claim：`83` 条。
 - 带 `derivation_profile` 的 claim：`50` 条。
 - 带 `separation_profile` 的 claim：`27` 条。
 - 带 `validity_profile` 的 claim：`35` 条；完整谱系见 [VALIDITY_LEDGER](VALIDITY_LEDGER.md)。
@@ -25,12 +25,12 @@
 
 ## 操作分类分布
 
-- **条件处置：** `conditional`=5；`discharged`=37；`inconclusive`=6；`method_only`=7；`refuted`=6；`scope_shifted`=21
-- **操作效果：** `bound_tightening`=15；`candidate_pruning`=25；`constraint_selection`=7；`constraint_strengthening`=22；`counterexample`=7；`discovery_method`=11；`experiment_boundary`=24；`pre_model_exclusion`=8；`scope_boundary`=37；`semantic_partition`=5；`semantic_permission`=1
-- **一般性：** `frozen_instance`=36；`game_semantics`=4；`model_domain`=13；`parameterized_family`=9；`research_process`=20
-- **solver 关系：** `candidate_filter`=27；`experimental_cut`=8；`model_constraint`=13；`not_applicable`=22；`pre_model_reduction`=12
-- **通用传播不可替代证据：** `experimental_only`=2；`none`=80
-- **发现方式：** `adversarial_review`=58；`formal_proof`=33；`incident_review`=11；`owner_adjudication`=12；`solver_experiment`=22；`systematic_rules_audit`=15；`targeted_derivation`=30；`zero_slack_audit`=9
+- **条件处置：** `conditional`=5；`discharged`=37；`inconclusive`=6；`method_only`=8；`refuted`=6；`scope_shifted`=21
+- **操作效果：** `bound_tightening`=15；`candidate_pruning`=25；`constraint_selection`=8；`constraint_strengthening`=22；`counterexample`=7；`discovery_method`=12；`experiment_boundary`=25；`pre_model_exclusion`=8；`scope_boundary`=37；`semantic_partition`=5；`semantic_permission`=1
+- **一般性：** `frozen_instance`=36；`game_semantics`=4；`model_domain`=13；`parameterized_family`=9；`research_process`=21
+- **solver 关系：** `candidate_filter`=27；`experimental_cut`=8；`model_constraint`=13；`not_applicable`=23；`pre_model_reduction`=12
+- **通用传播不可替代证据：** `experimental_only`=2；`none`=81
+- **发现方式：** `adversarial_review`=58；`formal_proof`=33；`incident_review`=11；`owner_adjudication`=13；`solver_experiment`=22；`systematic_rules_audit`=15；`targeted_derivation`=30；`zero_slack_audit`=9
 
 ## 推导结构分布
 
@@ -110,6 +110,7 @@
 | [`CLAIM-RAB-FCL-FRONT-DEPENDENT-PERFORMANCE-WITHDRAWN`](<CATALOG.md#claim-rab-fcl-front-dependent-performance-withdrawn>) | `current` | `scope_shifted` | `experiment_boundary`<br>`scope_boundary` | `research_process` | `not_applicable` | `none` |
 | [`CLAIM-RATE-LEMMA-CONDITIONAL-PROFILE`](<CATALOG.md#claim-rate-lemma-conditional-profile>) | `current` | `conditional` | `candidate_pruning`<br>`constraint_strengthening` | `model_domain` | `pre_model_reduction` | `none` |
 | [`CLAIM-RAW-ELIGIBLE-EVENTS-REQUIRED-FOR-SEPARATION-EVALUATION`](<CATALOG.md#claim-raw-eligible-events-required-for-separation-evaluation>) | `current` | `method_only` | `discovery_method`<br>`experiment_boundary` | `research_process` | `experimental_cut` | `none` |
+| [`CLAIM-RESEARCH-LINE-FRONTIER-BASELINE-EXIT-DISCIPLINE`](<CATALOG.md#claim-research-line-frontier-baseline-exit-discipline>) | `current` | `method_only` | `constraint_selection`<br>`discovery_method`<br>`experiment_boundary` | `research_process` | `not_applicable` | `none` |
 | [`CLAIM-ROUND45-CORRECTED-PROFILE-UNKNOWN-NOT-STRUCTURAL-WALL`](<CATALOG.md#claim-round45-corrected-profile-unknown-not-structural-wall>) | `current` | `inconclusive` | `experiment_boundary`<br>`scope_boundary` | `frozen_instance` | `model_constraint` | `none` |
 | [`CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT`](<CATALOG.md#claim-routing-reverification-extra-strict>) | `superseded` | `scope_shifted` | `constraint_strengthening`<br>`scope_boundary` | `model_domain` | `model_constraint` | `none` |
 | [`CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT-BOUNDARY`](<CATALOG.md#claim-routing-reverification-extra-strict-boundary>) | `current` | `scope_shifted` | `constraint_strengthening`<br>`scope_boundary` | `model_domain` | `model_constraint` | `none` |

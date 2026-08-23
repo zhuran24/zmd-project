@@ -1,7 +1,7 @@
 # 稳定主题索引
 
 > 本页由 `data/knowledge/topics.json` 自动生成；禁止手工修改。
-> 账本审阅日：`2026-08-18`；源摘要：`sha256:2720224c8cc41d4abfd1a1a30adf5c380a40c4458918601ced4695350f0983a8`。
+> 账本审阅日：`2026-08-18`；源摘要：`sha256:f89128ca73b3e30ae4b0994bd2619715dbe6904e44f76b2b5b04e2e8c3d32a1b`。
 
 主题是读取路径，不是新的 authority。一个 claim 可以出现在多个主题中；topic membership 只表示相关性，不改变 statement、scope 或 status。
 
@@ -9,7 +9,7 @@
 
 | Topic | 摘要 | Claims | Dossier labels | Open |
 |---|---|---:|---|---:|
-| [`TOPIC-AUTHORITY-AND-CURRENT-STATE`](#topic-authority-and-current-state) | 从 machine/owner authority、current ledger 与 OPEN 边界进入项目，不把证据存在误读为现态。 | 9 | p1_2-proof-chain | 1 |
+| [`TOPIC-AUTHORITY-AND-CURRENT-STATE`](#topic-authority-and-current-state) | 从 machine/owner authority、current ledger、研究方向与 OPEN 边界进入项目，不把证据存在误读为现态。 | 10 | p1_2-proof-chain | 1 |
 | [`TOPIC-CERTIFIED-SCOPE-AND-SEMANTICS`](#topic-certified-scope-and-semantics) | 六谓词、严格空地、model-stricter face 与 terminal/routing 作用域的当前边界。 | 13 | rules-semantics | 0 |
 | [`TOPIC-SIX-PREDICATE-UPPER-BOUND`](#topic-six-predicate-upper-bound) | R3/R4、membrane、zero-slack、SMM 与 SMM4 的结构引理、有限 band 与研究账本。 | 21 | upper-bound | 0 |
 | [`TOPIC-P2-THROUGHPUT`](#topic-p2-throughput) | P2.0 第七谓词下的流量、route-state、面积界、条件界、反例与未闭 min_side。 | 11 | p2-throughput | 1 |
@@ -18,7 +18,7 @@
 | [`TOPIC-WITNESS-AND-LOWER-BOUND`](#topic-witness-and-lower-bound) | whole-layout existence、受限候选域、W0 反例与局部构造证据的可复用边界。 | 5 | witness-lower-bound | 1 |
 | [`TOPIC-SOLVER-EXPERIMENTS-AND-NO-GO`](#topic-solver-experiments-and-no-go) | 保留 cheap gate、fixture、资源/参数归因和路线撤回的具体 scope，避免方法家族级过度外推。 | 13 | solver-experiment | 0 |
 | [`TOPIC-FORMAL-VERIFICATION`](#topic-formal-verification) | PB/VeriPB band、共享编码 common-mode 风险与 proof-producing sidecar 的证据坐标。 | 5 | formal-verification | 0 |
-| [`TOPIC-DISCOVERY-METHODS`](#topic-discovery-methods) | zero-slack、pairwise closure 反例、独立验证与发现/验证拆分等可复用方法层。 | 5 | other；reasoning-system | 0 |
+| [`TOPIC-DISCOVERY-METHODS`](#topic-discovery-methods) | 研究线立项、具名前沿与朴素基线，以及 zero-slack、pairwise closure 反例、独立验证和发现/验证拆分等可复用方法层。 | 6 | other；reasoning-system | 0 |
 | [`TOPIC-HISTORICAL-VALIDITY`](#topic-historical-validity) | 统一查询 refutation、semantic replacement、scope correction、implementation/experiment invalidation、route retirement 与 revalid… | 34 | other | 0 |
 | [`TOPIC-DOCUMENTATION-GOVERNANCE`](#topic-documentation-governance) | 文档类型、继承 policy、current review、长尾 triage、生成页和 framework-core 自维护入口。 | 0 | documentation-governance | 0 |
 | [`TOPIC-INDUSTRIAL-DELIVERY`](#topic-industrial-delivery) | 把蓝图导出、manifest、local artifact 与 release authority 分开，供追溯而不抬升语义。 | 0 | industrial-delivery | 0 |
@@ -27,10 +27,10 @@
 ## 权威与当前状态
 
 - **Topic ID：** `TOPIC-AUTHORITY-AND-CURRENT-STATE`
-- **摘要：** 从 machine/owner authority、current ledger 与 OPEN 边界进入项目，不把证据存在误读为现态。
+- **摘要：** 从 machine/owner authority、current ledger、研究方向与 OPEN 边界进入项目，不把证据存在误读为现态。
 - **Dossier topic labels：** p1_2-proof-chain
 - **术语坐标：** [`TERM-AUTHORITY`](<TERMINOLOGY.md#term-authority>)；[`TERM-EVIDENCE`](<TERMINOLOGY.md#term-evidence>)；[`TERM-CURRENT`](<TERMINOLOGY.md#term-current>)；[`TERM-CERTIFIED`](<TERMINOLOGY.md#term-certified>)；[`TERM-RESEARCH-UPPER-LEDGER`](<TERMINOLOGY.md#term-research-upper-ledger>)
-- **入口：** [docs/CURRENT.md](<CURRENT.md>)；[docs/START_HERE.md](<START_HERE.md>)
+- **入口：** [docs/CURRENT.md](<CURRENT.md>)；[docs/START_HERE.md](<START_HERE.md>)；[docs/项目说明/30_research_charter.md](<项目说明/30_research_charter.md>)
 
 ### Claims
 
@@ -45,6 +45,7 @@
 | [`CLAIM-R4-BOUNDARY-23-23-FULL-SPAN-EXCLUSION`](<CATALOG.md#claim-r4-boundary-23-23-full-span-exclusion>) | `current` | 46 个 boundary bodies 强制 23+23，并排除 70 格 full-span hole |
 | [`CLAIM-R4-MARKED-INCIDENCE-TOTAL-110`](<CATALOG.md#claim-r4-marked-incidence-total-110>) | `current` | R4 marked-incidence census 的总数为 110 |
 | [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818`](<CATALOG.md#claim-six-predicate-research-ledger-20260818>) | `current` | 六谓词 research 条件上界收紧为 U=(1170,30) |
+| [`CLAIM-RESEARCH-LINE-FRONTIER-BASELINE-EXIT-DISCIPLINE`](<CATALOG.md#claim-research-line-frontier-baseline-exit-discipline>) | `current` | 研究线立项与完成必须绑定具名前沿、朴素基线和后继变化 |
 
 ### Open questions
 
@@ -272,10 +273,10 @@
 ## 系统发现与审计方法
 
 - **Topic ID：** `TOPIC-DISCOVERY-METHODS`
-- **摘要：** zero-slack、pairwise closure 反例、独立验证与发现/验证拆分等可复用方法层。
+- **摘要：** 研究线立项、具名前沿与朴素基线，以及 zero-slack、pairwise closure 反例、独立验证和发现/验证拆分等可复用方法层。
 - **Dossier topic labels：** other；reasoning-system
-- **术语坐标：** [`TERM-CANDIDATE-DISCOVERY`](<TERMINOLOGY.md#term-candidate-discovery>)；[`TERM-CANDIDATE-VALIDATION`](<TERMINOLOGY.md#term-candidate-validation>)；[`TERM-SEPARATION`](<TERMINOLOGY.md#term-separation>)；[`TERM-FIXED-POINT`](<TERMINOLOGY.md#term-fixed-point>)
-- **入口：** [docs/REASONING_LEDGER.md](<REASONING_LEDGER.md>)
+- **术语坐标：** [`TERM-CANDIDATE-DISCOVERY`](<TERMINOLOGY.md#term-candidate-discovery>)；[`TERM-CANDIDATE-VALIDATION`](<TERMINOLOGY.md#term-candidate-validation>)；[`TERM-SEPARATION`](<TERMINOLOGY.md#term-separation>)；[`TERM-FIXED-POINT`](<TERMINOLOGY.md#term-fixed-point>)；[`TERM-NAMED-FRONTIER`](<TERMINOLOGY.md#term-named-frontier>)；[`TERM-NAIVE-BASELINE`](<TERMINOLOGY.md#term-naive-baseline>)
+- **入口：** [docs/REASONING_LEDGER.md](<REASONING_LEDGER.md>)；[docs/项目说明/30_research_charter.md](<项目说明/30_research_charter.md>)
 
 ### Claims
 
@@ -284,6 +285,7 @@
 | [`CLAIM-FORWARD-COMPLETENESS-RELATIVE-TO-DECLARED-FRAGMENT`](<CATALOG.md#claim-forward-completeness-relative-to-declared-fragment>) | `current` | 前向完备性只能相对于声明片段定义 |
 | [`CLAIM-PAIRWISE-CLOSURE-INCOMPLETE`](<CATALOG.md#claim-pairwise-closure-incomplete>) | `current` | pairwise 固定点不能证明规则闭包已饱和 |
 | [`CLAIM-RAW-ELIGIBLE-EVENTS-REQUIRED-FOR-SEPARATION-EVALUATION`](<CATALOG.md#claim-raw-eligible-events-required-for-separation-evaluation>) | `current` | 分离实验必须记录 raw eligible events，不能只看 accepted cuts |
+| [`CLAIM-RESEARCH-LINE-FRONTIER-BASELINE-EXIT-DISCIPLINE`](<CATALOG.md#claim-research-line-frontier-baseline-exit-discipline>) | `current` | 研究线立项与完成必须绑定具名前沿、朴素基线和后继变化 |
 | [`CLAIM-SHARED-ENCODING-AGREEMENT-NOT-INDEPENDENT-VALIDATION`](<CATALOG.md#claim-shared-encoding-agreement-not-independent-validation>) | `current` | 共享坐标 helper 的 oracle 与 validator 一致不构成独立验证 |
 | [`CLAIM-ZERO-SLACK-AUDIT-METHOD`](<CATALOG.md#claim-zero-slack-audit-method>) | `current` | 低余量审计可系统寻找被迫结构与领域不等式 |
 

@@ -1,7 +1,7 @@
 # 核心术语与禁止混同边界
 
 > 本页由 `data/knowledge/terminology.json` 自动生成；禁止手工修改。
-> 账本审阅日：`2026-08-12`；源摘要：`sha256:2720224c8cc41d4abfd1a1a30adf5c380a40c4458918601ced4695350f0983a8`。
+> 账本审阅日：`2026-08-12`；源摘要：`sha256:f89128ca73b3e30ae4b0994bd2619715dbe6904e44f76b2b5b04e2e8c3d32a1b`。
 
 术语表统一名称和类推边界，但不覆盖 canonical rules、claim statement 或 owner decision。别名只帮助检索，不表示两个更细概念在所有上下文中等价。
 
@@ -20,6 +20,8 @@
 | [`TERM-SUPERSEDED`](#term-superseded) | `superseded` | 被取代<br>换代 | 旧节点的含义或权威位置已由显式 successor 接替；旧节点仍保留以维持引用和历史链。 |
 | [`TERM-CERTIFIED`](#term-certified) | `CERTIFIED` | 认证级<br>certified exact | 只在 PROJECT_LOCK 与 overview 声明的六谓词、身份、证据和 lex 最优边界内成立的发布级状态。 |
 | [`TERM-RESEARCH-UPPER-LEDGER`](#term-research-upper-ledger) | `research upper ledger` | 研究上界账本<br>U 账本 | 按明确语义和前提登记的研究级上界坐标；六谓词与 P2.0 账本必须带标签并分开引用。 |
+| [`TERM-NAMED-FRONTIER`](#term-named-frontier) | `具名前沿` | named frontier | 一条研究线明确承诺推动的具体边界或账本坐标，必须指出推进哪一侧、相对于哪个当前值。 |
+| [`TERM-NAIVE-BASELINE`](#term-naive-baseline) | `朴素基线` | 同预算直接推进基线 | 在同一具名前沿与同一预算下，不增加新方法而直接推进该前沿的对照路线。 |
 | [`TERM-STRICT-EMPTY-RECTANGLE`](#term-strict-empty-rectangle) | `strict empty rectangle` | 严格空地<br>no_occupant_of_any_kind | 空矩形内部不允许任何 occupant，包括设施、端口前格、物流组件与 ghost-reserved 占用。 |
 | [`TERM-BODY-EMPTY-RECTANGLE`](#term-body-empty-rectangle) | `body-empty rectangle` | body-only 空矩形<br>设施体空地 | 只排除设施 body 的较宽松几何对象；它可用于中间计数，但不能直接替代现行 strict empty rectangle。 |
 | [`TERM-PHYSICAL-PORT`](#term-physical-port) | `physical port cell` | port cell<br>端口格 | 由 canonical pose 给出的实体端口坐标。 |
@@ -146,6 +148,26 @@
 - **不要混同：** 上界不推出可达性、下界或 production certification。
 - **相关 claim：** [`CLAIM-SIX-PREDICATE-RESEARCH-LEDGER`](<CATALOG.md#claim-six-predicate-research-ledger>)；[`CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER`](<CATALOG.md#claim-p2-throughput-research-ledger>)
 - **解释来源：** [docs/CURRENT.md](<CURRENT.md>)；[data/knowledge/claims.jsonl](<../data/knowledge/claims.jsonl>)
+
+<a id="term-named-frontier"></a>
+## 具名前沿
+
+- **Term ID：** `TERM-NAMED-FRONTIER`
+- **别名：** named frontier
+- **定义：** 一条研究线明确承诺推动的具体边界或账本坐标，必须指出推进哪一侧、相对于哪个当前值。
+- **不要混同：** 不要把方法新颖度、文档完成或研究机器改良本身当成前沿移动。
+- **相关 claim：** [`CLAIM-RESEARCH-LINE-FRONTIER-BASELINE-EXIT-DISCIPLINE`](<CATALOG.md#claim-research-line-frontier-baseline-exit-discipline>)
+- **解释来源：** [docs/项目说明/30_research_charter.md](<项目说明/30_research_charter.md>)
+
+<a id="term-naive-baseline"></a>
+## 朴素基线
+
+- **Term ID：** `TERM-NAIVE-BASELINE`
+- **别名：** 同预算直接推进基线
+- **定义：** 在同一具名前沿与同一预算下，不增加新方法而直接推进该前沿的对照路线。
+- **不要混同：** 两条精巧路线彼此比较，不能替代与朴素基线的同场比较。
+- **相关 claim：** [`CLAIM-RESEARCH-LINE-FRONTIER-BASELINE-EXIT-DISCIPLINE`](<CATALOG.md#claim-research-line-frontier-baseline-exit-discipline>)
+- **解释来源：** [docs/项目说明/30_research_charter.md](<项目说明/30_research_charter.md>)
 
 <a id="term-strict-empty-rectangle"></a>
 ## strict empty rectangle

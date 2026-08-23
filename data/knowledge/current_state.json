@@ -20,6 +20,10 @@
       "role": "六个 gating 谓词的外延与 CERTIFIED 命题。"
     },
     {
+      "path": "docs/项目说明/30_research_charter.md",
+      "role": "PROJECT_LOCK.md 之下的研究方向、立项基线、完成判据与当前押注唯一可写真源。"
+    },
+    {
       "path": "rules/canonical_rules.json",
       "role": "当前 canonical 游戏规则、admissibility 与空矩形语义。"
     },
@@ -113,6 +117,7 @@
         "CLAIM-R4-NECESSARY-DIMENSION-INEQUALITY",
         "CLAIM-R4-BOUNDARY-23-23-FULL-SPAN-EXCLUSION",
         "CLAIM-ZERO-SLACK-AUDIT-METHOD",
+        "CLAIM-RESEARCH-LINE-FRONTIER-BASELINE-EXIT-DISCIPLINE",
         "CLAIM-BOUNDARY-LOADER-EXCLUDED-FROZEN-INSTANCE",
         "CLAIM-RATE-LEMMA-CONDITIONAL-PROFILE"
       ]
@@ -204,7 +209,7 @@
   },
   "coverage": {
     "dossiers": "已登记 docs/research 一级目录与一级 Markdown，以及本机存在或被承重证据引用的 .artifacts 一级目录。轻量 checkout 可缺少 local artifact root。",
-    "claims": "当前共 94 条稳定 claim；CURRENT 按 claim_selection_policy 只投影当前承重子集，完整账本由 CATALOG、topic、reasoning 与 validity 页面查询。",
+    "claims": "当前共 95 条稳定 claim；CURRENT 按 claim_selection_policy 只投影当前承重子集，完整账本由 CATALOG、topic、reasoning 与 validity 页面查询。",
     "historical_claim_backfill": "45 个 dossier 有 current review，其中 42 个为语义审阅、3 个为 availability/provenance review；另有 165 个 dossier 全部且仅进入一个显式 triage group，17 个 active workflow 等待 typed closure。100% inventory coverage 不等于 100% semantic review。"
   },
   "generated_outputs": {

@@ -144,7 +144,7 @@
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260815-SOLVER-REASONING-OUTER-LOOP-GPT-PRO` | current review 保留 2 个未决项；重审触发：typed closure 决定 dossier 是否拆分，或 Phase -1 tracked 实验协议进入评审时。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-REVIEW-FOLLOWUPS` | `REVIEW-20260821-COMMON-MODE-BINDING-REVERIFY-RECLOSE` | current review 保留 3 个未决项；重审触发：production/I1 operation-map parity 断言进入后批、checker-wide mutation/typing/refresh-dossiers 任一后批启动，或任何消费者把 allowlist id 尾号当成坐标承诺或改变 SHA+size pin 语义时复审。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-SNAPSHOT-AGE` | `maintenance-snapshot` | 维护投影快照日期为 2026-08-15，距本次审计 0 天。 | `docsystem.render_maintenance`<br>`docsystem.audit` |
-| `info` | `DOC-AUDIT-TERMINOLOGY-COLLISION` | `terminology-summary` | 27 个 term 的 canonical label 与 alias 没有跨 ID 碰撞。 | `knowledge.build`<br>`knowledge.check` |
+| `info` | `DOC-AUDIT-TERMINOLOGY-COLLISION` | `terminology-summary` | 29 个 term 的 canonical label 与 alias 没有跨 ID 碰撞。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TOPIC-COVERAGE` | `topic-summary` | 13 个 topic 的 claim、term、entry 与 open-claim 坐标完整。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-CUT-SOLVER-TRACKED-LONGTAIL` | 14 个 dossier 处于 historical_semantic_queue，优先级 normal。 | `knowledge.build`<br>`knowledge.check` |
 | `info` | `DOC-AUDIT-TRIAGE-BACKLOG` | `TRIAGE-DOCUMENTATION-GOVERNANCE-TRACKED-LONGTAIL` | 2 个 dossier 处于 historical_semantic_queue，优先级 low。 | `knowledge.build`<br>`knowledge.check` |

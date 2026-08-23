@@ -5,7 +5,7 @@
     {
       "id": "TOPIC-AUTHORITY-AND-CURRENT-STATE",
       "title": "权威与当前状态",
-      "summary": "从 machine/owner authority、current ledger 与 OPEN 边界进入项目，不把证据存在误读为现态。",
+      "summary": "从 machine/owner authority、current ledger、研究方向与 OPEN 边界进入项目，不把证据存在误读为现态。",
       "claim_ids": [
         "CLAIM-BAND22-V0A-STRICT-HOLE-INCOMPATIBLE",
         "CLAIM-BOUNDARY-LOADER-EXCLUDED-FROZEN-INSTANCE",
@@ -15,7 +15,8 @@
         "CLAIM-P2-THROUGHPUT-RESEARCH-LEDGER-20260822",
         "CLAIM-R4-BOUNDARY-23-23-FULL-SPAN-EXCLUSION",
         "CLAIM-R4-MARKED-INCIDENCE-TOTAL-110",
-        "CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818"
+        "CLAIM-SIX-PREDICATE-RESEARCH-LEDGER-20260818",
+        "CLAIM-RESEARCH-LINE-FRONTIER-BASELINE-EXIT-DISCIPLINE"
       ],
       "dossier_topic_labels": [
         "p1_2-proof-chain"
@@ -29,7 +30,8 @@
       ],
       "entry_paths": [
         "docs/CURRENT.md",
-        "docs/START_HERE.md"
+        "docs/START_HERE.md",
+        "docs/项目说明/30_research_charter.md"
       ],
       "open_question_claim_ids": [
         "CLAIM-CERTIFIED-EXISTENCE-OPEN"
@@ -345,11 +347,12 @@
     {
       "id": "TOPIC-DISCOVERY-METHODS",
       "title": "系统发现与审计方法",
-      "summary": "zero-slack、pairwise closure 反例、独立验证与发现/验证拆分等可复用方法层。",
+      "summary": "研究线立项、具名前沿与朴素基线，以及 zero-slack、pairwise closure 反例、独立验证和发现/验证拆分等可复用方法层。",
       "claim_ids": [
         "CLAIM-FORWARD-COMPLETENESS-RELATIVE-TO-DECLARED-FRAGMENT",
         "CLAIM-PAIRWISE-CLOSURE-INCOMPLETE",
         "CLAIM-RAW-ELIGIBLE-EVENTS-REQUIRED-FOR-SEPARATION-EVALUATION",
+        "CLAIM-RESEARCH-LINE-FRONTIER-BASELINE-EXIT-DISCIPLINE",
         "CLAIM-SHARED-ENCODING-AGREEMENT-NOT-INDEPENDENT-VALIDATION",
         "CLAIM-ZERO-SLACK-AUDIT-METHOD"
       ],
@@ -361,10 +364,13 @@
         "TERM-CANDIDATE-DISCOVERY",
         "TERM-CANDIDATE-VALIDATION",
         "TERM-SEPARATION",
-        "TERM-FIXED-POINT"
+        "TERM-FIXED-POINT",
+        "TERM-NAMED-FRONTIER",
+        "TERM-NAIVE-BASELINE"
       ],
       "entry_paths": [
-        "docs/REASONING_LEDGER.md"
+        "docs/REASONING_LEDGER.md",
+        "docs/项目说明/30_research_charter.md"
       ],
       "open_question_claim_ids": [],
       "tags": [

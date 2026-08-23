@@ -2,7 +2,7 @@
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
 > 机器状态从冻结规则、义务、gate 与 exact-status 文件直接读取；研究结论从稳定 ID 账本投影。
-> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:2720224c8cc41d4abfd1a1a30adf5c380a40c4458918601ced4695350f0983a8`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:f89128ca73b3e30ae4b0994bd2619715dbe6904e44f76b2b5b04e2e8c3d32a1b`。
 
 ## 权威边界
 
@@ -10,15 +10,16 @@
 
 1. [PROJECT_LOCK.md](<../PROJECT_LOCK.md>)：certified exactness、命题 P、冻结身份与发布边界。
 2. [docs/项目说明/01_overview.md](<项目说明/01_overview.md>)：六个 gating 谓词的外延与 CERTIFIED 命题。
-3. [rules/canonical_rules.json](<../rules/canonical_rules.json>)：当前 canonical 游戏规则、admissibility 与空矩形语义。
-4. [data/proof_obligations/p1_2_proof_obligations.json](<../data/proof_obligations/p1_2_proof_obligations.json>)：P1.2 fail-closed 机器义务、proof-bearing sink 与 source/hash floor。
-5. [data/review_gates/phase_1_2_spike_close.json](<../data/review_gates/phase_1_2_spike_close.json>)：当前 owner-only phase gate；测试、Markdown 与 receipt 均不能替代 owner 决定。
-6. [data/solutions/exact_full_scale_status.json](<../data/solutions/exact_full_scale_status.json>)：checked-in full-scale exact 结果状态与阻断检查。
-7. [data/knowledge/claims.jsonl](<../data/knowledge/claims.jsonl>)：具有稳定 ID、作用域、前提、后果和证据的 claim 账本。
-8. [data/knowledge/decisions.jsonl](<../data/knowledge/decisions.jsonl>)：非授权、append-only 的 owner/governance 决定查询登记；每条记录必须指向外部权威真源，本文件不能授权。
-9. [data/knowledge/backfill_triage.json](<../data/knowledge/backfill_triage.json>)：未获 current review 的 dossier 长尾分诊；只保证 inventory coverage，不授予语义结论。
-10. [data/knowledge/topics.json](<../data/knowledge/topics.json>)：稳定主题到 claim、dossier topic 与术语的导航坐标。
-11. [data/knowledge/terminology.json](<../data/knowledge/terminology.json>)：核心术语、别名与禁止混同边界。
+3. [docs/项目说明/30_research_charter.md](<项目说明/30_research_charter.md>)：PROJECT_LOCK.md 之下的研究方向、立项基线、完成判据与当前押注唯一可写真源。
+4. [rules/canonical_rules.json](<../rules/canonical_rules.json>)：当前 canonical 游戏规则、admissibility 与空矩形语义。
+5. [data/proof_obligations/p1_2_proof_obligations.json](<../data/proof_obligations/p1_2_proof_obligations.json>)：P1.2 fail-closed 机器义务、proof-bearing sink 与 source/hash floor。
+6. [data/review_gates/phase_1_2_spike_close.json](<../data/review_gates/phase_1_2_spike_close.json>)：当前 owner-only phase gate；测试、Markdown 与 receipt 均不能替代 owner 决定。
+7. [data/solutions/exact_full_scale_status.json](<../data/solutions/exact_full_scale_status.json>)：checked-in full-scale exact 结果状态与阻断检查。
+8. [data/knowledge/claims.jsonl](<../data/knowledge/claims.jsonl>)：具有稳定 ID、作用域、前提、后果和证据的 claim 账本。
+9. [data/knowledge/decisions.jsonl](<../data/knowledge/decisions.jsonl>)：非授权、append-only 的 owner/governance 决定查询登记；每条记录必须指向外部权威真源，本文件不能授权。
+10. [data/knowledge/backfill_triage.json](<../data/knowledge/backfill_triage.json>)：未获 current review 的 dossier 长尾分诊；只保证 inventory coverage，不授予语义结论。
+11. [data/knowledge/topics.json](<../data/knowledge/topics.json>)：稳定主题到 claim、dossier topic 与术语的导航坐标。
+12. [data/knowledge/terminology.json](<../data/knowledge/terminology.json>)：核心术语、别名与禁止混同边界。
 
 ## 认证问题面
 
@@ -1096,6 +1097,38 @@ SMM4 composition gate 独立枚举确认 lex>(1188,18) 的完整 oriented band �
 
 - **证据：** [docs/history/status/00_master_roadmap_pre_phase3_20260812.md](<history/status/00_master_roadmap_pre_phase3_20260812.md>)〔owner-accepted methodology ledger before Phase 3 split〕；[docs/项目说明/REASONING_METHOD.md](<项目说明/REASONING_METHOD.md>)〔current extracted methodology contract〕；[docs/research/rule_system_redesign_20260807/FIRST_PRINCIPLES_DESIGN.md](<research/rule_system_redesign_20260807/FIRST_PRINCIPLES_DESIGN.md>)〔independent first-principles convergence〕
 
+### 研究线立项与完成必须绑定具名前沿、朴素基线和后继变化
+
+- **Claim ID：** `CLAIM-RESEARCH-LINE-FRONTIER-BASELINE-EXIT-DISCIPLINE`
+- **状态：** `current`
+- **权威层：** `owner_decision`
+- **权威依据：** `owner_decision`
+- **表示角色：** `AUTHORITATIVE_CURRENT`
+- **权威作用：** `descriptive_only`
+- **更新时间：** `2026-08-23`
+
+每条研究线开工前必须声明要移动的具名前沿、同预算朴素基线以及继续、降级或停止条件；产出只有实际改变后继问题或后继决策才算完成。方法、工具与研究机器改良本身不自动计入项目进展。
+
+- **适用范围：** research-governance；line-opening；baseline-comparison；completion-criterion
+
+- **成立前提：** PROJECT_LOCK.md 的精确性契约、命题 P 与认证边界保持更高权威；研究所得仍须经过既有证明链与发布闸门才能成为认证结论
+
+- **直接后果：** 新研究线必须在开工前写明前沿、基线与退出条件；精巧路线必须与同预算下直接推进同一前沿的朴素基线比较；文档落库或研究机器改良只有在改变后继问题、后继决策或提供具名前沿杠杆时才计为完成
+
+- **明确不推出：** 当前押注板中的候 owner 裁事项已经获准点火；研究机器改良没有价值；朴素基线必须优于所有精巧路线；本纲领能够授予 production、certified 或 release authority
+
+- **权威源：** docs/项目说明/30_research_charter.md
+
+- **条件处置：** `method_only`
+- **操作效果：** constraint_selection；discovery_method；experiment_boundary
+- **一般性：** `research_process`
+- **solver 关系：** `not_applicable`
+- **通用传播不能完成分离的证据：** `none`
+- **发现方式：** owner_adjudication
+- **分类注：** 该 claim 约束研究线的立项、比较与完成口径，不替任何具体路线提供数学或认证结论。
+
+- **证据：** [docs/项目说明/30_research_charter.md](<项目说明/30_research_charter.md>)〔owner-approved research-direction, line-opening and completion charter〕
+
 ### 冻结实例中 storage-side boundary loader 被 141>139 格数账排除
 
 - **Claim ID：** `CLAIM-BOUNDARY-LOADER-EXCLUDED-FROZEN-INSTANCE`
@@ -2003,7 +2036,7 @@ owner 选择严格解释：空矩形内不得出现任何 occupant。该决定�
 ## 覆盖范围与欠账
 
 - **dossier 目录覆盖：** 已登记 docs/research 一级目录与一级 Markdown，以及本机存在或被承重证据引用的 .artifacts 一级目录。轻量 checkout 可缺少 local artifact root。
-- **claim 覆盖：** 当前共 94 条稳定 claim；CURRENT 按 claim_selection_policy 只投影当前承重子集，完整账本由 CATALOG、topic、reasoning 与 validity 页面查询。
+- **claim 覆盖：** 当前共 95 条稳定 claim；CURRENT 按 claim_selection_policy 只投影当前承重子集，完整账本由 CATALOG、topic、reasoning 与 validity 页面查询。
 - **历史 claim 回填：** 45 个 dossier 有 current review，其中 42 个为语义审阅、3 个为 availability/provenance review；另有 165 个 dossier 全部且仅进入一个显式 triage group，17 个 active workflow 等待 typed closure。100% inventory coverage 不等于 100% semantic review。
 
 完整 claim、decision 与 evidence package 目录见 [CATALOG](<CATALOG.md>)；推理分类与历史回填进度见 [REASONING_LEDGER](<REASONING_LEDGER.md>)；历史反例、语义更正、实现失效与重验谱系见 [VALIDITY_LEDGER](<VALIDITY_LEDGER.md>)；语义审阅、可用性核对与长尾分诊闭包见 [BACKFILL_LEDGER](<BACKFILL_LEDGER.md>)；按稳定主题坐标查询见 [TOPIC_INDEX](<TOPIC_INDEX.md>)；规范术语与别名见 [TERMINOLOGY](<TERMINOLOGY.md>)；当前开放问题见 [OPEN_QUESTIONS](<OPEN_QUESTIONS.md>)；按问题进入项目见 [START_HERE](<START_HERE.md>)。

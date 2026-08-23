@@ -1,14 +1,14 @@
 # 项目知识目录
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:2720224c8cc41d4abfd1a1a30adf5c380a40c4458918601ced4695350f0983a8`。
+> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:f89128ca73b3e30ae4b0994bd2619715dbe6904e44f76b2b5b04e2e8c3d32a1b`。
 
 这里登记稳定 ID。claim 回答“我们知道什么”，decision 回答“谁改变了什么规则或门”，
 dossier 回答“原始证据包在哪里”，validity profile 回答“旧结论为何失效、怎样换代、能否复用”。目录不把历史材料自动升级为当前权威。
 
 ## 覆盖概览
 
-- claim：`94` 条，其中当前 / 开放 `73` 条，带 validity profile `35` 条。
+- claim：`95` 条，其中当前 / 开放 `74` 条，带 validity profile `35` 条。
 - decision：`10` 条。
 - backfill review：`57` 条，其中 current `45` 条。
 - dossier：`277` 个，其中 tracked `159` 个、local optional `118` 个、当前证据标记 `17` 个、人工精编 `97` 个。
@@ -87,6 +87,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 | [`CLAIM-RAB-FCL-FRONT-DEPENDENT-PERFORMANCE-WITHDRAWN`](#claim-rab-fcl-front-dependent-performance-withdrawn) | 旧 RAB/FCL 的 front-dependent 性能与收敛归因已撤回，复用前须按修正语义重验 | `current` | `research_authority` | `negative_research_result` |
 | [`CLAIM-RATE-LEMMA-CONDITIONAL-PROFILE`](#claim-rate-lemma-conditional-profile) | intermediate pure-flow rate lemma 只覆盖等占空且最少车道的显式分配剖面 | `current` | `rules_authority` | `conditional_model_exclusion` |
 | [`CLAIM-RAW-ELIGIBLE-EVENTS-REQUIRED-FOR-SEPARATION-EVALUATION`](#claim-raw-eligible-events-required-for-separation-evaluation) | 分离实验必须记录 raw eligible events，不能只看 accepted cuts | `current` | `research_authority` | `descriptive_only` |
+| [`CLAIM-RESEARCH-LINE-FRONTIER-BASELINE-EXIT-DISCIPLINE`](#claim-research-line-frontier-baseline-exit-discipline) | 研究线立项与完成必须绑定具名前沿、朴素基线和后继变化 | `current` | `owner_decision` | `descriptive_only` |
 | [`CLAIM-ROUND45-CORRECTED-PROFILE-UNKNOWN-NOT-STRUCTURAL-WALL`](#claim-round45-corrected-profile-unknown-not-structural-wall) | 修正后的 Round 4/5 紧凑模型只支持预算内 UNKNOWN，不支持结构墙 | `current` | `research_authority` | `negative_research_result` |
 | [`CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT`](#claim-routing-reverification-extra-strict) | routing reverification 的 no-orphan 与 selected-source-reaches-sink 超出游戏连通量词 | `superseded` | `rules_authority` | `defines_certified_scope` |
 | [`CLAIM-ROUTING-REVERIFICATION-EXTRA-STRICT-BOUNDARY`](#claim-routing-reverification-extra-strict-boundary) | routing reverification 的附加严格面不改写游戏连通量词 | `current` | `rules_authority` | `defines_certified_scope` |
@@ -3431,6 +3432,40 @@ accepted/applied cut 计数为零同时兼容“没有可分离事件”“produ
 - **分离注：** 识别性来自完整 funnel 和预注册对照，不来自单个 accepted counter。
 
 - **证据：** [docs/research/rab_sep_promotion_20260716/04_front_clear_lift_design_20260716.md](<research/rab_sep_promotion_20260716/04_front_clear_lift_design_20260716.md>)〔raw empty-domain event counters and NOT_EVALUATED semantics〕；[docs/research/rab_sep_promotion_20260716/05_front_clear_lift_batch_execution_20260716.md](<research/rab_sep_promotion_20260716/05_front_clear_lift_batch_execution_20260716.md>)〔historical telemetry design plus invalidation boundary〕；[.artifacts/ab16_arms_20260802/EVAL.md](<../.artifacts/ab16_arms_20260802/EVAL.md>)〔16-arm generated/compiled/applied funnel and budget censoring〕（工作区可选工件）
+
+<a id="claim-research-line-frontier-baseline-exit-discipline"></a>
+
+### 研究线立项与完成必须绑定具名前沿、朴素基线和后继变化
+
+- **Claim ID：** `CLAIM-RESEARCH-LINE-FRONTIER-BASELINE-EXIT-DISCIPLINE`
+- **状态：** `current`
+- **权威层：** `owner_decision`
+- **权威依据：** `owner_decision`
+- **表示角色：** `AUTHORITATIVE_CURRENT`
+- **权威作用：** `descriptive_only`
+- **更新时间：** `2026-08-23`
+
+每条研究线开工前必须声明要移动的具名前沿、同预算朴素基线以及继续、降级或停止条件；产出只有实际改变后继问题或后继决策才算完成。方法、工具与研究机器改良本身不自动计入项目进展。
+
+- **适用范围：** research-governance；line-opening；baseline-comparison；completion-criterion
+
+- **成立前提：** PROJECT_LOCK.md 的精确性契约、命题 P 与认证边界保持更高权威；研究所得仍须经过既有证明链与发布闸门才能成为认证结论
+
+- **直接后果：** 新研究线必须在开工前写明前沿、基线与退出条件；精巧路线必须与同预算下直接推进同一前沿的朴素基线比较；文档落库或研究机器改良只有在改变后继问题、后继决策或提供具名前沿杠杆时才计为完成
+
+- **明确不推出：** 当前押注板中的候 owner 裁事项已经获准点火；研究机器改良没有价值；朴素基线必须优于所有精巧路线；本纲领能够授予 production、certified 或 release authority
+
+- **权威源：** docs/项目说明/30_research_charter.md
+
+- **条件处置：** `method_only`
+- **操作效果：** constraint_selection；discovery_method；experiment_boundary
+- **一般性：** `research_process`
+- **solver 关系：** `not_applicable`
+- **通用传播不能完成分离的证据：** `none`
+- **发现方式：** owner_adjudication
+- **分类注：** 该 claim 约束研究线的立项、比较与完成口径，不替任何具体路线提供数学或认证结论。
+
+- **证据：** [docs/项目说明/30_research_charter.md](<项目说明/30_research_charter.md>)〔owner-approved research-direction, line-opening and completion charter〕
 
 <a id="claim-round45-corrected-profile-unknown-not-structural-wall"></a>
 
