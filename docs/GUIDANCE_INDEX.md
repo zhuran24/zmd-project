@@ -1,7 +1,7 @@
 # 当前文档职责索引
 
 > 本页由有效 `DOC_POLICY.json` 契约、前门注册表与 section registry 自动生成；禁止手工修改。
-> 文档系统版本：`2.6.0`；职责摘要：`sha256:2d9a8a6c81845853d2395aa0924d6fdc64d418f28c235e2319af8b0ff78072f9`。
+> 文档系统版本：`2.6.0`；职责摘要：`sha256:e6c42c7a5a90d61880093a39244d4104cdcb04c9920a8b131239a2be604686ad`。
 
 本页回答“哪些文档仍承担当前职责、各自唯一负责什么”。它不授予新的 authority，也不列历史证据；历史 dossier 与快照分别从 CATALOG、BACKFILL_LEDGER 和 `docs/history/` 下钻。
 
@@ -83,7 +83,7 @@
 |---|---:|
 | `locked_authority` | 1 |
 | `generated_projection` | 25 |
-| `normative` | 32 |
+| `normative` | 33 |
 | `living` | 47 |
 | `governance_control` | 1 |
 | `framework_core` | 26 |
@@ -136,6 +136,7 @@
 | [`docs/项目说明/23_rule_cut_evolution_protocol.md`](<项目说明/23_rule_cut_evolution_protocol.md>) | `project-manual` | `normative_input` | `governed` | Stable governance protocol for rule semantics, cut-family evolution, validation and production admission. |
 | [`docs/项目说明/24_repository_asset_governance.md`](<项目说明/24_repository_asset_governance.md>) | `project-manual` | `normative_input` | `governed` | Stable code-asset classification, workflow isolation and retirement governance contract. |
 | [`docs/项目说明/26_rules_handbook.md`](<项目说明/26_rules_handbook.md>) | `project-manual` | `normative_input` | `governed` | Human-readable canonical-rule interpretation and source-of-authority guide. |
+| [`docs/项目说明/30_research_charter.md`](<项目说明/30_research_charter.md>) | `project-manual` | `normative_input` | `governed` | Owner-approved research-direction and line-opening charter; its dated final section is the sole writable source for current research bets and changes only at decision points. |
 | [`docs/项目说明/REASONING_METHOD.md`](<项目说明/REASONING_METHOD.md>) | `project-manual` | `normative_input` | `governed` | Reusable mathematical reasoning and separation-method design principles. |
 | [`specs/01_problem_statement.md`](<../specs/01_problem_statement.md>) | `specifications` | `normative_input` | `governed` | Normative problem statement, objective and certified/exploratory proposition boundary. |
 | [`specs/02_global_notation_and_units.md`](<../specs/02_global_notation_and_units.md>) | `specifications` | `normative_input` | `governed` | Normative global notation, coordinates, units and indexing conventions. |

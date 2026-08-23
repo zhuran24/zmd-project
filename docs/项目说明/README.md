@@ -16,10 +16,10 @@
 
 - 命题、数学与不变量：[01_overview.md](01_overview.md)、[02_mathematical_foundations.md](02_mathematical_foundations.md)、[04_design_invariants.md](04_design_invariants.md)
 - 规则、cut 与资产治理：[23_rule_cut_evolution_protocol.md](23_rule_cut_evolution_protocol.md)、[24_repository_asset_governance.md](24_repository_asset_governance.md)、[26_rules_handbook.md](26_rules_handbook.md)
+- 研究方向、立项判据与当前押注：[30_research_charter.md](30_research_charter.md)
 - 依赖图：[11_dependency_graph.md](11_dependency_graph.md)
 - 测试、review、telemetry 与环境：[15_workflow_testing.md](15_workflow_testing.md)、[16_workflow_review.md](16_workflow_review.md)、[17_workflow_telemetry.md](17_workflow_telemetry.md)、[18_workflow_env_config.md](18_workflow_env_config.md)、[19_implementation_rhythm.md](19_implementation_rhythm.md)
-- 风险与操作：[14_risk_rollout.md](14_risk_rollout.md)、[28_pitfalls_and_sop.md](28_pitfalls_and_sop.md)
-- GO / close 判读词与证据边界：[12_go_criteria.md](12_go_criteria.md)
+- 风险、操作与 GO / close 判读：[14_risk_rollout.md](14_risk_rollout.md)、[28_pitfalls_and_sop.md](28_pitfalls_and_sop.md)、[12_go_criteria.md](12_go_criteria.md)
 
 ## 未来、方法与历史
 

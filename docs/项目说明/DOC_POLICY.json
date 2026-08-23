@@ -680,6 +680,51 @@
         ]
       },
       "rationale": "The tracked skill source remains current and discoverable without becoming a second owner-authority surface."
+    },
+    {
+      "id": "research_charter_normative",
+      "match": {
+        "path": "30_research_charter.md"
+      },
+      "set": {
+        "document_class": "normative",
+        "authority_role": "normative_input",
+        "mutation": "governed",
+        "context_level": "L1",
+        "purpose": "Owner-approved research-direction and line-opening charter; its dated final section is the sole writable source for current research bets and changes only at decision points.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-006",
+          "DOC-INV-009",
+          "DOC-INV-012",
+          "DOC-INV-014",
+          "DOC-INV-016",
+          "DOC-INV-018"
+        ],
+        "required_reads": [
+          "PROJECT_LOCK.md",
+          "docs/CURRENT.md"
+        ],
+        "after_change": [
+          "knowledge.check",
+          "docsystem.doctor",
+          "docsystem.tests",
+          "docsystem.gate"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": null
+        },
+        "section_refs": [
+          "project-manual"
+        ],
+        "adr_refs": [
+          "DOC-ADR-012",
+          "DOC-ADR-014"
+        ]
+      },
+      "rationale": "The research charter is the current normative source for research direction and line-opening criteria; its dated bet board is intentionally the single mutable source rather than a copied status projection."
     }
   ],
   "legacy_projection": {
@@ -731,6 +776,7 @@
             "docs/项目说明/27_status_dashboard.md",
             "docs/项目说明/28_pitfalls_and_sop.md",
             "docs/项目说明/29_solving_methodology_skill.md",
+            "docs/项目说明/30_research_charter.md",
             "docs/项目说明/README.md",
             "docs/项目说明/REASONING_METHOD.md",
             "docs/项目说明/ROADMAP.md"
