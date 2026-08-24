@@ -344,6 +344,8 @@ data/repository_governance/document_system/entrypoints.json
 
 修改 canonical front door 时，必须同时检查对应 `DOC_POLICY.json`、入口正文、`ARCHITECTURE.md` 和定点测试。根 `CLAUDE.md` 只保留每次任务必需的自举边界；低频操作知识进入 `docs/AGENT_OPERATIONS.md`，不能通过放宽预算把长手册重新塞回默认上下文。
 
+`agent_operations` 当前预算为 360 行 / 42000 字节：行预算为六个具名 canonical anchor 及其 21 条已路由 span 预留前向空间，字节预算保持不变以继续约束按需入口的总体体积。已批准目的地正文与预算冲突时，禁止删减义务换取绿灯；必须在同一变更中提交 candidate delta receipt、registry 调整、回归测试与维护说明。再次调整预算时也遵循同一事务。
+
 registry 中的三类记录分工如下：
 
 - `surfaces`：唯一现行前门、authority 或生成入口，并可为人工入口设置注意力预算；

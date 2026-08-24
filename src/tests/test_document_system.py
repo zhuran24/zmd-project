@@ -470,6 +470,8 @@ def test_entrypoint_registry_is_the_structural_source_for_frontdoor_contracts() 
     )
     operations = next(record for record in registry["surfaces"] if record["id"] == "agent_operations")
     assert operations["path"] == "docs/AGENT_OPERATIONS.md"
+    assert operations["max_lines"] == 360
+    assert operations["max_bytes"] == 42000
     assert "scripts/preflight_gate.py" in operations["required_targets"]
     assert "agent_bootstrap" not in {record["id"] for record in registry["surfaces"]}
     assert "volatile_copy_guards" not in current_state
@@ -836,7 +838,7 @@ def test_entrypoint_context_exposes_role_budget_and_write_through() -> None:
     assert operations.entrypoint["id"] == "agent_operations"
     operations_card = _render_card(operations)
     assert "ENTRYPOINT: surface agent_operations mode=manual" in operations_card
-    assert "ATTENTION BUDGET: 240 lines / 42000 bytes" in operations_card
+    assert "ATTENTION BUDGET: 360 lines / 42000 bytes" in operations_card
 
     guarded = system.resolve("NAV_MAP.md", "read")
     assert guarded.entrypoint is not None
@@ -849,6 +851,31 @@ def test_entrypoint_context_exposes_role_budget_and_write_through() -> None:
     assert redirect.entrypoint["kind"] == "redirect"
     assert redirect.contract["generator_action"] == "docsystem.render_entrypoints"
     assert "WRITE THROUGH: docsystem.render_entrypoints" in _render_card(redirect)
+
+
+def test_agent_operations_preserves_memory_migration_destinations_and_safeguards() -> None:
+    text = (PROJECT_ROOT / "docs/AGENT_OPERATIONS.md").read_text(encoding="utf-8")
+    for anchor in (
+        "durable-deferred-work",
+        "midflight-redirection",
+        "claims-reconciliation",
+        "seat-dispatch",
+        "blind-questioning",
+        "search-negatives",
+    ):
+        assert f'<a id="{anchor}"></a>' in text
+    for clause in (
+        "可被未来会话触达的结构化登记",
+        "未入账的临时文件只适合回查，不能替代触发器",
+        "不得用“已发送”推断远端已经停止或已经收到改令",
+        "消费必须绑定 result reference 与 claims-reconcile receipt",
+        "未消费且要求 claims 对账的结果会阻断后续受管 launch、close 与 publish",
+        "派活必须显式指定席位或模型，不依赖默认路由",
+        "承重结论的异源确认仍由不同来源承担",
+        "只读全局 `~/.claude/CLAUDE.md` 的现行 owner 指令",
+        "关键词零命中只是一条弱证据",
+    ):
+        assert clause in text
 
 
 def test_generated_compatibility_entrypoints_are_exact_write_through_projections() -> None:

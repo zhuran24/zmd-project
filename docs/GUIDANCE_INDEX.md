@@ -1,7 +1,7 @@
 # 当前文档职责索引
 
 > 本页由有效 `DOC_POLICY.json` 契约、前门注册表与 section registry 自动生成；禁止手工修改。
-> 文档系统版本：`2.6.0`；职责摘要：`sha256:e6c42c7a5a90d61880093a39244d4104cdcb04c9920a8b131239a2be604686ad`。
+> 文档系统版本：`2.6.0`；职责摘要：`sha256:e892c047be7e4732b5818f25e6c464f0a160634d9b80c6c6d0eaf903dd5453d4`。
 
 本页回答“哪些文档仍承担当前职责、各自唯一负责什么”。它不授予新的 authority，也不列历史证据；历史 dossier 与快照分别从 CATALOG、BACKFILL_LEDGER 和 `docs/history/` 下钻。
 
@@ -20,7 +20,7 @@
 
 | ID | 类型 | 路径 | 预算 | 唯一职责 |
 |---|---|---|---:|---|
-| `agent_operations` | `manual` | [`docs/AGENT_OPERATIONS.md`](<AGENT_OPERATIONS.md>) | 240 行 | tracked 的耐久 agent 操作与维护指南；可选根 overlay 只作本机会话入口。 |
+| `agent_operations` | `manual` | [`docs/AGENT_OPERATIONS.md`](<AGENT_OPERATIONS.md>) | 360 行 | tracked 的耐久 agent 操作与维护指南；可选根 overlay 只作本机会话入口。 |
 | `certified_authority` | `authority` | [`PROJECT_LOCK.md`](<../PROJECT_LOCK.md>) | — | certified exactness、命题边界与发布纪律的仓内最高权威。 |
 | `current_guidance_surface` | `generated` | [`docs/GUIDANCE_INDEX.md`](<GUIDANCE_INDEX.md>) | — | 当前仍承担职责的文档表面投影。 |
 | `current_state` | `generated` | [`docs/CURRENT.md`](<CURRENT.md>) | — | 唯一人类可读现态投影。 |

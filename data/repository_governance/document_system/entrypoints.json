@@ -96,7 +96,7 @@
         "scripts/preflight_gate.py"
       ],
       "enforce_common_forbidden_patterns": true,
-      "max_lines": 240,
+      "max_lines": 360,
       "max_bytes": 42000
     },
     {

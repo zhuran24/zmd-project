@@ -237,3 +237,33 @@ git diff --check
 ```
 
 若触及代码、规范、冻结输入、proof obligations、phase gate、求解或发布链，再按目标契约运行定点测试、lint、mypy、完整 preflight 和必要 slow lane。最终报告应区分已通过的机械检查、未运行的检查、环境限制以及仍需 owner 或数学审查的部分。
+
+<a id="durable-deferred-work"></a>
+## 11. 耐久挂账与时序敏感改令
+
+决定把事项留到后续处理时，必须在同一回合形成可被未来会话触达的结构化登记，至少包含触发条件、下一动作、authority/evidence 引用与当前 owner。对话、按日期归档的流水和未入账的临时文件只适合回查，不能替代触发器。
+
+<a id="midflight-redirection"></a>
+抢占仍在运行的可停止席位时，先停止原执行，再向可复活入口投递新任务；不赶时间的改令才进入普通消息队列。不得用“已发送”推断远端已经停止或已经收到改令。
+
+<a id="claims-reconciliation"></a>
+## 12. Claims 对账与结果消费
+
+新研究批开工、第一次把既有结论用于新判断、落库或发布前，先核对同一 claim 的现行 authority、已知反例/勘误与适用 scope。结果从工具或席位返回不等于已经被项目消费；消费必须绑定 result reference 与 claims-reconcile receipt。
+
+未消费且要求 claims 对账的结果会阻断后续受管 launch、close 与 publish。普通 Bash 和 hook 只提供观察面，最终关闭必须通过 artifact、process、result 与 claims 的尾账集合对账。
+
+<a id="seat-dispatch"></a>
+## 13. 席位派发与异源复核
+
+派活必须显式指定席位或模型，不依赖默认路由。能力更强的同源复核可提高第二次推理质量，但不能进入异源证据桶；承重结论的异源确认仍由不同来源承担。
+
+全局实时额度与派发口径只读全局 `~/.claude/CLAUDE.md` 的现行 owner 指令，本手册不保存额度数值副本。
+
+<a id="blind-questioning"></a>
+## 14. 盲问、框架对撞与全称否定
+
+需要独立发现结构时，先给问题事实与边界，再让复核方独立形成问题分解；不要把候选答案、内部术语和预期结论埋进问题框架。随后再与已有方案对撞。
+
+<a id="search-negatives"></a>
+“搜索不到”不能直接升级为“不存在”。承重全称否定必须明确搜索域、列出所有同义表达和生成路径，并使用覆盖该域的机器枚举或穷尽检索；关键词零命中只是一条弱证据。
