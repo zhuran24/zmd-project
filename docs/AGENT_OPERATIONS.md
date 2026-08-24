@@ -218,7 +218,7 @@ git diff --cached --name-status
 - **预算耗尽**：只能陈述 UNKNOWN、NOT_EXHAUSTIVE、NOT_REACHED 或工具定义的等价状态。
 - **长跑测量两口径混用**：周期性 progress 快照是下界不是精确计数；事件精确计数一律以 append-only journal 的完整落盘行为真源，两口径不得混用或相加（在案先例：Phase -1 快照 840 vs journal 7578）。
 - **历史路径不存在**：研究日志可能引用已经退役或只在旧工作区存在的 `.codegraph/`、`.Codex/`、`cc_memory/`、`cc_memory_vnext/` 及旧脚本；`.claude/` 当前包含项目 skill，例如 `.claude/skills/solving-methodology/SKILL.md`，不能整目录按退役处理。先查看当前 `--help`、[`NAV_MAP`](../NAV_MAP.md) 和 Git 历史，不为修复旧引用重建未经 owner 设计的 authority surface。
-- **搜索假阴性**：承重的存在/不存在结论先用 `git grep` 检查全部 tracked 路径；`rg` 默认受 `.rgignore` 影响，完整 hash 还可能被拆成相邻字符串，同一 sha 也可能在不同文件使用不同大小写。查集合成员资格时优先导入机器定义或运行对应契约测试。
+- **搜索假阴性**：承重的存在/不存在结论先用 `git grep` 检查全部 tracked 路径；`rg` 默认受 `.rgignore` 影响，完整 hash 还可能被拆成相邻字符串，同一 sha 也可能在不同文件使用不同大小写。查集合成员资格时优先导入机器定义或运行对应契约测试；完整全称否定规则见 [§14](#search-negatives)。
 - **生成页漂移**：修改 source 后运行声明的 generator；不要直接编辑输出。
 - **文档结论越权**：report、receipt、solver PASS 和 reviewer prose 只能在各自作用域内提供证据。
 
@@ -263,7 +263,7 @@ git diff --check
 <a id="blind-questioning"></a>
 ## 14. 盲问、框架对撞与全称否定
 
-需要独立发现结构时，先给问题事实与边界，再让复核方独立形成问题分解；不要把候选答案、内部术语和预期结论埋进问题框架。随后再与已有方案对撞。
+需要独立发现结构时，先给问题事实与边界，再让复核方独立形成问题分解；不要把候选答案、内部术语和预期结论埋进问题框架。随后再与已有方案对撞。A 段不得用“不要采用某思路”之类负向提示，因为回避声明本身会种下该框架；优先使用未污染的新窗口或新线程，已经浸泡在项目语境中的线程只作 B 段对撞席。
 
 <a id="search-negatives"></a>
 “搜索不到”不能直接升级为“不存在”。承重全称否定必须明确搜索域、列出所有同义表达和生成路径，并使用覆盖该域的机器枚举或穷尽检索；关键词零命中只是一条弱证据。
