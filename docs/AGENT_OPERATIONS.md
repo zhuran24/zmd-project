@@ -24,14 +24,14 @@
 .venv/bin/python devtools/docctl.py check --changed
 .venv/bin/python devtools/check_knowledge_docs.py
 ```
-`intake` 从 Git-visible diff 识别新增文档、生成页穿透、dossier 登记/关闭、owner authority companion、稳定 claim/decision 身份、临时文档和 local-optional portability。当前缺少 authority companion 只产生 default-off warning，不能被解释为授权；未来由 registry 开关提升为阻断。它只展示本次任务需要的事件卡，`check --changed` 复用同一结果。
+`intake` 从 Git-visible diff 识别新增文档、生成页穿透、dossier 登记/关闭、owner authority companion、稳定 claim/decision 身份、临时文档和 local-optional portability。当前缺少 authority companion 只产生 default-off warning，不能被解释为授权；未来由 registry 开关提升为阻断。它只展示本次任务需要的事件卡，`check --changed` 复用同一结果。新研究批开工、既有结论首次用于新判断、落库或发布前，必须核对 claim 的现行 authority、勘误与 scope；工具或席位返回结果不等于已消费，消费应绑定 result reference 与 claims-reconcile receipt，关闭前再对 artifact、process、result、claims 做尾账。
 新增研究包优先使用 `docctl new research-dossier`，它会同时创建入口和 `active` ledger record。关闭前先建立 current review 与必要 claim/decision，再用 `devtools/docctl.py close-dossier` 写 typed closure。新本机 evidence 使用 `devtools/docctl.py register-local-evidence`，临时稿使用带 expiry/exit action 的 `docctl new document` 并由 `devtools/docctl.py exit-ephemeral` 退出。不要建立第二份局部 dossier 真源。
 claim 的 `representation_class`、`authority`、`authority_basis` 和 evidence `storage` 是四个不同维度。只有 knowledge checker 能对 tracked machine source 实际执行具名 verifier 的记录才能标为 `machine`；历史 receipt 封顶 `research_authority`。`decisions.jsonl` 是 `non_authorizing` 追加登记册，必须指向外部 owner source，不能单独授权；schema 迁移只按 intake registry 中的精确 absent→present 字段豁免稳定身份检查。
 生成页、兼容跳转和职责索引不能直接修补，应修改其声明的 source，再运行操作卡给出的 generator。前门 registry 变化时使用：
 ```bash
 .venv/bin/python devtools/docctl.py render-entrypoints --write
 ```
-周期盘库只读现有真源，不另建维护状态；接受 finding 后仍修改原 claim、review、triage、policy 或 lifecycle 真源。每周运行 `.venv/bin/python devtools/docctl.py audit --profile weekly`，phase close 使用 `--profile phase_close --as-of YYYY-MM-DD`，修复后重建 `MAINTENANCE_QUEUE.md`。
+周期盘库只读现有真源，不另建维护状态；接受 finding 后仍修改原 claim、review、triage、policy 或 lifecycle 真源。决定把事项留到后续时，同一回合必须形成含触发条件、下一动作、authority/evidence 与 owner 的耐久登记；对话和按日期流水只供回查。抢占可停止席位时先停止原执行，再向可复活入口投递新任务；不赶时间才排队。每周运行 `.venv/bin/python devtools/docctl.py audit --profile weekly`，phase close 使用 `--profile phase_close --as-of YYYY-MM-DD`，修复后重建 `MAINTENANCE_QUEUE.md`。
 ## 3. 门禁、测试与静态检查
 
 ### 3.1 文档治理门
@@ -207,7 +207,7 @@ git diff --cached --name-status
 - HEAD 可能在任务进行中被其他会话推进。任何 amend、rebase 或纠错前先记录并复核当前 HEAD、目标对象与 diff；误 amend 时用 `git reset <对方hash>`（mixed，别 `--hard`）恢复，再按精确 pathspec 重提。禁止用 `git reset --hard` 或 `git clean` 处理共享工作区，也不能只凭 commit message 猜对象身份。
 - untracked 文件可能被并发清理。需要耐久保存的仓库资产应尽快进入精确提交；根 `CLAUDE.md` / `AGENTS.md` 这类 workspace overlay 仍按本地契约处理，不得混入 tracked 提交。
 - `scripts/package_review_snapshot.py` 读取已提交树；外审打包前先完成本任务提交，不能把工作树字节误当成快照内容。
-- 不在认证长测试运行中修改或提交承重文件。仓库没有可依赖的自动 hook 时必须手动运行门禁；hook 存在也只是辅助，不能替代最终机器验收。
+- 不在认证长测试运行中修改或提交承重文件。仓库没有可依赖的自动 hook 时必须手动运行门禁；hook 存在也只是辅助，不能替代最终机器验收。派活必须显式指定席位；强同源复核可提高第二次推理质量，但不能计入异源证据桶。
 
 ## 9. 常见故障模式
 
@@ -218,7 +218,7 @@ git diff --cached --name-status
 - **预算耗尽**：只能陈述 UNKNOWN、NOT_EXHAUSTIVE、NOT_REACHED 或工具定义的等价状态。
 - **长跑测量两口径混用**：周期性 progress 快照是下界不是精确计数；事件精确计数一律以 append-only journal 的完整落盘行为真源，两口径不得混用或相加（在案先例：Phase -1 快照 840 vs journal 7578）。
 - **历史路径不存在**：研究日志可能引用已经退役或只在旧工作区存在的 `.codegraph/`、`.Codex/`、`cc_memory/`、`cc_memory_vnext/` 及旧脚本；`.claude/` 当前包含项目 skill，例如 `.claude/skills/solving-methodology/SKILL.md`，不能整目录按退役处理。先查看当前 `--help`、[`NAV_MAP`](../NAV_MAP.md) 和 Git 历史，不为修复旧引用重建未经 owner 设计的 authority surface。
-- **搜索假阴性**：承重的存在/不存在结论先用 `git grep` 检查全部 tracked 路径；`rg` 默认受 `.rgignore` 影响，完整 hash 还可能被拆成相邻字符串，同一 sha 也可能在不同文件使用不同大小写。查集合成员资格时优先导入机器定义或运行对应契约测试。
+- **搜索假阴性**：承重的存在/不存在结论先用 `git grep` 检查全部 tracked 路径；`rg` 默认受 `.rgignore` 影响，完整 hash 还可能被拆成相邻字符串，同一 sha 也可能在不同文件使用不同大小写。查集合成员资格时优先导入机器定义或运行对应契约测试。需要独立发现结构时先给事实与边界，复核方独立分解后再与已有方案对撞，不把候选答案埋进提问框架。
 - **生成页漂移**：修改 source 后运行声明的 generator；不要直接编辑输出。
 - **文档结论越权**：report、receipt、solver PASS 和 reviewer prose 只能在各自作用域内提供证据。
 
