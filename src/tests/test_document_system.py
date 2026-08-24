@@ -21,7 +21,7 @@ from devtools.docctl import (  # noqa: E402
     DocumentSystem,
     _render_card,
 )
-from devtools.build_knowledge_docs import _path_belongs_to_dossier  # noqa: E402
+from devtools.build_knowledge_docs import _md_link, _path_belongs_to_dossier  # noqa: E402
 
 
 def _write_json(path: Path, value: Any) -> None:
@@ -197,6 +197,13 @@ def _policy(
         "rules": rules or [],
         "legacy_projection": {"rules": [], "out_of_scope_notes": []},
     }
+
+
+def test_external_evidence_links_are_checkout_stable(tmp_path: Path) -> None:
+    target = "/home/zhuran24/.claude/projects/example.jsonl"
+    expected = f"[{target}](<{target}>)"
+    assert _md_link(tmp_path / "checkout-a", target, "docs/CATALOG.md", target) == expected
+    assert _md_link(tmp_path / "nested" / "checkout-b", target, "docs/CATALOG.md", target) == expected
 
 
 def test_real_repository_document_system_is_self_consistent() -> None:

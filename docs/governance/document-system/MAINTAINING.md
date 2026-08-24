@@ -294,6 +294,8 @@ legacy 投影重建
 
 知识生成器写入的全局 source digest 也是生成页字节的一部分。任何 ledger 只要会改变某份投影的正文或 source digest，就必须列入该投影在 `DOC_POLICY.json` 中的 `source_paths`；不能因为正文语义未变而省略摘要依赖。新增知识源或调整摘要覆盖范围时，应逐份核对八个投影的 declared source，并用框架回归测试锁定穿透关系。
 
+知识账本中的 `external_root` 证据若使用绝对路径，生成 Markdown 时必须保留绝对路径身份，不能按当前 checkout 根重算相对链接。否则同一份机器真源会在主树与 worktree 生成不同字节，破坏只读门对同一输入树的判断。改变该链接规则时，应在框架测试中使用两个不同 checkout 根验证生成结果逐字一致。
+
 ### 当前职责索引
 
 ```bash

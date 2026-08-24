@@ -1885,9 +1885,13 @@ def _source_digest(model: KnowledgeModel) -> str:
 
 
 def _md_link(root: Path, target_relpath: str, from_relpath: str, label: str | None = None) -> str:
-    start = (root / from_relpath).parent
-    target = root / target_relpath
-    relative = os.path.relpath(target, start=start).replace(os.sep, "/")
+    target_path = Path(target_relpath)
+    if target_path.is_absolute():
+        relative = target_path.as_posix()
+    else:
+        start = (root / from_relpath).parent
+        target = root / target_path
+        relative = os.path.relpath(target, start=start).replace(os.sep, "/")
     text = label if label is not None else target_relpath
     return f"[{text}](<{relative}>)"
 
