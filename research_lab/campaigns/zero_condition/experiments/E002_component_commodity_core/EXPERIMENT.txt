@@ -1,0 +1,85 @@
+EXPERIMENT E002: commodity core of the E001 component failure
+=============================================================
+
+Question
+--------
+Which commodity component-support rule is sufficient to make the fixed E001
+replacement binding-infeasible after static port-domain compilation and terminal
+uniqueness have already been enforced?
+
+Cheapest faithful test
+----------------------
+Rebuild one binding model on the exact E001 replacement occupancy. Static
+front-domain filtering and duplicate terminal-key constraints remain always on.
+Compile each commodity's component-support rule behind its own CP-SAT assumption
+guard.
+
+Run:
+
+  all component guards false
+  all component guards true
+  every singleton component guard
+
+If no singleton is infeasible, use an assumption core followed by deletion
+minimization. This distinguishes a one-commodity structural wall from a genuinely
+joint commodity interaction without rebuilding the placement master.
+
+Inputs
+------
+E001 replacement layout:
+  research_lab/local/zero_condition/E001_pocket_cut_replay/run-002/REPLACEMENT_LAYOUT.json
+  sha256 752fb1706dba76ded658775750eaa6ac9f6816500e678a07ad18c3fce7d69f97
+
+E001 replacement assignment:
+  research_lab/local/zero_condition/E001_pocket_cut_replay/run-002/REPLACEMENT_ASSIGNMENT.json
+  sha256 ac80efdf293b12d852b62355815eaaeec7df5ae53b5078a4db9af24a41b55e91
+
+E001 result:
+  research_lab/local/zero_condition/E001_pocket_cut_replay/run-002/RESULT.json
+  sha256 aaf85e0b214c9253ee76240b57afcd7762a30fb368debaa1c88da483f9e3cf67
+
+The runner also pins the current rules, preprocess plan, mandatory instances,
+candidate pose pool, and relevant binding/routing source files.
+
+Change under test
+-----------------
+No placement or production-source change. The only experimental variables are
+commodity-level Boolean guards around the already-used component-support family.
+
+Outcome classification
+----------------------
+BASE_INVALID
+  The all-false model is not FEASIBLE. Component attribution is invalid because
+  static domains or terminal uniqueness already kill the layout.
+
+FULL_NOT_REPRODUCED
+  The all-true model does not reproduce INFEASIBLE. E001 and E002 interface
+  semantics drifted or the previous result was not stable.
+
+SINGLETON_COMMODITY_CORE
+  At least one commodity guard alone is INFEASIBLE. Each such singleton is an
+  inclusion-minimal commodity core.
+
+MULTI_COMMODITY_CORE
+  No singleton is fatal, but a deletion-minimized assumption set is INFEASIBLE.
+
+CORE_UNKNOWN
+  A required solve is censored by TIMEOUT; no minimality claim is made.
+
+Truth boundary
+--------------
+This experiment can identify an inclusion-minimal set of component-rule guards
+inside one frozen fixed-layout binding model. It is not a pose core, routing
+proof, placement cut, no-ghost infeasibility result, or certification artifact.
+
+Decision effect
+---------------
+A singleton core sends the next step directly to that commodity's forced
+source/sink components and their obstacle boundary. A broad multi-commodity core
+would instead indicate that the interface language must represent shared
+component allocation or simultaneous commodity structure before searching for a
+local placement cut.
+
+Result
+------
+Not run yet.
