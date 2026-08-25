@@ -580,7 +580,12 @@ def audit_and_attach_lowering(
         raise RuntimeError(
             f"cut constraint delta is {constraints_after - constraints_before}, expected 1"
         )
-    last_constraint = master.model.Proto().constraints[-1]
+    # Keep the parent pybind proto wrapper alive while reading a child.  With
+    # OR-Tools 9.15/Python 3.13, retaining ``model.Proto().constraints[-1]``
+    # from a temporary parent can leave a dangling child wrapper and SIGSEGV on
+    # ``has_linear()`` instead of raising a Python exception.
+    model_proto = master.model.Proto()
+    last_constraint = model_proto.constraints[-1]
     has_linear = getattr(last_constraint, "has_linear", None)
     if callable(has_linear) and not bool(has_linear()):
         raise RuntimeError("attached cut is not linear")
