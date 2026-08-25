@@ -14,8 +14,9 @@ and certification have different default questions:
   certification: Is this fixed candidate claim safe to consume with a stated
                  effect under a fixed context?
 
-The second question will receive its own worktree later. The old main worktree is
-neither role; it is retained as history and source material.
+The second question has its own worktree at
+/home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57 on certification/main. The old
+main worktree is neither role; it is retained as history and source material.
 
 1. Repository roles
 -------------------
@@ -33,10 +34,11 @@ research tree
   Authority: research only.
 
 certification tree
-  Status: not yet created.
-  Future role: cold, independent review and promotion of selected research
-               candidates. It will not inherit research conclusions merely by
-               sharing Git ancestry.
+  Path: /home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57
+  Branch: certification/main
+  Role: cold, independent review and promotion of selected frozen research
+        candidates. It does not inherit research conclusions merely by sharing
+        Git ancestry.
 
 2. Attention architecture
 -------------------------
@@ -112,8 +114,8 @@ method layer
   framework on first contact.
 
 promotion layer
-  promotion/. Frozen candidate packets for a future certification tree. A packet
-  is an interface object, not a certification receipt.
+  promotion/. Frozen candidate packets for the independent certification tree. A
+  packet is an interface object, not a certification receipt.
 
 5. Research loop
 ----------------
@@ -155,7 +157,7 @@ different question. Such changes are still research-only even if they touch a
 file that was certification-bearing in the historical tree.
 
 Do not preserve artificial src/ sanctity inside the research tree. The safety
-boundary is promotion into the future certification tree, not the pathname of a
+boundary is packet-only promotion into certification/main, not the pathname of a
 research edit. Conversely, do not interpret a successful research src/ run as a
 production result.
 

@@ -36,8 +36,8 @@ R0 plus:
 Touching inherited src/ in the research branch does not create certified effect.
 It only raises the fidelity obligations of the experiment.
 
-R2: candidate prepared for future certification
------------------------------------------------
+R2: candidate prepared for independent certification
+----------------------------------------------------
 R1 plus:
 
   clean coherent research commits
@@ -48,8 +48,8 @@ R1 plus:
   adversarial mutations or counterexample search appropriate to the claim
   complete non-implications and known unknowns
 
-R2 still does not certify the candidate. The future certification tree performs a
-fresh cold review and chooses its own gates.
+R2 still does not certify the candidate. The independent certification tree on
+certification/main performs a fresh cold review and chooses its own gates.
 
 Legacy tool boundary
 --------------------

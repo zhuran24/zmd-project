@@ -6,7 +6,7 @@
 
 - `/home/zhuran24/zmd-pj`：旧主树，今后作为 Git 历史与既有材料的保留树，只读使用。
 - 当前 worktree：研究树，允许大胆探索，但不得自授 production、certified、U/L 或发布效力。
-- 认证树：尚未建立；成熟结果以后只通过选定的 promotion packet 过境，不整体合并研究分支。
+- `/home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57`：认证树，分支 `certification/main`；只接收冻结的 promotion packet，负责独立冷审与晋级，不整体合并研究分支。
 
 ## 进入研究树
 
@@ -33,6 +33,6 @@
 - `research_lab/STATE.txt`：全树当前状态与 campaign 指针。
 - `research_lab/campaigns/`：每条当前研究战役的自包含工作面。
 - `research_lab/local/`：日志、缓存、临时模型与可再生运行产物，全部不进 Git。
-- `research_lab/promotion/`：未来送往认证树的候选包模板。
+- `research_lab/promotion/`：送往独立认证树的冻结候选包模板。
 
 旧仓库中的 `src/`、`rules/`、`specs/`、`docs/` 与历史研究材料仍是研究素材和代码底座，但不再是研究 agent 的默认注意力入口。

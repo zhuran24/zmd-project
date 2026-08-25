@@ -34,6 +34,7 @@ REQUIRED_MODE_KEYS = frozenset(
         "history_tree",
         "history_branch",
         "certification_tree",
+        "certification_branch",
         "python",
         "local_root",
         "promotion_policy",
@@ -213,14 +214,30 @@ def collect_report() -> tuple[CheckReport, dict[str, str]]:
 
     certification_tree = mode["certification_tree"]
     report.info["certification_tree"] = certification_tree
-    if certification_tree == "UNCREATED":
-        report.warnings.append("certification tree is intentionally not created yet")
+    cert_path = Path(certification_tree).resolve()
+    if not cert_path.is_dir():
+        report.errors.append(f"configured certification tree does not exist: {cert_path}")
+    elif cert_path in {ROOT.resolve(), history_tree}:
+        report.errors.append("certification tree must be distinct from research and history trees")
     else:
-        cert_path = Path(certification_tree).resolve()
-        if not cert_path.is_dir():
-            report.errors.append(f"configured certification tree does not exist: {cert_path}")
-        if cert_path in {ROOT.resolve(), history_tree}:
-            report.errors.append("certification tree must be distinct from research and history trees")
+        cert_branch_result = subprocess.run(
+            ["git", "-C", str(cert_path), "branch", "--show-current"],
+            check=False,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        cert_branch = cert_branch_result.stdout.strip() or "DETACHED"
+        report.info["certification_branch"] = cert_branch
+        if cert_branch_result.returncode != 0:
+            report.errors.append(
+                f"cannot inspect certification branch: {cert_branch_result.stderr.strip()}"
+            )
+        elif cert_branch != mode["certification_branch"]:
+            report.errors.append(
+                f"certification branch mismatch: mode expects "
+                f"{mode['certification_branch']!r}, Git reports {cert_branch!r}"
+            )
 
     python_path = Path(mode["python"])
     report.info["python"] = str(python_path)
@@ -301,6 +318,7 @@ def print_human(report: CheckReport, mode: dict[str, str], *, enter: bool) -> No
         "history_tree",
         "history_branch",
         "certification_tree",
+        "certification_branch",
         "python",
     ):
         if key in report.info:

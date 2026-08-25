@@ -9,8 +9,9 @@ A healthy entry must report:
 
   mode              = research
   branch            = research/main
-  history tree      = /home/zhuran24/zmd-pj
-  certification tree = UNCREATED
+  history tree      = /home/zhuran24/zmd-pj, branch main
+  certification tree = /home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57,
+                       branch certification/main
   active campaign   = the campaign named in .zmd-worktree-mode
 
 Read order
@@ -70,8 +71,10 @@ Before committing
   * Update STATE only when the current question or campaign position changed.
   * Update RESULTS only when a conclusion changed the next problem or decision.
 
-Main-tree boundary
-------------------
-/home/zhuran24/zmd-pj is the preserved history/material tree. It is not the
-certification tree and is not a writable companion workspace for this campaign.
-Read from it when needed; do not send research writes back into it.
+Tree boundaries
+---------------
+/home/zhuran24/zmd-pj is the preserved history/material tree. The independent
+certification tree is /home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57 on
+certification/main. Both are read-only from research sessions. Mature candidates
+cross only as frozen promotion packets; do not send research writes into either
+worktree.

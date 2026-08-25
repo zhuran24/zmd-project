@@ -54,10 +54,11 @@ whole-layout campaign.
 
 Architecture status
 -------------------
-The research tree now has its own front door, program, live state, campaign
-surface, ignored runtime area, mode checker, and packet-only promotion boundary.
-The old main tree is history/material only. The certification tree remains
-uncreated and is intentionally not simulated here.
+The research tree has its own front door, program, live state, campaign surface,
+ignored runtime area, mode checker, and packet-only promotion boundary. The old
+main tree is history/material only. The independent certification tree now exists
+at /home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57 on certification/main; it
+is read-only from research sessions and receives only frozen candidate packets.
 
 Orientation guards
 ------------------
@@ -67,5 +68,5 @@ Orientation guards
   or likely to obstruct the future expected target.
 * Do not send research writes into the history/material tree.
 * Do not promote research conclusions from this tree into certified claims.
-* When a result matures, freeze a compact packet for a fresh future
-  certification-tree session.
+* When a result matures, freeze a compact packet for a fresh
+  certification/main session.

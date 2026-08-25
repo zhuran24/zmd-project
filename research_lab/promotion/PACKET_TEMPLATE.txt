@@ -82,11 +82,12 @@ Utility evidence does not substitute for soundness.
 
 9. Certification handoff
 ------------------------
-certification tree: UNCREATED at template time
+certification tree: /home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57
+certification branch: certification/main
 required reviewer posture: fresh-session, cold object, independent attack
 whole research branch merge allowed: no
 
-Certification may accept, narrow, reimplement, or reject this candidate. Any fix
-that changes the candidate's claim, object space, consumer stage, or effect returns
-to research or becomes a new certification object; it is not silently repaired
-inside an approval verdict.
+Certification may admit, independently rederive, reject, return, or implement a
+semantics-preserving consumer for this frozen candidate. Any change to the claim,
+premises, object space, consumer stage, runtime mapping, or effect returns to
+research as a new packet; it is not silently repaired inside an approval verdict.

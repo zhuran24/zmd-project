@@ -19,9 +19,11 @@ history_role: preserve old Git history, tracked project material, local evidence
               and the shared project Python environment
 history_write_policy: read-only from research sessions
 
-certification_tree: UNCREATED
-certification_policy: create a separate worktree later; do not repurpose the old
-                      main worktree and do not treat it as a certification sink
+certification_tree: /home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57
+certification_branch: certification/main
+certification_policy: packet-only cold review; do not repurpose the history tree,
+                      do not merge research/main wholesale, and do not treat the
+                      certification branch name as authority
 
 Runtime dependencies
 --------------------
