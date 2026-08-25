@@ -1,0 +1,68 @@
+EXPERIMENT E012: jointly guarded step mismatch delta
+===================================================
+
+Question
+--------
+Does E011's jointly guarded gain in free adjacency and actual pattern survival
+reduce exact component mismatch beyond E009, and do any commodities reach zero?
+
+Why this is the stop/go test
+----------------------------
+E011 improves both resources it was asked to preserve or buy:
+
+  free adjacency       1158 -> 1187
+  meaningful patterns 13390 -> 13420
+  power poles             53 -> 48
+
+But component count remains 83 and all-commodity binding remains INFEASIBLE. E012
+uses the exact mismatch atlas to determine whether the joint step moved the real
+residual condition or only improved already-solved proxies.
+
+Competing readings
+------------------
+A. Total mismatch falls again or one or more commodities reach zero. The guarded
+   alternating constructor remains productive; use the new residual distribution
+   to choose another contextual step.
+
+B. Total mismatch is flat or worse despite both proxy gains. Scalar geometry and
+   port-domain resources have reached their explanatory limit. Move component
+   support into an exact local joint placement-binding neighborhood.
+
+C. Most commodities improve but a small residual set worsens sharply. Preserve
+the joint candidate and target the residual commodities in the local joint model,
+without emitting commodity-specific global cuts.
+
+Frozen inputs
+-------------
+E011 result:
+  research_lab/local/zero_condition/E011_guarded_joint_step/run-001/RESULT.json
+  sha256 8ccc4b94d988d4de21c2199d3c2d883f8301c27c38e230632a229bd5cc38ff4d
+
+E011 assignment:
+  research_lab/local/zero_condition/E011_guarded_joint_step/run-001/GUARDED_PERMEABILITY_ASSIGNMENT.json
+  sha256 06eb57dad02863be58107a64a76b68f39adf00e6ed028a0fbdd64328fc7c2c45
+
+Baselines:
+  E004 E001 total 281
+  E008 E006 total 214
+  E010 E009 total 196
+
+Truth boundary
+--------------
+Every minimum is exact only for one commodity in the fixed E011 placement. The
+trajectory across four candidates is not a proof of convergence. No result in
+this experiment runs exact routing or creates a placement cut.
+
+Decision effect
+---------------
+A further broad reduction earns another contextual constructor step. A flat or
+adverse result ends scalar alternation for now and moves the remaining component
+condition into a smaller exact joint model. Zero-mismatch commodities identify
+relations whose component requirement has been solved in this candidate.
+
+Result
+------
+Completed with verdict GUARDED_JOINT_STEP_NO_MISMATCH_IMPROVEMENT. All 19 fresh
+models reach OPTIMAL. Total mismatch moves 281 -> 214 -> 196 -> 198; versus E009,
+three commodities improve, 12 are unchanged, four worsen, and none reaches zero.
+See RESULT.txt for the representation-change conclusion.

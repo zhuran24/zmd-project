@@ -1,0 +1,83 @@
+EXPERIMENT E011: jointly guarded permeability step
+=================================================
+
+Question
+--------
+Can a radius-limited free-adjacency step around E009 improve permeability while
+preserving the selected-pattern and generic-port resources already earned by
+E009?
+
+Why this test comes next
+------------------------
+E006 improves component topology but harms binding-domain survival. E009 restores
+and exceeds real pattern survival, and E010 shows a second broad mismatch gain.
+The next step must not optimize either resource in isolation.
+
+Change under test
+-----------------
+E011 rebuilds the ordinary no-ghost pose-bool master with the checked E001 pocket
+cut. In the frozen E009 occupancy it recomputes, for every candidate group pose:
+
+  exact routing-visible binding patterns whose terminal cells are free
+  clear physical generic input/output ports
+
+These contextual coefficients are not optimized. They become hard guards:
+
+  selected-pattern score >= E009 reference score
+  generic-clear score    >= E009 reference score
+  selected power poles   <= 53
+  at most 20 E009 selected literals may leave
+
+Within those guards, E011 adds exact adjacent-free-pair Booleans and maximizes
+free adjacency. A complete E009 hint is supplied, presolve is disabled, and
+bounded LNS searches around the known feasible point.
+
+Competing readings
+------------------
+A. A new candidate improves free adjacency and the independently rebuilt actual
+   pattern domain while reducing component mismatch. The two-resource local
+   constructor is viable and may iterate.
+
+B. The contextual pattern guard is satisfied, but actual pattern survival drops.
+   Simultaneous pose movement breaks the first-order guard; shrink the trust
+   region or move exact pattern viability into a local joint model.
+
+C. No adjacency improvement is found while preserving the guards. Scalar local
+   objectives have reached a useful limit; move component-aware binding into a
+   smaller joint placement-binding neighborhood.
+
+D. Component-aware binding becomes FEASIBLE. Advance immediately to production
+   precheck and exact routing.
+
+Frozen context
+--------------
+E009 result, assignment, and layout plus E010 mismatch atlas are pinned by SHA-256
+in the runner. The runner also pins the E001 lowering and all consumed solver and
+semantic sources.
+
+Budget
+------
+60-second presolve-disabled LNS, eight workers, exact complete hint. Fresh
+component-aware binding is always evaluated on an improved candidate.
+
+Truth boundary
+--------------
+The pattern and generic coefficients are contextual first-order guards around
+E009, not globally valid constraints. The trust region and pole cap are research
+restrictions. A candidate remains placement-plus-power until the downstream chain
+accepts it.
+
+Decision effect
+---------------
+A faithful joint gain earns a fresh mismatch atlas and another evidence-driven
+iteration. No gain or an unfaithful guard moves the next experiment to an exact
+local joint placement-binding model. No outcome creates a production objective or
+necessary cut.
+
+Result
+------
+Completed with verdict JOINT_STEP_FAITHFUL_CANDIDATE. Compared with E009, the
+candidate gains 29 free-adjacency edges, 30 real meaningful binding patterns, 20
+free cells, and removes five power poles while satisfying the contextual guard.
+Component count remains 83 and component-aware binding remains INFEASIBLE. See
+RESULT.txt.

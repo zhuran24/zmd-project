@@ -543,6 +543,58 @@ evidence:
   E010 RESULT.txt; local RESULT.json sha256
   6e0965a159c52c6e49a5e0c8afc2a57472f8df0669d5631ed04c73749770d4fe.
 
+R-ZC-021  A contextual guard can preserve both earned scalar resources
+-----------------------------------------------------------------------
+status: measured FEASIBLE incumbent plus independent interface reconstruction
+scope: radius-limited E011 step around E009
+
+statement:
+  E011 converts E009's contextual pattern/generic objective into a hard local
+  lower-bound guard, then maximizes exact free adjacency. The candidate gains 29
+  free-adjacency edges, 30 real meaningful binding patterns, 20 free cells, and
+  removes five power poles. Component count and largest component remain 83 and
+  414. Component-aware binding remains INFEASIBLE.
+
+non-implications:
+  The contextual guard is not globally valid and the LNS incumbent is not
+  optimal. Simultaneous scalar improvement does not imply component mismatch
+  improvement.
+
+effect on next problem:
+  Measure exact mismatch before iterating. The result proves the resources can
+  coexist locally, not that they explain the residual component condition.
+
+evidence:
+  E011 RESULT.txt; local RESULT.json sha256
+  8ccc4b94d988d4de21c2199d3c2d883f8301c27c38e230632a229bd5cc38ff4d.
+
+R-ZC-022  Scalar placement proxies no longer explain the residual component wall
+-------------------------------------------------------------------------------
+status: 19 fresh OPTIMAL mismatch comparisons
+scope: E001, E006, E009, and E011 fixed layouts
+
+statement:
+  Exact total mismatch follows 281 -> 214 -> 196 -> 198. E011 improves adjacency,
+  actual pattern survival, free cells, and pole count, yet worsens exact mismatch
+  by two: three commodities improve, 12 are unchanged, four worsen, and none
+  reaches zero. The residual rule depends on where selected sources and sinks land
+  among components, not only on scalar geometry or domain size.
+
+non-implications:
+  Free adjacency and selected-pattern survival remain useful construction
+  features. This does not prove all scalar objectives useless or a local joint
+  model feasible.
+
+effect on next problem:
+  Stop scalar alternation for now. Keep exact routing downstream, but make local
+  pose movement and component-aware terminal selection cohabit a bounded joint
+  placement-binding neighborhood around E009. Use scalar resources as hints or
+  secondary objectives, not substitutes for component support.
+
+evidence:
+  E012 RESULT.txt; local RESULT.json sha256
+  19bd29aa579858a9138a3a05ed0fc0cbcf96bd467dfd8855670c941cba639ff4.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

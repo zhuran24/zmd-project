@@ -1,0 +1,137 @@
+E012 RESULT: SCALAR PROXIES HAVE REACHED THEIR CURRENT EXPLANATORY LIMIT
+======================================================================
+
+Status
+------
+Completed as research-only comparative interface evidence. No exact routing,
+placement cut, certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E012_joint_step_mismatch_delta/run-001/RESULT.json
+
+SHA-256:
+  19bd29aa579858a9138a3a05ed0fc0cbcf96bd467dfd8855670c941cba639ff4
+
+Size:
+  1,235,163 bytes
+
+Verdict:
+  GUARDED_JOINT_STEP_NO_MISMATCH_IMPROVEMENT
+
+Exact mismatch trajectory
+-------------------------
+All 19 fresh per-commodity models reach OPTIMAL, with optimum witnesses replayed
+through production run_exact_routing_precheck.
+
+  E001 one-cut replacement total mismatch       281
+  E006 permeability candidate total mismatch    214
+  E009 pattern-exposed candidate total mismatch 196
+  E011 guarded joint candidate total mismatch   198
+
+Relative to E009, E011 is two mismatches worse:
+
+  3 commodities improve
+ 12 remain unchanged
+  4 worsen
+  0 reach zero mismatch
+
+Per-commodity change, E011 minus E009
+-------------------------------------
+  blue_iron_block          -2
+  blue_iron_ore             0
+  blue_iron_powder          0
+  buckwheat                 0
+  buckwheat_powder         +1
+  buckwheat_seed            0
+  dense_blue_iron_powder    0
+  dense_source_powder      -1
+  fine_buckwheat_powder     0
+  qiaoyu_capsule            0
+  sandleaf                 -1
+  sandleaf_powder           0
+  sandleaf_seed            +1
+  source_ore                0
+  source_powder             0
+  steel_block              +1
+  steel_bottle              0
+  steel_part                0
+  valley_battery           +3
+
+Interpretation
+--------------
+E011 improves both scalar resources it was asked to protect or purchase:
+
+  free adjacency       +29
+  meaningful patterns  +30
+  free cells           +20
+  power poles           -5
+
+Yet exact component mismatch worsens slightly. This is not a failure of the
+measurements; every commodity optimum is independently rebuilt and checked. It is
+a failure of explanatory sufficiency:
+
+  free-edge quantity
+  selected-pattern quantity
+  optional-obstacle quantity
+
+still do not encode where each commodity's selected sources and sinks land among
+the components.
+
+The remaining component rule depends jointly on placement and binding decisions.
+It can no longer be represented faithfully by another scalar placement proxy
+without repeatedly rediscovering counterexamples.
+
+Inner-partition conclusion
+--------------------------
+The new interface partition remains valid:
+
+  static port domains
+    -> duplicate-safe, component-aware binding
+    -> exact routing
+
+But the constructive producer feeding this interface has reached a new thick
+region. Local pose movement and component-aware terminal selection share variables
+and mutually prune each other. For the next step they should cohabit a smaller
+joint neighborhood model rather than communicate through another one-number
+surrogate.
+
+This does not mean rebuilding one global monolithic placement-routing model. The
+appropriate object is local and contextual:
+
+  most of E009 fixed
+  a bounded set of movable pose units / power poles
+  exact binding variables for the affected facilities and commodities
+  component-support constraints inside the neighborhood or against a frozen
+  outside world
+
+Exact routing still remains downstream.
+
+Outer-loop conclusion
+---------------------
+The outer loop has now done more than accumulate cuts. It has:
+
+  discovered two useful positive resources
+  produced contextual coefficients
+  verified their predicted effects independently
+  found the point where those abstractions cease to explain the target condition
+  changed the next representation accordingly
+
+That representation change is the result of this round. Continuing to tune scalar
+weights would violate the project's method: the failure already identifies which
+rules must now be grouped together.
+
+Truth boundary
+--------------
+The trajectory covers four fixed placements and does not prove future local joint
+models feasible or scalar proxies universally useless. Free adjacency and selected
+pattern survival remain useful construction features; they are no longer
+sufficient as the sole decision language for crossing component-aware binding.
+
+Decision effect
+---------------
+Stop scalar alternation for now. Build a bounded exact local placement-binding
+model around the best current candidate, E009, using residual commodity mismatch
+to choose the movable neighborhood. Preserve the positive resource scores as
+hints or secondary objectives, not as substitutes for exact component support.

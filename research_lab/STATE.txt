@@ -56,7 +56,12 @@ probes and the first checked feedback replay now show a causal progression:
     patterns; the fixed candidate measures +1101 while components fall 91 to 83
     and the largest grows 405 to 414, though component binding remains INFEASIBLE;
   * E010 proves a second broad mismatch reduction: 281 -> 214 -> 196 across
-    E001/E006/E009, with 11 commodities improved from E006 and none yet at zero.
+    E001/E006/E009, with 11 commodities improved from E006 and none yet at zero;
+  * E011 preserves E009's contextual exposure score while buying +29 free
+    adjacencies, +30 actual meaningful patterns, +20 free cells, and -5 poles;
+  * E012 shows the residual rule is no longer explained by those scalars: exact
+    mismatch worsens 196 to 198, leaving all commodities positive despite both
+    proxy gains.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -64,10 +69,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Can a radius-limited permeability step around E009 improve free adjacency while
-preserving E009's contextual selected-pattern score, and does the jointly guarded
-candidate reduce exact component mismatch enough to approach a component-compatible
-binding?
+Which bounded set of E009 pose units and power poles controls the residual
+component mismatch, and can an exact local model let those placement literals and
+component-aware binding variables cohabit while the outside placement remains
+frozen?
 
 Current campaign posture
 ------------------------
@@ -104,14 +109,19 @@ faithful to within 16 patterns. Its trust-region candidate improves both actual
 port-domain survival and component morphology. E010 then confirms a second broad
 reduction in exact mismatch, but every commodity remains positive.
 
-The next experiment combines the two earned resources rather than alternating
-blindly. Around E009, it maximizes exact free adjacency while imposing a contextual
-lower bound that preserves E009's selected-pattern linearization score, retains
-the current pole cap, and limits pose churn. A candidate is immediately measured
-by actual pattern survival, component-aware binding, and the mismatch atlas. If
-this jointly guarded step cannot improve the interface, the residual component
-condition moves into a smaller joint placement-binding model instead of another
-scalar objective.
+The jointly guarded scalar step is now complete. It proves that permeability,
+actual pattern survival, pole economy, and free-cell quantity can improve together,
+but E012 supplies the stop signal: exact component mismatch does not follow those
+proxies beyond the E009 point.
+
+The next experiment therefore changes the inner grouping. Exact routing remains
+downstream, but a bounded neighborhood around E009 must contain both pose choices
+and component-aware binding choices. The outside factory stays frozen. Residual
+mismatch witnesses choose the movable neighborhood; the local model must preserve
+front viability, duplicate-terminal rules, and exact component support for the
+affected commodities. Scalar resources survive only as hints or secondary
+objectives. If no small neighborhood carries enough causal boundary, the next
+representation is a solver-chosen global backbone rather than another local cut.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

@@ -1,0 +1,82 @@
+E011 RESULT: PROXY GUARDS CAN HOLD WHILE EXACT COMPONENT MISMATCH REGRESSES
+========================================================================
+
+Status
+------
+Completed as research-only construction evidence. A new placement-plus-power
+candidate was produced and evaluated at component-aware binding. Exact routing,
+strict validation, throughput, certification, U/L, owner, and publication effects
+remain absent.
+
+Frozen result
+-------------
+Terminal result:
+  research_lab/local/zero_condition/E011_guarded_joint_step/run-001/RESULT.json
+  sha256 8ccc4b94d988d4de21c2199d3c2d883f8301c27c38e230632a229bd5cc38ff4d
+
+Assignment:
+  research_lab/local/zero_condition/E011_guarded_joint_step/run-001/GUARDED_PERMEABILITY_ASSIGNMENT.json
+  sha256 06eb57dad02863be58107a64a76b68f39adf00e6ed028a0fbdd64328fc7c2c45
+
+Layout:
+  research_lab/local/zero_condition/E011_guarded_joint_step/run-001/GUARDED_PERMEABILITY_LAYOUT.json
+  sha256 1707b28d5b910fd69efd9c2192659b1aa951d8291d3c15e9d1f07ea566f814b7
+
+Verdict:
+  JOINT_STEP_FAITHFUL_CANDIDATE
+
+Construction contract
+---------------------
+E011 recomputes E009's selection-conditioned pattern/generic coefficients in the
+frozen E009 occupancy. It first builds the contextual weighted objective, then
+turns that objective into a hard lower-bound guard and clears it. The actual
+objective is exact adjacent-free-pair count.
+
+Additional restrictions:
+
+  E009 trust region retained: at most 20 selected literals may leave
+  contextual selected-pattern/generic score cannot fall
+  power poles cannot exceed 53
+  checked E001 pocket cut remains active
+
+The complete E009 pose/front/edge hint is supplied. Presolve is disabled and a
+60-second LNS searches around the known feasible point.
+
+Measured candidate
+------------------
+Compared with E009:
+
+                         E009     E011
+  occupied cells          3756     3736
+  free cells              1144     1164
+  free adjacency          1158     1187
+  free components           83       83
+  largest component        414      414
+  meaningful patterns    13390    13420
+  power poles               53       48
+
+The candidate gains 29 adjacent-free edges, 30 real meaningful binding patterns,
+20 free cells, and removes five optional power poles. The contextual pattern guard
+is therefore not merely satisfied syntactically; the independently rebuilt actual
+domain also improves.
+
+Component-aware binding remains INFEASIBLE. Exact routing is not reached.
+
+Execution reading
+-----------------
+The guarded joint step demonstrates that the two earned resources can be improved
+simultaneously inside one local construction context. This rules out the simple
+explanation that E009 had already reached a strict free-adjacency/port-exposure
+Pareto frontier.
+
+However, component count and largest-component size do not move. The candidate
+reorganizes local free edges and removes optional obstacles without changing the
+coarse component decomposition. Whether this helps the real component mismatch is
+not decided by E011 itself; E012 supplies that answer.
+
+Truth boundary
+--------------
+The selected-pattern guard is contextual to E009 occupancy. The candidate is one
+bounded LNS incumbent, not a global optimum. It proves placement plus power under
+the E001 cut and local research restrictions, not binding, routing, throughput,
+or complete-layout feasibility.
