@@ -1,0 +1,176 @@
+E001 RESULT: first checked pocket-judgment replay
+================================================
+
+Status
+------
+COMPONENT_SUPPORT_INFEASIBLE
+
+Authority
+---------
+Research-only. No U/L, production, certification, owner, seal, or publication
+effect.
+
+Frozen run identities
+---------------------
+Lowering audit:
+  local path:
+    research_lab/local/zero_condition/E001_pocket_cut_replay/audit-004/AUDIT.json
+  sha256:
+    0c67f9272b8ab42f43ebb1e13e440438df91242eb8f7dca3d772ba7011e0642c
+
+Full run:
+  local path:
+    research_lab/local/zero_condition/E001_pocket_cut_replay/run-002/RESULT.json
+  sha256:
+    aaf85e0b214c9253ee76240b57afcd7762a30fb368debaa1c88da483f9e3cf67
+
+Replacement assignment:
+  local path:
+    research_lab/local/zero_condition/E001_pocket_cut_replay/run-002/REPLACEMENT_ASSIGNMENT.json
+  sha256:
+    ac80efdf293b12d852b62355815eaaeec7df5ae53b5078a4db9af24a41b55e91
+
+Replacement layout:
+  local path:
+    research_lab/local/zero_condition/E001_pocket_cut_replay/run-002/REPLACEMENT_LAYOUT.json
+  sha256:
+    752fb1706dba76ded658775750eaa6ac9f6816500e678a07ad18c3fce7d69f97
+
+Research head used by the successful run:
+  156ae10c0606cebd34896463d2fbe9208e899f28
+
+Lowering result
+---------------
+The source certificate named these arbitrary extracted instances:
+
+  pose_optional::power_pole::p_x23_y48_o0_m_omni  pose 1635
+  refinery_blue_iron_033                            pose 5422
+  refinery_blue_iron_034                            pose 5702
+  refinery_steel_015                                pose 6494
+
+The pose-bool master does not have named-instance variables for mandatory
+symmetric members. E001 explicitly proved the transport into four distinct
+consumer literals:
+
+  optional power-pole pose 1635
+  refinery_blue_iron group pose 5422
+  refinery_blue_iron group pose 5702
+  refinery_steel group pose 6494
+
+The two blue-iron names both belong to the same 34-member mandatory group; the
+steel name belongs to a 17-member group. All seven lowering obligations passed,
+the parent selected all four semantic occupancies, and the master constraint
+count increased by exactly one:
+
+  variables:          327173
+  constraints before: 918731
+  constraints after:  918732
+
+Consumer form:
+
+  sum(the four distinct group/optional pose-presence literals) <= 3
+
+Master replacement
+------------------
+The cut-augmented no-ghost placement-plus-power master returned OPTIMAL:
+
+  build seconds: 46.48144115100149
+  solve seconds: 191.9753331199754
+  conflicts: 4
+  branches: 11937
+  propagations: 2999877
+
+The replacement preserved the three manufacturing poses and moved only the pole
+at the representation-faithful group-pose level:
+
+  removed power-pole pose 1635, anchor (23,48)
+  added   power-pole pose 1704, anchor (24,48)
+
+Thus the local judgment had real leverage, but the cheapest repair was a one-cell
+pole translation rather than a reorganization of the manufacturing cluster.
+
+Interface attribution ladder
+----------------------------
+Fixed replacement occupancy:
+
+  occupied cells:        3800
+  free cells:            1100
+  free components:       97
+  largest free component: 405
+
+Stage 1, static port-domain compilation:
+
+  status: FEASIBLE
+  raw binding patterns: 17056
+  surviving patterns:   12955
+  front-blocked pruned:   4101
+  empty owner domains:       0
+  solve seconds: 0.020630560989957303
+
+Stage 2, duplicate terminal-key exclusion:
+
+  status: FEASIBLE
+  added duplicate constraints: 1555
+  solve seconds: 0.34366174502065405
+
+Stage 3, commodity component support:
+
+  status: INFEASIBLE
+  component-rule constraints: 384
+  solve seconds: 0.0033315879991278052
+
+Exact simultaneous routing was therefore not reached. The first rejecting family
+is component support, not occupied fronts and not terminal-key duplication.
+
+What changed in the research model
+----------------------------------
+1. The four-pose cut is not merely a point-nogood curiosity. One verified local
+   judgment changed the master candidate and moved the observed death one layer
+   downstream.
+
+2. Static port viability and terminal uniqueness are cheap enough, and share
+   enough variables with binding, to live before exact routing for fixed-layout
+   diagnosis.
+
+3. The next explanation should be a commodity/component core and then an
+   obstacle cause. Adding more full binding-selection nogoods would throw away
+   the information just exposed.
+
+Latent problems exposed
+-----------------------
+A. Implicit object-space transport
+
+  Historical certificates can name symmetric mandatory instances while the
+  pose-bool consumer acts on quotient group-pose occupancies. A true certificate
+  does not automatically authorize that lowering. New outer-loop judgments
+  should prefer the consumer's semantic literal space or carry an explicit
+  transport proof.
+
+B. Misleading layout-difference metric
+
+  Named-instance pose churn is not invariant under symmetric extraction, while
+  pose-derived optional IDs can hide a physical move as deletion plus addition.
+  Group-pose set difference is the faithful comparison for this representation.
+
+C. Unsafe native checker surface
+
+  OR-Tools 9.15 with Python 3.13 reproducibly SIGSEGVed inside
+  cp_model_helper when ConstraintProto.has_linear() inspected the last constraint
+  of this large model. The same call worked on a toy model and raised no Python
+  exception on failure. Large-proto native child inspection must not be used as a
+  fail-closed checker surface without an isolated crash boundary. E001 replaced
+  it with pinned consumer source, distinct resolved variables, and exact
+  constraint-count delta.
+
+Truth boundary
+--------------
+E001 proves neither a whole-layout witness nor no-ghost infeasibility. It proves a
+checked lowering for one research judgment, measures that judgment's effect on
+one master solve, and locates the replacement's first interface rejection in the
+frozen compiled model.
+
+Next live question
+------------------
+Which commodity, free component, and minimal placement obstacle set make the E001
+replacement component-infeasible, and can that cause be expressed directly in
+group-semantic literals for the next master replay?

@@ -144,4 +144,20 @@ Decision effect
 
 Result
 ------
-Not run yet.
+Completed at research head 156ae10c0606cebd34896463d2fbe9208e899f28.
+
+The checked instance-to-group lowering passed and added exactly one master
+constraint. The no-ghost placement-plus-power master found an OPTIMAL replacement
+in 191.98 seconds by moving the implicated power pole one cell right while
+retaining the three manufacturing poses.
+
+The replacement passed static port-domain compilation and duplicate terminal-key
+exclusion, then became INFEASIBLE when commodity component-support rules were
+enabled. Exact routing was not reached.
+
+Durable result and exact local-output identities:
+
+  RESULT.txt
+
+The next question is commodity/core localization of this component failure, not
+another full binding-selection nogood.

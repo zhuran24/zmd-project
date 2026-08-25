@@ -147,6 +147,89 @@ evidence:
   BLUE_IRON_POCKET_CUT_CERTIFICATE and independent checker identities in
   INPUTS.txt.
 
+R-ZC-006  One checked pocket judgment moves the death downstream
+-----------------------------------------------------------------
+status: measured with checked research-only lowering
+scope: E001 no-ghost pose-bool master replay at research head 156ae10
+
+statement:
+  The independently proved four-pose blue-iron pocket judgment was transported
+  from named-instance evidence to four distinct pose-bool group/optional
+  literals, then attached as exactly one constraint. The master returned an
+  OPTIMAL replacement in 191.98 seconds. At the group-pose level the replacement
+  changed only the power pole: pose 1635 at anchor (23,48) moved to pose 1704 at
+  anchor (24,48).
+
+non-implications:
+  The replacement is a placement-plus-power intermediate, not a whole-layout
+  witness. One successful replay does not establish a general pocket family or
+  production-cut utility.
+
+effect on next problem:
+  Retain the checked judgment/lowering split. Judge the replacement with an
+  ordered interface ladder rather than reverting to a full-selection nogood.
+
+evidence:
+  E001 RESULT.txt; local RESULT.json sha256
+  aaf85e0b214c9253ee76240b57afcd7762a30fb368debaa1c88da483f9e3cf67.
+
+R-ZC-007  The E001 replacement first dies at component support
+----------------------------------------------------------------
+status: measured and solver-refuted inside the fixed replacement model
+scope: E001 replacement occupancy and compiled binding interface
+
+statement:
+  Static port-domain compilation is FEASIBLE after pruning 4101 of 17056 raw
+  patterns, leaving 12955 and no empty owner domain. Adding 1555 duplicate
+  terminal-key constraints remains FEASIBLE. Adding 384 commodity
+  component-support rules makes the binding model INFEASIBLE in 0.0033 seconds.
+  Exact routing is not reached.
+
+non-implications:
+  The result does not identify the responsible commodity or placement obstacle.
+  It does not show that terminal uniqueness is globally irrelevant; it only
+  survives this fixed layout.
+
+effect on next problem:
+  Extract an inclusion-minimal commodity core, then explain its source/sink
+  component separation in placement literals. Do not add more point binding
+  nogoods before that explanation exists.
+
+evidence:
+  E001 RESULT.txt and frozen local output identities recorded there.
+
+R-ZC-008  Three hidden representation/checker hazards are now explicit
+-----------------------------------------------------------------------
+status: reproduced or mechanically demonstrated
+scope: current pose-bool research pipeline and E001 instrumentation
+
+statement:
+  First, a certificate naming symmetric mandatory instances does not directly
+  inhabit the pose-bool consumer's group-pose literal space; an explicit
+  permutation-invariant transport is required. Second, named-instance churn is
+  not a representation-invariant layout distance, and pose-derived optional IDs
+  can hide a move as delete/add; group-pose set difference is the faithful
+  measure. Third, OR-Tools 9.15/Python 3.13 reproducibly SIGSEGVed in
+  ConstraintProto.has_linear() on the large E001 model while the same API worked
+  on a toy model, so native proto-child introspection is not a safe in-process
+  fail-closed checker surface here.
+
+non-implications:
+  The native crash does not imply CP-SAT solve unsoundness. The object-space and
+  distance findings do not invalidate the source pocket theorem; they constrain
+  how it may be consumed and measured.
+
+effect on next problem:
+  New judgments should use group-semantic literals when the consumer has already
+  quotiented symmetry. Layout comparisons should report group-pose deltas.
+  Native model introspection used for critical checking must be isolated or
+  replaced by safer construction evidence.
+
+evidence:
+  E001 lowering audit sha256
+  0c67f9272b8ab42f43ebb1e13e440438df91242eb8f7dca3d772ba7011e0642c;
+  two kernel coredumps from the failed audit attempts; E001 RESULT.txt.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

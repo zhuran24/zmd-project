@@ -20,37 +20,42 @@ placement, but downstream evidence shows that the old placement / binding /
 routing partition transports too little of the actual topological cause of death.
 
 The decisive research update is no longer merely "routing is hard". Fixed-layout
-probes show three progressively sharper facts:
+probes and the first checked feedback replay now show a causal progression:
 
   * complete binding selections can be rejected immediately by blocked fronts;
   * after front filtering, coarse free-space component support can make binding
     itself infeasible before exact routing starts;
-  * for the current A1 layout, blue_iron_block alone is an inclusion-minimal
-    commodity core, and a three-cell closed pocket yields a sound four-pose
-    research nogood under the frozen semantics.
+  * for A1, blue_iron_block alone is an inclusion-minimal commodity core, and a
+    three-cell closed pocket yields a sound four-pose judgment;
+  * E001 transported that judgment into group-semantic pose-bool literals and
+    changed the master candidate with one constraint: only the implicated power
+    pole moved one cell right;
+  * the replacement passes static port domains and terminal uniqueness, then
+    becomes INFEASIBLE at commodity component support before exact routing.
 
 This is enough to reopen the binding-to-routing seam as a derived research
-object. The current layer count and cut packaging are not presumed correct.
+object. The old point-nogood package is no longer the default feedback language,
+and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-What is the smallest problem-derived repartition that lets placement, power
-obstacles, port-domain facts, component support, and exact routing exchange enough
-information to produce a whole layout without rebuilding one monolithic model?
+Which commodity, free component, and minimal placement obstacle set make the E001
+replacement component-infeasible, and can that cause be expressed directly in
+group-semantic literals for the next master replay?
 
 Current campaign posture
 ------------------------
-No detailed multi-step plan is frozen. The next experiment should distinguish
-among competing explanations of the next candidate's death:
+No detailed multi-step plan is frozen. The current replacement has already distinguished the first interface wall:
+component support, not front occupancy or duplicate terminal keys. The next
+experiment therefore narrows that wall by commodity assumptions and then by
+placement obstacles. If a small obstacle cause survives independent replay, it
+becomes the next checked judgment; if the cause is broad and diffuse, the
+representation must shift toward explicit permeable-space structure instead of
+accumulating local cuts.
 
-  local forced-port pocket
-  global free-space fragmentation
-  component support failure
-  true simultaneous multi-commodity routing conflict
-
-The experiment should serve the zero-condition witness directly. General outer-
-loop lessons are welcome outputs, but method validation must not displace the
-whole-layout campaign.
+The experiment must continue to serve the zero-condition witness directly.
+General outer-loop lessons are welcome outputs, but method validation must not
+displace the whole-layout campaign.
 
 Architecture status
 -------------------
