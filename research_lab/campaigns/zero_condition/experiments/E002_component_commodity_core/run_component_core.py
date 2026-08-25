@@ -598,7 +598,23 @@ def solve_with_enabled(
         else guards[commodity].Not()
         for commodity in all_commodities
     ]
+    expected_assumption_indices = [int(literal.Index()) for literal in assumptions]
     model.AddAssumptions(assumptions)
+    actual_assumption_indices = [int(value) for value in model.Proto().assumptions]
+    if actual_assumption_indices != expected_assumption_indices:
+        raise RuntimeError(
+            "CP-SAT assumption surface drift: "
+            f"actual={actual_assumption_indices}, expected={expected_assumption_indices}"
+        )
+    assumption_records = [
+        {
+            "commodity": commodity,
+            "enabled": commodity in enabled,
+            "guard_index": int(guards[commodity].Index()),
+            "assumption_literal_index": int(literal.Index()),
+        }
+        for commodity, literal in zip(all_commodities, assumptions, strict=True)
+    ]
     started = time.monotonic()
     status = binding_model.solve(time_limit_seconds=SOLVE_CAP_SECONDS)
     elapsed = time.monotonic() - started
@@ -612,14 +628,23 @@ def solve_with_enabled(
         "wall_time": float(solver.WallTime()) if solver is not None else 0.0,
         "branches": int(solver.NumBranches()) if solver is not None else None,
         "conflicts": int(solver.NumConflicts()) if solver is not None else None,
+        "assumption_literals": assumption_records,
+        "model_assumption_indices": actual_assumption_indices,
     }
     if status == "FEASIBLE":
         selection = binding_model.extract_selection()
         result["selection_digest"] = canonical_digest(selection)
     if status == "INFEASIBLE" and solver is not None:
-        result["sufficient_assumptions"] = [
+        sufficient = [
             int(value) for value in solver.SufficientAssumptionsForInfeasibility()
         ]
+        unknown_core_literals = sorted(set(sufficient) - set(actual_assumption_indices))
+        if unknown_core_literals:
+            raise RuntimeError(
+                "solver returned sufficient literals outside the active assumptions: "
+                f"{unknown_core_literals}"
+            )
+        result["sufficient_assumptions"] = sufficient
     return result
 
 
