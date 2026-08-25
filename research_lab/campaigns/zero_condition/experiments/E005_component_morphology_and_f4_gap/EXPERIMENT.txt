@@ -1,0 +1,95 @@
+EXPERIMENT E005: component morphology and the F4 consumption gap
+=================================================================
+
+Question
+--------
+Why did a project that already had a family named component_reach fail to turn
+years of disconnected-routing evidence into a changed placement/binding
+interface?
+
+Do A1 and its one-cut E001 replacement expose a small reusable component
+morphology, or only superficially similar shapes whose causal obstacle semantics
+are too diverse for a sound local family?
+
+Cheapest faithful test
+----------------------
+E005 has two independent halves.
+
+The morphology half reconstructs the exact free-cell components of A1 and E001,
+then measures:
+
+  exact cell-set persistence across the one-pole repair
+  translation-normalized free-cell shape families
+  translation-normalized boundary-cell semantic families
+  translation-normalized owner/pose semantic families
+  line-component and small-component prevalence
+  coverage of E004 optimum mismatch observations
+
+The architecture half pins and inspects the actual F4 oracle, validator, typed
+registry, lifecycle, and Benders state/attach path. It asks separately whether:
+
+  the mathematical disconnection rule exists
+  the live state supplies the rule's required objects
+  the live orchestrator invokes the family
+  the family carries a causal placement object
+  a compiler can lower the result into the master
+  the object matches selectable multi-terminal binding rather than one fixed pair
+
+Competing readings
+------------------
+A. A few full semantic boundary motifs cover most mismatch components, and F4
+   already has a usable causal lowering. The right next move is to enable or
+   repair the existing family.
+
+B. Free-cell shapes compress strongly but full causal boundary semantics do not;
+   F4 proves only fixed-state endpoint disconnection and has no live consumer.
+   Shape-only point cuts would be unsound or too numerous. The next representation
+   should be a positive permeability objective/restriction, while local causal
+   families remain secondary products when a small exact boundary repeats.
+
+C. Even free-cell shapes form a broad long tail. Local family compilation has no
+   leverage and the project should move directly to a positive global topology
+   representation.
+
+Frozen inputs
+-------------
+A1 layout:
+  /home/zhuran24/zmd-pj/.artifacts/lowerbound_ladder_20260824/phaseA1_noghost_master/MASTER_LAYOUT_A1.json
+  sha256 9e545fdf29e55978a8237fc4c1f1183f9643abfe04b6e8d2a8a5319c31c4df83
+
+E001 replacement layout:
+  research_lab/local/zero_condition/E001_pocket_cut_replay/run-002/REPLACEMENT_LAYOUT.json
+  sha256 752fb1706dba76ded658775750eaa6ac9f6816500e678a07ad18c3fce7d69f97
+
+E004 mismatch atlas:
+  research_lab/local/zero_condition/E004_component_mismatch_atlas/run-001/RESULT.json
+  sha256 490349a2778c46f7d209e199d7da34b73649d0ddcb5095a837731423a8460a69
+
+F4 and integration sources are hash-pinned in run_e005.py.
+
+Truth boundary
+--------------
+Morphology counts are exact for the two fixed layouts. An E004 mismatch component
+is counted once for each optimum commodity witness in which it appears. Full
+boundary semantic signatures are diagnostic equivalence classes, not proved
+logical equivalence classes for future layouts.
+
+The architecture audit proves what the pinned code can and cannot consume. It
+does not prove that every possible future F4 redesign is inadequate.
+
+Decision effect
+---------------
+High shape compression plus low causal compression and a missing F4 consumer
+selects a positive, solver-chosen permeability proxy as the next constructive
+probe. High full-semantic compression would instead select a parametric local
+separator compiler. A live complete F4 path would redirect effort to repairing
+that path rather than creating a parallel mechanism.
+
+Result
+------
+Completed with verdict
+SHAPE_COMPRESSIBLE_CAUSAL_LONG_TAIL_POSITIVE_PERMEABILITY_NEXT. Ninety-five of
+98 A1 components persist exactly after E001; the top 10 geometric shapes cover
+75.1% of mismatch observations, while the top 10 full owner/pose boundary
+signatures cover only 27.4%. The pinned live F4 path is missing its state,
+generator call, compiler, and step-8 consumer. See RESULT.txt.

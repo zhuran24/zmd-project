@@ -39,7 +39,10 @@ probes and the first checked feedback replay now show a causal progression:
     that diagnostic API is excluded from future proof-bearing use in this runtime;
   * E004 removes hard component equalities, minimizes component mismatch in 19
     fresh models, and still proves a positive optimum for every commodity (4 to
-    32 mismatches), with every optimum witness agreeing with production precheck.
+    32 mismatches), with every optimum witness agreeing with production precheck;
+  * E005 shows 95 of A1's 98 components survive E001 unchanged, component shapes
+    compress strongly but exact boundary causes do not, and the historical F4
+    path has mathematics without live state, generator, compiler, or consumer.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -47,10 +50,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Do the 97 free-space components of A1 and the E001 one-cut replacement collapse
-into a few translation-equivalent island/separator morphologies, or is their
-boundary structure too diverse for local family cuts and therefore better
-represented by a positive solver-chosen permeability resource?
+Can a positive, solver-chosen free-cell adjacency objective produce a no-ghost
+placement with substantially fewer components and lower component mismatch than
+A1/E001 without imposing a fixed corridor topology, and does that candidate reach
+component-aware binding or exact routing?
 
 Current campaign posture
 ------------------------
@@ -64,12 +67,19 @@ commodities remain fragmented even when binding optimizes for one commodity at a
 time. The observed optimum boundaries are mixed: many have only 3 to 10 owners,
 while components touching the main 405-cell region can have 154.
 
-The next experiment therefore compares component morphology before and after the
-one-pole E001 repair. Translation-normalized free-cell shapes, relative boundary
-patterns, and mismatch coverage decide the representation. High compression into
-a few repeated motifs earns a family compiler. A diverse long tail, or near-total
-persistence from A1 to E001, shifts work toward a positive permeability or
-variable-backbone construction layer rather than more local cuts.
+E005 has selected the representation fork. The one-cut repair changed only three
+old components into two new ones; 95 exact components and their boundary semantics
+survived. Geometric symptoms repeat, but full causal motifs remain a long tail.
+The existing F4 cannot consume the actual object.
+
+The next experiment therefore adds a research-only objective to the unchanged
+no-ghost placement-plus-power master: maximize adjacent pairs of free cells. This
+is a problem-derived permeability surrogate, not a fixed shelf or corridor. A
+candidate is judged first by component count, largest component, and E004-style
+mismatch, then immediately by component-aware binding and exact routing if it
+survives. Failure to improve morphology sends the representation back for a
+stronger positive structure; improvement without binding survival reveals the
+next missing topological statistic.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

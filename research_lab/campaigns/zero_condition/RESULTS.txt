@@ -311,6 +311,58 @@ evidence:
   E004 RESULT.txt; local RESULT.json sha256
   490349a2778c46f7d209e199d7da34b73649d0ddcb5095a837731423a8460a69.
 
+R-ZC-012  Component shapes repeat, but exact causal boundaries form a long tail
+-----------------------------------------------------------------------------
+status: exact morphology measurement on A1, E001, and E004 witness observations
+scope: two fixed no-ghost placement geometries
+
+statement:
+  Ninety-five of A1's 98 free components persist as identical absolute cell sets
+  with identical boundary semantics after E001 moves one power pole. E001 has 97
+  components; 80.4% are one-cell-wide lines and 95.9% have size at most 20. The
+  top 10 translation-normalized shapes cover 75.1% of E004 mismatch observations,
+  but the top 10 owner/pose semantic boundary signatures cover only 27.4%.
+
+non-implications:
+  Repeated shape does not imply repeated placement cause. Shape identity alone is
+  not a sound cut, and the result does not prove a fixed corridor or backbone
+  necessary.
+
+effect on next problem:
+  Local exact obstacle judgments remain secondary, but the main constructive
+  response should be a positive solver-chosen permeability proxy rather than a
+  long list of shape cuts.
+
+evidence:
+  E005 RESULT.txt; local RESULT.json sha256
+  67f08d79d26c3d7f121995fd8282c3c0c0f0c356c3c5144b4c16ece3e6f2b71f.
+
+R-ZC-013  Historical F4 validates a neighboring object and has no live consumer
+-------------------------------------------------------------------------------
+status: source-identity-pinned architecture audit
+scope: current research revision's F4, typed platform, lifecycle, and Benders path
+
+statement:
+  The F4 BFS-disconnection theorem and validator exist, but the live path excludes
+  the family, builds BState with empty cell_owner and no commodity_routes, omits
+  its oracle capability and generator call, provides no compiler, and gives step
+  8 no F4 master-domain projection. F4 also requires a non-null ghost, represents
+  one fixed src/sink pair per commodity, emits no blocking-facility cause, and
+  rejects ghost-agnostic scope. The actual wall is selectable multi-terminal
+  component compatibility in a no-ghost layout.
+
+non-implications:
+  This does not refute the BFS theorem or prove that no future F4 successor can be
+  useful. It explains why the existing family could not change placement.
+
+effect on next problem:
+  Do not confuse a validator with a consumed rule family. A successor must either
+  carry a proved group/pose cause into placement or expose a positive placement
+  resource. The next probe chooses the latter without fixing its shape.
+
+evidence:
+  E005 RESULT.txt and its pinned source-coordinate audit.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

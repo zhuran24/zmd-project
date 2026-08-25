@@ -1,0 +1,123 @@
+E005 RESULT: F4 HAS MATHEMATICS BUT NO LIVE CONSUMPTION PATH
+============================================================
+
+Status
+------
+Completed as research-only architecture and morphology evidence. No solver
+mutation, cut attachment, exact routing, certification, U/L, owner, or
+publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E005_component_morphology_and_f4_gap/run-001/RESULT.json
+
+SHA-256:
+  67f08d79d26c3d7f121995fd8282c3c0c0f0c356c3c5144b4c16ece3e6f2b71f
+
+Size:
+  124,613 bytes
+
+Verdict:
+  SHAPE_COMPRESSIBLE_CAUSAL_LONG_TAIL_POSITIVE_PERMEABILITY_NEXT
+
+Morphology
+----------
+A1 contains 1,100 free cells in 98 components. Its free-free adjacency score is
+1,080.
+
+After the E001 one-pole repair, the same 1,100 free cells form 97 components and
+the free-free adjacency score rises by only one, to 1,081.
+
+Ninety-five components persist as exactly the same absolute cell sets. All 95
+also retain the same owner/pose boundary semantics. Only three A1 components
+disappear and two E001 components appear. The local repair therefore changed the
+local pocket while leaving 96.9% of the original component decomposition intact.
+
+E001 component morphology:
+
+  80.4% are one-cell-wide lines
+  95.9% contain at most 20 free cells
+  48.5% touch at least one power-pole body
+
+Among E004's 281 optimum mismatch observations:
+
+  72.2% are one-cell-wide lines
+  91.1% contain at most 20 free cells
+  40.9% touch at least one power-pole body
+
+Translation-normalized shape is highly compressible:
+
+  29 exact-orientation shape families
+  top 10 shapes cover 75.1% of mismatch observations
+  top 10 dihedral shapes cover 77.2%
+
+But exact causal boundary semantics are not similarly compressed:
+
+  87 owner/pose semantic families
+  top 10 cover only 27.4% of mismatch observations
+
+Thus the free-space symptom repeats strongly, while the exact surrounding
+operation/pose causes form a long tail. Shape equality alone cannot safely become
+a placement cut.
+
+What F4 actually is
+-------------------
+The historical F4 component_reach family contains a valid mathematical core:
+for one fixed source cell and one fixed sink cell in one fixed free-cell graph,
+BFS disconnection proves there is no path.
+
+The live integration path, however, lacks every material consumption link checked
+by E005:
+
+  1. F4 is absent from the live enabled family set.
+  2. The production BState builder writes cell_owner={}.
+  3. It supplies no commodity_routes registry.
+  4. component_reach_v1 is absent from available_oracle_versions.
+  5. The attach orchestrator never imports or calls its generator.
+  6. The typed capability is VALIDATED / LEGACY_DIAGNOSTIC with no compiler.
+  7. Step 8 recognizes only region_capacity, shape_packing_hall, and
+     power_hitting_set master-domain projections.
+
+There are two further object-space mismatches:
+
+* F4 requires a non-null ghost and explicitly rejects ghost-agnostic scope, so it
+  cannot even represent the current zero-condition no-ghost campaign.
+* Its registry schema is one fixed src/sink pair per commodity. The current wall
+  is a selectable set of many source and sink terminals whose components depend
+  jointly on binding choices and placement.
+
+Finally, the current generator emits blocking_facilities=[] and the geometric
+validator deliberately ignores facility identities. This is sufficient to
+validate a fixed-state disconnection, but it carries no causal group/pose object
+that a master compiler could change.
+
+Interpretation
+--------------
+The project did not ignore a working F4 cut. It built a validator for a neighboring
+mathematical statement, but never built the state, object transport, compiler, or
+consumer needed by the actual binding/placement problem.
+
+This explains how the repository could contain years of component-reach code while
+rules, layer boundaries, and master feedback remained almost unchanged. Family
+existence was mistaken for knowledge consumption.
+
+Decision effect
+---------------
+Do not merely enable F4 and do not emit cuts from shape identity alone.
+
+The next constructive probe is a positive, solver-chosen permeability surrogate:
+maximize the number of adjacent free-cell pairs in the no-ghost master. This
+responds directly to the repeated one-cell strip morphology without prescribing a
+fixed shelf, frame, corridor, or backbone shape.
+
+Exact small obstacle causes remain useful secondary judgments when independently
+proved. They should not be expected to dissolve a decomposition that survived
+96.9% unchanged after the first local repair.
+
+Truth boundary
+--------------
+The morphology is exact for A1, E001, and the E004 selected optimum witnesses. The
+F4 findings are exact for the hash-pinned source revision. Diagnostic morphology
+signatures are not soundness proofs for future cut families, and this result does
+not prove a permeability objective sufficient for routing.
