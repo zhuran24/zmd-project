@@ -1,0 +1,96 @@
+EXPERIMENT E006: positive free-adjacency master objective
+========================================================
+
+Question
+--------
+Can the unchanged no-ghost placement-plus-power master, while retaining the
+proved E001 pocket cut, choose a substantially more permeable geometry when it is
+asked to maximize adjacent pairs of free cells?
+
+Why this objective
+------------------
+A1 and E001 each leave exactly 1,100 free cells, but only 1,080/1,081 adjacent
+free-cell edges. E005 shows that 80.4% of E001 components are one-cell-wide lines,
+95.9% have size at most 20, and 95 of A1's 98 components survive the first local
+repair unchanged.
+
+Maximizing free-free adjacency rewards the master for consolidating free space
+without prescribing a shelf, frame, corridor location, component count, or
+backbone shape. It is a sufficient construction heuristic, not a necessary
+condition and not a cut.
+
+Change under test
+-----------------
+After building the ordinary pose-bool no-ghost master and attaching exactly the
+already checked E001 four-literal cut:
+
+  for each grid cell, occupancy is the existing at-most-one sum of pose literals;
+  for each horizontal or vertical neighboring cell pair, add one Boolean that is
+  exactly one iff both cells are free;
+  maximize the sum of the 9,660 neighboring-pair Booleans.
+
+The E001 replacement is supplied as a known feasible hint. No fixed corridor or
+additional placement restriction is introduced.
+
+Competing readings
+------------------
+A. The solver finds a candidate with a large adjacency improvement and sharply
+   fewer components. The master can respond to a positive permeability signal;
+   immediately test component-aware binding and exact routing.
+
+B. Adjacency improves, but component count or mismatch remains poor. Pairwise
+   adjacency is too local; the next positive statistic must expose articulation,
+   main-component terminal support, or an explicit variable backbone.
+
+C. The solver cannot improve the E001 incumbent within the bounded run. This is
+   UNKNOWN about the global objective, but it shows the current encoding/search
+   cannot cheaply consume this proxy. Try a staged or local-repair formulation,
+   not a stronger claim.
+
+D. The objective produces a candidate that regresses the proved pocket cut,
+   placement/power semantics, or recomputed objective identity. This is execution
+   failure.
+
+Frozen inputs
+-------------
+E001 replacement assignment:
+  research_lab/local/zero_condition/E001_pocket_cut_replay/run-002/REPLACEMENT_ASSIGNMENT.json
+  sha256 ac80efdf293b12d852b62355815eaaeec7df5ae53b5078a4db9af24a41b55e91
+
+E001 source judgment and lowering:
+  ../E001_pocket_cut_replay/JUDGMENT.json
+  ../E001_pocket_cut_replay/LOWERING_CONTRACT.json
+
+The runner pins the E001 certificate, candidate pool, rules, mandatory instances,
+generic I/O requirements, preprocess plan, master sources, and E001 replay code.
+
+Budget
+------
+Master wall cap: 240 seconds, 8 CP-SAT workers, automatic search, fixed seed.
+
+The run may return FEASIBLE with an incumbent and an open objective bound. Such a
+candidate is valid for downstream research, but no optimality claim is made.
+
+Truth boundary
+--------------
+A candidate proves only placement plus power under the ordinary no-ghost master,
+the E001 cut, and the stated objective encoding. Free adjacency is a heuristic
+quality measure. It does not imply component-aware binding, routing, throughput,
+or a complete layout.
+
+Decision effect
+---------------
+A materially better geometry is immediately sent to the interface ladder. A
+small or absent improvement keeps the positive-permeability direction but changes
+the representation or search decomposition. No result licenses a production
+objective or necessary cut.
+
+Result
+------
+Completed with a research-only FEASIBLE candidate. The ordinary exact-master
+solve path spent its budget in presolve and returned UNKNOWN without registering
+the known-feasible hint. A presolve-disabled, complete-hint LNS recovery retained
+the same objective semantics and found objective 1166 versus E001's 1081,
+reducing free components from 97 to 91 and selected power poles from 64 to 54.
+See RESULT.txt for identities, execution-container interpretation, and truth
+boundary.

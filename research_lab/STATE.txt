@@ -42,7 +42,10 @@ probes and the first checked feedback replay now show a causal progression:
     32 mismatches), with every optimum witness agreeing with production precheck;
   * E005 shows 95 of A1's 98 components survive E001 unchanged, component shapes
     compress strongly but exact boundary causes do not, and the historical F4
-    path has mathematics without live state, generator, compiler, or consumer.
+    path has mathematics without live state, generator, compiler, or consumer;
+  * E006 turns permeability into a positive construction signal: a complete-hint
+    LNS raises free adjacency from 1081 to 1166, reduces components from 97 to 91,
+    and removes ten unpriced residual power poles, producing a new master candidate.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -50,10 +53,9 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Can a positive, solver-chosen free-cell adjacency objective produce a no-ghost
-placement with substantially fewer components and lower component mismatch than
-A1/E001 without imposing a fixed corridor topology, and does that candidate reach
-component-aware binding or exact routing?
+Does the E006 permeability candidate pass fresh component-aware binding and reach
+exact routing, and if it remains component-infeasible, which mismatch statistic
+failed to improve despite the higher adjacency score and fewer optional obstacles?
 
 Current campaign posture
 ------------------------
@@ -72,14 +74,18 @@ old components into two new ones; 95 exact components and their boundary semanti
 survived. Geometric symptoms repeat, but full causal motifs remain a long tail.
 The existing F4 cannot consume the actual object.
 
-The next experiment therefore adds a research-only objective to the unchanged
-no-ghost placement-plus-power master: maximize adjacent pairs of free cells. This
-is a problem-derived permeability surrogate, not a fixed shelf or corridor. A
-candidate is judged first by component count, largest component, and E004-style
-mismatch, then immediately by component-aware binding and exact routing if it
-survives. Failure to improve morphology sends the representation back for a
-stronger positive structure; improvement without binding survival reveals the
-next missing topological statistic.
+E006 has now produced the candidate rather than merely proposing the proxy. The
+first monolithic objective solve spent its budget in presolve; the same semantic
+objective, carried by a complete-hint LNS container, found a geometry with 85 more
+free adjacencies, six fewer components, and ten fewer power poles. This separates
+where the knowledge belongs from which solver container can consume it.
+
+The next experiment is the real-interface test. It rebuilds front filtering,
+duplicate-terminal exclusion, and all commodity component rules from scratch on
+the E006 layout. FEASIBLE goes immediately to production precheck and exact
+routing. INFEASIBLE triggers a new mismatch atlas against E004, asking whether
+adjacency improved the wrong topology statistic or merely not enough of the right
+one.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

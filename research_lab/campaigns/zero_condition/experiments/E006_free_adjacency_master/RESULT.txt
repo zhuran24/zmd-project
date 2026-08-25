@@ -1,0 +1,135 @@
+E006 RESULT: POSITIVE PERMEABILITY SIGNAL WORKS IN THE RIGHT CONTAINER
+=====================================================================
+
+Status
+------
+Completed as research-only construction evidence. A new placement-plus-power
+candidate was produced. Binding, exact routing, strict validation, throughput,
+certification, U/L, owner, and publication effects remain absent.
+
+Frozen candidate
+----------------
+Terminal recovery result:
+  research_lab/local/zero_condition/E006_free_adjacency_master/run-003/RESULT.json
+  sha256 e3ce1ad7f557c1ee52c45588f9bc4ede701939fa444f9c7653157be71551d7d5
+
+Assignment:
+  research_lab/local/zero_condition/E006_free_adjacency_master/run-003/PERMEABILITY_ASSIGNMENT.json
+  sha256 29692d8465374498100e6f58069c92eabb69460d8fc742912ec0984877218b43
+
+Layout:
+  research_lab/local/zero_condition/E006_free_adjacency_master/run-003/PERMEABILITY_LAYOUT.json
+  sha256 dd228aa137651251f63e8b473579d371d78b28781de4fd76518681eec830edd8
+
+Verdict:
+  RECOVERY_PERMEABILITY_CANDIDATE
+
+What was changed
+----------------
+The ordinary no-ghost placement-plus-power pose-bool master retained the checked
+E001 four-literal pocket cut. For each horizontal or vertical neighboring cell
+pair, E006 added a Boolean that is exactly true iff both cells are free, and
+maximized the sum of the 9,660 such Booleans.
+
+This is a sufficient construction heuristic. It does not assert that every
+routable layout must maximize or meet any free-adjacency threshold, and it fixes
+no corridor, shelf, frame, or backbone location.
+
+Three execution readings
+------------------------
+Run 001 used the ordinary MasterPlacementModel.solve path with default presolve.
+The 9,660 edge variables and 28,980 constraints expanded the model to 336,833
+variables and 947,712 constraints. The 190.9-second solve returned UNKNOWN with
+zero branches and zero conflicts; the known-feasible E001 hint was not registered.
+This is an execution-container failure, not evidence against the objective.
+
+Run 002 disabled presolve and supplied complete values for pose, front-clear, and
+edge variables. The solver independently reported:
+
+  The solution hint is complete and is feasible. Its objective value is 1081.
+
+It registered the 1081 incumbent at 17.28 seconds and started search at 19.25
+seconds. The surrounding tool call was interrupted before a terminal result, so
+this run is diagnostic only.
+
+Run 003 kept the same exact objective and complete hint, disabled the expensive
+presolve path, and used bounded LNS around the known feasible incumbent. It
+returned FEASIBLE with objective 1166 after a 63.5-second solver wall. No
+optimality is claimed; the reported best bound remained 9660.
+
+Geometry change
+---------------
+Compared with the E001 replacement:
+
+                         E001     E006
+  occupied cells          3800     3760
+  free cells              1100     1140
+  free adjacency          1081     1166
+  free components           97       91
+  largest component        405      405
+  selected placements      330      320
+  selected power poles      64       54
+
+The candidate improves free adjacency by 85 and reduces component count by six.
+It does not enlarge the 405-cell main component; the gain comes from reorganizing
+smaller regions and removing optional obstacles.
+
+The change is not a one-pole repair. All 17 mandatory operation groups change
+selected pose sets, and the power-pole set changes substantially. The E001
+four-literal cut is respected: all four source literals evaluate to zero in the
+candidate.
+
+Latent construction problem
+---------------------------
+The historical no-objective master selected 64 residual power poles. E006 found a
+placement satisfying the same master-level power semantics with 54 poles. The
+pose-bool formulation intentionally allows residual optional poles and, without a
+construction objective or tie-break, gives the solver no reason to avoid ten
+extra 2x2 obstacles.
+
+This is not a semantic unsoundness finding. Both intermediates satisfy the master
+model. It is a longstanding construction-quality problem: unconstrained optional
+slack can be filled arbitrarily, and downstream binding/routing then pays for the
+result as if those obstacles were necessary. The placement layer was optimizing
+neither pole economy nor permeability, so a formally feasible master incumbent
+could be systematically hostile to the next layer.
+
+Inner-methodology conclusion
+----------------------------
+The permeability knowledge belongs before binding/routing, but the first physical
+encoding put a global exact objective into the heaviest master container and died
+in presolve. Reusing the same semantics through a hint-centered LNS container
+produced a candidate quickly.
+
+Therefore:
+
+  semantic position: early placement construction
+  first exact container: too heavy
+  bounded LNS container: useful
+
+This is the same distinction previously missed by front-clear lift: moving a rule
+earlier and choosing the machine that should consume it are separate decisions.
+A failed monolithic encoding does not send the knowledge back downstream.
+
+Outer-loop conclusion
+---------------------
+The loop has now produced a positive rule, not only a rejection:
+
+  repeated fragmentation
+    -> derive free adjacency as a shape-free permeability surrogate
+    -> compile it into a construction objective
+    -> observe a machine-compatibility failure
+    -> change the execution container without changing the semantic rule
+    -> obtain a new candidate geometry
+
+The next result must decide whether the surrogate moved the real interface, not
+merely its proxy. The candidate therefore goes directly to front-filtered,
+duplicate-safe, component-aware binding and, if that passes, exact routing.
+
+Truth boundary
+--------------
+The candidate proves only placement plus power in the frozen no-ghost master with
+the E001 cut and the stated research objective. Objective 1166 is an incumbent,
+not an optimum. Reduced component count does not imply component-compatible
+binding or routability. Fifty-four poles are sufficient for this candidate, not
+proved globally minimal.

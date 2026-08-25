@@ -363,6 +363,58 @@ effect on next problem:
 evidence:
   E005 RESULT.txt and its pinned source-coordinate audit.
 
+R-ZC-014  A shape-free permeability objective produces a better master candidate
+-------------------------------------------------------------------------------
+status: measured FEASIBLE incumbent under a research-only construction objective
+scope: no-ghost placement plus power, E001 pocket cut, bounded complete-hint LNS
+
+statement:
+  Maximizing adjacent free-cell pairs produced a FEASIBLE master candidate with
+  score 1166 versus E001's 1081, 1140 versus 1100 free cells, and 91 versus 97
+  free components. The largest component remains 405. The candidate obeys the
+  E001 cut and changes all 17 mandatory operation-group pose sets plus the power
+  pole set. No objective optimality is claimed.
+
+non-implications:
+  Free adjacency is a construction heuristic, not a necessary condition. The
+  candidate is not yet component-compatible, routable, throughput-feasible, or a
+  whole-layout witness. Fifty-four power poles in this candidate are not proved
+  globally minimal.
+
+effect on next problem:
+  Send the candidate directly to fresh component-aware binding and exact routing
+  if it survives. Compare real mismatch, not only the proxy score.
+
+evidence:
+  E006 RESULT.txt; local recovery RESULT.json sha256
+  e3ce1ad7f557c1ee52c45588f9bc4ede701939fa444f9c7653157be71551d7d5.
+
+R-ZC-015  Optional pole slack was an unpriced downstream obstacle source
+------------------------------------------------------------------------
+status: measured formulation/construction interaction
+scope: no-objective and free-adjacency no-ghost master intermediates
+
+statement:
+  E001 selected 64 residual power poles. E006 satisfies the same master-level
+  placement and power semantics with 54 poles, removing ten 2x2 optional bodies.
+  The pose-bool master permits residual optional poles and, without a quality
+  objective or tie-break, gives the solver no reason to avoid extra routing
+  obstacles. The first all-model objective encoding died in presolve; the same
+  semantic objective produced a candidate through complete-hint LNS.
+
+non-implications:
+  E001 is not semantically invalid, and 54 is not a global pole minimum. The
+  finding concerns construction quality and interface cost, not certified
+  soundness.
+
+effect on next problem:
+  Treat optional-obstacle economy as an explicit construction resource. Keep the
+  permeability knowledge early, but do not equate semantic placement with one
+  monolithic exact encoding; choose a machine-compatible container.
+
+evidence:
+  E006 RESULT.txt and run-001/run-002/run-003 execution chain.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the
