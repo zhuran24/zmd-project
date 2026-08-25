@@ -1,0 +1,147 @@
+EXPERIMENT E001: pocket judgment replay through the repartitioned interface
+=========================================================================
+
+Question
+--------
+After explicitly transporting the proved four-pose blue-iron pocket judgment
+from instance-labelled evidence into the pose-bool master's group-occupancy
+language, does one sound cut produce a replacement zero-condition geometry, and
+which interface family is then the first to reject or admit it?
+
+This is one causal experiment.  The only change to placement plus power is the
+single proved pocket nogood.  The later interface ladder diagnoses the resulting
+geometry; it does not add further feedback to the master in this run.
+
+Competing readings
+------------------
+A. The point cut has almost no leverage: it only permutes symmetric instance
+   labels or makes a tiny local move, and the replacement returns to the same
+   source-trap family.
+
+B. The cut changes real group-level geometry, but the replacement still dies
+   before exact routing.  The first rejecting family tells us whether the next
+   language should be static port domains, terminal uniqueness, or free-space
+   component support.
+
+C. The replacement survives the cheap interface families and reaches exact
+   simultaneous routing.  In that case the wall has moved from coarse topology
+   to path coexistence, and the next cut language must be derived from the exact
+   routing failure rather than from more front-blocked events.
+
+Cheapest faithful test
+----------------------
+Build the unchanged no-ghost pose-bool placement-plus-power master, add exactly
+one constraint corresponding to the independently checked pocket judgment, use
+the old A1 assignment only as a non-feasible hint, and solve for a replacement.
+
+For a replacement, rebuild binding three times on the same fixed occupancy:
+
+  1. static port-domain filtering only;
+  2. the same model plus duplicate terminal-key constraints;
+  3. the same model plus duplicate keys and commodity component support.
+
+Only a candidate surviving stage 3 is sent to ordinary routing precheck and the
+exact routing solver.  This ordered ladder answers where the new geometry first
+dies instead of bundling all interface logic into one opaque rejection.
+
+Inputs
+------
+History/material evidence, read-only:
+
+  /home/zhuran24/zmd-pj/.artifacts/lowerbound_ladder_20260824/
+    blue_iron_pocket_cut/BLUE_IRON_POCKET_CUT_CERTIFICATE.json
+    sha256 c589d7682fe7ecdc5d8784b311d51e0f48031af70b3be1dda936a16c4ef97d17
+
+  /home/zhuran24/zmd-pj/.artifacts/lowerbound_ladder_20260824/
+    phaseA1_noghost_master/MASTER_ASSIGNMENT_A1.json
+    sha256 3ee4a6e7acdf8bc0aee799f4d09ac254305bf628e63afbfd1b951669d439f4f7
+
+  /home/zhuran24/zmd-pj/data/preprocessed/candidate_placements.json
+    sha256 f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3
+
+The remaining rule, instance, generic-I/O, preprocess-plan, and source identities
+are listed in JUDGMENT.json and checked by the runner before model construction.
+
+Change under test
+-----------------
+Exactly one research-only master constraint:
+
+  not(
+    power-pole pose 1635
+    and refinery_blue_iron group occupies pose 5422
+    and refinery_blue_iron group occupies pose 5702
+    and refinery_steel group occupies pose 6494
+  )
+
+The source certificate used arbitrary named instances for the mandatory
+facilities.  The pose-bool consumer has no named-instance variables for symmetric
+members; it has one Boolean per (facility_type, operation_type, pose).  The
+lowering is allowed only after the runner proves the permutation-invariance and
+one-to-one literal transport recorded in LOWERING_CONTRACT.json.
+
+Outcome classification
+----------------------
+MASTER_REPLACEMENT
+  A replacement placement-plus-power intermediate was found.  Continue through
+  the interface ladder.  This is not a whole-layout result.
+
+MASTER_UNKNOWN
+  The bounded solve produced no replacement and no infeasibility conclusion.
+
+MASTER_INFEASIBLE_RESEARCH_ONLY
+  The cut-augmented relaxed master was proved infeasible.  Treat as a model-risk
+  signal requiring independent audit, not as a whole-layout theorem.
+
+PORT_DOMAIN_INFEASIBLE
+  Static front-domain compilation alone kills the fixed replacement.
+
+TERMINAL_UNIQUENESS_INFEASIBLE
+  Port domains survive, but duplicate terminal-key rules kill the binding.
+
+COMPONENT_SUPPORT_INFEASIBLE
+  Port domains and terminal uniqueness survive, but no binding satisfies the
+  compiled free-space component condition.
+
+EXACT_ROUTING_REACHED
+  The candidate survives all cheap interface families and enters exact routing.
+  Routing may then be FEASIBLE, INFEASIBLE, or TIMEOUT.
+
+WHOLE_LAYOUT_RESEARCH_WITNESS
+  Binding, exact routing, and the strict non-ghost terminal validator all pass.
+  Flow/throughput and game-side review remain separate obligations.
+
+Run outputs
+-----------
+All raw output is written under:
+
+  research_lab/local/zero_condition/E001_pocket_cut_replay/
+
+Only this experiment source, compact durable conclusions, and any later selected
+promotion object belong in Git.
+
+Truth boundary
+--------------
+The run can measure the leverage of one checked judgment, identify the first
+rejecting interface family for its replacement, and expose mismatches between
+proof object space and consumer literal space.  It cannot certify a lower bound,
+prove the no-ghost problem infeasible from UNKNOWN, authorize a production cut,
+or establish that one observed death family is globally complete.
+
+Decision effect
+---------------
+* A named-instance/group-literal transport failure blocks the cut and becomes an
+  outer-loop object-space defect, not a solver result.
+* A static-port rejection directs the next family toward domain compilation and
+  minimal blocker explanations.
+* A terminal-key rejection requires auditing that rule's exact semantics before
+  any placement feedback.
+* A component rejection justifies commodity/core localization and a placement
+  obstacle explanation, not more point binding nogoods.
+* Exact routing entry moves the research seam downstream to simultaneous path
+  coexistence and its own rejection language.
+* A complete routing witness immediately takes priority over architecture work
+  so the remaining flow, strict, and game-side obligations can be closed.
+
+Result
+------
+Not run yet.

@@ -1,0 +1,98 @@
+{
+  "schema": "zmd_research_lowering_contract_v0",
+  "status": "FROZEN_FOR_E001_AUDIT_AND_REPLAY",
+  "authority": "research_only_noncertified",
+  "judgment": "JUDGMENT.json",
+  "consumer": {
+    "class": "src.models.master_model.MasterPlacementModel",
+    "representation": "pose_bool_exact_v1",
+    "method": "add_benders_cut",
+    "context": "no-ghost placement-plus-power master"
+  },
+  "source_literals": [
+    {
+      "source_instance_id": "pose_optional::power_pole::p_x23_y48_o0_m_omni",
+      "facility_type": "power_pole",
+      "operation_type": "power_supply",
+      "pose_idx": 1635,
+      "pose_id": "p_x23_y48_o0_m_omni",
+      "target_literal_kind": "optional_pose_presence"
+    },
+    {
+      "source_instance_id": "refinery_blue_iron_033",
+      "facility_type": "manufacturing_3x3",
+      "operation_type": "refinery_blue_iron",
+      "pose_idx": 5422,
+      "pose_id": "p_x20_y50_o0_m_TB",
+      "target_literal_kind": "mandatory_group_pose_presence"
+    },
+    {
+      "source_instance_id": "refinery_blue_iron_034",
+      "facility_type": "manufacturing_3x3",
+      "operation_type": "refinery_blue_iron",
+      "pose_idx": 5702,
+      "pose_id": "p_x21_y53_o0_m_TB",
+      "target_literal_kind": "mandatory_group_pose_presence"
+    },
+    {
+      "source_instance_id": "refinery_steel_015",
+      "facility_type": "manufacturing_3x3",
+      "operation_type": "refinery_steel",
+      "pose_idx": 6494,
+      "pose_id": "p_x24_y50_o0_m_TB",
+      "target_literal_kind": "mandatory_group_pose_presence"
+    }
+  ],
+  "transport_obligations": [
+    {
+      "id": "T1_GROUP_EQUIVALENCE_CLASS",
+      "requirement": "Every mandatory source instance maps to exactly one group whose membership is defined by exact equality of facility_type and operation_type."
+    },
+    {
+      "id": "T2_LABEL_PERMUTATION_INVARIANCE",
+      "requirement": "The judgment remains true under every permutation of named instances within each mapped mandatory group; no premise depends on the arbitrary extracted instance label."
+    },
+    {
+      "id": "T3_POSE_IDENTITY",
+      "requirement": "Each pose_idx resolves to the expected pose_id in the expected facility pool."
+    },
+    {
+      "id": "T4_ONE_TO_ONE_LITERAL_MAPPING",
+      "requirement": "The four semantic occupancies resolve to four distinct pose-bool variables."
+    },
+    {
+      "id": "T5_SOURCE_ROLE_PRESERVED",
+      "requirement": "The pose-5702 source premise is a property of operation refinery_blue_iron at that pose, not of source_instance_id refinery_blue_iron_034."
+    },
+    {
+      "id": "T6_CONSUMER_FORM",
+      "requirement": "Exactly one new linear constraint is added, with logical form sum(the four distinct presence literals) <= 3."
+    },
+    {
+      "id": "T7_PARENT_HINT_IS_NOT_A_WITNESS",
+      "requirement": "The A1 parent selects all four forbidden occupancies, so it is supplied only as known_feasible_hint=false and is never treated as a feasible post-cut witness."
+    }
+  ],
+  "lowering_payload": {
+    "api_conflict_set": {
+      "pose_optional::power_pole::p_x23_y48_o0_m_omni": 1635,
+      "refinery_blue_iron_033": 5422,
+      "refinery_blue_iron_034": 5702,
+      "refinery_steel_015": 6494
+    },
+    "expected_constraint_delta": 1,
+    "expected_upper_bound": 3,
+    "condition_literals": []
+  },
+  "known_architectural_risk": {
+    "description": "The historical certificate surface names mandatory instances, while pose_bool_exact_v1 consumes group-pose occupancies. Without an explicit transport proof, an apparently valid certificate may be lowered into a different object space.",
+    "E001_policy": "Fail before solve if any transport obligation is not mechanically discharged.",
+    "future_direction": "Prefer group-semantic literals in new judgments whenever the master representation has already quotiented named-instance symmetry."
+  },
+  "prohibited": [
+    "treating source_instance_id equality as consumer literal identity",
+    "deduplicating aliased literals and silently strengthening the cut",
+    "attaching any additional cut in E001",
+    "production or certification effect"
+  ]
+}

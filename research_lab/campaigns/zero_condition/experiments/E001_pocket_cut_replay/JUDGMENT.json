@@ -1,0 +1,85 @@
+{
+  "schema": "zmd_research_judgment_v0",
+  "judgment_name": "blue_iron_closed_source_pocket_group_pose_exclusion",
+  "status": "PROVED_RESEARCH_JUDGMENT_REQUIRES_CHECKED_LOWERING",
+  "authority": "research_only_noncertified",
+  "problem_identity": {
+    "game_version": "1.1",
+    "grid": [70, 70],
+    "mandatory_instances": {
+      "path": "data/preprocessed/mandatory_exact_instances.json",
+      "sha256": "545b98c2b4f96643f1346b423edf2dc8e300a0c815b6cf821776ceed03cd4cd6"
+    },
+    "candidate_placements": {
+      "external_path": "/home/zhuran24/zmd-pj/data/preprocessed/candidate_placements.json",
+      "sha256": "f05b1291a51d64a1bc40507146e95f3257effaaf2b795a0fa83f85f5d8d280d3",
+      "size_bytes": 54467709
+    },
+    "generic_io_requirements": {
+      "path": "data/preprocessed/generic_io_requirements.json",
+      "sha256": "ad5125b50e607a7f3f3bf0b54fea64f93edf87cedb62e8d24f5590e1c895c44e"
+    },
+    "canonical_rules": {
+      "path": "rules/canonical_rules.json",
+      "sha256": "c3fc3a34e67b2321048a8861a9b178c744361698a838039b0361287c9fb542c0"
+    },
+    "preprocess_plan": {
+      "path": "rules/preprocess_plan.json",
+      "sha256": "5c669c4fa48d2ed77a3283f06c1d5f97f7542c92253c41ba31fbaba0b313c4ee"
+    }
+  },
+  "objective_identity": {
+    "dependency": "NONE_FOR_THIS_NECESSARY_FEASIBILITY_JUDGMENT",
+    "note": "The proposition excludes an unroutable placement pattern independently of the optimization objective. Consumer context is still recorded separately."
+  },
+  "context": {
+    "ghost_rect": null,
+    "required_semantics": [
+      "facility body occupancy",
+      "pose-level port geometry",
+      "exact pose-level binding domain",
+      "blue_iron_block mandatory source and sink roles",
+      "free-space four-neighbour connected components"
+    ],
+    "consumer_scope": "zero-condition placement-plus-power master research replay",
+    "active_prior_cuts": [],
+    "flow_or_throughput_dependency": false
+  },
+  "binders": {
+    "layout": "for every complete placement/binding/routing candidate under problem_identity",
+    "instance_labels": "mandatory members within one (facility_type, operation_type) class are permutation symmetric"
+  },
+  "premises": [
+    "The power-pole pose at index 1635 and the three manufacturing poses at indices 5422, 5702, and 6494 occupy the barrier cells checked by the source certificate.",
+    "The two refinery_blue_iron poses belong to the same facility_type and operation_type equivalence class, and pose semantics do not depend on the arbitrary member label assigned during solution extraction.",
+    "Whenever the refinery_blue_iron group occupies pose 5702, that pose has a surviving binding domain and every surviving binding emits blue_iron_block at the pocket source front (23,52).",
+    "The four pose occupancies close the free component {(23,50),(23,51),(23,52)}.",
+    "No legally placeable mandatory blue-iron sink and no generic-input sink alternative can put a blue_iron_block input terminal in that component."
+  ],
+  "conclusion": {
+    "logical_form": "NOT(POLE_POSE(1635) AND GROUP_POSE(manufacturing_3x3,refinery_blue_iron,5422) AND GROUP_POSE(manufacturing_3x3,refinery_blue_iron,5702) AND GROUP_POSE(manufacturing_3x3,refinery_steel,6494))",
+    "kind": "necessary_condition",
+    "consumer_effect_requested": "one research-only pose-bool master nogood"
+  },
+  "proof_source": {
+    "external_path": "/home/zhuran24/zmd-pj/.artifacts/lowerbound_ladder_20260824/blue_iron_pocket_cut/BLUE_IRON_POCKET_CUT_CERTIFICATE.json",
+    "sha256": "c589d7682fe7ecdc5d8784b311d51e0f48031af70b3be1dda936a16c4ef97d17",
+    "required_status": "PASS_SOUND_RESEARCH_CUT",
+    "source_checker": {
+      "external_path": "/home/zhuran24/zmd-pj/.artifacts/lowerbound_ladder_20260824/blue_iron_pocket_cut/check_blue_iron_pocket_cut.py",
+      "sha256": "4233cc7642bcfabd64c9b76b396f8a11bb9ddf3ede7b08781426a4f94da9573a"
+    }
+  },
+  "allowed_use": [
+    "research-only master replay after LOWERING_CONTRACT obligations pass",
+    "counterexample search against the lowering",
+    "family-discovery seed"
+  ],
+  "prohibited_use": [
+    "production cut attachment",
+    "certified lower-bound update",
+    "whole-layout infeasibility claim",
+    "generalized pocket-family claim",
+    "reuse under changed rules, instances, pose pool, or binding semantics without re-derivation"
+  ]
+}
