@@ -230,6 +230,59 @@ evidence:
   0c67f9272b8ab42f43ebb1e13e440438df91242eb8f7dca3d772ba7011e0642c;
   two kernel coredumps from the failed audit attempts; E001 RESULT.txt.
 
+R-ZC-009  The E001 replacement is component-infeasible commodity by commodity
+-----------------------------------------------------------------------------
+status: measured and fresh-model reproduced inside the fixed replacement model
+scope: E001 replacement occupancy; static front domains and terminal uniqueness fixed on
+
+statement:
+  The all-component-disabled binding model is FEASIBLE, but the ordinary routing
+  precheck reports all 19 routed commodities disconnected. Enabling any one
+  commodity's component-support family by itself makes the binding model
+  INFEASIBLE. All 19 singleton statuses were reproduced by rebuilding a fresh
+  complete model for each commodity. The free geometry has 1100 cells split into
+  97 components, largest 405.
+
+non-implications:
+  This does not prove the no-ghost problem infeasible, does not identify a
+  placement obstacle core, and does not yet prove that the component compiler is
+  extensionally identical to the production precheck over every binding.
+
+effect on next problem:
+  Stop treating the replacement as another isolated blue-iron pocket. Verify the
+  component semantics with a differently shaped optimization formulation, then
+  measure the minimum unavoidable mismatch and boundary scale. The fork is now
+  repeated small separator families versus a positive permeability structure.
+
+evidence:
+  E002 RESULT.txt; local run-004 RESULT.json sha256
+  af7dbc207dec54d9e86f8e8ee37481cc2677bfc253967d87494870605f493154.
+
+R-ZC-010  Repeated-solve CP-SAT sufficient cores are stale in this runtime
+-------------------------------------------------------------------------
+status: reproduced tool defect
+scope: OR-Tools 9.15 / Python 3.13 assumption-core diagnostics
+
+statement:
+  After ClearAssumptions and a new solve on the same CpModel,
+  SufficientAssumptionsForInfeasibility() returned a literal from the preceding
+  infeasible solve that was absent from the current assumption list. The defect
+  was reproduced on a two-guard toy model and on E002. Fresh-model status replay
+  still reproduced every singleton INFEASIBLE result.
+
+non-implications:
+  This does not show that CP-SAT feasibility statuses or ordinary solving are
+  unsound. It specifically disqualifies the repeated-solve sufficient-core API as
+  a proof surface in this runtime.
+
+effect on next problem:
+  Query a sufficient core only on a first solve of a fresh model, or avoid the API
+  entirely. Core minimization and certification-facing diagnostics must rebuild
+  or use an independently checked mechanism.
+
+evidence:
+  E002 RESULT.txt and run-004 assumption_core_api_boundary.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

@@ -1,0 +1,116 @@
+E002 RESULT: EVERY ROUTED COMMODITY IS A SINGLETON COMPONENT CORE
+=================================================================
+
+Status
+------
+Completed as research-only evidence. No routing solve, certification, U/L,
+production-cut, owner, or publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E002_component_commodity_core/run-004/RESULT.json
+
+SHA-256:
+  af7dbc207dec54d9e86f8e8ee37481cc2677bfc253967d87494870605f493154
+
+Size:
+  14,454,809 bytes
+
+Research head recorded by the result:
+  cd1448c8b51aa3b32c79f2323eac089be017c612
+
+Observed ladder
+---------------
+The E001 replacement occupancy has 3,800 occupied cells and 1,100 free cells.
+The free cells form 97 components; the largest contains 405 cells.
+
+The fixed binding model first compiled placement-dependent facts:
+
+  raw binding patterns                         17,056
+  patterns pruned by unusable terminal fronts  4,101
+  surviving patterns                          12,955
+  empty owner domains                              0
+  duplicate-terminal constraints               1,555
+  commodity component constraints                384
+
+With every commodity component guard disabled, the model is FEASIBLE. The
+resulting binding has no blocked front or duplicate terminal key, and the ordinary
+production routing precheck reports all 19 routed commodities disconnected.
+
+With every component guard enabled, the model is INFEASIBLE.
+
+Singleton result
+----------------
+Each commodity, enabled alone while all other commodity component rules are
+disabled, is already INFEASIBLE:
+
+  blue_iron_block
+  blue_iron_ore
+  blue_iron_powder
+  buckwheat
+  buckwheat_powder
+  buckwheat_seed
+  dense_blue_iron_powder
+  dense_source_powder
+  fine_buckwheat_powder
+  qiaoyu_capsule
+  sandleaf
+  sandleaf_powder
+  sandleaf_seed
+  source_ore
+  source_powder
+  steel_block
+  steel_bottle
+  steel_part
+  valley_battery
+
+The 19 status results were then rebuilt from fresh complete models, one commodity
+per model. All 19 fresh replays again returned INFEASIBLE. The result therefore
+does not depend on reusing one CP-SAT model for the status classification.
+
+Interpretation
+--------------
+The E001 replacement is not being killed by one exceptional commodity. Every
+routed production relation separately lacks a component-compatible binding in
+this fixed geometry. This is strong evidence for a global fragmentation regime,
+not evidence that 19 unrelated local cuts should be emitted.
+
+The result still leaves one important alternative open: the component compiler
+could be stronger than the production routing precheck over unobserved binding
+assignments. The next experiment must use a differently shaped formulation and
+compare its optimal witness directly with run_exact_routing_precheck before the
+19/19 result is used to redesign placement.
+
+Hidden tool defect
+------------------
+OR-Tools 9.15 / Python 3.13 returned a stale literal from
+SufficientAssumptionsForInfeasibility() after assumptions were changed and the
+same CpModel was re-solved. The behaviour was reproduced on a two-guard toy model
+and in E002.
+
+Accordingly:
+
+* the sufficient-core API was queried only on the first all-true infeasible solve;
+* subsequent status classifications did not consume that API;
+* every singleton status was confirmed by a fresh model rebuild.
+
+The stale-core defect does not invalidate the fresh INFEASIBLE statuses. It does
+invalidate repeated-solve sufficient-core extraction as a trustworthy research
+or certification surface in this runtime.
+
+Truth boundary
+--------------
+This result concerns the fixed E001 replacement occupancy and the frozen
+front-domain, terminal-uniqueness, and component-support binding model. It is not
+a whole-layout infeasibility proof, a placement cut, an exact-routing result, or
+a proof that one global backbone topology is necessary.
+
+Decision effect
+---------------
+Do not continue commodity-by-commodity cut mining from this layout. First verify
+the component rule by an independent mismatch-minimization formulation. If every
+commodity still has a strictly positive minimum mismatch, measure the scale and
+shared geometry of the unavoidable orphan components. Small repeated boundaries
+support a family compiler; broad shared boundaries support an explicit
+permeability resource or constructive backbone representation.

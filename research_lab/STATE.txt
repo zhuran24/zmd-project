@@ -31,7 +31,12 @@ probes and the first checked feedback replay now show a causal progression:
     changed the master candidate with one constraint: only the implicated power
     pole moved one cell right;
   * the replacement passes static port domains and terminal uniqueness, then
-    becomes INFEASIBLE at commodity component support before exact routing.
+    becomes INFEASIBLE at commodity component support before exact routing;
+  * E002 shows this is not one exceptional commodity: every one of the 19 routed
+    commodities is individually component-infeasible, with all 19 statuses
+    reproduced by fresh complete model rebuilds;
+  * E002 also reproduces stale repeated-solve CP-SAT sufficient-core literals, so
+    that diagnostic API is excluded from future proof-bearing use in this runtime.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -39,19 +44,25 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Which commodity, free component, and minimal placement obstacle set make the E001
-replacement component-infeasible, and can that cause be expressed directly in
-group-semantic literals for the next master replay?
+Does an independent mismatch-minimization formulation agree that every routed
+commodity has a strictly positive minimum component mismatch on the E001
+replacement, and are the unavoidable orphan components bounded by small repeated
+obstacle sets or by broad shared separators?
 
 Current campaign posture
 ------------------------
-No detailed multi-step plan is frozen. The current replacement has already distinguished the first interface wall:
-component support, not front occupancy or duplicate terminal keys. The next
-experiment therefore narrows that wall by commodity assumptions and then by
-placement obstacles. If a small obstacle cause survives independent replay, it
-becomes the next checked judgment; if the cause is broad and diffuse, the
-representation must shift toward explicit permeable-space structure instead of
-accumulating local cuts.
+No detailed multi-step plan is frozen. The current replacement has already
+located the first interface wall at component support, not front occupancy or
+duplicate terminal keys. Commodity minimization then produced the stronger 19/19
+result, so commodity-by-commodity cut mining is no longer the default move.
+
+The next experiment uses a differently shaped objective formulation and the
+production routing precheck as an external semantic comparison. If strictly
+positive minimum mismatch survives, boundary-scale analysis decides the next
+representation: small repeated boundaries justify a family compiler; broad
+shared separators justify an explicit permeability resource or constructive
+backbone. A zero-mismatch counterexample instead refutes the current component
+compiler and sends the work back to interface semantics.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

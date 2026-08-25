@@ -82,4 +82,7 @@ local placement cut.
 
 Result
 ------
-Not run yet.
+Completed. All 19 routed commodities are singleton component cores in the fixed
+E001 replacement model, and all 19 statuses were reproduced by fresh model
+rebuilds. See RESULT.txt for the frozen identity, truth boundary, and the stale
+SufficientAssumptionsForInfeasibility() API defect discovered during the run.
