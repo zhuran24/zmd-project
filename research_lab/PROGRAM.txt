@@ -1,0 +1,124 @@
+ZMD RESEARCH WORKTREE PROGRAM
+=============================
+
+Status
+------
+This file is the durable orientation for the research worktree. It is not a
+production specification, a certification claim, or permission to update U/L.
+The research worktree owns the whole research program, not only the current
+zero-condition campaign.
+
+The three goal levels must never be collapsed into one another.
+
+1. CURRENT CAMPAIGN GOAL
+------------------------
+The present campaign is to obtain the first zero-condition whole layout for the
+current frozen instance.
+
+"Zero-condition" removes the empty-rectangle requirement only. It does not mean
+"placement-only" or "geometry-only". A successful object must still traverse
+the full relevant chain: mandatory placement, power, exact port binding, exact
+routing, the intended flow/throughput checks for this research stage, strict
+independent validation, and eventual game-side review where required.
+
+This campaign is the current entry point because the lower side is empty and a
+whole layout is the cheapest way to expose the real construction interface. It
+is a milestone and a diagnostic lens, not the mission of the research tree.
+After it succeeds, the next lower-bound rung may be 6x6, followed by progressively
+stronger lower bounds, but the exact next move is decided from the evidence then
+available rather than frozen here as a detailed plan.
+
+2. PROJECT FINAL TARGET
+-----------------------
+For the current active IndustrialPlanner problem, close the exact optimization
+problem rather than merely find a plausible layout.
+
+The intended final object is a durable, independently replayable,
+certified-exact result for the active valley4_protocol_core production system:
+
+* a complete legal layout and its full witness;
+* the exact max_lex(empty-rectangle area, min-side) optimum, obtained by making
+  the lower and upper ledgers meet under the same instance, rules, objective,
+  and premises;
+* exact placement, power, binding, routing, and strict empty-rectangle semantics;
+* the project's intended throughput semantics, including discrete sustained
+  production and startup reachability rather than connectivity alone;
+* independent proof/replay and an honest durable publication path.
+
+The current production theorem still has a narrower six-predicate scope. The
+throughput line is therefore a separate research ledger today, but historical
+owner decisions record throughput certification as a final must-do scope. The
+intended final target must keep both facts visible: today's theorem must not be
+silently widened, and the project must not mistake a connectivity-only close for
+its eventual full game-semantic close.
+
+For throughput, the expected final witness shape includes, as needed, a legal
+bootstrap manifest, a replayable startup trace from a player-reachable initial
+state, and a periodic discrete schedule that sustains the frozen production
+targets. Startup duration may later become a low-priority quality objective, but
+its place in the objective is not fixed here.
+
+3. FUTURE EXPECTED TARGET
+-------------------------
+After the current problem is genuinely closed, the expected direction is not to
+leave behind a one-instance monument. It is to turn the learned architecture
+into a reusable, context-bound certified-exact solving and research system.
+
+The expected future system should be able to:
+
+* accept different bases, production targets, rule versions, and objective
+  contexts without pretending that conclusions transfer automatically;
+* derive and reuse judgments only with explicit problem/objective/context
+  premises, so rules can transfer across instances or families when proved and
+  are re-derived when premises change;
+* use a reasoning outer loop to generate necessary conditions, constructive
+  templates, reductions, bounds, and failure explanations, while exact inner
+  solvers consume the residual freedom;
+* reactivate the other known IndustrialPlanner bases as evidence permits,
+  including larger-base deployment such as the 80x80 wuling_protocol_core path;
+* study cross-base transfer of the solving architecture, rules, and proof
+  machinery;
+* eventually define and solve joint multi-base optimization, including
+  cross-base commodity flow and a globally appropriate objective rather than
+  copying the current single-base max_lex objective without proof.
+
+This is an expected future direction, not a present certified scope or a promise
+that every listed feature must be built in one step. It exists in the research
+program so near-term choices do not accidentally hard-code the architecture
+against the future. Conversely, future generality must not be used to burden a
+cheap current experiment with abstractions it does not need.
+
+Research principles
+-------------------
+1. Choices, layer boundaries, representations, and cut forms are outputs of the
+   problem, not inherited furniture.
+2. Every useful result must change the next problem, the next construction, or
+   the next decision.
+3. Computation consumes the residue left after cheap reasoning, arithmetic,
+   counterexamples, and local exact checks.
+4. Discovery is allowed to be provisional and adventurous. Conjectures,
+   heuristics, sufficient restrictions, and temporary over-constraints must be
+   labelled, not forbidden.
+5. Negative results retain their exact scope. UNKNOWN is not infeasibility.
+6. The research tree may create candidate mathematics and candidate machinery,
+   but it never self-grants production, certification, U/L updates, or owner
+   authority.
+7. Promotion is a separate cold-start act: selected results cross to the
+   certification tree through a compact promotion packet and are independently
+   re-derived, attacked, and replayed there. The whole research branch is not the
+   unit of promotion.
+
+Historical coordinates
+----------------------
+The goal hierarchy is reconstructed from these durable main-tree sources:
+
+* docs/项目说明/30_research_charter.md
+* docs/history/status/00_master_roadmap_pre_phase3_20260812.md, especially the
+  P2.0 final-scope line and the later Q15/Q16 future-scope entries
+* docs/history/status/05_open_questions_pre_phase3_20260812.md, Q15 and Q16
+* docs/research/p2_0_throughput_certification_paradigm_design_v2.md, including
+  the v3.1 startup-reachability addendum
+* specs/23_industrial_planner_outer_base_planning_representation.md
+
+These coordinates are evidence for orientation. Their old current-status claims
+remain historical and must not overwrite present machine state.

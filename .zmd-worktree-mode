@@ -1,0 +1,10 @@
+mode=research
+scope=all_zmd_research
+branch=research/zero-condition-interface-repartition-20260825
+program=research_lab/PROGRAM.txt
+state=research_lab/STATE.txt
+current_campaign=zero_condition_whole_layout
+project_final_target=current_base_full_intended_certified_exact_closure
+future_expected_target=generalized_context_bound_certified_exact_solver
+certification_tree=/home/zhuran24/zmd-pj
+promotion_policy=selected_packet_only_not_whole_branch

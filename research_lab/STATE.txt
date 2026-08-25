@@ -1,0 +1,48 @@
+ZMD RESEARCH WORKTREE STATE
+===========================
+
+Updated: 2026-08-25
+Branch: research/zero-condition-interface-repartition-20260825
+Mode: RESEARCH
+
+Program versus campaign
+-----------------------
+The research worktree owns the complete research program described in
+PROGRAM.txt. The current campaign is only the active point of attack.
+
+Current campaign
+----------------
+Produce the first zero-condition whole layout for the current frozen instance.
+The immediate object is a complete witness, not a placement-only incumbent.
+
+Known current wall
+------------------
+Placement plus power can produce candidates, but the historical and current
+death data show that the placement/binding/routing partition transports too
+little information. Repeated front-blocked point nogoods have changed individual
+bindings without changing the family of death. Current evidence already justifies
+re-deriving the interface partition rather than treating the old F1-F9 family
+layout and the current binding-to-routing seam as fixed architecture.
+
+Current research question
+-------------------------
+What is the smallest problem-derived repartition that lets placement, port-domain
+facts, component support, power obstacles, and exact routing exchange enough
+information to produce a whole layout without rebuilding one monolithic model?
+
+Working posture
+---------------
+No detailed multi-step plan is frozen. Each step should answer one discriminating
+question, update this state when the answer changes the problem, and commit the
+smallest coherent durable change. The next experiment is selected from the last
+failure shape, not from an old checklist.
+
+Orientation guards
+------------------
+* Do not redefine the whole research tree as the zero-condition project.
+* Do not let future generality displace the current lower-side bottleneck.
+* Do record whether a new representation is inherently instance-specific,
+  transferable with premises, or likely to obstruct the future expected target.
+* Do not promote research conclusions from this tree into certified claims.
+* When a candidate result is ready for certification review, freeze a compact
+  promotion packet and hand it to a fresh certification-tree session.
