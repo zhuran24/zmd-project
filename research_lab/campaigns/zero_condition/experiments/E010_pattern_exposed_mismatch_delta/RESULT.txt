@@ -1,0 +1,116 @@
+E010 RESULT: THE ALTERNATING CONSTRUCTOR MAKES A SECOND BROAD INTERFACE GAIN
+===========================================================================
+
+Status
+------
+Completed as research-only comparative interface evidence. Exact routing,
+placement cuts, certification, U/L, owner, and publication effects remain absent.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E010_pattern_exposed_mismatch_delta/run-001/RESULT.json
+
+SHA-256:
+  6e0965a159c52c6e49a5e0c8afc2a57472f8df0669d5631ed04c73749770d4fe
+
+Size:
+  1,197,992 bytes
+
+Verdict:
+  ALTERNATING_CONSTRUCTOR_SECOND_BROAD_IMPROVEMENT
+
+Exact mismatch trajectory
+-------------------------
+E010 reruns the same fresh, differently shaped per-commodity
+minimum-component-mismatch optimization on E009. All 19 models reach OPTIMAL,
+and every optimum binding is checked by production run_exact_routing_precheck.
+
+  E001 one-cut replacement total mismatch       281
+  E006 permeability candidate total mismatch    214
+  E009 pattern-exposed candidate total mismatch 196
+
+Relative to E001, E009 reduces the total by 85 or 30.25%.
+Relative to E006, the second step reduces it by another 18 or 8.41%.
+
+Against E006:
+
+  11 commodities improve
+   6 remain unchanged
+   2 worsen
+   0 reach zero mismatch
+
+Per-commodity minima
+--------------------
+                              E001  E006  E009
+  blue_iron_block               11    14    15
+  blue_iron_ore                 13    11    11
+  blue_iron_powder              14    16    14
+  buckwheat                     17    14    13
+  buckwheat_powder               6     5     5
+  buckwheat_seed                16    11    10
+  dense_blue_iron_powder        28    22    18
+  dense_source_powder           10     9     8
+  fine_buckwheat_powder          7     3     3
+  qiaoyu_capsule                 4     4     4
+  sandleaf                      32    19    16
+  sandleaf_powder               22    19    17
+  sandleaf_seed                 26    10     8
+  source_ore                    13    10     8
+  source_powder                 18    18    17
+  steel_block                   22     8     9
+  steel_bottle                   9     8     8
+  steel_part                     9     9     8
+  valley_battery                 4     4     4
+
+The E009 step improves blue-iron powder, buckwheat, buckwheat seed, dense
+blue-iron powder, dense source powder, sandleaf, sandleaf powder, sandleaf seed,
+source ore, source powder, and steel part. Blue-iron block and steel block worsen.
+
+Interpretation
+--------------
+The two positive signals are not merely exchanging one proxy for another.
+Permeability first buys a large mismatch reduction. Selection-conditioned pattern
+exposure then increases real binding-domain survival by 1101 while also reducing
+aggregate mismatch further.
+
+This supports an outer-loop constructor of the form:
+
+  compute current occupancy
+    -> optimize one positive interface resource locally
+    -> rebuild the exact fixed-layout interface
+    -> derive the next contextual resource coefficients
+    -> move within a trust region
+    -> repeat
+
+However, no commodity has yet reached zero minimum mismatch. Scalar alternation
+has moved the whole distribution, but it has not crossed component feasibility.
+The next step should preserve the E009 port-exposure gain while improving
+permeability, rather than independently optimizing adjacency and risking another
+trade reversal.
+
+Residual structure
+------------------
+The largest remaining minima are dense blue-iron powder 18, source powder 17,
+sandleaf powder 17, sandleaf 16, and blue-iron block 15. Blue-iron block has
+regressed in both positive construction steps relative to E001; steel block
+improves strongly in E006 and then loses one unit in E009. These residuals are
+useful routing signals for a later targeted component term, but they do not yet
+justify commodity-specific placement cuts.
+
+Truth boundary
+--------------
+The trajectory compares three fixed placements. It does not prove monotonic
+convergence of every future alternating step, and none of the three is a
+component-compatible layout. Each minimum is exact only within its fixed-layout
+binding model.
+
+Decision effect
+---------------
+The next construction step combines the two earned resources asymmetrically:
+maximize free adjacency around E009 while imposing a contextual lower bound that
+preserves E009's selected-pattern linearization score, plus the current pole cap
+and a small trust region. A resulting candidate is immediately re-evaluated by
+actual pattern survival and exact mismatch. If this constrained step cannot
+improve, the residual component condition moves into a smaller joint
+placement-binding model.

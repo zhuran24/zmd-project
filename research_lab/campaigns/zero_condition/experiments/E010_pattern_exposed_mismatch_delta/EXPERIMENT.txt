@@ -1,0 +1,66 @@
+EXPERIMENT E010: pattern-exposed mismatch delta
+===============================================
+
+Question
+--------
+Does E009's selection-conditioned port-exposure improvement also reduce exact
+component mismatch beyond E006, and do any commodities now reach zero mismatch?
+
+Why this is decisive for the local linearization
+-------------------------------------------------
+E009 improved both real binding-domain survival and coarse morphology, but its
+all-commodity component model remains INFEASIBLE. The binary result cannot tell
+whether the radius-20 step moved toward the interface or only made different
+patterns available.
+
+E010 applies the same fresh per-commodity minimum-mismatch formulation used by
+E004 and E008 to the E009 fixed placement. Every optimum witness is again checked
+by production run_exact_routing_precheck.
+
+Competing readings
+------------------
+A. Total mismatch falls again and one or more commodities reach zero. Alternating
+   permeability and selected-pattern linearizations is a productive constructor;
+   iterate with the next residual commodity/component signal.
+
+B. Pattern survival improves but mismatch is flat or worse. Port-domain quantity
+   and component placement are separate enough that the next local model must
+   include component-aware binding directly, not alternate scalar proxies.
+
+C. Most mismatch improves but a small commodity set regresses. Use the residual
+   set to form a targeted component-support term or local joint model, while
+   preserving the two proven useful resources.
+
+Frozen inputs
+-------------
+E009 result:
+  research_lab/local/zero_condition/E009_selected_pattern_linearization/run-001/RESULT.json
+  sha256 c0bce86fd9d2871621a28c883b57f51c3e3e7b5f5efbba9b96c23ea6c55dccec
+
+E009 assignment:
+  research_lab/local/zero_condition/E009_selected_pattern_linearization/run-001/PATTERN_EXPOSED_ASSIGNMENT.json
+  sha256 7a4a2a21cc13621e935fc6672bfa9f691e2d340ec120ec0947b3b62b3d648924
+
+Baselines:
+  E004 E001 atlas sha256 490349a2778c46f7d209e199d7da34b73649d0ddcb5095a837731423a8460a69
+  E008 E006 atlas sha256 07cb000e85ba1795d851f1b79e3e4d82af9974cc4b68369932e50fb2205d67d9
+
+Truth boundary
+--------------
+Each minimum is exact only for one commodity in the fixed E009 placement. The
+experiment compares three fixed candidates, not all outputs of either research
+objective. It cannot certify a local-search convergence trend from one step.
+
+Decision effect
+---------------
+A second broad reduction supports another evidence-driven alternating step. A
+flat or adverse result moves the residual component rule into a local joint
+placement-binding model. Zero-mismatch commodities identify which parts of the
+interface have already been solved and should not be disturbed without reason.
+
+Result
+------
+Completed with verdict ALTERNATING_CONSTRUCTOR_SECOND_BROAD_IMPROVEMENT. All 19
+fresh models reach OPTIMAL. Total mismatch follows 281 (E001) -> 214 (E006) ->
+196 (E009); the second step improves 11 commodities, leaves six unchanged, and
+worsens two. No commodity reaches zero. See RESULT.txt.

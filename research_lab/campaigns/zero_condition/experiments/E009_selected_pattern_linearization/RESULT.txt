@@ -1,0 +1,125 @@
+E009 RESULT: SELECTION-CONDITIONED PATTERN LINEARIZATION IS LOCALLY FAITHFUL
+============================================================================
+
+Status
+------
+Completed as research-only construction evidence. A new placement-plus-power
+candidate was produced and evaluated at the component-aware binding interface.
+Exact routing, strict validation, throughput, certification, U/L, owner, and
+publication effects remain absent.
+
+Frozen result
+-------------
+Terminal result:
+  research_lab/local/zero_condition/E009_selected_pattern_linearization/run-001/RESULT.json
+  sha256 c0bce86fd9d2871621a28c883b57f51c3e3e7b5f5efbba9b96c23ea6c55dccec
+
+Assignment:
+  research_lab/local/zero_condition/E009_selected_pattern_linearization/run-001/PATTERN_EXPOSED_ASSIGNMENT.json
+  sha256 7a4a2a21cc13621e935fc6672bfa9f691e2d340ec120ec0947b3b62b3d648924
+
+Layout:
+  research_lab/local/zero_condition/E009_selected_pattern_linearization/run-001/PATTERN_EXPOSED_LAYOUT.json
+  sha256 3b23f3f801d5b06f5cde90beb7ceb5074101d2be543b141e68ab432940e70d33
+
+Verdict:
+  PATTERN_EXPOSED_CANDIDATE
+
+Rejected neighboring proxy
+---------------------------
+The raw sum of every master front_clear variable was rejected before search.
+E001 scores 4475 and E006 scores 4623 on that quantity, yet E006 has fewer real
+surviving binding patterns. The raw total rewards hypothetical terminal fronts
+belonging to poses that are not selected.
+
+Selected-pose construction signal
+---------------------------------
+E009 instead freezes E006 as the current outer-loop context. For every candidate
+mandatory group pose with exact pose-level binding, it counts the binding patterns
+whose routing-visible terminal cells are free in the E006 occupancy. Generic hub
+poses receive a smaller clear-port score, and power poles receive a one-unit
+penalty.
+
+The coefficients are placed directly on existing pose literals. No objective
+variable or exact joint binding model is added to the master. The search is
+restricted to a radius-20 neighborhood around E006 and at most 54 power poles.
+The checked E001 pocket cut remains active.
+
+Predicted versus actual effect
+------------------------------
+Reference E006:
+
+  meaningful surviving patterns     12,289
+  generic clear physical ports           59
+  power poles                            54
+  weighted objective              122,895,846
+
+E009 candidate:
+
+  predicted meaningful patterns       13,374
+  actual meaningful patterns          13,390
+  actual total filtered patterns      13,443
+  front-pruned raw patterns            3,602
+  generic clear physical ports            59
+  power poles                             53
+  weighted objective               133,745,847
+
+The local model predicts +1085 meaningful patterns; fixed-layout reconstruction
+measures +1101. The prediction error is only +16 in the conservative direction.
+Front-pruned patterns fall by 1101. The one-step outer-loop linearization is
+therefore a faithful local approximation in this trust region.
+
+The candidate uses the full allowed trust radius: 20 reference literals leave and
+19 new literals enter. All four E001 forbidden literals are absent.
+
+Morphology
+----------
+Compared with E006:
+
+                         E006     E009
+  occupied cells          3760     3756
+  free cells              1140     1144
+  free adjacency          1166     1158
+  free components           91       83
+  largest component        405      414
+  power poles               54       53
+
+Although adjacency falls by eight, component count improves by eight and the main
+component grows by nine cells. E009 therefore improves real port exposure and
+coarse component topology simultaneously, rather than merely reversing E006.
+
+Interface outcome
+-----------------
+A fresh all-commodity component-aware binding model is still INFEASIBLE. Exact
+routing is not reached. The candidate is a genuine dual-resource improvement
+point, not yet a component-compatible layout.
+
+Postprocess incident
+--------------------
+The LNS solve completed, wrote the assignment/layout, and returned FEASIBLE. The
+original runner then looked up one nonexistent E006 result field while computing a
+baseline pole count and wrote an execution-failure receipt. Search was not rerun.
+A hash-pinned deterministic finalizer reconstructed the interface metrics from the
+completed witness and solver log. The tracked runner now derives the baseline pole
+count from the frozen E006 assignment.
+
+Outer-loop conclusion
+---------------------
+This is the first successful local producer of a positive construction judgment:
+
+  current occupancy
+    -> derive contextual pose scores from exact binding pattern survival
+    -> lower scores onto existing group-pose literals
+    -> search only a declared trust region
+    -> independently rebuild the new fixed-layout interface
+    -> compare predicted and actual effect
+
+The context dependence is explicit. The coefficients are not stored as timeless
+rules; a future iteration must recompute them from the new occupancy.
+
+Truth boundary
+--------------
+The coefficient model is valid only as a first-order construction approximation
+around E006. The candidate proves placement plus power under the E001 cut. It is
+not component-compatible, routable, throughput-feasible, or a complete layout,
+and the LNS objective is not globally optimal.

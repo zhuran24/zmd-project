@@ -1,0 +1,91 @@
+EXPERIMENT E009: selected-pose binding-pattern linearization
+============================================================
+
+Question
+--------
+Can a selection-conditioned port-exposure objective complement E006's free-space
+permeability without paying for every dynamic binding pattern inside the full
+master?
+
+Rejected neighboring proxy
+---------------------------
+The raw sum of all master front_clear variables is not selection-conditioned.
+E001 scores 4475 and E006 scores 4623 on that quantity, yet E006 has 612 fewer
+surviving actual binding patterns. It rewards hypothetical ports belonging to
+unselected poses and is rejected before a solve.
+
+Change under test
+-----------------
+E009 treats E006 as the current outer-loop context. For every mandatory group pose
+with exact pose-level binding, it enumerates the raw legal binding patterns and
+counts how many have all routing-visible terminal cells free in the E006
+occupancy. The resulting integer becomes a coefficient on that pose's existing
+master literal.
+
+Generic hub poses receive a smaller coefficient equal to their currently clear
+physical generic ports. Power poles receive a negative tie-break coefficient.
+The objective is therefore:
+
+  exact-pattern survivors, lexicographically dominant
+  then generic physical port exposure
+  then fewer selected power poles
+
+No new objective variable is introduced. The checked E001 pocket cut remains
+attached.
+
+Because the coefficients are a first-order view of one fixed occupancy, E009
+uses a trust region: at most 20 currently selected group/optional poses may leave
+the E006 selected set, and the power-pole count may not exceed 54. This is a
+research search restriction, not a necessary condition.
+
+Competing readings
+------------------
+A. Predicted and actual surviving patterns both improve while component mismatch
+does not regress. The outer-loop linearization is a useful port-exposure term and
+can be combined with permeability in the next constructor.
+
+B. Predicted score improves but actual pattern survival does not. Interactions
+among simultaneously moved poses dominate the first-order model. Reduce the trust
+region or move exact pattern viability into a local joint placement-binding
+model.
+
+C. Actual patterns improve but component mismatch worsens. The two-resource
+Pareto tension is real; construct a combined or alternating objective rather than
+replacing E006.
+
+D. Component-aware binding becomes FEASIBLE. Advance immediately to production
+precheck and exact routing.
+
+Frozen context
+--------------
+E006 candidate result, assignment, and layout are pinned by SHA-256 in the runner.
+E007 and E008 results are also pinned as the trigger and baseline interface
+measurements.
+
+Budget
+------
+Master build under the frozen pose-bool model, followed by a 60-second complete-
+hint, presolve-disabled LNS. Component-aware binding is evaluated on any improved
+candidate.
+
+Truth boundary
+--------------
+The objective coefficients are valid only as a local linearization around E006.
+They are not a theorem about future occupancy and do not create a production
+objective or cut. A master candidate remains placement-plus-power only until the
+interface and routing chain accepts it.
+
+Decision effect
+---------------
+A faithful improvement earns an alternating permeability/exposure constructor.
+An unfaithful improvement moves the exact interaction into a smaller joint local
+model. No-gain preserves the E006 candidate and redirects effort to a connected
+backbone representation.
+
+Result
+------
+Completed with verdict PATTERN_EXPOSED_CANDIDATE. The contextual linearization
+predicted +1085 meaningful surviving patterns; fixed-layout reconstruction
+measured +1101, with only +16 error. The candidate also reduces free components
+91 to 83 and grows the largest component 405 to 414, but remains component-binding
+INFEASIBLE. See RESULT.txt for the postprocess recovery and truth boundary.

@@ -50,7 +50,13 @@ probes and the first checked feedback replay now show a causal progression:
     which proves INFEASIBLE in milliseconds before exact routing;
   * E008 shows the proxy still moved the real interface: total exact mismatch
     falls 281 to 214 and 13/19 commodities improve, but 602 more binding patterns
-    are front-pruned, exposing a connectivity-versus-terminal-exposure tradeoff.
+    are front-pruned, exposing a connectivity-versus-terminal-exposure tradeoff;
+  * E009 rejects the raw global front_clear sum, derives selection-conditioned
+    pattern-survival coefficients from E006, and predicts +1085 meaningful
+    patterns; the fixed candidate measures +1101 while components fall 91 to 83
+    and the largest grows 405 to 414, though component binding remains INFEASIBLE;
+  * E010 proves a second broad mismatch reduction: 281 -> 214 -> 196 across
+    E001/E006/E009, with 11 commodities improved from E006 and none yet at zero.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -58,9 +64,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Can the master’s existing front_clear variables produce a complementary
-port-exposed candidate from the E006 hint, and how does that candidate trade actual
-surviving binding patterns against free adjacency and exact component mismatch?
+Can a radius-limited permeability step around E009 improve free adjacency while
+preserving E009's contextual selected-pattern score, and does the jointly guarded
+candidate reduce exact component mismatch enough to approach a component-compatible
+binding?
 
 Current campaign posture
 ------------------------
@@ -90,14 +97,21 @@ component topology broadly but worsens ordinary port-domain survival. This is no
 a reason to discard permeability; it proves the two resources share placement
 variables and must eventually be optimized together.
 
-Before adding another large exact encoding, the next experiment reuses the
-front_clear variables already present in the pose-bool master. From the E006
-complete hint, a bounded LNS maximizes global potential terminal-front exposure
-without new geometric variables. The candidate is then measured by actual
-front-filtered binding domains, free adjacency, and the same exact mismatch atlas.
-If it supplies the opposing Pareto direction, the following constructor can bind
-both terms. If the global front_clear score fails to improve real pattern survival,
-that proxy is rejected before a combined model is built.
+The raw global front_clear sum has now been rejected without burning a solve: it
+counts fronts of unselected poses and moves opposite real domain survival. E009's
+selected-pose pattern linearization repairs the object space and is locally
+faithful to within 16 patterns. Its trust-region candidate improves both actual
+port-domain survival and component morphology. E010 then confirms a second broad
+reduction in exact mismatch, but every commodity remains positive.
+
+The next experiment combines the two earned resources rather than alternating
+blindly. Around E009, it maximizes exact free adjacency while imposing a contextual
+lower bound that preserves E009's selected-pattern linearization score, retains
+the current pole cap, and limits pose churn. A candidate is immediately measured
+by actual pattern survival, component-aware binding, and the mismatch atlas. If
+this jointly guarded step cannot improve the interface, the residual component
+condition moves into a smaller joint placement-binding model instead of another
+scalar objective.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

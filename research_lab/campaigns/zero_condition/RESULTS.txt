@@ -465,6 +465,84 @@ evidence:
   E008 RESULT.txt; local RESULT.json sha256
   07cb000e85ba1795d851f1b79e3e4d82af9974cc4b68369932e50fb2205d67d9.
 
+R-ZC-018  Raw front-clear totals measure the wrong object space
+--------------------------------------------------------------
+status: direct counterexample measurement
+scope: A1/E001/E006 pose-bool master front_clear variables and fixed-layout domains
+
+statement:
+  The sum of all master front_clear variables rises from 4475 on E001 to 4623 on
+  E006, while real surviving binding patterns fall from 12955 to 12343. The raw
+  total counts hypothetical terminal fronts belonging to unselected poses. It is
+  therefore not a faithful port-exposure objective. A selected-pose slack probe
+  also moves in the observed direction: selected sides lacking one extra clear
+  terminal rise from 57 on A1 to 78 on E006.
+
+non-implications:
+  This does not invalidate front_clear as a local primitive. It rejects only the
+  unconditioned global sum as a construction objective.
+
+effect on next problem:
+  Condition port-exposure knowledge on selected group poses. Use current occupancy
+  to derive contextual binding-pattern survival coefficients, and independently
+  measure the candidate after each trust-region step.
+
+evidence:
+  E009 EXPERIMENT.txt rejected-proxy audit and E007 fixed-domain counts.
+
+R-ZC-019  A contextual selected-pattern linearization predicts its real effect
+---------------------------------------------------------------------------
+status: measured FEASIBLE incumbent plus independent fixed-layout reconstruction
+scope: radius-20 neighborhood around E006; E006 occupancy-derived coefficients
+
+statement:
+  E009 scores existing group-pose literals by exact routing-visible binding
+  patterns surviving in the E006 occupancy. It predicts 13374 meaningful patterns
+  versus E006's 12289; the new fixed layout has 13390, a +16 prediction error and
+  +1101 actual gain. Front-pruned patterns fall by 1101. The candidate also moves
+  from 91 to 83 components, grows the largest component 405 to 414, and reduces
+  poles 54 to 53, while free adjacency changes 1166 to 1158. It remains
+  component-binding INFEASIBLE.
+
+non-implications:
+  The contextual coefficients are not globally valid rules, and the LNS incumbent
+  is not objective-optimal. Increased pattern survival does not by itself prove
+  component compatibility.
+
+effect on next problem:
+  The outer loop has a faithful positive producer: derive local coefficients,
+  move inside an explicit trust region, then rebuild the exact interface. Compare
+  exact mismatch before deciding whether to alternate again or form a joint model.
+
+evidence:
+  E009 RESULT.txt; local RESULT.json sha256
+  c0bce86fd9d2871621a28c883b57f51c3e3e7b5f5efbba9b96c23ea6c55dccec.
+
+R-ZC-020  Alternating permeability and exposure yields a second broad gain
+--------------------------------------------------------------------------
+status: 19 fresh OPTIMAL mismatch comparisons
+scope: E001, E006, and E009 fixed layouts
+
+statement:
+  Exact total per-commodity mismatch follows 281 -> 214 -> 196. Relative to E006,
+  E009 improves 11 commodities, leaves six unchanged, and worsens blue_iron_block
+  and steel_block; no commodity reaches zero. Relative to E001, the two steps
+  remove 85 mismatches, or 30.25%.
+
+non-implications:
+  Three fixed layouts do not prove monotonic convergence of future alternating
+  steps. No current candidate is component-compatible or routable.
+
+effect on next problem:
+  Preserve E009's contextual pattern score while asking for another permeability
+  improvement in a small trust region. If the constrained step fails to improve
+  the exact interface, move the residual component condition into a smaller joint
+  placement-binding model rather than piling on more scalar proxies.
+
+evidence:
+  E010 RESULT.txt; local RESULT.json sha256
+  6e0965a159c52c6e49a5e0c8afc2a57472f8df0669d5631ed04c73749770d4fe.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the
