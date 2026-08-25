@@ -1,0 +1,106 @@
+ZERO-CONDITION CAMPAIGN INPUTS
+==============================
+
+Identity rule
+-------------
+The history/material tree path is not an evidence identity. For local artifacts,
+use path + SHA-256 + size. If the bytes disappear or change, narrow the conclusion
+or deliberately import a frozen copy; do not silently regenerate and pretend it
+is the same observation.
+
+History/material root
+---------------------
+/home/zhuran24/zmd-pj
+
+Current local evidence
+----------------------
+
+A1 placement-plus-power master result
+  path: .artifacts/lowerbound_ladder_20260824/phaseA1_noghost_master/A1_RESULT.json
+  sha256: c1b5a855533723097f3aad00aafebd1c40e83279063c84ed81ced0076a9a356e
+  size: 15185
+  role: proves only OPTIMAL no-ghost placement-plus-power master intermediate
+
+A1 fixed layout
+  path: .artifacts/lowerbound_ladder_20260824/phaseA1_noghost_master/MASTER_LAYOUT_A1.json
+  sha256: 9e545fdf29e55978a8237fc4c1f1183f9643abfe04b6e8d2a8a5319c31c4df83
+  size: 122817
+  role: fixed geometry input for downstream probes
+
+A1 first-pass binding/routing result
+  path: .artifacts/lowerbound_ladder_20260824/phaseA2_backchain/A2_RESULT.json
+  sha256: bfdf64215780a4621b994af62955a4dd6776ef3b78b66f82d0ecf186ba5873cc
+  size: 210990
+  role: first binding FEASIBLE; routing precheck front_blocked; no whole-layout conclusion
+
+A1 component-aware binding result
+  path: .artifacts/lowerbound_ladder_20260824/interface_component_probe/recovery_v2/A1_NO_GHOST_COMPONENT_BINDING_RESULT.json
+  sha256: 650d89b408a67c4cadf0ec1a1cdd6920d8502d420daa2e67756bdc30ef94444e
+  size: 48183
+  role: fixed-layout component-closed binding INFEASIBLE result
+
+A1 commodity-core result
+  path: .artifacts/lowerbound_ladder_20260824/interface_component_core/A1_NO_GHOST_COMMODITY_CORE_RESULT.json
+  sha256: cffa6d614b44e41fbcbb64c8ffe02327525a9618bc092df16d8b8c32202e1be8
+  size: 431643
+  role: inclusion-minimal one-commodity core inside the frozen guarded binding model
+
+Blue-iron pocket cut certificate
+  path: .artifacts/lowerbound_ladder_20260824/blue_iron_pocket_cut/BLUE_IRON_POCKET_CUT_CERTIFICATE.json
+  sha256: c589d7682fe7ecdc5d8784b311d51e0f48031af70b3be1dda936a16c4ef97d17
+  size: 21135
+  role: sound four-pose research-only obstacle cut under frozen semantics
+
+Blue-iron pocket independent checker
+  path: .artifacts/lowerbound_ladder_20260824/blue_iron_pocket_cut/check_blue_iron_pocket_cut.py
+  sha256: 4233cc7642bcfabd64c9b76b396f8a11bb9ddf3ede7b08781426a4f94da9573a
+  size: 24525
+  role: independent recomputation for the pocket certificate
+
+Phase-minus1 v2 high-budget summary
+  path: .artifacts/solver_reasoning_outer_loop_phase_minus1_v2_20260815/phase-minus1-v2-r1-20260815/V2_RUN_SUMMARY.json
+  sha256: 3fcf6afe1fa9dc01c97a5e2a37b8699db4c3050c35ce44fa098248d69a4698a5
+  size: 39026
+  role: inherited fixed-layout evidence that point-nogood enumeration repeatedly
+        returns front_blocked and fails to enter exact routing
+
+Tracked source material in the research branch
+----------------------------------------------
+
+Research charter
+  docs/项目说明/30_research_charter.md
+
+Solving methodology
+  docs/项目说明/REASONING_METHOD.md
+
+Phase-minus1 protocol and verdict
+  docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/PHASE_MINUS1_PROTOCOL.md
+  docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1/GO_NO_GO.md
+
+Phase-minus1 v2 protocol
+  docs/research/solver_reasoning_outer_loop_reviews_20260815/phase_minus1_v2/PHASE_MINUS1_V2_PROTOCOL.md
+
+W0 compressed theorem and lowering experiments
+  docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_one_w0_ghost_front_offline_certificate_20260815/
+  docs/research/solver_reasoning_outer_loop_reviews_20260815/experiment_two_w0_unary_lowering_canary_20260816/
+
+Historical front-clear / routing-aware binding line
+  docs/research/rab_sep_promotion_20260716/
+  docs/research/front_offset_incident_20260718/
+
+Canonical semantics and current code substrate
+  rules/canonical_rules.json
+  data/preprocessed/generic_io_requirements.json
+  data/preprocessed/mandatory_exact_instances.json
+  src/models/binding_subproblem.py
+  src/models/routing_subproblem.py
+  src/search/benders_loop.py
+
+External large input
+--------------------
+candidate placements
+  history path: /home/zhuran24/zmd-pj/data/preprocessed/candidate_placements.json
+  current size: 54467709
+  identity: verify with data/external_artifacts.json and the campaign harness before use
+  local policy: do not duplicate by default; consume by verified external path or an
+                ignored local mount/copy whose digest is recorded in the run receipt

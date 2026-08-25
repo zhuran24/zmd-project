@@ -1,0 +1,147 @@
+CAMPAIGN: ZERO-CONDITION WHOLE LAYOUT
+=====================================
+
+Identity
+--------
+id: zero_condition
+status: active
+opened_for: first complete whole-layout witness on the current frozen instance
+relation_to_program: current campaign, not project final target
+
+Success object
+--------------
+A successful zero-condition result is one complete layout after removing only the
+empty-rectangle requirement.
+
+It is not satisfied by:
+  * a placement-only incumbent;
+  * a placement-plus-power master solution;
+  * one FEASIBLE binding selection;
+  * a routing precheck that merely avoids front-blocked;
+  * an unverified external blueprint.
+
+The intended campaign chain is:
+
+  all mandatory facilities placed
+    -> power coverage
+    -> exact binding
+    -> exact routing connectivity
+    -> the intended research-stage flow/throughput checks
+    -> strict independent validation
+    -> game-side review when required
+
+A stage may use research-only instrumentation or a narrower diagnostic model, but
+only the complete chain closes the campaign.
+
+Why this campaign is first
+--------------------------
+The lower side is empty. Before asking for a 6x6 or larger strict-empty rectangle,
+the project needs to prove it can construct and validate any complete layout under
+the remaining rules. The zero-condition object is therefore both the cheapest
+constructive milestone and the clearest microscope for the real interface among
+placement, power, binding, and routing.
+
+Current evidence
+----------------
+1. The no-ghost placement-plus-power master has an OPTIMAL solution containing
+   all 266 mandatory instances. This is an intermediate, not a whole layout.
+
+2. Its first binding is FEASIBLE, but exact routing precheck reports front_blocked
+   with 70 blocked ports. The strict validator is not reached. This only rejects
+   that binding selection under the fixed layout.
+
+3. The fixed geometry contains 1100 free cells split into 98 components; the
+   largest component has 405 cells. A binding model that compiles front clearance
+   and component support is INFEASIBLE before exact routing.
+
+4. Commodity assumption minimization reduces that component-support failure to
+   the single commodity blue_iron_block.
+
+5. An independently checked four-pose pattern forms a closed three-cell pocket
+   containing the mandatory blue_iron_block source front and no possible sink.
+   The resulting pose-conjunction nogood is sound in the frozen context and has
+   no production or ledger effect.
+
+6. Older fixed-layout campaigns independently show that full-selection point
+   nogoods repeatedly change the binding assignment without changing the local
+   family of front-blocked death. They justify re-deriving the interface, not
+   assuming the existing seam is adequate.
+
+The precise evidence identities are recorded in INPUTS.txt and RESULTS.txt.
+
+Research conclusion already earned
+----------------------------------
+The old seam
+
+  placement + power -> complete binding -> routing precheck
+
+is not treated as a neutral default. At least three classes of information should
+be reconsidered before exact routing:
+
+  static port-pattern viability
+  free-space component support for selected commodity terminals
+  placement-level obstacle causes when all compatible selections are impossible
+
+This does not yet determine the final number of layers or the final cut families.
+It determines that those are open research outputs.
+
+Live question
+-------------
+What is the smallest faithful repartition that prevents the master/binding side
+from producing geometries and selections already dead by cheap interface
+reasoning, while leaving true simultaneous path conflicts to exact routing?
+
+Candidate explanations to distinguish
+-------------------------------------
+local pocket regime
+  A small obstacle set forces a required terminal into a sink-free component.
+  Appropriate output may be a compact placement-level nogood or a parametric
+  pocket rule.
+
+global fragmentation regime
+  No small core dominates; the placement creates many disconnected free-space
+  islands. Appropriate output may be a positive permeable-space or variable
+  backbone representation rather than many local cuts.
+
+component-support regime
+  Terminals exist but no assignment can place each required commodity source and
+  sink in a compatible component. Appropriate output belongs with binding, not
+  exact path routing.
+
+simultaneous-routing regime
+  Component support passes, but paths cannot coexist because of shared cells,
+  directions, crossings, or corridor capacity. Only then does exact-routing cut
+  design become the current wall.
+
+Working constraints
+-------------------
+* Do not assume a fixed shelf, frame, corridor, or factory topology merely because
+  it is easy to describe.
+* Do not encode the entire routing model into the placement master without a new
+  problem-derived reason.
+* Do not let another interface-compressibility study postpone the whole-layout
+  target; measurements should ride on the witness campaign.
+* Do not infer zero-condition infeasibility from the death of A1 or any finite
+  portfolio unless the quantified space is exactly exhausted.
+* Do not treat the current four-pose cut as a general family until its premises
+  and transport rule are generalized or independently regenerated per layout.
+
+Relation to later goals
+-----------------------
+Near term, success unlocks the first strict-empty lower-bound rung. Project-wide,
+the campaign should reveal a construction interface that can participate in full
+exact closure and later throughput semantics. Future-facing designs should carry
+premises cleanly enough to transfer or be re-derived on other bases, but current
+experiments need not build a generic multi-base system in advance.
+
+Campaign close
+--------------
+Close only when a complete zero-condition witness and its validation chain are
+present. On close, record:
+
+  witness identity
+  exact stages passed
+  remaining semantic exclusions
+  methods/results that transfer to the next campaign
+  methods/results that were special to zero-condition
+  next campaign selected from the evidence then available

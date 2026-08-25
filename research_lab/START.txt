@@ -1,0 +1,77 @@
+ZMD RESEARCH TREE: COLD START
+=============================
+
+Run this first:
+
+  /home/zhuran24/zmd-pj/.venv/bin/python research_lab/tools/research_tree.py enter
+
+A healthy entry must report:
+
+  mode              = research
+  branch            = research/main
+  history tree      = /home/zhuran24/zmd-pj
+  certification tree = UNCREATED
+  active campaign   = the campaign named in .zmd-worktree-mode
+
+Read order
+----------
+Every session:
+
+  1. research_lab/STATE.txt
+  2. the active campaign file printed by the entry tool
+
+First entry, changed mission, or architecture work:
+
+  3. research_lab/PROGRAM.txt
+  4. research_lab/ARCHITECTURE.txt
+  5. research_lab/CHECKS.txt when choosing a validation level
+
+Only after the current question is clear:
+
+  6. the smallest relevant subset of rules, source code, evidence, and history
+
+Do not begin ordinary research by loading the complete certification/governance
+corpus. PROJECT_LOCK, CURRENT, ledgers, and AGENT_OPERATIONS are on-demand
+sources for exact authority, certified semantics, promotion, publication,
+shared-Git repair, or a specific operational contract.
+
+Session orientation
+-------------------
+Before reasoning, state in one sentence:
+
+  "RESEARCH mode: I am producing candidate knowledge for <active campaign>;
+   this session cannot grant certification or update U/L."
+
+Then identify one live question. A session may explore several ideas, but it
+should have one question whose answer can change the next problem or decision.
+
+Where work goes
+---------------
+  tracked experiment source / small fixtures:
+      research_lab/campaigns/<campaign>/experiments/
+
+  durable campaign conclusions and their effect on the next question:
+      research_lab/campaigns/<campaign>/RESULTS.txt
+
+  reusable method that has survived more than one campaign:
+      research_lab/methods/  (create only when earned)
+
+  logs, solver dumps, caches, temporary models, raw notebooks, large output:
+      research_lab/local/
+
+  candidate ready for independent certification review:
+      research_lab/promotion/<packet-id>/
+
+Before committing
+-----------------
+  * Re-read the active campaign success object and truth boundary.
+  * Keep the commit to one coherent research change.
+  * Use exact pathspecs; do not stage local output.
+  * Update STATE only when the current question or campaign position changed.
+  * Update RESULTS only when a conclusion changed the next problem or decision.
+
+Main-tree boundary
+------------------
+/home/zhuran24/zmd-pj is the preserved history/material tree. It is not the
+certification tree and is not a writable companion workspace for this campaign.
+Read from it when needed; do not send research writes back into it.

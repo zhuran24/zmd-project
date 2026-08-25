@@ -1,0 +1,49 @@
+EXPERIMENT <id>: <short name>
+=============================
+
+Question
+--------
+What single uncertainty can this experiment resolve?
+
+Competing readings
+------------------
+A.
+B.
+C.  (omit when unnecessary)
+
+Cheapest faithful test
+----------------------
+Why does this test answer the stated question rather than an easier neighboring
+question?
+
+Inputs
+------
+List exact paths and identities. Mark any external or local-only evidence.
+
+Change under test
+-----------------
+State the one intended model, representation, heuristic, theorem, or construction
+change. If several changes are inseparable, explain why.
+
+Outcome classification
+----------------------
+Define only the distinctions needed for the decision. Do not force a complete
+pre-registration for ordinary exploratory work.
+
+Run outputs
+-----------
+Write raw logs and large output under research_lab/local/. Keep only the script,
+small fixture, compact receipt, and conclusion needed for durable understanding.
+
+Truth boundary
+--------------
+What can this experiment prove, measure, refute, or leave UNKNOWN?
+
+Decision effect
+---------------
+For each material outcome, what changes in the next problem or decision?
+
+Result
+------
+Fill after the run. If it changes the campaign, add a concise durable record to
+../RESULTS.txt and update research_lab/STATE.txt.

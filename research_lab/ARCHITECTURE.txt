@@ -1,0 +1,236 @@
+ZMD RESEARCH TREE ARCHITECTURE
+==============================
+
+Purpose
+-------
+The research tree is the long-lived home of ZMD discovery work. It exists to
+keep attention on the problem while preserving enough truth discipline that
+useful results can later survive independent certification.
+
+It is deliberately not a lighter copy of the certification process. Research
+and certification have different default questions:
+
+  research:      What structure is true or useful, and what should we try next?
+  certification: Is this fixed candidate claim safe to consume with a stated
+                 effect under a fixed context?
+
+The second question will receive its own worktree later. The old main worktree is
+neither role; it is retained as history and source material.
+
+1. Repository roles
+-------------------
+
+history/material tree
+  Path: /home/zhuran24/zmd-pj
+  Role: preserve previous Git history, old state, tracked sources, and local
+        evidence that was not copied into the research worktree.
+  Default access: read-only.
+
+research tree
+  Branch: research/main
+  Role: all active research, including mathematics, solver design, construction,
+        experiments, counterexamples, and candidate proof machinery.
+  Authority: research only.
+
+certification tree
+  Status: not yet created.
+  Future role: cold, independent review and promotion of selected research
+               candidates. It will not inherit research conclusions merely by
+               sharing Git ancestry.
+
+2. Attention architecture
+-------------------------
+The root README and agent overlays only establish mode and route attention. They
+do not carry the whole project state.
+
+Stable orientation:
+  research_lab/PROGRAM.txt
+    Goal hierarchy and research principles. Changes rarely.
+
+Live orientation:
+  research_lab/STATE.txt
+    Active campaign pointer, current wall, latest consequential result, and the
+    one live question. Kept short enough to reread every session.
+
+Validation level:
+  research_lab/CHECKS.txt
+    R0 ordinary exploration, R1 real-solver integration, and R2 promotion
+    candidate checks. The level follows the effect being claimed, not file type.
+
+Campaign context:
+  research_lab/campaigns/<id>/CAMPAIGN.txt
+    Success object, scope, known facts, non-implications, current research
+    tension, and links to source evidence.
+
+The inherited repository is a library, not the front door. Agents load old
+CURRENT/PROJECT_LOCK/ledgers/history only when the current question needs exact
+semantics, current authority, a historical claim, or a promotion boundary.
+
+3. Goal hierarchy
+-----------------
+Every campaign is evaluated against three distinct levels:
+
+  A. Current campaign goal
+     The immediate object whose success or failure will move the project.
+
+  B. Current-project final target
+     Complete exact closure for the active base under the project's intended
+     final semantics, including throughput/startup rather than connectivity
+     alone.
+
+  C. Future expected target
+     A context-bound reusable exact-research system that can transfer with proof
+     across instances and bases and eventually support multi-base optimization.
+
+A current experiment does not need to implement C. It must only avoid claiming
+that an accidental current-instance encoding is a universal architecture. When a
+cheap special case is useful, use it and label the premise.
+
+4. Working layers
+-----------------
+
+program layer
+  PROGRAM.txt. Stable mission and principles.
+
+state layer
+  STATE.txt. Current position and next question, not a diary.
+
+campaign layer
+  campaigns/<id>/. Self-contained active research surface.
+
+experiment-source layer
+  campaigns/<id>/experiments/. Tracked scripts, small fixtures, hypotheses, and
+  compact summaries needed to reproduce or understand a discriminating test.
+
+local runtime layer
+  local/. Ignored logs, caches, raw runs, temporary models, large receipts,
+  notebooks, and mounts. Nothing here is durable merely because it exists.
+
+method layer
+  methods/. Created only when the same reasoning or tool has survived use in at
+  least two materially different contexts. Do not promote a one-off trick into a
+  framework on first contact.
+
+promotion layer
+  promotion/. Frozen candidate packets for a future certification tree. A packet
+  is an interface object, not a certification receipt.
+
+5. Research loop
+----------------
+The default loop is intentionally small:
+
+  observe a concrete wall
+    -> state one discriminating question
+    -> choose the cheapest faithful test
+    -> run or reason
+    -> classify the outcome honestly
+    -> change the next problem, construction, or decision
+
+No detailed global plan is required. Pre-registration is optional and used only
+when looking at the outcome could move thresholds, when a causal A/B claim is
+intended, when a high-budget run needs a stop rule, or when owner instructions
+explicitly require it.
+
+A result is durable only when RESULTS.txt records:
+
+  statement
+  premises/scope
+  evidence identity
+  status: conjecture / measured / proved / refuted / witness / unknown
+  non-implications
+  effect on the next problem or decision
+
+A large log without that effect remains raw material. A beautiful method without
+frontier or decision leverage remains a tool, not project progress.
+
+6. Code placement
+-----------------
+Early hypotheses should usually begin as campaign-local harnesses or prototypes.
+This keeps experimental vocabulary and temporary assumptions close to their
+question.
+
+Modify inherited src/ code in the research branch when the experiment genuinely
+asks about integration with the real solver and a side harness would answer a
+different question. Such changes are still research-only even if they touch a
+file that was certification-bearing in the historical tree.
+
+Do not preserve artificial src/ sanctity inside the research tree. The safety
+boundary is promotion into the future certification tree, not the pathname of a
+research edit. Conversely, do not interpret a successful research src/ run as a
+production result.
+
+7. Git model
+------------
+research/main is the research integration line, not a disposable feature branch.
+Small sequential work may commit directly to it. Use research/exp/<name> branches
+only for parallel agents, a risky large rewrite, or experiments that need clean
+A/B ancestry.
+
+Commit rules:
+  * one coherent idea, instrument, experiment, or conclusion per commit;
+  * exact pathspec staging;
+  * raw local output excluded;
+  * no wholesale merge from research/main into a certification branch;
+  * promotion packets name exact commits or diffs to be reviewed.
+
+The research branch may import selected historical fixes when needed, but it does
+not periodically merge the old main branch merely to appear synchronized. Any
+baseline refresh is an explicit research decision recorded in BASELINE.txt.
+
+8. Evidence and external material
+---------------------------------
+Tracked historical documents remain in this tree because they are useful search
+material. Large untracked evidence remains in the history/material tree unless a
+campaign deliberately imports a compact immutable subset.
+
+Campaign INPUTS.txt files record external path, SHA-256, size, role, and whether
+that object is required or merely useful. A path alone is not identity. Missing
+external evidence narrows what can be concluded but does not invite a fabricated
+placeholder.
+
+9. Promotion boundary
+---------------------
+Research can finish in several ways: a theorem, counterexample, witness,
+algorithm, representation, negative result, or a decision-changing measurement.
+Only selected results need certification.
+
+A promotion packet contains the cold object:
+  * exact claim and object space;
+  * premises and context identity;
+  * requested effect;
+  * selected commits/diff;
+  * independent reproduction commands;
+  * positive controls, negative controls, and adversarial mutations;
+  * known unknowns and non-implications;
+  * source evidence identities.
+
+It deliberately omits persuasive narrative, sunk-cost history, and the research
+session's preference for the candidate. The future certification agent should
+meet the result after it has cooled.
+
+10. Legacy governance boundary
+------------------------------
+The inherited document governance and production preflight tools describe the
+former combined tree. They remain useful when a research task intentionally edits
+one of their governed legacy surfaces, but they are not the health authority for
+research/main. In particular, a legacy checker may reject this branch's tracked
+research README or branch-specific agent overlays because its old model requires
+one shared front door and untracked overlays.
+
+Research-tree health is checked by research_lab/tools/research_tree.py and the
+claim-proportional levels in CHECKS.txt. Do not mutate the old governance system
+solely to make an unrelated research experiment pass.
+
+11. Architecture change rule
+----------------------------
+This architecture should not grow a new rule for every incident. Change it only
+when one of these is true:
+
+  * a recurring research action has no natural home;
+  * an agent repeatedly enters with the wrong attention mode;
+  * durable results are being lost or raw outputs mistaken for conclusions;
+  * promotion cannot identify a clean candidate object;
+  * the architecture itself measurably delays ordinary research.
+
+When that happens, repair the smallest layer responsible. Do not answer research
+friction by cloning the old governance machine into research_lab.

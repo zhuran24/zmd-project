@@ -1,43 +1,38 @@
-# ZMD certified-exact 最大空矩形求解器
+# ZMD Research Tree
 
-这是《明日方舟：终末地》IndustrialPlanner 基地布局问题的 certified-exact 求解与验证仓库。候选、结构检查、supervisor seal、owner gate 与 durable `CERTIFIED` 属于不同权限层，不能互相代替。
+这是 ZMD 的长期研究树，分支固定为 `research/main`。它负责问题理解、数学推导、构造、反例、求解器实验、表示与切分重构，以及把成熟结果整理成待认证候选。
 
-## 进入项目
+它不是认证树，也不是旧主树的延续用途：
 
-| 需要回答的问题 | 唯一入口 |
-|---|---|
-| 现在的机器状态、gate、义务与 durable 结果是什么 | [CURRENT](docs/CURRENT.md) |
-| 应从哪类知识、规范、历史或操作页面进入 | [START_HERE](docs/START_HERE.md) |
-| 文档按哪些稳定分区组织、各分区从哪里进入 | [SECTION_INDEX](docs/SECTION_INDEX.md) |
-| 哪些页面仍承担当前职责 | [GUIDANCE_INDEX](docs/GUIDANCE_INDEX.md) |
-| certified exactness 与发布边界是什么 | [PROJECT_LOCK](PROJECT_LOCK.md) |
-| agent 操作与文档维护入口 | [AGENT_OPERATIONS](docs/AGENT_OPERATIONS.md) |
-| claim、decision、dossier 与证据在哪里 | [CATALOG](docs/CATALOG.md) |
+- `/home/zhuran24/zmd-pj`：旧主树，今后作为 Git 历史与既有材料的保留树，只读使用。
+- 当前 worktree：研究树，允许大胆探索，但不得自授 production、certified、U/L 或发布效力。
+- 认证树：尚未建立；成熟结果以后只通过选定的 promotion packet 过境，不整体合并研究分支。
 
-`CURRENT`、知识账本页面和职责索引都是投影，不是新的最高权威。当前值只从对应机器源或生成页读取；不要在 README、操作手册或历史材料中复制 gate、上下界、hash、测试数量和开关状态。
+## 进入研究树
 
-外部 review 计数仍是 `owner-maintained outside the repo`；仓库只记录 owner 已作出的治理结果，不自行推导或累加该计数。
-
-## 最小操作面
-
-项目命令统一使用 `.venv/bin/python`。修改文档前先解析目标路径，完成后检查本次 diff：
+先运行：
 
 ```bash
-.venv/bin/python devtools/docctl.py context <path> --intent edit
-.venv/bin/python devtools/docctl.py check --changed
-.venv/bin/python devtools/docctl.py gate --profile changed
-.venv/bin/python scripts/preflight_gate.py --full
+/home/zhuran24/zmd-pj/.venv/bin/python research_lab/tools/research_tree.py enter
 ```
 
-详细运行、测试、冻结与发布流程见 [Agent 操作手册](docs/AGENT_OPERATIONS.md)。文档治理 gate 验收文档框架且保证检查前后 Git-visible 状态不变；production preflight 验收另一套运行与认证边界。checker 或 preflight 通过只证明其声明的检查面，不自动授予数学 soundness、owner close 或 production certification。
+随后按输出读取 `research_lab/STATE.txt` 与当前 campaign。第一次进入或目标发生变化时，再读 `research_lab/PROGRAM.txt`。
 
-## 代码与规范
+## 三层目标
 
-- [代码地图](NAV_MAP.md)
-- [问题陈述](specs/01_problem_statement.md)
-- [canonical rules](rules/canonical_rules.json)
-- [proof obligations](data/proof_obligations/p1_2_proof_obligations.json)
-- [owner phase gate](data/review_gates/phase_1_2_spike_close.json)
-- [工程历史](CHANGELOG.md)
+1. 当前 campaign：先得到零条件完整布局。
+2. 当前项目终点：在当前基地的完整预期语义下，让上下界闭合并形成可独立复验的 certified-exact 结果。
+3. 未来预期：形成可绑定问题、目标与上下文，能够跨实例、跨基地并最终支持多基地联合优化的通用研究与精确求解体系。
 
-旧版根入口保存在 [历史快照](docs/history/status/root_README_pre_knowledge_spine_20260811.md)，只用于追溯当时叙述。
+三层目标必须同时可见，但不能互相冒充。当前 campaign 决定眼前资源，项目终点防止局部胜利被误写成完成，未来目标防止今天的方便把架构焊死。
+
+## 研究区
+
+- `research_lab/START.txt`：冷启动入口。
+- `research_lab/PROGRAM.txt`：稳定总纲与目标层级。
+- `research_lab/STATE.txt`：全树当前状态与 campaign 指针。
+- `research_lab/campaigns/`：每条当前研究战役的自包含工作面。
+- `research_lab/local/`：日志、缓存、临时模型与可再生运行产物，全部不进 Git。
+- `research_lab/promotion/`：未来送往认证树的候选包模板。
+
+旧仓库中的 `src/`、`rules/`、`specs/`、`docs/` 与历史研究材料仍是研究素材和代码底座，但不再是研究 agent 的默认注意力入口。

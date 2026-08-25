@@ -1,0 +1,162 @@
+ZERO-CONDITION DURABLE RESEARCH RESULTS
+=======================================
+
+This file records only conclusions that changed the next problem or decision.
+Raw runs, failed apparatus, and exploratory notes remain in local output or the
+source evidence. Records are not certification claims.
+
+R-ZC-000  Repeated point nogoods do not transmit the observed death family
+--------------------------------------------------------------------------
+status: measured
+scope: fixed-layout binding/routing experiments under their frozen contexts
+
+statement:
+  Phase-minus1 v1 observed 7578 exact routing-precheck failures across nine fixed
+  layouts. Every event was front_blocked and the actual feedback was a 285-literal
+  full-selection point nogood. The feedback changed the next binding selection,
+  but the next selection remained FEASIBLE and returned to the same death family.
+  The v2 deep arms added 26508 more front_blocked events over three approximately
+  eight-hour runs and still entered exact routing zero times.
+
+non-implications:
+  This does not prove any complete fixed layout infeasible. It does not prove a
+  particular local signature is a sound placement cut.
+
+effect on next problem:
+  The binding-to-routing interface itself is a research object. Additional point
+  enumeration is not the default answer to repeated front-blocked evidence.
+
+evidence:
+  tracked phase-minus1 verdict and v2 protocol; local V2_RUN_SUMMARY identity in
+  INPUTS.txt.
+
+R-ZC-001  Zero-condition placement plus power is constructible
+--------------------------------------------------------------
+status: proved by solver for the frozen master model
+scope: no-ghost placement-plus-power master only
+
+statement:
+  The current no-ghost pose-bool master returns OPTIMAL and places all 266
+  mandatory instances with power under that master model.
+
+non-implications:
+  This is not a whole-layout witness. It says nothing about exact binding,
+  routing, throughput, strict terminal validation, or game-side execution.
+
+effect on next problem:
+  Stop treating mandatory packing itself as the current zero-condition wall.
+  Study what interface information the master omits.
+
+evidence:
+  A1_RESULT and MASTER_LAYOUT_A1 identities in INPUTS.txt.
+
+R-ZC-002  The first A1 binding dies before routing solve
+-------------------------------------------------------
+status: measured
+scope: first binding selection on fixed A1 geometry
+
+statement:
+  Binding is FEASIBLE. Exact routing precheck reports front_blocked with 70
+  blocked ports and a placement-level conflict set containing 96 objects. No
+  routing solve or strict validator is reached. Alternative bindings were not
+  exhausted in this run.
+
+non-implications:
+  This rejects only the observed selection. It does not prove the A1 geometry
+  impossible under all bindings.
+
+effect on next problem:
+  Compile static port-pattern viability before complete binding selection, and
+  measure whether the remaining selections die by topology rather than occupied
+  fronts.
+
+evidence:
+  A2_RESULT identity in INPUTS.txt.
+
+R-ZC-003  Coarse topology belongs before exact routing
+-----------------------------------------------------
+status: measured and solver-refuted within a frozen fixed-layout model
+scope: A1 fixed occupancy; component-closed binding model
+
+statement:
+  A1 has 1100 free cells split into 98 connected components, with largest size
+  405. After compiling front clearance and component support into binding, the
+  fixed-layout binding model is INFEASIBLE before exact routing.
+
+non-implications:
+  This is not a full-layout infeasibility proof outside the stated fixed model.
+  It does not say every future layout needs a particular corridor or backbone.
+
+effect on next problem:
+  Treat component support as a binding-interface constraint family, not as an
+  expensive routing afterthought. Placement must eventually receive a compact
+  explanation when all compatible bindings are impossible.
+
+evidence:
+  A1_NO_GHOST_COMPONENT_BINDING_RESULT identity in INPUTS.txt.
+
+R-ZC-004  The current component failure has a one-commodity core
+----------------------------------------------------------------
+status: proved inclusion-minimal inside the frozen guarded binding model
+scope: A1 fixed occupancy and compiled component-support rules
+
+statement:
+  Enabling only blue_iron_block component support is already INFEASIBLE. Removing
+  that commodity from the assumption set makes the one-element core disappear;
+  minimality was replayed in the frozen model.
+
+non-implications:
+  The core is over commodity rules, not poses. It is not a production cut and it
+  does not prove all blue_iron layouts fail.
+
+effect on next problem:
+  Follow the blue_iron source/sink geometry to find the smallest placement cause
+  rather than continuing with a 19-commodity explanation.
+
+evidence:
+  A1_NO_GHOST_COMMODITY_CORE_RESULT identity in INPUTS.txt.
+
+R-ZC-005  A four-pose pattern forms a sound blue-iron source trap
+----------------------------------------------------------------
+status: proved in frozen context by independent checker
+scope: frozen pose pool, binding semantics, and current necessary component rule
+
+statement:
+  The conjunction of these four pose literals is impossible in a complete
+  solution under the frozen semantics:
+
+    power_pole                     p_x23_y48_o0_m_omni
+    refinery_blue_iron_033         p_x20_y50_o0_m_TB
+    refinery_blue_iron_034         p_x21_y53_o0_m_TB
+    refinery_steel_015             p_x24_y50_o0_m_TB
+
+  They close a three-cell free pocket. Every surviving binding for the mandatory
+  refinery source emits blue_iron_block at (23,52) inside the pocket, while no
+  mandatory sink can place a body-disjoint blue_iron_block input there.
+
+non-implications:
+  The cut is research-only, unattached, and has ledger_effect=none. It is not yet
+  a generalized pocket family, a production cut, or a lower-bound result.
+
+effect on next problem:
+  The next placement search can consume this exact local nogood as a narrow
+  probe. Subsequent candidates decide whether the correct language is a family
+  of small source traps or a more global permeable-space representation.
+
+evidence:
+  BLUE_IRON_POCKET_CUT_CERTIFICATE and independent checker identities in
+  INPUTS.txt.
+
+Current synthesis
+-----------------
+The campaign has crossed the threshold from "collect more deaths" to "change the
+interface language". The evidence already supports this ordered conceptual
+split:
+
+  static port-domain compilation
+    -> component-aware binding
+    -> exact simultaneous routing
+
+Placement-level feedback should carry the smallest obstacle cause that survives
+independent replay. The final physical layer count and feedback families remain
+open and are to be derived from the next candidates.

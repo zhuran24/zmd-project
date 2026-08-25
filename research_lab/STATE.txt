@@ -2,47 +2,70 @@ ZMD RESEARCH WORKTREE STATE
 ===========================
 
 Updated: 2026-08-25
-Branch: research/zero-condition-interface-repartition-20260825
+Branch: research/main
 Mode: RESEARCH
+Active campaign: zero_condition
+Campaign file: research_lab/campaigns/zero_condition/CAMPAIGN.txt
 
 Program versus campaign
 -----------------------
-The research worktree owns the complete research program described in
-PROGRAM.txt. The current campaign is only the active point of attack.
+The research worktree owns the complete program in PROGRAM.txt. The active
+campaign is only the current point of attack.
 
-Current campaign
-----------------
-Produce the first zero-condition whole layout for the current frozen instance.
-The immediate object is a complete witness, not a placement-only incumbent.
+Current project position
+------------------------
+The lower side is still empty: there is no complete whole-layout witness. The
+current zero-condition placement-plus-power master can produce a full mandatory
+placement, but downstream evidence shows that the old placement / binding /
+routing partition transports too little of the actual topological cause of death.
 
-Known current wall
-------------------
-Placement plus power can produce candidates, but the historical and current
-death data show that the placement/binding/routing partition transports too
-little information. Repeated front-blocked point nogoods have changed individual
-bindings without changing the family of death. Current evidence already justifies
-re-deriving the interface partition rather than treating the old F1-F9 family
-layout and the current binding-to-routing seam as fixed architecture.
+The decisive research update is no longer merely "routing is hard". Fixed-layout
+probes show three progressively sharper facts:
 
-Current research question
--------------------------
-What is the smallest problem-derived repartition that lets placement, port-domain
-facts, component support, power obstacles, and exact routing exchange enough
+  * complete binding selections can be rejected immediately by blocked fronts;
+  * after front filtering, coarse free-space component support can make binding
+    itself infeasible before exact routing starts;
+  * for the current A1 layout, blue_iron_block alone is an inclusion-minimal
+    commodity core, and a three-cell closed pocket yields a sound four-pose
+    research nogood under the frozen semantics.
+
+This is enough to reopen the binding-to-routing seam as a derived research
+object. The current layer count and cut packaging are not presumed correct.
+
+Live question
+-------------
+What is the smallest problem-derived repartition that lets placement, power
+obstacles, port-domain facts, component support, and exact routing exchange enough
 information to produce a whole layout without rebuilding one monolithic model?
 
-Working posture
----------------
-No detailed multi-step plan is frozen. Each step should answer one discriminating
-question, update this state when the answer changes the problem, and commit the
-smallest coherent durable change. The next experiment is selected from the last
-failure shape, not from an old checklist.
+Current campaign posture
+------------------------
+No detailed multi-step plan is frozen. The next experiment should distinguish
+among competing explanations of the next candidate's death:
+
+  local forced-port pocket
+  global free-space fragmentation
+  component support failure
+  true simultaneous multi-commodity routing conflict
+
+The experiment should serve the zero-condition witness directly. General outer-
+loop lessons are welcome outputs, but method validation must not displace the
+whole-layout campaign.
+
+Architecture status
+-------------------
+The research tree now has its own front door, program, live state, campaign
+surface, ignored runtime area, mode checker, and packet-only promotion boundary.
+The old main tree is history/material only. The certification tree remains
+uncreated and is intentionally not simulated here.
 
 Orientation guards
 ------------------
-* Do not redefine the whole research tree as the zero-condition project.
+* Do not redefine the research tree as the zero-condition project.
 * Do not let future generality displace the current lower-side bottleneck.
-* Do record whether a new representation is inherently instance-specific,
-  transferable with premises, or likely to obstruct the future expected target.
+* Do record whether a representation is instance-specific, premise-transferable,
+  or likely to obstruct the future expected target.
+* Do not send research writes into the history/material tree.
 * Do not promote research conclusions from this tree into certified claims.
-* When a candidate result is ready for certification review, freeze a compact
-  promotion packet and hand it to a fresh certification-tree session.
+* When a result matures, freeze a compact packet for a fresh future
+  certification-tree session.

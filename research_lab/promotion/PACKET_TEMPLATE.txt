@@ -1,0 +1,92 @@
+ZMD RESEARCH PROMOTION PACKET <packet-id>
+=========================================
+
+Packet status
+-------------
+research_candidate_only
+
+This packet requests independent review. It does not grant the requested effect,
+change U/L, or establish production/certified status.
+
+1. Candidate object
+-------------------
+kind:
+  theorem / counterexample / witness / algorithm / representation / cut /
+  checker / model change / other
+
+exact claim:
+
+object space:
+
+requested consumer and stage:
+
+requested effect:
+
+2. Context and premises
+-----------------------
+problem identity:
+objective identity:
+rules/input identities:
+explicit premises:
+known scope restrictions:
+
+3. Research lineage
+-------------------
+research branch: research/main
+selected commits:
+selected diff or files:
+active campaign:
+
+Do not include unrelated research-branch history.
+
+4. Evidence
+-----------
+source evidence paths + SHA-256:
+reproduction commands:
+compact result receipts:
+independent checks already performed:
+
+5. Adversarial surface
+----------------------
+positive controls:
+negative controls:
+mutation tests:
+known counterexamples rejected by the candidate:
+plausible counterexamples not yet tested:
+
+6. Non-implications and unknowns
+--------------------------------
+The candidate does not prove:
+
+Remaining UNKNOWN:
+
+Research assumptions that must not cross the boundary:
+
+7. Consumption contract requested
+----------------------------------
+runtime trigger:
+concrete effect:
+fail-closed behavior on mismatch:
+required context guard:
+required independent re-derivation:
+
+8. Resource and utility evidence
+--------------------------------
+baseline:
+treatment:
+common milestone or censoring boundary:
+observed benefit:
+observed cost or hotspot migration:
+
+Utility evidence does not substitute for soundness.
+
+9. Certification handoff
+------------------------
+certification tree: UNCREATED at template time
+required reviewer posture: fresh-session, cold object, independent attack
+whole research branch merge allowed: no
+
+Certification may accept, narrow, reimplement, or reject this candidate. Any fix
+that changes the candidate's claim, object space, consumer stage, or effect returns
+to research or becomes a new certification object; it is not silently repaired
+inside an approval verdict.

@@ -110,7 +110,7 @@ Research principles
 
 Historical coordinates
 ----------------------
-The goal hierarchy is reconstructed from these durable main-tree sources:
+The goal hierarchy is reconstructed from these durable history/material sources:
 
 * docs/项目说明/30_research_charter.md
 * docs/history/status/00_master_roadmap_pre_phase3_20260812.md, especially the
@@ -121,4 +121,6 @@ The goal hierarchy is reconstructed from these durable main-tree sources:
 * specs/23_industrial_planner_outer_base_planning_representation.md
 
 These coordinates are evidence for orientation. Their old current-status claims
-remain historical and must not overwrite present machine state.
+remain historical and must not overwrite present machine state. The worktree
+operating structure is defined separately in ARCHITECTURE.txt so the stable
+research mission does not become entangled with directory and Git mechanics.

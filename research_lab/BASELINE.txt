@@ -1,0 +1,50 @@
+ZMD RESEARCH TREE BASELINE
+==========================
+
+Research integration branch
+---------------------------
+branch: research/main
+created_from_commit: ede4fa4b883d0aa965141700d2475af1b96817c8
+first_research_program_commit: c3f0294
+
+The branch was created as an isolated Git worktree from the committed main-tree
+snapshot. Dirty working-tree changes and most regenerable/local artifacts from
+the old main worktree were not copied.
+
+Repository roles
+----------------
+history_material_tree: /home/zhuran24/zmd-pj
+history_branch: main
+history_role: preserve old Git history, tracked project material, local evidence,
+              and the shared project Python environment
+history_write_policy: read-only from research sessions
+
+certification_tree: UNCREATED
+certification_policy: create a separate worktree later; do not repurpose the old
+                      main worktree and do not treat it as a certification sink
+
+Runtime dependencies
+--------------------
+project_python: /home/zhuran24/zmd-pj/.venv/bin/python
+candidate_placements_source:
+  /home/zhuran24/zmd-pj/data/preprocessed/candidate_placements.json
+
+The research worktree intentionally does not duplicate the virtual environment or
+large external candidate-placement artifact. Campaign tools may consume verified
+external inputs from the history/material tree, or deliberately materialize a
+local copy or symlink under an ignored path. They must record the consumed bytes'
+identity before drawing a durable conclusion.
+
+Baseline refresh rule
+---------------------
+The research tree does not automatically merge main. A baseline refresh is made
+only when a concrete research question needs a later historical fix or input.
+Record:
+
+  source commit
+  selected paths or commits
+  reason the refresh changes the research problem
+  conflicts or assumptions introduced
+
+Then commit the import as its own coherent change. Do not hide a baseline refresh
+inside an unrelated experiment commit.

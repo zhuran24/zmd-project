@@ -1,0 +1,64 @@
+RESEARCH TREE CHECK LEVELS
+==========================
+
+These checks preserve research truth and reproducibility without importing the
+old certification/governance workload into every idea.
+
+R0: ordinary reasoning, note, prototype, or small experiment
+------------------------------------------------------------
+Required:
+
+  /home/zhuran24/zmd-pj/.venv/bin/python research_lab/tools/research_tree.py check
+  git diff --check
+  run or compile the changed prototype when applicable
+
+Also verify that raw output stays under research_lab/local/ and that any durable
+conclusion states its scope and effect on the next question.
+
+Not required by default:
+  full preflight
+  document governance gate
+  owner gate
+  production cut lifecycle
+  global dossier registration
+
+R1: experiment against the real solver or inherited src/
+-------------------------------------------------------
+R0 plus:
+
+  targeted tests/checkers for the exact code path changed
+  frozen or recorded input identities
+  a baseline or counterfactual when claiming causal improvement
+  explicit UNKNOWN/censoring handling
+  a compact result receipt or RESULTS.txt update if the experiment changes the
+  campaign
+
+Touching inherited src/ in the research branch does not create certified effect.
+It only raises the fidelity obligations of the experiment.
+
+R2: candidate prepared for future certification
+-----------------------------------------------
+R1 plus:
+
+  clean coherent research commits
+  a frozen promotion packet based on PACKET_TEMPLATE.txt
+  exact claim, premises, object space, requested consumer/effect
+  independent reproduction command
+  positive and negative controls
+  adversarial mutations or counterexample search appropriate to the claim
+  complete non-implications and known unknowns
+
+R2 still does not certify the candidate. The future certification tree performs a
+fresh cold review and chooses its own gates.
+
+Legacy tool boundary
+--------------------
+The inherited `devtools/docctl.py doctor`, document convergence projections, and
+production preflight were designed for the former combined tree. They may reject
+this branch's tracked research front door and branch-specific agent overlays by
+design. Their output is not the health verdict for research/main.
+
+Use those tools only when a task intentionally edits the inherited document
+system, certification machinery, or another surface whose own contract names the
+tool. Do not repair their global assumptions merely to make an unrelated research
+prototype green.
