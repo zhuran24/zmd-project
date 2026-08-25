@@ -1,0 +1,16 @@
+---
+name: audit-gate-threat-model-and-monotonicity
+description: 审计闸防“没验证就过”；先确认对象存在，审计线不能自授权
+metadata:
+  node_type: memory
+  type: project
+  role: certification
+---
+
+本仓最常见威胁不是恶意敌手，而是验证不足的流程产出一个看起来合规的授权。人闸的价值在于引入自动链之外、不可跳过的核对点；nonce 只强制时序，不能被描述成对抗安全。
+
+开任何验收条件前先确认被验对象和真实 consumer 已存在。不能为了满足“改唯一路径”的令而新建一个原本不存在的消费者，从而借修复扩大作用面。
+
+“缩权无需重证”只有在 source、consumer、stage、object space、effect、target claim、grant issuer 全部相同，且 `Accepted_new ⊆ Accepted_old`、新增拒绝只产生 `NO_EFFECT` 或具名 fail-loud 时才成立。换 issuer、换 stage、换 effect、切 fallback 或把授权拒绝翻译成数学拒绝，都可能是伪缩权。
+
+审计线可以判定合同、scope、currency 与作用边，但不能给自己签发 capability。grant 必须来自具名 owner、认证 sink 或另行授权入口。授权面 fail-closed 与可见性面 fail-loud需同时检查。

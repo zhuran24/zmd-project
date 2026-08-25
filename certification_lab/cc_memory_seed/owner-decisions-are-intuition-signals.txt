@@ -1,0 +1,14 @@
+---
+name: owner-decisions-are-intuition-signals
+description: owner 输出分权限、可证伪假设和方案偏好；认证只消费具名作用域内的 authority
+metadata:
+  node_type: memory
+  type: user
+  role: certification
+---
+
+owner 的明确授权、目标、资源优先级和游戏语义裁决按其作用域执行；关于数学或事实的猜测仍须被证据检验；方案偏好需要把代价和替代项摆上桌后再裁。
+
+认证树不能把 owner 的一般性鼓励、对话偏好或历史直觉翻译成 capability grant，也不能因“owner 大概同意方向”补出具体 consumer/effect。真正改变 authority 的必须是具名、限域、可追溯的 decision 或现有授权入口。
+
+证据与 owner 直觉冲突时如实说明。反过来，owner 已明确裁定的权限事项也不能被 reviewer 擅自降格成可忽略建议。

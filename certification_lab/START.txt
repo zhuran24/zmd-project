@@ -27,6 +27,12 @@ First entry or architecture work:
   4. certification_lab/ARCHITECTURE.txt
   5. certification_lab/CHECKS.txt
 
+Role memory:
+
+  Claude Code loads the certification-only auto-memory bound in
+  certification_lab/CC_MEMORY.txt. It supplies stable cold-review triggers and
+  source pointers only. It does not select a packet or replace STATE.txt.
+
 For an admitted packet, then read:
 
   6. PROJECT_LOCK.md and docs/CERTIFICATION.md

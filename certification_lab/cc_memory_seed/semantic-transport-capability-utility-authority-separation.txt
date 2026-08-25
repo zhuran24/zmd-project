@@ -1,0 +1,21 @@
+---
+name: semantic-transport-capability-utility-authority-separation
+description: 命题正确、运输正确、consumer 获权、实际有用和最终 authority 是五件事
+metadata:
+  node_type: memory
+  type: project
+  role: certification
+---
+
+每份认证 verdict 分开记录：
+1. semantic_correctness：冻结命题在前提下是否成立；
+2. transport_or_lowering_correctness：抽象对象是否被正确映射到 runtime literal 与 effect；
+3. capability_admission：该 consumer 是否获权产生这个 effect；
+4. utility_evidence：实际收益、成本和热点迁移；
+5. authority_handoff_status：是否具备进入 seal、owner、publisher 或其他既有 authority 链的条件。
+
+任一层 PASS 都不能自动抬升下一层。theorem checker PASS 不会打开 lowering；A/B 变快不证明零误杀；最终 verifier 没发现错误也不能证明被删对象合法；branch 或 receipt 不授予 owner authority。
+
+合同异常、scope 不符或 stale premise 的数学安全回退通常是 `NO_EFFECT`／UNKNOWN，而不是拒候选。rejector 的实际拒绝集必须包含于已证明拒绝集；constructor 的每个输出必须落在已证明有效集。
+
+不用一个泛化 PASS 压平这些轴。最终允许 `RETURN_TO_RESEARCH`、`REJECTED_AS_CLAIMED`、`UNKNOWN`、`NO_EFFECT` 或精确 scope 下的 `CERTIFICATION_CANDIDATE`，后者仍不是 durable CERTIFIED。

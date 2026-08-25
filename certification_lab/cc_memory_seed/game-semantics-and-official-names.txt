@@ -1,0 +1,16 @@
+---
+name: game-semantics-and-official-names
+description: 语义审查使用游戏正式名称；“测过／没测过”先查实测清单和未坐实项
+metadata:
+  node_type: memory
+  type: reference
+  role: certification
+---
+
+代码键是定位坐标，不是面向 owner 的实体名。已确认 `power_pole` = **供电桩**。名称不确定时查游戏文本或 owner 裁定，不在 verdict 中临时翻译，也不把多口、多槽组等物理结构顺手压平。
+
+游戏实测总清单入口：
+- 历史树 `.artifacts/ingame_confirmation_inventory_20260824/INVENTORY_INGAME_CONFIRMATIONS.md`
+- ops 副本 `~/.claude/ops/zmd-pj/evidence_vault/ingame_confirmation_inventory_20260824/`
+
+该清单是时点证据，既列已确认规则也列未坐实机制。认证只能在 packet 当前 context 中消费具名证据；新的游戏实测不能靠记忆直接升格，应形成来源、日期和适用范围明确的证据对象。

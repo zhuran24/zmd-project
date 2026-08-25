@@ -1,0 +1,14 @@
+---
+name: owner-reader-profile
+description: owner 对细节只保留大概印象；最终说明要抽象但不省略，逐层解释 scoped verdict
+metadata:
+  node_type: memory
+  type: user
+  role: certification
+---
+
+owner 对项目结构有整体印象和较强数学敏感度，但不记内部坐标、批次号和文件行号。最终说明应从“审的对象是什么”开始，依次解释命题、前提、发现、允许的 effect、仍缺的 authority，不要求读者回仓查代号。
+
+“听不懂”通常是中间断了一环，不是要把结论说得更浅。首次出现的术语用一句话定义，五条认证轴不能压成一个 PASS，也不能只报内部 nodeid。
+
+每份汇报自含，不写成上一轮审查的增量补丁。内部复现坐标留在 review record；面向 owner 的版本讲结构、理由、结论和是否需要裁决。

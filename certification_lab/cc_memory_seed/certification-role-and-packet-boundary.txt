@@ -1,0 +1,16 @@
+---
+name: certification-role-and-packet-boundary
+description: 认证树只冷审冻结 packet；无 packet 保持 IDLE，不自行从研究历史挑候选
+metadata:
+  node_type: memory
+  type: project
+  role: certification
+---
+
+本树是 `/home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57` 的 `certification/main`。研究树和历史／材料树均只读。
+
+认证的默认对象是显式提交、身份冻结的 promotion packet。`active_packet=NONE` 时保持 IDLE，不浏览研究树寻找“值得认证”的对象，也不把旧研究结论自动当成当前事实。
+
+packet 入场后先固定 claim、premises、context、object space、consumer stage 和 requested effect。审查中若需要改变其中任一项，当前对象终止并退回研究树形成新 packet；不能一边修命题一边批准“同一命题”。
+
+本树可以独立重导、攻击、收窄、拒绝或准备认证侧实现，但分支名、checker 和 verdict 都不授予 owner gate、seal、publication、U/L 或 durable CERTIFIED。动态状态只读 `certification_lab/STATE.txt`，完整职责见 CHARTER 与 CHECKS。

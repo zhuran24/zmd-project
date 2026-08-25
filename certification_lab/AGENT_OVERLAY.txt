@@ -12,6 +12,8 @@ Run:
 
 Read `certification_lab/STATE.txt`. If an active packet exists, read that packet before reading the research narrative. On first entry or when the certification architecture changes, read `certification_lab/CHARTER.txt`, `certification_lab/ARCHITECTURE.txt`, and `certification_lab/CHECKS.txt`.
 
+Claude Code auto-memory is bound to the certification-only directory recorded in `certification_lab/CC_MEMORY.txt`. It carries stable cold-review habits, not active research hypotheses or packet state; `STATE.txt` and the admitted packet remain authoritative for the current review.
+
 ## Default attention
 
 Start from the frozen candidate object:

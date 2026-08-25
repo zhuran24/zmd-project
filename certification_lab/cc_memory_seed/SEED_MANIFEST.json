@@ -1,0 +1,24 @@
+{
+  "schema": "zmd_cc_memory_seed_v1",
+  "role": "certification",
+  "role_marker": "ZMD_CERTIFICATION_MEMORY_V1",
+  "forbidden_role_marker": "ZMD_RESEARCH_MEMORY_V1",
+  "native_memory_directory": "/home/zhuran24/.claude/projects/zmd-pj-certification/memory",
+  "local_settings_path": ".claude/settings.local.json",
+  "source_p5_manifest_path": "/home/zhuran24/.claude/ops/zmd-pj/metabolism_20260822/implementation/metab_knives23_20260823/P1_metab_knives23_p1_gptpro_20260824T125103Z/P5/memory/FINAL_MEMORY_MANIFEST.json",
+  "source_p5_manifest_sha256": "bc2aea1d19e78246526e086b28f21c663304201506abf16a5099ea6d41c449cb",
+  "source_archive_path": "/home/zhuran24/.claude/ops/zmd-pj/archive/memory-cards/metab_knives23_p1_gptpro_20260824T125103Z/P5_FINAL",
+  "files": [
+    {"seed": "MEMORY.txt", "target": "MEMORY.md"},
+    {"seed": "certification-role-and-packet-boundary.txt", "target": "certification-role-and-packet-boundary.md"},
+    {"seed": "audit-gate-threat-model-and-monotonicity.txt", "target": "audit-gate-threat-model-and-monotonicity.md"},
+    {"seed": "semantic-transport-capability-utility-authority-separation.txt", "target": "semantic-transport-capability-utility-authority-separation.md"},
+    {"seed": "cold-review-and-heterogeneous-evidence.txt", "target": "cold-review-and-heterogeneous-evidence.md"},
+    {"seed": "existing-knowledge-and-errata-reconciliation.txt", "target": "existing-knowledge-and-errata-reconciliation.md"},
+    {"seed": "universal-negatives-need-exhaustive-search.txt", "target": "universal-negatives-need-exhaustive-search.md"},
+    {"seed": "owner-reader-profile.txt", "target": "owner-reader-profile.md"},
+    {"seed": "owner-decisions-are-intuition-signals.txt", "target": "owner-decisions-are-intuition-signals.md"},
+    {"seed": "game-semantics-and-official-names.txt", "target": "game-semantics-and-official-names.md"},
+    {"seed": "no-mindless-conservatism-surface-the-tension.txt", "target": "no-mindless-conservatism-surface-the-tension.md"}
+  ]
+}

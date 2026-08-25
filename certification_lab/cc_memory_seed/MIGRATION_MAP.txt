@@ -1,0 +1,98 @@
+ZMD CERTIFICATION MEMORY EXTRACTION MAP
+=======================================
+
+Source
+------
+P5 reviewed source set: 24 memory files / 139 routed spans.
+Source manifest SHA-256:
+  bc2aea1d19e78246526e086b28f21c663304201506abf16a5099ea6d41c449cb
+
+The old combined-tree memory mixed discovery, audit, operations and dated line
+state. Certification imports only cold-review triggers. Non-injected material
+remains recoverable from P5 archive, tracked handbooks and ops state.
+
+Disposition of every old source file
+------------------------------------
+MEMORY.md
+  Replaced by a certification-role index.
+
+audit-gate-threat-model-and-monotonicity.md
+  Active certification card, retaining threat model, object-existence check,
+  monotonic narrowing premises and grant-issuer boundary.
+
+baseline-arm-closed-with-triggers.md
+  Not injected. Historical research-line state and triggers stay ops/archive.
+
+canary-ruling-and-v2-standby-20260816.md
+  Not injected. Date-bound owner/seat/line status stays archive; general grant
+  rules are covered by certification cards.
+
+deferred-work-must-reach-future-sessions.md
+  Merged into packet/review follow-up discipline: unresolved work must return to
+  research or enter certification STATE/review triggers, never hide in prose.
+
+execution-line-reports-to-command-not-terminal.md
+  Not a certification memory card. Reporting mechanics remain in agent operations.
+
+game-entity-names-must-match-in-game-terms.md
+  Merged into game-semantics-and-official-names.
+
+game-terms-glossary.md
+  Merged into game-semantics-and-official-names.
+
+gpt-pro-devspace-mcp-bridge.md
+  Not injected. Machine bridge operations stay ops/runbook.
+
+gpt-pro-project-chat.md
+  Not injected. Browser windows, quotas and live thresholds are volatile ops state.
+
+heterogeneous-seats-beat-model-fit.md
+  Merged into cold-review-and-heterogeneous-evidence with certification posture.
+
+ingame-confirmation-inventory.md
+  Merged as a source pointer into game-semantics-and-official-names.
+
+line3-cut-line-handover-and-evidence-gap.md
+  Not injected. Historical research-line state stays archive.
+
+new-results-must-reconcile-claims-ledger.md
+  Active certification card, widened to current authority, dossier effect,
+  ERRATA, frozen artifacts and replay.
+
+no-mindless-conservatism-surface-the-tension.md
+  Active role-adjusted card: soundness plus visible cost of conservative action.
+
+owner-decisions-are-intuition-signals.md
+  Active shared card, narrowed to authority consumption and evidence conflicts.
+
+owner-reader-profile.md
+  Active shared card, adapted to scoped certification explanations.
+
+question-framing-carries-answers.md
+  Merged into cold-review: independent re-derivation precedes packet narrative.
+
+subagent-model-dispatch-profile.md
+  Not injected. Live model quotas remain global; source independence is retained.
+
+taskstop-before-redirect.md
+  Inline pointer only; full operation remains in AGENT_OPERATIONS.
+
+three-plane-line-role-and-standby.md
+  Not injected. Old line status stays archive; semantic-plane and capability
+  lessons are expressed in current certification cards.
+
+universal-negatives-need-exhaustive-search.md
+  Active certification truth-discipline card.
+
+verdict-labels-are-backstop-not-focus.md
+  Merged into the five-axis verdict card; certification still uses typed outcomes
+  but never a generic PASS score.
+
+wf-default-anomaly-monitor.md
+  Not injected. Workflow recovery/cache behavior stays ops documentation.
+
+No-loss boundary
+----------------
+"Not injected" means excluded from default certification attention, not deleted.
+The P5 archive, span-route receipts, tracked handbooks and ops state remain the
+provenance and recovery surfaces.

@@ -1,0 +1,14 @@
+---
+name: cold-review-and-heterogeneous-evidence
+description: 认证先独立重导冻结对象，再看研究叙事；承重结论保留真正异源攻击
+metadata:
+  node_type: memory
+  type: feedback
+  role: certification
+---
+
+packet 是待审对象，不是说服材料。先从 authoritative inputs 独立重建 proposition、binder、量词、前提和对象空间，再阅读研究过程中的解释、偏好和性能叙事，避免沉没成本替候选补洞。
+
+研究作者或同源强模型的第二次复核可以提高质量，但不能计入异源证据桶。合并席、裁断席和最终 reviewer 若与承重发现链同源，仍可能一起漏掉同一处。重大 semantic 或 transport 结论至少保留一条不同来源的攻击路径。
+
+盲审不是拒绝上下文。冻结 problem/objective/context 和必要规则必须完整提供；应去掉的是候选答案、预期结论和策展式证据顺序。独立重导后再做对撞，差异本身是审查材料。

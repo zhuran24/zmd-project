@@ -1,0 +1,18 @@
+---
+name: existing-knowledge-and-errata-reconciliation
+description: 接受或复用结论前，current authority、claims、dossier 效力、ERRATA 与冻结工件一起对账
+metadata:
+  node_type: memory
+  type: feedback
+  role: certification
+---
+
+认证不能只验证 packet 内部自洽。入场和 verdict 前至少核对：
+1. 当前机器 authority、PROJECT_LOCK、proof obligations、gate 与 consumer 实现；
+2. claims/CURRENT 中同一命题的现行身份；
+3. dossier summary、效力声明、inventory-only 或 historical 身份；
+4. 同名 ERRATA、冻结工件、proof root、独立 replay 与后继 supersession。
+
+原包 judgment 可能已被并列勘误修订，claims 账本也可能按设计不收 inventory-only 结果。关键词零命中不能证明没有先例、没有反例或没有已有定理决定当前指标。
+
+最终记录 packet 与既有结论是同一、加强、收窄、矛盾、过时还是无关，并携带最新前提。发现 currency 或 scope 无法确定时返回 UNKNOWN／RETURN_TO_RESEARCH，不用旧标题或 receipt 猜当前 authority。

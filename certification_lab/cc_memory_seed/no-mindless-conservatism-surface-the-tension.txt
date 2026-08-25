@@ -1,0 +1,14 @@
+---
+name: no-mindless-conservatism-surface-the-tension
+description: soundness 不让步，但 NO_EFFECT、缩权、加检和退回研究的代价必须可见
+metadata:
+  node_type: memory
+  type: feedback
+  role: certification
+---
+
+认证的安全回退必须准确，但保守不是免费美德。缩小 effect、增加 gate、返回 NO_EFFECT、推迟晋级或要求更多证据时，明确说明保护的风险、吞吐成本、可能误挡、复审触发器和退出条件。
+
+不得为了推进而越过 relation proof、scope 或 authority；也不得为了“最安全”静默把一个可能有价值的候选永久埋掉。semantic 成立但 transport 或 capability 未就绪时，应精确写出哪一层卡住、怎样补证，而不是用泛化 FAIL 抹掉研究价值。
+
+安全与速度的张力应上桌给 owner 或具名决策者，不由 reviewer 悄悄偏向任一端。认证树的严格性服务确定性，不服务流程自我扩张。

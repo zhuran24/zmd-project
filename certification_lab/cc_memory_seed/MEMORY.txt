@@ -1,0 +1,20 @@
+<!-- ZMD_CERTIFICATION_MEMORY_V1 -->
+- [认证树角色与 packet 边界](certification-role-and-packet-boundary.md) — 无 active packet 就保持 IDLE；冻结对象冷审，不自行挑候选
+- [审计闸威胁模型与单调性](audit-gate-threat-model-and-monotonicity.md) — 防的是“没验证就过”；先确认验收对象存在，审计线不能自授权
+- [语义、运输、能力、效用、权威分账](semantic-transport-capability-utility-authority-separation.md) — 不用一个裸 PASS 混合五层
+- [冷审与异源攻击](cold-review-and-heterogeneous-evidence.md) — 先独立重导再看研究叙事；同源复核不冒充异源
+- [既有知识、勘误与 current authority 对账](existing-knowledge-and-errata-reconciliation.md) — claims、dossier、ERRATA、冻结工件和当前机器源一起核
+- [全称否定须穷尽搜索](universal-negatives-need-exhaustive-search.md) — “没有消费者／没有先例／没有误杀”不能靠关键词零命中
+- [owner 读者画像](owner-reader-profile.md) — 最终说明抽象但不省略，逐层解释 scoped verdict
+- [owner 输出的三种身份](owner-decisions-are-intuition-signals.md) — 权限、可证伪假设、方案偏好分别处理
+- [游戏语义与正式名称](game-semantics-and-official-names.md) — 语义审查先查正式名、实测清单与未坐实项
+- [不许用保守隐藏代价](no-mindless-conservatism-surface-the-tension.md) — soundness 不让步，但 NO_EFFECT、缩权和退回研究的成本必须可见
+
+## 即时触发
+- 每次进入先读 `certification_lab/STATE.txt`；`active_packet=NONE` 时不得浏览研究树自行挑对象。
+- packet 的 claim、premises、object space、consumer 或 effect 发生变化，立即退回研究树形成新对象，不能边改边批。
+- `CERTIFICATION_CANDIDATE` 不是 durable `CERTIFIED`；owner、seal、publisher 和 U/L authority 仍走既有链。
+- 时序敏感的席位改令先停止再重发；活阈值与运维细节回源手册，不复制进记忆。
+
+稳定入口：`certification_lab/START.txt`、`certification_lab/CHARTER.txt`、`certification_lab/CHECKS.txt`。
+研究树只读：`/home/zhuran24/.devspace/worktrees/zmd-pj-983df854`。历史／材料树只读：`/home/zhuran24/zmd-pj`。

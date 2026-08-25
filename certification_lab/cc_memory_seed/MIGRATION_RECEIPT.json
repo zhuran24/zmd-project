@@ -1,0 +1,23 @@
+{
+  "aggregate_manifest_sha256": "ee4a1307f4eaf9f3997c7c6df1ba516f9681c3cc9dc31221cefb2d1d06547447",
+  "created_at": "2026-08-25",
+  "file_count": 11,
+  "files": [
+    {"sha256": "36c23e8fcf92ce7c0ea20dfe25a2e0a9c82b1a336b86cee31c575a0766822489", "size_bytes": 2290, "target": "MEMORY.md"},
+    {"sha256": "6619734f2b1265a5d71ce17687948c1474b459bf623b3bd59a5716c03b1f5a12", "size_bytes": 1119, "target": "certification-role-and-packet-boundary.md"},
+    {"sha256": "7c5af91446331ef925644334181b770861aff3e3aae736a01a74c5ba2b636134", "size_bytes": 1252, "target": "audit-gate-threat-model-and-monotonicity.md"},
+    {"sha256": "5f5f9be21f8ce9e668c02d8c9f3203fa5d0b3c45e5b84eed0fcb38dfb10dc49b", "size_bytes": 1410, "target": "semantic-transport-capability-utility-authority-separation.md"},
+    {"sha256": "40c0d0b526176126cda3374fd0c2235d71ed99e8866e0f1a618211666696b448", "size_bytes": 991, "target": "cold-review-and-heterogeneous-evidence.md"},
+    {"sha256": "8c102073a566b582145120b6fd72ac04b7d5f45d908f4f0a889b139b28490c11", "size_bytes": 1098, "target": "existing-knowledge-and-errata-reconciliation.md"},
+    {"sha256": "68cab4dc80efcde69f13d689f07d972b9e181ea3dbc6995e78856eb296457597", "size_bytes": 1008, "target": "universal-negatives-need-exhaustive-search.md"},
+    {"sha256": "7656b387daca55b82ced31089acd79e837929470f0f0f927abfcd7150ff81cba", "size_bytes": 872, "target": "owner-reader-profile.md"},
+    {"sha256": "5a2daa54fbbea769d5e77e39e21e32bd3da97782e278554c385da457a1efcc69", "size_bytes": 870, "target": "owner-decisions-are-intuition-signals.md"},
+    {"sha256": "6e3a96fdd9da3acb9e0bdc895729000cd0cc47fa43afb9d91d67bf5cf9588e62", "size_bytes": 942, "target": "game-semantics-and-official-names.md"},
+    {"sha256": "106a2aa206958b6066ed532016ca2785018c08817269b5e861d4a88fc5b3971e", "size_bytes": 960, "target": "no-mindless-conservatism-surface-the-tension.md"}
+  ],
+  "native_memory_directory": "/home/zhuran24/.claude/projects/zmd-pj-certification/memory",
+  "role": "certification",
+  "schema": "zmd_cc_memory_migration_receipt_v1",
+  "seed_match": true,
+  "source_p5_manifest_sha256": "bc2aea1d19e78246526e086b28f21c663304201506abf16a5099ea6d41c449cb"
+}

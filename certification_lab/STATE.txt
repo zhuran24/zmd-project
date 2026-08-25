@@ -50,7 +50,10 @@ Tree readiness
 --------------
 The certification architecture is ready: its structural checker passes from a
 clean commit, local overlays match the tracked template, runtime output is
-ignored, and the three tree roles are distinct.
+ignored, the three tree roles are distinct, and Claude Code is bound to a
+certification-only memory set. The old combined-tree memory was extracted into
+cold-review habits; active research hypotheses and packet state are not copied
+into auto-memory.
 
 The project certification baseline remains BLOCKED until a separate named task
 repairs the inherited blockers or imports and validates a newer baseline. Do not

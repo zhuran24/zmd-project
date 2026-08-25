@@ -16,8 +16,12 @@ Required for every certification session:
   git diff --check
 
 The tree checker verifies mode, branch, three-tree separation, local overlay
-bytes, required front-door files, ignored runtime output, and active packet
-routing. It does not prove any candidate claim.
+bytes, required front-door files, ignored runtime output, active packet routing,
+and the certification-only Claude Code memory binding. It checks that the local
+setting is ignored/untracked, the role marker is correct, every tracked seed card
+has an installed counterpart, and research-role memory is not injected. Seed
+drift is reported as memory evolution rather than silently overwritten. It does
+not prove any candidate claim.
 
 When importing a packet:
 

@@ -1,0 +1,14 @@
+---
+name: universal-negatives-need-exhaustive-search
+description: “没有消费者／没有先例／没有误杀／从未验证”必须穷尽同义面或改为有界陈述
+metadata:
+  node_type: memory
+  type: feedback
+  role: certification
+---
+
+全称否定在审查中尤其危险，因为它常被放在前提从句里而不被单独攻击。关键词零命中不能证明对象不存在；对象可能换名、藏在生成页、inventory-only dossier、并列 ERRATA、冻结工件、旧 Git object 或外部 authority root。
+
+出口前声明搜索域，覆盖正式名、代码键、同义措辞、数字特征、注册表和生成路径；承重否定交不同来源复核。无法覆盖时改写为“我在 X/Y/Z 入口找到这些对象”，不要写“只有／完全没有”。
+
+“负 canary 全过所以没有误杀”也属于不成立的全称推断。被错误删除的对象不会到达最终 checker；零误杀必须由 relation proof、覆盖性论证或独立适当证据承担。

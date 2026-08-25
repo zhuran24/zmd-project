@@ -23,6 +23,7 @@ REQUIRED_MODE_KEYS = frozenset(
         "schema",
         "mode",
         "branch",
+        "branch_prefix",
         "entry",
         "charter",
         "architecture",
@@ -42,6 +43,11 @@ REQUIRED_MODE_KEYS = frozenset(
         "research_branch",
         "python",
         "local_root",
+        "cc_memory_directory",
+        "cc_memory_settings",
+        "cc_memory_seed",
+        "cc_memory_migration",
+        "cc_memory_receipt",
         "inbox_root",
         "reviews_root",
         "intake_policy",
@@ -204,10 +210,17 @@ def collect_report() -> tuple[CheckReport, dict[str, str]]:
     branch = branch_result.stdout.strip()
     report.info["branch"] = branch or "DETACHED"
     if branch != mode["branch"]:
-        report.errors.append(
-            f"branch mismatch: mode expects {mode['branch']!r}, "
-            f"Git reports {branch or 'DETACHED'!r}"
-        )
+        branch_prefix = mode["branch_prefix"]
+        if not branch.startswith(branch_prefix):
+            report.errors.append(
+                f"branch mismatch: expected integration branch {mode['branch']!r} "
+                f"or prefix {branch_prefix!r}, Git reports {branch or 'DETACHED'!r}"
+            )
+        else:
+            report.warnings.append(
+                f"certification tree is on temporary branch {branch!r}, "
+                f"not integration branch {mode['branch']!r}"
+            )
 
     head_result = run_git(["rev-parse", "--short=12", "HEAD"], check=False)
     report.info["head"] = (
@@ -250,6 +263,10 @@ def collect_report() -> tuple[CheckReport, dict[str, str]]:
         "reviews README": ROOT / "certification_lab" / "reviews" / "README.txt",
         "local README": ROOT / "certification_lab" / "local" / "README.txt",
         "local ignore": ROOT / "certification_lab" / "local" / ".gitignore",
+        "CC memory architecture": ROOT / "certification_lab" / "CC_MEMORY.txt",
+        "CC memory seed": path_from_mode(mode, "cc_memory_seed"),
+        "CC memory migration map": path_from_mode(mode, "cc_memory_migration"),
+        "CC memory migration receipt": path_from_mode(mode, "cc_memory_receipt"),
         "PROJECT_LOCK": ROOT / "PROJECT_LOCK.md",
         "certification navigation": ROOT / "docs" / "CERTIFICATION.md",
     }
@@ -342,6 +359,99 @@ def collect_report() -> tuple[CheckReport, dict[str, str]]:
                 f"local runtime root is not ignored by Git: {local_relative}"
             )
 
+    memory_dir = Path(mode["cc_memory_directory"]).expanduser().resolve()
+    report.info["cc_memory_directory"] = str(memory_dir)
+    settings_path = path_from_mode(mode, "cc_memory_settings")
+    settings_relative = settings_path.relative_to(ROOT).as_posix()
+    if not settings_path.is_file():
+        report.errors.append(f"missing local CC memory setting: {settings_relative}")
+    else:
+        if is_tracked(settings_relative):
+            report.errors.append(f"CC memory local setting must remain untracked: {settings_relative}")
+        if not is_ignored(settings_relative):
+            report.errors.append(f"CC memory local setting must be Git-ignored: {settings_relative}")
+        try:
+            settings_payload = json.loads(settings_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            report.errors.append(f"invalid CC memory local setting: {exc}")
+        else:
+            if not isinstance(settings_payload, dict):
+                report.errors.append("CC memory local setting must be a JSON object")
+            else:
+                if settings_payload.get("autoMemoryEnabled") is not True:
+                    report.errors.append("CC memory local setting must enable autoMemoryEnabled")
+                configured_raw = settings_payload.get("autoMemoryDirectory")
+                if not isinstance(configured_raw, str) or not configured_raw:
+                    report.errors.append("CC memory local setting must name autoMemoryDirectory")
+                elif Path(configured_raw).expanduser().resolve() != memory_dir:
+                    report.errors.append(
+                        "CC memory directory mismatch between mode and local settings"
+                    )
+
+    seed_path = path_from_mode(mode, "cc_memory_seed")
+    if memory_dir in roots:
+        report.errors.append(
+            "CC memory directory must be distinct from certification, research, and history trees"
+        )
+    if not memory_dir.is_dir():
+        report.errors.append(f"CC memory directory does not exist: {memory_dir}")
+    elif seed_path.is_file():
+        try:
+            seed_manifest = json.loads(seed_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            report.errors.append(f"invalid CC memory seed manifest: {exc}")
+        else:
+            if not isinstance(seed_manifest, dict) or seed_manifest.get("role") != "certification":
+                report.errors.append("CC memory seed manifest must declare role=certification")
+            else:
+                marker = str(seed_manifest.get("role_marker", ""))
+                forbidden_marker = str(seed_manifest.get("forbidden_role_marker", ""))
+                files = seed_manifest.get("files")
+                if not marker or not isinstance(files, list) or not files:
+                    report.errors.append("CC memory seed manifest lacks marker or files")
+                else:
+                    drift_count = 0
+                    for entry in files:
+                        if not isinstance(entry, dict):
+                            report.errors.append("CC memory seed file entry must be an object")
+                            continue
+                        seed_name = entry.get("seed")
+                        target_name = entry.get("target")
+                        if not isinstance(seed_name, str) or not isinstance(target_name, str):
+                            report.errors.append("CC memory seed entry lacks seed/target strings")
+                            continue
+                        seed_file = seed_path.parent / seed_name
+                        target_file = memory_dir / target_name
+                        if not seed_file.is_file():
+                            report.errors.append(
+                                f"missing CC memory seed file: {relative_display(seed_file)}"
+                            )
+                            continue
+                        seed_relative = seed_file.relative_to(ROOT).as_posix()
+                        if not is_tracked(seed_relative):
+                            report.errors.append(f"CC memory seed file is not tracked: {seed_relative}")
+                        if not target_file.is_file():
+                            report.errors.append(f"missing installed CC memory file: {target_file}")
+                            continue
+                        if seed_file.read_bytes() != target_file.read_bytes():
+                            drift_count += 1
+                    index_path = memory_dir / "MEMORY.md"
+                    if index_path.is_file():
+                        index_text = index_path.read_text(encoding="utf-8")
+                        if marker not in index_text:
+                            report.errors.append(
+                                "installed CC memory index lacks certification role marker"
+                            )
+                        if forbidden_marker and forbidden_marker in index_text:
+                            report.errors.append(
+                                "certification CC memory contains research role marker"
+                            )
+                    report.info["cc_memory_seed_drift"] = str(drift_count)
+                    if drift_count:
+                        report.warnings.append(
+                            f"{drift_count} CC memory core file(s) evolved from the tracked seed"
+                        )
+
     inbox_root = path_from_mode(mode, "inbox_root")
     reviews_root = path_from_mode(mode, "reviews_root")
     for label, path in (("inbox_root", inbox_root), ("reviews_root", reviews_root)):
@@ -433,6 +543,8 @@ def print_human(report: CheckReport, mode: dict[str, str], *, enter: bool) -> No
         "research_tree",
         "research_branch",
         "research_head",
+        "cc_memory_directory",
+        "cc_memory_seed_drift",
         "python",
     ):
         if key in report.info:

@@ -1,0 +1,45 @@
+ZMD CERTIFICATION CLAUDE CODE MEMORY
+====================================
+
+Purpose
+-------
+Claude Code auto-memory is role-scoped. The certification tree uses its own
+external memory directory and must not inherit the research tree's discovery
+preferences or the old combined-tree's live line state.
+
+Native memory directory:
+  /home/zhuran24/.claude/projects/zmd-pj-certification/memory
+
+Local Claude Code setting:
+  .claude/settings.local.json
+
+Required setting values:
+  autoMemoryEnabled = true
+  autoMemoryDirectory = /home/zhuran24/.claude/projects/zmd-pj-certification/memory
+
+The local setting and native memory are machine-local and untracked. The durable
+seed, extraction map, and migration receipt live under:
+
+  certification_lab/cc_memory_seed/
+
+Architecture
+------------
+MEMORY.md is a small cold-review index. It defaults to packet identity, semantic
+re-derivation, transport/lowering, capability, utility, and authority separation.
+It does not contain active research hypotheses or browse research history for a
+candidate.
+
+The old 24-card combined-tree memory was not copied wholesale. Date-bound line
+state, workflow/browser operations, and research-only framing guidance remain in
+ops/archive or the research tree. Certification retains only information needed
+to review frozen objects and to communicate scoped verdicts safely.
+
+Drift policy
+------------
+The seed is a recoverable baseline, not a frozen evidence object. Claude Code may
+add role-consistent memory. Tree health requires the certification role marker,
+core cards, local binding, and no research-role marker. Seed drift is visible but
+not automatically a certification finding.
+
+Memory never grants a capability, owner decision, seal, U/L update, or durable
+CERTIFIED result. It only routes attention to the actual authority and evidence.
