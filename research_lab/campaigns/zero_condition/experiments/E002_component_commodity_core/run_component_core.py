@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 import datetime as dt
+import gc
 import hashlib
 import json
 import os
@@ -701,27 +702,39 @@ def run() -> dict[str, Any]:
         facility_pools=pools,
     )
 
-    build_started = time.monotonic()
-    binding_model = PortBindingModel(
-        placement_solution=solution,
-        facility_pools=pools,
-        instances=instances,
-        project_root=HISTORY_ROOT,
-        required_generic_outputs=generic.get("required_generic_outputs", {}),
-        required_generic_inputs=generic.get("required_generic_inputs", {}),
-        generic_input_slots_by_operation=plan["generic_input_slots_by_operation"],
-        generic_output_slots_by_operation=plan["generic_output_slots_by_operation"],
-        utility_operation_by_template=plan["utility_operation_by_template"],
-        canonical_rules_payload=rules,
-        routing_context=routing_bundle["routing_context"],
-    )
-    binding_model.build()
-    compiled, internals = compile_guarded_interface(
-        binding_model=binding_model,
-        routing_context=routing_bundle["routing_context"],
-        required_generic_inputs=generic.get("required_generic_inputs", {}),
-    )
-    build_seconds = time.monotonic() - build_started
+    def build_guarded_model() -> tuple[Any, dict[str, Any], dict[str, Any], float]:
+        build_started = time.monotonic()
+        model = PortBindingModel(
+            placement_solution=solution,
+            facility_pools=pools,
+            instances=instances,
+            project_root=HISTORY_ROOT,
+            required_generic_outputs=generic.get("required_generic_outputs", {}),
+            required_generic_inputs=generic.get("required_generic_inputs", {}),
+            generic_input_slots_by_operation=plan[
+                "generic_input_slots_by_operation"
+            ],
+            generic_output_slots_by_operation=plan[
+                "generic_output_slots_by_operation"
+            ],
+            utility_operation_by_template=plan["utility_operation_by_template"],
+            canonical_rules_payload=rules,
+            routing_context=routing_bundle["routing_context"],
+        )
+        model.build()
+        model_compiled, model_internals = compile_guarded_interface(
+            binding_model=model,
+            routing_context=routing_bundle["routing_context"],
+            required_generic_inputs=generic.get("required_generic_inputs", {}),
+        )
+        return (
+            model,
+            model_compiled,
+            model_internals,
+            time.monotonic() - build_started,
+        )
+
+    binding_model, compiled, internals, build_seconds = build_guarded_model()
     guards = internals["guards"]
     if compiled["empty_filtered_domain_count"] != 0:
         raise RuntimeError("front-domain compilation produced an empty owner domain")
@@ -795,6 +808,52 @@ def run() -> dict[str, Any]:
                 f"unexpected singleton status for {commodity}: {result['status']}"
             )
 
+    # Rebuild the complete binding model for every singleton once.  Re-solving
+    # one CpModel is useful for speed, but OR-Tools 9.15/Python 3.13 has a
+    # reproducible stale SufficientAssumptionsForInfeasibility() result after
+    # assumptions change.  Fresh-model status replay separates the semantic
+    # INFEASIBLE result from that diagnostic API defect.
+    fresh_singleton_confirmations: list[dict[str, Any]] = []
+    for initial in singleton_results:
+        commodity = str(initial["enabled"][0])
+        fresh_model, fresh_compiled, fresh_internals, fresh_build_seconds = (
+            build_guarded_model()
+        )
+        for count_key in (
+            "filtered_binding_option_count",
+            "duplicate_constraint_count",
+            "component_constraint_count",
+            "model_variable_count",
+            "model_constraint_count",
+        ):
+            if fresh_compiled[count_key] != compiled[count_key]:
+                raise RuntimeError(
+                    f"fresh model count drift for {commodity}:{count_key}: "
+                    f"{fresh_compiled[count_key]} != {compiled[count_key]}"
+                )
+        fresh_result = solve_with_enabled(
+            binding_model=fresh_model,
+            guards=fresh_internals["guards"],
+            enabled={commodity},
+            label=f"FRESH_SINGLETON_{commodity}",
+        )
+        if fresh_result["status"] != initial["status"]:
+            raise RuntimeError(
+                f"fresh singleton replay disagrees for {commodity}: "
+                f"{fresh_result['status']} != {initial['status']}"
+            )
+        fresh_singleton_confirmations.append(
+            {
+                "commodity": commodity,
+                "initial_status": initial["status"],
+                "fresh_status": fresh_result["status"],
+                "fresh_build_seconds": fresh_build_seconds,
+                "fresh_solve": fresh_result,
+            }
+        )
+        del fresh_model
+        gc.collect()
+
     minimized_core: list[str] = []
     deletion_trace: list[dict[str, Any]] = []
     if not singleton_cores and not censored:
@@ -865,6 +924,7 @@ def run() -> dict[str, Any]:
         "base_ordinary_precheck": base_precheck_summary,
         "full_all_true": full,
         "singleton_results": singleton_results,
+        "fresh_singleton_confirmations": fresh_singleton_confirmations,
         "singleton_cores": sorted(singleton_cores),
         "minimized_multi_commodity_core": minimized_core,
         "deletion_trace": deletion_trace,
@@ -878,6 +938,17 @@ def run() -> dict[str, Any]:
             "E001 replacement binding model only; not a pose core, placement cut, "
             "routing proof, or certified result."
         ),
+        "assumption_core_api_boundary": {
+            "status": "REPEATED_SOLVE_CORE_API_UNTRUSTED",
+            "observation": (
+                "On a two-guard toy model and on E002, fresh CpSolver instances "
+                "re-solving one CpModel after ClearAssumptions returned a stale "
+                "sufficient-core literal from the preceding infeasible solve. "
+                "E002 therefore queries that API only on the first infeasible "
+                "all-true solve and validates singleton statuses by fresh model rebuild."
+            ),
+            "status_results_use_sufficient_core_api": False,
+        },
         "routing_solver_run": False,
     }
 
