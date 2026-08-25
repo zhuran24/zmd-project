@@ -9,7 +9,9 @@ created_on: 2026-08-25
 
 The certification worktree was created from the committed main-tree snapshot.
 Dirty working-tree changes and most local or regenerable artifacts in the old
-main worktree were not copied.
+main worktree were not copied. The measured health of this baseline is recorded
+in certification_lab/BASELINE_VALIDATION.txt; architecture readiness and project
+preflight readiness are intentionally separate verdicts.
 
 Tree identities
 ---------------

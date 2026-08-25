@@ -4,6 +4,10 @@ ZMD CERTIFICATION TREE CHECK LEVELS
 Certification checks are cumulative. The packet's requested effect determines
 the required level. A higher level does not erase a lower-level failure.
 
+The current inherited baseline health is recorded separately in
+certification_lab/BASELINE_VALIDATION.txt. Tree architecture can be ready while
+the project certification baseline remains blocked; both verdicts must be shown.
+
 C0: tree and intake readiness
 -----------------------------
 Required for every certification session:

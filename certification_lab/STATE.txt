@@ -13,6 +13,12 @@ The certification worktree has been created from the committed historical main
 baseline. It is separate from both the history/material tree and research tree.
 No research candidate has been admitted, reviewed, or promoted in this tree.
 
+The worktree architecture and governance checks pass. The inherited project
+baseline does not currently pass production preflight: it contains committed
+P1.2/mypy/parity blockers also reproduced on history/main, while this lightweight
+worktree additionally lacks several local informational evidence paths. The exact
+classification is frozen in certification_lab/BASELINE_VALIDATION.txt.
+
 Current authority status
 ------------------------
 The tree architecture itself grants no mathematical, production, owner, seal,
@@ -42,9 +48,13 @@ Research tree at certification-tree creation:
 
 Tree readiness
 --------------
-The certification tree is ready when its structural checker passes from a clean
-commit, local overlays match the tracked template, runtime output is ignored,
-and the three tree roles are distinct.
+The certification architecture is ready: its structural checker passes from a
+clean commit, local overlays match the tracked template, runtime output is
+ignored, and the three tree roles are distinct.
+
+The project certification baseline remains BLOCKED until a separate named task
+repairs the inherited blockers or imports and validates a newer baseline. Do not
+hide that repair inside an unrelated packet review.
 
 Orientation guards
 ------------------

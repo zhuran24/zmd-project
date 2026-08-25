@@ -1,0 +1,157 @@
+ZMD CERTIFICATION BASELINE VALIDATION
+=====================================
+
+Measured: 2026-08-25
+Certification branch: certification/main
+Certification architecture commit: 7392088898e2
+Historical baseline commit: ede4fa4b883d0aa965141700d2475af1b96817c8
+Active packet: NONE
+
+Purpose
+-------
+This record separates certification-worktree architecture health from inherited
+project-baseline health. It is a measured snapshot, not an authority grant and
+not a repair plan.
+
+Architecture and governance checks
+----------------------------------
+PASS:
+
+  devtools/certification_tree.py check
+  devtools/certification_tree.py enter
+  git diff --check
+  Python compilation of devtools/certification_tree.py
+  ruff on devtools/certification_tree.py
+  local runtime ignore canary
+  docctl intake --changed
+  docctl check --changed
+  docctl doctor
+  knowledge check
+  repository code assets check-current
+  line-ending policy check
+  document governance gate --profile changed
+
+The full historical code-asset replay command cannot run in the rebuilt Git
+object graph because its 2026-07-28 baseline commit object is absent. The current-
+worktree code-asset check and its regression lane pass; historical replay remains
+an external-history operation rather than a certification-tree defect.
+
+Default production preflight
+----------------------------
+Command:
+
+  /home/zhuran24/zmd-pj/.venv/bin/python scripts/preflight_gate.py
+
+Result:
+
+  BLOCKED
+  16 checks passed
+  1 warning
+  4 blocked groups
+
+The blocked groups are classified below.
+
+B1. Lightweight-worktree evidence materialization
+-------------------------------------------------
+The phase review gate checker reported 14 missing informational-history evidence
+paths under .artifacts. These paths were intentionally not copied into the new
+linked worktree.
+
+Independent comparison:
+
+  Running scripts/check_phase_review_gate.py in the history/material tree at the
+  same commit returns exit 0 because its local artifact payload is present.
+
+Classification:
+
+  worktree materialization gap, not a newly introduced theorem or code failure.
+  A certification packet needing this gate must mount or materialize the exact
+  historical evidence bytes and verify their identities before use.
+
+B2. Inherited P1.2 utility-operation-map contract conflict
+---------------------------------------------------------
+The P1.2 proof-obligation checker reports:
+
+  PortBindingModel must expose exactly one consumed utility operation map;
+  found _pose_optional_operation_by_template and
+  _utility_operation_by_template.
+
+Independent comparison:
+
+  The same checker fails with the same issue in the history/material main tree at
+  ede4fa4.
+
+Classification:
+
+  inherited committed-baseline blocker. It was not caused by certification-tree
+  architecture work and is not repaired without a scoped project task or packet.
+
+B3. Inherited master_model duplicate definitions
+------------------------------------------------
+Mypy reports:
+
+  _resolve_utility_operation_by_template defined twice
+  utility_operation_by_template defined twice
+
+Independent comparison:
+
+  The same two errors occur in the history/material main tree at ede4fa4.
+
+Classification:
+
+  inherited committed-baseline blocker.
+
+B4. Inherited and materialization-derived test failures
+-------------------------------------------------------
+The default preflight pytest lane reported:
+
+  8 failed
+  1536 passed
+  1 skipped
+
+Failure groups:
+
+  phase-review-gate tests
+    In the certification worktree these are affected by B1 missing local evidence.
+
+  P1.2 proof-obligation tests
+    Reproduce B2 on history/main.
+
+  rule-cut-evolution authority parity
+    PROJECT_LOCK.md digest differs from the frozen test expectation. The same
+    focused test fails on history/main at ede4fa4.
+
+Classification:
+
+  mixed inherited baseline and lightweight materialization blockers. No failure
+  points to certification_lab or devtools/certification_tree.py.
+
+Baseline verdict
+----------------
+CERTIFICATION_TREE_ARCHITECTURE_READY
+PROJECT_CERTIFICATION_BASELINE_BLOCKED
+
+Meaning:
+
+  The separate certification worktree, attention mode, packet boundary, checker,
+  and governance integration are operational.
+
+  The inherited project snapshot is not currently a clean C3 certification-side
+  integration baseline. Before the first packet that requests production or
+  certification-bearing effect, the relevant inherited blockers must be repaired
+  or an explicitly newer baseline must be imported and revalidated.
+
+  No active packet exists, so this record does not authorize choosing or fixing a
+  research candidate. Baseline repair is a separate named task and must not be
+  hidden inside an unrelated packet review.
+
+Checks not claimed
+------------------
+This snapshot does not claim:
+
+  full --full preflight success
+  slow soundness lane success
+  restored local artifact completeness in the certification worktree
+  repair of B2, B3, or authority-parity drift
+  owner gate action
+  durable seal or publication

@@ -7,6 +7,7 @@ architecture=certification_lab/ARCHITECTURE.txt
 checks=certification_lab/CHECKS.txt
 state=certification_lab/STATE.txt
 baseline=certification_lab/BASELINE.txt
+baseline_validation=certification_lab/BASELINE_VALIDATION.txt
 overlay_template=certification_lab/AGENT_OVERLAY.txt
 intake_contract=certification_lab/intake/PACKET_CONTRACT.txt
 packet_template=certification_lab/intake/PACKET_TEMPLATE.txt
