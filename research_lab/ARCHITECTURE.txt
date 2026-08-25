@@ -54,6 +54,14 @@ Live orientation:
     Active campaign pointer, current wall, latest consequential result, and the
     one live question. Kept short enough to reread every session.
 
+Role memory:
+  research_lab/CC_MEMORY.txt and research_lab/cc_memory_seed/
+    Bind Claude Code to a research-only native memory directory. MEMORY.md stays
+    a short index of stable habits; campaign state, old line status, quotas, and
+    changing thresholds stay in STATE, campaign files, handbooks, or ops state.
+    The tracked seed makes the machine-local memory recoverable without freezing
+    later role-consistent memory evolution.
+
 Validation level:
   research_lab/CHECKS.txt
     R0 ordinary exploration, R1 real-solver integration, and R2 promotion
@@ -107,6 +115,11 @@ experiment-source layer
 local runtime layer
   local/. Ignored logs, caches, raw runs, temporary models, large receipts,
   notebooks, and mounts. Nothing here is durable merely because it exists.
+
+role-memory layer
+  CC_MEMORY.txt plus cc_memory_seed/. The native memory lives outside Git and is
+  selected through ignored `.claude/settings.local.json`; the tracked seed and
+  migration map preserve its intended role and provenance.
 
 method layer
   methods/. Created only when the same reasoning or tool has survived use in at

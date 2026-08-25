@@ -1,0 +1,100 @@
+ZMD RESEARCH MEMORY EXTRACTION MAP
+==================================
+
+Source
+------
+P5 reviewed source set: 24 memory files / 139 routed spans.
+Source manifest SHA-256:
+  bc2aea1d19e78246526e086b28f21c663304201506abf16a5099ea6d41c449cb
+
+The old P5 result already moved detailed operations and stale line state out of
+default memory. This extraction preserves that architecture instead of reviving
+all 24 cards.
+
+Disposition of every old source file
+------------------------------------
+MEMORY.md
+  Replaced by a research-role index.
+
+audit-gate-threat-model-and-monotonicity.md
+  Research boundary merged into research-role-and-goal-hierarchy; full audit
+  mechanics belong to certification memory and the old archive.
+
+baseline-arm-closed-with-triggers.md
+  Not injected. Historical line state and T-1..T-3 remain in ops triggers/archive;
+  current zero-condition facts live in campaign RESULTS.
+
+canary-ruling-and-v2-standby-20260816.md
+  Not injected. Date-bound owner/seat/line status remains archive material.
+
+deferred-work-must-reach-future-sessions.md
+  Merged into MEMORY immediate triggers and research STATE/CAMPAIGN/RESULTS rule.
+
+execution-line-reports-to-command-not-terminal.md
+  Not a default research card. Execution/reporting mechanics remain in agent
+  operations and planning-line instructions.
+
+game-entity-names-must-match-in-game-terms.md
+  Merged into game-semantics-and-official-names.
+
+game-terms-glossary.md
+  Merged into game-semantics-and-official-names.
+
+gpt-pro-devspace-mcp-bridge.md
+  Not injected. Machine bridge operations remain in ops/runbook.
+
+gpt-pro-project-chat.md
+  Not injected. Browser windows, quotas and live thresholds are volatile ops
+  state; current source is ops protocol.
+
+heterogeneous-seats-beat-model-fit.md
+  Active research card, rewritten for discovery and source independence.
+
+ingame-confirmation-inventory.md
+  Merged as a source pointer into game-semantics-and-official-names.
+
+line3-cut-line-handover-and-evidence-gap.md
+  Not injected. Date-bound old line state remains archive material.
+
+new-results-must-reconcile-claims-ledger.md
+  Active research card, widened to claims + dossier effect + ERRATA + frozen
+  artifacts and adapted to the three-tree topology.
+
+no-mindless-conservatism-surface-the-tension.md
+  Active research card.
+
+owner-decisions-are-intuition-signals.md
+  Active shared collaboration card, role-adjusted.
+
+owner-reader-profile.md
+  Active shared collaboration card, role-adjusted.
+
+question-framing-carries-answers.md
+  Active research-only discovery card.
+
+subagent-model-dispatch-profile.md
+  Not injected. Live quotas and dispatch policy remain in global CLAUDE.md and
+  AGENT_OPERATIONS; heterogeneous-source principle remains active.
+
+taskstop-before-redirect.md
+  Kept as an inline trigger/pointer; full mechanics remain in AGENT_OPERATIONS.
+
+three-plane-line-role-and-standby.md
+  Not injected. Old line role and trigger state remain ops/archive; general
+  authority lessons are handled by certification memory.
+
+universal-negatives-need-exhaustive-search.md
+  Active shared truth-discipline card.
+
+verdict-labels-are-backstop-not-focus.md
+  Active research card.
+
+wf-default-anomaly-monitor.md
+  Not injected. Workflow retry and cache semantics remain in ops markdown and
+  AGENT_OPERATIONS.
+
+No-loss boundary
+----------------
+"Not injected" means "not placed in default role memory", not deleted. The old
+P5 archive, span routes, destination receipts, tracked handbooks and ops state
+remain the provenance and recovery surface.

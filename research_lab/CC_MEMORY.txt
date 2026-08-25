@@ -1,0 +1,44 @@
+ZMD RESEARCH CLAUDE CODE MEMORY
+===============================
+
+Purpose
+-------
+Claude Code auto-memory is role-scoped. This tree uses a dedicated external
+memory directory rather than inheriting the old combined-tree memory.
+
+Native memory directory:
+  /home/zhuran24/.claude/projects/zmd-pj-research/memory
+
+Local Claude Code setting:
+  .claude/settings.local.json
+
+Required setting values:
+  autoMemoryEnabled = true
+  autoMemoryDirectory = /home/zhuran24/.claude/projects/zmd-pj-research/memory
+
+The local setting and native memory are machine-local and untracked. The durable
+seed, source classification, and migration receipt live under:
+
+  research_lab/cc_memory_seed/
+
+Architecture
+------------
+MEMORY.md remains a short default-injection index. Detailed cards are loaded only
+when their trigger matches. Dynamic campaign state is not copied into auto-memory;
+it stays in research_lab/STATE.txt and the active CAMPAIGN.txt.
+
+The old combined-tree memory was not copied wholesale. P5 had already routed
+many old cards into tracked handbooks, ops state, trigger ledgers, or archive.
+This tree imports only the parts that must shape research attention, rewritten
+for the research role. Old line status, browser operations, workflow recovery,
+and stale canary/baseline-arm state remain pointers or archive material.
+
+Drift policy
+------------
+The seed is a recoverable baseline, not a read-only mirror. Claude Code may add
+or refine role-consistent memory over time. Tree health requires the role marker,
+core cards, and local memory binding to remain present. Byte drift from the seed
+is reported as memory evolution, not automatically treated as failure.
+
+Never write certification authority, U/L changes, owner grants, or current
+campaign status into this memory as if memory itself were authoritative.

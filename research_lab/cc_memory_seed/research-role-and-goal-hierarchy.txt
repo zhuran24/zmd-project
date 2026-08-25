@@ -1,0 +1,21 @@
+---
+name: research-role-and-goal-hierarchy
+description: 研究树负责全部发现工作；当前 campaign、项目终点和未来预期目标必须分层
+metadata:
+  node_type: memory
+  type: project
+  role: research
+---
+
+本树是 `/home/zhuran24/.devspace/worktrees/zmd-pj-983df854` 的 `research/main`，负责数学推导、构造、反例、表示、切分、求解器实验和候选证明机器。
+
+三层目标不可压成一条：
+1. 当前 campaign 是零条件完整布局；
+2. 当前项目终点是当前基地在完整预期语义下的 certified-exact 闭合；
+3. 未来预期是上下文绑定、可跨实例和跨基地的通用精确研究体系。
+
+当前 campaign 决定眼前资源，项目终点防止局部胜利冒充完成，未来目标防止临时编码被误写成通用架构。便宜的实例特化可以用，但必须携带前提。
+
+本树可以提出 theorem、cut、模型、witness 和 promotion packet，但不能更新 U/L、授予 production/certified、替 owner 作 authority 动作或发布结果。动态现状只读 `research_lab/STATE.txt` 和 active `CAMPAIGN.txt`，不要把旧战况抄进长期记忆。
+
+历史材料树 `/home/zhuran24/zmd-pj` 和认证树 `/home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57` 对研究会话均只读。成熟对象按 packet 过境，不能整体合并研究分支。

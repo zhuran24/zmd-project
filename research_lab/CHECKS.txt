@@ -12,6 +12,11 @@ Required:
   git diff --check
   run or compile the changed prototype when applicable
 
+The tree checker also validates that Claude Code is bound to the research-only
+native memory directory, the local setting is ignored/untracked, the role marker
+is correct, and every tracked seed card has an installed counterpart. Seed drift
+is reported as memory evolution rather than silently overwritten.
+
 Also verify that raw output stays under research_lab/local/ and that any durable
 conclusion states its scope and effect on the next question.
 

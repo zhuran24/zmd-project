@@ -27,6 +27,12 @@ First entry, changed mission, or architecture work:
   4. research_lab/ARCHITECTURE.txt
   5. research_lab/CHECKS.txt when choosing a validation level
 
+Role memory:
+
+  Claude Code loads the research-only auto-memory bound in
+  research_lab/CC_MEMORY.txt. It supplies stable research habits and source
+  pointers only. It does not replace STATE.txt or the active campaign.
+
 Only after the current question is clear:
 
   6. the smallest relevant subset of rules, source code, evidence, and history

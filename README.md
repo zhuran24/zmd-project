@@ -31,6 +31,7 @@
 - `research_lab/START.txt`：冷启动入口。
 - `research_lab/PROGRAM.txt`：稳定总纲与目标层级。
 - `research_lab/STATE.txt`：全树当前状态与 campaign 指针。
+- `research_lab/CC_MEMORY.txt`：研究角色专属 Claude Code 记忆的绑定、种子与漂移边界。
 - `research_lab/campaigns/`：每条当前研究战役的自包含工作面。
 - `research_lab/local/`：日志、缓存、临时模型与可再生运行产物，全部不进 Git。
 - `research_lab/promotion/`：送往独立认证树的冻结候选包模板。

@@ -1,0 +1,16 @@
+---
+name: game-semantics-and-official-names
+description: 游戏实体用正式名；声称规则已测或未测前先查实测清单与语义真源
+metadata:
+  node_type: memory
+  type: reference
+  role: research
+---
+
+代码键只是检索坐标，面向 owner 和耐久解释时使用游戏正式中文名并保持一致。已确认：`power_pole` = **供电桩**。表中没有的名字先查游戏文本或问 owner，不临时自造译名，也不把“多个物理口绑定同一槽组”压成“只有一个口”。
+
+凡“游戏里是否测过”先查：
+- 历史树 `.artifacts/ingame_confirmation_inventory_20260824/INVENTORY_INGAME_CONFIRMATIONS.md`
+- ops 耐久副本 `~/.claude/ops/zmd-pj/evidence_vault/ingame_confirmation_inventory_20260824/`
+
+该清单是时点快照，既含已确认规则也含未坐实项。新实测先作为研究证据登记，再决定是否形成更新或认证 packet。不要凭记忆声称“没测过”。

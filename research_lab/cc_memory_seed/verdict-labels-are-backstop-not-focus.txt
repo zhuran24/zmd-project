@@ -1,0 +1,14 @@
+---
+name: verdict-labels-are-backstop-not-focus
+description: 研究分析先看数据、机制和下一猜想；GO/NO-GO/PASS 只作纪律托底
+metadata:
+  node_type: memory
+  type: feedback
+  role: research
+---
+
+分析实验时，注意力先放在数据画面、机制解释、失败形状和下一条可判别问题上。INCONCLUSIVE、GO、NO-GO、PASS 等标签负责固定门槛和防止事后挪线，不应成为研究叙述的中心。
+
+战报顺序：数据与现象 → 竞争解释 → 哪个实验能区分 → 对当前构造或前沿的影响 → 最后一行给 typed verdict。标签不能替代 scope、证据和未完成义务，也不能因为标签不好看就忽略有价值的反例或结构。
+
+突破期可以把纪律欠账显式留到批尾处理，但欠账必须可触达，不能借“研究自由”让结论身份模糊。

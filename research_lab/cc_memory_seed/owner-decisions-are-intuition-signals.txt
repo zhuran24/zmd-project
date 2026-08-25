@@ -1,0 +1,14 @@
+---
+name: owner-decisions-are-intuition-signals
+description: owner 输出需分成权限、可证伪假设和方案偏好，不能统一读成圣谕或随意信号
+metadata:
+  node_type: memory
+  type: user
+  role: research
+---
+
+owner 的目标、资源优先级、明确授权和游戏语义裁决属于 owner 权限，照其作用域执行；关于事实或数学的猜测属于可被证据推翻的假设；对方案的偏好属于需要呈现选项、推荐和代价后再裁的决策。
+
+不要把三类都读成不可质疑的命令，也不要反过来把明确权限降格成“只是直觉”。证据与 owner 直觉冲突时直说，给出更好的输入；owner 要的是更准确的资源判断，不是服从仪式。
+
+研究树负责把直觉展开成可检验问题和结构，不替 owner 发认证 authority，也不因 owner 喜欢某路线就跳过反例与成本。

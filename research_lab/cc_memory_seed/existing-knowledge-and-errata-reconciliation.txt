@@ -1,0 +1,20 @@
+---
+name: existing-knowledge-and-errata-reconciliation
+description: 声称新发现或设计实验前，claims、dossier 效力、ERRATA 与冻结工件必须一起对账
+metadata:
+  node_type: memory
+  type: feedback
+  role: research
+---
+
+「这是新发现」「这个指标还没被决定」「这条旧结论仍可直接引用」都包含全称判断，不能只扫 claims 账本。
+
+开工和收官至少四查：
+1. 当前研究树的 STATE、campaign RESULTS 与已有方法；
+2. 历史树的 claims/CURRENT；
+3. 对应 dossier 的 summary、效力声明和 inventory-only 身份；
+4. 同名 ERRATA、冻结工件、proof root 与独立实现结果。
+
+对每个待测指标额外问：现有定理或工件是否已经决定它的取值。引用旧结论时必须携带最新勘误和适用前提。
+
+探索过程中保持自由；但形成实验问题、声称新颖性、改变研究方向或写入耐久 RESULTS 时必须完成对账，并写明新结果与既有结论是同一、加强、矛盾还是无关。对账搜索面不全时，用有界表述，不写“仓内没有”。

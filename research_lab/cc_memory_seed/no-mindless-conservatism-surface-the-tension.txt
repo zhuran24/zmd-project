@@ -1,0 +1,14 @@
+---
+name: no-mindless-conservatism-surface-the-tension
+description: soundness 不动摇，但保守退守必须标价、可退出，不能静默丢题
+metadata:
+  node_type: memory
+  type: feedback
+  role: research
+---
+
+无脑保守不适合本项目。soundness 一寸不让，但研究方向常态应向更强定理、更大作用域和真实问题上攻；缩圈、加检、降速、推迟只是带成本的临时退守，不是美德。
+
+出现安全与推进张力时，明确列出风险、收益、代价和退出条件，不要默认选择最保守的一端。过缓与过严都不会主动报告自己杀掉了多少研究节拍或合法空间。
+
+这是一条汇报与资源决策纪律，不是逐次自审仪式。正常思考、允许犯错，让 checker、反例、异源审查和 owner 方向感接住错误。最低义务是不静默把问题丢掉，也不把研究树的自由误读成可以越过认证边界。

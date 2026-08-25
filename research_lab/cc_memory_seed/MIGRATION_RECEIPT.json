@@ -1,0 +1,23 @@
+{
+  "aggregate_manifest_sha256": "5a10847b0b949862815cb2c25e484dc06ed351960d35cbebd1c4b99998b5dd66",
+  "created_at": "2026-08-25",
+  "file_count": 11,
+  "files": [
+    {"sha256": "d6a287665889b58518ffc135ea3ef780beedefadac3697fb43200ec5b7d1efee", "size_bytes": 2191, "target": "MEMORY.md"},
+    {"sha256": "26afebfe7859b843af83f4e220c737def126c07a928e3ea072b52dd30fff080f", "size_bytes": 1355, "target": "research-role-and-goal-hierarchy.md"},
+    {"sha256": "4b258e7506438317a6d3bfb25fa15938d175245baf6f23d85c7a1e9dbc818c8f", "size_bytes": 946, "target": "question-framing-carries-answers.md"},
+    {"sha256": "038c1b62e492f53796368fbad12dcbfa3305855b6c4b4c74a2a8ccd6ef117038", "size_bytes": 1098, "target": "existing-knowledge-and-errata-reconciliation.md"},
+    {"sha256": "c480410420884f59dc028ab392cbe1b5080622a7096bda41ccf3626a4c1272f2", "size_bytes": 775, "target": "heterogeneous-seats-beat-model-fit.md"},
+    {"sha256": "e590592961116de04b344cb1653dbd6707b42495df295e5adfe6c1e96be2847e", "size_bytes": 931, "target": "no-mindless-conservatism-surface-the-tension.md"},
+    {"sha256": "0ac77f30bb3858e5d9c47b8d23e8ac58e345001f3f051e1deed0a9532f279ee7", "size_bytes": 856, "target": "verdict-labels-are-backstop-not-focus.md"},
+    {"sha256": "1664c215986d5e76702dcbd5cded493d76f1442ad76148a80c462c43b544c54d", "size_bytes": 972, "target": "universal-negatives-need-exhaustive-search.md"},
+    {"sha256": "670541925473536674032ec20816466069247d75517409d7d76862c9b80f3782", "size_bytes": 915, "target": "owner-reader-profile.md"},
+    {"sha256": "188505fd690c3b0f872ef7e1750e0059859deb383eab653c2e8fb0e27fc70022", "size_bytes": 887, "target": "owner-decisions-are-intuition-signals.md"},
+    {"sha256": "2a86d3c9513cc6570b8249a09a3d295cde9a454dfa2ddbec763fe65c131fc992", "size_bytes": 955, "target": "game-semantics-and-official-names.md"}
+  ],
+  "native_memory_directory": "/home/zhuran24/.claude/projects/zmd-pj-research/memory",
+  "role": "research",
+  "schema": "zmd_cc_memory_migration_receipt_v1",
+  "seed_match": true,
+  "source_p5_manifest_sha256": "bc2aea1d19e78246526e086b28f21c663304201506abf16a5099ea6d41c449cb"
+}

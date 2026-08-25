@@ -12,6 +12,8 @@ Run:
 
 Then read the active campaign named by `.zmd-worktree-mode`. Read `PROGRAM.txt` on first entry or when the goal hierarchy changes; read `STATE.txt` every session. Load old governance and history only when the current question needs them.
 
+Claude Code auto-memory is bound to the research-only directory recorded in `research_lab/CC_MEMORY.txt`. It carries stable research habits, not current campaign state; `STATE.txt` and the active campaign remain authoritative for what is happening now.
+
 ## Default attention
 
 Start from the problem: rules, resource accounts, death shapes, constructive structure, representations, layer boundaries, and the cheapest discriminating experiment. Existing modules, F1-F9 names, current layer count, and current cut forms are historical candidates, not axioms.
