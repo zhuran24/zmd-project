@@ -283,6 +283,34 @@ effect on next problem:
 evidence:
   E002 RESULT.txt and run-004 assumption_core_api_boundary.
 
+R-ZC-011  Positive component mismatch is exact for all 19 commodities
+---------------------------------------------------------------------
+status: proved OPTIMAL inside 19 fresh fixed-layout binding models
+scope: E001 replacement occupancy; one mismatch-minimization model per commodity
+
+statement:
+  Without hard component-equality constraints, E004 minimized the number of
+  source-only or sink-only free components for each routed commodity. All 19
+  solves reached OPTIMAL, all minima were strictly positive, and every extracted
+  optimum witness agreed with production run_exact_routing_precheck. The minima
+  range from 4 to 32. Across the selected optimum witnesses, mismatch-component
+  boundaries have 3 to 154 occupied owners, median 6.
+
+non-implications:
+  This does not prove a named mismatch component or obstacle set unavoidable in
+  every optimum binding. It does not prove a fixed backbone topology necessary or
+  the no-ghost problem infeasible.
+
+effect on next problem:
+  The geometry is in a global fragmentation regime, but its observed boundaries
+  mix many small islands with a few broad shared regions. Test morphological
+  compressibility across A1 and its one-cut replacement before choosing between a
+  parametric local separator family and a positive permeability representation.
+
+evidence:
+  E004 RESULT.txt; local RESULT.json sha256
+  490349a2778c46f7d209e199d7da34b73649d0ddcb5095a837731423a8460a69.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

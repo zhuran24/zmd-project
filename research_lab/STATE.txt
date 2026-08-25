@@ -36,7 +36,10 @@ probes and the first checked feedback replay now show a causal progression:
     commodities is individually component-infeasible, with all 19 statuses
     reproduced by fresh complete model rebuilds;
   * E002 also reproduces stale repeated-solve CP-SAT sufficient-core literals, so
-    that diagnostic API is excluded from future proof-bearing use in this runtime.
+    that diagnostic API is excluded from future proof-bearing use in this runtime;
+  * E004 removes hard component equalities, minimizes component mismatch in 19
+    fresh models, and still proves a positive optimum for every commodity (4 to
+    32 mismatches), with every optimum witness agreeing with production precheck.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -44,10 +47,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Does an independent mismatch-minimization formulation agree that every routed
-commodity has a strictly positive minimum component mismatch on the E001
-replacement, and are the unavoidable orphan components bounded by small repeated
-obstacle sets or by broad shared separators?
+Do the 97 free-space components of A1 and the E001 one-cut replacement collapse
+into a few translation-equivalent island/separator morphologies, or is their
+boundary structure too diverse for local family cuts and therefore better
+represented by a positive solver-chosen permeability resource?
 
 Current campaign posture
 ------------------------
@@ -56,13 +59,17 @@ located the first interface wall at component support, not front occupancy or
 duplicate terminal keys. Commodity minimization then produced the stronger 19/19
 result, so commodity-by-commodity cut mining is no longer the default move.
 
-The next experiment uses a differently shaped objective formulation and the
-production routing precheck as an external semantic comparison. If strictly
-positive minimum mismatch survives, boundary-scale analysis decides the next
-representation: small repeated boundaries justify a family compiler; broad
-shared separators justify an explicit permeability resource or constructive
-backbone. A zero-mismatch counterexample instead refutes the current component
-compiler and sends the work back to interface semantics.
+The differently shaped mismatch objective has now confirmed that all 19
+commodities remain fragmented even when binding optimizes for one commodity at a
+time. The observed optimum boundaries are mixed: many have only 3 to 10 owners,
+while components touching the main 405-cell region can have 154.
+
+The next experiment therefore compares component morphology before and after the
+one-pole E001 repair. Translation-normalized free-cell shapes, relative boundary
+patterns, and mismatch coverage decide the representation. High compression into
+a few repeated motifs earns a family compiler. A diverse long tail, or near-total
+persistence from A1 to E001, shifts work toward a positive permeability or
+variable-backbone construction layer rather than more local cuts.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

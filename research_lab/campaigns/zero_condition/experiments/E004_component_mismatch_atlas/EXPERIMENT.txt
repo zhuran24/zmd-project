@@ -1,0 +1,127 @@
+EXPERIMENT E004: minimum component-mismatch atlas
+=================================================
+
+Question
+--------
+Is E002's 19/19 singleton result a faithful consequence of the production
+routing-precheck condition, or did the hard component compiler accidentally make
+binding stricter than the precheck?
+
+If the result is faithful, how many source/sink component mismatches are
+unavoidable for each commodity, and how large are the occupied obstacle
+boundaries around the mismatched components selected by an optimum binding?
+
+Why this test comes next
+------------------------
+E002 proved, inside its guarded CP-SAT formulation, that every routed commodity
+is individually component-infeasible. That is too broad to justify another local
+cut immediately. Before changing placement architecture, the same condition must
+be asked in a differently shaped way.
+
+E004 does not add source==sink hard equalities. For one commodity at a time it
+builds a fresh front-filtered, duplicate-safe binding model, introduces one
+Boolean for every component where source presence and sink presence differ, and
+minimizes the number of such mismatched components.
+
+For the optimum binding, the ordinary production run_exact_routing_precheck is
+then run as an external evaluator. With both source and sink present, objective
+zero is equivalent to that commodity passing the precheck's component condition.
+A strictly positive proven optimum therefore independently reproduces the
+singleton wall without consuming E002's repeated-solve assumption-core API.
+
+Competing readings
+------------------
+A. At least one commodity has optimum mismatch zero. The E002 compiler is too
+   strong or its assumption construction is wrong. Interface semantics must be
+   repaired before any placement feedback.
+
+B. Every commodity has a positive optimum, but the optimum mismatches are mostly
+   tiny components with small repeated obstacle boundaries. The geometry is
+   fragmented by a reusable local separator family; the next outer-loop product
+   should be a checked family compiler rather than 19 point cuts.
+
+C. Every commodity has a positive optimum and the relevant boundaries are broad,
+   diverse, or heavily shared across the board. The local-pocket language has
+   exhausted its leverage; placement needs an explicit positive permeability
+   resource, variable backbone, or equivalent constructive representation.
+
+D. One or more optimization solves remain non-optimal within the cap. Those
+   commodities remain UNKNOWN; no minimum-mismatch or global-fragmentation claim
+   is allowed for them.
+
+Frozen inputs
+-------------
+E001 replacement layout:
+  research_lab/local/zero_condition/E001_pocket_cut_replay/run-002/REPLACEMENT_LAYOUT.json
+  sha256 752fb1706dba76ded658775750eaa6ac9f6816500e678a07ad18c3fce7d69f97
+
+E001 replacement assignment:
+  research_lab/local/zero_condition/E001_pocket_cut_replay/run-002/REPLACEMENT_ASSIGNMENT.json
+  sha256 ac80efdf293b12d852b62355815eaaeec7df5ae53b5078a4db9af24a41b55e91
+
+E002 fresh-replay result:
+  research_lab/local/zero_condition/E002_component_commodity_core/run-004/RESULT.json
+  sha256 af7dbc207dec54d9e86f8e8ee37481cc2677bfc253967d87494870605f493154
+
+The runner also pins the canonical rules, preprocess plan, mandatory instances,
+candidate placement pool, generic I/O requirements, and the exact binding/routing
+source files it consumes.
+
+Model relation
+--------------
+Always present:
+
+  placement-fixed routing-aware binding domains
+  exact binding cardinalities
+  generic input/output cardinalities
+  duplicate terminal-key exclusion
+
+Per commodity objective:
+
+  minimize sum_c XOR(source_present_in_c, sink_present_in_c)
+
+No component equality is imposed. The objective is solved to OPTIMAL or left
+UNKNOWN. The extracted optimum selection is replayed through the production
+routing precheck and checked against the objective value.
+
+Outcome classification
+----------------------
+COMPONENT_COMPILER_COUNTEREXAMPLE
+  At least one commodity has a proven zero-mismatch binding while E002 called its
+  singleton component rule infeasible, or the optimum/precheck comparison
+  disagrees.
+
+GLOBAL_FRAGMENTATION_REPRODUCED
+  All 19 commodities are OPTIMAL with minimum mismatch at least one, and every
+  optimum witness agrees with the production precheck.
+
+PARTIAL_FRAGMENTATION_UNKNOWN
+  No semantic disagreement is found, but at least one commodity is not solved to
+  OPTIMAL within its cap.
+
+EXECUTION_FAILURE
+  Frozen identity, front-domain, duplicate-key, objective, extraction, or
+  precheck comparison fails.
+
+Truth boundary
+--------------
+A positive optimum is exact only for one commodity in the fixed E001 replacement
+binding model. Boundary profiles describe one optimum mismatch witness; they do
+not by themselves prove that a particular component or obstacle set occurs in
+every optimum binding. The experiment does not prove no-ghost infeasibility,
+produce a placement cut, run exact routing, or update any certified ledger.
+
+Decision effect
+---------------
+A counterexample repairs the interface before further search. A fully positive
+atlas moves the next question from "which commodity" to "what geometric resource
+prevents all commodities from fragmenting". Boundary-size and owner-sharing
+statistics decide whether to pursue a local separator family or a positive
+permeability representation.
+
+Result
+------
+Completed with verdict GLOBAL_FRAGMENTATION_REPRODUCED. All 19 commodity
+objectives reached OPTIMAL, every minimum mismatch was positive (range 4 to 32),
+and every optimum witness agreed with production run_exact_routing_precheck. See
+RESULT.txt for the frozen identity, boundary statistics, and truth boundary.

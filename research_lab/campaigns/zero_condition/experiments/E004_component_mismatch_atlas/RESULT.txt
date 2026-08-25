@@ -1,0 +1,112 @@
+E004 RESULT: GLOBAL FRAGMENTATION SURVIVES MISMATCH MINIMIZATION
+================================================================
+
+Status
+------
+Completed as research-only evidence. No exact routing, placement cut,
+certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E004_component_mismatch_atlas/run-001/RESULT.json
+
+SHA-256:
+  490349a2778c46f7d209e199d7da34b73649d0ddcb5095a837731423a8460a69
+
+Size:
+  1,594,993 bytes
+
+Verdict:
+  GLOBAL_FRAGMENTATION_REPRODUCED
+
+Semantic differential
+---------------------
+For each of the 19 routed commodities, E004 built a fresh binding model with:
+
+  static placement-dependent front filtering
+  exact ordinary binding and generic-I/O cardinalities
+  duplicate terminal-key exclusion
+  no hard component equality
+
+It then minimized the count of free components containing source terminals but no
+sink terminals, or sink terminals but no source terminals, for that commodity.
+All 19 solves reached OPTIMAL. Every optimum binding was independently evaluated
+by production run_exact_routing_precheck, and target-commodity disconnection
+agreed exactly with the positive mismatch objective.
+
+No commodity obtained mismatch zero. E002's 19/19 singleton result is therefore
+not an artifact of imposing source==sink component equalities in that one
+formulation.
+
+Minimum mismatch counts
+-----------------------
+  blue_iron_block          11
+  blue_iron_ore            13
+  blue_iron_powder         14
+  buckwheat                17
+  buckwheat_powder          6
+  buckwheat_seed           16
+  dense_blue_iron_powder   28
+  dense_source_powder      10
+  fine_buckwheat_powder     7
+  qiaoyu_capsule            4
+  sandleaf                 32
+  sandleaf_powder          22
+  sandleaf_seed            26
+  source_ore               13
+  source_powder            18
+  steel_block              22
+  steel_bottle              9
+  steel_part                9
+  valley_battery            4
+
+The minimum is 4 and the maximum is 32. This is not a near miss in which one
+commodity has one removable orphan component. Every production relation is
+separated across several components even after binding is optimized specifically
+to reduce that commodity's fragmentation.
+
+Boundary observations
+---------------------
+Across the 19 optimum witnesses, 281 mismatched-component observations were
+recorded.
+
+  occupied boundary-owner count: min 3, median 6, max 154
+  component size:               min 1, max 405
+
+Many mismatch components therefore have small local boundaries, while some
+commodities also mismatch against the 405-cell main component whose boundary
+contains much of the factory. The result is a mixed morphology: globally broad
+fragmentation assembled from many small repeated islands and a few large shared
+regions.
+
+The same facility instances recur around mismatch boundaries across many
+commodities. This suggests substantial geometric sharing, but the current counts
+are over one selected optimum binding per commodity. They do not yet tell whether
+the small islands compress into a few translation-equivalent separator families
+or form a diverse long tail.
+
+Interpretation
+--------------
+The current master is not merely producing one bad terminal pocket. It produces a
+facility geometry in which every routed commodity remains disconnected after the
+binding layer optimizes specifically for that commodity. The placement/binding
+seam must therefore transport a positive notion of permeability or a compact
+family of repeated separator violations; another commodity point cut would be the
+wrong unit.
+
+Truth boundary
+--------------
+Each minimum is exact only inside the fixed E001 replacement binding model. The
+boundary profile describes one optimum witness for each commodity. It does not
+prove a named component or obstacle owner is present in every optimum binding,
+and it does not prove any particular backbone topology necessary.
+
+Decision effect
+---------------
+The next cheapest discriminating question is morphological compressibility. Build
+a translation-normalized atlas of the original A1 and E001 replacement free-space
+components and their occupied boundaries. If a few repeated motifs cover most
+mismatch islands, derive a parametric separator/pocket family. If the motifs and
+boundaries are diverse, stop local cut accumulation and prototype a positive,
+solver-chosen permeability or backbone resource.
