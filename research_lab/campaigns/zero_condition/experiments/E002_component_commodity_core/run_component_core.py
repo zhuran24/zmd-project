@@ -585,6 +585,7 @@ def solve_with_enabled(
     guards: Mapping[str, Any],
     enabled: set[str],
     label: str,
+    collect_sufficient_core: bool = False,
 ) -> dict[str, Any]:
     all_commodities = sorted(guards)
     unknown = sorted(enabled - set(all_commodities))
@@ -634,17 +635,19 @@ def solve_with_enabled(
     if status == "FEASIBLE":
         selection = binding_model.extract_selection()
         result["selection_digest"] = canonical_digest(selection)
-    if status == "INFEASIBLE" and solver is not None:
+    if status == "INFEASIBLE" and solver is not None and collect_sufficient_core:
         sufficient = [
             int(value) for value in solver.SufficientAssumptionsForInfeasibility()
         ]
         unknown_core_literals = sorted(set(sufficient) - set(actual_assumption_indices))
         if unknown_core_literals:
             raise RuntimeError(
-                "solver returned sufficient literals outside the active assumptions: "
-                f"{unknown_core_literals}"
+                "first requested sufficient core contains literals outside the "
+                f"active assumptions: {unknown_core_literals}"
             )
         result["sufficient_assumptions"] = sufficient
+    elif status == "INFEASIBLE":
+        result["sufficient_assumptions"] = "NOT_QUERIED_AFTER_MODEL_RESOLVE"
     return result
 
 
@@ -758,6 +761,7 @@ def run() -> dict[str, Any]:
         guards=guards,
         enabled=all_commodities,
         label="FULL_ALL_COMPONENT_GUARDS_TRUE",
+        collect_sufficient_core=True,
     )
     if full["status"] != "INFEASIBLE":
         return {
