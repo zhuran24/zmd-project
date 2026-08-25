@@ -1,0 +1,99 @@
+E008 RESULT: FREE ADJACENCY IMPROVES COMPONENT MISMATCH BUT HURTS PORT EXPOSURE
+=============================================================================
+
+Status
+------
+Completed as research-only comparative interface evidence. No exact routing,
+placement cut, certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E008_permeability_mismatch_delta/run-001/RESULT.json
+
+SHA-256:
+  07cb000e85ba1795d851f1b79e3e4d82af9974cc4b68369932e50fb2205d67d9
+
+Verdict:
+  PERMEABILITY_PROXY_PARTIAL_INTERFACE_IMPROVEMENT
+
+Exact mismatch comparison
+-------------------------
+E008 rebuilt E004's minimum-mismatch optimization from scratch on the E006 fixed
+placement, one fresh model per commodity. All 19 solves reached OPTIMAL, and every
+optimum witness agreed with production run_exact_routing_precheck.
+
+Total minimum component mismatch falls from 281 to 214, a reduction of 67 or
+23.84%.
+
+  commodities improved   13
+  unchanged                4
+  worsened                 2
+
+Per-commodity delta, E006 minus E001:
+
+  blue_iron_block          +3
+  blue_iron_ore            -2
+  blue_iron_powder         +2
+  buckwheat                -3
+  buckwheat_powder         -1
+  buckwheat_seed           -5
+  dense_blue_iron_powder   -6
+  dense_source_powder      -1
+  fine_buckwheat_powder    -4
+  qiaoyu_capsule            0
+  sandleaf                -13
+  sandleaf_powder          -3
+  sandleaf_seed           -16
+  source_ore               -3
+  source_powder             0
+  steel_block             -14
+  steel_bottle             -1
+  steel_part                0
+  valley_battery            0
+
+The largest gains occur in sandleaf_seed, steel_block, sandleaf, and dense
+blue-iron powder. Blue-iron block and blue-iron powder regress.
+
+Opposing port-domain effect
+---------------------------
+The same candidate prunes 602 more raw binding patterns than E001 and leaves 612
+fewer survivors:
+
+                         E001     E006     delta
+  front-pruned patterns    4101     4703      +602
+  surviving patterns      12955    12343      -612
+
+At the same time, generic receiving ports improve from three to seven usable
+slots. The regression is therefore concentrated in ordinary pose-level binding
+alternatives rather than every type of terminal exposure.
+
+Interpretation
+--------------
+Free adjacency is not the wrong direction. It buys a broad, exact reduction in
+component mismatch across 13 of 19 commodities. But it is incomplete: by compacting
+facilities without pricing their alternative terminal fronts, it moves pressure
+from component topology into port-domain viability.
+
+The next construction object must treat two resources jointly:
+
+  free-space connectivity / component consolidation
+  usable terminal exposure / binding-domain multiplicity
+
+Neither should remain a late filter behind the other. A stronger adjacency-only
+weight would likely continue trading one resource for the other.
+
+Truth boundary
+--------------
+The deltas compare two fixed layouts, not all layouts reachable by the E006
+objective. They do not prove any particular combined objective sufficient or
+necessary. The result justifies retaining free adjacency as one term while adding
+a port-exposure term in the same construction context.
+
+Decision effect
+---------------
+The next cheapest probe optimizes the master’s already-existing front_clear
+variables without adding a second large exact encoding. It produces a port-exposed
+Pareto point from the E006 hint. The resulting candidate is evaluated by actual
+surviving binding patterns and the same mismatch atlas; only then is a combined
+front-exposure/permeability construction justified.

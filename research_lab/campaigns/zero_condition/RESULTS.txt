@@ -415,6 +415,56 @@ effect on next problem:
 evidence:
   E006 RESULT.txt and run-001/run-002/run-003 execution chain.
 
+R-ZC-016  The permeability candidate still dies at cheap component-aware binding
+--------------------------------------------------------------------------------
+status: fresh fixed-layout CP-SAT INFEASIBLE
+scope: E006 placement; all 19 component guards fixed true without assumptions
+
+statement:
+  E007 rebuilt static front filtering, terminal uniqueness, and component-aware
+  binding from scratch. The 13,292-variable model proved INFEASIBLE in 0.013
+  solver seconds after a 0.240-second build, so exact routing was not reached.
+  E006 exposes seven of 14 generic input ports, but prunes 4703 raw binding
+  patterns versus E001's 4101 and leaves 12343 survivors versus 12955.
+
+non-implications:
+  The result applies only to the fixed E006 layout and does not prove no-ghost
+  infeasibility. It does not invalidate free adjacency as a partial heuristic.
+
+effect on next problem:
+  Keep component-aware binding as the cheap interface gate. Compare exact mismatch
+  deltas before changing the positive construction representation.
+
+evidence:
+  E007 RESULT.txt; local RESULT.json sha256
+  51b0ed0c8b10e1454b5fb7c1785e7b9c9a9db56501c5d420e300daaec511bdee.
+
+R-ZC-017  Connectivity and terminal exposure are coupled construction resources
+-------------------------------------------------------------------------------
+status: 19 fresh OPTIMAL mismatch comparisons plus front-domain measurement
+scope: E001 versus E006 fixed layouts
+
+statement:
+  E008 reduces the sum of exact per-commodity minimum mismatches from 281 to 214
+  (-23.84%): 13 commodities improve, four are unchanged, and two worsen. In the
+  same layout, front filtering removes 602 more raw patterns and leaves 612 fewer
+  binding survivors. Free adjacency therefore moves component topology in the
+  right direction while compacting facilities onto alternative terminal fronts.
+
+non-implications:
+  The comparison does not characterize every candidate reachable by the E006
+  objective and does not prove a particular combined objective sufficient.
+
+effect on next problem:
+  Free-space connectivity and usable terminal exposure must be represented in the
+  same construction context. The next cheap probe uses the master’s existing
+  front_clear variables to obtain the opposite Pareto direction before building a
+  combined constructor.
+
+evidence:
+  E008 RESULT.txt; local RESULT.json sha256
+  07cb000e85ba1795d851f1b79e3e4d82af9974cc4b68369932e50fb2205d67d9.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

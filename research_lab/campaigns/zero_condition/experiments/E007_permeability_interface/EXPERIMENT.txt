@@ -1,0 +1,86 @@
+EXPERIMENT E007: permeability candidate interface test
+======================================================
+
+Question
+--------
+Did E006's higher free adjacency and lower optional-obstacle count move the real
+placement/binding interface enough to produce one binding whose terminals are
+component-compatible, and if so can exact routing use it?
+
+Why this test comes immediately
+-------------------------------
+E006's score is only a proxy. The candidate must not accumulate another layer of
+proxy analysis before meeting the exact interface that killed A1 and E001.
+
+E007 rebuilds, from frozen inputs and a fresh CP-SAT model:
+
+  static terminal-front filtering
+  ordinary exact binding cardinalities
+  duplicate terminal-key exclusion
+  all 19 commodity component-support rules
+
+All component guards are fixed true by ordinary constraints. E007 does not reuse
+E002's repeated-solve assumptions or sufficient-core API.
+
+If binding is FEASIBLE, the selected ports are replayed through production
+run_exact_routing_precheck and then sent directly to RoutingSubproblem. A routing
+witness, if found, enters the same non-ghost strict terminal validator used by
+E001.
+
+Competing readings
+------------------
+A. Component-aware binding is FEASIBLE. The positive permeability signal crossed
+   the previous interface wall; exact routing becomes the current wall or yields
+   the first routing-complete zero-condition research witness.
+
+B. Component-aware binding is INFEASIBLE, but a new minimum-mismatch atlas is
+   substantially better than E001. The proxy moved the right statistic but not
+   far enough; strengthen or iterate the positive construction layer.
+
+C. Component-aware binding is INFEASIBLE and mismatch is unchanged or worse.
+   Pairwise free adjacency rewards the wrong geometry, most likely by removing
+   optional clutter without reconnecting terminal-support components. Replace it
+   with a main-component, articulation, or variable-backbone statistic.
+
+D. Binding or routing remains UNKNOWN within the cap. Preserve the exact stage
+   reached and do not infer feasibility direction.
+
+Frozen candidate
+----------------
+E006 result:
+  research_lab/local/zero_condition/E006_free_adjacency_master/run-003/RESULT.json
+  sha256 e3ce1ad7f557c1ee52c45588f9bc4ede701939fa444f9c7653157be71551d7d5
+
+E006 assignment:
+  research_lab/local/zero_condition/E006_free_adjacency_master/run-003/PERMEABILITY_ASSIGNMENT.json
+  sha256 29692d8465374498100e6f58069c92eabb69460d8fc742912ec0984877218b43
+
+E006 layout:
+  research_lab/local/zero_condition/E006_free_adjacency_master/run-003/PERMEABILITY_LAYOUT.json
+  sha256 dd228aa137651251f63e8b473579d371d78b28781de4fd76518681eec830edd8
+
+Budget
+------
+Binding cap: 60 seconds, four workers.
+Exact routing cap, only if reached: 120 seconds, eight workers.
+
+Truth boundary
+--------------
+An INFEASIBLE result applies only to the fixed E006 placement under the frozen
+compiled necessary-interface model. A FEASIBLE binding proves only the current
+front, terminal uniqueness, and component conditions. Only a strict validated
+routing witness closes the routing-connectivity portion of the campaign; flow,
+startup, game-side review, certification, and U/L remain separate.
+
+Decision effect
+---------------
+FEASIBLE advances immediately to routing. INFEASIBLE triggers a comparative
+mismatch atlas against E004, not another commodity point cut. UNKNOWN preserves
+the current interface question without directional inference.
+
+Result
+------
+Completed with verdict PERMEABILITY_COMPONENT_BINDING_INFEASIBLE. The fresh
+all-guards-hard binding model proved infeasible in 0.013 seconds after a
+0.240-second build, so exact routing was not reached. E006 improved free-space
+morphology but pruned 602 more raw binding patterns than E001. See RESULT.txt.

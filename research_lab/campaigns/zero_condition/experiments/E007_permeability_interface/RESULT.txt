@@ -1,0 +1,82 @@
+E007 RESULT: PERMEABILITY CANDIDATE STILL DIES AT COMPONENT BINDING
+=================================================================
+
+Status
+------
+Completed as research-only fixed-layout interface evidence. Exact routing and the
+strict validator were not reached. No certification, U/L, owner, or publication
+effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E007_permeability_interface/run-001/RESULT.json
+
+SHA-256:
+  51b0ed0c8b10e1454b5fb7c1785e7b9c9a9db56501c5d420e300daaec511bdee
+
+Size:
+  14,329,871 bytes
+
+Verdict:
+  PERMEABILITY_COMPONENT_BINDING_INFEASIBLE
+
+Fixed geometry
+--------------
+  occupied cells          3760
+  free cells              1140
+  free components           91
+  largest component        405
+
+Fresh interface build
+---------------------
+E007 rebuilt one binding model from the E006 assignment. It did not reuse E002's
+assumptions or sufficient-core API. Static front filtering, duplicate terminal
+keys, and all 19 commodity component rules were compiled, and every component
+guard was fixed true by an ordinary equality.
+
+  raw binding patterns                         17,046
+  patterns pruned by blocked terminal fronts    4,703
+  surviving binding patterns                   12,343
+  empty owner domains                               0
+  surviving generic input ports                     7 of 14
+  surviving generic output ports                   52 of 52
+  duplicate constraints                         1,509
+  component constraints                           334
+  binding variables                            13,292
+  binding constraints                          38,392
+
+The model proved INFEASIBLE in 0.013 seconds of solver wall, with zero branches
+and zero conflicts after a 0.240-second build. This is a structural interface
+failure, not a search-budget wall.
+
+Comparison with E001
+--------------------
+E006 has six fewer free components and 40 more free cells, but front-domain
+quality regressed:
+
+                         E001     E006
+  front-pruned patterns    4101     4703
+  surviving patterns      12955    12343
+  generic input ports         3        7
+
+The candidate exposed more protocol-core receiving ports and improved global
+component morphology, yet moved many manufacturing bodies onto cells used by
+alternative binding fronts. The two resources changed in opposite directions.
+
+Inner-methodology conclusion
+----------------------------
+The cheap component-aware binding layer continues to be the correct cut between
+placement and exact routing. It rejects this candidate in milliseconds and keeps
+routing from paying for a geometry already dead by component support.
+
+The failure also proves that free-space permeability and terminal exposure are
+not substitutes. They share placement variables and jointly determine binding
+survival, so the next construction layer must account for both rather than place
+one as a late filter behind the other.
+
+Truth boundary
+--------------
+INFEASIBLE applies only to the fixed E006 placement under the frozen static-front,
+duplicate-terminal, and component-support model. It does not prove the no-ghost
+problem infeasible and does not justify a placement cut by itself.

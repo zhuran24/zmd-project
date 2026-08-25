@@ -1,0 +1,73 @@
+EXPERIMENT E008: permeability mismatch delta
+============================================
+
+Question
+--------
+Did E006's higher free adjacency and lower component count reduce the exact
+per-commodity component mismatch measured in E004, or did it improve a proxy
+while making terminal support unchanged or worse?
+
+Why this test follows E007
+--------------------------
+E007 proves the E006 candidate is still component-binding INFEASIBLE. That binary
+answer cannot distinguish "right direction, insufficient magnitude" from "wrong
+statistic".
+
+E008 reruns E004's differently shaped minimum-mismatch optimization on the E006
+fixed placement, one fresh model per commodity. It compares every exact optimum
+with the corresponding E001 optimum and independently replays the extracted
+binding through production run_exact_routing_precheck.
+
+Competing readings
+------------------
+A. Total and most per-commodity minima fall materially. Free adjacency is a valid
+   but incomplete construction signal. Iterate or strengthen it with the missing
+   statistic exposed by the residual mismatches.
+
+B. Some commodities improve while others worsen, with little aggregate movement.
+   Pairwise adjacency is not aligned with terminal topology. It needs a
+   commodity-aware/main-component supplement rather than more weight.
+
+C. Aggregate mismatch worsens. The proxy rewards compaction that blocks usable
+   fronts or consolidates the wrong free cells. Retire it as the primary
+   construction objective, while retaining optional-pole economy as a separate
+   useful signal.
+
+D. Any optimum/precheck disagreement refutes the measurement surface and blocks
+   interpretation.
+
+Frozen inputs
+-------------
+E004 baseline atlas:
+  research_lab/local/zero_condition/E004_component_mismatch_atlas/run-001/RESULT.json
+  sha256 490349a2778c46f7d209e199d7da34b73649d0ddcb5095a837731423a8460a69
+
+E006 assignment:
+  research_lab/local/zero_condition/E006_free_adjacency_master/run-003/PERMEABILITY_ASSIGNMENT.json
+  sha256 29692d8465374498100e6f58069c92eabb69460d8fc742912ec0984877218b43
+
+E007 interface result:
+  research_lab/local/zero_condition/E007_permeability_interface/run-001/RESULT.json
+  sha256 51b0ed0c8b10e1454b5fb7c1785e7b9c9a9db56501c5d420e300daaec511bdee
+
+Truth boundary
+--------------
+Each optimum is exact only for one commodity in the fixed E006 placement binding
+model. Delta signs compare two fixed layouts, not two global construction
+families. The experiment does not prove the adjacency objective incapable of
+finding a different better candidate.
+
+Decision effect
+---------------
+A broad positive delta keeps free adjacency as one construction term. A mixed or
+negative delta shifts the next positive representation toward usable-terminal
+support in a shared large component, articulation reduction, or a solver-chosen
+backbone. No result creates a necessary placement cut.
+
+Result
+------
+Completed with verdict PERMEABILITY_PROXY_PARTIAL_INTERFACE_IMPROVEMENT. All 19
+fresh mismatch solves reached OPTIMAL. Total minimum mismatch falls from 281 to
+214; 13 commodities improve, four are unchanged, and two worsen. Meanwhile 602
+more binding patterns are front-pruned. See RESULT.txt for the dual-resource
+interpretation and truth boundary.
