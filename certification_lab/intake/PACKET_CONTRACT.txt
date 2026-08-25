@@ -1,0 +1,168 @@
+ZMD CERTIFICATION PACKET CONTRACT
+=================================
+
+Purpose
+-------
+A packet is the complete, frozen object transported from research into the
+certification tree. It must let a reviewer understand, reproduce, attack, and
+bind the candidate without depending on the research conversation or mutable
+working-tree state.
+
+Packet directory
+----------------
+
+  certification_lab/inbox/<packet-id>/
+
+The packet is copied or materialized into this directory before review. Review
+material is written elsewhere under certification_lab/reviews/<packet-id>/.
+After admission, packet semantic bytes are immutable.
+
+Required packet identity
+------------------------
+packet_id
+  Stable, self-explaining identifier. A semantic change requires a new id.
+
+created_at
+  Creation time of the frozen packet.
+
+producer
+  Research branch and source session/agent identity when available. Producer
+  identity is provenance, not authority.
+
+research_source
+  Exact research commit(s), parent, selected paths or patch digest, and a clean /
+  dirty statement for the source used to build the packet.
+
+packet_manifest
+  Every packet file with size and SHA-256. Unknown extra files are either listed
+  and explained or admission fails.
+
+Certification subject
+---------------------
+claim
+  One exact proposition. Natural-language explanation may accompany it, but the
+  quantified object must be unambiguous.
+
+object_space
+  The type of object over which the claim quantifies, such as placement,
+  binding_selection, selected_route_graph, whole_layout, judgment, certificate,
+  or ledger transition.
+
+binders_and_quantifiers
+  Explicit variables, domains, existential/universal directions, and any fixed
+  objects.
+
+premises
+  Complete structured assumptions. Include instance/rule/objective/context
+  identities, fixed geometry, feature flags, runtime configuration, external
+  artifacts, and semantic version as applicable.
+
+conclusion
+  Exact mathematical or operational conclusion.
+
+requested_effect
+  The single concrete capability requested from certification. Examples:
+  research-only theorem acceptance, production model pruning at binding stage,
+  construction admission, upper-bound ledger update, fixed-witness acceptance,
+  or eligibility for an existing seal path. Avoid blanket requests such as
+  "certify this".
+
+consumer
+  Concrete stage, module, function, schema, or authority sink expected to consume
+  the result.
+
+transport_or_lowering
+  Mapping from abstract claim to runtime literals/effect. State NONE when the
+  packet requests theorem review only.
+
+Evidence and reproduction
+-------------------------
+evidence_manifest
+  Path, SHA-256, size, role, and storage for every input, witness, log prefix,
+  certificate, fixture, or external artifact that bears the claim.
+
+reproduction
+  Exact commands, interpreter, environment variables, worker/seed/time limits,
+  expected outputs, and success/failure interpretation.
+
+independent_checking_surface
+  What a checker must reconstruct rather than trust from producer output. Name
+  any intentionally shared parser, model, library, or source of correlated
+  failure.
+
+positive_controls
+  Inputs that must be accepted or produce the claimed effect.
+
+negative_controls
+  Inputs that must be rejected, return NO_EFFECT, or expose a vacuous/dead
+  checker. Include wrong context, slot, pose, stage, digest, or strengthened claim
+  as appropriate.
+
+counterexample_search
+  Search domain already checked, exact bounds, and what remains unsearched.
+
+Boundary fields
+---------------
+known_unknowns
+  Undecided facts or untested regions.
+
+non_implications
+  Claims the packet does not make. Include neighboring object spaces, other
+  layouts/bases/rule versions, global optimality, runtime utility, and authority
+  effects when not proved.
+
+failure_action
+  Required behavior on stale context, missing input, checker exception, timeout,
+  or unknown version. New pruning/acceptance effects must normally disappear.
+
+rollback
+  How to remove the proposed effect without rewriting historical evidence.
+
+utility_hypothesis
+  Named frontier or expensive residual expected to move, plus the baseline and
+  measurement. This is not needed for a pure theorem truth review, but must be
+  present before claiming solver value.
+
+Admission rules
+---------------
+A packet is ADMITTED only when:
+
+  * packet id and manifest are complete;
+  * all semantic fields are frozen and internally consistent;
+  * source commits and evidence bytes are available and hash-correct;
+  * object space and quantifiers are explicit;
+  * requested effect and consumer are concrete;
+  * reproduction is possible without mutable research-local state;
+  * missing evidence is typed rather than silently substituted;
+  * non-implications and failure action are present.
+
+Admission proves only that the candidate is reviewable. It does not establish
+truth, sound lowering, permission, usefulness, or certification.
+
+Change rules
+------------
+The following require a new packet id:
+
+  claim, binder, quantifier, premise, context, object space, consumer stage,
+  runtime mapping, requested effect, witness semantics, or certificate semantics.
+
+A packaging-only correction may retain the semantic id only when subject bytes
+are unchanged and an explicit correction receipt records old/new packet
+manifests and reason.
+
+Forbidden packet dependencies
+-----------------------------
+
+  mutable research worktree paths without commit/digest identity
+  unlisted files in research_lab/local or .artifacts
+  research conversation context needed to fill a premise
+  "same as current" without naming the current machine authority
+  a checker PASS used as requested authority
+  a performance result used as soundness proof
+  owner intent inferred from repository prose
+
+Packet handoff
+--------------
+The packet is a request for independent review. It may be returned, refuted,
+held UNKNOWN, accepted with NO_EFFECT, or promoted to CERTIFICATION_CANDIDATE.
+None of those outcomes bypasses the existing project authority chain.

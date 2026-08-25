@@ -1,0 +1,132 @@
+ZMD CERTIFICATION WORKTREE CHARTER
+==================================
+
+Status
+------
+This charter defines the role of the certification worktree. It does not replace
+PROJECT_LOCK.md, canonical rules, machine authority, owner decisions, supervisor
+seal, or the public publisher.
+
+Mission
+-------
+The certification tree receives selected, frozen outputs from the research tree
+and determines whether a precisely stated claim may be consumed with a precisely
+stated effect under the current project context.
+
+Its job is not to continue discovery until a candidate becomes attractive. Its
+job is to make the candidate survive without the researcher's momentum,
+narrative, or goodwill.
+
+Repository roles
+----------------
+History/material tree
+  /home/zhuran24/zmd-pj, branch main.
+  Preserves the former combined tree, old Git history, tracked sources, and local
+  evidence. Read-only from certification sessions.
+
+Research tree
+  /home/zhuran24/.devspace/worktrees/zmd-pj-983df854, branch research/main.
+  Produces conjectures, theorems, constructions, algorithms, experiments, and
+  frozen promotion packets. Read-only from certification sessions.
+
+Certification tree
+  This worktree, branch certification/main.
+  Performs independent intake, re-derivation, adversarial review, effect binding,
+  certification-side implementation, and integration checks.
+
+Core laws
+---------
+1. Packet before narrative.
+   The review object is the frozen packet and its immutable source identities.
+   Research history may explain where an idea came from, but it cannot fill a
+   missing premise or grant authority.
+
+2. A claim is frozen while reviewed.
+   Changing the proposition, object space, premise set, runtime binding, context,
+   or requested effect creates a new candidate. The old review cannot silently
+   slide onto the new object.
+
+3. Truth, execution, permission, and usefulness are separate.
+   A theorem may be true while its lowering is wrong. A lowering may be sound
+   while its consumer lacks permission. An admitted effect may be useless. No
+   axis pays for another.
+
+4. Transport is a proof obligation.
+   A binding-level fact does not become a placement ban, a fixed-layout result
+   does not become a cross-layout family, and a local infeasibility result does
+   not become a frontier exclusion without an explicit transport argument.
+
+5. Failure removes the new effect, not the old search domain.
+   Missing evidence, stale context, checker failure, exception, timeout, or
+   UNKNOWN causes NO_EFFECT / HOLD / RETURN, never a conservative candidate ban.
+
+6. Certification is independent of authorship.
+   The certification reviewer reconstructs the claim from locked inputs and
+   attacks it with counterexamples, mutation canaries, alternate derivations, and
+   the strongest relevant current semantics. Re-running the research harness is
+   necessary evidence when applicable, not independence by itself.
+
+7. Repair and approval are different acts.
+   A reviewer may harden an implementation only when the frozen semantics and
+   requested effect remain unchanged. Any semantic repair returns to research as
+   a new packet. The same act cannot both widen the candidate and approve the
+   widened object.
+
+8. The branch name grants nothing.
+   certification/main may contain review records and certification-ready code,
+   but U/L updates, durable CERTIFIED minting, owner-only closure, and public
+   publication remain governed by the existing project authority chain.
+
+Admissible outcomes
+-------------------
+ADMITTED
+  Packet identity and minimum contract are complete enough to review.
+
+RETURN_TO_RESEARCH
+  The candidate may be promising, but the frozen packet lacks a necessary
+  premise, exact object, transport proof, reproducible input, or stable effect.
+
+REJECTED_AS_CLAIMED
+  A counterexample or proof failure refutes the packet's exact claim. This does
+  not automatically refute neighboring, narrower, or repaired claims.
+
+UNKNOWN
+  The review could not decide within the available evidence or budget. No new
+  effect is granted.
+
+NO_EFFECT
+  The theorem may remain true, but the requested consumer/effect is unsupported,
+  stale, disallowed, or incorrectly lowered.
+
+CERTIFICATION_CANDIDATE
+  The frozen claim, concrete effect, current context, and applicable tests have
+  passed the certification-tree review. This is eligibility for the next
+  existing authority step, not durable certification itself.
+
+Scope of work
+-------------
+The certification tree may:
+
+  * import and freeze a research promotion packet;
+  * independently recompute theorem, witness, certificate, or counterexample;
+  * create adversarial tests and mutation canaries;
+  * implement or harden a semantics-preserving consumer;
+  * run targeted and full project gates appropriate to the requested effect;
+  * issue a scoped verdict and prepare a certification candidate.
+
+The certification tree must not:
+
+  * browse research work and choose a candidate without an explicit packet;
+  * treat research branch state, report prose, or test success as authority;
+  * modify packet semantics in place to make a review pass;
+  * update U/L or strong status merely from its own verdict;
+  * bypass supervisor seal, owner decisions, or publisher checks;
+  * write into the history or research worktree.
+
+Completion criterion
+--------------------
+The certification worktree architecture is functioning when a fresh agent can
+enter in certification mode, identify an active packet or idle state, reproduce
+its immutable inputs, produce a scoped review without inheriting research
+attention, and hand a passing candidate to the existing authority chain without
+confusing that handoff with certification itself.

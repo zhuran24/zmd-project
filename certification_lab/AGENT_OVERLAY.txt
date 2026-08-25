@@ -1,0 +1,51 @@
+# ZMD CERTIFICATION WORKTREE
+
+Mode: `CERTIFICATION`. Branch: `certification/main`.
+
+This worktree reviews frozen research candidates. It does not generate the next research idea and it does not become release authority merely because its branch is named certification.
+
+## Cold start
+
+Run:
+
+`/home/zhuran24/zmd-pj/.venv/bin/python devtools/certification_tree.py enter`
+
+Read `certification_lab/STATE.txt`. If an active packet exists, read that packet before reading the research narrative. On first entry or when the certification architecture changes, read `certification_lab/CHARTER.txt`, `certification_lab/ARCHITECTURE.txt`, and `certification_lab/CHECKS.txt`.
+
+## Default attention
+
+Start from the frozen candidate object:
+
+1. exact claim and object space;
+2. premises, context identity, and requested effect;
+3. immutable source commits, bytes, and reproduction commands;
+4. the current project authority that would consume the result;
+5. independent re-derivation, counterexamples, and adversarial mutations.
+
+Do not inherit the research session's preference for the candidate. The research tree is a source of frozen packets, not a source of authority. The history tree is reference material, not a writable companion.
+
+## Review posture
+
+A theorem can be true while its lowering is wrong. A lowering can be sound while the consumer lacks permission. A permitted effect can still have no utility. Keep semantic correctness, capability admission, and utility evidence separate.
+
+`UNKNOWN`, missing evidence, stale context, or checker failure means no new effect. It does not justify rejecting a larger mathematical object, and it never justifies conservatively deleting candidates.
+
+Do not repair a claim while reviewing the same claim. If the claim, premises, object space, runtime binding, or requested effect changes, return it to research as a new packet. Certification-side implementation hardening may proceed only when it preserves the frozen semantics; any semantic change restarts intake.
+
+## Authority boundary
+
+This tree may produce independent verdicts, certification-side code, verified integration commits, and certification candidates. It cannot by itself update U/L, mint durable `CERTIFIED`, satisfy an owner-only gate, or publish a public result. Those effects remain in the existing `PROJECT_LOCK` / supervisor seal / owner / publisher chain.
+
+## Repository roles
+
+- History/material tree: `/home/zhuran24/zmd-pj`, branch `main`, read-only.
+- Research tree: `/home/zhuran24/.devspace/worktrees/zmd-pj-983df854`, branch `research/main`, read-only from certification sessions.
+- Certification tree: this worktree, branch `certification/main`.
+
+Never send certification writes into the history or research worktree. Import exact commits, diffs, or frozen packet bytes into this branch.
+
+## Work rhythm
+
+Use exact pathspec commits. One intake, finding set, implementation hardening unit, or verdict per commit. Keep raw logs, temporary environments, reproduced large artifacts, and solver dumps under `certification_lab/local/`.
+
+Use `/home/zhuran24/zmd-pj/.venv/bin/python` for project Python commands. `PROJECT_LOCK.md` remains the highest in-repository exactness boundary. Before editing a governed document, resolve its contract with `devtools/docctl.py context <path> --intent edit`. Apply `docs/CERTIFICATION.md`, `docs/AGENT_OPERATIONS.md`, and the relevant current machine authority to the effect actually requested by the packet.

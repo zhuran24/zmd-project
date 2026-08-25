@@ -1,0 +1,284 @@
+ZMD CERTIFICATION TREE ARCHITECTURE
+===================================
+
+Purpose
+-------
+The certification tree is the cold boundary between open-ended research and the
+existing exactness / release authority chain. It converts a selected research
+output into one of three useful things:
+
+  * a scoped counterexample or return request;
+  * a verified but non-admitted result with an explicit NO_EFFECT boundary;
+  * a certification candidate ready for the next existing project authority.
+
+It is not a second research environment and not a replacement publisher.
+
+1. Three-tree topology
+----------------------
+
+History/material tree
+  Path: /home/zhuran24/zmd-pj
+  Branch: main
+  Function: preserve the former combined tree's Git history, tracked baseline,
+            local large evidence, and shared Python environment.
+  Certification access: read-only.
+
+Research tree
+  Path: /home/zhuran24/.devspace/worktrees/zmd-pj-983df854
+  Branch: research/main
+  Function: all active discovery, construction, mathematics, experiments, and
+            promotion packet creation.
+  Certification access: read-only, packet source only.
+
+Certification tree
+  Branch: certification/main
+  Function: frozen intake, independent review, semantics-preserving integration,
+            and preparation for the existing seal / owner / publisher chain.
+
+No tree is inferred from another tree's directory name. MODE.txt, branch checks,
+and immutable packet identities establish role.
+
+2. Attention architecture
+-------------------------
+The local root AGENTS.md and CLAUDE.md are certification-mode overlays. Their
+canonical bytes live in certification_lab/AGENT_OVERLAY.txt. They remain
+untracked because the inherited project document system models workspace
+overlays as local files; devtools/certification_tree.py verifies that both local
+files exist, are untracked, and match the tracked template exactly.
+
+Stable orientation:
+  certification_lab/CHARTER.txt
+    Mission, laws, outcomes, and authority stop line.
+
+Live orientation:
+  certification_lab/STATE.txt
+    Active packet, review stage, current blocking question, and latest verdict.
+    This file stays short and is read every session.
+
+Operational weight:
+  certification_lab/CHECKS.txt
+    C0 through C4 validation levels. The required level follows the packet's
+    requested effect.
+
+Candidate object:
+  certification_lab/inbox/<packet-id>/
+    Frozen packet and imported immutable evidence manifest.
+
+Review object:
+  certification_lab/reviews/<packet-id>/
+    Independent derivation, findings, checks, and final scoped verdict.
+
+Raw runtime:
+  certification_lab/local/
+    Ignored logs, solver output, temporary environments, replayed large objects,
+    and scratch models.
+
+3. Packet lifecycle
+-------------------
+A packet crosses the boundary in seven stages.
+
+Stage 0: RECEIVE
+  Copy or materialize the exact packet into inbox/<packet-id>. Do not review from
+  a mutable research working-tree path. Record packet bytes, source commits,
+  referenced artifact hashes, and the certification baseline.
+
+Stage 1: ADMISSION
+  Check the intake contract. The packet must name a single claim, object space,
+  premises, context identity, requested effect, source identities, reproduction
+  path, controls, non-implications, and known unknowns. Missing or mutable inputs
+  produce RETURN_TO_RESEARCH, not a guessed completion.
+
+Stage 2: INDEPENDENT RECONSTRUCTION
+  Rebuild the claim from authoritative inputs. The reviewer may use a different
+  implementation, direct mathematics, a clean harness, exhaustive toy domain,
+  or an independent checker according to the object. Merely invoking the packet's
+  own script is reproduction, not independent reconstruction.
+
+Stage 3: ADVERSARIAL REVIEW
+  Attack premise currency, scope, object-space transport, monotonicity,
+  quantifiers, hidden defaults, exact arithmetic, negative cases, stale hashes,
+  alternate bindings, and false-positive / false-negative directions. Build
+  mutation canaries that would fail if the candidate were strengthened or moved
+  to the wrong consumer.
+
+Stage 4: EFFECT BINDING
+  Compare the proven set relation with the concrete runtime effect. For a
+  rejector, actual rejection must be a subset of the theorem-proven rejection
+  set. For a constructor, emitted witnesses must lie in the proven valid set. For
+  an exact checker, accepted objects must match the exact feasible set in the
+  named object space. Any cross-space transport is separately proved.
+
+Stage 5: INTEGRATION
+  When the effect is semantically fixed, implement or harden it on
+  certification/main. The integration records exact source changes, rollback,
+  context guards, failure action, tests, and source identity. If implementation
+  work reveals that the claim or requested effect must change, stop and return a
+  new packet request.
+
+Stage 6: VERDICT
+  Write reviews/<packet-id>/VERDICT.txt using the template. Report semantic
+  correctness, transport/lowering, capability admission, utility evidence, and
+  the exact outcome separately.
+
+Stage 7: AUTHORITY HANDOFF
+  CERTIFICATION_CANDIDATE means only that this tree's review is complete. Durable
+  seal, owner-only decisions, ledger updates, and publication proceed through
+  the existing project entrypoints. The certification verdict is evidence for
+  those steps, never a substitute.
+
+4. Frozen-object rule
+---------------------
+Once admitted, the packet directory is immutable except for a separately named
+intake receipt. Findings and derived material live under reviews/<packet-id>.
+
+A change to any of these creates a new packet id:
+
+  claim formula or natural-language proposition
+  object space or binder
+  premise set
+  problem, objective, context, rules, or source identity
+  requested consumer stage
+  runtime literal mapping
+  requested effect
+  certificate or witness semantics
+
+Pure packaging corrections may preserve the packet id only when the imported
+subject bytes and all semantic fields remain identical; the correction receives
+its own intake receipt.
+
+5. Review independence
+----------------------
+Independence is achieved by reducing shared failure modes, not by asserting a
+reviewer label.
+
+Preferred measures:
+
+  * reconstruct from canonical inputs rather than packet-derived summaries;
+  * use exact arithmetic or a distinct checker implementation;
+  * create counterexamples before reading the researcher's defense;
+  * compare the claim against current errata and successor semantics;
+  * freeze runtime environment and shared caches;
+  * run negative controls that a dead checker or always-reject consumer cannot
+    pass;
+  * separate candidate authoring session from certification session.
+
+Same-model re-review may improve reasoning quality but remains same-source
+confirmation. A result whose authority requires heterogeneous confirmation must
+obtain it outside this tree or through an explicitly different source.
+
+6. Finding and repair boundary
+------------------------------
+A review finding must identify:
+
+  exact packet field or implementation surface
+  failed relation or counterexample
+  severity relative to requested effect
+  whether the packet is refuted, under-specified, stale, or merely non-admitted
+  smallest acceptable next object
+
+Certification may repair representation, serialization, guards, tests,
+observability, and implementation details if the frozen semantics are preserved.
+Certification must return to research when repair changes mathematical content,
+object-space transport, premise strength, or effect scope.
+
+This prevents the reviewer from becoming a co-author whose investment quietly
+changes the burden of proof.
+
+7. Branch and commit model
+--------------------------
+certification/main is the integration branch for certification architecture and
+completed reviews.
+
+Use certification/review/<packet-id> when:
+
+  * multiple reviewers work in parallel;
+  * the candidate modifies certification-bearing source;
+  * a clean baseline is needed for A/B or attack variants;
+  * the review may be abandoned without polluting integration history.
+
+Commit boundaries:
+
+  intake
+  independent reproduction
+  adversarial findings
+  semantics-preserving implementation unit
+  targeted validation
+  final verdict
+
+Do not merge research/main wholesale. Import the exact research commits, patch,
+or frozen files named by the packet. A certification commit must not contain
+unrelated research history.
+
+8. Baseline and currency
+------------------------
+The initial certification baseline is the committed main-tree snapshot recorded
+in BASELINE.txt. Dirty history-tree bytes were not copied.
+
+The certification branch does not automatically track history/main or
+research/main. Baseline refresh requires its own commit recording:
+
+  source tree and commit
+  selected paths or commits
+  reason the refresh is needed for a named certification object
+  authority or semantic changes introduced
+  tests and reseal consequences
+
+A packet is reviewed against the current certification baseline, not whatever
+happens to be checked out in the research tree later.
+
+9. Current project authority
+----------------------------
+The certification architecture routes to, but does not rewrite, existing
+project authority:
+
+  PROJECT_LOCK.md
+    exactness constitution, theorem scope, invariants, and forbidden changes
+
+  docs/CERTIFICATION.md
+    stable certification navigation
+
+  docs/CURRENT.md and machine sources
+    current status, claims, gates, and source identities
+
+  docs/AGENT_OPERATIONS.md
+    applicable testing, frozen-artifact, Git, seal, and publication procedures
+
+  supervisor seal / owner gate / publisher
+    durable certification and public release authority
+
+Only the authority relevant to the packet's requested effect must be loaded, but
+that authority is mandatory before capability admission.
+
+10. Outcome semantics
+---------------------
+RETURN_TO_RESEARCH
+  Packet is not reviewable or needs semantic change. No claim of falsity unless
+  a counterexample also exists.
+
+REJECTED_AS_CLAIMED
+  Exact packet claim is refuted. Neighboring claims remain open unless covered by
+  the counterexample or proof.
+
+UNKNOWN
+  Budget or evidence insufficient. No new effect.
+
+NO_EFFECT
+  Claim may be true, but the proposed consumer/effect is unsupported or
+  disallowed.
+
+CERTIFICATION_CANDIDATE
+  Candidate passed the stated review and integration level. It may proceed to
+  the existing authority chain, which can still block it.
+
+No outcome called PASS is used alone as a final cross-layer verdict.
+
+11. Architecture-change rule
+----------------------------
+Change this architecture only when a repeated certification action has no home,
+a reviewer enters in the wrong attention mode, packet identity is ambiguous,
+review and repair are being mixed, or the boundary cannot hand off a cold object
+to existing authority.
+
+Do not add a new form for every candidate. Start with packet-specific checkers
+and review files; generalize only after the same invariant appears in multiple
+materially different packets.

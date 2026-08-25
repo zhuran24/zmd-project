@@ -1,0 +1,124 @@
+ZMD CERTIFICATION REVIEW VERDICT
+================================
+
+Review identity
+---------------
+packet_id:
+packet_manifest_sha256:
+research_source_commit:
+certification_baseline_commit:
+review_branch:
+review_commits:
+reviewer_source:
+review_started_at:
+review_completed_at:
+
+Frozen subject
+--------------
+claim:
+object_space:
+premises:
+requested_effect:
+consumer:
+
+Axis verdicts
+-------------
+semantic_correctness:
+  outcome: ACCEPTED / REFUTED / UNKNOWN / NOT_REVIEWED
+  statement:
+  evidence:
+
+transport_or_lowering_correctness:
+  outcome: ACCEPTED / REFUTED / UNKNOWN / NOT_APPLICABLE / NOT_REVIEWED
+  statement:
+  evidence:
+
+capability_admission:
+  outcome: ADMITTED / BLOCKED / OWNER_REQUIRED / UNKNOWN / NOT_REVIEWED
+  statement:
+  authority_basis:
+
+utility_evidence:
+  outcome: POSITIVE / NEGATIVE / INCONCLUSIVE / NOT_MEASURED / NOT_APPLICABLE
+  statement:
+  baseline_and_measurement:
+
+authority_handoff_status:
+  outcome: NOT_REACHED / READY_FOR_EXISTING_CHAIN / BLOCKED / COMPLETED_BY_EXTERNAL_AUTHORITY
+  statement:
+
+Findings
+--------
+For each finding:
+
+finding_id:
+severity_relative_to_requested_effect:
+failed_relation_or_counterexample:
+exact_scope:
+evidence:
+required_next_object_or_fix:
+packet_effect:
+
+Independent reconstruction
+--------------------------
+method:
+inputs_rebuilt_from_authority:
+shared_failure_modes_remaining:
+commands_and_results:
+
+Controls and adversarial attacks
+--------------------------------
+positive_controls:
+negative_controls:
+mutation_canaries:
+counterexample_search:
+
+Integration checks
+------------------
+targeted_tests:
+independent_checkers:
+ruff_mypy:
+document_and_knowledge_checks:
+preflight:
+slow_soundness_lane:
+unrun_obligations:
+
+Final scoped outcome
+--------------------
+outcome:
+  ADMITTED
+  RETURN_TO_RESEARCH
+  REJECTED_AS_CLAIMED
+  UNKNOWN
+  NO_EFFECT
+  CERTIFICATION_CANDIDATE
+
+exact_statement:
+requested_effect_granted_by_this_verdict:
+  NONE unless a current project authority explicitly permits the certification
+  tree itself to grant a narrower intermediate capability.
+
+next_authorized_step:
+
+Non-implications
+----------------
+This verdict does not imply:
+
+  durable CERTIFIED
+  owner gate closure
+  U/L or strong-status update
+  public publication
+  correctness outside the frozen packet scope
+  utility outside the measured baseline
+
+Add packet-specific non-implications here:
+
+Reader self-check
+-----------------
+A future reader should be able to answer without the research conversation:
+
+  What exact object was reviewed?
+  What was independently reconstructed?
+  What failed or passed on each separate axis?
+  What effect, if any, may occur next?
+  Which authority still has to act?

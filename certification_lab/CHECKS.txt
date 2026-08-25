@@ -1,0 +1,134 @@
+ZMD CERTIFICATION TREE CHECK LEVELS
+===================================
+
+Certification checks are cumulative. The packet's requested effect determines
+the required level. A higher level does not erase a lower-level failure.
+
+C0: tree and intake readiness
+-----------------------------
+Required for every certification session:
+
+  /home/zhuran24/zmd-pj/.venv/bin/python devtools/certification_tree.py check
+  git diff --check
+
+The tree checker verifies mode, branch, three-tree separation, local overlay
+bytes, required front-door files, ignored runtime output, and active packet
+routing. It does not prove any candidate claim.
+
+When importing a packet:
+
+  * materialize it under certification_lab/inbox/<packet-id>/;
+  * verify packet and evidence hashes;
+  * pin research source commits or exact diff identities;
+  * ensure all required inputs are immutable or copied into the packet;
+  * record the certification baseline;
+  * keep the packet unchanged after admission.
+
+Failure at C0 yields RETURN_TO_RESEARCH or UNKNOWN. It never grants a pruning or
+acceptance effect.
+
+C1: semantic claim review
+-------------------------
+C0 plus:
+
+  * independently reconstruct the proposition from authoritative inputs;
+  * verify binder, object space, quantifiers, premises, context currency, and
+    does-not-imply boundary;
+  * use exact arithmetic where arithmetic bears the claim;
+  * search for counterexamples and stronger/weaker neighboring statements;
+  * run positive and negative controls that expose a dead or vacuous checker;
+  * identify whether the proof is instance-local, premise-transferable, or a
+    family theorem;
+  * write a review record separate from the packet.
+
+A packet may leave C1 as REJECTED_AS_CLAIMED, RETURN_TO_RESEARCH, UNKNOWN, or
+semantic-correctness accepted for the frozen scope. Semantic acceptance alone
+has no runtime effect.
+
+C2: transport, lowering, and consumer review
+--------------------------------------------
+C1 plus:
+
+  * name the concrete consumer stage and runtime literals;
+  * prove any transport between theorem object space and consumer object space;
+  * compare actual effect against the theorem relation;
+  * verify stale-context and mismatch behavior is NO_EFFECT / fail closed;
+  * add mutation canaries for wrong slot, pose, layout, context, stage, scope, or
+    strengthened effect as applicable;
+  * verify exceptions and checker failures do not reject candidates;
+  * run targeted tests and independent replay of the concrete effect;
+  * record rollback and observability.
+
+For rejectors, actual rejection must be a subset of theorem-proven rejection.
+For constructors, every emitted witness must lie in the proven-valid set. For an
+exact checker, accepted objects must equal the named feasible set.
+
+C2 can yield NO_EFFECT even when C1 semantic correctness succeeds.
+
+C3: certification-side integration candidate
+---------------------------------------------
+C2 plus all current project checks required by the modified surface. Determine
+the exact commands from PROJECT_LOCK.md, docs/CERTIFICATION.md,
+docs/AGENT_OPERATIONS.md, source pins, and the packet's consumer contract.
+Typical obligations include:
+
+  targeted pytest with an isolated basetemp
+  relevant independent checker and replay
+  ruff and mypy for affected strict targets
+  document / knowledge checks when governed documents change
+  source identity and frozen-artifact checks
+  full non-slow preflight
+  slow soundness lane when certification-bearing source is affected
+  clean-tree rerun of the final applicable gates
+
+Do not treat a skipped dependency, censored run, or unrelated green suite as
+coverage. Record every command, exit status, environment, and unrun obligation.
+
+A C3 success permits only the verdict CERTIFICATION_CANDIDATE for the packet's
+exact requested effect.
+
+C4: durable certification and publication
+-----------------------------------------
+C3 is not C4.
+
+C4 is performed only through the existing project authority chain. Depending on
+the object, it may require:
+
+  accepted current proof-bearing artifacts
+  exact campaign or fixed-witness terminal evidence
+  supervisor seal from disk-current state
+  explicit owner-only gate or decision
+  publisher transaction and post-write replay
+  ledger and delivery updates through their authorized writers
+
+The certification tree cannot declare C4 complete from its own review. It can
+prepare inputs, execute an existing authorized entrypoint when explicitly
+requested, and report the resulting machine/owner outcome.
+
+Review output discipline
+------------------------
+Every final review separates:
+
+  semantic_correctness
+  transport_or_lowering_correctness
+  capability_admission
+  utility_evidence
+  authority_handoff_status
+
+Use typed outcomes. Do not collapse them into a single PASS score.
+
+Raw output discipline
+---------------------
+Logs, reproduced large artifacts, temporary environments, solver output, and
+scratch data belong under certification_lab/local/. Durable packet, review,
+checker, test, or implementation source belongs in Git with exact pathspecs.
+
+Local overlay discipline
+------------------------
+AGENTS.md and CLAUDE.md are local, untracked worktree overlays. Their canonical
+bytes are certification_lab/AGENT_OVERLAY.txt. Reinstall with:
+
+  /home/zhuran24/zmd-pj/.venv/bin/python \
+    devtools/certification_tree.py install-overlay
+
+The tree check fails if either overlay is absent, tracked, or byte-different.

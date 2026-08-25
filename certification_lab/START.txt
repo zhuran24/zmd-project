@@ -1,0 +1,104 @@
+ZMD CERTIFICATION TREE: COLD START
+==================================
+
+Run first:
+
+  /home/zhuran24/zmd-pj/.venv/bin/python devtools/certification_tree.py enter
+
+A healthy entry reports:
+
+  mode             = certification
+  branch           = certification/main
+  history tree     = /home/zhuran24/zmd-pj, branch main
+  research tree    = /home/zhuran24/.devspace/worktrees/zmd-pj-983df854,
+                     branch research/main
+  active packet    = the value in certification_lab/MODE.txt
+
+Read order
+----------
+Every session:
+
+  1. certification_lab/STATE.txt
+  2. the active packet printed by the entry tool, when one exists
+
+First entry or architecture work:
+
+  3. certification_lab/CHARTER.txt
+  4. certification_lab/ARCHITECTURE.txt
+  5. certification_lab/CHECKS.txt
+
+For an admitted packet, then read:
+
+  6. PROJECT_LOCK.md and docs/CERTIFICATION.md
+  7. the current machine authority and exact consumer contract relevant to the
+     packet's requested effect
+  8. only the historical or research evidence needed to independently test the
+     frozen claim
+
+Do not begin with the research conversation or a broad tour of its worktree. The
+packet is the candidate object; research narrative is non-authoritative context.
+
+Session orientation
+-------------------
+Before reviewing, state:
+
+  "CERTIFICATION mode: I am independently reviewing <packet-id> for
+   <requested-effect>; this session cannot self-grant certification, U/L, owner
+   approval, durable seal, or publication."
+
+When active_packet=NONE, state that the tree is idle. Do not manufacture an
+assignment by browsing the research branch for something promising.
+
+Review posture
+--------------
+Keep these questions separate:
+
+  semantic correctness
+    Is the claim true under its stated premises and object space?
+
+  transport / lowering correctness
+    Does the concrete runtime effect reject, accept, construct, or update exactly
+    what the claim permits?
+
+  capability admission
+    Is this consumer allowed to create that effect in the current project state?
+
+  utility evidence
+    Does the admitted effect actually move a named frontier or reduce an
+    expensive residual cost?
+
+A pass on one axis does not pass another.
+
+Where work goes
+---------------
+  frozen incoming packet:
+      certification_lab/inbox/<packet-id>/
+
+  independent review, findings, and verdict:
+      certification_lab/reviews/<packet-id>/
+
+  temporary checkout, solver output, logs, caches, reproduced large artifacts:
+      certification_lab/local/
+
+  certification-side implementation:
+      the normal project path in this branch, with the packet and review naming
+      the exact commits and effect
+
+Before committing
+-----------------
+  * Recheck branch and mode with the entry tool.
+  * Do not stage AGENTS.md or CLAUDE.md; they are local overlays rebuilt from
+    certification_lab/AGENT_OVERLAY.txt.
+  * Stage only one coherent intake, finding set, hardening unit, or verdict.
+  * Do not change a packet in place after admission.
+  * Keep raw output under certification_lab/local/.
+  * Use the validation level in CHECKS.txt that matches the requested effect.
+
+Tree boundaries
+---------------
+The history and research worktrees are read-only sources from this tree. Never
+write results back to them. Import immutable commits, diffs, or packet bytes into
+certification/main.
+
+The branch name is not authority. Durable certification and publication remain
+inside the existing project seal, owner-gate, and publisher chain.

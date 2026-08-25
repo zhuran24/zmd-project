@@ -1,0 +1,107 @@
+ZMD CERTIFICATION PACKET
+========================
+
+Packet identity
+---------------
+packet_id:
+created_at:
+producer:
+research_branch:
+research_commit:
+research_parent:
+source_clean_state:
+packet_manifest_path:
+packet_manifest_sha256:
+
+Claim
+-----
+claim_id:
+claim:
+object_space:
+binders_and_quantifiers:
+premises:
+conclusion:
+
+Requested use
+-------------
+requested_effect:
+consumer_stage:
+consumer_module_or_sink:
+transport_or_lowering:
+claim_channel_or_ledger:
+
+Context identity
+----------------
+problem_identity:
+objective_identity:
+rules_identity:
+context_identity:
+runtime_environment_identity:
+external_artifact_identities:
+
+Evidence
+--------
+evidence_manifest:
+primary_witness_or_certificate:
+source_code_or_patch_identity:
+research_result_identity:
+
+Reproduction
+------------
+interpreter:
+working_directory:
+commands:
+environment:
+seed_workers_timeout:
+expected_outputs:
+outcome_interpretation:
+
+Independent review surface
+--------------------------
+what_must_be_reconstructed:
+known_shared_failure_modes:
+preferred_independent_method:
+
+Controls and attacks
+--------------------
+positive_controls:
+negative_controls:
+adversarial_mutations:
+counterexample_search_already_run:
+unsearched_domain:
+
+Boundaries
+----------
+known_unknowns:
+non_implications:
+failure_action:
+rollback:
+
+Utility
+-------
+named_frontier_or_residual:
+baseline:
+utility_hypothesis:
+measurement_contract:
+
+Producer self-check
+-------------------
+packet_manifest_verified:
+source_commits_available:
+all_bearing_inputs_hash_pinned:
+mutable_local_dependency_absent:
+claim_frozen:
+requested_effect_single_and_concrete:
+non_implications_complete:
+
+Certification intake fields
+---------------------------
+certification_baseline_commit:
+received_at:
+intake_manifest_sha256:
+admission_outcome:
+admission_findings:
+
+The packet must not contain a prewritten certification verdict. Research may
+state its expected result, but the certification review is independently written
+under certification_lab/reviews/<packet-id>/.

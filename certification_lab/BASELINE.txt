@@ -1,0 +1,62 @@
+ZMD CERTIFICATION TREE BASELINE
+===============================
+
+Certification integration branch
+--------------------------------
+branch: certification/main
+created_from_commit: ede4fa4b883d0aa965141700d2475af1b96817c8
+created_on: 2026-08-25
+
+The certification worktree was created from the committed main-tree snapshot.
+Dirty working-tree changes and most local or regenerable artifacts in the old
+main worktree were not copied.
+
+Tree identities
+---------------
+history_material_tree: /home/zhuran24/zmd-pj
+history_branch: main
+history_role: preserve prior Git history, tracked project material, local large
+              evidence, and the shared project Python environment
+history_write_policy: read-only from certification sessions
+
+research_tree: /home/zhuran24/.devspace/worktrees/zmd-pj-983df854
+research_branch: research/main
+research_head_observed_at_creation: b97361de162bcc2384b517df456c95019833f4e9
+research_role: candidate producer only
+research_write_policy: read-only from certification sessions
+
+certification_tree: this worktree
+certification_branch: certification/main
+certification_role: packet intake, independent review, semantics-preserving
+                    integration, and authority handoff preparation
+
+Runtime dependencies
+--------------------
+project_python: /home/zhuran24/zmd-pj/.venv/bin/python
+candidate_placements_source:
+  /home/zhuran24/zmd-pj/data/preprocessed/candidate_placements.json
+
+The certification worktree intentionally does not duplicate the virtual
+environment or large external candidate-placement artifact. Any review that
+consumes external bytes must record and verify their identities. A path alone is
+not a frozen input.
+
+Baseline refresh rule
+---------------------
+The certification tree does not automatically merge history/main or research/main.
+A baseline refresh is a separate certification commit and records:
+
+  source tree and exact commit
+  selected paths or commits
+  named packet or certification reason
+  semantic, authority, and source-pin consequences
+  conflicts or assumptions introduced
+  required tests, replay, and reseal consequences
+
+Do not hide a baseline refresh inside a packet verdict or implementation commit.
+
+Packet import rule
+------------------
+A research packet names exact research commits, diffs, and evidence hashes. The
+certification review imports those frozen objects; it does not review whatever
+bytes happen to be present at the mutable research worktree path later.

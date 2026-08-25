@@ -1,0 +1,57 @@
+ZMD CERTIFICATION WORKTREE STATE
+================================
+
+Updated: 2026-08-25
+Branch: certification/main
+Mode: CERTIFICATION
+Active packet: NONE
+Review stage: IDLE
+
+Current position
+----------------
+The certification worktree has been created from the committed historical main
+baseline. It is separate from both the history/material tree and research tree.
+No research candidate has been admitted, reviewed, or promoted in this tree.
+
+Current authority status
+------------------------
+The tree architecture itself grants no mathematical, production, owner, seal,
+ledger, U/L, or publication effect. Existing project authority remains in
+PROJECT_LOCK.md, machine sources, supervisor seal, owner decisions, and the
+publisher chain.
+
+Live question
+-------------
+No active packet. Remain idle until a frozen packet is explicitly submitted from
+research/main or by the owner. Do not select a candidate by browsing research
+history.
+
+Baseline
+--------
+Certification branch base:
+  ede4fa4b883d0aa965141700d2475af1b96817c8
+
+History/material tree:
+  /home/zhuran24/zmd-pj
+  branch main
+
+Research tree at certification-tree creation:
+  /home/zhuran24/.devspace/worktrees/zmd-pj-983df854
+  branch research/main
+  observed head b97361de162bcc2384b517df456c95019833f4e9
+
+Tree readiness
+--------------
+The certification tree is ready when its structural checker passes from a clean
+commit, local overlays match the tracked template, runtime output is ignored,
+and the three tree roles are distinct.
+
+Orientation guards
+------------------
+* A packet is required before review begins.
+* Research and history trees are read-only from this tree.
+* Packet semantics cannot change during the same review.
+* Certification-side hardening must preserve the frozen claim and requested
+  effect or trigger a new packet.
+* CERTIFICATION_CANDIDATE is not durable CERTIFIED.
+* No checker or branch name substitutes for owner, seal, or publisher authority.
