@@ -1187,6 +1187,45 @@ evidence:
   optimum-face audit sha256
   430f1435ee9da4e8838146cc249705f12da37f0633674a72b11b5e0005858e41.
 
+R-ZC-042  A bounded five-footprint assignment neighborhood improves 163 -> 161
+--------------------------------------------------------------------------------
+status: three exact same-size operation-permutation neighborhoods plus face audit
+scope: fixed E030 occupied geometry and fully materialized objective-163 endpoint
+
+statement:
+  E031 selects five current footprints independently in the 3x3, 5x5, and 6x4
+  manufacturing classes by exact residual-boundary coverage and operation
+  diversity. After quotienting only byte-equivalent mandatory operation groups,
+  it exhausts 97 non-identity semantic assignments. Seventy-seven reach OPTIMAL
+  shared bindings and 20 empty an owner domain. The 3x3 arm reaches objective 161
+  through two distinct assignment states; 5x5 and 6x4 bottom out at 165 and 164.
+  The best objective-161 face varies only blue_iron_ore/source_ore with fixed sum
+  15, while all 19 commodities remain positive and routing is not reached.
+
+non-implications:
+  The result does not exhaust all operation assignments, prove either 161 state
+  necessary, establish component compatibility, or produce a routing witness.
+  Equal objective does not prove equal continuation: one 161 state is a pair
+  exchange and the other is a three-way reassignment with different placement and
+  binding-selection identities.
+
+effect on next problem:
+  Retain both objective-161 3x3 states as a small assignment beam. Materialize the
+  second endpoint and compare their residual action surfaces before choosing any
+  further neighborhood. If bounded assignment gains saturate while all commodity
+  mismatches remain positive, operation-assignment and binding variables must
+  cohabit directly.
+
+evidence:
+  E031 RESULT.txt; local RESULT.json sha256
+  a6efad78e382133b0b5b2492bbb048e6e15726294ec3940c0a777bceecd791b2;
+  assignment-record manifest sha256
+  6ad352c8dc8d395124fe9bf4b30f744a7c4f8dbc6fcbb1e5f6cdaa8d0087e88f;
+  materialized endpoint sha256
+  f300d618089f92fad5b55044204c4946a911702db32334714f49a0a952703087;
+  optimum-face audit sha256
+  058d10cbc3c65a4276318018699eae6496d5e7d6e8531aae7c8bf43ea0971f50.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

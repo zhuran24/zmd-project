@@ -141,7 +141,12 @@ probes and the first checked feedback replay now show a causal progression:
   * E030 proves the assignment layer is reusable: all twelve swaps pass static
     domains and reach OPTIMAL shared bindings with objectives 163-169. The best
     swaps crusher_blue_iron pose 2105 with refinery_steel pose 2947, lowering
-    166 -> 163 while the free-cell set remains identical.
+    166 -> 163 while the free-cell set remains identical;
+  * E031 replaces pair-by-pair guidance with three exact five-footprint assignment
+    neighborhoods. Ninety-seven non-identity permutations yield 77 OPTIMAL shared
+    bindings. The 3x3 arm reaches 161 through two distinct assignments, while 5x5
+    and 6x4 bottom out at 165 and 164. The best face lowers the ore-pair sum to 15
+    and all 19 commodities remain positive.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -149,10 +154,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Which bounded multi-footprint operation-assignment neighborhood should be built
-around the fully materialized objective-163 child, and can joint permutation of
-that neighborhood produce further exact gains without returning to a greedy
-pair-swap chain?
+Do the two distinct objective-161 3x3 assignment states expose different residual
+action surfaces or continuation domains, and does either justify another bounded
+assignment neighborhood before operation-assignment and binding variables must
+cohabit directly?
 
 Current campaign posture
 ------------------------
@@ -306,12 +311,19 @@ wins at 163. Boundary incidence can generate a finite portfolio but cannot rank
 it. The objective-163 optimum face still varies only the ore pair at fixed sum 16;
 blue_iron_block -1 and steel_block -2 are the structural gain.
 
-The next step does not continue one pair at a time. It rebuilds the 163 residual
-surface, selects a bounded set of same-type footprints from exact response and
-residual incidence, and permits their operations to permute jointly. One shared
-binding objective ranks complete assignments. Distinct equal-score assignments
-remain a beam; saturation with all commodities positive moves operation assignment
-and binding variables into one cohabiting model. A zero state enters routing.
+E031 now validates a bounded multi-footprint assignment neighborhood. The selected
+3x3, 5x5, and 6x4 neighborhoods contain 59, 19, and 19 non-identity assignments.
+Only the 3x3 arm improves the parent, reaching 161 twice. One optimum is a pair
+exchange; the other is a three-way reassignment with a different binding endpoint.
+The best audited face keeps only the ore-pair exchange and lowers its fixed sum to
+15. Equal score is therefore another live state split, not permission to retain
+one arbitrary witness.
+
+The next step materializes the second 161 endpoint and compares both residual
+action surfaces and exact continuation domains. A measured difference retains a
+small assignment beam. If both bounded surfaces saturate while every commodity
+remains positive, operation-assignment and binding variables enter one cohabiting
+model. A zero state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

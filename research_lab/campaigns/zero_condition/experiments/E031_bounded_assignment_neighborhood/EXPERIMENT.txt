@@ -1,0 +1,89 @@
+EXPERIMENT E031: bounded multi-footprint operation-assignment neighborhoods
+=========================================================================
+
+Question
+--------
+Can joint operation assignment across several fixed footprints reduce the exact
+shared component mismatch beyond the objective-163 pair-swap child, without
+returning to a hand-selected sequence of one swap at a time?
+
+Why this is the next object
+---------------------------
+E028 and E030 prove that operation-to-footprint assignment changes binding quality
+while occupied geometry, power coverage, and the free-cell graph remain fixed.
+E030 also shows that boundary coverage proposes useful swap candidates but cannot
+rank their continuation value.
+
+The next honest unit is therefore not another manually chosen pair. It is a
+bounded assignment neighborhood in which several current footprints of one size
+class are selected together and the complete operation multiset is permuted over
+them.
+
+Neighborhood selection
+----------------------
+E031 reconstructs the fully materialized objective-163 endpoint and its 163 exact
+mismatch-component observations. For each manufacturing size class it selects
+five current footprint literals by exact maximum residual-boundary coverage, then
+breaks ties by operation diversity and a stable literal order:
+
+  manufacturing_3x3
+  manufacturing_5x5
+  manufacturing_6x4
+
+Selection chooses the neighborhood only. It does not rank assignments inside it.
+
+Assignment semantics
+--------------------
+Within each five-footprint neighborhood, E031 enumerates every distinct
+operation-label permutation while preserving the current operation multiset.
+Instances of the same operation are quotiented only after checking that their
+mandatory metadata and generic-I/O obligations are identical. A canonical named
+instance realization is used for each semantic permutation.
+
+Every child must preserve:
+
+  the exact occupied-cell set
+  mandatory instance count
+  operation multiplicities
+  selected power poles and exact power coverage
+
+Evaluation
+----------
+Each non-identity assignment is evaluated through the ordered interface:
+
+  static owner-domain feasibility
+  aggregate binding resources and terminal uniqueness
+  one exact shared component-mismatch optimum over all 19 commodities
+  exact routing immediately if the shared objective reaches zero
+
+The best endpoint is fully materialized with its binding selection, port specs,
+selected components, and mismatch boundaries.
+
+Competing readings
+------------------
+A. One bounded neighborhood produces a material gain. Operation assignment is a
+   reusable constructive solver layer, and the improved state remains live.
+
+B. Several assignments tie or different size classes lead. Retain a small beam of
+   assignment states rather than canonizing one permutation.
+
+C. All neighborhoods are weak, equal, or statically dead. Explicit permutation
+   has saturated, so operation-assignment and binding variables must cohabit in
+   one model.
+
+D. A child reaches zero mismatch. Send it directly to exact routing.
+
+Truth boundary
+--------------
+The experiment is exhaustive only for three five-footprint neighborhoods selected
+from one objective-163 endpoint. It does not exhaust all operation assignments,
+prove a global lower bound, or certify a whole layout. Coverage is a neighborhood
+selector, not a value theorem.
+
+Result
+------
+Completed with verdict BOUNDED_ASSIGNMENT_MATERIAL_IMPROVEMENT. E031 evaluates
+97 non-identity assignments across three exact five-footprint neighborhoods.
+The 3x3 arm reaches objective 161 through two distinct operation assignments;
+5x5 and 6x4 bottom out at 165 and 164. All 19 commodities remain positive and
+exact routing is not reached. See RESULT.txt.

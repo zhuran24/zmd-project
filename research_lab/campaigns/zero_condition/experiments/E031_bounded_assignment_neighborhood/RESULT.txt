@@ -1,0 +1,179 @@
+E031 RESULT: BOUNDED MULTI-FOOTPRINT ASSIGNMENT IMPROVES TO 161
+================================================================
+
+Status
+------
+Completed as research-only exact assignment-neighborhood evidence. No
+component-compatible binding, exact routing, whole-layout witness, certification,
+U/L, owner, or publication effect.
+
+Frozen results
+--------------
+Main result:
+  research_lab/local/zero_condition/E031_bounded_assignment_neighborhood/run-001/RESULT.json
+
+SHA-256:
+  a6efad78e382133b0b5b2492bbb048e6e15726294ec3940c0a777bceecd791b2
+
+Assignment records:
+  research_lab/local/zero_condition/E031_bounded_assignment_neighborhood/run-001/ASSIGNMENT_RECORDS.json
+
+SHA-256:
+  6ad352c8dc8d395124fe9bf4b30f744a7c4f8dbc6fcbb1e5f6cdaa8d0087e88f
+
+Verdict:
+  BOUNDED_ASSIGNMENT_MATERIAL_IMPROVEMENT
+
+Neighborhood construction
+-------------------------
+E031 reconstructs the fully materialized objective-163 endpoint and selects five
+current footprints independently inside each manufacturing size class. Selection
+is exact and hierarchical: maximize residual mismatch-boundary coverage, maximize
+operation diversity at that coverage, then apply a stable literal tie-break.
+
+The resulting neighborhoods are:
+
+  type                 coverage     operation diversity     semantic assignments
+  manufacturing_3x3     54 / 163              4                    60
+  manufacturing_5x5     57 / 163              3                    20
+  manufacturing_6x4     56 / 163              3                    20
+
+The identity assignment is omitted, leaving 97 non-identity candidates. Ten
+mandatory operation groups are quotiented only after their metadata and generic-
+I/O obligations are checked byte-equivalent across all group members.
+
+Exact response
+--------------
+Every candidate preserves the occupied-cell set and exact power coverage. The
+ordered interface returns:
+
+  OPTIMAL             77
+  PORT_DOMAIN_EMPTY   20
+
+The complete objective distribution over the 77 exact shared-binding children is:
+
+  objective 161     2
+  objective 162     1
+  objective 163     8
+  objective 164    11
+  objective 165    23
+  objective 166    12
+  objective 167    16
+  objective 168     1
+  objective 169     3
+
+Per-size response
+-----------------
+The three size classes behave differently:
+
+  manufacturing_3x3
+    47 OPTIMAL, 12 PORT_DOMAIN_EMPTY
+    best objective 161, delta -2
+
+  manufacturing_5x5
+    11 OPTIMAL, 8 PORT_DOMAIN_EMPTY
+    best objective 165, delta +2
+
+  manufacturing_6x4
+    19 OPTIMAL, 0 PORT_DOMAIN_EMPTY
+    best objective 164, delta +1
+
+Thus the current useful assignment freedom is concentrated in the selected 3x3
+operation family. High residual coverage in the 5x5 and 6x4 neighborhoods does
+not imply positive continuation value.
+
+Two distinct objective-161 states
+---------------------------------
+Two different 3x3 assignments reach objective 161.
+
+The materialized winner assigns, in selected-footprint order:
+
+  crusher_sandleaf
+  crusher_source
+  refinery_steel
+  refinery_blue_iron
+  refinery_blue_iron
+
+Relative to the parent, this exchanges refinery_blue_iron at pose 5295 with
+refinery_steel at pose 2963 while the other selected footprints retain their
+operations.
+
+A second state reaches the same objective with a different placement and binding
+selection:
+
+  crusher_sandleaf
+  refinery_blue_iron
+  refinery_steel
+  refinery_blue_iron
+  crusher_source
+
+It forms a three-way reassignment among the crusher-source, refinery-blue-iron,
+and refinery-steel footprints. The two states have different placement and
+binding-selection digests. Objective equality therefore does not justify
+collapsing them before their residual action surfaces are compared.
+
+Best endpoint
+-------------
+The materialized best endpoint changes the exact shared objective:
+
+  163 -> 161
+
+Its fixed occupied geometry remains unchanged:
+
+  free cells                  1144
+  free components               79
+  largest free component       479
+  free adjacency               1160
+  free-cell digest
+    341f75af121780e04a913a7bd135db7970f670c7dd15fd211581f843a0deafff
+
+All 19 commodities remain positive. The materialized endpoint is:
+
+  research_lab/local/zero_condition/E031_bounded_assignment_neighborhood/run-001/BEST_ENDPOINT.json
+
+SHA-256:
+  f300d618089f92fad5b55044204c4946a911702db32334714f49a0a952703087
+
+Optimum-face audit
+------------------
+The objective-161 face varies only:
+
+  blue_iron_ore    6..10
+  source_ore       5..9
+  fixed sum           15
+
+All other 17 commodity mismatch values are fixed. Relative to the objective-163
+parent face, the structural improvement is:
+
+  blue_iron_block          -1
+  dense_blue_iron_powder   -1
+  ore-pair fixed sum       16 -> 15
+  steel_block              +1
+
+Audit SHA-256:
+
+  058d10cbc3c65a4276318018699eae6496d5e7d6e8531aae7c8bf43ea0971f50
+
+Architecture effect
+-------------------
+The experiment replaces manual pair-by-pair construction with an exact bounded
+operation-assignment neighborhood. The neighborhood selector, static domain gate,
+and exact shared-binding consumer remain separate.
+
+The result also produces a genuine assignment-state fork: one pair exchange and
+one three-way reassignment have equal exact value but distinct witnesses. The
+outer loop must preserve both until measured continuation proves them equivalent.
+
+Decision effect
+---------------
+Retain both objective-161 3x3 states as a small assignment beam. Materialize the
+second endpoint, reconstruct both residual action surfaces, and compare their
+next operation-assignment domains. If their continuation differs, retain the
+split. If both bounded assignment surfaces saturate while all commodities remain
+positive, move operation-assignment and binding variables into one joint model.
+
+Truth boundary
+--------------
+E031 is exhaustive only for three selected five-footprint neighborhoods under one
+fixed objective-163 occupied geometry. Objective 161 is not a global no-ghost
+bound, component-compatible binding, routing witness, or whole-layout result.
