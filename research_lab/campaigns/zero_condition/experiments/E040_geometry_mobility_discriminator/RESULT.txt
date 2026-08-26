@@ -1,0 +1,188 @@
+E040 RESULT: PORT MODE IS A DISTINCT INNER LAYER; FIXED-OUTSIDE GEOMETRY IS ONLY MARGINALLY USEFUL
+=================================================================================================
+
+Status
+------
+Completed as research-only exact mobility evidence. No component-compatible
+binding, exact routing, whole-layout witness, certification, U/L, owner, or
+publication effect.
+
+Frozen results
+--------------
+Main result:
+  research_lab/local/zero_condition/E040_geometry_mobility_discriminator/run-002/RESULT.json
+
+SHA-256:
+  d6031ef825363173b1ec51aebbcd69eb46a0d00cf76aef3dd7a1d69e6c5c9b3e
+
+Arm manifest:
+  research_lab/local/zero_condition/E040_geometry_mobility_discriminator/run-002/ARM_MANIFEST.json
+
+SHA-256:
+  44e11af724caaa1171e289c68bcdaa200cb4ed0f65ae61392a94cf1a3a05bc1e
+
+Verdict recorded by the runner:
+  CAUSAL_GEOMETRY_MATERIAL_SIGNAL
+
+Refined interpretation:
+  SAME_FOOTPRINT_PORT_MODE_MATERIAL_SIGNAL;
+  FIXED_OUTSIDE_BODY_GEOMETRY_UNARY_SATURATION_SIGNAL.
+
+Causal portfolio and exact mobility
+-----------------------------------
+E040 reconstructs 157 exact mismatch-component observations from the fully
+materialized E039 endpoint. Among 315 current boundary literals, 268 are admitted
+as movable mandatory-group or optional-pose targets. The exact budget-16 coverage
+problem selects sixteen current literals touching 136/157 observations, or 86.6%.
+
+Every selected target's placement- and power-valid fixed-outside pose domain is
+then exhausted. Across 328 candidates:
+
+  OPTIMAL            152
+  PORT_DOMAIN_EMPTY  175
+  INFEASIBLE           1
+
+The exact shared-objective distribution ranges from 154 to 171. All retained
+objectives remain positive for every one of the 19 commodities, so exact routing
+is not reached.
+
+The best child does not move occupied geometry
+----------------------------------------------
+The best action changes planter_sandleaf_020 from:
+
+  pose 9653  p_x37_y41_o0_m_LR
+
+to:
+
+  pose 9650  p_x37_y41_o0_m_TB
+
+Both poses occupy the same 5x5 body cells. The free-cell set, component census,
+largest component, and free adjacency are byte-identical to E039:
+
+  free cells             1144
+  free components          79
+  largest component       479
+  free adjacency         1160
+  free-cell digest
+    341f75af121780e04a913a7bd135db7970f670c7dd15fd211581f843a0deafff
+
+Only the pose's port mode changes. The exact shared mismatch objective improves:
+
+  157 -> 154
+
+The direct endpoint vector changes:
+
+  blue_iron_ore   -1
+  source_ore      +1
+  sandleaf        -1
+  sandleaf_seed   -2
+
+The independent optimum-face audit proves that blue_iron_ore/source_ore still
+exchange over a four-unit range with fixed sum 15. The structural gain is therefore:
+
+  sandleaf        -1
+  sandleaf_seed   -2
+
+Optimum-face audit SHA-256:
+
+  7acb5f0f6060c0e46e20a9201c55109752c9adc3824ecdb001ae15a49e373c16
+
+Other same-footprint signals
+----------------------------
+The portfolio contains additional exact same-body improvements:
+
+  planter_buckwheat pose 11045 -> 11042    157 -> 155
+  grinder_dense_blue_iron pose 6643 -> 6642
+                                              157 -> 155
+  grinder_dense_blue_iron pose 7586 -> 7587
+                                              157 -> 156
+
+These are not body relocations. They change native pose/port semantics while
+preserving occupied geometry.
+
+Actual body relocation is only marginal in this fixed-outside test
+-------------------------------------------------------------------
+The best occupied-geometry-changing candidates move crusher_sandleaf_003 from pose
+2155 to pose 5342 or 5343 and reach only:
+
+  157 -> 156
+
+That one-unit gain is below the predeclared material threshold. The selected power
+pole with 96 exact alternatives never improves below 157, and another selected
+pole has no placement/power-valid fixed-outside alternative.
+
+Therefore E040 does not support continuing a greedy body-relocation lineage. It
+supports a bounded simultaneous geometry neighborhood later, but only after the
+stronger same-footprint port-mode freedom is represented faithfully.
+
+Hidden partition error
+----------------------
+E039 was correctly exact for its declared fixed-pose model, but its narrative
+called that state "fixed geometry." E040 proves that phrase was too coarse. A pose
+contains at least two logically separate objects:
+
+  body footprint / occupied cells
+  port mode / terminal semantics
+
+E039 fixed both. Its saturation claim therefore means:
+
+  operation assignment + binding are saturated on the frozen current poses,
+
+not:
+
+  every fixed-body operation/port configuration is saturated.
+
+This distinction matters because the strongest new improvement changes only the
+second object.
+
+Architecture effect
+-------------------
+The problem-derived inner order is now:
+
+  occupied body geometry
+    -> pose / port-mode choice
+    -> operation-to-footprint assignment
+    -> aggregate binding resources and terminal uniqueness
+    -> component-aware binding
+    -> exact simultaneous routing
+
+Port mode and operation assignment share the same conditional binding owners and
+must cohabit with binding. They should not be emitted as complete outer-loop
+actions one at a time.
+
+Decision effect
+---------------
+Retain the objective-154 endpoint as the leading construction seed. Build a
+bounded fixed-body joint model that allows same-footprint pose modes, operation
+assignment, and binding to cohabit. Admit the E039 objective-157 endpoint and the
+E040 objective-154 endpoint as calibration witnesses.
+
+Use E040's actual-mobility atlas to reserve a later simultaneous body-geometry
+neighborhood. Do not call another same-footprint mode change a geometry move, and
+do not resume an unbounded unary pose-mode climb. Objective zero enters exact
+routing immediately.
+
+Truth boundary
+--------------
+E040 exhausts fixed-outside alternatives only for sixteen exact residual-selected
+current literals under one objective-157 parent. The selected set is a proposer,
+not a necessary family. Objective 154 is not a global fixed-body optimum,
+component-compatible binding, routing witness, lower bound, or certified claim.
+
+Execution note
+--------------
+Run-001 failed before model construction because the draft runner pinned the
+pre-final E039 runner hash. Run-002 pins the committed E039 bytes and also repairs
+two draft-only source defects: a missing E004 runner reference and an unused local
+variable. The failed launch produced no solver result and has no scientific effect.
+
+Frozen artifact identities
+--------------------------
+Best assignment:
+  f4d2a3a90ffa40fd937776702344fa513a49bcb496d86732cf04407c556f247f
+
+Best layout:
+  c2b43a72c9afe9dc529c4d3fa8cbc42db73190b3a8892cbdff4dd333d51717eb
+
+Best endpoint:
+  d700a6bdcf62e1f611d421ad6e71a1e99e46eff0f0d5958ac8657e3dbc71ea42

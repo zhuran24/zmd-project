@@ -1,0 +1,81 @@
+EXPERIMENT E040: RESIDUAL-CAUSAL GEOMETRY MOBILITY DISCRIMINATOR
+================================================================
+
+Question
+--------
+After fixed-geometry assignment and binding saturate at 157, which current
+facility poses both touch a large share of residual mismatch components and have
+an exact placement/power-valid geometry action whose shared binding value is
+actually useful?
+
+Why this experiment
+-------------------
+E039 proves that the frozen merged assignment context cannot improve below 157 on
+its occupied geometry. The next freedom must change geometry, but boundary
+incidence alone has repeatedly failed as a value function. E040 therefore uses
+incidence only to freeze a finite target portfolio, then exhausts each target's
+actual fixed-outside pose domain through the exact shared binding objective.
+
+Method
+------
+From the fully materialized E039 endpoint, E040 reconstructs all 157 mismatch-
+component observations and their current boundary literals. It restricts the
+candidate set to one-source mandatory group poses and optional poses that can be
+interpreted as movable facilities, then solves the exact budget-16 maximum-
+coverage problem.
+
+For every selected target, E040:
+
+  enumerates every non-overlapping, exact-power-valid fixed-outside pose
+  distinguishes same-footprint port-mode changes from occupied-geometry changes
+  evaluates every candidate with the ordinary static-domain, aggregate-binding,
+    terminal-uniqueness, and exact shared component-mismatch model
+  records PORT_DOMAIN_EMPTY separately from later binding outcomes
+
+Each target is checkpointed independently. The experiment may resume completed
+arms without changing their bytes.
+
+This is a single geometry discriminator, not permission to resume an unbounded
+serial-unary climb.
+
+Decision rule
+-------------
+Objective 0
+  Materialize the endpoint and enter exact routing immediately.
+
+Improvement of at least two units
+  Retain the best geometry child as a construction seed, but use the full mobility
+  atlas to build a simultaneous geometry neighborhood rather than selecting the
+  next unary move greedily.
+
+Improvement of one unit, equality, or harm
+  Do not retain a unary lineage. Select a simultaneous geometry neighborhood from
+  targets with real base-feasible mobility and complementary residual coverage.
+
+No OPTIMAL child
+  The budget-16 causal portfolio has no useful fixed-outside action. Broaden or
+  change the geometry representation instead of inventing another point cut.
+
+Truth boundary
+--------------
+E040 exhausts pose alternatives only for sixteen residual-selected current
+literals with every other facility and power pole fixed. Its coverage portfolio
+is a proposer, not a necessary set. A positive shared-mismatch gain is not a
+component-compatible binding, routing witness, lower bound, or certification
+artifact.
+
+Result
+------
+Completed in run-002. The sixteen-target portfolio exhausts 328 fixed-outside
+alternatives and returns 152 OPTIMAL shared bindings, 175 PORT_DOMAIN_EMPTY
+candidates, and one later INFEASIBLE candidate.
+
+The best result is 157 -> 154, but it is not a body relocation: planter_sandleaf
+pose 9653 changes to same-footprint pose 9650, preserving every occupied and free
+cell while changing port mode. The best actual body relocation reaches only 156.
+E040 therefore refines the next layer from generic "geometry" to joint
+same-footprint pose/port-mode + operation-assignment + binding, with simultaneous
+body geometry reserved for the subsequent discriminator.
+
+See RESULT.txt for frozen identities, the optimum-face audit, and the corrected
+truth boundary.

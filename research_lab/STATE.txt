@@ -162,9 +162,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Which bounded geometry neighborhood is selected by the objective-157 endpoint's
-residual causes and actual mobility, and can geometry, operation assignment, and
-binding cohabit faithfully enough to lower 157 or reach component compatibility?
+Can a bounded fixed-body model make pose/port mode, operation assignment, and
+binding cohabit faithfully, recalibrate the E039 objective-157 and E040
+objective-154 endpoints, and improve below 154 or reach component compatibility
+without external enumeration of complete pose-mode assignments?
 
 Current campaign posture
 ------------------------
@@ -379,13 +380,23 @@ assignments recalibrate exactly at 157 and 159.
 The free repaired model is OPTIMAL 157 and ordinary fixed-layout replay agrees.
 Its exact face varies only the ore pair at fixed sum 15; every other commodity is
 fixed and all 19 remain positive. The merged 3x3, 5x5, and merged 6x4 assignment
-context is therefore faithfully saturated on the current occupied geometry.
+context is therefore faithfully saturated on the current frozen poses. E040 shows
+that calling this "fixed geometry" was too coarse because pose identity also fixes
+port mode.
 
-The next object is no longer another assignment block. Rebuild the 157 residual
-boundary atlas, test actual pose mobility under the fixed outside geometry, and
-select a bounded geometry neighborhood by marginal causal coverage. Operation
-assignment and binding stay inside the faithful E039 extension while those
-geometry variables are released. A zero state enters routing immediately.
+E040 reconstructs all 157 residual mismatch observations, selects sixteen current
+literals covering 136 of them, and exhausts 328 fixed-outside pose alternatives.
+The best child reaches 154 by changing planter_sandleaf pose 9653 to same-footprint
+pose 9650. Every occupied and free cell is unchanged; the audited ore-pair sum
+remains 15, while sandleaf falls by one and sandleaf_seed by two. The best actual
+body relocation reaches only 156.
+
+The next object is therefore not yet a simultaneous body-geometry model. First
+separate body footprint from pose/port mode and extend the faithful conditional-
+owner model so port mode, operation assignment, and binding share one bounded
+fixed-body context. Use the E039 157 and E040 154 states as exact calibration
+witnesses. Actual body relocations remain available for a later simultaneous
+geometry neighborhood. A zero state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

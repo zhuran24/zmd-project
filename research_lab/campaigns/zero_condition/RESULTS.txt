@@ -1511,6 +1511,43 @@ evidence:
   conditional-owner helper sha256
   3f86dbc5f339c80566e7d95e02d75009cdd8f377db2d1364615c3f23058caa11.
 
+R-ZC-051  Port mode is a distinct inner layer, while unary body motion is marginal
+-----------------------------------------------------------------------------------
+status: exact budget-16 causal mobility portfolio plus optimum-face audit
+scope: E039 objective-157 endpoint under fixed-outside pose alternatives
+
+statement:
+  E040 selects sixteen current literals covering 136/157 mismatch observations
+  and exhausts 328 placement- and power-valid fixed-outside alternatives. It
+  obtains 152 OPTIMAL shared bindings, 175 PORT_DOMAIN_EMPTY results, and one
+  later INFEASIBLE result. The best child changes planter_sandleaf pose 9653 to
+  same-footprint pose 9650 and proves 157 -> 154 without changing one occupied or
+  free cell. Its audited ore-pair sum remains 15; the structural gain is sandleaf
+  -1 and sandleaf_seed -2. The best actual body relocation reaches only 156.
+
+non-implications:
+  Objective 154 is not a global fixed-body optimum, component-compatible binding,
+  routing witness, lower bound, or necessary pose choice. The budget-16 portfolio
+  is a proposer, and a one-unit geometry gain does not prove body relocation lacks
+  value in a simultaneous neighborhood.
+
+effect on next problem:
+  Refine the inner object from undifferentiated pose geometry into occupied body
+  footprint plus pose/port mode. Build a bounded fixed-body model in which port
+  mode, operation assignment, and binding cohabit; use the E039 157 and E040 154
+  endpoints as calibration witnesses. Reserve actual body relocations for a later
+  simultaneous geometry neighborhood rather than another unary climb.
+
+evidence:
+  E040 RESULT.txt; local RESULT.json sha256
+  d6031ef825363173b1ec51aebbcd69eb46a0d00cf76aef3dd7a1d69e6c5c9b3e;
+  arm manifest sha256
+  44e11af724caaa1171e289c68bcdaa200cb4ed0f65ae61392a94cf1a3a05bc1e;
+  materialized endpoint sha256
+  d700a6bdcf62e1f611d421ad6e71a1e99e46eff0f0d5958ac8657e3dbc71ea42;
+  optimum-face audit sha256
+  7acb5f0f6060c0e46e20a9201c55109752c9adc3824ecdb001ae15a49e373c16.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the
