@@ -162,10 +162,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Which body-response neighborhood is selected by the fully materialized
-objective-147 Seed A endpoint, and does the next singleton geometry remain
-material after joint middle-layer reoptimization or trigger a simultaneous
-body-pair neighborhood?
+Which of the two E044 ordinary-objective-146 body geometries becomes the true
+leader after exact geometry-conditioned joint port-mode, operation-assignment,
+and binding reoptimization, and does the joint response justify another
+singleton geometry or force a simultaneous body-pair neighborhood?
 
 Current campaign posture
 ------------------------
@@ -415,11 +415,21 @@ ledger by four.
 
 The fixed-assignment geometry ranking survives, but the three-unit and one-unit
 joint gains prove that geometry cannot be carried with a stale middle-layer value.
-Seed A's fully materialized 147 endpoint now replaces the E042 atlas. Rebuild its
-residual causes and actual body mobility, propose a finite next geometry set, and
-rank any admitted geometry with a fresh joint port-mode/assignment/binding solve.
-Marginal singleton continuation triggers a simultaneous body-pair neighborhood.
-A zero state enters routing immediately.
+Seed A's fully materialized 147 endpoint replaces the E042 atlas.
+
+E044 rebuilds the 147 residual and finds 261 current literals with actual body
+mobility. An exact budget-six portfolio covers 70/147 observations and produces
+44 OPTIMAL ordinary body children. After removing geometries that already carry
+joint values, two distinct new states are materialized at ordinary objective 146:
+a one-cell 5x5 planter move with 76 components and largest component 479, and the
+composition of the retained 6x4 move with an outside 3x3 relocation, also with 76
+components but largest component 520.
+
+The 146 values are proposals only. Both seeds now receive exact calibration and a
+fresh joint port-mode/assignment/binding solve. A strict joint winner becomes the
+next geometry state; a tied joint response retains a geometry beam; no joint gain
+triggers a simultaneous body-pair neighborhood. A zero state enters routing
+immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

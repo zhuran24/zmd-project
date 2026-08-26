@@ -1664,6 +1664,46 @@ evidence:
   optimum-face audits sha256
   b8d8ae52b178856f7d89606c5145d33d2bb3b83c14fee42e78da94d673bf0664.
 
+R-ZC-055  The 147 endpoint proposes two distinct ordinary-146 body geometries
+-------------------------------------------------------------------------------
+status: exact body census, budget-six portfolio, known-state filtering, seed materialization
+scope: E043 Seed A objective-147 endpoint under fixed-outside body relocations
+
+statement:
+  E044 reconstructs 147 residual observations and identifies 261 movable current
+  body literals. An exact budget-six portfolio covers 70/147 observations and
+  yields 44 OPTIMAL ordinary body children. After removing geometries already
+  carrying exact joint values, two distinct states are materialized at objective
+  146. Seed 1 moves planter_buckwheat pose 11045 -> 11046 and has 76 free
+  components with largest 479. Seed 2 composes the retained 6x4 move with
+  crusher_sandleaf pose 2155 -> 5342 and has 76 components with largest 520. All
+  19 commodities remain positive.
+
+non-implications:
+  The two 146 values are not geometry-conditioned joint values, component
+  compatibility, routing witnesses, lower bounds, or certified claims. The exact
+  budget-six portfolio is a proposer and does not exhaust singleton or pair body
+  geometry.
+
+effect on next problem:
+  Carry both materialized seeds into geometry-conditioned joint port-mode,
+  operation-assignment, and binding solves. Reproduce each frozen 146 endpoint
+  before freeing the middle layer. A strict joint winner becomes the next state;
+  a tie retains a geometry beam; no gain triggers a simultaneous body-pair
+  neighborhood.
+
+evidence:
+  E044 RESULT.txt; local RESULT.json sha256
+  d1329eb538618eaf42d4a90267dd336446ea33e458f29a47a5ab70d3c47ce9e1;
+  mobility census sha256
+  044cfcd2d608eea23a35ef00f2645821e8b66c7a17c886aedc7945f5fdc870e3;
+  arm manifest sha256
+  c8c49d7c4a4913b8dfece39b584e535792cc55d68058e096fd890a5b159112ca;
+  Seed 1 endpoint sha256
+  92436c89149d87e234e1d9168e9c0964a33b9c42f543290fb76a052ba2abe8d3;
+  Seed 2 endpoint sha256
+  561e465f2dcb8126f411e5e0f2c686f907860efcbc24ef1cfa8c32e9665d28ff.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

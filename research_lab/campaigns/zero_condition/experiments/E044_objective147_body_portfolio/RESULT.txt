@@ -1,0 +1,161 @@
+E044 RESULT: THE OBJECTIVE-147 ENDPOINT PROPOSES TWO NEW 146 BODY GEOMETRIES
+================================================================================
+
+Status
+------
+Completed as research-only geometry-proposal evidence. No geometry-conditioned
+joint reoptimization, component-compatible binding, exact routing, whole-layout
+witness, certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/E044_objective147_body_portfolio/run-001/RESULT.json
+
+SHA-256:
+  d1329eb538618eaf42d4a90267dd336446ea33e458f29a47a5ab70d3c47ce9e1
+
+Verdict:
+  OBJECTIVE147_BODY_SEEDS_PROPOSED
+
+Residual and mobility portfolio
+-------------------------------
+E044 reconstructs 147 mismatch-component observations and 315 current boundary
+literals from the fully materialized E043 Seed A endpoint. Of 268 admissible
+current literals, 261 expose at least one placement- and power-valid body
+relocation.
+
+The exact budget-six coverage portfolio touches:
+
+  70 / 147 observations    47.6%
+
+Its six complete fixed-outside action domains contain 164 body-relocation
+alternatives. Forty-four reach an OPTIMAL ordinary shared binding. Their objective
+distribution is:
+
+  146    4
+  147    1
+  148    1
+  150    5
+  151    5
+  152    5
+  153    4
+  154    5
+  155    4
+  156    2
+  157    1
+  158    2
+  159    3
+  160    2
+
+The original E041 geometry and the previously joint-valued E043 Seed B geometry
+are recognized by free-cell digest and removed from the new-seed ledger.
+
+Mobility census SHA-256:
+
+  044cfcd2d608eea23a35ef00f2645821e8b66c7a17c886aedc7945f5fdc870e3
+
+Arm manifest SHA-256:
+
+  c8c49d7c4a4913b8dfece39b584e535792cc55d68058e096fd890a5b159112ca
+
+Seed 1
+------
+The first new geometry moves planter_buckwheat_007 one cell down:
+
+  pose 11045  p_x42_y64_o0_m_LR
+    ->
+  pose 11046  p_x42_y65_o0_m_RL
+
+Its ordinary fixed-layout shared objective is:
+
+  147 -> 146
+
+The free partition changes:
+
+  free components        77 -> 76
+  largest component      479 -> 479
+  free adjacency        1159 -> 1160
+  free-cell digest
+    4c47b080f3686fefff5f4a3820e8bfefcaff692270579d219345a3a71b91da61
+
+Seed 1 endpoint SHA-256:
+
+  92436c89149d87e234e1d9168e9c0964a33b9c42f543290fb76a052ba2abe8d3
+
+Seed 2
+------
+The second distinct geometry moves crusher_sandleaf_003:
+
+  pose 2155  p_x08_y37_o0_m_BT
+    ->
+  pose 5342  p_x20_y30_o0_m_TB
+
+This is the same individual body geometry seen in E043 Seed B, but now composed
+with the already-retained 6x4 body move from Seed A. Its ordinary fixed-layout
+shared objective is also:
+
+  147 -> 146
+
+The free partition is:
+
+  free components          76
+  largest component       520
+  free adjacency         1158
+  free-cell digest
+    5733db8daaa44f0e80771a807d4f5ce851dd494ed2bc6c3c8373bffe0dea73a6
+
+Seed 2 endpoint SHA-256:
+
+  561e465f2dcb8126f411e5e0f2c686f907860efcbc24ef1cfa8c32e9665d28ff
+
+Interpretation
+--------------
+The two new geometries tie at ordinary objective 146 but have materially different
+free partitions and move different body classes. E043 already proved that fixed
+ordinary geometry scores can shift by several units once port mode, operation
+assignment, and binding are freed. The tie therefore has no final continuation
+meaning.
+
+Architecture effect
+-------------------
+E044 is a geometry proposer only. It performs:
+
+  residual cause
+    -> exact mobility
+    -> finite body portfolio
+    -> remove known geometry states
+    -> materialize distinct seeds
+
+The value consumer remains the geometry-conditioned joint middle layer established
+by E043.
+
+Decision effect
+---------------
+Carry both objective-146 seeds into exact geometry-conditioned joint solves. Each
+seed must reproduce its frozen ordinary endpoint before the middle layer is freed.
+A strict joint winner becomes the next geometry state; a tied joint response
+retains a geometry beam. If neither seed improves after joint reoptimization,
+stop singleton body proposals and construct a simultaneous body-pair
+neighborhood.
+
+Truth boundary
+--------------
+E044 exhausts fixed-outside alternatives only for one exact budget-six body target
+portfolio. Objectives 146 are ordinary fixed-layout proposer values, not joint
+geometry values, component compatibility, routing witnesses, lower bounds, or
+certified claims. All 19 commodity mismatch counts remain positive.
+
+Frozen seed identities
+----------------------
+Seed 1 assignment:
+  cccd2fbe9f45e91e313fda56b283516e7c2f09097bb99dd0d24107cd4c537a3e
+
+Seed 1 layout:
+  a63df816d935f1ec6eb72faa2fb66de825ab6ba89a70a40381322003189e8a85
+
+Seed 2 assignment:
+  bf6aae0efaa0de4d29b5e87acc40c9761b5584e0061d8de045720ab118100e86
+
+Seed 2 layout:
+  2c66a1fb82079b2f0a40a1fbd8d28923b62c3dce8b1f4b7edf92ec201e720365

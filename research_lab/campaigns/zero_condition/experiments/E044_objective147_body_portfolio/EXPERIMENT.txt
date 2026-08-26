@@ -1,0 +1,62 @@
+EXPERIMENT E044: OBJECTIVE-147 BODY-RESPONSE PORTFOLIO
+======================================================
+
+Question
+--------
+Which new occupied-body geometries are proposed by the fully materialized E043
+objective-147 endpoint after known reverse and previously joint-valued geometries
+are removed from the action ledger?
+
+Method
+------
+E044 rebuilds all 147 mismatch-component observations and current boundary
+literals. It performs a placement- and power-only mobility census, retains every
+current literal with an actual body-relocation alternative, and solves one exact
+budget-six maximum-coverage problem.
+
+The selected six targets cover 70/147 residual observations. Their complete
+fixed-outside pose domains are evaluated through static owner domains and the
+ordinary exact shared-binding objective. Same-footprint alternatives are ignored
+in this body portfolio.
+
+Geometry states already carrying exact joint values are not treated as new:
+
+  E041 original fixed-body geometry              joint value 152
+  E043 Seed B geometry                           joint value 150
+  current E043 Seed A geometry                   parent value 147
+
+The remaining candidates are ranked only as cheap geometry proposals. The two
+best distinct free-cell geometries are fully materialized for E045, where the
+joint port-mode/assignment/binding middle layer will be rebuilt and freed.
+
+Decision rule
+-------------
+Objective 0
+  Enter exact routing immediately.
+
+At least one new base-feasible geometry
+  Freeze the best two distinct geometry seeds and hand them to a geometry-
+  conditioned joint-middle portfolio.
+
+No new base-feasible geometry
+  Stop singleton geometry proposals and build a simultaneous body-pair
+  neighborhood around the 147 parent.
+
+Truth boundary
+--------------
+E044 exhausts fixed-outside alternatives only for one exact budget-six target
+portfolio. Its ordinary shared-binding values are proposers, not final geometry
+continuation values. The result does not prove component compatibility, reach
+routing, establish a lower bound, or grant certified effect.
+
+Result
+------
+Completed. The exact six-target body portfolio covers 70/147 observations and
+produces 44 OPTIMAL body candidates. After removing already joint-valued
+geometries, two distinct new seeds are materialized at ordinary objective 146:
+a one-cell 5x5 planter move and the composition of the retained 6x4 move with an
+outside 3x3 relocation.
+
+These 146 values are proposals only. Both seeds now pass to geometry-conditioned
+joint port-mode/assignment/binding reoptimization. See RESULT.txt for exact
+manifests and frozen seed identities.
