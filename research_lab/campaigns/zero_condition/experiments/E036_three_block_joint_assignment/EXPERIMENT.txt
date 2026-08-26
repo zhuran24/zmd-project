@@ -1,0 +1,68 @@
+EXPERIMENT E036: THREE-BLOCK JOINT ASSIGNMENT AND BINDING
+=========================================================
+
+Question
+--------
+Can a residual-selected five-footprint 5x5 operation-assignment block compose
+with the live 3x3+6x4 joint context, lowering exact objective 159 or reaching
+component zero while occupied geometry remains fixed?
+
+Trigger
+-------
+E035 proves OPTIMAL 159 after adding a residual-selected 6x4 assignment block to
+the exact-saturated 3x3 block. At the materialized 159 endpoint, those two blocks
+touch 96 of 159 mismatch observations. Exact five-footprint additions have
+marginal coverage +12 for 3x3, +29 for 5x5, and +21 for 6x4. The 5x5 block is
+therefore the next problem-derived context.
+
+Method
+------
+E036 rebuilds the exact 159 mismatch-boundary incidence. It selects five current
+5x5 footprints by:
+
+  maximum marginal coverage beyond the live 3x3+6x4 blocks
+  maximum operation diversity at that coverage
+  deterministic lexical tie-break
+
+The live 3x3 and 6x4 blocks remain assignment variables. The new 5x5 block joins
+them in the same PortBindingModel with conditional exact binding patterns,
+operation multiplicities, generic-I/O, duplicate-terminal constraints, and one
+shared all-commodity component objective. Complete assignments are not externally
+enumerated.
+
+Calibration
+-----------
+The expanded model must reproduce the E035 objective-159 parent when all three
+blocks are fixed. It also replays the older second objective-160 regression state
+to guard the alternate 3x3 assignment surface.
+
+Outcome interpretation
+----------------------
+OPTIMAL objective 0
+  Materialize the concrete assignment and enter exact routing immediately.
+
+OPTIMAL objective 1..158
+  Retain the full three-block joint witness and recompute residual context value.
+
+OPTIMAL objective 159
+  The selected three-block context is saturated. Select another residual block or
+  release occupied geometry; do not return to isolated permutations inside these
+  footprints.
+
+FEASIBLE / UNKNOWN
+  Record incumbent and bound only.
+
+Truth boundary
+--------------
+This experiment is exact only for one fixed occupied geometry and fifteen
+selected manufacturing footprints. It is not a global assignment optimum,
+routing result, whole-layout infeasibility proof, lower bound, or certification
+artifact.
+
+Result
+------
+Completed. The E035 parent recalibrates to OPTIMAL 159 and the alternate regression
+state to OPTIMAL 160. The free three-block solve proves OPTIMAL 159: the selected
+5x5 reassignment changes the commodity vector but not total mismatch. See
+RESULT.txt and local result SHA-256
+e000e1dba3eb3eea208bbc75a8a41eb9faf6001e51eade2308ef43ba6eaff27c.

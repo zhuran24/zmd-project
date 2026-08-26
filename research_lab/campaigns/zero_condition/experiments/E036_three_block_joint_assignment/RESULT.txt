@@ -1,0 +1,138 @@
+E036 RESULT: THE RESIDUAL-SELECTED 5x5 BLOCK CHANGES THE ENDPOINT BUT NOT VALUE
+================================================================================
+
+Status
+------
+Completed as research-only exact three-block evidence. No component-compatible
+binding, exact routing, whole-layout witness, certification, U/L, owner, or
+publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E036_three_block_joint_assignment/run-001/RESULT.json
+
+SHA-256:
+  e000e1dba3eb3eea208bbc75a8a41eb9faf6001e51eade2308ef43ba6eaff27c
+
+Verdict:
+  THREE_BLOCK_JOINT_SATURATED
+
+Residual-selected 5x5 block
+---------------------------
+At the E035 objective-159 endpoint, the live 3x3 and 6x4 blocks touch 96 mismatch
+observations. E036 selects five 5x5 footprints by exact marginal coverage,
+operation diversity, and deterministic tie-break. They raise coverage to 125, a
+marginal gain of 29:
+
+  planter_buckwheat    pose 10655
+  planter_sandleaf     pose 7647
+  planter_sandleaf     pose 9225
+  planter_sandleaf     pose 9265
+  planter_sandleaf     pose 9653
+
+The current operation multiset has one planter_buckwheat and four
+planter_sandleaf instances, so it has five semantic assignments.
+
+Three-block model
+-----------------
+The 3x3, 6x4, and new 5x5 blocks share one binding model and one component
+objective:
+
+  assignment variables                 50
+  conditional binding-pattern vars   6,231
+  joint conditional binding owners      49
+  outside binding owners                257
+  total variables                    19,076
+  total constraints                  55,592
+
+Calibration
+-----------
+The expanded model reproduces:
+
+  E035 objective-159 parent      OPTIMAL 159   best bound 159
+  alternate objective-160 state OPTIMAL 160   best bound 160
+
+The 5x5 extension therefore preserves both the live incumbent and the older
+alternate 3x3 assignment surface.
+
+Free exact solve
+----------------
+With all three assignment blocks released, E036 proves:
+
+  status          OPTIMAL
+  objective       159
+  best bound      159
+  solve time      1.20 s
+
+The selected 3x3 and 6x4 assignments stay at E035. The 5x5 block moves the lone
+planter_buckwheat operation from pose 10655 to pose 9653, with four
+planter_sandleaf operations occupying the remaining selected footprints.
+
+The commodity vector changes without changing the scalar objective:
+
+  buckwheat         11 -> 10
+  buckwheat_seed     9 -> 11
+  sandleaf_seed      8 ->  7
+
+The net change is zero. This is an endpoint trade, not a new objective gain.
+
+Optimum-face audit
+------------------
+For the selected E036 assignment, the exact objective-159 face again varies only:
+
+  blue_iron_ore    6..10
+  source_ore       5..9
+  fixed sum           15
+
+All other 17 commodity values are fixed within this assignment. Audit SHA-256:
+
+  13fb2b86276b92567daa003b3e548fcd6606fbc0e61a57c0c4117884cb81b3e9
+
+Frozen witnesses
+----------------
+Concrete assignment:
+  research_lab/local/zero_condition/E036_three_block_joint_assignment/run-001/
+    BEST_ASSIGNMENT.json
+  sha256 a2b263a15a75d446154d7288c8fa499566d8bb565cd95e5c92c01cf782573116
+
+Ordinary fixed-assignment endpoint:
+  research_lab/local/zero_condition/E036_three_block_joint_assignment/run-001/
+    BEST_ENDPOINT.json
+  sha256 24d675ea298254cba8ab34983f723d7b7e1663b06ed3957df014c0ef00c4a96e
+
+Joint assignment-pattern witness:
+  research_lab/local/zero_condition/E036_three_block_joint_assignment/run-001/
+    JOINT_WITNESS.json
+  sha256 193051a66876f181c1dc860071a4094fa3925995472d3c971b91187158d291e7
+
+Residual measurement after saturation
+-------------------------------------
+The three live blocks now touch 125 of 159 observations. Exact five-footprint
+additions outside the current pose sets give:
+
+  additional 3x3 footprints     marginal +9
+  additional 5x5 footprints     marginal +8
+  additional 6x4 footprints     marginal +14
+
+The strongest remaining assignment context is another 6x4 footprint set. Because
+it has the same facility type as the existing 6x4 block, the correct next object
+is not an independent second block. The two sets must be merged into one ten-
+footprint 6x4 assignment block so operations may cross the old artificial block
+boundary.
+
+Decision effect
+---------------
+Retain both objective-159 endpoints as regression witnesses. Build a model with
+the current 3x3 and 5x5 blocks plus one merged ten-footprint 6x4 block containing
+the existing five footprints and the exact residual-selected five additions.
+
+A lower value shows that cross-subset 6x4 assignment was hidden by the previous
+block boundary. Exact 159 is a strong fixed-geometry assignment saturation signal.
+Objective zero enters exact routing.
+
+Truth boundary
+--------------
+This result is exact only for one fixed occupied geometry and the selected fifteen
+footprints. It is not a global assignment optimum, component-compatible binding,
+routing result, no-ghost infeasibility result, lower bound, or certified claim.

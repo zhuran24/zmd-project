@@ -162,9 +162,9 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Can a residual-selected five-footprint 5x5 assignment block compose with the
-live 3x3+6x4 joint context, lowering exact objective 159 or reaching component
-zero without releasing occupied geometry?
+Does merging the live five-footprint 6x4 assignment block with the strongest
+remaining five 6x4 footprints expose cross-subset operation assignments below
+159, or is fixed-geometry assignment freedom saturated enough to release geometry?
 
 Current campaign posture
 ------------------------
@@ -353,11 +353,19 @@ grinder_fine_buckwheat between poses 7017 and 7895 while leaving the 3x3 assignm
 unchanged. The audited ore-pair sum remains 15; dense_source_powder 7 -> 6 is the
 fixed gain. All 19 commodities remain positive.
 
-The current 3x3 and 6x4 blocks jointly touch 96 of the 159 residual observations.
-Exact next-block probes give marginal +12 for another 3x3 block, +29 for a 5x5
-block, and +21 for another 6x4 block. The next joint model therefore adds the
-residual-selected 5x5 block while keeping both existing blocks live. A zero state
-enters routing immediately.
+E036 adds the exact-selected five-footprint 5x5 block, which raises touched
+observations from 96 to 125. The parent recalibrates to 159 and the alternate
+regression state to 160. Releasing all three blocks still proves OPTIMAL 159. The
+5x5 assignment changes buckwheat, buckwheat_seed, and sandleaf_seed but the net
+objective stays fixed; the audited ore-pair sum remains 15.
+
+Residual assignment coverage now has diminishing returns: a further five
+footprints add at most 9 observations for 3x3, 8 for 5x5, and 14 for 6x4. The
+last assignment-only discriminator merges the strongest five residual 6x4
+footprints with the existing five into one ten-footprint block. This is necessary
+because two independent same-type blocks would forbid cross-subset operation
+moves. Exact 159 after the merge moves the campaign to geometry release. A zero
+state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

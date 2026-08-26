@@ -1366,6 +1366,44 @@ evidence:
   optimum-face audit sha256
   39390516ff35aec593ceecbb21ec67cf8cfedfa26718caa3c5e51e1f681786fb.
 
+R-ZC-047  A high-coverage 5x5 block changes the endpoint but saturates at 159
+----------------------------------------------------------------------------------
+status: two calibration solves, one free exact three-block solve, and face audit
+scope: fixed E035 geometry with five 3x3, five 6x4, and five selected 5x5 footprints
+
+statement:
+  E036 selects a five-footprint 5x5 block that adds 29 residual observations to
+  the 96 touched by the live 3x3+6x4 blocks. The E035 parent recalibrates to
+  OPTIMAL 159 and the alternate regression state to OPTIMAL 160. Releasing all
+  three blocks again proves OPTIMAL 159. The 5x5 assignment moves the lone
+  planter_buckwheat operation from pose 10655 to 9653, changing buckwheat 11 ->
+  10, buckwheat_seed 9 -> 11, and sandleaf_seed 8 -> 7 with zero net objective
+  change. The fixed-assignment optimum face still varies only the ore pair at
+  fixed sum 15. All 19 commodities remain positive.
+
+non-implications:
+  The result does not make the 5x5 block irrelevant in every context, prove fixed
+  geometry globally saturated, establish component compatibility, or reach
+  routing. It exhausts only the selected three-block assignment language.
+
+effect on next problem:
+  The three blocks touch 125/159 observations. Remaining five-footprint marginal
+  coverage is +9 for 3x3, +8 for 5x5, and +14 for 6x4. Add the selected 6x4
+  footprints by merging them with the existing 6x4 set into one ten-footprint
+  assignment block; a separate block would falsely forbid operations crossing the
+  old subset boundary. Exact 159 after that merge is a strong signal to release
+  geometry rather than continue assignment-only expansion.
+
+evidence:
+  E036 RESULT.txt; local RESULT.json sha256
+  e000e1dba3eb3eea208bbc75a8a41eb9faf6001e51eade2308ef43ba6eaff27c;
+  joint witness sha256
+  193051a66876f181c1dc860071a4094fa3925995472d3c971b91187158d291e7;
+  ordinary fixed endpoint sha256
+  24d675ea298254cba8ab34983f723d7b7e1663b06ed3957df014c0ef00c4a96e;
+  optimum-face audit sha256
+  13fb2b86276b92567daa003b3e548fcd6606fbc0e61a57c0c4117884cb81b3e9.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the
