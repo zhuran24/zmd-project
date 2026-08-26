@@ -84,7 +84,12 @@ probes and the first checked feedback replay now show a causal progression:
   * E017 evaluates four third-member families and proves 178 -> 176. Twelve
     candidates tie across crusher-source and refinery groups, while the residual-
     coverage leader grinder pose 7754 worsens to 180. Coverage proposes; shared
-    binding must rank.
+    binding must rank;
+  * E018 exhausts 152 fourth-member alternatives on one representative triple.
+    Thirty-six shared bindings are OPTIMAL and refinery pose 5343 -> 3338/3339
+    lowers 176 -> 174, but every commodity remains positive. Its exact face keeps
+    the ore-pair sum at 18, and the predeclared stop rule moves the outer loop to
+    the twelve-state E017 beam.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -92,9 +97,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Does one final four-member portfolio compose with the representative 176 triple,
-and if the fourth-step gain is weak or absent, what multi-state beam surface
-should replace the now-splitting greedy lineage?
+When the same evidence-selected expansion is applied across the twelve distinct
+objective-176 E017 triples, which placement/binding states survive deduplication,
+do any beat the representative branch's 174, and what diversity key is required
+to prevent the beam from collapsing onto one geometric family?
 
 Current campaign posture
 ------------------------
@@ -174,13 +180,21 @@ not compose. This is the first strong warning that one greedy candidate path is
 no longer a faithful outer-loop state: equally scoring geometries may expose
 very different next neighborhoods.
 
-One final controlled fourth-member round remains useful. It tests grinder pose
-7754, refinery poses 5279 and 5343, and crusher-source pose 6125 after the
-representative triple. Each arm preserves the same ordered interface and exact
-shared objective. A zero candidate enters routing. A material improvement will
-seed a beam with the tied triple families rather than canonize one path. Weak or
-no improvement ends sequential assembly and moves the outer loop to a small
-multi-state beam or simultaneous pose-binding neighborhood.
+E018 has completed the fourth-member stop test. The best representative branch
+reaches 174 through refinery pose 5343 -> 3338/3339, while the grinder coverage
+leader again fails to compose. This is a real gain, but it does not rescue the
+single-line state representation: E017's twelve objective-176 triples remain
+live, and they differ in placement, free-space, port-mode, and binding-selection
+identity.
+
+The next experiment therefore applies a controlled common expansion to all twelve
+seeds. It must reconstruct each frozen triple, exclude moves already consumed by
+that state, evaluate exact shared binding, and deduplicate at two levels:
+placement/free-cell identity and binding-selection identity. Beam retention must
+preserve distinct residual-boundary signatures, not only the lowest objective.
+A zero state enters routing immediately. If every beam branch stalls near 174,
+the next representation becomes a simultaneous multi-pose/binding neighborhood
+rather than a deeper sequential tree.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

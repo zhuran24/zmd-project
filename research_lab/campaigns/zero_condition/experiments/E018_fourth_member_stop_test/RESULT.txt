@@ -1,0 +1,114 @@
+E018 RESULT: FOURTH-MEMBER GAIN EXISTS, BUT THE GREEDY LINEAGE STOPS
+====================================================================
+
+Status
+------
+Completed as research-only fixed-layout/shared-binding evidence. No routing
+witness, certification, U/L update, production cut, owner decision, or
+publication effect.
+
+Frozen outputs
+--------------
+Main result:
+  research_lab/local/zero_condition/E018_fourth_member_stop_test/run-001/RESULT.json
+  sha256 6155248779f6de3e9f17e3a13b07684aacb2c373650510d0b82a81d979a8a06b
+
+Optimum-face audit:
+  research_lab/local/zero_condition/E018_fourth_member_stop_test/run-001/OPTIMUM_FACE_AUDIT.json
+  sha256 fd57b3ccb35a1bb94d67620ba67fa14943594cddc5a61f320e38c14f149777cc
+
+Best assignment:
+  research_lab/local/zero_condition/E018_fourth_member_stop_test/run-001/BEST_FOURTH_ASSIGNMENT.json
+  sha256 7f14bb9b749c18fd24bc4000f55ba161176e7566e7c47aca310ea8acaacbf26b
+
+Best layout:
+  research_lab/local/zero_condition/E018_fourth_member_stop_test/run-001/BEST_FOURTH_LAYOUT.json
+  sha256 04ed4433bc9c32b3ceae43c4b734e5e0795c01954d200c92a528fdc9c6c51a66
+
+Verdict:
+  FOURTH_SHARED_MISMATCH_IMPROVEMENT_BEAM_NEXT
+
+Exhaustive portfolio result
+---------------------------
+The representative E017 triple has exact shared mismatch 176. E018 exhausts all
+fixed-outside alternatives for four selected fourth literals:
+
+  target current pose                         alternatives  domain-empty  OPTIMAL  best
+  grinder_fine_buckwheat 7754                         3            2        1     178
+  refinery_blue_iron     5279                        51           40       11     175
+  refinery_blue_iron     5343                        51           40       11     174
+  crusher_source         6125                        47           34       13     175
+
+Across 152 alternatives, 116 fail at the static owner-domain gate and 36 reach an
+exact shared-binding optimum. No candidate has zero mismatch, so exact routing is
+not reached.
+
+Best fourth move
+----------------
+The best arm moves the refinery_blue_iron group pose at 5343 to the 3x3 footprint
+at anchor (12,65). Port modes 3338/TB and 3339/BT tie at objective 174; the frozen
+representative uses pose 3338.
+
+The cumulative representative lineage is therefore:
+
+  E009 shared baseline                                      200
+  crusher_sandleaf 2186 -> 15830                            186
+  crusher_source   6191 -> 6102                             178
+  crusher_source   6073 -> 6179                             176
+  refinery_blue_iron 5343 -> 3338                           174
+
+The fourth step gains two units. The best fixed geometry has 79 free components,
+a largest component of 439 cells, 1144 free cells, free-adjacency score 1160,
+13433 surviving binding patterns, 53 power poles, and positive mismatch for all
+19 commodities.
+
+Optimum-face audit
+------------------
+The exact objective-174 face preserves the same one-dimensional generic-output
+exchange seen in the preceding states:
+
+  blue_iron_ore range  8..12
+  source_ore range     6..10
+  fixed pair sum          18
+
+The other 17 commodity mismatch values are fixed. The two-unit gain is therefore
+not an arbitrary optimum-endpoint artifact.
+
+Why the greedy lineage stops here
+---------------------------------
+E018 does not end sequential assembly because the fourth move failed. It ends it
+because the predeclared model-selection condition has been reached:
+
+* E017 already produced twelve objective-176 triples across different operation
+  families and port modes.
+* E018 improves one representative branch by only two units.
+* Equal-score geometries carry different free-cell and binding-selection
+  identities, so future composition cannot be inferred from one chosen lineage.
+* The residual-coverage leader grinder pose 7754 again fails to compose, reaching
+  178 rather than improving the branch.
+
+Continuing to canonize one state would discard live causal alternatives. The
+outer-loop state must now be a beam of distinct exact-scored geometries rather
+than a single incumbent plus one suggested partner.
+
+Next representation
+-------------------
+The initial beam is seeded by the twelve objective-176 E017 triples frozen in the
+main result. Each state must carry at least:
+
+  placement identity and free-cell digest
+  exact shared-binding objective and optimum-face signature
+  surviving binding-domain count
+  residual mismatch-boundary signature
+  moved group-pose literals
+
+The first beam expansion should apply a controlled common fourth-member portfolio
+to every seed, deduplicate by placement and binding identity, and retain diverse
+best states rather than only the numerically first optimum.
+
+Truth boundary
+--------------
+The enumeration is exhaustive only for four selected fourth literals after one
+representative triple. Objective 174 is not a global no-ghost bound, a routing
+witness, or evidence that the frozen four moves are necessary. The other eleven
+E017 triple states remain live research states.

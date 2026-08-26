@@ -1,0 +1,59 @@
+EXPERIMENT E018: fourth-member stop test
+========================================
+
+Question
+--------
+Does one final evidence-selected fourth member materially improve the
+representative E017 triple at objective 176, or has single-line sequential
+assembly saturated enough to require a multi-state beam?
+
+Frozen triple
+-------------
+The representative triple fixes:
+
+  crusher_sandleaf pose 2186 -> 15830
+  crusher_source pose 6191 -> 6102
+  crusher_source pose 6073 -> 6179
+
+Its exact shared optimum is 176.
+
+Fourth-member portfolio
+-----------------------
+E018 evaluates:
+
+  grinder_fine_buckwheat pose 7754
+  refinery_blue_iron pose 5279
+  refinery_blue_iron pose 5343
+  crusher_source pose 6125
+
+The first three lead the representative triple's residual coverage; pose 6125
+adds a distinct crusher-source candidate with prior exact gradient evidence.
+
+Stop rule
+---------
+A fourth move is considered material only if it improves the exact shared
+objective and that improvement survives optimum-face audit. A zero candidate
+enters routing.
+
+If no arm improves 176, or if improvement is only a small branch-specific step
+amid many tied states, the research line stops canonizing one state. The next
+outer-loop representation becomes a small beam over distinct equal-score
+geometries, each carrying its exact shared-binding score and residual boundary
+signature.
+
+Truth boundary
+--------------
+This experiment is exhaustive only for four selected fourth literals after one
+representative triple. Failure does not refute other triples or joint multi-pose
+moves. It is a model-selection experiment for the outer loop, not a global
+infeasibility proof.
+
+Result
+------
+Completed with verdict FOURTH_SHARED_MISMATCH_IMPROVEMENT_BEAM_NEXT. Across 152
+alternatives, 116 empty an owner domain and 36 reach exact shared-binding
+OPTIMAL. The best refinery-blue-iron move lowers 176 to 174, but all 19
+commodities remain positive. The optimum-face audit preserves the four-unit
+blue_iron_ore/source_ore exchange with fixed sum 18. The predeclared stop rule
+therefore transitions the outer loop from one greedy lineage to a twelve-seed
+multi-state beam. See RESULT.txt.

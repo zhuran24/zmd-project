@@ -772,6 +772,36 @@ evidence:
   optimum-face audit sha256
   c0bbcb2cbbac15841b6d0566e315c7e36407d40a5d91a6c7c3c073afe38065da.
 
+R-ZC-029  A valid fourth-step gain confirms the beam transition rather than one greedy lineage
+--------------------------------------------------------------------------------------------------
+status: exhaustive fourth-variable alternatives plus exact optimum-face audit
+scope: one representative E017 objective-176 triple and four selected fourth literals
+
+statement:
+  E018 evaluates 152 exact fourth-member alternatives. One hundred sixteen empty
+  an owner domain and all 36 remaining shared-binding models are OPTIMAL. Moving
+  refinery_blue_iron pose 5343 to pose 3338 or 3339 lowers the representative
+  triple from 176 to 174; all 19 commodities remain positive. The objective-174
+  face varies only blue_iron_ore 8-12 and source_ore 6-10 with fixed sum 18. The
+  other three arms bottom out at 175, 175, and 178.
+
+non-implications:
+  Objective 174 is not a global no-ghost bound, routing witness, or proof that the
+  chosen four moves are necessary. E018 exhausts only four fourth literals after
+  one representative triple; eleven equal-score E017 triples remain live.
+
+effect on next problem:
+  End single-line sequential assembly at its predeclared stop point. Seed a
+  multi-state beam with the twelve objective-176 triples, expand each through a
+  common evidence-selected portfolio, deduplicate placement/binding identities,
+  and retain diverse exact-scored states rather than the first numerical optimum.
+
+evidence:
+  E018 RESULT.txt; main result sha256
+  6155248779f6de3e9f17e3a13b07684aacb2c373650510d0b82a81d979a8a06b;
+  optimum-face audit sha256
+  fd57b3ccb35a1bb94d67620ba67fa14943594cddc5a61f320e38c14f149777cc.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the
