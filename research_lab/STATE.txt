@@ -162,10 +162,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Can a bounded fixed-body model make pose/port mode, operation assignment, and
-binding cohabit faithfully, recalibrate the E039 objective-157 and E040
-objective-154 endpoints, and improve below 154 or reach component compatibility
-without external enumeration of complete pose-mode assignments?
+Which bounded expansion is selected by the fully materialized objective-152
+endpoint: unadmitted same-footprint pose/port modes outside the current 25-body
+context, or simultaneous occupied-body relocations, and can that expansion lower
+152 or reach component compatibility while preserving joint assignment-binding?
 
 Current campaign posture
 ------------------------
@@ -391,12 +391,20 @@ pose 9650. Every occupied and free cell is unchanged; the audited ore-pair sum
 remains 15, while sandleaf falls by one and sandleaf_seed by two. The best actual
 body relocation reaches only 156.
 
-The next object is therefore not yet a simultaneous body-geometry model. First
-separate body footprint from pose/port mode and extend the faithful conditional-
-owner model so port mode, operation assignment, and binding share one bounded
-fixed-body context. Use the E039 157 and E040 154 states as exact calibration
-witnesses. Actual body relocations remain available for a later simultaneous
-geometry neighborhood. A zero state enters routing immediately.
+E041 completes that fixed-body extension. It creates native conditional owners
+for 195 (body destination, mode, operation) choices, exactly recalibrates the E039
+157 and E040 154 endpoints, and proves the free joint model OPTIMAL 152 with best
+bound 152. Seven destinations change same-footprint mode while operation
+assignment and binding change jointly; occupied geometry remains byte-identical.
+The exact ore-pair face falls from fixed sum 15 to 14, and all 19 commodities
+remain positive.
+
+The next object is selected from the 152 endpoint rather than another complete
+mode action. Rebuild its residual causes and actual mobility. Compare unadmitted
+same-footprint mode destinations outside the current 25-body context against
+occupied-body relocations from the mobility atlas. The chosen bounded expansion
+must preserve the faithful joint operation-assignment, port-mode, and binding
+consumer. A zero state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

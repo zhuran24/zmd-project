@@ -1548,6 +1548,46 @@ evidence:
   optimum-face audit sha256
   7acb5f0f6060c0e46e20a9201c55109752c9adc3824ecdb001ae15a49e373c16.
 
+R-ZC-052  Joint port mode, operation assignment, and binding improve 154 -> 152
+---------------------------------------------------------------------------------
+status: two exact calibrations, one free fixed-body solve, and optimum-face audit
+scope: nine mode-enabled destinations inside the E039 25-footprint context
+
+statement:
+  E041 extends E039's native conditional-owner model with an explicit same-body
+  pose-mode axis. It exactly recalibrates the E039 frozen-pose endpoint at 157 and
+  the E040 same-body endpoint at 154. The free 30,039-variable model is OPTIMAL
+  152 with best bound 152, and ordinary fixed-layout replay agrees. Seven body
+  destinations change port mode while operation assignments and binding patterns
+  change jointly; every occupied and free cell remains byte-identical. The exact
+  optimum face varies only blue_iron_ore/source_ore with fixed sum 14. All 19
+  commodities remain positive.
+
+non-implications:
+  Objective 152 is not a global fixed-body optimum, component-compatible binding,
+  routing witness, lower bound, or certified claim. Only nine E040-selected
+  destinations inside the existing 25-body context expose alternate modes, and
+  the result does not prove the selected operation or mode pattern necessary.
+
+effect on next problem:
+  Treat port mode as a standing inner variable, not an outer complete-action
+  format. Rebuild the 152 residual cause and mobility surface, comparing
+  same-footprint mode destinations outside the current context with actual body
+  relocations. Exact coverage proposes the bounded expansion; static domains and
+  the shared objective remain consumers. Objective zero enters routing.
+
+evidence:
+  E041 RESULT.txt; local RESULT.json sha256
+  ba97d01cfe4a757daf102e514ab9984bd99abc679c16f8db6147f2269d40fada;
+  joint witness sha256
+  a2af92a53cc3ebd74b81c082abfbea4c4e0c3b820684fe8e5170b857ea7807d1;
+  materialized endpoint sha256
+  9c05925a3bb5e4f3d1d88c14e26e5473c7109fb5004e1110b8bd07fb8558f1b4;
+  optimum-face audit sha256
+  2306d5ff7881591690868b1b7849a43ab2fac879c0228cc946a02713c70ea356;
+  conditional-mode helper sha256
+  98464fc5c9ee181a69392e582c2194edd0c213965b6c62672ece190fb1370dad.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

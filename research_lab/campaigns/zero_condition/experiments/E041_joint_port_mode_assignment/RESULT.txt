@@ -1,0 +1,168 @@
+E041 RESULT: PORT MODE, OPERATION ASSIGNMENT, AND BINDING COHABIT EXACTLY AND IMPROVE 154 -> 152
+================================================================================================
+
+Status
+------
+Completed as research-only exact fixed-body joint-model evidence. No
+component-compatible binding, exact routing, whole-layout witness,
+certification, U/L, owner, or publication effect.
+
+Frozen results
+--------------
+Main result:
+  research_lab/local/zero_condition/E041_joint_port_mode_assignment/run-001/RESULT.json
+
+SHA-256:
+  ba97d01cfe4a757daf102e514ab9984bd99abc679c16f8db6147f2269d40fada
+
+Verdict:
+  PORT_MODE_JOINT_MATERIAL_IMPROVEMENT
+
+Fidelity calibrations
+---------------------
+The model first fixes every operation and port mode to two independently
+materialized ordinary fixed-layout endpoints:
+
+  E039 frozen poses       expected 157    OPTIMAL 157
+  E040 same-body mode     expected 154    OPTIMAL 154
+
+Both calibrations pass exactly. The free scientific solve is therefore admitted.
+
+Joint model
+-----------
+The E039 25-footprint operation-assignment context remains intact. Nine E040
+residual-selected destinations expose all frozen-pool poses with byte-identical
+occupied cells. One native conditional owner is built for each admitted:
+
+  block
+  destination body
+  same-footprint mode
+  operation
+
+combination, with an explicit inactive pattern. Exactly one mode-operation tuple
+is active per destination, operation multiplicities are conserved, and the
+active native binding pattern is chosen in the same CP-SAT model.
+
+Model size:
+
+  mode-operation variables            195
+  conditional active-pattern vars  18,090
+  conditional owners                  195
+  inactive-only owners                 33
+  ordinary outside binding owners     247
+  total variables                  30,039
+  total constraints                88,257
+
+The free solve reaches:
+
+  status       OPTIMAL
+  objective    152
+  best bound   152
+  solve time   70.6 s
+
+Ordinary fixed-layout replay of the concrete child also returns 152.
+
+Body geometry is unchanged
+--------------------------
+The E041 child has exactly the same occupied and free cells as E039 and E040:
+
+  free cells             1144
+  free components          79
+  largest component       479
+  free adjacency         1160
+  free-cell digest
+    341f75af121780e04a913a7bd135db7970f670c7dd15fd211581f843a0deafff
+
+Seven body destinations change port mode, and operation assignments change inside
+the 3x3 and 6x4 blocks. Representative mode changes include:
+
+  refinery_steel body       pose 5295 -> 5294
+  refinery_blue_iron body   pose 5327 -> 5326
+  planter_sandleaf bodies   7647 -> 7646
+                             9265 -> 9264
+                             9653 -> 9650
+  6x4 bodies                6028 -> 6029
+                             6643 -> 6642
+
+The model selects these modes jointly with the operation multiset and binding,
+rather than replaying a sequence of complete outer-loop actions.
+
+Exact optimum face
+------------------
+The objective-152 optimum face varies only:
+
+  blue_iron_ore   5..9
+  source_ore      5..9
+  fixed sum          14
+
+All other 17 commodity mismatch values are fixed. Compared with the E040
+objective-154 face, the ore-pair fixed sum falls 15 -> 14. The fixed-commodity
+ledger changes:
+
+  blue_iron_powder         -1
+  buckwheat                +1
+  buckwheat_powder         -2
+  dense_blue_iron_powder   +2
+  sandleaf                 -2
+  sandleaf_seed            +1
+  source_powder            +1
+  steel_bottle             -1
+
+The fixed ledger nets -1 and the ore-pair sum contributes the other -1, yielding
+the exact 154 -> 152 improvement.
+
+Optimum-face audit SHA-256:
+
+  2306d5ff7881591690868b1b7849a43ab2fac879c0228cc946a02713c70ea356
+
+Architecture effect
+-------------------
+Port mode is now a proven standing inner variable layer, not an outer-loop action
+format. The current problem-derived order is:
+
+  occupied body geometry
+    -> pose / port mode
+    -> operation-to-footprint assignment
+    -> aggregate binding resources and terminal uniqueness
+    -> component-aware binding
+    -> exact simultaneous routing
+
+The middle three layers are strongly coupled and can be carried by one faithful
+conditional-owner model on a bounded body context.
+
+Decision effect
+---------------
+Retain and fully materialize the objective-152 endpoint. Rebuild its residual
+cause and mobility surface. The next discriminator should compare:
+
+  unadmitted same-footprint mode destinations outside the current 25-body context
+  actual occupied-body relocations from E040's mobility atlas
+
+Coverage may propose the bounded expansion, but exact static domains and the
+shared objective remain the consumers. A zero state enters exact routing
+immediately.
+
+Truth boundary
+--------------
+E041 fixes every occupied body cell and every power pole. Same-footprint modes are
+admitted only for nine E040-selected destinations inside the existing E039
+25-footprint assignment context. Objective 152 is not a global fixed-body optimum,
+component-compatible binding, routing witness, lower bound, or certified claim.
+All 19 commodity mismatch counts remain positive.
+
+Frozen artifact identities
+--------------------------
+Joint witness:
+  a2af92a53cc3ebd74b81c082abfbea4c4e0c3b820684fe8e5170b857ea7807d1
+
+Best assignment:
+  020bfc79e47e61e2c6ccd68d10a7f292d22f381ab0747c3ea37e960f501ce642
+
+Best layout:
+  5949948b4e1dd8a518c3c88755e90e97368cbdbc56871428d2d976e5f64503f6
+
+Best endpoint:
+  9c05925a3bb5e4f3d1d88c14e26e5473c7109fb5004e1110b8bd07fb8558f1b4
+
+Conditional-mode helper:
+  98464fc5c9ee181a69392e582c2194edd0c213965b6c62672ece190fb1370dad

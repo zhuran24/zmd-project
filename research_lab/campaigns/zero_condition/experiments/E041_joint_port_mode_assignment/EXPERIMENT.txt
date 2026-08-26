@@ -1,0 +1,79 @@
+EXPERIMENT E041: JOINT SAME-FOOTPRINT PORT MODE, OPERATION ASSIGNMENT, AND BINDING
+================================================================================
+
+Question
+--------
+On the frozen E039 occupied body geometry, can a faithful bounded model jointly
+choose same-footprint pose/port modes, operation-to-footprint assignments, and
+binding patterns to improve below the E040 objective 154 or reach component
+compatibility?
+
+Why this experiment
+-------------------
+E039 proves operation assignment and binding are exact at 157 only when every
+pose is frozen. E040 then proves 157 -> 154 by changing planter_sandleaf pose 9653
+to same-footprint pose 9650. No occupied or free cell changes. The missing freedom
+is therefore not body geometry but pose/port mode.
+
+Continuing to emit complete mode changes from the outer loop would repeat the
+manual action-enumeration pattern already stopped for operation swaps. E041 moves
+the newly discovered freedom into the inner model.
+
+Bounded context
+---------------
+The E039 merged 3x3, 5x5, and 6x4 operation-assignment blocks remain intact. For
+every E040 budget-16 target already inside those blocks and having same-footprint
+pose alternatives, the destination exposes every frozen-pool pose with identical
+occupied cells. Other destinations retain one mode.
+
+This yields nine mode-enabled body destinations. One conditional native owner is
+created for every admitted (block, destination, mode, operation) tuple. Exactly
+one mode-operation tuple is active per destination; operation multiplicities are
+preserved across each block. The active owner's native binding pattern is chosen
+in the same CP-SAT model and the all-commodity component mismatch is the objective.
+
+Fidelity calibrations
+---------------------
+Before the free solve, the model fixes and replays:
+
+  E039 operation assignment + current modes      expected OPTIMAL 157
+  E040 operation assignment + pose 9650 mode     expected OPTIMAL 154
+
+Any failed calibration rejects the model and blocks scientific interpretation.
+
+Decision rule
+-------------
+Objective 0
+  Materialize the endpoint and enter exact routing immediately.
+
+OPTIMAL below 154
+  Retain and materialize the improved fixed-body state. Recompute its residual
+  causes to decide whether another bounded mode destination or simultaneous body
+  geometry is the next missing freedom.
+
+OPTIMAL 154
+  The admitted port-mode/assignment/binding context is saturated. Move to a
+  simultaneous body-geometry neighborhood selected from E040's mobility atlas.
+
+Nonterminal
+  Preserve the best bound and reformulate or extend the solve without treating it
+  as saturation.
+
+Truth boundary
+--------------
+E041 fixes all occupied body cells and all power poles. It admits same-footprint
+modes only for nine E040-selected destinations inside the existing 25-footprint
+assignment context. It does not exhaust every fixed-body mode choice, move bodies,
+prove component compatibility, reach routing, establish a lower bound, or grant
+certified effect.
+
+Result
+------
+Completed. Both frozen calibrations reproduce exactly at 157 and 154. The free
+30,039-variable model reaches OPTIMAL 152 in 70.6 seconds, and ordinary
+fixed-layout replay agrees. Seven destinations change same-footprint mode while
+operation assignment and binding change jointly; occupied geometry remains
+byte-identical and all 19 commodity mismatches remain positive.
+
+See RESULT.txt for frozen identities, model statistics, the exact optimum-face
+audit, and the next decision boundary.
