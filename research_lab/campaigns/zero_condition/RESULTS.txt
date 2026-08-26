@@ -636,10 +636,11 @@ statement:
   Fifteen manufacturing group-pose arms admit 425 exact non-overlap and power-
   preserving alternatives; the selected power-pole arm admits none while all
   outside placements and the 53-pole count stay fixed. Fresh interface models
-  reject 287 alternatives by empty front-filtered owner domains and prove the
-  remaining 138 component-infeasible. No candidate reaches exact routing. Of 390
-  footprint-changing alternatives, 280 die at port domains; 28 same-footprint
-  port-mode changes preserve domains but still fail component support.
+  reject 287 alternatives by empty front-filtered owner domains. E015 reclassifies
+  three protocol-core alternatives as aggregate base-binding capacity failures,
+  leaving 135 base-feasible candidates that all fail component support. No
+  candidate reaches exact routing. Twenty-seven same-footprint port-mode changes
+  reach component support and still fail it.
 
 non-implications:
   This does not prove any target immovable jointly, any pair insufficient, or
@@ -647,14 +648,69 @@ non-implications:
   essential.
 
 effect on next problem:
-  Unary relocation is exhausted for the selected neighborhood. Soften component
-  support on the 138 domain-valid candidates under one shared binding selection,
-  use the exact mismatch gradient to choose a coupled pair/portfolio, and make
-  front-domain preservation explicit in that joint move.
+  Unary relocation is exhausted for the selected neighborhood. Separate aggregate
+  binding capacity from component support, then optimize one shared component
+  objective on the 135 base-feasible candidates to choose a coupled pair.
 
 evidence:
   E014 RESULT.txt; local RESULT.json sha256
   193a114047e3e7d5d69df2d47cc5136fc1f4f4934dd47180256f4b7b17ba287c.
+
+R-ZC-025  One shared binding exposes a robust 14-unit unary gradient
+--------------------------------------------------------------------
+status: exact shared-objective baseline and 135 OPTIMAL candidate comparisons
+scope: E009 and E014 fixed-layout candidates
+
+statement:
+  E009's exact all-commodity component mismatch under one common binding is 200,
+  whereas the sum of independent commodity minima is 196. The unique best E014
+  repair moves crusher_sandleaf group pose 2186 to pose 15830 and proves a shared
+  optimum of 186. Seven fixed commodity values fall by ten total, while the
+  blue_iron_ore/source_ore pair sum falls from 23 to 19. The best geometry has 81
+  free components, largest component 457, and 13445 surviving binding patterns,
+  but every commodity remains positive and routing is not reached.
+
+non-implications:
+  Shared mismatch is still only a necessary coarse-topology condition. The
+  14-unit improvement does not prove the suggested pair sufficient or the fixed
+  candidate routable.
+
+effect on next problem:
+  Fix the crusher-sandleaf move and release the strongest residual partner,
+  crusher_source group pose 6191, in an exact pair search. Continue to use one
+  shared binding objective rather than sums of incompatible commodity optima.
+
+evidence:
+  E015 RESULT.txt; local RESULT.json sha256
+  d3a4a054a62ab4731a2b6f67b609b1101d4595eb097a031ec5edec11b4b95f9c.
+
+R-ZC-026  Generic-output assignment forms a four-unit optimum face and needs an aggregate precheck
+----------------------------------------------------------------------------------------------------
+status: exact optimum-face ranges plus component-disabled protocol-core replay
+scope: E009, E015 best placement, and three E014 protocol-core alternatives
+
+statement:
+  Over the E009 shared optimum face, only blue_iron_ore and source_ore vary: their
+  ranges are 11-15 and 8-12 and their sum is fixed at 23. Over the E015-best face,
+  the ranges are 9-13 and 6-10 with sum fixed at 19; every other commodity value
+  is fixed. Separately, protocol-core poses 7432/7433/7434 leave 48/49/49 usable
+  generic-output slots against exact demand 52 and are INFEASIBLE even with every
+  component guard false, despite all owner domains being nonempty.
+
+non-implications:
+  The optimum-face exchange does not make either endpoint uniquely canonical.
+  Aggregate capacity failure is not component disconnection and does not prove
+  the protocol core globally immovable in a joint placement repair.
+
+effect on next problem:
+  Insert aggregate binding resource feasibility between owner-domain filtering
+  and component support. Treat generic-output assignment and component placement
+  as one shared binding object, and avoid deriving pair causes from one arbitrary
+  optimum-face endpoint.
+
+evidence:
+  E015 optimum-face audit sha256
+  e36a807bbe76e2b87828130be2c6b05c7e0acf9c50e3c741afda021702c617e0.
 
 Current synthesis
 -----------------

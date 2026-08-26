@@ -38,18 +38,21 @@ coverer relation.
 Ordered interface outcomes
 --------------------------
 Every candidate is rebuilt through static port filtering, terminal uniqueness,
-and all 19 hard component-support rules:
+and all 19 hard component-support rules. E015 subsequently separates the 138 raw
+COMPONENT_INFEASIBLE labels into their earlier and later causes:
 
-  PORT_DOMAIN_EMPTY          287
-  COMPONENT_INFEASIBLE       138
-  component-feasible           0
-  exact routing reached        0
+  owner-level PORT_DOMAIN_EMPTY                 287
+  aggregate base-binding capacity INFEASIBLE      3
+  base binding feasible, component INFEASIBLE    135
+  component-feasible                              0
+  exact routing reached                           0
 
 The split is informative. Most geometry-changing one-literal moves destroy at
 least one owner's complete front-filtered binding domain before component logic:
-280 of 390 footprint-changing alternatives die there. The remaining 110
-footprint-changing candidates and 28 same-footprint port-mode changes preserve
-all owner domains but still fail component support.
+280 of 390 footprint-changing alternatives die there. Two more fail aggregate
+binding capacity and 108 reach component support. Among 35 same-footprint
+port-mode changes, seven empty an owner domain, one fails aggregate capacity, and
+27 reach but fail component support.
 
 Useful movement without sufficiency
 -----------------------------------
@@ -65,9 +68,10 @@ confirms the E012 stop signal: pattern count, component count, free adjacency, a
 largest-component size remain useful features but do not encode the residual
 terminal-component relation.
 
-The same-footprint results are also decisive. Twenty-eight port-mode changes alter
-terminal choices without altering occupied geometry, yet all remain component-
-infeasible. Geometry-only and binding-only one-variable repairs are each too thin.
+The same-footprint results are also decisive. Twenty-seven port-mode changes alter
+terminal choices without altering occupied geometry and reach component support,
+yet all remain component-infeasible. Geometry-only and binding-only one-variable
+repairs are each too thin.
 
 New inner partition
 -------------------
@@ -105,8 +109,7 @@ or that the no-ghost problem is infeasible.
 
 Decision effect
 ---------------
-E015 should soften the hard component rules on the 138 domain-valid candidates
-and minimize a shared all-commodity component-mismatch objective under one binding
-selection. The best exact one-literal gradients identify which two or few
-placement literals should be released together. Pair construction must preserve
-front domains explicitly rather than relying on scalar geometry.
+E015 minimizes a shared all-commodity component objective on the 135 base-binding-
+feasible candidates and identifies a unique best unary gradient. The next repair
+should couple that move to its residual crusher-source partner while preserving
+owner domains and aggregate binding capacity explicitly.

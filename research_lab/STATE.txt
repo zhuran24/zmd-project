@@ -66,9 +66,18 @@ probes and the first checked feedback replay now show a causal progression:
     literals and 151 coverage classes. Sixteen dispersed classes touch 87.8% of
     observations, but 15 are manufacturing group poses; a pole-only or single-
     window repair is therefore the wrong next object;
-  * E014 exhausts 425 exact one-literal fixed-outside alternatives. Static port
-    domains reject 287, hard component support rejects 138, the selected pole is
-    power-locked, and no candidate reaches routing.
+  * E014 exhausts 425 exact one-literal fixed-outside alternatives. Static owner
+    domains reject 287; E015 reclassifies three protocol-core moves as aggregate
+    base-binding capacity failures and confirms 135 later component failures. The
+    selected pole is power-locked and no candidate reaches routing;
+  * E015 proves E009's one-binding optimum is 200, then finds a unique unary move,
+    crusher_sandleaf pose 2186 -> 15830, with exact shared optimum 186. Its
+    residual boundary and independent unary gradient both select crusher_source
+    pose 6191 as the next partner;
+  * E015's optimum-face audit shows only blue_iron_ore and source_ore trade four
+    units; their fixed sum falls 23 -> 19 after the best move. It also exposes the
+    missing aggregate generic-output capacity gate between owner domains and
+    component support.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -76,10 +85,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Among E014's 138 domain-valid one-literal repairs, which moves minimize a shared
-all-commodity component mismatch under one binding selection, and which pair of
-placement literals does that exact gradient identify for the first coupled
-placement-binding neighborhood?
+After fixing crusher_sandleaf pose 2186 at replacement pose 15830, can an exact
+joint release of crusher_source pose 6191 reduce the shared component optimum
+below 186 or reach zero, and which residual literal follows if the pair remains
+positive?
 
 Current campaign posture
 ------------------------
@@ -134,14 +143,26 @@ Same-footprint port-mode changes also fail, so neither geometry-only nor binding
 only unary repair is sufficient. The selected pole cannot move alone while exact
 power and the outside factory remain fixed.
 
-The next experiment does not widen the placement search blindly. It replaces the
-hard component equalities on E014's 138 domain-valid candidates with one shared
-all-commodity mismatch objective under a single binding selection. This provides
-an exact residual gradient on the real interface rather than another placement
-proxy. The best one-literal gradients select the first pair or small portfolio to
-release jointly; front-domain preservation remains a hard prerequisite. If no
-one-literal move improves the shared mismatch, the pair must be chosen from
-explicit port-domain dependencies rather than boundary coverage alone.
+E015 has now supplied the joint gradient. The sum of independent commodity minima
+understates E009's attainable one-binding optimum by four. That optimum has a
+one-dimensional generic-output tradeoff: blue_iron_ore and source_ore exchange
+four units while the other 17 values remain fixed. The best unary placement move
+reduces the exact shared objective by 14 to 186, but every commodity remains
+positive.
+
+The interface ladder is also revised. Three protocol-core alternatives have
+nonempty owner domains but only 48/49 generic-output slots for exact demand 52 and
+are infeasible with every component guard disabled. Aggregate binding resource
+feasibility therefore belongs before component support; those candidates must
+not be attributed to F4-like topology.
+
+The next experiment fixes the unique crusher-sandleaf improvement and re-
+enumerates the crusher_source pose-6191 alternatives under the changed geometry.
+Each pair must preserve overlap, exact power, owner domains, and aggregate binding
+capacity before receiving the same shared mismatch objective. A zero objective
+enters exact routing immediately. A positive improvement selects the next
+residual partner; no improvement would force a larger cohabiting pose-binding
+portfolio rather than another unary pass.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

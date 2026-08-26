@@ -1,0 +1,74 @@
+EXPERIMENT E015: shared-binding component gradient
+=================================================
+
+Question
+--------
+Under one common binding selection, which of E014's 138 domain-valid unary
+placement repairs minimizes the exact all-commodity component mismatch, and what
+second placement literal is implicated by the best residual boundary?
+
+Why the shared objective is necessary
+-------------------------------------
+E010's total 196 is the sum of 19 independently optimized commodity minima. Those
+minima need not be simultaneously attainable by one binding selection. A joint
+placement-binding neighborhood must be scored by one common binding, otherwise
+its gradient can point toward mutually incompatible terminal choices.
+
+E015 first solves the unchanged E009 layout with one objective:
+
+  minimize sum over every routed commodity and free component of
+           XOR(source-present-in-component, sink-present-in-component)
+
+All binding decisions, generic assignments, static front filtering, and terminal
+uniqueness are shared. It then applies the identical model to every E014 candidate
+that has no empty front-filtered owner domain.
+
+Frozen candidate surface
+------------------------
+E014 supplies 138 domain-valid one-literal repairs. Candidate solutions are
+reconstructed from the frozen E009 assignment, the E014 arm target, and the
+candidate pose. Every reconstruction must match the candidate solution digest
+recorded by E014.
+
+Validation
+----------
+Every OPTIMAL solution is checked against ordinary routing precheck:
+
+  each commodity has at least one selected source and sink
+  objective value equals the mismatch components extracted from selected ports
+  the set of positive-mismatch commodities equals the precheck disconnected set
+
+The E009 shared optimum is also compared with E010's per-commodity lower bounds.
+
+Competing readings
+-------------------
+A. A unary placement repair reduces the shared optimum. Its moved literal is the
+   first member of the joint neighborhood; the best residual-boundary partner
+   supplies the second.
+
+B. No unary repair improves the shared optimum, but different repairs shift the
+   per-commodity mismatch vector. The first pair should combine complementary
+   gradients rather than merely the two largest boundary-coverage literals.
+
+C. Some candidate reaches zero shared mismatch. It immediately enters exact
+   routing and supersedes pair construction.
+
+Truth boundary
+--------------
+The shared mismatch objective is a necessary coarse-topology condition, not exact
+routing. A lower objective does not prove that a pair containing that move can
+reach zero, and an OPTIMAL fixed-layout result is not a global no-ghost theorem.
+
+Decision effect
+---------------
+A zero candidate goes to routing. Otherwise the exact joint gradient and residual
+boundary coverage freeze the smallest evidence-derived pair/portfolio for E016.
+
+Result
+------
+Completed with verdict UNARY_SHARED_MISMATCH_IMPROVEMENT. E009's exact shared
+optimum is 200. The best unary move, crusher_sandleaf pose 2186 to 15830,
+reaches 186. The optimum face has a four-unit exchange only between
+blue_iron_ore and source_ore. Three protocol-core candidates are reclassified as
+aggregate generic-output capacity failures before component support. See
+RESULT.txt.

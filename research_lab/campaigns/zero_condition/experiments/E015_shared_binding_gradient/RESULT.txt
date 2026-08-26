@@ -1,0 +1,168 @@
+E015 RESULT: A SHARED BINDING REVEALS A ROBUST UNARY GRADIENT AND TWO MISSING INTERFACE RULES
+================================================================================================
+
+Status
+------
+Completed as research-only fixed-layout optimization and audit. No candidate
+reaches component compatibility or exact routing. No certification, U/L, owner,
+production, or publication effect.
+
+Frozen results
+--------------
+Main result:
+  research_lab/local/zero_condition/E015_shared_binding_gradient/run-001/RESULT.json
+
+SHA-256:
+  d3a4a054a62ab4731a2b6f67b609b1101d4595eb097a031ec5edec11b4b95f9c
+
+Optimum-face and capacity audit:
+  research_lab/local/zero_condition/E015_shared_binding_gradient/run-001/OPTIMUM_FACE_AUDIT.json
+
+SHA-256:
+  e36a807bbe76e2b87828130be2c6b05c7e0acf9c50e3c741afda021702c617e0
+
+Verdict:
+  UNARY_SHARED_MISMATCH_IMPROVEMENT
+
+One common binding changes the baseline
+---------------------------------------
+E010's total 196 is the sum of 19 separately optimized commodity models. E015
+places all commodity terminal choices in one binding model and proves the E009
+shared optimum is 200.
+
+The four-unit gap is not assigned to one fixed commodity. Over the complete E009
+optimum face:
+
+  blue_iron_ore ranges from 11 to 15
+  source_ore    ranges from  8 to 12
+  their sum is fixed at 23
+  the other 17 commodity mismatches are fixed
+
+The two commodities share the saturated generic-output assignment surface. One
+binding can trade four component mismatches between them but cannot make both
+reach their independent minima simultaneously.
+
+Exact gradient over E014 candidates
+-----------------------------------
+E015 evaluates all 138 E014 candidates whose owner domains are nonempty. A custom
+automatic-search CP-SAT container proves 135 shared objectives OPTIMAL. The three
+protocol-core candidates are reclassified below.
+
+The unique best unary repair is:
+
+  current literal:
+    mandatory::group::manufacturing_3x3::crusher_sandleaf::3::2186
+  materialized carrier:
+    crusher_sandleaf_005
+  current pose:
+    p_x08_y45_o0_m_TB
+  replacement pose:
+    p_x59_y39_o0_m_TB
+  replacement pose index:
+    15830
+
+Its shared optimum is 186, an exact improvement of 14 over E009's 200.
+
+The improvement is robust to optimum-face choice. Seven fixed commodity values
+fall by ten in total:
+
+  blue_iron_block       -2
+  buckwheat             -1
+  buckwheat_powder      -1
+  dense_blue_iron_powder -1
+  sandleaf_powder       -2
+  source_powder         -2
+  steel_block           -1
+
+The generic-output pair's fixed sum falls from 23 to 19, supplying the remaining
+four units. On the best-layout optimum face:
+
+  blue_iron_ore ranges from  9 to 13
+  source_ore    ranges from  6 to 10
+  their sum is fixed at 19
+
+All 19 commodities still have positive mismatch. Exact routing is therefore not
+reached.
+
+Geometry and domain effect
+--------------------------
+The best move changes the free geometry as follows:
+
+  free component count       83 -> 81
+  largest component          414 -> 457
+  free adjacency             1158 -> 1156
+  meaningful binding patterns 13390 -> 13445
+
+This is the first candidate that improves the exact shared interface by a large
+amount while adjacency itself slightly decreases. It confirms that the correct
+signal is terminal-component compatibility, not any single global morphology
+score.
+
+The next pair
+-------------
+The best candidate's residual boundary atlas points first to:
+
+  mandatory::group::manufacturing_3x3::crusher_source::4::6191
+
+That literal touches 17 residual mismatch observations. It is also independently
+strong in E015: its best unary repair reaches objective 192. The evidence-derived
+first pair is therefore:
+
+  crusher_sandleaf group pose 2186 -> 15830
+  crusher_source group pose 6191 -> jointly selected alternative
+
+The second replacement pose is not fixed by E015. It must be re-enumerated after
+the first move because the first move opens one region and occupies another.
+
+Aggregate capacity belongs before component support
+---------------------------------------------------
+E014 labelled three protocol-core alternatives COMPONENT_INFEASIBLE because it
+jumped from owner-domain nonemptiness directly to the all-component model. E015
+replays those candidates with every component guard false:
+
+  protocol-core pose 7432: 48 surviving generic-output slots, INFEASIBLE
+  protocol-core pose 7433: 49 surviving generic-output slots, INFEASIBLE
+  protocol-core pose 7434: 49 surviving generic-output slots, INFEASIBLE
+
+The exact required generic-output total is 52. Every owner has a nonempty local
+domain and there is no fixed duplicate contradiction, yet the aggregate binding
+capacity is insufficient.
+
+The corrected interface order is therefore:
+
+  static owner-domain filtering
+  -> aggregate binding resource and demand feasibility
+  -> terminal uniqueness
+  -> shared component-aware binding
+  -> exact simultaneous routing
+
+This is a distinct family from component reachability. Per-owner domain
+nonemptiness does not imply global binding feasibility.
+
+New inner partition
+-------------------
+E015 supplies the first true gradient for a joint placement-binding layer. The
+next model need not release all 16 E013 variables. It can start from one proved
+unary improvement and one residual partner:
+
+  freeze outside E009 geometry
+  -> fix crusher_sandleaf at replacement pose 15830
+  -> release crusher_source pose 6191
+  -> enumerate exact placement/power alternatives
+  -> preserve owner domains and aggregate binding capacity
+  -> optimize one shared all-commodity component objective
+  -> enter exact routing only at zero mismatch
+
+Truth boundary
+--------------
+The value 186 is exact for the fixed best placement and one shared binding model.
+It is a necessary coarse-topology score, not routing feasibility. Residual partner
+coverage does not prove pair sufficiency, and the named carrier is a
+materialization of a group-pose change rather than a new instance-level cut.
+
+Decision effect
+---------------
+E016 should exhaust the crusher_source partner alternatives after fixing the
+crusher_sandleaf move. If the pair improves below 186, its residual boundary
+selects the next portfolio member. If it reaches zero, proceed immediately to
+exact routing.

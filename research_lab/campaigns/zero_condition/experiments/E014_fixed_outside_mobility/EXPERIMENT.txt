@@ -86,6 +86,7 @@ Result
 ------
 Completed with verdict PARTIAL_MOBILITY_COMPONENT_WALL_PERSISTS. Fifteen
 manufacturing arms yield 425 exact placement/power alternatives; the selected
-power-pole arm is locked under fixed outside geometry. Static port domains reject
-287 candidates and hard component support rejects the remaining 138. No candidate
-reaches exact routing. See RESULT.txt.
+power-pole arm is locked under fixed outside geometry. Static owner domains reject
+287 candidates; a later aggregate-capacity replay reclassifies three protocol-core
+moves before component support, and the remaining 135 fail component support. No
+candidate reaches exact routing. See RESULT.txt.
