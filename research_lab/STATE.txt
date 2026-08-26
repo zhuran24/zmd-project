@@ -162,10 +162,9 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Which of the two E044 ordinary-objective-146 body geometries becomes the true
-leader after exact geometry-conditioned joint port-mode, operation-assignment,
-and binding reoptimization, and does the joint response justify another
-singleton geometry or force a simultaneous body-pair neighborhood?
+Which bounded singleton body portfolio is proposed by the fully materialized
+objective-145 endpoint, and does the best geometry-conditioned joint response
+improve by at least two units or force a simultaneous body-pair neighborhood?
 
 Current campaign posture
 ------------------------
@@ -425,11 +424,20 @@ a one-cell 5x5 planter move with 76 components and largest component 479, and th
 composition of the retained 6x4 move with an outside 3x3 relocation, also with 76
 components but largest component 520.
 
-The 146 values are proposals only. Both seeds now receive exact calibration and a
-fresh joint port-mode/assignment/binding solve. A strict joint winner becomes the
-next geometry state; a tied joint response retains a geometry beam; no joint gain
-triggers a simultaneous body-pair neighborhood. A zero state enters routing
-immediately.
+E045 reconstructs the E043 Seed A context and verifies each E044 seed differs from
+the immediate 147 parent by exactly one body move. Both ordinary 146 endpoints
+calibrate exactly. Seed A's 5x5 planter geometry remains OPTIMAL 146 after freeing
+the middle layer. Seed B's outside 3x3 geometry reaches OPTIMAL 145 and is the
+strict winner; its singleton body selects same-footprint pose 5343. The audited
+ore-pair sum remains 14, so the one-unit reoptimization gain lies in the fixed
+commodity ledger.
+
+Seed B's fully materialized 145 endpoint replaces the E044 proposer tie. Rebuild
+its residual causes and actual body mobility. One more bounded singleton-body
+portfolio is admitted because this body contributed two units relative to the
+previous joint parent 147. If the next geometry-conditioned joint winner improves
+by at most one unit, stop singleton expansion and construct a simultaneous
+body-pair neighborhood. A zero state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

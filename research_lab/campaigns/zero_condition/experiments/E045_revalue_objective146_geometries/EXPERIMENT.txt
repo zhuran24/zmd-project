@@ -1,0 +1,75 @@
+EXPERIMENT E045: REVALUE THE TWO OBJECTIVE-146 BODY GEOMETRIES WITH THE JOINT MIDDLE LAYER
+================================================================================================
+
+Question
+--------
+Which of E044's two ordinary-objective-146 body geometries becomes the true
+continuation leader after exact geometry-conditioned port-mode,
+operation-assignment, and binding reoptimization?
+
+Seeds
+-----
+Seed A moves planter_buckwheat_007 one cell down from pose 11045 to 11046 while
+retaining E043's 6x4 body move.
+
+Seed B moves crusher_sandleaf_003 from pose 2155 to 5342 while retaining E043's
+6x4 body move.
+
+Both have ordinary fixed-layout shared objective 146 but different free-cell
+partitions.
+
+Method
+------
+E045 reconstructs the exact E043 Seed A joint context. The original E041
+25-footprint blocks are first transported onto E043's retained 6x4 geometry, and
+the ten E043 mode-enabled destinations remain active.
+
+Each E044 seed differs from the objective-147 parent by exactly one body outside
+that context. The moved body is added as a singleton conditional mode block. For
+each seed:
+
+  1. fix every operation, port mode, and binding choice;
+  2. reproduce the frozen E044 objective 146 exactly;
+  3. free the joint port-mode, operation-assignment, and binding middle layer;
+  4. materialize and ordinarily replay the best joint endpoint.
+
+The implementation reuses the already checked E043 geometry-seed solver after
+reconstructing the correct E043 context. It does not compare E044's ordinary 146
+values directly.
+
+Decision rule
+-------------
+Objective 0
+  Enter exact routing immediately.
+
+One seed has a strictly lower OPTIMAL joint value
+  Retain that geometry, rebuild its residual/body-response surface, and stop using
+  E044's stale ordinary ranking.
+
+The seeds tie with distinct witnesses
+  Retain a small geometry beam and compare their body-response domains.
+
+Neither seed improves below 146
+  Stop singleton body proposals and build a simultaneous body-pair neighborhood
+  around the objective-147 parent.
+
+Truth boundary
+--------------
+E045 compares only two frozen singleton body moves composed with E043 Seed A.
+Their joint contexts remain bounded to the transported E043 assignment blocks
+plus one singleton moved body. The result does not optimize body geometry inside
+one model, exhaust body pairs, prove component compatibility, reach routing,
+establish a lower bound, or grant certified effect.
+
+Result
+------
+Completed. Both ordinary objective-146 seeds calibrate exactly. Seed A remains
+OPTIMAL 146 after freeing the joint middle layer. Seed B reaches OPTIMAL 145 and
+is the strict geometry winner. Its singleton body chooses same-footprint pose
+5343, and the audited ore-pair sum remains 14; the one-unit gain lies in the fixed
+commodity ledger.
+
+Seed B is retained as the new leading endpoint. See RESULT.txt for context
+reconstruction, exact model sizes, optimum-face audits, and the rule that geometry
+deltas must be measured against the immediate materialized parent rather than an
+older named-instance assignment.

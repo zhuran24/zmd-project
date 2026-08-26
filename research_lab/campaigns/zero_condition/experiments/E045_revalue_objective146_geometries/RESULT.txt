@@ -1,0 +1,191 @@
+E045 RESULT: THE TWO ORDINARY-146 GEOMETRIES DIVERGE UNDER THE JOINT MIDDLE LAYER; SEED B REACHES 145
+====================================================================================================
+
+Status
+------
+Completed as research-only exact geometry-conditioned middle-layer evidence. No
+component-compatible binding, exact routing, whole-layout witness,
+certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/E045_revalue_objective146_geometries/run-001/RESULT.json
+
+SHA-256:
+  eae3662471f5b7d841effd9351351fdba67c329381ed5c65ddcf9dba839045df
+
+Verdict:
+  OBJECTIVE146_GEOMETRY_JOINT_MATERIAL_IMPROVEMENT
+
+Context reconstruction
+----------------------
+E045 first reconstructs the exact E043 Seed A conditional-owner context rather
+than comparing E044's named-instance assignments directly with E041.
+
+That distinction is necessary. Operation reassignment can move a named mandatory
+instance between existing bodies without changing occupied geometry. A naive
+instance-pose diff against E041 reports many apparent moves in E044, even though
+each E044 seed differs from the current E043 parent by exactly one body move.
+
+E045 reconstructs:
+
+  3 operation-assignment blocks
+  25 selected body destinations
+  10 E043 mode-enabled destinations
+
+and then verifies:
+
+  Seed A adds exactly planter_buckwheat_007 pose 11045 -> 11046
+  Seed B adds exactly crusher_sandleaf_003 pose 2155 -> 5342
+
+Both moved bodies are outside the existing 25-body context and therefore enter as
+one-body conditional mode blocks.
+
+Exact calibrations
+------------------
+Both ordinary E044 endpoints are reproduced exactly before any free solve:
+
+  Seed A    expected 146    OPTIMAL 146
+  Seed B    expected 146    OPTIMAL 146
+
+The free joint solves are therefore scientifically admitted.
+
+Seed A joint response
+---------------------
+Seed A moves the 5x5 planter body one cell down. Its free geometry-conditioned
+model contains:
+
+  mode-operation variables            201
+  conditional pattern variables    18,098
+  conditional owners                  201
+  total variables                  30,030
+  total constraints                88,093
+
+It reaches:
+
+  status       OPTIMAL
+  objective    146
+  best bound   146
+  solve time   82.6 s
+
+Ordinary concrete replay agrees. The joint middle layer does not improve this
+geometry beyond its frozen ordinary value.
+
+The exact optimum face varies only blue_iron_ore/source_ore at fixed sum 15.
+
+Seed A endpoint SHA-256:
+
+  6e66f962a9b829a09b9c0d20a4b3c5fdf6824d84806911def8c2f3721b56f21a
+
+Seed B joint response
+---------------------
+Seed B composes the retained 6x4 move with the outside 3x3 crusher body. Its free
+geometry-conditioned model contains:
+
+  mode-operation variables            201
+  conditional pattern variables    17,612
+  conditional owners                  201
+  total variables                  29,534
+  total constraints                86,524
+
+It reaches:
+
+  status       OPTIMAL
+  objective    145
+  best bound   145
+  solve time   68.6 s
+
+Ordinary concrete replay agrees. The singleton body chooses pose 5343, which has
+the same occupied cells as frozen pose 5342 but another port mode. The body
+geometry remains E044 Seed 2's 76-component partition with largest component 520.
+
+Relative to the frozen ordinary objective-146 endpoint, the direct vector changes:
+
+  blue_iron_block          +1
+  blue_iron_ore            -2
+  buckwheat                +1
+  buckwheat_powder         -2
+  dense_blue_iron_powder   +1
+  fine_buckwheat_powder    -1
+  sandleaf                 -1
+  sandleaf_powder          +1
+  source_ore               +2
+  steel_block              -1
+
+The exact optimum-face audit proves blue_iron_ore/source_ore remain at fixed sum
+14. Their direct exchange is not structural. The fixed-commodity ledger nets -1,
+which is the exact 146 -> 145 improvement.
+
+Seed B endpoint SHA-256:
+
+  94a2497f57b54259b9cf5fd218e0cde11b6ca3c0d2fd8af53c3b304b34dd1214
+
+Combined optimum-face audit SHA-256:
+
+  10e2f8b6d4375e15cc8bec92ee1edcfdbd24894bef1b9b850effee302c9497cf
+
+Interpretation
+--------------
+The ordinary 146 tie had no continuation meaning:
+
+  Seed A    146 -> 146
+  Seed B    146 -> 145
+
+The geometry carrying the larger free component and the outside 3x3 move is the
+strict joint winner, even though the ordinary proposer could not distinguish the
+seeds.
+
+The result also exposes an object-space rule for the outer loop:
+
+  body geometry deltas must be measured relative to the immediate materialized
+  parent geometry, not by named-instance pose differences against an older
+  operation assignment.
+
+Otherwise operation reassignment is miscounted as physical body motion.
+
+Architecture effect
+-------------------
+The geometry state now consists of:
+
+  occupied body set
+  admitted mode destinations
+  operation-assignment context
+  materialized binding endpoint
+  exact joint continuation value
+
+An ordinary fixed-layout score is only a proposal attribute. It cannot quotient
+two geometries or decide retention.
+
+Decision effect
+---------------
+Retain and fully materialize Seed B's objective-145 endpoint. Rebuild its residual
+cause and body-response surface from scratch. Since the new body contributed two
+units relative to the previous joint parent 147, one more bounded singleton-body
+portfolio remains justified. If the next geometry-conditioned joint winner
+improves by at most one unit, stop singleton geometry expansion and construct a
+simultaneous body-pair neighborhood.
+
+A zero state enters exact routing immediately.
+
+Truth boundary
+--------------
+E045 compares only two E044 singleton body geometries, each composed with E043
+Seed A and each evaluated in one bounded conditional mode/assignment/binding
+context. Objective 145 is not a global body-geometry optimum,
+component-compatible binding, routing witness, lower bound, or certified claim.
+All 19 commodity mismatch counts remain positive.
+
+Frozen artifact identities
+--------------------------
+Seed A best assignment:
+  06611136869b17cd0ec3b7389e10e56e7d50609358c3988269fd3e47314da729
+
+Seed A joint witness:
+  e181703addf49b431c1cb5733c69e4ad7e086538c9dc1e5ebfb410af1f0977dc
+
+Seed B best assignment:
+  216344c1ff593b228e2adf28cd67c04b33c9b7bc28a23c4c5a5793868669bd9f
+
+Seed B joint witness:
+  e9234fb495fbff91b273eaeb6b13dd3b51649ff6276a011b19805ce4a8c8e913
