@@ -1,0 +1,67 @@
+EXPERIMENT E021: fifth-step continuation across objective-174 classes
+====================================================================
+
+Question
+--------
+Do the four leading objective-174 free-space classes expose different exact
+continuation values when crusher_source pose 6125 is moved under the same
+fixed-outside semantics?
+
+Why this is the next discriminator
+----------------------------------
+E020 shows that refinery pose 5343 improves every eligible objective-176 seed to
+the same best value 174. The parents and children nevertheless differ in action
+domain, free-space identity, and binding-selection identity.
+
+A beam should retain those differences only when they alter future construction.
+E021 therefore takes one representative from each of the four retained
+objective-174 free-space classes and applies a fifth action that remains selected
+in all four:
+
+  mandatory::group::manufacturing_3x3::crusher_source::4::6125
+
+Evaluation
+----------
+For each class, E021 reconstructs the exact frozen E017 seed and E020 refinery
+child, verifies placement and power, exhausts every fixed-outside alternative for
+pose 6125, and evaluates:
+
+  owner-domain feasibility
+  aggregate generic I/O and terminal uniqueness
+  one shared component-mismatch optimum over all 19 commodities
+  exact routing only if the shared objective reaches zero
+
+Parents and base-feasible children are deduplicated by placement plus binding
+selection. The focused class beam has width four and preserves free-space and
+binding-selection diversity after exact objective ranking.
+
+Competing readings
+------------------
+A. Best fifth-step objectives differ. The objective-174 classes have measured
+   continuation-value differences, and beam retention is justified by more than
+   representation.
+
+B. Every class reaches the same improved objective. The classes can be quotiented
+   for this action, though their action-domain signatures remain available for
+   other moves.
+
+C. Every class fails to improve, but candidate domains differ. Sequential unary
+   motion is saturating; the next representation should combine two unresolved
+   pose variables or place binding variables inside the same neighborhood.
+
+D. A child reaches zero. It enters exact routing immediately.
+
+Truth boundary
+--------------
+E021 is exhaustive only for pose 6125 on four selected objective-174 class
+representatives. It does not exhaust all fifth actions or prove the focused beam
+complete.
+
+Result
+------
+Completed with verdict FIFTH_STEP_CLASS_INVARIANT_IMPROVEMENT. Across the four
+objective-174 class representatives, 216 alternatives yield 158 owner-domain
+failures and 58 OPTIMAL shared bindings. Every class reaches objective 173 through
+pose 6125 -> 6123, while feasible child counts differ from 11 to 23. The exact
+objective-173 face varies only blue_iron_ore 8-12 and source_ore 5-9 with fixed
+sum 17. No commodity reaches zero and routing is not entered. See RESULT.txt.

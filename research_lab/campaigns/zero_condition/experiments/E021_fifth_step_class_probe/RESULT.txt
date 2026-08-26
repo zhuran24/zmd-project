@@ -1,0 +1,137 @@
+E021 RESULT: ONE FIFTH ACTION IS VALUE-INVARIANT BUT NOT DOMAIN-INVARIANT
+============================================================================
+
+Status
+------
+Completed as research-only beam-continuation evidence. No exact routing witness,
+whole-layout claim, certification, U/L, owner, or publication effect is granted.
+
+Frozen evidence
+---------------
+Main result:
+  research_lab/local/zero_condition/E021_fifth_step_class_probe/run-001/RESULT.json
+  sha256 bf582d3a86b8308a8816b447b4b484f7d64044988003236a41fa384457e2bdb9
+
+Beam manifest:
+  research_lab/local/zero_condition/E021_fifth_step_class_probe/run-001/CLASS_BEAM_MANIFEST.json
+  sha256 abb73768c4b4590d31f9c9dc055a04c8bede775f2ce508c76fe989a4e2605787
+
+Best assignment / layout:
+  BEST_FIFTH_ASSIGNMENT.json
+  sha256 76b622bf8968275e68a3420cf6afb9a57bab1326e708c273a60b98e2a06037d9
+
+  BEST_FIFTH_LAYOUT.json
+  sha256 262b9f2ded93d4c48ffae0fa0192b851c23165d8d79a19f878e4cbfc75950755
+
+Optimum-face audit:
+  OPTIMUM_FACE_AUDIT.json
+  sha256 bc6e729eaf6d25caa35560be0f514e820162ff91c1bfde344c2d0a937e1b099f
+
+Verdict:
+  FIFTH_STEP_CLASS_INVARIANT_IMPROVEMENT
+
+Common fifth action
+-------------------
+E021 takes one representative from each of the four leading E020 objective-174
+free-space classes and exhausts every fixed-outside alternative for:
+
+  mandatory::group::manufacturing_3x3::crusher_source::4::6125
+
+Across the four parents, 216 exact placement alternatives are evaluated:
+
+  owner-domain empty        158
+  shared-binding OPTIMAL     58
+
+No candidate reaches zero component mismatch, so exact routing is not entered.
+
+Continuation value
+------------------
+Every class has the same best exact response:
+
+  parent objective           174
+  best child objective       173
+  delta                       -1
+  best replacement pose     6123, p_x23_y24_o0_m_BT
+
+The best-objective range across classes is therefore zero. For this action, the
+four parent classes form one exact continuation-value equivalence class.
+
+Action domains remain different
+-------------------------------
+The equal best value does not collapse the underlying search domains:
+
+  class   alternatives   owner-empty   OPTIMAL children
+    1          51             40              11
+    2          51             38              13
+    3          59             36              23
+    4          55             44              11
+
+After placement-plus-binding deduplication, the combined child pool contains:
+
+  62 distinct placement states
+  58 distinct binding-selection states
+  17 distinct free-cell sets
+
+The retained width-four beam keeps one exact-scored child per free-space class.
+All four have objective 173 but retain different placement, binding-selection,
+component, and surviving-pattern identities. Their surviving binding-pattern
+counts range from 13427 to 13443; free-component counts range from 79 to 81.
+
+Exact optimum face
+------------------
+The best child's objective-173 face is independently replayed. Only the two
+exact generic-output commodities vary:
+
+  blue_iron_ore   8 .. 12
+  source_ore      5 ..  9
+  fixed sum              17
+
+The other 17 commodity mismatch values are fixed. The fifth action therefore
+reduces the same shared ore bottleneck by one unit rather than selecting a
+fortuitous endpoint of a broad optimum face.
+
+Current objective chain
+-----------------------
+The exact shared-binding construction chain is now:
+
+  E009 baseline       200
+  E015 unary          186
+  E016 pair           178
+  E017 triple         176
+  E018 fourth         174
+  E021 fifth          173
+
+All 19 commodities remain positive at the current best state. The chain is a
+research construction path under fixed-outside neighborhoods, not a global
+no-ghost bound or proof that these moves are necessary.
+
+Outer-loop consequence
+----------------------
+Beam quotienting must be action-specific:
+
+  score quotient
+    The four parents can share one value label for action 6125 because every
+    branch reaches 173.
+
+  action-domain signature
+    They cannot be merged into one search state because their feasible child
+    counts and objective distributions differ.
+
+  witness identity
+    Placement, free-space, and binding-selection identities remain separate from
+    both score and action-domain summaries.
+
+Truth boundary
+--------------
+E021 is exhaustive only for one fifth target over four selected objective-174
+class representatives. It does not prove other actions invariant, the beam
+complete, or sequential unary motion sufficient.
+
+Decision effect
+---------------
+The next experiment should compute residual boundary/action rankings separately
+for the four objective-173 retained states. A common high-ranking action can be
+replayed across the beam; divergent rankings define state-specific branches. If
+single actions continue to yield only one-unit gains, the representation should
+move to a simultaneous two-pose or pose-binding neighborhood rather than extend a
+long unary chain.

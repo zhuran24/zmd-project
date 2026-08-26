@@ -866,6 +866,42 @@ evidence:
   beam manifest sha256
   a6e01df86ad1d230c82ca70d17118a5a5355b2c3fd57cf5b1cea84d4517b5f91.
 
+R-ZC-032  Fifth-step value is class-invariant while feasible action domains remain distinct
+------------------------------------------------------------------------------------------------
+status: four-class exhaustive common-action replay plus exact optimum-face audit
+scope: crusher_source pose 6125 across four E020 objective-174 free-space representatives
+
+statement:
+  E021 exhausts 216 fixed-outside alternatives. One hundred fifty-eight empty an
+  owner domain and 58 shared-binding models are OPTIMAL. Every class improves
+  174 -> 173 through pose 6125 -> 6123, so this action has zero continuation-value
+  range across the four representatives. The feasible child counts nevertheless
+  differ 11, 13, 23, and 11; the combined pool contains 62 placement identities,
+  58 binding-selection identities, and 17 free-cell sets. The objective-173 face
+  varies only blue_iron_ore 8-12 and source_ore 5-9 with fixed sum 17. All 19
+  commodities remain positive.
+
+non-implications:
+  Action-value invariance for pose 6125 does not prove the four beam states
+  globally equivalent, other actions invariant, or sequential unary motion
+  sufficient. The value 173 is not a global no-ghost bound or routing witness.
+
+effect on next problem:
+  Quotient beam states only for the tested action's value while retaining their
+  action-domain and placement/binding identities. Recompute residual action
+  rankings on each objective-173 child. Shared high-ranked actions receive
+  cross-state replay; divergent rankings define state-specific branches. If the
+  next unary gains remain marginal, move to a simultaneous two-pose or
+  pose-binding neighborhood.
+
+evidence:
+  E021 RESULT.txt; main result sha256
+  bf582d3a86b8308a8816b447b4b484f7d64044988003236a41fa384457e2bdb9;
+  beam manifest sha256
+  abb73768c4b4590d31f9c9dc055a04c8bede775f2ce508c76fe989a4e2605787;
+  optimum-face audit sha256
+  bc6e729eaf6d25caa35560be0f514e820162ff91c1bfde344c2d0a937e1b099f.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

@@ -99,7 +99,11 @@ probes and the first checked feedback replay now show a causal progression:
     seeds. Every branch reaches best objective 174, but alternatives range 51-63,
     base-feasible children 9-23, and the child-objective histograms and best
     geometries differ. Beam state now needs score, action-domain, and witness
-    identities as separate layers.
+    identities as separate layers;
+  * E021 applies crusher-source pose 6125 to four objective-174 free-space class
+    representatives. All four improve exactly one unit to 173 through pose 6123,
+    but feasible child counts remain 11, 13, 23, and 11. The optimum face keeps
+    only the ore-pair exchange and lowers its fixed sum 18 -> 17.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -107,10 +111,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-When crusher-source pose 6125 is applied to one representative from each of the
-four leading objective-174 free-space classes, do the fifth-step exact objectives
-diverge, and can action-response signatures safely quotient states that raw
-placement and binding identities keep separate?
+Do the four retained objective-173 beam states expose the same residual
+boundary-action ranking, and which common or state-specific next move best
+distinguishes continued unary progress from the need for a simultaneous
+pose-binding neighborhood?
 
 Current campaign posture
 ------------------------
@@ -204,20 +208,26 @@ descendants. Representational difference is therefore necessary metadata, not
 sufficient evidence of continuation value. Boundary coverage proposes actions;
 only cross-state exact replay tells whether a branch deserves retention.
 
-E020 has now tested that known-composing action. All eight eligible seeds reach
-174, so they are equivalent at the best one-step value. They are not equivalent
-as search states: candidate counts, domain-survival counts, objective histograms,
-and best replacement geometries differ substantially. The outer loop therefore
-records three separate identities: score/optimum-face, action-response domain,
-and placement/binding witness.
+E020 has tested the first known-composing beam action. All eight eligible seeds
+reach 174, so they are equivalent at the best one-step value. They are not
+equivalent as search states: candidate counts, domain-survival counts, objective
+histograms, and best replacement geometries differ substantially. The outer loop
+therefore records three separate identities: score/optimum-face,
+action-response domain, and placement/binding witness.
 
-The next experiment takes one representative from each of the four leading
-objective-174 free-space classes and exhausts crusher-source pose 6125, which is
-still selected in all four. This is the first fifth-step cross-class probe. If
-objectives diverge, the classes have measured continuation-value differences. If
-they remain invariant, the beam may quotient them for that action while keeping
-their distinct action-domain signatures available for other moves. A zero state
-enters routing immediately.
+E021 now shows that the next crusher-source action is also exact-value invariant:
+all four class representatives reach 173 through pose 6123. The shared optimum
+face remains one-dimensional and its ore-pair sum falls to 17, so the gain is
+structural rather than an arbitrary binding endpoint. Yet the four action domains
+remain unequal and all 19 commodities stay positive.
+
+The next experiment therefore does not choose another action from one canonical
+state. It reconstructs residual mismatch-boundary rankings independently for the
+four retained objective-173 states, transports them into current group-pose
+literals, and compares their common and branch-specific action surfaces. A shared
+leader receives cross-state exact replay. Divergent leaders define a diversified
+beam. If another unary round yields only marginal gains, the sequential chain
+ends and the next object is a simultaneous two-pose or pose-binding neighborhood.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not
