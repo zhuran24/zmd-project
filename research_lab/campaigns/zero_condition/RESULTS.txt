@@ -1735,11 +1735,56 @@ evidence:
   E045 RESULT.txt; local RESULT.json sha256
   eae3662471f5b7d841effd9351351fdba67c329381ed5c65ddcf9dba839045df;
   Seed A endpoint sha256
-  6e66f962a9b829a09b9c0d20a4b3c5fdf6824d84806911def8c2f3721b56f21a;
+  ff394af513f81b82d3ff321979622cd642e30ff9e4bc46677197af0072aa5b30;
   Seed B endpoint sha256
-  94a2497f57b54259b9cf5fd218e0cde11b6ca3c0d2fd8af53c3b304b34dd1214;
+  ddcb3be7a67a86739c7ffc914f0e5bb722a5fe02ec593ce4bfb925b7b02eb67b;
   optimum-face audits sha256
   10e2f8b6d4375e15cc8bec92ee1edcfdbd24894bef1b9b850effee302c9497cf.
+
+R-ZC-057  Integrated singleton-body revaluation saturates at 144
+------------------------------------------------------------------
+status: exact budget-six body portfolio, two materialized geometries, two joint revaluations, face audits
+scope: E045 objective-145 endpoint and its residual-selected singleton-body neighborhood
+
+statement:
+  E046 reconstructs 145 mismatch observations and selects six body targets covering
+  70/145. Twenty-one body children reach ordinary OPTIMAL values and nine distinct
+  free geometries are novel. The retained planter-buckwheat geometry reaches
+  ordinary 144, calibrates exactly at 144, and remains joint OPTIMAL 144 after
+  port mode, operation assignment, and binding are freed. The second geometry
+  remains 148. Seed A's exact optimum face keeps blue_iron_ore/source_ore at fixed
+  sum 14, and all 19 commodity mismatches remain positive.
+
+non-implications:
+  Objective 144 is not a global singleton-body or geometry optimum, component-
+  compatible binding, routing witness, lower bound, or certified claim. The
+  budget-six portfolio is a proposer and does not exhaust simultaneous body pairs.
+
+  The first tool invocation stopped after Seed A and exposed incomplete checkpoint
+  continuation in E046. The repaired runner reuses and validates the original arm,
+  seed, and joint checkpoints under their frozen computational runner hash. The
+  preliminary FAILURE.json is non-scientific and does not override the terminal
+  RESULT.json.
+
+effect on next problem:
+  Stop serial singleton-body expansion: the best integrated response is only
+  145 -> 144, below the two-unit material threshold. Retain the fully materialized
+  144 geometry and construct a bounded simultaneous body-pair neighborhood from
+  residual incidence, actual mobility, and complementary single-body responses.
+  Every admitted pair must be ranked after the faithful joint middle layer is
+  rebuilt; objective zero enters exact routing immediately.
+
+evidence:
+  E046 RESULT.txt; local RESULT.json sha256
+  cd9c45fd0c57af15306329758ad80ecf14962ba27c680cda91b0c4e8cebf59c0;
+  arm manifest sha256
+  0702d538ddc54a1816739af9327b2c52c881d9eff336630651d3896ba3c77006;
+  Seed A endpoint sha256
+  eabbd025a69e18e905604e47f72076af11317f99c5b03d6c0ca601f0190ad59e;
+  Seed B endpoint sha256
+  e88686ab350e72766528f5d9d0e4cd9748aeb1149eb27b60b29dc8e3fa022f4f;
+  optimum-face audits sha256
+  f77a303d9a47bf41d8d24f332095352f34f1d9109478a943d55abaf55d6a9924.
 
 Current synthesis
 -----------------

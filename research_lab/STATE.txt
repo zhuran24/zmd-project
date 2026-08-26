@@ -162,9 +162,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Which bounded singleton body portfolio is proposed by the fully materialized
-objective-145 endpoint, and does the best geometry-conditioned joint response
-improve by at least two units or force a simultaneous body-pair neighborhood?
+Which bounded simultaneous body-pair neighborhood is selected by the fully
+materialized objective-144 endpoint's residual causes, actual mobility, and
+single-body response atlas, and can pair geometry plus the faithful joint middle
+layer lower 144 materially or reach component compatibility?
 
 Current campaign posture
 ------------------------
@@ -432,12 +433,19 @@ strict winner; its singleton body selects same-footprint pose 5343. The audited
 ore-pair sum remains 14, so the one-unit reoptimization gain lies in the fixed
 commodity ledger.
 
-Seed B's fully materialized 145 endpoint replaces the E044 proposer tie. Rebuild
-its residual causes and actual body mobility. One more bounded singleton-body
-portfolio is admitted because this body contributed two units relative to the
-previous joint parent 147. If the next geometry-conditioned joint winner improves
-by at most one unit, stop singleton expansion and construct a simultaneous
-body-pair neighborhood. A zero state enters routing immediately.
+Seed B's fully materialized 145 endpoint replaces the E044 proposer tie. E046
+then integrates singleton body proposal and joint revaluation in one loop. Its
+budget-six body portfolio covers 70/145 observations and finds nine novel free
+geometries, but the best planter-buckwheat move reaches only joint OPTIMAL 144;
+the second selected geometry remains 148. The objective-144 face keeps the ore
+pair at fixed sum 14 and all 19 commodities remain positive.
+
+The singleton-body axis therefore stops at its predeclared threshold. The next
+object is a simultaneous body-pair neighborhood built from the 144 residual,
+actual pair compatibility, complementary causal coverage, and the single-body
+response atlas. Pair geometry is only a proposer object; every retained pair must
+be recalibrated and revalued by the faithful joint port-mode, operation-assignment,
+and binding middle layer. A zero state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

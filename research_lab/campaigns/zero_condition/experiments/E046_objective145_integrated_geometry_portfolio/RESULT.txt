@@ -1,0 +1,149 @@
+E046 RESULT: SINGLETON BODY EXPANSION SATURATES AT JOINT OBJECTIVE 144
+=====================================================================
+
+Status
+------
+Completed as research-only exact singleton-body and geometry-conditioned joint
+evidence. No component-compatible binding, exact routing, whole-layout witness,
+certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/E046_objective145_integrated_geometry_portfolio/
+    run-001/RESULT.json
+
+SHA-256:
+  cd9c45fd0c57af15306329758ad80ecf14962ba27c680cda91b0c4e8cebf59c0
+
+Verdict:
+  OBJECTIVE145_SINGLETON_GEOMETRY_SATURATION_SIGNAL
+
+Decision:
+  BUILD_SIMULTANEOUS_BODY_PAIR_NEIGHBORHOOD
+
+Residual body portfolio
+-----------------------
+The objective-145 endpoint has:
+
+  mismatch observations          145
+  current boundary literals      315
+  budget-six coverage             70 / 145 = 48.28%
+  ordinary OPTIMAL body children  21
+  distinct novel free geometries   9
+
+The ordinary body-objective distribution is:
+
+  144 x 2
+  148 x 2
+  149 x 2
+  150 x 6
+  151 x 2
+  152 x 1
+  155 x 3
+  156 x 2
+  158 x 1
+
+The six target arms show sharply different mobility. Packaging-battery and
+seed-collector targets have no domain-valid body child. The refinery-blue-iron
+arm bottoms out at 148; the crusher-sandleaf arm at 152. The only ordinary-144
+geometry in the retained two-seed set moves planter_buckwheat_007:
+
+  pose 11045  p_x42_y64_o0_m_LR
+    ->
+  pose 11046  p_x42_y65_o0_m_RL
+
+Its free-space morphology is:
+
+  free cells                1144
+  free components             75
+  largest component          520
+  free adjacency            1159
+
+Geometry-conditioned joint values
+---------------------------------
+Both selected geometries recalibrate exactly at their frozen ordinary values.
+The faithful middle layer is then released on each geometry:
+
+  Seed A   ordinary 144   calibration 144   joint OPTIMAL 144
+  Seed B   ordinary 148   calibration 148   joint OPTIMAL 148
+
+Seed A therefore improves the objective-145 parent by only one unit. Its joint
+middle layer finds no additional reduction. Seed B remains harmful.
+
+The fully materialized Seed A endpoint is:
+
+  research_lab/local/zero_condition/E046_objective145_integrated_geometry_portfolio/
+    run-001/SEED_A_BEST_ENDPOINT.json
+
+SHA-256:
+  eabbd025a69e18e905604e47f72076af11317f99c5b03d6c0ca601f0190ad59e
+
+Its exact commodity vector remains positive for all 19 commodities. No component-
+compatible binding exists in this experiment and exact routing is not entered.
+
+Optimum-face audit
+------------------
+The objective-144 Seed A face varies only:
+
+  blue_iron_ore   5..9
+  source_ore      5..9
+  fixed sum          14
+
+All other 17 commodity values are fixed. Seed B's objective-148 face has ore-pair
+fixed sum 15. The Seed A one-unit gain is therefore not an arbitrary ore-pair
+exchange within one face.
+
+Audit SHA-256:
+  f77a303d9a47bf41d8d24f332095352f34f1d9109478a943d55abaf55d6a9924
+
+Singleton stop signal
+---------------------
+The predeclared material threshold is two units. The best integrated singleton
+body response is only:
+
+  145 -> 144
+
+Continuing to select one body, freeze all others, and reoptimize the middle layer
+would recreate a manually scheduled unary climb. E046 therefore stops that action
+language. The next object is a simultaneous body-pair neighborhood in which two
+causally complementary body variables move before one faithful joint middle-layer
+solve ranks the combined geometry.
+
+Resumability finding
+--------------------
+The first E046 invocation reached the tool-call time boundary after completing all
+six arms, both ordinary seeds, and Seed A joint revaluation. This exposed three
+non-scientific continuation defects:
+
+  the arm manifest was written exclusively on every invocation
+  materialized ordinary seeds could not be reloaded
+  layout replay compared generated timestamps
+
+The repaired runner validates and reuses exact existing bytes. Checkpoints retain
+the original computational runner SHA-256:
+
+  11be18751ce88dae029f1af1004ab0f7c10702f297a4f3b605cc42b54b0e414d
+
+The final resumability wrapper SHA-256 is:
+
+  b15363594654d497dc18f2a53eb12b75cc1ce0bedd3c2149acd9c40649d69648
+
+A preliminary FAILURE.json records the first manifest-resume failure. It occurred
+before a new scientific solve and has no result authority. The final RESULT.json
+contains the completed terminal result and explicit resume provenance.
+
+Decision effect
+---------------
+Retain the objective-144 Seed A geometry as the leading construction state. Build
+a bounded simultaneous body-pair proposer from its residual boundary incidence,
+actual pair mobility, and the single-body response atlas. Rank each admitted pair
+only after rebuilding the joint port-mode, operation-assignment, and binding
+middle layer. A zero joint state enters exact routing immediately.
+
+Truth boundary
+--------------
+E046 is exhaustive only for one budget-six singleton-body portfolio and two new
+geometry-conditioned joint states. Objective 144 is not a global no-ghost bound,
+a component-compatible binding, a routing witness, a lower bound, or a certified
+claim.

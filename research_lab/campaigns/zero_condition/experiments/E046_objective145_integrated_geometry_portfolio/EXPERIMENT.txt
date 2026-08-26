@@ -1,0 +1,80 @@
+EXPERIMENT E046: OBJECTIVE-145 INTEGRATED SINGLETON-BODY PORTFOLIO
+==================================================================
+
+Question
+--------
+Does the fully materialized objective-145 endpoint still contain a singleton body
+relocation whose value remains at least two units after port mode, operation
+assignment, and binding are jointly reoptimized on the new geometry, or has the
+singleton body axis saturated and forced a simultaneous body-pair neighborhood?
+
+Why this experiment
+-------------------
+E044 and E045 separated ordinary body-proposal value from geometry-conditioned
+joint value, but they still required two experiments. E046 integrates the cycle:
+
+  residual body proposal
+    -> exact fixed-outside ordinary screening
+    -> novel geometry materialization
+    -> exact geometry-conditioned joint middle-layer revaluation
+
+The outer loop therefore proposes geometry but no longer publishes an ordinary
+binding value as the geometry's continuation value.
+
+Method
+------
+E046 starts from the E045 objective-145 assignment and fully materialized binding
+endpoint. It reconstructs all 145 mismatch-component observations and all current
+boundary literals. Among one-source mandatory or optional movable literals, it
+selects an exact budget-six body portfolio by maximum residual coverage.
+
+For every selected current literal it exhausts all non-overlapping,
+power-preserving fixed-outside pose alternatives through the ordinary shared
+binding objective. Same-footprint mode changes are excluded from the body axis.
+Previously measured free-cell geometries are recognized by free-cell-set digest.
+At most two distinct new geometries are materialized.
+
+Each materialized geometry is then calibrated at its ordinary endpoint and solved
+again with the faithful joint middle layer inherited from E045:
+
+  conditional same-body port modes
+  operation-to-footprint assignment
+  native binding domains
+  aggregate binding resources
+  terminal uniqueness
+  component-aware shared mismatch objective
+
+The E046 runner supports checkpointed continuation. An initial five-minute tool
+window ended after Seed A. The original implementation was only partly resumable:
+arm checkpoints existed, but the arm manifest and materialized seeds were not
+idempotent, and a layout check compared timestamps. E046 now validates and reuses
+those exact bytes while recording both the pre-resume computational runner hash
+and the current resumability wrapper hash. Those repairs change no candidate or
+objective semantics.
+
+Decision rule
+-------------
+Joint objective 0
+  Enter exact routing immediately.
+
+Best joint objective <= 143
+  Retain the singleton geometry and recompute its residual body surface.
+
+Best joint objective 144 or worse
+  Stop serial singleton-body expansion and construct a simultaneous body-pair
+  neighborhood.
+
+Calibration failure
+  Reject the geometry context and repair fidelity before using any free result.
+
+Truth boundary
+--------------
+E046 exhausts one exact budget-six residual-selected singleton-body portfolio under
+one objective-145 parent and gives exact joint middle-layer values to at most two
+new free-cell geometries. It does not exhaust all body relocations or pairs, prove
+a necessary placement, establish component compatibility, enter routing, change
+U/L, or grant certification authority.
+
+Result
+------
+Completed. See RESULT.txt.
