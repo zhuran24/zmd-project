@@ -1,0 +1,59 @@
+EXPERIMENT E027: final serial-unary discriminator on the objective-168 leader
+=============================================================================
+
+Question
+--------
+Does the objective-168-specific crusher_sandleaf pose 2155 produce a material
+shared component-mismatch gain, or has fixed-outside serial unary motion reached
+its useful limit?
+
+Why this action
+---------------
+E025 ranks pose 2155 as the strongest objective-168 action distinct from the
+common packaging action. E026 then rejects that common action completely at the
+static owner-domain layer. Pose 2155 therefore becomes the highest live
+branch-specific unary candidate.
+
+The action has 51 exact placement- and power-valid alternatives under the E024
+leader. It is large enough to test real continuation, but still bounded enough to
+exhaust without choosing a new global factory topology.
+
+Method
+------
+E027 freezes the E024 objective-168 placement outside the selected
+crusher_sandleaf group pose, verifies exact power coverage, enumerates all 51
+alternatives, and evaluates one shared component-mismatch optimum over all 19
+commodities for every base-feasible child.
+
+The exact compact binding endpoint of the winning candidate is materialized,
+including selected components, rather than leaving only a digest. A zero child is
+sent directly to exact routing.
+
+Decision rule
+-------------
+Improvement of at least two units
+  Retain the child as a real beam advance. Recompute its residual surface before
+  deciding whether any further unary step is justified.
+
+Improvement of one unit, equality, or harm
+  End serial unary expansion. The next construction object is a simultaneous
+  two-pose or pose-binding neighborhood.
+
+No base-feasible child
+  Retire the action at its earliest exact rejecting layer and move directly to the
+  simultaneous neighborhood.
+
+Truth boundary
+--------------
+The experiment is exhaustive only for one current group pose with the outside
+placement fixed. A negative result does not prove the group globally immovable or
+exclude useful joint motion. A positive mismatch gain is not a routing witness.
+
+Result
+------
+Completed with verdict SERIAL_UNARY_SATURATION_SIGNAL. Fifty-one exact
+alternatives yield 47 empty owner domains and four shared-binding optima; the
+best move lowers 168 only to 167, below the predeclared two-unit material-gain
+threshold. The exact winning binding endpoint is fully materialized. Serial unary
+motion stops and the next object is a simultaneous placement neighborhood. See
+RESULT.txt.

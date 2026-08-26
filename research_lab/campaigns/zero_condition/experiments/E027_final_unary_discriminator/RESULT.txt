@@ -1,0 +1,102 @@
+E027 RESULT: SERIAL FIXED-OUTSIDE UNARY MOTION HAS REACHED ITS STOP RULE
+======================================================================
+
+Status
+------
+Completed as research-only construction evidence. No exact routing, whole-layout
+witness, certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E027_final_unary_discriminator/run-002/RESULT.json
+
+SHA-256:
+  45474cd70c8fc1561c7e3b5d7a07fa889218ec6423941867ede4dbb9b03eb412
+
+Verdict:
+  SERIAL_UNARY_SATURATION_SIGNAL
+
+Exact fixed-outside response
+----------------------------
+E027 releases crusher_sandleaf pose 2155 from the objective-168 E024 placement
+while every other placement and all selected power poles remain fixed. Fifty-one
+placement- and power-valid alternatives are exhausted:
+
+  PORT_DOMAIN_EMPTY    47
+  shared OPTIMAL        4
+
+The four exact shared objectives are:
+
+  167    2 candidates
+  171    1 candidate
+  174    1 candidate
+
+The best replacement is pose 5342, p_x20_y30_o0_m_TB. It changes the shared
+component-mismatch objective only:
+
+  168 -> 167
+
+The predeclared material-gain threshold was two units. The one-unit result
+therefore ends serial fixed-outside unary expansion instead of starting another
+single-pose round.
+
+Endpoint materialization
+------------------------
+The best fixed placement is accompanied by a complete compact binding endpoint:
+
+  research_lab/local/zero_condition/E027_final_unary_discriminator/run-002/
+    BEST_CHILD_ENDPOINT.json
+
+SHA-256:
+  38b1b684d29384aa3ca81c126f3b189f0ec1fac8df4568911175cc5fa4ee326a
+
+The endpoint contains the actual binding selection, port specifications,
+selected components, mismatch boundaries, and their digests. This avoids the
+E024 digest-only persistence gap.
+
+The best endpoint remains positive for all 19 commodities. Relative to the E024
+parent, the extracted optimum changes:
+
+  blue_iron_ore    -3
+  sandleaf         -1
+  source_ore       +2
+  steel_block      +1
+  steel_bottle     +1
+  steel_part       -1
+
+The net improvement is one. The result is not a component-compatible binding or
+routing witness.
+
+Geometry
+--------
+The best child has:
+
+  free cells                  1144
+  free components               78
+  largest free component       520
+  free adjacency               1159
+  surviving binding patterns 13437
+
+The large free component grows, but the exact shared mismatch barely moves. This
+reinforces the earlier conclusion that scalar morphology is no longer an honest
+substitute for selected source/sink component compatibility.
+
+Decision effect
+---------------
+Stop serial unary expansion on this branch. The next object must let at least two
+placement variables move together, or let placement and binding variables
+cohabit.
+
+E026 supplies the first problem-derived pair: packaging_battery pose 6189 cannot
+move alone because its pose-6186 alternative empties the fixed
+grinder_dense_blue_iron_002@6049 domain. Releasing those two current poses
+together directly tests whether the static unary rejection was caused by a
+repairable coupling rather than by the packaging action itself.
+
+Truth boundary
+--------------
+E027 is exhaustive only for crusher_sandleaf pose 2155 with all outside placement
+fixed. The stop rule is a representation decision, not a proof that other unary
+moves cannot improve, that the no-ghost instance is infeasible, or that a
+particular simultaneous pair is sufficient.

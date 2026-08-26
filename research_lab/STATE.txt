@@ -125,7 +125,11 @@ probes and the first checked feedback replay now show a causal progression:
   * E026 exhausts all 12 packaging-battery alternatives across the live beam. Every
     candidate empties a front-filtered owner domain with the same three rejection
     patterns, so the action is retired before component support rather than being
-    mislabeled as another topology failure.
+    mislabeled as another topology failure;
+  * E027 exhausts 51 crusher-sandleaf alternatives on the objective-168 branch.
+    Forty-seven empty an owner domain and four shared bindings are OPTIMAL; the
+    best child reaches only 167. The predeclared two-unit material-gain threshold
+    therefore stops serial unary motion, and the exact endpoint is fully persisted.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -133,10 +137,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Does the objective-168-specific crusher-sandleaf pose 2155 produce a material
-exact shared-mismatch gain under the fixed outside geometry, or has serial unary
-motion saturated enough that the next honest object is a simultaneous two-pose
-or pose-binding neighborhood?
+Can the first problem-derived simultaneous pair, packaging_battery pose 6189 plus
+grinder_dense_blue_iron pose 6049, reopen the statically dead packaging domain and
+produce a material exact shared-mismatch gain under the objective-168 outside
+geometry, or must placement and binding variables cohabit the next model directly?
 
 Current campaign posture
 ------------------------
@@ -266,12 +270,20 @@ empty exact action domain in every state: all three alternatives destroy one or
 two front-filtered owner domains before component support. This response can be
 stored once as an action-domain signature shared by the four parents.
 
-The next and deliberately final serial-unary discriminator is crusher-sandleaf
-pose 2155 on the objective-168 leader. It has 51 exact alternatives and is the
-highest branch-specific residual action after the two common actions are retired.
-A material gain may remain in this branch; equality, harm, or only a marginal
-one-unit improvement ends the serial line and moves the construction interface to
-a simultaneous two-pose or pose-binding neighborhood.
+E027 has now closed the serial-unary branch. Only four of 51 alternatives survive
+static domains, and the best exact shared objective is 167, a one-unit gain below
+the predeclared material threshold. The 167 child is diagnostic, not retained as
+the next greedy lineage.
+
+The first simultaneous neighborhood is derived from a concrete unary coupling,
+not from a generic pair portfolio. In E026, packaging pose 6186 fails only because
+grinder_dense_blue_iron_002 remains at pose 6049 and loses its entire static
+binding domain. Releasing both current poses exposes 47 placement-, power-, and
+non-overlap-valid pairs under the objective-168 outside geometry. E028 evaluates
+those pairs through the same ordered interface and shared component objective.
+A zero pair enters exact routing. A material positive gain validates the
+simultaneous placement layer; no useful pair moves binding variables into the
+same neighborhood next.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

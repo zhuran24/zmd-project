@@ -1054,6 +1054,36 @@ evidence:
   E026 RESULT.txt; local RESULT.json sha256
   7dbb42b6c255fbc89a6a904364b861a7ef28eb8487ccabbfc305dbc291c8456e.
 
+R-ZC-038  The final serial unary discriminator improves only 168 -> 167
+----------------------------------------------------------------------------
+status: exhaustive fixed-outside alternatives plus fully materialized binding endpoint
+scope: crusher_sandleaf pose 2155 under the objective-168 E024 placement
+
+statement:
+  E027 exhausts 51 placement- and power-valid alternatives. Forty-seven empty an
+  owner domain and four shared bindings are OPTIMAL, with objective distribution
+  {167:2, 171:1, 174:1}. The best replacement is pose 5342 and lowers the exact
+  shared objective only one unit, 168 -> 167. All 19 commodities remain positive.
+  The complete winning selection, ports, selected components, and mismatch
+  boundaries are persisted in BEST_CHILD_ENDPOINT.json rather than only by digest.
+
+non-implications:
+  The one-unit result does not prove all unary moves useless, the no-ghost problem
+  infeasible, or any simultaneous pair sufficient. The fixed outside geometry is
+  essential to the stop judgment.
+
+effect on next problem:
+  Apply the predeclared stop rule and end serial fixed-outside unary expansion.
+  Build the first simultaneous placement neighborhood from an observed coupling:
+  release packaging_battery pose 6189 together with the grinder_dense_blue_iron
+  pose 6049 whose fixed domain caused packaging pose 6186 to be rejected in E026.
+
+evidence:
+  E027 RESULT.txt; local RESULT.json sha256
+  45474cd70c8fc1561c7e3b5d7a07fa889218ec6423941867ede4dbb9b03eb412;
+  materialized endpoint sha256
+  38b1b684d29384aa3ca81c126f3b189f0ec1fac8df4568911175cc5fa4ee326a.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the
