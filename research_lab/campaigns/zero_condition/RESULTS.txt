@@ -1786,6 +1786,48 @@ evidence:
   optimum-face audits sha256
   f77a303d9a47bf41d8d24f332095352f34f1d9109478a943d55abaf55d6a9924.
 
+R-ZC-058  The bounded ordinary body-pair portfolio does not beat 144
+---------------------------------------------------------------------------
+status: fresh residual atlas, detailed empty-owner replay, bounded pair evaluation, three materialized seeds
+scope: E046 objective-144 endpoint and one exact budget-six body target set
+
+statement:
+  E047 reconstructs 144 mismatch observations and selects six body targets covering
+  69/144. Ninety-four singleton PORT_DOMAIN_EMPTY actions are replayed with exact
+  empty-owner diagnostics; none directly names another selected target, so the
+  E028-style internal rescue channel is absent in this scoped portfolio. Nineteen
+  pair specs yield 16 ordinary OPTIMAL states and three overlap/transport rejects.
+  Every pair is worse than the objective-144 parent: the best reaches 146. Fifteen
+  of sixteen measured pair responses are exactly additive from their singleton
+  values; one has one unit of negative synergy but objective 159. Three distinct
+  pair geometries are materialized at ordinary objectives 146, 151, and 153.
+
+non-implications:
+  The result does not prove that all body pairs are harmful or that no rescue pair
+  exists outside the selected target set. Ordinary pair objectives are not final
+  geometry-conditioned continuation values, component-compatible bindings,
+  routing witnesses, lower bounds, or certified claims.
+
+effect on next problem:
+  Rebuild the faithful joint port-mode, operation-assignment, and binding middle
+  layer on all three pair geometries. Each geometry must first reproduce its
+  frozen ordinary endpoint. A strict joint improvement below 144 becomes the next
+  state; equality or harm retires this bounded pair language and triggers a
+  broader/native simultaneous geometry representation. Objective zero enters
+  exact routing immediately.
+
+evidence:
+  E047 RESULT.txt; local RESULT.json sha256
+  72bee868f4799a75c2acb007c66f5e24a0fb1686801cddef845e2df5abe9f6c0;
+  dead diagnostics sha256
+  93d6bcea1de21f8bb8d060ab1943072f73d60300ded8ec95cfca9beb16415dba;
+  pair manifest sha256
+  41b32a2ffb5433b5d9906ea8ff11eb60f4c55d4aab799f3c625b727f9b8e7f9b;
+  materialized endpoint sha256 values
+  260065baf3790111f9ffcad8563f2071ec62c2b6cd3e311fb67b01127500d236,
+  92ab91774683fd127abc111e4fbf574b989bff0938872193a1b0c4ed12029099,
+  4659077182863125a50c1b77d8ceaefc89628b88a0bc48de6bea7ff389595fa7.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

@@ -1,0 +1,79 @@
+EXPERIMENT E047: SIMULTANEOUS BODY-PAIR PROPOSER AT OBJECTIVE 144
+================================================================
+
+Question
+--------
+Which bounded pair of physical body relocations should replace the now-saturated
+singleton-body action language at the fully materialized objective-144 endpoint?
+Can two moves jointly restore domains or improve the ordinary shared component
+objective enough to justify exact geometry-conditioned middle-layer revaluation?
+
+Why this experiment
+-------------------
+E046 proves that the best integrated singleton response is only 145 -> 144 and
+that the middle layer contributes no additional gain on that geometry. Continuing
+one body at a time would become another manually scheduled unary climb.
+
+A body pair cannot be proposed by simply combining the two lowest singleton
+scores. Earlier E028 evidence shows that a move which is statically dead alone can
+become meaningful when the owner whose domain it destroys is moved at the same
+time. E047 therefore retains two proposal channels:
+
+  value-composing pairs from domain-valid singleton actions
+  direct rescue pairs where one singleton's empty domain names the other body
+
+Residual boundary incidence proposes the six primary target bodies. Static
+owner-domain diagnoses determine rescue relations. Exact ordinary shared binding
+ranks only complete pair geometries. Ordinary pair value remains a proposal value,
+not the geometry's final continuation value.
+
+Method
+------
+From the E046 objective-144 assignment and binding endpoint, E047 reconstructs all
+144 mismatch-component observations and current boundary literals. It selects an
+exact budget-six body portfolio by maximum residual coverage and exhausts every
+fixed-outside body alternative for those six targets.
+
+For every singleton body action E047 records:
+
+  overlap- and exact-power-validity
+  ordinary shared-binding status and objective
+  for PORT_DOMAIN_EMPTY actions, the exact empty owner set
+
+A bounded action pool is formed per target:
+
+  up to four best domain-valid body actions
+  up to three statically dead actions that directly empty another selected body
+
+Cross-target pairs are admitted when either both singleton actions are domain-
+valid or one action directly names the other target as an empty owner. Each pair
+is reconstructed from the unchanged parent, checked for overlap and exact power,
+and then evaluated by the ordinary shared component objective. Pair families are
+checkpointed independently.
+
+At most three distinct new free-cell geometries are materialized, with target-pair
+diversity preferred. A later experiment must rebuild the faithful joint port-mode,
+operation-assignment, and binding middle layer on those geometries.
+
+Decision rule
+-------------
+Ordinary pair objective 0
+  Materialize the endpoint and enter exact routing immediately.
+
+One or more new domain-valid pair geometries
+  Freeze up to three diverse seeds and pass them to exact joint revaluation.
+
+No domain-valid pair geometry
+  Broaden the rescue relation or move to a native simultaneous geometry model;
+  do not return to singleton action enumeration.
+
+Truth boundary
+--------------
+E047 exhausts a finite pair portfolio derived from one exact budget-six residual
+body set. It does not exhaust all body pairs, prove a necessary move, assign final
+continuation value to a geometry, establish component compatibility unless the
+ordinary objective is zero, enter routing, update U/L, or grant certification.
+
+Result
+------
+Not run yet.

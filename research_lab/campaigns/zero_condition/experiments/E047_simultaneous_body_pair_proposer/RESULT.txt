@@ -1,0 +1,177 @@
+E047 RESULT: THE BOUNDED ORDINARY BODY-PAIR PORTFOLIO DOES NOT BEAT 144
+============================================================================
+
+Status
+------
+Completed as research-only exact pair-proposal evidence. No geometry-conditioned
+joint value is assigned here. No component-compatible binding, exact routing,
+whole-layout witness, certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/E047_simultaneous_body_pair_proposer/
+    run-001/RESULT.json
+
+SHA-256:
+  72bee868f4799a75c2acb007c66f5e24a0fb1686801cddef845e2df5abe9f6c0
+
+Verdict:
+  BODY_PAIR_GEOMETRY_SEEDS_PROPOSED
+
+Decision:
+  REVALUE_PAIR_GEOMETRIES_WITH_JOINT_MIDDLE
+
+Fresh objective-144 body atlas
+------------------------------
+E047 rebuilds the residual surface from the fully materialized objective-144
+endpoint rather than reusing E046's singleton atlas:
+
+  mismatch observations          144
+  current boundary literals      315
+  exact budget-six coverage       69 / 144 = 47.92%
+  detailed dead body actions      94
+
+The six residual-selected bodies are:
+
+  packaging_battery_001          coverage 14
+  refinery_blue_iron_025         coverage 12
+  grinder_dense_blue_iron_008    coverage 12
+  seed_collector_sandleaf_006    coverage 11
+  crusher_sandleaf_002           coverage 10
+  grinder_dense_blue_iron_010    coverage 10
+
+Only three targets have domain-valid body actions in the bounded pool:
+
+  refinery_blue_iron_025       four retained actions
+  crusher_sandleaf_002         three retained actions
+  grinder_dense_blue_iron_010 one retained action
+
+The other three targets have no ordinary domain-valid body relocation.
+
+No direct rescue relation in the selected target set
+----------------------------------------------------
+Every one of the 94 singleton PORT_DOMAIN_EMPTY actions was replayed through the
+detailed static interface compiler. None names another one of the six selected
+body instances as an empty owner. Consequently E047 does not reproduce the E028
+pattern where moving the directly killed owner rescues the first action.
+
+This is a scoped negative result. It does not prove that no rescue pair exists
+outside the selected target set. It shows only that the exact budget-six residual
+portfolio has no internal direct-rescue edge.
+
+Exact ordinary pair response
+----------------------------
+The bounded action pools produce 19 admitted pair specifications in three target-
+pair families. Final outcomes are:
+
+  OPTIMAL                         16
+  OVERLAP_OR_TRANSPORT_REJECTED    3
+  PORT_DOMAIN_EMPTY                0
+  direct-rescue OPTIMAL pairs      0
+
+Ordinary objective distribution:
+
+  146 x 1
+  147 x 1
+  148 x 2
+  151 x 1
+  153 x 1
+  156 x 2
+  157 x 3
+  158 x 1
+  159 x 1
+  161 x 1
+  162 x 2
+
+No ordinary pair improves the objective-144 parent. The best pair is:
+
+  grinder_dense_blue_iron_010  -> pose 15385
+  refinery_blue_iron_025       -> pose 2156
+
+and reaches ordinary objective 146. Its free geometry has 76 components and a
+largest component of 479.
+
+Pair synergy ledger
+-------------------
+For pairs whose two singleton values are both known, E047 compares the exact pair
+objective with the additive prediction:
+
+  singleton_left + singleton_right - 144
+
+Fifteen of sixteen OPTIMAL pairs are exactly additive. One pair has one unit of
+negative synergy, but its absolute objective is 159 and it is not competitive.
+Thus the selected ordinary pair layer supplies neither a good composing move nor
+a hidden rescue effect.
+
+Proposal seeds
+--------------
+Three distinct free geometries are materialized solely for fair joint revaluation:
+
+  Seed 1  ordinary 146
+    grinder_dense_blue_iron_010@15385
+    refinery_blue_iron_025@2156
+    endpoint sha256
+      260065baf3790111f9ffcad8563f2071ec62c2b6cd3e311fb67b01127500d236
+
+  Seed 2  ordinary 151
+    crusher_sandleaf_002@2155
+    grinder_dense_blue_iron_010@15385
+    endpoint sha256
+      92ab91774683fd127abc111e4fbf574b989bff0938872193a1b0c4ed12029099
+
+  Seed 3  ordinary 153
+    crusher_sandleaf_002@2051
+    grinder_dense_blue_iron_010@15385
+    endpoint sha256
+      4659077182863125a50c1b77d8ceaefc89628b88a0bc48de6bea7ff389595fa7
+
+These ordinary values do not rank final geometry continuation. Historical E043
+and E045 results show that the faithful port-mode/operation-assignment/binding
+middle layer can change geometry rankings by several units. The three seeds must
+therefore be recalibrated and revalued before the pair axis is accepted or
+rejected.
+
+Architecture effect
+-------------------
+E047 sharpens the role split inside the outer loop:
+
+  residual incidence selects body targets
+  detailed empty-owner diagnostics proposes rescue relations
+  ordinary shared binding screens complete pair geometries
+  geometry-conditioned joint middle solve assigns continuation value
+
+The absence of an internal rescue edge also prevents a false conclusion from the
+three individually dead targets. Their death is recorded, but not promoted into a
+blanket claim that they cannot participate in any pair outside the selected set.
+
+Decision effect
+---------------
+Carry the three materialized geometries into a faithful pair-conditioned joint
+solve. The joint context must update both moved bodies relative to the immediate
+objective-144 parent, enable port modes at both moved destinations, preserve all
+existing assignment blocks, and recalibrate each ordinary endpoint before freeing
+operation assignment and binding.
+
+If every pair remains at or above 144, retire this bounded pair language and
+broaden the pair proposer or move to a native simultaneous geometry model. A
+strict joint improvement becomes the next state. Objective zero enters exact
+routing immediately.
+
+Truth boundary
+--------------
+E047 exhausts only 19 pair specifications derived from one exact budget-six body
+set and capped action pools. It does not exhaust all body pairs, prove pair
+infeasibility, assign joint continuation value, establish component compatibility,
+enter routing, update U/L, or grant certification.
+
+Evidence identities
+-------------------
+Dead diagnostics:
+  93d6bcea1de21f8bb8d060ab1943072f73d60300ded8ec95cfca9beb16415dba
+
+Pair manifest:
+  41b32a2ffb5433b5d9906ea8ff11eb60f4c55d4aab799f3c625b727f9b8e7f9b
+
+Runner:
+  7c7ed75fecd64662c8b133405a8d0051750aa3b41c5eaba7620ac1dcab94abf9
