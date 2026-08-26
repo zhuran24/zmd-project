@@ -162,10 +162,9 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-What is the smallest faithful fixed-geometry model in which a bounded
-operation-to-footprint assignment and binding variables coexist, and can it move
-the exact shared component objective below 160 or reach zero without externally
-enumerating complete assignments?
+Can a second, residual-selected five-footprint 6x4 operation-assignment block
+compose with the exact-saturated five-footprint 3x3 block inside one shared
+assignment-binding model, lowering objective 160 or reaching component zero?
 
 Current campaign posture
 ------------------------
@@ -333,19 +332,25 @@ yet their full rankings and two portfolio entries differ because pose 2963 carri
 different operations. They may share a contextual action ledger, but they cannot
 be merged before exact continuation is measured.
 
-E033 now supplies that measurement. The common swap gives the same marginal
-161 -> 160 response on both states, and the analogous branch actions both worsen
-to 163. These four scalar responses can be quotiented as one contextual action-
-family record, but the resulting endpoints remain different witnesses. The best
-gain is below the material threshold and all 19 commodity mismatches remain
-positive.
+E033 supplies the final external-action measurement. The common swap gives the
+same marginal 161 -> 160 response on both states, and the analogous branch actions
+both worsen to 163. Those contextual responses can be shared, but the resulting
+endpoints remain distinct witnesses. External assignment enumeration therefore
+stops.
 
-External assignment enumeration now stops. The next object is a fixed-geometry
-joint model that preserves exact operation multiplicities, static terminal domains,
-aggregate generic I/O, terminal uniqueness, and component-aware shared binding,
-while allowing bounded operation assignment and binding decisions to coexist.
-The two objective-160 endpoints are warm starts and regression witnesses. A zero
-state enters routing immediately.
+E034 now implements the replacement rather than merely proposing it. Twenty
+footprint-operation variables and 123 conditional binding-pattern variables share
+one CP-SAT model with the unchanged outside binding system. Both objective-160
+warm states independently recalibrate to OPTIMAL 160, and the free solve also
+proves OPTIMAL 160. The five 3x3 footprints are exactly saturated in the joint
+language; returning to another swap or permutation inside that context is closed.
+
+Residual marginal coverage selects the next expansion. The saturated 3x3 block
+touches 51 observations. Three more 3x3 footprints add only 13, a five-footprint
+5x5 block adds 35, and a five-footprint 6x4 block adds 46. The next model therefore
+keeps the saturated 3x3 block and adds the exact-selected 6x4 block, with both
+assignment families cohabiting the same binding objective. A zero state enters
+routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

@@ -1,0 +1,87 @@
+EXPERIMENT E034: JOINT OPERATION-ASSIGNMENT AND BINDING MODEL
+============================================================
+
+Question
+--------
+On the fixed occupied geometry shared by the two objective-160 E033 states, can a
+single CP-SAT model choose both the operation assigned to each selected 3x3
+footprint and that operation's exact pose-level binding pattern, thereby moving
+the exact shared component-mismatch objective below 160 or to zero without
+externally enumerating complete assignments?
+
+Why this is the next object
+---------------------------
+E031 proves a five-footprint 3x3 assignment neighborhood can improve 163 to 161.
+E033 then tests the strongest common and branch-specific external swaps on the
+two tied states: the common action improves both only to 160 and the branch
+actions worsen both to 163. Continuing to propose one complete assignment after
+another would turn the outer loop into a manual assignment hill-climber.
+
+The selected operations have no generic input or output slots. Their only moving
+binding semantics are exact pose-level patterns on fixed footprints. This permits
+a small faithful cohabiting model without rebuilding protocol-core or storage-box
+slot semantics.
+
+Model
+-----
+The full occupied cell set is fixed. All facilities outside the five E031 3x3
+footprints use the existing PortBindingModel unchanged. For each selected
+footprint f, operation o, and front-filtered exact pattern p, E034 creates a
+conditional literal z[f,o,p].
+
+  sum_p z[f,o,p] = y[f,o]
+  sum_o y[f,o] = 1                         for every footprint f
+  sum_f y[f,o] = frozen multiplicity(o)    for every operation o
+
+The existing duplicate-terminal and shared component-mismatch compiler then sees
+outside binding literals and the conditional joint literals in one model. Thus an
+assignment cannot be selected independently of its binding pattern.
+
+Calibration
+-----------
+Before freeing assignment variables, the same model is built twice with operation
+assignment fixed to each E033 objective-160 state. Both fixed models must prove an
+OPTIMAL objective of exactly 160. A calibration mismatch blocks interpretation of
+the free solve.
+
+Inputs
+------
+E031 neighborhood and exchangeability proof, E033 first and second common
+assignments/endpoints, the frozen candidate pool, mandatory instances, canonical
+rules, preprocess plan, and generic-I/O requirements are admitted by SHA-256 in
+the runner.
+
+Outcome interpretation
+----------------------
+OPTIMAL objective 0
+  Materialize the concrete assignment and ordinary fixed-layout endpoint, then
+  enter exact routing immediately.
+
+OPTIMAL objective 1..159
+  The cohabiting layer has constructive leverage that external action replay did
+  not expose. Persist the complete joint witness and fixed-layout endpoint; use
+  the resulting residual to decide whether the bounded footprint set should grow
+  or whether geometry must move next.
+
+OPTIMAL objective 160
+  The five-footprint cohabiting neighborhood is exact and saturated. Do not return
+  to external swaps. Expand the joint footprint context from residual causes or
+  move to a broader assignment-binding representation.
+
+FEASIBLE / UNKNOWN
+  Record only the incumbent and bound. Do not claim saturation or optimality.
+
+Truth boundary
+--------------
+This experiment fixes occupied geometry, power poles, and every operation outside
+five 3x3 footprints. It is not a global operation-assignment optimum, a component-
+compatible binding unless the objective is zero, an exact-routing result, a lower
+bound, or a certification artifact.
+
+Result
+------
+Completed. Both frozen objective-160 warm assignments recalibrate to OPTIMAL 160
+inside the cohabiting model, and the free exact solve also proves OPTIMAL 160.
+The five-footprint 3x3 context is therefore saturated rather than undersampled.
+See RESULT.txt and the frozen local result SHA-256
+c772086f8bf0d969e9a6bdc84fd5fe55adba07a012de453afc4c1580a9c190a0.

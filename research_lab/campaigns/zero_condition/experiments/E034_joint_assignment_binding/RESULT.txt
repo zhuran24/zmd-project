@@ -1,0 +1,132 @@
+E034 RESULT: THE FIVE-FOOTPRINT JOINT ASSIGNMENT-BINDING CONTEXT SATURATES AT 160
+=================================================================================
+
+Status
+------
+Completed as research-only exact local-model evidence. No component-compatible
+binding, exact routing, whole-layout witness, certification, U/L, owner, or
+publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E034_joint_assignment_binding/run-001/RESULT.json
+
+SHA-256:
+  c772086f8bf0d969e9a6bdc84fd5fe55adba07a012de453afc4c1580a9c190a0
+
+Verdict:
+  BOUNDED_JOINT_ASSIGNMENT_BINDING_SATURATED
+
+Model object
+------------
+E034 fixes the occupied 70x70 geometry, all power poles, and every operation
+outside the five 3x3 footprints selected by E031. Inside those footprints it does
+not enumerate complete operation assignments externally. Instead one CP-SAT model
+contains:
+
+  footprint-operation assignment variables
+  conditional exact pose-level binding-pattern variables
+  exact operation multiplicity constraints
+  unchanged outside binding variables and generic-I/O constraints
+  duplicate-terminal constraints
+  one shared all-commodity component-mismatch objective
+
+The four selected operations have no generic input/output slot semantics, so this
+bounded cohabiting model does not omit a dynamic slot family.
+
+The free model contains:
+
+  assignment variables                 20
+  conditional binding-pattern vars    123
+  joint conditional binding owners     19
+  outside binding owners              267
+  total variables                  14,382
+  total constraints                41,390
+
+Calibration
+-----------
+Before the free solve, E034 fixes assignment variables to each of the two E033
+objective-160 states and resolves the same cohabiting model.
+
+  first warm state     OPTIMAL 160   best bound 160   0.63 s
+  second warm state    OPTIMAL 160   best bound 160   0.62 s
+
+The two calibrations recover their distinct operation assignments and distinct
+commodity vectors. This proves that the joint encoding contains both known states
+and agrees with the ordinary fixed-assignment binding objective on them.
+
+Free exact solve
+----------------
+With the assignment variables released, the model again proves:
+
+  status          OPTIMAL
+  objective       160
+  best bound      160
+
+The selected operation assignment is the first E033 warm assignment:
+
+  crusher_sandleaf
+  crusher_source
+  refinery_steel
+  refinery_blue_iron
+  refinery_blue_iron
+
+All 19 commodity mismatch counts remain positive. Exact routing is therefore not
+reached.
+
+Frozen witnesses
+----------------
+Concrete assignment:
+  research_lab/local/zero_condition/E034_joint_assignment_binding/run-001/
+    BEST_ASSIGNMENT.json
+  sha256 d8886d3da0a8cf8a5513cbd8c6d1806faa6323d7f7db829425648e92e12a001d
+
+Ordinary fixed-assignment endpoint:
+  research_lab/local/zero_condition/E034_joint_assignment_binding/run-001/
+    BEST_ENDPOINT.json
+  sha256 bd8d526a08f714f7c23ebe98003313483f04355bf0b8054b718b2e5ff42ba619
+
+Joint assignment-pattern witness:
+  research_lab/local/zero_condition/E034_joint_assignment_binding/run-001/
+    JOINT_WITNESS.json
+  sha256 f325b92aaf264b0db9b00227b42267c098bc82cc8cb8707abce32fd471707067
+
+Interpretation
+--------------
+The previous 160 result is not an artifact of externally replaying too few
+complete assignments. Within this five-footprint 3x3 context, assignment and
+binding have now cohabited directly and the exact optimum is still 160.
+
+This supplies a real stop condition. Do not return to the same five footprints
+with another externally proposed swap, permutation, or binding endpoint. The
+context itself is exhausted.
+
+Residual-context choice
+-----------------------
+Using the materialized objective-160 endpoint, the five current 3x3 footprints
+touch 51 mismatch observations. Exact marginal-coverage probes give:
+
+  add three more 3x3 footprints     union 64    marginal +13
+  add a five-footprint 5x5 block    union 86    marginal +35
+  add a five-footprint 6x4 block    union 97    marginal +46
+
+The strongest problem-derived expansion is therefore a 6x4 assignment block,
+not a larger version of the already saturated 3x3 neighborhood.
+
+Decision effect
+---------------
+Retain both objective-160 endpoints as regression witnesses. Build the next
+cohabiting model with the saturated five-footprint 3x3 block plus an exact
+residual-selected five-footprint 6x4 block. Both operation-assignment blocks share
+one unchanged binding model and one shared component objective.
+
+A value below 160 demonstrates cross-block composition. Exact 160 proves the
+expanded fixed-geometry context saturated. Objective zero enters exact routing.
+
+Truth boundary
+--------------
+This result is exact only for one fixed occupied geometry and the selected five
+3x3 footprints. It is not a global operation-assignment optimum, a whole-layout
+infeasibility result, a component-compatible binding, an exact-routing result, or
+a certified claim.

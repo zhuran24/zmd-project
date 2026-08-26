@@ -1293,6 +1293,42 @@ evidence:
   second common endpoint sha256
   ab184e28e69326b40f1e5d973d64096ec3436b83fe890390b1804a22ee0f7e30.
 
+R-ZC-045  Direct assignment-binding cohabitation proves the five-footprint context saturated
+------------------------------------------------------------------------------------------------
+status: two fixed-assignment calibrations plus one free exact joint solve
+scope: the E031 five-footprint 3x3 neighborhood under the fixed E033 geometry
+
+statement:
+  E034 removes external complete-assignment enumeration. Twenty footprint-
+  operation variables and 123 conditional exact binding-pattern variables share
+  one model with 267 unchanged outside binding owners, exact operation counts,
+  generic-I/O, terminal uniqueness, and the all-commodity component objective.
+  Fixing assignment to each E033 warm state independently reproduces OPTIMAL 160.
+  Releasing assignment also proves OPTIMAL 160 with best bound 160. Thus the
+  previous value is the exact optimum of this cohabiting five-footprint context,
+  not a missed external permutation. All 19 commodities remain positive.
+
+non-implications:
+  Saturation of this bounded context does not prove fixed geometry globally
+  saturated, component incompatibility, no-ghost infeasibility, or any routing
+  statement. The selected 160 assignment is not necessary for a feasible layout.
+
+effect on next problem:
+  Do not return to swaps or permutations within the same five 3x3 footprints.
+  Select the next joint block by residual marginal coverage. Relative to the 51
+  observations touched by the saturated block, three additional 3x3 footprints
+  add 13, a five-footprint 5x5 block adds 35, and a five-footprint 6x4 block adds
+  46. Add the residual-selected 6x4 block to the same joint binding model and test
+  cross-block composition.
+
+evidence:
+  E034 RESULT.txt; local RESULT.json sha256
+  c772086f8bf0d969e9a6bdc84fd5fe55adba07a012de453afc4c1580a9c190a0;
+  joint witness sha256
+  f325b92aaf264b0db9b00227b42267c098bc82cc8cb8707abce32fd471707067;
+  ordinary fixed endpoint sha256
+  bd8d526a08f714f7c23ebe98003313483f04355bf0b8054b718b2e5ff42ba619.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the
