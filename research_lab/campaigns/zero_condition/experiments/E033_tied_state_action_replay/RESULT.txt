@@ -1,0 +1,136 @@
+E033 RESULT: EXPLICIT ASSIGNMENT ACTIONS SATURATE AT OBJECTIVE 160
+================================================================
+
+Status
+------
+Completed as research-only exact continuation evidence. No component-compatible
+binding, exact routing, whole-layout witness, certification, U/L, owner, or
+publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E033_tied_state_action_replay/run-001/RESULT.json
+
+SHA-256:
+  0928591c006dc70fe4fe2250e2161d8e3261bc121c0f196822aa390b583b8932
+
+Verdict:
+  TIED_STATE_ACTION_FAMILY_SATURATION_SIGNAL
+
+Exact response matrix
+---------------------
+E033 evaluates four occupancy-preserving operation swaps under the two frozen
+objective-161 assignment/binding states. Every child passes static domains and
+reaches an OPTIMAL shared binding.
+
+  action family        first state       second state
+  common leader             160                160
+  pose-2963 branch          163                163
+
+The common action is:
+
+  grinder_fine_buckwheat pose 7754
+    <-> packaging_battery pose 6018
+
+It improves both parents by one unit:
+
+  161 -> 160
+
+The branch actions are:
+
+  first state
+    crusher_sandleaf pose 2119
+      <-> refinery_blue_iron pose 2963
+
+  second state
+    crusher_sandleaf pose 2119
+      <-> crusher_source pose 2963
+
+Both worsen their parent by two units:
+
+  161 -> 163
+
+State equivalence boundary
+--------------------------
+The two parents have identical scalar responses for this tested action family, but
+their children remain distinct placement and binding objects.
+
+The common children have different placement, selection, and port-spec digests.
+Their exact commodity vectors also differ while summing to the same objective:
+
+  first common child
+    blue_iron_block 7
+    source_powder  13
+
+  second common child
+    blue_iron_block 8
+    source_powder  12
+
+The remaining reported commodity values agree. The branch children likewise have
+different placement, binding, and ore-pair endpoints despite equal objective 163.
+
+Therefore the two states may share an action-family value record for these four
+responses. They are not proved globally interchangeable and should not be merged
+as complete outer-loop states.
+
+Saturation decision
+-------------------
+The predeclared material threshold is two objective units. The best surviving
+action improves only one unit, and both branch-specific actions are harmful.
+This ends the explicit sequence:
+
+  propose a swap
+  materialize the full assignment
+  solve binding
+  choose another swap
+
+Continuing that sequence would again make the outer loop manually enumerate
+complete assignment states one action at a time.
+
+The next construction object is a fixed-geometry joint model in which a bounded
+operation-to-footprint assignment and binding variables coexist. The model should
+optimize the shared component mismatch directly rather than asking the outer loop
+to enumerate every complete assignment first.
+
+Materialized children
+---------------------
+All four exact endpoints are frozen. The two leading objective-160 endpoints are:
+
+  first common endpoint SHA-256
+    80669d65d1039aa896a6cb8d35c59593d1ac57b285a100058d967c46c72974b3
+
+  second common endpoint SHA-256
+    ab184e28e69326b40f1e5d973d64096ec3436b83fe890390b1804a22ee0f7e30
+
+They remain useful as warm starts and regression witnesses for the joint model,
+not as proof that another explicit swap should be selected.
+
+Architecture effect
+-------------------
+The evidence now supports this research partition under fixed occupied geometry:
+
+  bounded operation-assignment variables
+    + aggregate binding resources
+    + terminal uniqueness
+    + component-aware shared binding
+      -> exact simultaneous routing
+
+Operation assignment has earned a real solver layer, but explicit external action
+enumeration has reached its stop point. The outer loop should provide the bounded
+context and learned action-domain facts; the inner joint model should choose the
+assignment and binding together.
+
+Decision effect
+---------------
+Build the smallest faithful operation-assignment/binding cohabitation model around
+the frozen objective-160 witnesses. Preserve exact operation multiplicities,
+current occupied geometry, static terminal-domain facts, aggregate generic I/O,
+and the shared component objective. A zero child enters exact routing immediately.
+
+Truth boundary
+--------------
+E033 evaluates four selected swaps under two objective-161 parents. The saturation
+verdict concerns explicit serial assignment-action replay, not all joint operation
+assignments. Objective 160 is not a global no-ghost bound, component-compatible
+binding, routing witness, or whole-layout result.

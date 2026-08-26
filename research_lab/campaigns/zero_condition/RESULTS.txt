@@ -1259,6 +1259,40 @@ evidence:
   second endpoint sha256
   5553653fc1182429400aacba3241d6fbc1e06db6e12cd7e10a8953cb46e37dfd.
 
+R-ZC-044  Exact action replay stops explicit assignment enumeration at 160
+----------------------------------------------------------------------------
+status: four exact occupancy-preserving continuation responses with materialized endpoints
+scope: common and pose-2963 branch actions under the two E031 objective-161 states
+
+statement:
+  E033 evaluates the shared leading swap and one branch-specific swap under each
+  objective-161 parent. All four children reach OPTIMAL shared bindings. The common
+  grinder_fine_buckwheat-7754 / packaging_battery-6018 swap improves both parents
+  identically to 160. The two pose-2963 branch actions both worsen to 163. The
+  common children retain different placement, binding-selection, port-spec, and
+  commodity-vector identities despite their equal scalar value. All 19 commodities
+  remain positive and routing is not reached.
+
+non-implications:
+  Equal responses for this action family do not prove the parent states globally
+  interchangeable. The one-unit gain does not establish component compatibility,
+  and the saturation verdict does not exhaust all joint operation assignments.
+
+effect on next problem:
+  Stop external serial assignment-action enumeration. Carry the common action
+  response as a contextual value record, retain the objective-160 children as
+  warm starts, and build the smallest fixed-geometry model in which bounded
+  operation-to-footprint assignment and binding variables coexist under the exact
+  shared component objective.
+
+evidence:
+  E033 RESULT.txt; local RESULT.json sha256
+  0928591c006dc70fe4fe2250e2161d8e3261bc121c0f196822aa390b583b8932;
+  first common endpoint sha256
+  80669d65d1039aa896a6cb8d35c59593d1ac57b285a100058d967c46c72974b3;
+  second common endpoint sha256
+  ab184e28e69326b40f1e5d973d64096ec3436b83fe890390b1804a22ee0f7e30.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

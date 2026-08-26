@@ -150,7 +150,11 @@ probes and the first checked feedback replay now show a causal progression:
   * E032 fully materializes the second 161 endpoint. The two residual surfaces
     share 9/10 top literals and the same leader; their operation-swap top tens
     overlap 8/10 and their twelve-action portfolios overlap 10/12. They share a
-    common leading swap but retain two branch-specific pose-2963 actions.
+    common leading swap but retain two branch-specific pose-2963 actions;
+  * E033 gives the exact stop signal for external assignment actions. The common
+    swap improves both 161 parents only to 160, while both branch-specific swaps
+    worsen to 163. The scalar responses match, but all child placement, binding,
+    and port-spec identities remain distinct. All 19 commodities stay positive.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -158,9 +162,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-What exact continuation values do the common leading operation swap and the two
-pose-2963 branch-specific swaps have on the two objective-161 states, and can the
-states be safely quotiented after those responses?
+What is the smallest faithful fixed-geometry model in which a bounded
+operation-to-footprint assignment and binding variables coexist, and can it move
+the exact shared component objective below 160 or reach zero without externally
+enumerating complete assignments?
 
 Current campaign posture
 ------------------------
@@ -328,11 +333,19 @@ yet their full rankings and two portfolio entries differ because pose 2963 carri
 different operations. They may share a contextual action ledger, but they cannot
 be merged before exact continuation is measured.
 
-The next step replays the common leading swap on both states and one branch-specific
-pose-2963 swap in each. Identical exact responses permit an action-specific
-quotient; divergent responses retain the assignment beam. If both branches
-saturate with all commodities positive, operation-assignment and binding variables
-enter one cohabiting model. A zero state enters routing immediately.
+E033 now supplies that measurement. The common swap gives the same marginal
+161 -> 160 response on both states, and the analogous branch actions both worsen
+to 163. These four scalar responses can be quotiented as one contextual action-
+family record, but the resulting endpoints remain different witnesses. The best
+gain is below the material threshold and all 19 commodity mismatches remain
+positive.
+
+External assignment enumeration now stops. The next object is a fixed-geometry
+joint model that preserves exact operation multiplicities, static terminal domains,
+aggregate generic I/O, terminal uniqueness, and component-aware shared binding,
+while allowing bounded operation assignment and binding decisions to coexist.
+The two objective-160 endpoints are warm starts and regression witnesses. A zero
+state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

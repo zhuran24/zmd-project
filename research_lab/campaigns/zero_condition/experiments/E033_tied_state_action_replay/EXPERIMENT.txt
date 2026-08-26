@@ -1,0 +1,62 @@
+EXPERIMENT E033: exact continuation replay on the two objective-161 states
+===========================================================================
+
+Question
+--------
+Do the two E031 objective-161 assignment states have the same exact continuation
+value under their shared leading swap and their pose-2963 branch-specific swaps?
+
+Actions
+-------
+The common action is replayed independently on both states:
+
+  grinder_fine_buckwheat pose 7754
+    <-> packaging_battery pose 6018
+
+Each state also receives the analogous branch action involving pose 2963:
+
+  pair-exchange state
+    crusher_sandleaf pose 2119
+      <-> refinery_blue_iron pose 2963
+
+  three-way state
+    crusher_sandleaf pose 2119
+      <-> crusher_source pose 2963
+
+Method
+------
+Each action preserves occupied geometry by exchanging operations between two
+same-size current footprints. E033 verifies power, evaluates static owner domains,
+and solves one exact shared component-mismatch model over all 19 commodities.
+Every surviving child is fully materialized with its assignment and binding
+endpoint. A zero child enters exact routing immediately.
+
+Decision readings
+-----------------
+Equal common and branch responses
+  The tie can be quotiented for this action family, subject to child identity.
+
+Equal common response but different branch response
+  The states share a contextual common ledger but retain genuine branch value.
+
+No improving child
+  Bounded explicit assignment has saturated; operation assignment and binding
+  variables should cohabit directly.
+
+Material improving child
+  Retain the improved state and recompute its assignment surface without deleting
+  the other branch unless continuation equivalence is proved.
+
+Truth boundary
+--------------
+E033 evaluates four frozen two-footprint actions under two fixed objective-161
+parents. It does not exhaust their assignment neighborhoods, prove global
+infeasibility, or certify a whole layout.
+
+Result
+------
+Completed with verdict TIED_STATE_ACTION_FAMILY_SATURATION_SIGNAL. The common
+swap improves both parents only 161 -> 160, while both pose-2963 branch actions
+worsen 161 -> 163. All four children are OPTIMAL and all 19 commodities remain
+positive. Explicit assignment-action replay stops; the next object cohabits
+bounded operation assignment and binding variables. See RESULT.txt.
