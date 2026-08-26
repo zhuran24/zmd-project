@@ -1,0 +1,78 @@
+EXPERIMENT E016: first evidence-derived coupled pair
+===================================================
+
+Question
+--------
+After fixing E015's unique best unary move, can jointly relocating the strongest
+residual crusher-source literal reduce the exact shared component mismatch below
+186 or reach zero?
+
+Frozen first move
+-----------------
+E015 fixes:
+
+  crusher_sandleaf group current pose 2186
+  materialized carrier crusher_sandleaf_005
+  replacement pose 15830, p_x59_y39_o0_m_TB
+
+The resulting fixed-layout shared optimum is exactly 186.
+
+Second variable
+---------------
+E015's residual boundary atlas and independent unary gradient both select:
+
+  crusher_source group current pose 6191
+  materialized carrier crusher_source_015
+
+The second replacement pose is re-enumerated after the first move. This admits
+poses opened by the first facility's departure and rejects poses blocked by its
+new location.
+
+Exact candidate rules
+---------------------
+Every pair candidate preserves:
+
+  266 mandatory instances
+  fixed outside geometry
+  cell non-overlap
+  53 selected power poles
+  exact power coverage
+  the frozen first move
+
+Candidates then pass the ordered interface:
+
+  owner-domain filtering
+  aggregate/shared base binding and terminal uniqueness
+  exact all-commodity shared mismatch optimization
+  exact routing only at mismatch zero
+
+Competing readings
+-------------------
+A. The pair reaches zero mismatch and enters routing.
+
+B. The pair improves below 186. Its residual boundary identifies a third member
+   for a minimal portfolio.
+
+C. No second pose improves 186. Residual coverage and unary gradients do not
+   compose; pose and binding variables must enter a truly simultaneous local
+   model rather than sequential enumeration.
+
+Truth boundary
+--------------
+This is exhaustive only for the frozen first move and one crusher-source carrier
+with all outside placements fixed. A positive optimum is not global
+infeasibility, and a zero component mismatch remains only a prerequisite for
+exact routing.
+
+Decision effect
+---------------
+A zero candidate goes directly to routing. A positive improvement freezes the
+best pair and selects the next residual partner. No improvement ends sequential
+pair construction and triggers a simultaneous portfolio model.
+
+Result
+------
+Completed with verdict PAIR_SHARED_MISMATCH_IMPROVEMENT. Fifty-five exact second-
+pose alternatives yield 32 empty owner domains and 23 OPTIMAL shared bindings.
+The unique best second pose is 6102, reducing the shared objective 186 -> 178.
+All 19 commodities remain positive. See RESULT.txt.

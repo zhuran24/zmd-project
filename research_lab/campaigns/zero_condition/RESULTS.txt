@@ -712,6 +712,36 @@ evidence:
   E015 optimum-face audit sha256
   e36a807bbe76e2b87828130be2c6b05c7e0acf9c50e3c741afda021702c617e0.
 
+R-ZC-027  The first evidence-derived pair composes to an exact 178 optimum
+----------------------------------------------------------------------------
+status: exhaustive second-variable placement/power enumeration and shared binding
+scope: E015 best move plus crusher_source pose-6191 alternatives
+
+statement:
+  After fixing crusher_sandleaf pose 2186 at pose 15830, E016 enumerates 55 exact
+  crusher_source-6191 alternatives. Thirty-two empty an owner domain; all 23
+  remaining shared-binding models are OPTIMAL. The unique best replacement is
+  pose 6102 and lowers the objective 186 -> 178, for a cumulative E009 reduction
+  200 -> 186 -> 178. The optimum face varies only blue_iron_ore 8-12 and
+  source_ore 6-10 with fixed sum 18; the other 17 values are fixed. All 19
+  commodities remain positive.
+
+non-implications:
+  This is not a routing witness, global no-ghost lower bound, or proof that the
+  pair is part of every successful layout. Outside geometry and the first move
+  are fixed.
+
+effect on next problem:
+  Preserve the successful pair and evaluate a four-arm third-member portfolio
+  selected from residual coverage and prior exact unary gradients: poses 7754,
+  6073, 5279, and 5343. Enter routing only if shared mismatch reaches zero.
+
+evidence:
+  E016 RESULT.txt; main result sha256
+  1a6c85a6db935237c5d0df8666d47b1df36dce59ddaec5ab585883d5e13ca161;
+  optimum-face audit sha256
+  cec4481a1feeccca618e9024520384140751a3d812cb06a3e781ee7331d02597.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

@@ -77,7 +77,10 @@ probes and the first checked feedback replay now show a causal progression:
   * E015's optimum-face audit shows only blue_iron_ore and source_ore trade four
     units; their fixed sum falls 23 -> 19 after the best move. It also exposes the
     missing aggregate generic-output capacity gate between owner domains and
-    component support.
+    component support;
+  * E016 fixes the unary move and exhausts 55 crusher_source partner poses. The
+    unique best pair uses pose 6102 and proves 186 -> 178; all 19 commodities
+    remain positive and the ore-pair sum falls again, 19 -> 18.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -85,10 +88,9 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-After fixing crusher_sandleaf pose 2186 at replacement pose 15830, can an exact
-joint release of crusher_source pose 6191 reduce the shared component optimum
-below 186 or reach zero, and which residual literal follows if the pair remains
-positive?
+With both successful moves fixed, which member of the four-arm residual portfolio
+(poses 7754, 6073, 5279, 5343) composes with the pair, how far below 178 can the
+exact shared optimum move, and does any third move reach zero component mismatch?
 
 Current campaign posture
 ------------------------
@@ -156,13 +158,22 @@ are infeasible with every component guard disabled. Aggregate binding resource
 feasibility therefore belongs before component support; those candidates must
 not be attributed to F4-like topology.
 
-The next experiment fixes the unique crusher-sandleaf improvement and re-
-enumerates the crusher_source pose-6191 alternatives under the changed geometry.
-Each pair must preserve overlap, exact power, owner domains, and aggregate binding
-capacity before receiving the same shared mismatch objective. A zero objective
-enters exact routing immediately. A positive improvement selects the next
-residual partner; no improvement would force a larger cohabiting pose-binding
-portfolio rather than another unary pass.
+E016 confirms that the first two gradients compose rather than cancel. The best
+crusher-source alternative lowers the shared optimum by eight more units to 178.
+Its optimum face still has only the four-unit generic-output exchange; every
+other commodity value is fixed, so the pair improvement is not an arbitrary
+binding endpoint effect.
+
+The next experiment fixes both successful moves and evaluates four possible third
+members. They are not selected by one signal alone: pose 7754 leads residual
+boundary coverage, poses 5279 and 5343 had stronger unary gradients, and pose 6073
+combines high residual coverage with a modest unary improvement. Each arm re-
+enumerates its poses under the new pair geometry, preserves exact power and the
+revised owner-domain/aggregate-capacity gates, and receives the same one-binding
+objective. A zero candidate enters exact routing. A positive improvement extends
+the minimal portfolio. If all four fail to improve 178, sequential causal
+assembly has reached its limit and the next model must release several pose and
+binding decisions simultaneously.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

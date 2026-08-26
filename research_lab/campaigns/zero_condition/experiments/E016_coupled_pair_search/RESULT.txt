@@ -1,0 +1,142 @@
+E016 RESULT: THE FIRST COUPLED PAIR IMPROVES THE EXACT SHARED OBJECTIVE TO 178
+================================================================================
+
+Status
+------
+Completed as research-only pair enumeration. No candidate reaches zero component
+mismatch or exact routing. No certification, U/L, owner, production, or
+publication effect.
+
+Frozen results
+--------------
+Main result:
+  research_lab/local/zero_condition/E016_coupled_pair_search/run-001/RESULT.json
+
+SHA-256:
+  1a6c85a6db935237c5d69df8666d47b1df36dce59ddaec5ab585883d5e13ca161
+
+Optimum-face audit:
+  research_lab/local/zero_condition/E016_coupled_pair_search/run-001/OPTIMUM_FACE_AUDIT.json
+
+SHA-256:
+  cec4481a1feeccca618e9024520384140751a3d812cb06a3e781ee7331d02597
+
+Verdict:
+  PAIR_SHARED_MISMATCH_IMPROVEMENT
+
+Frozen first move
+-----------------
+E016 starts from E015's unique best unary repair:
+
+  crusher_sandleaf group pose 2186 -> pose 15830
+  shared objective 200 -> 186
+
+Exact second-variable enumeration
+---------------------------------
+The second current literal is:
+
+  mandatory::group::manufacturing_3x3::crusher_source::4::6191
+  materialized carrier crusher_source_015
+
+After the first move, E016 re-enumerates every exact non-overlap and power-
+preserving alternative for that carrier:
+
+  exact alternatives                    55
+  owner-domain empty                    32
+  shared-binding OPTIMAL                23
+
+No base-binding-feasible candidate is censored or merely FEASIBLE. All 23 shared
+objectives are proved OPTIMAL.
+
+Unique best pair
+----------------
+The best second move is:
+
+  crusher_source current pose 6191
+  -> pose 6102, p_x23_y19_o0_m_TB
+
+Its exact shared objective is 178:
+
+  E009 baseline       200
+  first unary move    186
+  first coupled pair  178
+
+The second move therefore contributes a robust eight-unit improvement after the
+first move, for a cumulative reduction of 22.
+
+Pair optimum face
+-----------------
+Only the saturated generic-output pair varies over the complete optimum face:
+
+  blue_iron_ore ranges from  8 to 12
+  source_ore    ranges from  6 to 10
+  their sum is fixed at 18
+
+The other 17 commodity values are fixed. Relative to the E015-best fixed values,
+the robust changes are:
+
+  blue_iron_block  -1
+  buckwheat        -2
+  buckwheat_seed   -1
+  sandleaf         +1
+  source_powder    -1
+  steel_block      -3
+  ore-pair sum     -1
+
+These changes sum to -8 independently of which ore endpoint is selected.
+
+Geometry and interface
+----------------------
+The best pair has:
+
+  free components               81
+  largest component             457
+  free adjacency                1158
+  meaningful binding patterns  13439
+  owner domains empty               0
+  generic-output slots             52
+
+All 19 commodities still have positive mismatch, so exact routing is not
+reached.
+
+Residual third-member evidence
+------------------------------
+On one optimum witness, the strongest residual portfolio coverage belongs to:
+
+  grinder_fine_buckwheat pose 7754        16 observations
+  crusher_source pose 6073                14
+  refinery_blue_iron pose 5279            13
+  refinery_blue_iron pose 5343            12
+
+One optimum witness is not enough to canonize the first item, because the ore
+pair has a four-unit optimum face and E015's unary gradient for pose 7754 was
+poor. The next experiment should therefore evaluate this four-member union:
+residual-coverage leaders plus strong surviving unary-gradient families.
+
+New inner-loop behavior
+-----------------------
+The sequence now constitutes a genuine outer/inner feedback cycle:
+
+  exact shared binding mismatch
+  -> cause-bearing current literal
+  -> exact fixed-outside placement repair
+  -> rebuild one shared binding
+  -> prove new optimum
+  -> derive next residual portfolio
+
+This differs from point nogoods in two ways. Feedback is carried in consumer-
+semantic group-pose variables, and every new placement is ranked by one joint
+binding object rather than independent commodity summaries.
+
+Truth boundary
+--------------
+E016 exhausts only the second carrier's alternatives after one frozen first move.
+The value 178 is exact for the fixed best pair, not a global lower bound. A
+positive mismatch does not prove routing infeasibility outside this placement.
+
+Decision effect
+---------------
+E017 should fix both successful moves and evaluate a four-arm third-member
+portfolio containing poses 7754, 6073, 5279, and 5343. A zero candidate enters
+routing. A positive improvement continues the evidence-derived portfolio; no
+improvement triggers a truly simultaneous multi-pose/binding model.
