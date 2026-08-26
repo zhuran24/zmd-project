@@ -133,7 +133,11 @@ probes and the first checked feedback replay now show a causal progression:
   * E028 releases packaging_battery pose 6189 and grinder_dense_blue_iron pose
     6049 together. Only two of 47 pairs survive static domains, but both reach
     objective 166. The winner swaps the two operations across their existing 6x4
-    footprints, improving the shared interface without changing any free cell.
+    footprints, improving the shared interface without changing any free cell;
+  * E029 reconstructs the fully materialized 166 endpoint and enumerates 8,486
+    same-type, cross-operation swaps that preserve occupied geometry. A diversified
+    twelve-swap portfolio touches 26-29 residual observations per action, led by
+    crusher_sandleaf pose 2155 <-> refinery_blue_iron pose 5327.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -141,10 +145,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-What residual action surface does the fully materialized objective-166
-operation-swap child expose, and does it propose another compact simultaneous
-assignment move, a branch split, or the first neighborhood in which pose and
-binding variables must cohabit directly?
+Do any of the twelve occupancy-preserving operation swaps selected from the
+objective-166 endpoint survive static domains and materially reduce the exact
+shared component mismatch, or must operation assignment and binding variables
+cohabit the next model directly?
 
 Current campaign posture
 ------------------------
@@ -285,13 +289,18 @@ grinder is released. The two surviving pairs instead exchange packaging and
 grinder operation/port semantics across the two current 6x4 bodies. Free space is
 identical, while the exact shared objective falls 168 -> 166.
 
-The objective-166 child becomes the leading beam state and its full endpoint is
-already materialized. The next experiment rebuilds its residual boundary/action
-surface without re-solving away the selected binding. It compares that surface to
-the prior 168/173 ledgers, carries forward retired unary and static-domain actions,
-and asks whether another compact joint assignment move is visible. Renewed ties,
-weak joint gains, or actions whose value depends on binding endpoint trigger a
-pose-binding cohabitation model rather than another scalar or greedy unary chain.
+The objective-166 child is now represented by geometry, operation assignment,
+and a fully materialized binding endpoint. E029 shows that operation assignment
+is not a one-off pair trick: 8,486 same-type cross-operation exchanges preserve
+occupancy, and a compact twelve-action portfolio touches a substantial residual
+surface. The E028 reverse is excluded because its exact value is already known.
+
+E030 now evaluates those twelve swaps through the ordered interface and one shared
+binding objective. High coverage remains only a proposer. Static-domain failure
+retires an action before topology; exact positive gain retains a new assignment
+state; a zero state enters routing. If the entire portfolio is weak or dead, the
+next representation puts operation-assignment and binding variables in the same
+model rather than growing another action ledger.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

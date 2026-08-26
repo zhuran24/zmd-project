@@ -1119,6 +1119,37 @@ evidence:
   pair-record manifest sha256
   620ac89e579cf4a58f9a331d3dc27ad23ef445d36fb10018de267ff1c1a3378e.
 
+R-ZC-040  The objective-166 endpoint exposes a finite operation-swap portfolio
+--------------------------------------------------------------------------------
+status: exact endpoint incidence reconstruction plus occupancy-preserving action generation
+scope: E028 objective-166 placement and binding endpoint
+
+statement:
+  E029 reconstructs 166 mismatch observations and 315 current boundary literals
+  without re-solving the binding endpoint. It enumerates 8,486 current
+  same-facility-type, cross-operation swaps that preserve occupied geometry by
+  construction. The immediate E028 reverse swap is recognized and excluded. A
+  diversified twelve-action portfolio has union coverage 26-29; the leader swaps
+  crusher_sandleaf pose 2155 with refinery_blue_iron pose 5327 and touches 29
+  observations. The 166 and 168 top-10 surfaces overlap strongly but have distinct
+  full ranking digests.
+
+non-implications:
+  Coverage does not prove static-domain feasibility or continuation value. The
+  portfolio is not a theorem, cut family, routing witness, or globally sufficient
+  assignment representation. Retired unary actions may still appear in joint
+  swaps because their joint value is unmeasured.
+
+effect on next problem:
+  Exhaust the twelve frozen occupancy-preserving swaps through static domain and
+  exact shared-binding replay. A material gain establishes operation-to-footprint
+  assignment as a reusable constructive layer; a weak or dead portfolio moves
+  operation assignment and binding variables into one cohabiting model.
+
+evidence:
+  E029 RESULT.txt; local RESULT.json sha256
+  25ded5d381d3972bb753b4593c3f1b791303027696212fd40bd44a8612d7b6fe.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

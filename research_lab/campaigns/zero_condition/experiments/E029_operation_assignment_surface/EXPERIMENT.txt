@@ -1,0 +1,67 @@
+EXPERIMENT E029: residual operation-assignment surface of the objective-166 pair child
+====================================================================================
+
+Question
+--------
+After E028 improves the shared component objective without changing free space,
+which current operation-to-footprint assignments touch the remaining 166 mismatch
+components, and what finite swap portfolio should be tested next?
+
+Why this representation
+-----------------------
+The E028 child differs from its parent only by exchanging packaging_battery and
+grinder_dense_blue_iron across two existing manufacturing_6x4 footprints. This
+proves that occupied geometry and operation/terminal assignment are distinct
+construction resources.
+
+E029 therefore does not propose another scalar geometry objective or another
+single-pose move. It freezes the fully materialized E028 binding endpoint,
+reconstructs the exact residual mismatch-boundary incidence surface, and derives
+same-facility-type operation swaps that preserve the occupied cell set by
+construction.
+
+Method
+------
+E029:
+
+  verifies the E028 assignment, layout, endpoint, objective, and selection digest;
+  rebuilds the 166 mismatch observations from the frozen selected components;
+  transports every boundary owner to the current group/optional pose literal;
+  compares the 166 ranking with the three retained objective-173 parent surfaces;
+  enumerates pairs of current mandatory literals with the same facility type but
+    different operations and exactly one represented source instance each;
+  scores each swap by the union of residual observations touched by its two
+    current literals;
+  excludes the immediate E028 reverse swap, whose exact value 168 is already
+    known;
+  freezes a small highest-coverage swap portfolio for exact shared-binding replay.
+
+A swap candidate is only a proposer. Identical facility type makes the exchange
+occupancy-preserving, but static domains and exact shared binding still decide
+whether it is useful.
+
+Competing readings
+------------------
+A. A compact operation-swap portfolio covers a substantial residual fraction.
+   Evaluate it before introducing a heavier pose-binding model.
+
+B. High-coverage swaps are dominated by one operation or repeat already rejected
+   actions. Use a diversified portfolio or move directly to pose-binding
+   cohabitation.
+
+C. The 166 surface differs sharply from the retained 173 parents. Preserve the
+   branch-specific state and avoid a global action ranking.
+
+Truth boundary
+--------------
+Boundary touch is not continuation value. E029 proves neither swap feasibility nor
+objective improvement. It selects a finite, occupancy-preserving action portfolio
+under one frozen endpoint and carries no routing, certification, or ledger effect.
+
+Result
+------
+Completed with verdict OPERATION_ASSIGNMENT_SWAP_PORTFOLIO_PLAUSIBLE. The
+objective-166 endpoint contains 166 mismatch observations and 315 current
+boundary literals. E029 derives 8,486 occupancy-preserving same-type operation
+swaps and freezes a diversified twelve-swap portfolio; the leading pair touches
+29 observations. See RESULT.txt.

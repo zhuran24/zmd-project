@@ -1,0 +1,108 @@
+E029 RESULT: THE OBJECTIVE-166 ENDPOINT SUPPORTS A FINITE OPERATION-SWAP PORTFOLIO
+================================================================================
+
+Status
+------
+Completed as research-only action-selection evidence. No placement change,
+shared-binding replay, exact routing, certification, U/L, owner, or publication
+effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E029_operation_assignment_surface/run-001/RESULT.json
+
+SHA-256:
+  25ded5d381d3972bb753b4593c3f1b791303027696212fd40bd44a8612d7b6fe
+
+Verdict:
+  OPERATION_ASSIGNMENT_SWAP_PORTFOLIO_PLAUSIBLE
+
+Residual surface
+----------------
+The fully materialized E028 endpoint has:
+
+  mismatch observations    166
+  current boundary literals 315
+
+Exact maximum boundary coverage is:
+
+  budget 1    16 observations
+  budget 2    31 observations
+  budget 4    57 observations
+
+The raw single-literal leader remains grinder_fine_buckwheat pose 7754 with
+coverage 16. It is still retired from unary use by E019 and E023, but unary
+retirement does not ban a simultaneous operation swap.
+
+Compared with the previous objective-168 endpoint, the top-10 overlap is 9/11
+(Jaccard 0.818), while the full ranking digest changes. Compared with the three
+retained objective-173 parents, all four current states still share the grinder
+leader, but only three literals remain common to every top ten:
+
+  grinder_fine_buckwheat pose 7754
+  crusher_sandleaf pose 2155
+  refinery_blue_iron pose 5327
+
+The branch remains related to its ancestors but is not reducible to their action
+surface.
+
+Operation-swap surface
+----------------------
+E029 pairs current mandatory group-pose literals only when they:
+
+  use the same facility type;
+  represent different operations;
+  have one concrete current source instance each.
+
+Exchanging such a pair preserves the occupied cell set by construction. The
+current endpoint admits:
+
+  eligible current literals      219
+  candidate operation swaps     8486
+
+The immediate reverse of E028 is identified and excluded. It touches 19 residual
+observations but is already known to return to objective 168.
+
+The highest raw swap touches 29 of 166 observations with zero overlap between its
+two members:
+
+  crusher_sandleaf pose 2155
+    <-> refinery_blue_iron pose 5327
+
+A diversified twelve-swap portfolio is frozen, with at most three appearances of
+any one current literal. Its leading entries are:
+
+  coverage 29  crusher_sandleaf 2155 <-> refinery_blue_iron 5327
+  coverage 29  grinder_fine_buckwheat 7754 <-> packaging_battery 6018
+  coverage 28  crusher_sandleaf 2155 <-> crusher_buckwheat 2915
+  coverage 28  grinder_dense_blue_iron 6189 <-> packaging_battery 6018
+  coverage 28  grinder_fine_buckwheat 7754 <-> grinder_dense_blue_iron 6654
+
+Interpretation
+--------------
+E028's gain was not an isolated curiosity. Once operation assignment is treated
+as its own layer, the objective-166 state exposes thousands of occupancy-
+preserving exchanges and a compact high-coverage test portfolio.
+
+This does not make boundary coverage a value function. The portfolio is a cheap
+proposer because each action leaves geometry and power unchanged; static domains
+and exact shared binding remain the ranking consumers.
+
+Decision effect
+---------------
+Run exact shared-binding replay on the twelve selected swaps. Preserve the
+current objective-166 endpoint as parent, materialize every surviving child's
+binding endpoint, and enter routing only if a swap reaches zero.
+
+If the portfolio produces a material gain, operation-to-footprint assignment
+becomes a standing constructive layer between geometry and binding. If it is
+static-dead or weak despite high coverage, the next model must let operation
+assignment and binding choices cohabit rather than continuing with boundary-only
+proposals.
+
+Truth boundary
+--------------
+E029 selects actions for one frozen endpoint. It proves neither static-domain
+feasibility nor continuation value for any swap, and it does not establish a
+necessary swap structure or any result about the global no-ghost instance.
