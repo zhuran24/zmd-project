@@ -932,6 +932,38 @@ evidence:
   E022 RESULT.txt; local RESULT.json sha256
   d43463034c81d1ce4185f76312a25173e880da9744bcc5bd2023e4610a1e6e83.
 
+R-ZC-034  A robust boundary-coverage leader is uniformly harmful at two beam depths
+------------------------------------------------------------------------------------
+status: exhaustive four-state common-action replay with historical twelve-state control
+scope: grinder_fine_buckwheat pose 7754 under fixed-outside unary relocation
+
+statement:
+  E023 exhausts three alternatives on each of four objective-173 parents. Two per
+  parent empty an owner domain; the sole OPTIMAL child uses pose 7755 and scores
+  175. Every branch therefore worsens 173 -> 175 by two with zero response range.
+  E019 had already shown the same action worsening twelve objective-176 parents
+  176 -> 178 by two. Across both contexts the action is exact-value invariant and
+  uniformly harmful despite touching 16 current mismatch boundaries in every
+  E021 state.
+
+non-implications:
+  The result does not prove the facility globally immovable, joint relocation
+  useless, or residual boundary coverage generally valueless. It rejects this
+  unary action in the tested fixed-outside contexts.
+
+effect on next problem:
+  Remove pose 7754 from the current unary action ledger and retain the four
+  objective-173 parents. Test one genuinely branch-specific leader, starting with
+  crusher_blue_iron pose 2053 on class 4. If that also lacks value, end unary
+  boundary ranking and construct a simultaneous two-pose or pose-binding
+  neighborhood.
+
+evidence:
+  E023 RESULT.txt; local RESULT.json sha256
+  c064e9918b5e8d7cfe422868d1c4e46b9df64b7d0cf22ebab05fb022391caffc;
+  E019 historical control sha256
+  89f37256e282a7f716092d477495d8e6ec715015d32632c97ca133b0ce40d3e7.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

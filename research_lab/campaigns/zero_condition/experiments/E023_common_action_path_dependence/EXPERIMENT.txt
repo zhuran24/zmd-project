@@ -1,0 +1,68 @@
+EXPERIMENT E023: path dependence of the common grinder action
+=============================================================
+
+Question
+--------
+Does grinder_fine_buckwheat pose 7754, which worsened every objective-176 beam
+state in E019, become constructive after the accumulated objective-173 chain, or
+is residual boundary coverage again a false continuation signal?
+
+Frozen parents
+--------------
+E023 uses the four retained E021 objective-173 placement/binding states. Their
+full residual rankings differ, but E022 identifies pose 7754 as the robust common
+leader: it touches exactly 16 observations in every state and ranks 1, 1, 1, and
+2.
+
+Common action
+-------------
+For each parent, the experiment exhausts every exact fixed-outside alternative of:
+
+  mandatory::group::manufacturing_6x4::grinder_fine_buckwheat::16::7754
+
+Every owner-domain-valid child receives the same exact shared component-mismatch
+objective. A zero child enters exact routing.
+
+Historical control
+------------------
+E019 applied the same action at objective 176. Each of twelve parents had two
+owner-domain failures and one OPTIMAL child at 178, so every branch worsened by
+two. E023 is therefore a controlled noncommutativity test:
+
+  same current literal
+  same exact downstream objective
+  different accumulated placement context
+
+Competing readings
+------------------
+A. The action improves at objective 173. Composition is history-dependent, and
+   beam state needs a context/action-response signature rather than a timeless
+   literal score.
+
+B. The action again worsens every branch. Retire it despite its residual coverage
+   and promote branch-specific leaders or a simultaneous neighborhood.
+
+C. Responses diverge. Preserve only improved/equal children and treat the action
+   as a state-specific operator.
+
+Truth boundary
+--------------
+E023 is exhaustive for one current literal over four retained parents with all
+outside placements fixed. It does not prove the action globally useless, the
+beam complete, or the no-ghost problem infeasible.
+
+Decision effect
+---------------
+A shared improvement remains in the common beam. A second shared rejection
+removes pose 7754 from the current unary action ledger. Mixed response partitions
+the beam by action context. No-improvement after this test ends common unary
+assembly and moves the next experiment to branch-specific or simultaneous
+pose-binding actions.
+
+Result
+------
+Completed with verdict COMMON_COVERAGE_ACTION_RETIRED_SECOND_REJECTION. Each of
+four parents has three alternatives: two empty an owner domain and pose 7755 is
+OPTIMAL at objective 175. Thus every branch worsens 173 -> 175, exactly matching
+E019's earlier 176 -> 178 response. The action is retired from the current unary
+ledger and no child enters routing. See RESULT.txt.

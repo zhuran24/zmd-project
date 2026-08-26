@@ -1,0 +1,113 @@
+E023 RESULT: THE COMMON GRINDER ACTION IS RETIRED AFTER A SECOND EXACT REJECTION
+==================================================================================
+
+Status
+------
+Completed as research-only action-response evidence. No child is retained in the
+beam. No routing witness, whole-layout claim, certification, U/L, owner, or
+publication effect is granted.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E023_common_action_path_dependence/run-001/RESULT.json
+
+SHA-256:
+  c064e9918b5e8d7cfe422868d1c4e46b9df64b7d0cf22ebab05fb022391caffc
+
+Verdict:
+  COMMON_COVERAGE_ACTION_RETIRED_SECOND_REJECTION
+
+Exact branch response
+---------------------
+E023 exhausts grinder_fine_buckwheat pose 7754 over all four retained
+objective-173 parents. Each parent has the same action domain:
+
+  alternatives per parent          3
+  owner-domain empty               2
+  shared-binding OPTIMAL           1
+  unique surviving replacement  7755, p_x59_y43_o0_m_BT
+
+Every branch has the same exact continuation value:
+
+  parent objective               173
+  child objective                175
+  delta                           +2
+
+The objective range across the four classes is zero. The action is therefore
+branch-invariant and uniformly harmful in the current context.
+
+Historical control
+------------------
+E019 tested the same current literal on twelve objective-176 parents:
+
+  176 -> 178
+  delta +2
+  worsened parents 12/12
+
+E023 now gives:
+
+  173 -> 175
+  delta +2
+  worsened parents 4/4
+
+The accumulated E020/E021 construction history does not reverse the action. Its
+response is stable across two objective levels, sixteen parent states, and many
+placement/binding identities.
+
+Why coverage failed
+-------------------
+E022 ranks pose 7754 first in three states and second in the fourth because its
+current body lies on 16 residual mismatch boundaries in every parent. Moving it
+does alter the boundary surface, but the only owner-domain-valid port mode raises
+the one-binding mismatch objective.
+
+Thus the outer loop now distinguishes:
+
+  causal touch coverage
+    where an action can alter current boundary evidence
+
+  exact continuation value
+    whether the resulting placement and shared binding improve the residual
+
+Pose 7754 is high in the first ledger and negative in the second. It is removed
+from the current unary action ledger.
+
+Best attempted child
+--------------------
+The best attempted child still has all 19 commodities positive and objective
+175. Its assignment and layout are retained only as negative evidence:
+
+  BEST_GRINDER_CHILD_ASSIGNMENT.json
+  sha256 c4ff90cd5b44ed78d6d2fd17d7c242693113463bdc7a2d02a437bd32bce27053
+
+  BEST_GRINDER_CHILD_LAYOUT.json
+  sha256 b385ab9c2553053f73ac0dfda4d04d6f814e1337467a6a0f2d514bd32cd7fe5f
+
+No exact routing solve is entered.
+
+Outer-loop consequence
+----------------------
+The four objective-173 parents remain the live beam. None of the grinder children
+is retained. A common unary action is no longer justified merely because it is a
+robust boundary-coverage leader.
+
+The next action should be either:
+
+  a branch-specific leader whose residual prominence is not shared, beginning
+  with crusher_blue_iron pose 2053 on class 4; or
+
+  a simultaneous two-pose / pose-binding neighborhood that can express
+  compensating moves unavailable to unary replay.
+
+Truth boundary
+--------------
+The rejection is exact only for pose 7754's fixed-outside alternatives over the
+four retained E021 parents. It does not prove the facility globally immovable or
+joint relocation useless.
+
+Decision effect
+---------------
+Retire pose 7754 from the current unary ledger. Use one branch-specific probe to
+test whether beam divergence carries real continuation value; absent such value,
+stop unary boundary ranking and construct the simultaneous neighborhood.

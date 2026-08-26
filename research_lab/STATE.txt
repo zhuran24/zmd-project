@@ -108,7 +108,11 @@ probes and the first checked feedback replay now show a causal progression:
     Full residual rankings differ, yet 312 literals are common and four appear in
     every top ten. Grinder pose 7754 touches exactly 16 observations in all four
     states and ranks 1, 1, 1, and 2; class 4 instead ranks crusher-blue-iron pose
-    2053 first.
+    2053 first;
+  * E023 replays grinder pose 7754 on all four parents. Each has two owner-domain
+    failures and one OPTIMAL pose-7755 child at 175, uniformly worsening 173 ->
+    175. This exactly repeats E019's earlier +2 response, so the common coverage
+    leader is retired from the current unary ledger.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -116,10 +120,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Does grinder_fine_buckwheat pose 7754, which worsened every objective-176 beam
-state, become constructive after the accumulated objective-173 chain, or does its
-second exact rejection end common unary replay and promote branch-specific or
-simultaneous pose-binding moves?
+Does the class-4-specific residual leader crusher_blue_iron pose 2053 carry real
+continuation value on its objective-173 parent, or does its failure complete the
+stop condition for unary boundary ranking and force a simultaneous two-pose or
+pose-binding neighborhood?
 
 Current campaign posture
 ------------------------
@@ -232,12 +236,17 @@ pose 7754 with equal coverage 16 in every state, but class 4's local leader is
 crusher-blue-iron pose 2053. The pairwise top-10 overlap ranges from 0.25 to
 0.818, so the common probe cannot erase branch-specific alternatives.
 
-The next experiment replays pose 7754 across all four objective-173 states. E019
-already proved this action harmful at objective 176. Improvement now would expose
-noncommutative, history-dependent composition; repeated worsening would retire
-the common coverage leader a second time. In that case class-specific leaders or
-a simultaneous two-pose / pose-binding neighborhood replace further common unary
-assembly.
+E023 now gives the second exact rejection. The action worsens every objective-173
+parent by two, exactly as it worsened every objective-176 parent in E019. Its
+boundary coverage is causal-touch information, not continuation value, and the
+four original objective-173 parents remain the live beam.
+
+One branch-specific discriminator remains before ending unary boundary ranking.
+Class 4 alone ranks crusher_blue_iron pose 2053 above the retired common leader,
+with coverage 17. The next experiment exhausts that action on the class-4 parent.
+A real improvement validates diversified beam actions; no improvement closes the
+unary phase and moves directly to a simultaneous two-pose or pose-binding
+neighborhood.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not
