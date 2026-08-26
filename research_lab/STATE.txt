@@ -80,7 +80,11 @@ probes and the first checked feedback replay now show a causal progression:
     component support;
   * E016 fixes the unary move and exhausts 55 crusher_source partner poses. The
     unique best pair uses pose 6102 and proves 186 -> 178; all 19 commodities
-    remain positive and the ore-pair sum falls again, 19 -> 18.
+    remain positive and the ore-pair sum falls again, 19 -> 18;
+  * E017 evaluates four third-member families and proves 178 -> 176. Twelve
+    candidates tie across crusher-source and refinery groups, while the residual-
+    coverage leader grinder pose 7754 worsens to 180. Coverage proposes; shared
+    binding must rank.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -88,9 +92,9 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-With both successful moves fixed, which member of the four-arm residual portfolio
-(poses 7754, 6073, 5279, 5343) composes with the pair, how far below 178 can the
-exact shared optimum move, and does any third move reach zero component mismatch?
+Does one final four-member portfolio compose with the representative 176 triple,
+and if the fourth-step gain is weak or absent, what multi-state beam surface
+should replace the now-splitting greedy lineage?
 
 Current campaign posture
 ------------------------
@@ -164,16 +168,19 @@ Its optimum face still has only the four-unit generic-output exchange; every
 other commodity value is fixed, so the pair improvement is not an arbitrary
 binding endpoint effect.
 
-The next experiment fixes both successful moves and evaluates four possible third
-members. They are not selected by one signal alone: pose 7754 leads residual
-boundary coverage, poses 5279 and 5343 had stronger unary gradients, and pose 6073
-combines high residual coverage with a modest unary improvement. Each arm re-
-enumerates its poses under the new pair geometry, preserves exact power and the
-revised owner-domain/aggregate-capacity gates, and receives the same one-binding
-objective. A zero candidate enters exact routing. A positive improvement extends
-the minimal portfolio. If all four fail to improve 178, sequential causal
-assembly has reached its limit and the next model must release several pose and
-binding decisions simultaneously.
+E017 confirms a third move can compose, but only by two units and with a twelve-
+way tie across three operation families. The residual-coverage leader itself does
+not compose. This is the first strong warning that one greedy candidate path is
+no longer a faithful outer-loop state: equally scoring geometries may expose
+very different next neighborhoods.
+
+One final controlled fourth-member round remains useful. It tests grinder pose
+7754, refinery poses 5279 and 5343, and crusher-source pose 6125 after the
+representative triple. Each arm preserves the same ordered interface and exact
+shared objective. A zero candidate enters routing. A material improvement will
+seed a beam with the tied triple families rather than canonize one path. Weak or
+no improvement ends sequential assembly and moves the outer loop to a small
+multi-state beam or simultaneous pose-binding neighborhood.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

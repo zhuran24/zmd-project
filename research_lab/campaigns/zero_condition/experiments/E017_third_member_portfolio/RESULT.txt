@@ -1,0 +1,128 @@
+E017 RESULT: THIRD-MEMBER PORTFOLIO IMPROVES TO 176, BUT GREEDY RANKING SPLITS
+================================================================================
+
+Status
+------
+Completed as research-only four-arm third-member enumeration. No candidate
+reaches zero component mismatch or exact routing. No certification, U/L, owner,
+production, or publication effect.
+
+Frozen results
+--------------
+Main result:
+  research_lab/local/zero_condition/E017_third_member_portfolio/run-001/RESULT.json
+
+SHA-256:
+  08626489854032d7a25097b6b2f1cfacb95444a14c680cee6e7886134f45588d
+
+Optimum-face audit:
+  research_lab/local/zero_condition/E017_third_member_portfolio/run-001/OPTIMUM_FACE_AUDIT.json
+
+SHA-256:
+  c0bbcb2cbbac15841b6d0566e315c7e36407d40a5d91a6c7c3c073afe38065da
+
+Verdict:
+  TRIPLE_SHARED_MISMATCH_IMPROVEMENT
+
+Four exact arms
+---------------
+With the E016 pair frozen at objective 178, E017 evaluates:
+
+  current literal                                      alternatives  best
+  grinder_fine_buckwheat pose 7754                          3         180
+  crusher_source pose 6073                                 55         176
+  refinery_blue_iron pose 5279                             59         176
+  refinery_blue_iron pose 5343                             59         176
+
+Across all four arms:
+
+  exact placement/power alternatives     176
+  owner-domain empty                     110
+  shared-binding OPTIMAL                  66
+
+No base-feasible candidate is censored.
+
+Best triple
+-----------
+The selected representative best move is:
+
+  crusher_source current pose 6073
+  materialized carrier crusher_source_012
+  -> pose 6179, p_x23_y38_o0_m_BT
+
+The shared objective moves:
+
+  E009 baseline       200
+  first move          186
+  pair                178
+  triple              176
+
+The third move therefore adds a robust two-unit improvement. Twelve distinct
+third-move candidates tie at objective 176 across crusher-source and two refinery
+arms. The selected representative wins only on secondary construction measures;
+it is not a uniquely necessary third move.
+
+Triple optimum face
+-------------------
+The generic-output exchange remains the only optimum-face freedom:
+
+  blue_iron_ore  8..12
+  source_ore     6..10
+  fixed sum         18
+
+Relative to the pair's fixed commodity values, the robust changes are:
+
+  blue_iron_powder        -1
+  dense_blue_iron_powder  -1
+  source_powder           -1
+  steel_block             +1
+
+Net change: -2. All 19 commodities remain positive.
+
+Geometry and domain
+-------------------
+The selected triple has:
+
+  free components               79
+  largest component             457
+  free adjacency                1158
+  meaningful binding patterns  13447
+  generic-output slots             52
+
+Exact routing is not reached.
+
+Outer-loop lesson
+-----------------
+Residual boundary coverage is useful for proposing variables, not ordering them.
+The coverage leader, grinder_fine_buckwheat pose 7754, cannot improve the pair and
+reaches only 180. Three lower-ranked arms reach 176. The outer loop must therefore
+keep a small hypothesis portfolio and let exact shared binding rank the members.
+
+The twelve-way tie is a second stop signal against a single greedy lineage. One
+controlled fourth-member round is still justified, but later growth should retain
+multiple states rather than canonizing one representative too early.
+
+Fourth-member portfolio
+-----------------------
+For the representative triple, the next four current literals are:
+
+  grinder_fine_buckwheat pose 7754
+  refinery_blue_iron pose 5279
+  refinery_blue_iron pose 5343
+  crusher_source pose 6125
+
+They combine residual coverage with earlier exact gradients. If the fourth round
+is weak or non-compositional, sequential assembly ends and a beam or simultaneous
+pose-binding model becomes the next architecture.
+
+Truth boundary
+--------------
+E017 exhausts four selected third variables under a fixed successful pair and
+fixed outside geometry. The value 176 is exact for the selected triple, not a
+global bound. Alternative tied triples may have different future composition.
+
+Decision effect
+---------------
+E018 should run one final controlled fourth-member portfolio. A zero candidate
+enters routing; a material improvement can seed a multi-state beam. Weak or no
+improvement ends greedy sequential construction.

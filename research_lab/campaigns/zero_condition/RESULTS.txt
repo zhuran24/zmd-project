@@ -742,6 +742,36 @@ evidence:
   optimum-face audit sha256
   cec4481a1feeccca618e9024520384140751a3d812cb06a3e781ee7331d02597.
 
+R-ZC-028  A four-arm third-member portfolio improves to 176 and splits the greedy lineage
+------------------------------------------------------------------------------------------------
+status: exhaustive third-variable alternatives in four evidence-selected arms
+scope: fixed E016 pair and fixed outside geometry
+
+statement:
+  E017 enumerates 176 exact alternatives: 110 empty an owner domain and all 66
+  remaining shared bindings are OPTIMAL. Crusher_source pose 6073 -> 6179 gives a
+  representative best triple at objective 176, but twelve candidates tie at 176
+  across crusher-source and two refinery-blue-iron arms. The residual-coverage
+  leader grinder_fine_buckwheat pose 7754 reaches only 180. On the triple optimum
+  face only blue_iron_ore/source_ore vary, with fixed sum 18; every other value is
+  fixed and all 19 commodities remain positive.
+
+non-implications:
+  The selected representative is not a uniquely necessary third move, and the
+  tied triples need not have equal future composition. The value 176 is not a
+  global no-ghost bound or routing witness.
+
+effect on next problem:
+  Run one controlled fourth-member portfolio, but treat the twelve-way tie as a
+  stop signal for a single greedy lineage. Weak composition should transition the
+  outer loop to a small multi-state beam or simultaneous pose-binding model.
+
+evidence:
+  E017 RESULT.txt; main result sha256
+  08626489854032d7a25097b6b2f1cfacb95444a14c680cee6e7886134f45588d;
+  optimum-face audit sha256
+  c0bbcb2cbbac15841b6d0566e315c7e36407d40a5d91a6c7c3c073afe38065da.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

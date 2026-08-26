@@ -1,0 +1,70 @@
+EXPERIMENT E017: four-arm third-member portfolio
+===============================================
+
+Question
+--------
+With E016's successful pair fixed, which of four evidence-selected current
+literals composes as a third placement move, and can any exact third move drive
+the shared component mismatch from 178 to zero?
+
+Frozen pair
+-----------
+The fixed pair is:
+
+  crusher_sandleaf pose 2186 -> 15830
+  crusher_source   pose 6191 -> 6102
+
+Its exact shared optimum is 178.
+
+Third-member portfolio
+----------------------
+The four current literals combine residual-boundary coverage and prior exact
+unary evidence:
+
+  grinder_fine_buckwheat pose 7754   residual coverage leader
+  crusher_source pose 6073            high residual coverage
+  refinery_blue_iron pose 5279        strong unary gradient family
+  refinery_blue_iron pose 5343        strong unary gradient family
+
+Each arm re-enumerates all exact alternatives after both previous moves. No old
+alternative list is reused across changed geometry.
+
+Interface order
+---------------
+Every candidate preserves mandatory cardinality, fixed outside geometry,
+non-overlap, 53 poles, and exact power. It is then evaluated by:
+
+  owner-domain filtering
+  aggregate/shared base binding and terminal uniqueness
+  one exact all-commodity shared mismatch objective
+  exact routing only at mismatch zero
+
+Competing readings
+-------------------
+A. One third member reduces the exact objective below 178. The successful triple
+   extends the evidence-derived portfolio.
+
+B. One third member reaches zero and enters exact routing.
+
+C. None improves 178. Sequential causal assembly has saturated; the next model
+   must release multiple pose and binding decisions simultaneously.
+
+Truth boundary
+--------------
+This experiment is exhaustive only for four chosen current literals, one carrier
+per literal, and fixed outside geometry. A positive objective is not global
+infeasibility. Residual coverage and unary gradients are neighborhood selectors,
+not sound cuts.
+
+Decision effect
+---------------
+A zero candidate goes to routing. A positive improvement freezes the best triple
+and derives a fourth member. No improvement ends sequential portfolio growth.
+
+Result
+------
+Completed with verdict TRIPLE_SHARED_MISMATCH_IMPROVEMENT. Four arms enumerate
+176 exact alternatives; 110 empty an owner domain and all 66 remaining shared
+bindings are OPTIMAL. Crusher-source pose 6073 -> 6179 gives the selected
+representative optimum 178 -> 176. Twelve candidates tie at 176 and all 19
+commodities remain positive. See RESULT.txt.
