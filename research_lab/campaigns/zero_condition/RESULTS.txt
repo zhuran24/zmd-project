@@ -1588,6 +1588,45 @@ evidence:
   conditional-mode helper sha256
   98464fc5c9ee181a69392e582c2194edd0c213965b6c62672ece190fb1370dad.
 
+R-ZC-053  Body relocation outruns residual unadmitted port mode at 152
+----------------------------------------------------------------------------
+status: full mobility census, two exact budget-six portfolios, and face audits
+scope: E041 objective-152 endpoint under fixed-outside pose alternatives
+
+statement:
+  E042 classifies all 268 admissible current literals before binding: 210 expose
+  unadmitted same-footprint modes and 261 expose body relocations. Exact budget-six
+  portfolios cover 69/152 and 71/152 residual observations respectively. The best
+  unadmitted mode reaches only 151. The best body move shifts
+  grinder_dense_blue_iron pose 6228 to 6098, changes the free partition from 79 to
+  77 components, and proves 152 -> 150. Both audited faces retain the ore-pair
+  fixed sum 14; the body's fixed structural gain is buckwheat -1 and
+  sandleaf_powder -1. All 19 commodities remain positive.
+
+non-implications:
+  Objective 150 is not a global body-geometry optimum, component-compatible
+  binding, routing witness, lower bound, or certified claim. The two six-target
+  portfolios are proposers, and the body move was evaluated under one concrete
+  operation/mode assignment rather than the free E041 middle layer.
+
+effect on next problem:
+  Carry the faithful joint port-mode, operation-assignment, and binding consumer
+  across a small portfolio of distinct E042 body geometries. Recalibrate each
+  frozen ordinary endpoint, free the joint middle layer, and rank geometries by
+  those exact joint values before selecting any simultaneous body partner.
+
+evidence:
+  E042 RESULT.txt; local RESULT.json sha256
+  81e641860cde0e3a99f55b964a25c68630c66360d8e3127152d164bcf517636a;
+  mobility census sha256
+  047f49a57726819dd74c0634006ef25929a0b56c9f75a27ee45a379ba14b6cc2;
+  arm manifest sha256
+  cf91b652d39fc80b620920c01de158ea80093e2cf649e2fbea5f9bf952bcacbd;
+  best body endpoint sha256
+  25f13ba25f51568f9131ef7e4dcfe5b21444948e83200949b3b3645d8c029d6c;
+  optimum-face audits sha256
+  dd052a9dc94af393b8994d43bd385256128c8e5ad26795107629dd23af0cd656.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

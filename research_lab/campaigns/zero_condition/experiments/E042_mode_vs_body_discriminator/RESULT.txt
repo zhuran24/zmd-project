@@ -1,0 +1,180 @@
+E042 RESULT: BODY RELOCATION OUTPERFORMS UNADMITTED PORT MODE AT THE 152 ENDPOINT
+================================================================================================
+
+Status
+------
+Completed as research-only exact two-axis mobility evidence. No
+component-compatible binding, exact routing, whole-layout witness,
+certification, U/L, owner, or publication effect.
+
+Frozen results
+--------------
+Main result:
+  research_lab/local/zero_condition/E042_mode_vs_body_discriminator/run-001/RESULT.json
+
+SHA-256:
+  81e641860cde0e3a99f55b964a25c68630c66360d8e3127152d164bcf517636a
+
+Verdict:
+  BODY_RELOCATION_MATERIAL_SIGNAL
+
+Mobility census and exact portfolios
+------------------------------------
+E042 reconstructs 152 mismatch-component observations and 315 current boundary
+literals from the fully materialized E041 endpoint. Of 268 admissible current
+pose literals:
+
+  210 have an unadmitted same-footprint mode alternative
+  261 have at least one occupied-body relocation alternative
+
+Two independent exact budget-six coverage problems select:
+
+  unadmitted-mode portfolio    69 / 152 observations    45.4%
+  body-relocation portfolio    71 / 152 observations    46.7%
+
+The two portfolios contain eleven distinct targets. Their complete fixed-outside
+pose domains produce 271 candidate evaluations. Coverage selects the finite
+portfolios; static owner domains and the exact shared objective determine value.
+
+Frozen mobility census SHA-256:
+
+  047f49a57726819dd74c0634006ef25929a0b56c9f75a27ee45a379ba14b6cc2
+
+Arm manifest SHA-256:
+
+  cf91b652d39fc80b620920c01de158ea80093e2cf649e2fbea5f9bf952bcacbd
+
+Unadmitted port-mode axis
+-------------------------
+Six same-footprint candidates reach an OPTIMAL shared binding. Their objective
+distribution is:
+
+  151    1
+  152    3
+  153    1
+  155    1
+
+The best unadmitted mode changes grinder_dense_blue_iron_008 from:
+
+  pose 6654  p_x51_y13_o0_m_TB
+
+to:
+
+  pose 6655  p_x51_y13_o0_m_BT
+
+Occupied geometry is unchanged and the objective improves only:
+
+  152 -> 151
+
+Its exact optimum face keeps blue_iron_ore/source_ore at fixed sum 14. The one
+structural unit is dense_blue_iron_powder -1. This is below the predeclared
+two-unit material threshold.
+
+Best mode endpoint SHA-256:
+
+  d9f0c21e442b3b64a255ef1fb63d0cd8faaae6d8c7a8682d3e6024e32ffb53bd
+
+Occupied-body relocation axis
+-----------------------------
+Ten body-relocation candidates reach an OPTIMAL shared binding. Their objective
+distribution is:
+
+  150    1
+  151    2
+  153    1
+  156    1
+  157    2
+  159    1
+  162    1
+  164    1
+
+The best body move relocates grinder_dense_blue_iron_001 one cell left:
+
+  pose 6228  p_x47_y60_o0_m_TB
+    ->
+  pose 6098  p_x46_y60_o0_m_TB
+
+The free-cell count remains 1144, but the partition changes:
+
+  free components        79 -> 77
+  largest component      479 -> 479
+  free adjacency        1160 -> 1159
+  free-cell digest
+    341f75af121780e04a913a7bd135db7970f670c7dd15fd211581f843a0deafff
+    ->
+    8e22154e0d4614cf542fcd307de9558baf5eb17ce722824d8e3994f8e8c7037b
+
+The exact shared objective improves:
+
+  152 -> 150
+
+The best-body optimum face again varies only blue_iron_ore/source_ore with fixed
+sum 14. The fixed structural gain is:
+
+  buckwheat          -1
+  sandleaf_powder    -1
+
+Best body endpoint SHA-256:
+
+  25f13ba25f51568f9131ef7e4dcfe5b21444948e83200949b3b3645d8c029d6c
+
+Both optimum faces were independently audited. Combined audit SHA-256:
+
+  dd052a9dc94af393b8994d43bd385256128c8e5ad26795107629dd23af0cd656
+
+Interpretation
+--------------
+The current nine-destination port-mode context is not globally complete, but the
+best residual unadmitted mode is only marginal. Actual occupied-body movement
+provides the first material next-axis gain.
+
+The winning body is already inside E041's 6x4 operation-assignment block, but
+E042 evaluates the move with one concrete operation/mode assignment. Its value
+must therefore be recalibrated with the faithful joint port-mode,
+operation-assignment, and binding consumer before another body partner is chosen.
+
+Architecture effect
+-------------------
+The inner representation now has an experimentally ordered handoff:
+
+  fixed body geometry
+    -> joint port mode + operation assignment + binding
+    -> residual-selected body geometry
+    -> reinstantiate the joint middle layer on each admitted geometry
+    -> exact routing only after component compatibility
+
+A body geometry cannot be ranked faithfully by a stale concrete binding endpoint.
+The joint middle layer must travel with the geometry state.
+
+Decision effect
+---------------
+Retain and fully materialize the objective-150 body child as the leading geometry
+seed. Build a small geometry portfolio from the best distinct E042 body states,
+and on each geometry:
+
+  recalibrate its frozen ordinary endpoint
+  release the E041 port-mode/operation-assignment/binding context
+  solve the exact shared objective
+
+Use the resulting joint values, not E042's fixed-assignment values, to select the
+next body state or simultaneous body-pair neighborhood. Objective zero enters
+exact routing immediately.
+
+Truth boundary
+--------------
+E042 exhausts fixed-outside alternatives only for two residual-selected
+six-target portfolios under one objective-152 parent. Objective 150 is not a
+global body-geometry optimum, component-compatible binding, routing witness,
+lower bound, or certified claim. All 19 commodity mismatch counts remain
+positive.
+
+Frozen artifact identities
+--------------------------
+Best mode assignment:
+  2c6306a8415e991ea009081f390a092ef1071fb26edb993e13d9e3aa945f989c
+
+Best body assignment:
+  b5dae2fadbcc5db51556aeb77f4b3bea26a929ed308ee76207ba19b38cb18d2f
+
+Best body layout:
+  7bec4df566a8e775dc5e5121d7b130e208aec6b74997f5e29fa0bee84d04fb1d

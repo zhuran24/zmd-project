@@ -162,10 +162,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Which bounded expansion is selected by the fully materialized objective-152
-endpoint: unadmitted same-footprint pose/port modes outside the current 25-body
-context, or simultaneous occupied-body relocations, and can that expansion lower
-152 or reach component compatibility while preserving joint assignment-binding?
+Which of the best distinct E042 body geometries remains strongest after the
+faithful joint port-mode, operation-assignment, and binding consumer is rebuilt on
+that geometry, and does the resulting joint value select a geometry seed or force
+a simultaneous body-pair neighborhood?
 
 Current campaign posture
 ------------------------
@@ -399,12 +399,19 @@ assignment and binding change jointly; occupied geometry remains byte-identical.
 The exact ore-pair face falls from fixed sum 15 to 14, and all 19 commodities
 remain positive.
 
-The next object is selected from the 152 endpoint rather than another complete
-mode action. Rebuild its residual causes and actual mobility. Compare unadmitted
-same-footprint mode destinations outside the current 25-body context against
-occupied-body relocations from the mobility atlas. The chosen bounded expansion
-must preserve the faithful joint operation-assignment, port-mode, and binding
-consumer. A zero state enters routing immediately.
+E042 rebuilds the 152 residual and classifies all 268 admissible current literals.
+The exact six-target unadmitted-mode portfolio reaches only 151. The exact
+six-target body portfolio reaches 150 by shifting grinder_dense_blue_iron pose
+6228 to 6098, changing the free partition from 79 to 77 components. Both audited
+faces keep the ore-pair sum at 14; the body's fixed gain is buckwheat -1 and
+sandleaf_powder -1.
+
+The body move was still valued under one concrete E041 operation/mode assignment.
+The next object carries the faithful joint middle layer across a small portfolio
+of distinct E042 body geometries. Each frozen endpoint is first recalibrated, then
+port mode, operation assignment, and binding are freed on that geometry. Those
+joint values, not stale fixed-assignment values, select the next geometry seed or
+simultaneous body-pair neighborhood. A zero state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

@@ -1,0 +1,82 @@
+EXPERIMENT E042: UNADMITTED PORT MODE VERSUS BODY-RELOCATION DISCRIMINATOR
+================================================================================
+
+Question
+--------
+At the fully materialized objective-152 endpoint, does the next bounded freedom
+come from same-footprint pose/port modes not admitted by E041, from occupied-body
+relocation, or from a hybrid neighborhood?
+
+Why this experiment
+-------------------
+E041 proves that nine same-body mode destinations, operation assignment, and
+binding can cohabit faithfully and improve 154 -> 152. The current layout still
+has 19 positive commodity mismatches. The next context cannot be selected by the
+old 157 residual surface or by one manually chosen pose.
+
+Method
+------
+E042 reconstructs all 152 mismatch-component observations and current boundary
+literals from the frozen E041 endpoint. Before any binding solve it enumerates the
+placement- and power-valid fixed-outside pose domain of every admissible current
+literal and classifies each alternative as:
+
+  same-footprint pose/port mode
+  occupied-body relocation
+
+A body whose modes were already admitted by E041 is excluded from the new-mode
+universe but remains eligible for body relocation. Two independent exact
+maximum-coverage portfolios are then frozen:
+
+  six unadmitted-mode targets
+  six body-relocation targets
+
+One target may belong to both portfolios; the union is evaluated once. Every
+selected target's complete fixed-outside action domain is passed through static
+owner domains and the exact shared component-mismatch objective. Mode and body
+responses are reported separately even when they share an arm.
+
+The complete 268-target mobility census is written to a local manifest. Coverage
+proposes the finite portfolios; exact static domains and shared binding determine
+value.
+
+Decision rule
+-------------
+Objective 0 on either axis
+  Materialize and enter exact routing immediately.
+
+Mode improvement of at least two units, stronger than body relocation
+  Expand the faithful joint mode/assignment/binding context with the selected
+  unadmitted body destinations. Do not continue one mode at a time.
+
+Body improvement of at least two units, stronger than unadmitted mode
+  Build a simultaneous body-geometry neighborhood carrying the existing joint
+  mode/assignment/binding consumer.
+
+Both axes materially improve at equal best value
+  Build a bounded hybrid mode-plus-body neighborhood.
+
+Neither axis materially improves
+  Treat fixed-outside unary mobility as saturated and build a simultaneous body
+  geometry neighborhood rather than another point action.
+
+Truth boundary
+--------------
+E042 exhausts fixed-outside alternatives only for the exact six-plus-six
+residual-selected portfolios under one objective-152 parent. The portfolios are
+not necessary families, and a positive objective gain is not component
+compatibility, routing, a lower bound, or certified effect.
+
+Result
+------
+Completed. The exact six-target mode portfolio covers 69/152 observations and
+finds a best same-footprint result of 151. The exact six-target body portfolio
+covers 71/152 observations and finds a material body relocation at 150 by moving
+grinder_dense_blue_iron pose 6228 to pose 6098. Both optimum faces retain the
+ore-pair fixed sum 14, so the body's structural gain is buckwheat -1 and
+sandleaf_powder -1.
+
+The decision is to carry the faithful joint port-mode, operation-assignment, and
+binding consumer across a small portfolio of distinct body geometries before
+selecting another geometry partner. See RESULT.txt for frozen identities and the
+exact truth boundary.
