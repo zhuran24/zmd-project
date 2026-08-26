@@ -1,0 +1,69 @@
+EXPERIMENT E037: MERGED TEN-FOOTPRINT 6x4 ASSIGNMENT BLOCK
+=========================================================
+
+Question
+--------
+Does merging the live five-footprint 6x4 block with the strongest remaining five
+6x4 footprints expose cross-subset operation assignments below objective 159, or
+is fixed-geometry assignment freedom saturated enough to release geometry?
+
+Trigger
+-------
+E036 adds a high-coverage 5x5 block but proves the three-block optimum remains
+159. Its live blocks touch 125/159 mismatch observations. Exact five-footprint
+marginal coverage outside the current pose sets is +9 for 3x3, +8 for 5x5, and
++14 for 6x4.
+
+Why merge rather than add another block
+---------------------------------------
+Two independent 6x4 assignment blocks would preserve an artificial partition:
+operations could move inside each five-footprint subset but not across them. E037
+therefore combines the existing and newly selected 6x4 footprints into one
+10-footprint assignment block with one exact operation multiset.
+
+Method
+------
+E037 reconstructs the materialized E036 endpoint, selects five additional current
+6x4 footprints by exact marginal coverage, operation diversity, and deterministic
+tie-break, then builds one model with:
+
+  the live five-footprint 3x3 block
+  the live five-footprint 5x5 block
+  one merged ten-footprint 6x4 block
+  conditional exact binding patterns for every operation-footprint pair
+  unchanged outside binding and generic-I/O semantics
+  terminal uniqueness and one shared component-mismatch objective
+
+The E036 and E035 objective-159 states are fixed and replayed as calibration
+witnesses before the free solve.
+
+Outcome interpretation
+----------------------
+OPTIMAL objective 0
+  Materialize the endpoint and enter exact routing immediately.
+
+OPTIMAL objective 1..158
+  Retain the merged-block witness and derive the next context from its residual.
+
+OPTIMAL objective 159
+  Fixed-geometry operation assignment is saturated across the strongest tested
+  20 footprints. Stop assignment-only expansion and release a problem-derived
+  geometry neighborhood together with assignment and binding.
+
+FEASIBLE / UNKNOWN
+  Record incumbent and bound only.
+
+Truth boundary
+--------------
+The experiment fixes occupied geometry and every operation outside twenty
+selected manufacturing footprints. It is not a global assignment optimum,
+routing result, whole-layout infeasibility proof, lower bound, or certification
+artifact.
+
+Result
+------
+Completed. Both objective-159 calibration states replay exactly, and the free
+merged-block model proves OPTIMAL 157. The best state moves operations across the
+former 6x4 subset boundary and also selects the alternate 3x3 branch. See
+RESULT.txt and local result SHA-256
+450bd05565afc96cbd071d924405f85d4dc5bc7eee1af4e89cdb574566cfe56f.

@@ -1404,6 +1404,43 @@ evidence:
   optimum-face audit sha256
   13fb2b86276b92567daa003b3e548fcd6606fbc0e61a57c0c4117884cb81b3e9.
 
+R-ZC-048  Merging same-type assignment subsets reveals a hidden 159 -> 157 gain
+----------------------------------------------------------------------------------
+status: two calibration solves, one free exact merged-block solve, and face audit
+scope: fixed E036 geometry with five 3x3, five 5x5, and ten merged 6x4 footprints
+
+statement:
+  E037 adds five residual-selected 6x4 footprints with marginal coverage 14, but
+  merges them with the live five rather than creating an independent block. The
+  resulting ten-footprint operation multiset spans five operation families. Both
+  objective-159 regression states recalibrate exactly. The free model proves
+  OPTIMAL 157 and crosses the former 6x4 subset boundary while also selecting the
+  alternate 3x3 branch. The exact face still varies only the ore pair at fixed sum
+  15; all 19 commodities remain positive.
+
+non-implications:
+  The result does not prove the selected twenty footprints necessary, exhaust all
+  fixed-geometry assignment freedom, establish component compatibility, or reach
+  routing. It does prove that independent same-type blocks can hide value by
+  forbidding operation flow across an artificial partition.
+
+effect on next problem:
+  The live assignment context now touches 137/157 observations. Additional five-
+  footprint marginal coverage is +9 for 3x3, +6 for 5x5, and zero for 6x4. Merge
+  the exact-selected five additional 3x3 footprints with the existing five into
+  one ten-footprint 3x3 block. Exact 157 after that merge is a strong signal to
+  release geometry rather than continue assignment-only expansion.
+
+evidence:
+  E037 RESULT.txt; local RESULT.json sha256
+  450bd05565afc96cbd071d924405f85d4dc5bc7eee1af4e89cdb574566cfe56f;
+  joint witness sha256
+  61ad0bea02290dd3240646176fa0c6d16e3db3466a0cced16c9c4bc2212525f5;
+  ordinary fixed endpoint sha256
+  4899d69713790483058945e1b568dd5a2fca12455dc8bfb844309ce18ad20383;
+  optimum-face audit sha256
+  8b56476fad1bd7935b0d64ef063ad13e94cab75bdb01192926cf99d153559d57.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

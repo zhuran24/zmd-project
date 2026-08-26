@@ -162,9 +162,9 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Does merging the live five-footprint 6x4 assignment block with the strongest
-remaining five 6x4 footprints expose cross-subset operation assignments below
-159, or is fixed-geometry assignment freedom saturated enough to release geometry?
+Does merging the live five-footprint 3x3 assignment block with the strongest
+remaining five 3x3 footprints lower exact objective 157, or has fixed-geometry
+operation assignment reached its stop point and forced geometry release?
 
 Current campaign posture
 ------------------------
@@ -359,13 +359,18 @@ regression state to 160. Releasing all three blocks still proves OPTIMAL 159. Th
 5x5 assignment changes buckwheat, buckwheat_seed, and sandleaf_seed but the net
 objective stays fixed; the audited ore-pair sum remains 15.
 
-Residual assignment coverage now has diminishing returns: a further five
-footprints add at most 9 observations for 3x3, 8 for 5x5, and 14 for 6x4. The
-last assignment-only discriminator merges the strongest five residual 6x4
-footprints with the existing five into one ten-footprint block. This is necessary
-because two independent same-type blocks would forbid cross-subset operation
-moves. Exact 159 after the merge moves the campaign to geometry release. A zero
-state enters routing immediately.
+E037 then removes an artificial boundary inside the 6x4 assignment layer. Five
+new residual footprints are merged with the live five into one ten-footprint
+block. Both objective-159 states recalibrate exactly, while the free model proves
+OPTIMAL 157 and also switches to the alternate 3x3 branch. The audited ore-pair
+sum remains 15; the two-unit gain is fixed outside that face.
+
+The current twenty-footprint assignment context touches 137 of 157 observations.
+Remaining five-footprint marginal coverage is +9 for 3x3, +6 for 5x5, and zero
+for 6x4. The next and strongest assignment-only discriminator merges five new
+3x3 footprints with the live five into one ten-footprint 3x3 block. Exact 157
+after that merge moves the campaign to a geometry-plus-assignment-binding
+neighborhood. A zero state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

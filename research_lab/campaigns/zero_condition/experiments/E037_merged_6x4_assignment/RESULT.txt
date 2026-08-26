@@ -1,0 +1,161 @@
+E037 RESULT: MERGING THE TWO 6x4 SUBSETS LOWERS THE JOINT OPTIMUM TO 157
+================================================================================
+
+Status
+------
+Completed as research-only exact merged-block evidence. No component-compatible
+binding, exact routing, whole-layout witness, certification, U/L, owner, or
+publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E037_merged_6x4_assignment/run-001/RESULT.json
+
+SHA-256:
+  450bd05565afc96cbd071d924405f85d4dc5bc7eee1af4e89cdb574566cfe56f
+
+Verdict:
+  MERGED_6X4_JOINT_MATERIAL_IMPROVEMENT
+
+Residual addition and merge
+---------------------------
+At the E036 objective-159 endpoint, the live 3x3, 5x5, and 6x4 blocks touch 125
+mismatch observations. E037 selects five additional 6x4 footprints that raise
+coverage to 139, a marginal gain of 14:
+
+  filling_capsule                 pose 16843
+  grinder_dense_blue_iron         pose 6228
+  grinder_dense_blue_iron         pose 6643
+  grinder_fine_buckwheat          pose 6018
+  packaging_battery               pose 7754
+
+The new footprints are not kept in a separate assignment block. They merge with
+the existing five 6x4 footprints into one ten-footprint block, allowing operation
+assignments to cross the old subset boundary.
+
+The merged operation multiset is:
+
+  filling_capsule                 2
+  grinder_dense_blue_iron         4
+  grinder_dense_source            1
+  grinder_fine_buckwheat          2
+  packaging_battery               1
+
+Joint model
+-----------
+The model contains one five-footprint 3x3 block, one five-footprint 5x5 block, and
+one merged ten-footprint 6x4 block:
+
+  assignment variables                  80
+  conditional binding-pattern vars   15,141
+  joint conditional binding owners       78
+  outside binding owners                 252
+  total variables                     26,570
+  total constraints                   78,319
+
+Calibration
+-----------
+The E036 and E035 objective-159 states both replay exactly:
+
+  first calibration     OPTIMAL 159
+  second calibration    OPTIMAL 159
+
+This guards the 5x5 endpoint variation while enlarging the 6x4 assignment domain.
+
+Free exact solve
+----------------
+With the merged block released, E037 proves:
+
+  status          OPTIMAL
+  objective       157
+  best bound      157
+  solve time      5.49 s
+
+The best state also switches the 3x3 assignment to the alternate objective-159
+branch, demonstrating real cross-block composition. The merged 6x4 assignment is:
+
+  filling_capsule
+  grinder_fine_buckwheat
+  grinder_dense_blue_iron
+  grinder_dense_blue_iron
+  grinder_dense_blue_iron
+  grinder_fine_buckwheat
+  packaging_battery
+  grinder_dense_source
+  filling_capsule
+  grinder_dense_blue_iron
+
+The improvement would be invisible if the two five-footprint 6x4 subsets remained
+independent, because the optimum moves operations across their former boundary.
+
+Optimum-face audit
+------------------
+The exact objective-157 face varies only:
+
+  blue_iron_ore    6..10
+  source_ore       5..9
+  fixed sum           15
+
+All other 17 commodity values are fixed. Relative to the E036 endpoint, the ore
+pair only moves along the existing face. The fixed structural changes are:
+
+  blue_iron_block          +1
+  blue_iron_powder         -1
+  buckwheat                +1
+  buckwheat_seed           -2
+  dense_blue_iron_powder   -1
+  sandleaf_powder          -1
+  sandleaf_seed            +1
+  source_powder            -1
+  steel_bottle             +1
+
+Their net contribution is -2. Audit SHA-256:
+
+  8b56476fad1bd7935b0d64ef063ad13e94cab75bdb01192926cf99d153559d57
+
+Frozen witnesses
+----------------
+Concrete assignment:
+  research_lab/local/zero_condition/E037_merged_6x4_assignment/run-001/
+    BEST_ASSIGNMENT.json
+  sha256 e06cb7e2078c398ee2eee4bdf61105bee3d9422a8fca355324f7296d04979640
+
+Ordinary fixed-assignment endpoint:
+  research_lab/local/zero_condition/E037_merged_6x4_assignment/run-001/
+    BEST_ENDPOINT.json
+  sha256 4899d69713790483058945e1b568dd5a2fca12455dc8bfb844309ce18ad20383
+
+Joint assignment-pattern witness:
+  research_lab/local/zero_condition/E037_merged_6x4_assignment/run-001/
+    JOINT_WITNESS.json
+  sha256 61ad0bea02290dd3240646176fa0c6d16e3db3466a0cced16c9c4bc2212525f5
+
+Residual measurement
+--------------------
+The current 20-footprint assignment context now touches 137 of 157 observations.
+Exact five-footprint additions outside the current pose sets give:
+
+  additional 3x3 footprints     marginal +9
+  additional 5x5 footprints     marginal +6
+  additional 6x4 footprints     marginal +0
+
+The merged 6x4 block has absorbed the residual boundary surface visible to all
+remaining 6x4 footprints. The strongest remaining assignment extension is a
+five-footprint 3x3 set with five distinct operations.
+
+Decision effect
+---------------
+Retain objective 157. Merge the exact-selected five additional 3x3 footprints
+with the live five into one ten-footprint 3x3 block, while keeping the 5x5 and
+merged 6x4 blocks live. This is the next assignment-only discriminator.
+
+If that merged 3x3 context proves 157, fixed-geometry operation assignment has a
+strong saturation case and the next model must release geometry together with
+assignment and binding. Objective zero enters exact routing.
+
+Truth boundary
+--------------
+This result is exact only for one fixed occupied geometry and the selected twenty
+footprints. It is not a global assignment optimum, component-compatible binding,
+routing result, no-ghost infeasibility result, lower bound, or certified claim.
