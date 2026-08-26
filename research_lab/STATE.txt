@@ -146,7 +146,11 @@ probes and the first checked feedback replay now show a causal progression:
     neighborhoods. Ninety-seven non-identity permutations yield 77 OPTIMAL shared
     bindings. The 3x3 arm reaches 161 through two distinct assignments, while 5x5
     and 6x4 bottom out at 165 and 164. The best face lowers the ore-pair sum to 15
-    and all 19 commodities remain positive.
+    and all 19 commodities remain positive;
+  * E032 fully materializes the second 161 endpoint. The two residual surfaces
+    share 9/10 top literals and the same leader; their operation-swap top tens
+    overlap 8/10 and their twelve-action portfolios overlap 10/12. They share a
+    common leading swap but retain two branch-specific pose-2963 actions.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -154,10 +158,9 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Do the two distinct objective-161 3x3 assignment states expose different residual
-action surfaces or continuation domains, and does either justify another bounded
-assignment neighborhood before operation-assignment and binding variables must
-cohabit directly?
+What exact continuation values do the common leading operation swap and the two
+pose-2963 branch-specific swaps have on the two objective-161 states, and can the
+states be safely quotiented after those responses?
 
 Current campaign posture
 ------------------------
@@ -319,11 +322,17 @@ The best audited face keeps only the ore-pair exchange and lowers its fixed sum 
 15. Equal score is therefore another live state split, not permission to retain
 one arbitrary witness.
 
-The next step materializes the second 161 endpoint and compares both residual
-action surfaces and exact continuation domains. A measured difference retains a
-small assignment beam. If both bounded surfaces saturate while every commodity
-remains positive, operation-assignment and binding variables enter one cohabiting
-model. A zero state enters routing immediately.
+E032 now shows that the split is narrow but real. The second endpoint is fully
+materialized. The two states share the same residual and operation-swap leaders,
+yet their full rankings and two portfolio entries differ because pose 2963 carries
+different operations. They may share a contextual action ledger, but they cannot
+be merged before exact continuation is measured.
+
+The next step replays the common leading swap on both states and one branch-specific
+pose-2963 swap in each. Identical exact responses permit an action-specific
+quotient; divergent responses retain the assignment beam. If both branches
+saturate with all commodities positive, operation-assignment and binding variables
+enter one cohabiting model. A zero state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

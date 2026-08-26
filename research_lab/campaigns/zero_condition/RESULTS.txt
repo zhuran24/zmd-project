@@ -1226,6 +1226,39 @@ evidence:
   optimum-face audit sha256
   058d10cbc3c65a4276318018699eae6496d5e7d6e8531aae7c8bf43ea0971f50.
 
+R-ZC-043  The two objective-161 assignments share leaders but not one action surface
+-------------------------------------------------------------------------------------
+status: full second-endpoint recovery plus residual and swap-surface comparison
+scope: the two E031 objective-161 3x3 assignment states
+
+statement:
+  E032 reconstructs and fully materializes the three-way E031 endpoint, recovering
+  its frozen binding-selection digest on the second parallel replay. The two 161
+  states have distinct complete residual ranking digests but share 9/10 top
+  current literals and the same leader, grinder_fine_buckwheat pose 7754. Each
+  exposes 8,486 operation swaps. Their top-10 swap sets overlap 8/10 and their
+  diversified twelve-action portfolios overlap 10/12; both share the same leading
+  swap between grinder_fine_buckwheat pose 7754 and packaging_battery pose 6018.
+
+non-implications:
+  Similar proposal surfaces do not prove equal continuation value, and the two
+  branch-specific actions are not yet known to help. The result does not justify
+  merging the states, reach component compatibility, or enter routing.
+
+effect on next problem:
+  Share the common proposal ledger but retain both witnesses. Replay the common
+  leading swap on both states and one pose-2963 branch-specific swap in each. The
+  exact shared-binding responses decide whether the tie can be quotiented or must
+  remain a genuine assignment beam.
+
+evidence:
+  E032 RESULT.txt; local RESULT.json sha256
+  d67de72f3b971e8d5fb9bea5546392f789d367918de9ad9b0a26ebacd7a9db8c;
+  second assignment sha256
+  4780e4a269900d422494a6abe0f265ebdf8744ab24982dcab19ebdef00453de5;
+  second endpoint sha256
+  5553653fc1182429400aacba3241d6fbc1e06db6e12cd7e10a8953cb46e37dfd.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

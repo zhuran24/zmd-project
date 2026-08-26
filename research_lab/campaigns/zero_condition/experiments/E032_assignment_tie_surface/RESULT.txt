@@ -1,0 +1,103 @@
+E032 RESULT: THE TWO OBJECTIVE-161 STATES SHARE A LEADER BUT NOT ONE ACTION SURFACE
+=================================================================================
+
+Status
+------
+Completed as research-only state-comparison evidence. No operation swap is assigned
+continuation value here. No component-compatible binding, exact routing,
+certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E032_assignment_tie_surface/run-001/RESULT.json
+
+SHA-256:
+  d67de72f3b971e8d5fb9bea5546392f789d367918de9ad9b0a26ebacd7a9db8c
+
+Verdict:
+  OBJECTIVE_161_SHARED_LEADER_DISTINCT_SURFACES
+
+Second endpoint materialization
+-------------------------------
+The three-way E031 assignment is reconstructed from the objective-163 parent and
+the frozen candidate record. Parallel replay first returns another objective-161
+selection, then reproduces the target selection digest on attempt two. The second
+endpoint is therefore fully materialized rather than represented by a digest or a
+compact surrogate.
+
+  assignment SHA-256
+    4780e4a269900d422494a6abe0f265ebdf8744ab24982dcab19ebdef00453de5
+
+  layout SHA-256
+    d30920ea2ea5335c8edc905ef16b72e1db7f5cb9e52648394c5e6de3d3fb761c
+
+  endpoint SHA-256
+    5553653fc1182429400aacba3241d6fbc1e06db6e12cd7e10a8953cb46e37dfd
+
+Residual literal surfaces
+-------------------------
+The two endpoints have different complete ranking digests but remain close:
+
+  common current literals          313
+  common top-10 literals             9
+  top-10 Jaccard                  0.818
+  common top-20 literals            19
+  top-20 Jaccard                  0.905
+
+Both rank the same current literal first:
+
+  grinder_fine_buckwheat pose 7754
+  coverage 16 / 161 in both states
+
+The next several current-literal leaders are also shared. Equal score has not
+produced unrelated geometries, but the surfaces are not byte-identical.
+
+Operation-swap surfaces
+-----------------------
+Each endpoint exposes:
+
+  8,486 same-type cross-operation swap candidates
+  219 eligible current literals
+  a diversified twelve-swap proposal portfolio
+
+Both share the same highest-coverage swap:
+
+  grinder_fine_buckwheat pose 7754
+    <-> packaging_battery pose 6018
+
+  union coverage 29 / 161
+
+The operation-swap surfaces still differ:
+
+  common top-10 swaps                 8
+  top-10 Jaccard                  0.667
+  common portfolio actions           10
+  portfolio Jaccard               0.714
+
+The two branch-specific portfolio entries arise at the same physical pose 2963.
+In the pair-exchange state that footprint carries refinery_blue_iron; in the
+three-way state it carries crusher_source. The state split therefore changes the
+operation identity of later actions even though occupied geometry is fixed.
+
+Interpretation
+--------------
+The two states can share a contextual action ledger for their common proposals,
+but they cannot yet be quotiented into one continuation state. Proposal overlap
+is high, while the exact value of those proposals remains unmeasured.
+
+This is the assignment-layer analogue of the earlier beam result: equal objective
+and similar residual morphology do not establish equal future construction.
+
+Decision effect
+---------------
+Replay the common leading swap on both states, then replay one branch-specific
+pose-2963 swap in each state. Exact shared-binding response decides whether the
+states share continuation value or retain genuinely different assignment paths.
+A zero child enters routing immediately.
+
+Truth boundary
+--------------
+E032 compares residual incidence and swap proposals for two frozen objective-161
+assignment/binding endpoints. It does not prove either state necessary, prove
+future value different, or exhaust the operation-assignment search space.

@@ -1,0 +1,58 @@
+EXPERIMENT E032: residual action surfaces of the two objective-161 assignments
+============================================================================
+
+Question
+--------
+Are the two distinct objective-161 3x3 operation assignments equivalent as
+continuation states, or do their residual assignment surfaces justify retaining a
+beam?
+
+Why this follows E031
+---------------------
+E031 finds two exact objective-161 states under the same occupied geometry. One is
+a pair exchange; the other is a three-way reassignment. Their placement and
+binding-selection identities differ, so choosing the first merely because it was
+materialized would repeat the single-line bias already exposed by the earlier
+beam experiments.
+
+Method
+------
+E032 reconstructs both E031 states from the frozen objective-163 parent and the
+exact 3x3 neighborhood. It materializes the second binding endpoint when the
+frozen selection digest can be recovered, then rebuilds each state's 161 exact
+mismatch-component boundaries without changing the endpoint.
+
+For each state it computes:
+
+  current literal boundary-coverage ranking
+  exact small-budget boundary coverage
+  all current same-size cross-operation swaps
+  a diversified occupancy-preserving swap portfolio
+
+The two surfaces are compared by ranking digest, top-set overlap, common leaders,
+and proposed swap identities. No swap is assigned continuation value in this
+experiment.
+
+Competing readings
+------------------
+A. The complete residual and swap surfaces agree. The two witnesses can be
+   quotiented for the next assignment action.
+
+B. They share a leader but differ elsewhere. Retain both until exact replay of a
+   common and a branch-specific action resolves continuation value.
+
+C. Their leaders or portfolios diverge. The objective-161 tie is a real beam split.
+
+Truth boundary
+--------------
+Residual incidence proposes actions only. Equal or different proposal surfaces do
+not prove equal or different exact continuation values. E032 concerns two frozen
+assignment/binding endpoints under one occupied geometry and has no routing,
+certification, or U/L effect.
+
+Result
+------
+Completed with verdict OBJECTIVE_161_SHARED_LEADER_DISTINCT_SURFACES. The second
+binding endpoint is fully materialized. The two states share their residual and
+swap leaders, but only 8/10 top swaps and 10/12 portfolio actions overlap. See
+RESULT.txt.
