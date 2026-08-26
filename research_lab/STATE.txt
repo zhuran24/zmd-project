@@ -89,7 +89,12 @@ probes and the first checked feedback replay now show a causal progression:
     Thirty-six shared bindings are OPTIMAL and refinery pose 5343 -> 3338/3339
     lowers 176 -> 174, but every commodity remains positive. Its exact face keeps
     the ore-pair sum at 18, and the predeclared stop rule moves the outer loop to
-    the twelve-state E017 beam.
+    the twelve-state E017 beam;
+  * E019 applies grinder pose 7754 across all twelve beam seeds. Every branch has
+    exactly two owner-domain failures and one OPTIMAL child at 178, so all parents
+    worsen by two. The action is branch-invariant despite twelve placement and
+    binding identities; causal coverage and continuation value are now separate
+    outer-loop ledgers.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -97,10 +102,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-When the same evidence-selected expansion is applied across the twelve distinct
-objective-176 E017 triples, which placement/binding states survive deduplication,
-do any beat the representative branch's 174, and what diversity key is required
-to prevent the beam from collapsing onto one geometric family?
+Does the refinery-blue-iron 5343 action that improves the representative triple
+to 174 have the same value across the eight eligible objective-176 seeds, or do
+its exact outcomes finally separate branch continuation values and identify the
+beam diversity key that matters?
 
 Current campaign posture
 ------------------------
@@ -187,14 +192,20 @@ single-line state representation: E017's twelve objective-176 triples remain
 live, and they differ in placement, free-space, port-mode, and binding-selection
 identity.
 
-The next experiment therefore applies a controlled common expansion to all twelve
-seeds. It must reconstruct each frozen triple, exclude moves already consumed by
-that state, evaluate exact shared binding, and deduplicate at two levels:
-placement/free-cell identity and binding-selection identity. Beam retention must
-preserve distinct residual-boundary signatures, not only the lowest objective.
-A zero state enters routing immediately. If every beam branch stalls near 174,
-the next representation becomes a simultaneous multi-pose/binding neighborhood
-rather than a deeper sequential tree.
+E019 now calibrates what that diversity means. The same grinder action is
+completely invariant across all twelve states: two domain failures and one exact
+178 child per seed. The beam keeps the twelve parents and discards all grinder
+descendants. Representational difference is therefore necessary metadata, not
+sufficient evidence of continuation value. Boundary coverage proposes actions;
+only cross-state exact replay tells whether a branch deserves retention.
+
+The next experiment uses the refinery-blue-iron 5343 action already known to
+produce 174 on the representative seed. Four E017 seeds have already consumed
+that literal and are ineligible; the remaining eight receive the identical
+fixed-outside alternative set. Differential exact objectives would supply the
+first measured branch-value split. Invariance at 174 would instead collapse the
+eight eligible states into one action-equivalence class while preserving their
+port-mode alternatives. A zero state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

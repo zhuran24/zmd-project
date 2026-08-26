@@ -802,6 +802,37 @@ evidence:
   optimum-face audit sha256
   fd57b3ccb35a1bb94d67620ba67fa14943594cddc5a61f320e38c14f149777cc.
 
+R-ZC-030  Equal-score branch diversity does not imply action-value diversity
+--------------------------------------------------------------------------------
+status: twelve-seed exact common-action replay
+scope: grinder_fine_buckwheat pose 7754 across the E017 objective-176 beam
+
+statement:
+  E019 reconstructs twelve placement-distinct and binding-distinct parents, then
+  exhausts three grinder-pose alternatives from each. Twenty-four of 36 children
+  empty an owner domain. Every remaining child is OPTIMAL at objective 178, so
+  all twelve parents worsen by exactly two and no child reaches routing. The 24
+  parent/child states remain placement- and binding-distinct, but their exact
+  response to this action is identical.
+
+non-implications:
+  The result does not make the E017 beam redundant, prove other actions invariant,
+  or show that free-cell and binding signatures have no future value. It rejects
+  only grinder pose 7754 as a discriminator and construction move on this beam.
+
+effect on next problem:
+  Separate causal boundary coverage from exact continuation value. Retain the
+  original parents, retire grinder descendants, and replay the known composing
+  refinery-blue-iron 5343 action across all eligible seeds. Beam retention should
+  be justified by measured response divergence, not representational difference
+  alone.
+
+evidence:
+  E019 RESULT.txt; main result sha256
+  89f37256e282a7f716092d477495d8e6ec715015d32632c97ca133b0ce40d3e7;
+  beam manifest sha256
+  538a5e010521b0a2fe2cd59bd9ed94c6038aae20686b5e1090ab5eb3f4aff801.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

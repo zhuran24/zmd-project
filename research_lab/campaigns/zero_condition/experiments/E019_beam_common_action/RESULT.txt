@@ -1,0 +1,108 @@
+E019 RESULT: THE FIRST COMMON ACTION IS BRANCH-INVARIANT
+=======================================================
+
+Status
+------
+Completed as research-only beam-model evidence. No child reaches component
+feasibility or exact routing. No certification, U/L, production-cut, owner, or
+publication effect is granted.
+
+Frozen outputs
+--------------
+Main result:
+  research_lab/local/zero_condition/E019_beam_common_action/run-002/RESULT.json
+  sha256 89f37256e282a7f716092d477495d8e6ec715015d32632c97ca133b0ce40d3e7
+
+Beam-state manifest:
+  research_lab/local/zero_condition/E019_beam_common_action/run-002/BEAM_STATE_MANIFEST.json
+  sha256 538a5e010521b0a2fe2cd59bd9ed94c6038aae20686b5e1090ab5eb3f4aff801
+
+Best child assignment:
+  research_lab/local/zero_condition/E019_beam_common_action/run-002/BEST_CHILD_ASSIGNMENT.json
+  sha256 35d6e73cfe5e5ab3146b1c810271102b726cd3788e298fb43f16547b893e21b3
+
+Best child layout:
+  research_lab/local/zero_condition/E019_beam_common_action/run-002/BEST_CHILD_LAYOUT.json
+  sha256 d1d923bcf4fb1d130bb87c8292ca2d53cb5db3493908fb0722fb8d511944bf43
+
+Verdict:
+  COMMON_ACTION_BRANCH_INVARIANT
+
+Exact cross-seed response
+-------------------------
+E019 reconstructs twelve placement-distinct E017 parents, all with exact shared
+mismatch 176. Every parent receives all three exact fixed-outside alternatives
+for grinder_fine_buckwheat pose 7754.
+
+Across 36 children:
+
+  PORT_DOMAIN_EMPTY  24
+  OPTIMAL            12
+
+Each seed has exactly the same pattern: two alternatives empty an owner domain,
+and the remaining pose 7755 reaches exact shared mismatch 178. The distribution
+of best child objectives is therefore:
+
+  178: 12 seeds
+
+Every parent worsens by two. The representative seed is not exceptional, and no
+child reaches routing.
+
+What the beam differences do and do not mean
+--------------------------------------------
+The twelve parents are genuinely distinct:
+
+  distinct placement identities          12
+  distinct binding-selection identities  12
+  distinct free-cell sets                  7
+
+After adding the twelve base-feasible grinder children, all 24 states remain
+distinct in placement and binding identity. Nevertheless, the common action has
+identical exact continuation value on every branch.
+
+This separates two claims that had previously been entangled:
+
+1. E017's equal-score states contain representational diversity.
+2. That diversity necessarily changes every future action's value.
+
+E019 proves the first but refutes the second for grinder pose 7754. Geometry or
+binding identity alone is not a sufficient beam-retention rationale. A branch is
+valuable only when a downstream action actually distinguishes its continuation.
+
+Beam retention result
+---------------------
+The frozen width-12 beam retains the original parents, not the worse children.
+It preserves seven free-cell signatures and all twelve binding-selection
+signatures. The retention mechanism itself worked as intended, but E019 supplies
+no evidence to expand the beam with grinder descendants.
+
+Hidden methodological issue
+---------------------------
+Residual-boundary coverage selected grinder 7754 as the strongest unused literal.
+It worsened the representative E017 triple in E018 and now worsens all twelve
+seeds identically. Coverage remains useful for proposing actions, but it does not
+measure compositional value.
+
+The outer loop therefore needs two distinct ledgers:
+
+  causal reach: which residual observations an action touches
+  continuation value: what exact objective change the action produces from each state
+
+Collapsing these into one ranking recreates the earlier error in a more refined
+form: a broad explanation is not automatically a good construction move.
+
+Decision effect
+---------------
+Do not retire the beam after one invariant action, and do not promote grinder
+7754 further. The next common-action test uses refinery_blue_iron pose 5343,
+which is known to improve the representative triple from 176 to 174. It applies
+to the eight seeds where pose 5343 remains unmoved. Differential response there
+would establish branch-dependent continuation value; invariance would show that
+this fourth-step gain is itself family-wide rather than branch-specific.
+
+Truth boundary
+--------------
+The result is exhaustive only for one target literal and twelve frozen E017 seed
+states. It does not show that all actions are branch-invariant, that the seven
+free-cell families are equivalent, or that a simultaneous multi-pose model is
+unnecessary.

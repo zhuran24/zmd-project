@@ -1,0 +1,82 @@
+EXPERIMENT E019: first multi-state beam expansion
+================================================
+
+Question
+--------
+Do the twelve exact-score-176 E017 triples respond differently when the same
+unconsumed high-coverage move is offered to each state, or are their geometric
+and binding differences irrelevant to future composition?
+
+Why this is the next object
+---------------------------
+E017 produced twelve equal-score triples across crusher-source and
+refinery-blue-iron branches. E018 followed one representative triple and found a
+valid fourth move to 174, but the result cannot tell whether the other eleven
+triples expose better, worse, or merely equivalent continuations.
+
+A single incumbent is therefore no longer the faithful outer-loop state. E019
+uses the smallest common-action test that can distinguish the competing
+representations before a broad beam search is built.
+
+Frozen beam seeds
+-----------------
+The beam contains the first twelve E017 candidates whose exact shared-binding
+objective is 176. Each seed carries its placement digest, free-cell digest,
+binding-selection digest, parent target literal, and replacement pose.
+
+Common expansion action
+-----------------------
+Every seed is offered all exact fixed-outside alternatives for:
+
+  mandatory::group::manufacturing_6x4::grinder_fine_buckwheat::16::7754
+
+This literal leads the residual E018 coverage ranking but worsened the one
+representative triple to 178. It has only three exact placement/power alternatives,
+so replaying it across all twelve seeds is a cheap and discriminating test of
+branch-dependent composition.
+
+For every child:
+
+  static owner-domain filtering is applied first
+  aggregate generic I/O and terminal uniqueness remain in the shared binding
+  exact shared component mismatch is optimized under one common binding
+  routing is entered only if the shared mismatch reaches zero
+
+Beam retention
+--------------
+Parents and base-feasible children are deduplicated by placement identity and
+binding-selection identity. A bounded research beam is selected by exact shared
+objective while preserving distinct free-cell and binding-selection signatures.
+This retention rule is a search policy, not a mathematical theorem.
+
+Competing readings
+------------------
+A. At least one non-representative seed improves below 176 while the
+   representative worsens. Equal-score branches have materially different
+   continuation value, proving the beam is necessary.
+
+B. No child improves, but best responses differ by seed. The beam remains useful
+   for diversity, while this common action is retired.
+
+C. Every seed has the same response after deduplication. The apparent E017 branch
+   diversity is not informative for this action; a different common action or a
+   simultaneous neighborhood is needed.
+
+D. A child reaches zero shared mismatch. It immediately enters exact routing and
+   takes priority over further beam architecture work.
+
+Truth boundary
+--------------
+E019 is exhaustive only for one common target literal applied independently to
+twelve frozen seed states. It does not exhaust all fourth moves, all equal-score
+triples, or simultaneous multi-pose changes. Beam ranking and width have research
+utility only and grant no certified effect.
+
+Result
+------
+Completed with verdict COMMON_ACTION_BRANCH_INVARIANT. Across twelve exact-score
+parents, the grinder-7754 action produces the same response on every branch: two
+owner-domain failures and one exact child at objective 178. All parents worsen by
+two, no child reaches routing, and the retained beam remains the twelve original
+parents. The next common-action test uses refinery pose 5343, which is known to
+improve the representative branch. See RESULT.txt.
