@@ -1473,6 +1473,44 @@ evidence:
   E038 RESULT.txt; local run-001 object-space FAILURE and run-002 calibration
   FAILURE under research_lab/local/zero_condition/E038_merged_3x3_assignment/.
 
+R-ZC-050  Native conditional owners repair E038 and saturate the frozen context at 157
+------------------------------------------------------------------------------------------------
+status: dual fixed-assignment calibration, free exact solve, ordinary replay, and face audit
+scope: frozen E038 merged 3x3, 5x5, and merged 6x4 blocks on one fixed geometry
+
+statement:
+  E039 registers 120 conditional owners before native PortBindingModel domain
+  construction. Each owner has an inactive pattern plus zero or more native
+  front-filtered active patterns; seven inactive-only owners force their
+  assignment literals to zero without disappearing or killing the whole model.
+  The repaired surface recalibrates the frozen E037 and E036 assignments exactly
+  at 157 and 159. Its free solve is OPTIMAL 157, and an ordinary fixed-layout
+  replay of the materialized winner also returns 157. The optimum face varies only
+  blue_iron_ore/source_ore at fixed sum 15; all 19 commodities remain positive.
+
+non-implications:
+  E039 does not implement conditional owners with generic slots, prove global
+  fixed-geometry saturation outside the frozen 25 footprints, establish component
+  compatibility, or reach routing. The campaign-local helper is not production
+  authority.
+
+effect on next problem:
+  Treat the E038 anomaly as a repaired extension-seam defect, not a scientific
+  gain. Stop assignment-only expansion on this geometry. Rebuild residual causes
+  from the fully materialized 157 endpoint and select a bounded geometry
+  neighborhood by actual mobility and marginal causal coverage, while retaining
+  assignment and binding cohabitation inside the new context.
+
+evidence:
+  E039 RESULT.txt; local RESULT.json sha256
+  662c2a420fd84a7c9fbbde6c0392d1ce7d726b8c3dcd83e430d299a8a3c93389;
+  materialized endpoint sha256
+  f24f39d1fdf317a9bd2cd9c3559c46ef449a9d67e8e5c671b1523b3d2c0ef85e;
+  optimum-face audit sha256
+  04dbab3bc1e529eb431f4b731ba957910e6092c4a4a5a2a02809966679bb61bf;
+  conditional-owner helper sha256
+  3f86dbc5f339c80566e7d95e02d75009cdd8f377db2d1364615c3f23058caa11.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

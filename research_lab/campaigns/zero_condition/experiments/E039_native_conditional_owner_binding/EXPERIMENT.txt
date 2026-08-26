@@ -1,0 +1,98 @@
+EXPERIMENT E039: NATIVE CONDITIONAL-OWNER BINDING EXTENSION
+===========================================================
+
+Question
+--------
+Can conditional operation-assignment owners enter PortBindingModel before its
+native owner-dependent phases, reproduce the frozen E037 objective-157 and E036
+objective-159 assignments exactly, and only then reopen E038's merged-3x3 free
+solve?
+
+Why this experiment
+-------------------
+E038 found a model-extension defect rather than a scientific result. The earlier
+campaign prototypes built the ordinary outside-owner binding model first and then
+injected virtual assignment owners. A later diagnostic represented every virtual
+owner with an inactive empty pattern before build, but an operation/footprint pair
+with no active pose-level pattern disappeared from the native domain builder, so
+that representation was not closed under static domain emptiness.
+
+The next object is therefore the extension seam itself. No new footprint,
+objective, cut, or construction hypothesis is introduced in E039.
+
+Method
+------
+E039 defines a campaign-local ConditionalOwnerPortBindingModel. Ordinary outside
+owners are built by the unchanged native implementation. Conditional owners are
+registered before build and receive:
+
+  one explicit inactive empty pattern
+  zero or more front-filtered native pose-level binding patterns
+  one native exactly-one domain over inactive plus active patterns
+  an activation literal equal to NOT(inactive)
+
+An operation/footprint pair with zero active patterns remains a valid inactive-
+only owner and its assignment literal is forced to zero. Thus static domain
+emptiness is represented inside the assignment model instead of deleting the
+owner or making the entire model infeasible.
+
+All operations in the frozen E038 blocks have zero generic-input and zero generic-
+output slots. E039 checks this and fails closed; conditional generic-slot owners
+remain a future extension rather than being silently approximated.
+
+Calibration gates
+-----------------
+The same extension surface is built twice with assignment variables fixed:
+
+  E037 concrete assignment and endpoint    expected OPTIMAL 157
+  E036 concrete assignment and endpoint    expected OPTIMAL 159
+
+Both must match their ordinary fixed-layout PortBindingModel optima exactly. A
+calibration failure blocks the free solve and is reported as another extension
+fidelity defect.
+
+Free solve
+----------
+After both calibrations pass, E039 releases the frozen E038 blocks:
+
+  merged ten-footprint 3x3 assignment block
+  five-footprint 5x5 assignment block
+  merged ten-footprint 6x4 assignment block
+
+Operation multiplicities remain exact, occupied geometry and power remain fixed,
+and one shared component-mismatch objective consumes assignment and binding
+variables together. Any winning abstract assignment is materialized into concrete
+named instances and replayed through an ordinary fixed-layout PortBindingModel.
+The joint and ordinary objectives must agree.
+
+Outcome interpretation
+----------------------
+Calibration mismatch
+  No scientific continuation value is admitted. Refine the conditional-owner
+  compiler before changing the neighborhood.
+
+OPTIMAL below 157
+  The repaired native extension reveals genuine value in the frozen E038 context.
+  Persist the concrete endpoint and continue from its residual causes.
+
+OPTIMAL 157
+  The frozen merged assignment context is faithfully saturated. The next
+  construction freedom must move geometry or broaden a separately justified
+  conditional-owner surface.
+
+OPTIMAL 0
+  Materialize the endpoint and enter exact routing immediately.
+
+Truth boundary
+--------------
+E039 is research-only and fixed-geometry. It does not validate conditional owners
+with generic slots, modify production PortBindingModel, certify a layout, update
+U/L, or prove global saturation outside the frozen E038 blocks.
+
+Result
+------
+Completed. The native conditional-owner extension recalibrates the frozen E037
+and E036 assignments exactly at 157 and 159. The free frozen E038 context is
+OPTIMAL 157, so assignment-only expansion on the fixed geometry is saturated.
+See RESULT.txt for the inactive-only owner semantics, independent ordinary replay,
+and exact artifact identities.

@@ -162,9 +162,9 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-How can conditional operation-assignment owners enter the native binding model
-before every owner-dependent constraint phase, so the frozen E037 objective-157
-and E036 objective-159 assignments calibrate exactly in one extension surface?
+Which bounded geometry neighborhood is selected by the objective-157 endpoint's
+residual causes and actual mobility, and can geometry, operation assignment, and
+binding cohabit faithfully enough to lower 157 or reach component compatibility?
 
 Current campaign posture
 ------------------------
@@ -369,19 +369,23 @@ The current twenty-footprint assignment context touches 137 of 157 observations.
 Remaining five-footprint marginal coverage is +9 for 3x3, +6 for 5x5, and zero
 for 6x4, so E038 opens the merged ten-footprint 3x3 discriminator.
 
-E038 does not yet receive a scientific value. Its first pre-solve guard exposes
-stale named-owner labels in cross-state block payloads; group-pose identity is
-durable, but concrete owner identity must be rebuilt per endpoint. After that
-repair, the same fixed E036 assignment scores 159 in the ordinary binding model
-and 157 in the post-build virtual-owner prototype. The lower calibration is
-rejected. Virtual owners were added after native owner-dependent port,
-conservation, hand-carry, distinctness, implication, and guidance phases had
-already run.
+E038 correctly stops at an extension-seam defect rather than accepting a lower
+prototype value. E039 repairs that seam. Conditional owners are registered before
+native domain construction and always retain an inactive pattern; seven
+operation/footprint pairs with no active pattern become inactive-only choices
+instead of disappearing or killing the model. The frozen E037 and E036
+assignments recalibrate exactly at 157 and 159.
 
-The next research object is therefore the extension seam, not another footprint
-set. Conditional owners must enter before all native binding phases, and the
-frozen 157/159 assignments must calibrate exactly before E038 is rerun. A zero
-state still enters routing immediately once a faithful model produces it.
+The free repaired model is OPTIMAL 157 and ordinary fixed-layout replay agrees.
+Its exact face varies only the ore pair at fixed sum 15; every other commodity is
+fixed and all 19 remain positive. The merged 3x3, 5x5, and merged 6x4 assignment
+context is therefore faithfully saturated on the current occupied geometry.
+
+The next object is no longer another assignment block. Rebuild the 157 residual
+boundary atlas, test actual pose mobility under the fixed outside geometry, and
+select a bounded geometry neighborhood by marginal causal coverage. Operation
+assignment and binding stay inside the faithful E039 extension while those
+geometry variables are released. A zero state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

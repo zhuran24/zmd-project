@@ -1,0 +1,141 @@
+E039 RESULT: NATIVE CONDITIONAL OWNERS CALIBRATE, AND THE FROZEN CONTEXT SATURATES AT 157
+================================================================================================
+
+Status
+------
+Completed as research-only model-extension and fixed-geometry saturation evidence.
+No component-compatible binding, exact routing, whole-layout witness,
+certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E039_native_conditional_owner_binding/run-002/RESULT.json
+
+SHA-256:
+  662c2a420fd84a7c9fbbde6c0392d1ce7d726b8c3dcd83e430d299a8a3c93389
+
+Verdict:
+  NATIVE_CONDITIONAL_OWNER_CONTEXT_SATURATED
+
+Conditional-owner repair
+------------------------
+E039 replaces post-build virtual-domain injection with a campaign-local native
+extension. Ordinary outside owners still use the unchanged PortBindingModel path.
+Every conditional owner is registered before build and receives:
+
+  one inactive empty pattern
+  zero or more native front-filtered active patterns
+  one native exactly-one owner domain
+  an activation literal equal to NOT(inactive)
+
+Seven of 120 conditional owners have no active pattern. They remain valid
+inactive-only owners and their assignment literals are forced to zero. No owner is
+dropped and no static-empty candidate makes the whole model infeasible.
+
+All admitted moving operations have zero generic input/output slots. E039 fails
+closed outside that scope; it does not claim a generic-slot conditional-owner
+implementation.
+
+Exact calibration
+-----------------
+The repaired extension reproduces both frozen ordinary fixed-layout optima:
+
+  E037 assignment    expected 157    OPTIMAL 157
+  E036 assignment    expected 159    OPTIMAL 159
+
+The earlier E038 calibration anomaly therefore belonged to the model-extension
+surface, not to a hidden scientific improvement or an invalid ordinary endpoint.
+
+Free exact solve
+----------------
+The same extension then releases the frozen E038 blocks:
+
+  merged 10-footprint 3x3 block
+  5-footprint 5x5 block
+  merged 10-footprint 6x4 block
+
+Model size:
+
+  assignment variables              120
+  conditional active-pattern vars 15,342
+  conditional owners                120
+  inactive-only owners                7
+  ordinary outside binding owners   247
+  total variables                26,985
+  total constraints              79,270
+
+The free solve reaches:
+
+  status       OPTIMAL
+  objective    157
+  best bound   157
+  solve time   2.33 s
+
+The concrete assignment is materialized and independently replayed through an
+ordinary fixed-layout PortBindingModel. The ordinary endpoint also returns 157.
+Thus the frozen merged assignment context is faithfully saturated.
+
+Optimum-face audit
+------------------
+The E039 best assignment has the same structural optimum face shape as the E037
+157 state:
+
+  blue_iron_ore   5..9
+  source_ore      6..10
+  fixed sum          15
+
+All other 17 commodity mismatch values are fixed. Audit SHA-256:
+
+  04dbab3bc1e529eb431f4b731ba957910e6092c4a4a5a2a02809966679bb61bf
+
+The materialized endpoint remains positive for all 19 commodities. Exact routing
+is not reached.
+
+Architecture effect
+-------------------
+The conditional-owner seam now has a faithful, minimal research implementation
+for exact pose-level operations without generic slots. Dynamic owners must exist
+before native owner-domain construction; static-empty operation/footprint pairs
+are represented as inactive-only choices rather than deleted owners.
+
+This repairs the hidden problem exposed by E038 and restores a trustworthy
+assignment-binding extension surface. It also supplies a concrete candidate for
+later factoring into the inner architecture, but the current module remains
+campaign-local and research-only.
+
+Decision effect
+---------------
+Do not continue assignment-only expansion on this fixed geometry. The merged
+3x3/5x5/6x4 context is exact at 157. Recompute the residual boundary causes from
+the fully materialized E039 endpoint and release a bounded geometry neighborhood
+selected by actual mobility and marginal causal coverage. Operation assignment
+and binding remain cohabiting consumers inside that geometry experiment.
+
+Truth boundary
+--------------
+E039 fixes occupied geometry, power poles, and every facility outside the frozen
+25-footprint assignment context. It does not support conditional generic-slot
+owners, prove global fixed-geometry saturation outside those blocks, establish
+component compatibility, reach routing, or produce a zero-condition whole layout.
+
+Execution note
+--------------
+A first launch failed before model construction because the campaign-local helper
+could not import the project `src` package. Run-002 adds the worktree root to the
+helper import path. The failed launch produced no solver result and has no
+scientific effect.
+
+Frozen artifact identities
+--------------------------
+Best assignment:
+  aeded115ef1a1983e0fdf9f3decee3d34983d8b53de0f02af5bcb3670cd8cf7b
+
+Best endpoint:
+  f24f39d1fdf317a9bd2cd9c3559c46ef449a9d67e8e5c671b1523b3d2c0ef85e
+
+Joint witness:
+  5f8621ee5b688a6186ef114d37f57762a3c04c764d9ab9485d3e1a9fb5d23f29
+
+Conditional-owner helper:
+  3f86dbc5f339c80566e7d95e02d75009cdd8f377db2d1364615c3f23058caa11
