@@ -162,10 +162,9 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-After exact calibration, what joint continuation values do the three E049 rescued
-pose states receive under the objective-144 port-mode/operation-assignment/binding
-context, and does the external rescue relation produce a true state below 144 or
-only an ordinary admission gain?
+Which residual mode, body, and structured rescue relations survive at the fully
+materialized objective-139 endpoint, and what is the smallest next context that
+can lower 139 without returning to externally ranked complete actions?
 
 Current campaign posture
 ------------------------
@@ -464,12 +463,20 @@ states. The strongest packaging_battery_001 -> grinder_dense_source_003 relation
 reaches ordinary 143 through two body-relocation mode variants; a third same-owner-
 body variant reaches 144. All 19 commodities remain positive.
 
-Those values are proposal values only. The next object rebuilds the faithful 144
-middle layer on all three rescued pose states, supporting two pose changes and one
-or two occupied-body changes. A strict joint value below 144 becomes the new
-leading geometry; equality or harm separates admission value from continuation
-value and returns the work to a broader native simultaneous context. A zero state
-enters routing immediately.
+E050 rebuilds that faithful middle layer. All three ordinary endpoints calibrate
+exactly at 143, 143, and 144. Free joint values are OPTIMAL 141, 141, and 139. The
+ordinary-144 state, consisting of one packaging-battery body move and one grinder-
+dense-source same-body mode change, becomes the strict continuation winner.
+
+All three audited ore-pair sums remain 14, matching the objective-144 parent. The
+five-unit improvement is therefore fixed commodity structure, not an optimum-face
+exchange. All 19 commodities remain positive and routing is not reached.
+
+The objective-139 Seed C now replaces the old 144 state. Its next residual analysis
+must preserve structured owner records from birth and compare unadmitted same-body
+modes, body mobility, and conditional rescue relations. The outer loop may propose
+contexts, but complete pose states must be calibrated and valued by the faithful
+joint consumer. A zero state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

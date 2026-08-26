@@ -1,0 +1,70 @@
+EXPERIMENT E050: FAITHFUL JOINT REVALUATION OF EXTERNAL RESCUE STATES
+=====================================================================
+
+Question
+--------
+Do the three E049 rescued pose states remain below the objective-144 parent after
+port mode, operation assignment, and binding are rebuilt and jointly optimized,
+or is their 143/143/144 ordinary gain only an admission effect?
+
+Why this experiment
+-------------------
+E049 proves that structured external empty-owner relations can revive fixed-
+outside dead actions, but ordinary shared-binding value is not geometry
+continuation value. Two rescued states move both bodies; the third moves one body
+and changes the second owner's same-body port mode. The E048 pair-context compiler
+counts only occupied-body changes and therefore cannot faithfully represent all
+three.
+
+E050 generalizes the context boundary from exactly two body changes to exactly two
+pose changes with one or two body changes. Every changed instance updates its
+existing assignment destination or receives a singleton block, and both changed
+destinations receive native same-body mode choices.
+
+Method
+------
+E050 reconstructs the exact objective-144 parent context. For each E049 seed it:
+
+  verifies exactly two pose changes relative to the immediate parent
+  records which changes alter occupied body cells
+  preserves all inherited operation multisets and selected-instance sets
+  fixes pose mode, operation assignment, and binding to reproduce the frozen
+  ordinary objective 143, 143, or 144
+  only after exact calibration releases the faithful middle layer
+  materializes the best concrete assignment and ordinary fixed-layout endpoint
+
+Each seed is checkpointed independently and may be resumed without recomputation.
+
+Decision rule
+-------------
+Joint objective 0
+  Enter exact routing immediately.
+
+Best joint objective < 144
+  Retain the strict rescued state and recompute its residual causal/mobility
+  surface. External rescue becomes a confirmed continuation mechanism.
+
+Every joint objective >= 144
+  Separate rescue admission from continuation value and proceed to a broader
+  native simultaneous geometry context.
+
+Calibration failure
+  Reject the affected result and repair pose-change context fidelity before any
+  free solve is interpreted.
+
+Truth boundary
+--------------
+E050 assigns exact bounded middle-layer values to three E049 rescued pose states
+only. It does not exhaust external rescue, body pairs, multi-owner relations, all
+pose domains, or global geometry. It cannot update U/L or grant certification.
+
+Result
+------
+Completed. All three frozen states calibrate exactly at 143, 143, and 144. Their
+free faithful joint values are OPTIMAL 141, 141, and 139. The ordinary-144 Seed C
+therefore becomes the strict continuation winner. Verdict:
+
+  EXTERNAL_RESCUE_JOINT_IMPROVEMENT
+
+The objective-139 endpoint is fully materialized and becomes the next residual
+state. See RESULT.txt.

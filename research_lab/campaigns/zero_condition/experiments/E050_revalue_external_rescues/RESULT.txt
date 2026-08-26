@@ -1,0 +1,204 @@
+E050 RESULT: EXTERNAL RESCUE PRODUCES A TRUE JOINT CONTINUATION TO 139
+====================================================================
+
+Status
+------
+Completed as research-only exact calibration, joint middle-layer revaluation, and
+optimum-face evidence. No component-compatible binding, exact routing, whole-
+layout witness, certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/E050_revalue_external_rescues/run-001/RESULT.json
+
+SHA-256:
+  ece91ce0ebc74caa5a1e7791c64ebdf6a692926aa8f74e780384d6898a41944d
+
+Verdict:
+  EXTERNAL_RESCUE_JOINT_IMPROVEMENT
+
+Decision:
+  RECOMPUTE_RESIDUAL_FROM_RESCUED_GEOMETRY
+
+Generalized pose-pair context
+-----------------------------
+E050 reconstructs the exact objective-144 context and generalizes the previous
+pair compiler from "exactly two body changes" to:
+
+  exactly two pose changes
+  one or two occupied-body changes
+
+Every changed instance updates its inherited assignment destination or receives a
+singleton block. Both changed destinations are mode-enabled. Operation multisets,
+selected-instance sets, ordinary outside binding owners, aggregate binding
+resources, terminal uniqueness, and component-aware shared objective remain in
+the same faithful consumer.
+
+All three E049 frozen ordinary endpoints calibrate exactly:
+
+  Seed A   expected 143   OPTIMAL 143
+  Seed B   expected 143   OPTIMAL 143
+  Seed C   expected 144   OPTIMAL 144
+
+No free joint result is admitted before these calibrations.
+
+Exact joint continuation values
+-------------------------------
+After calibration, port mode, operation assignment, and binding are released on
+each rescued pose context:
+
+  Seed A   fixed 143   joint OPTIMAL 141   delta -2
+  Seed B   fixed 143   joint OPTIMAL 141   delta -2
+  Seed C   fixed 144   joint OPTIMAL 139   delta -5
+
+Joint objective distribution:
+
+  139 x 1
+  141 x 2
+
+All three best bounds equal their objectives. All three endpoints remain positive
+for all 19 commodities, so component-compatible binding and exact routing are not
+reached.
+
+Ranking inversion
+-----------------
+The two ordinary-objective-143 states move both packaging_battery_001 and
+grinder_dense_source_003 bodies. They share one free-space geometry but differ in
+owner port mode. Their faithful joint values both become 141.
+
+Seed C looked weaker under the ordinary consumer:
+
+  packaging_battery_001   body move 7754 -> 7757
+  grinder_dense_source_003 same-body mode 7895 -> 7894
+  ordinary objective     144
+
+Yet its joint middle layer reaches 139, decisively beating both ordinary-143
+geometries. Thus ordinary rescue value is useful for admission but does not rank
+continuation. The strongest state is the context that allows the deepest
+operation-assignment and binding reorganization, not the one with the lowest
+frozen assignment score.
+
+Best rescued state
+------------------
+Seed C best endpoint:
+
+  research_lab/local/zero_condition/E050_revalue_external_rescues/
+    run-001/SEED_C_BEST_ENDPOINT.json
+
+SHA-256:
+  04999122509a580c501eb0458d9909abf65dbd5075fd3f06b5ca928355be9b86
+
+Best assignment SHA-256:
+  8964829329cc98d4ea58d691854d6d81a9723248a6467d9a159d010bbcdabe55
+
+Free-space morphology:
+
+  free cells                1144
+  free components             74
+  largest component          520
+  free adjacency            1162
+  filtered binding patterns 12562
+
+The two other joint endpoint identities are:
+
+  Seed A endpoint
+    8b7222c851e79c334efe902514ff7a9d38e2283519ac4604dcc782a93253c650
+
+  Seed B endpoint
+    6ccf7ccf8fd39407a59128bf5ec2141c86a473018639678b4f996d0d69a44e1c
+
+Optimum-face audit
+------------------
+All three exact optimum faces vary only:
+
+  blue_iron_ore
+  source_ore
+
+with four-unit exchange width. Their fixed sums are:
+
+  Seed A   14
+  Seed B   14
+  Seed C   14
+
+Audit SHA-256:
+  aec0bb6c0f2916df7117b638bb35dd6052d098dd4df046ff9b20513847a0881c
+
+The objective-144 parent also has ore-pair fixed sum 14. Therefore 144 -> 139 is
+not an ore-pair endpoint exchange. Its fixed commodity ledger changes by net -5:
+
+  blue_iron_block         -1
+  blue_iron_powder        -1
+  buckwheat               +2
+  buckwheat_powder        -3
+  buckwheat_seed          -2
+  fine_buckwheat_powder   -1
+  sandleaf                -1
+  sandleaf_seed           +1
+  source_powder           +2
+  steel_part              -2
+  valley_battery          +1
+
+Architecture effect
+-------------------
+External rescue is not merely a diagnostic or admission trick. It is now a proven
+outer-loop continuation mechanism:
+
+  exact dead source action
+    -> structured external empty-owner relation
+    -> rescued pose context
+    -> faithful joint mode/assignment/binding reoptimization
+    -> strict objective improvement
+
+The state value belongs to the whole context, not to the source action, owner move,
+free geometry, or frozen binding separately. An outer-loop action record must
+therefore retain:
+
+  source action identity
+  structured owner cause
+  pose-change/body-change distinction
+  materialized parent and child contexts
+  exact calibration result
+  joint continuation value
+
+This is a more faithful replacement for point nogoods and externally ranked pair
+actions.
+
+Decision effect
+---------------
+Promote the fully materialized objective-139 Seed C as the leading research state.
+Recompute its exact residual mismatch boundaries, body/mode mobility, and
+structured empty-owner relations. Do not continue the old objective-144 action
+ledger or assume the 143 ordinary states remain competitive.
+
+The next proposer should preserve structured owner records from birth and compare
+three mechanisms on the 139 endpoint:
+
+  same-body mode expansion not already admitted
+  ordinary body motion
+  conditional rescue relations, including multi-owner sets when one owner is
+  insufficient
+
+Every geometry that survives proposal must again be valued by the faithful joint
+middle layer. Objective zero enters exact routing immediately.
+
+Truth boundary
+--------------
+E050 assigns exact bounded middle-layer values to three E049 rescued pose states
+only. It does not exhaust external rescue, multi-owner rescue, all body pairs,
+all pose domains, or global geometry. Objective 139 is a research-only shared
+component-mismatch value, not the project objective, a lower bound, routing
+witness, whole-layout result, or certified claim.
+
+Execution note
+--------------
+The first tool call exceeded its five-minute wrapper after completing Seed A and
+Seed B. Their checkpoints were frozen with the same runner SHA-256. The resumed
+call reused them, solved Seed C, and wrote the terminal result. No seed was
+recomputed or overwritten.
+
+Runner SHA-256:
+  6e9a0a874c5d31fe6b63892b9aabb979c6c776204aaa12c7e2f043ebaf5a274e
+
+Audit runner SHA-256:
+  de31714d8e65a0b6b6ebc39a8785d66625372c8042a79bfeba4c48180fbe8417

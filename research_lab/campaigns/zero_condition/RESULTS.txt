@@ -1895,6 +1895,38 @@ evidence:
   arm manifest sha256
   60b5c6e7c89f8d63c08d16cf974c7ac8d405e44d4b2a2ea39ec5d7e79df9d39a.
 
+R-ZC-061  External rescue becomes a true joint continuation mechanism at 139
+--------------------------------------------------------------------------------
+status: three exact pose-pair calibrations, free joint solves, and optimum-face audits
+scope: E049's three rescued states under the reconstructed objective-144 context
+
+statement:
+  E050 generalizes the context compiler to exactly two pose changes with one or
+  two occupied-body changes. All frozen ordinary endpoints calibrate exactly at
+  143, 143, and 144. Releasing port mode, operation assignment, and binding yields
+  OPTIMAL 141, 141, and 139. The ordinary-144 state is the strict joint winner.
+  All three optimum faces retain ore-pair fixed sum 14, so 144 -> 139 is a five-
+  unit reduction in the fixed commodity ledger rather than endpoint exchange.
+
+non-implications:
+  Objective 139 remains positive for all 19 commodities and does not reach routing.
+  The result covers three rescued contexts only and does not exhaust external or
+  multi-owner rescue, all body pairs, native pose domains, or global geometry.
+
+effect on next problem:
+  Retain the fully materialized 139 Seed C and discard the old objective-144 action
+  ledger as the active state. Recompute residual causes, mode/body mobility, and
+  structured rescue relations at 139. Every proposed pose context must again be
+  calibrated and valued by the faithful joint middle layer.
+
+evidence:
+  E050 RESULT.txt; local RESULT.json sha256
+  ece91ce0ebc74caa5a1e7791c64ebdf6a692926aa8f74e780384d6898a41944d;
+  best Seed C endpoint sha256
+  04999122509a580c501eb0458d9909abf65dbd5075fd3f06b5ca928355be9b86;
+  optimum-face audits sha256
+  aec0bb6c0f2916df7117b638bb35dd6052d098dd4df046ff9b20513847a0881c.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the
