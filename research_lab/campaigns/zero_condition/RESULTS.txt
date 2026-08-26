@@ -995,6 +995,36 @@ evidence:
   optimum-face audit sha256
   b08cab6df73fc26d57e025b01f2f30138b7a2662c6555a673c3c33ff27e4c261.
 
+R-ZC-036  A digest-only binding state is not replayable under parallel optimum search
+---------------------------------------------------------------------------------------
+status: frozen endpoint recovery plus four-state residual-surface comparison
+scope: E024 objective-168 placement and the live 168/173 beam
+
+statement:
+  E025 replays the E024 fixed placement with the same shared-binding model, seed,
+  and worker count. The first solve returns a different objective-168 endpoint
+  with ore pair (7,9); the second recovers the frozen digest and endpoint (11,5).
+  Both lie on the audited fixed-sum-16 optimum face. After exact recovery, the 168
+  state has 168 mismatch observations and 315 current literals. Its raw leader is
+  the already-retired grinder pose 7754. Excluding that action, packaging_battery
+  pose 6189 is the strongest common live-beam candidate with coverage 15 in all
+  four states; crusher_sandleaf pose 2155 is the leading distinct 168 candidate.
+
+non-implications:
+  Parallel replay nondeterminism does not invalidate the objective or optimum-face
+  proof. Boundary coverage remains a proposer, and unary retirement does not ban
+  the grinder pose from simultaneous moves.
+
+effect on next problem:
+  Persist full binding endpoints, not only digests, whenever a beam state will be
+  expanded later. Keep a separate action ledger so recomputed coverage cannot
+  resurrect exact-negative actions. Replay packaging_battery pose 6189 across the
+  four live states, retaining pose 2155 as the first 168-specific fallback.
+
+evidence:
+  E025 RESULT.txt; local RESULT.json sha256
+  3a2d076ba283ccfaf946c772cbbc25a530b14849bcd433516965edc3b7670c5a.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

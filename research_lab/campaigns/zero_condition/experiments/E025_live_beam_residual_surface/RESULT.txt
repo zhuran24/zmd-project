@@ -1,0 +1,108 @@
+E025 RESULT: THE LIVE BEAM SHARES A PORTFOLIO, NOT A REPLAYABLE SINGLE STATE
+============================================================================
+
+Status
+------
+Completed as research-only action-selection evidence. No placement cut, exact
+routing, certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E025_live_beam_residual_surface/run-004/RESULT.json
+
+SHA-256:
+  3a2d076ba283ccfaf946c772cbbc25a530b14849bcd433516965edc3b7670c5a
+
+Verdict:
+  LIVE_BEAM_RESIDUAL_SURFACE_SHARED_PORTFOLIO
+
+Endpoint recovery finding
+-------------------------
+E024 persisted the final placement, shared objective, per-commodity vector, and
+binding-selection digest, but not the complete binding selection or selected
+component sets used by its detailed replay. The ARM checkpoint contains a
+different materialized optimum for the same placement.
+
+E025 replayed the fixed E024 placement with the same model, seed, and parallel
+worker count. The first replay returned another objective-168 optimum:
+
+  selection digest  ca6ff92e5aa32aacedcf95ed64103f275e74de70c81d9afcb3b645192da9c662
+  blue_iron_ore     7
+  source_ore        9
+
+The second replay recovered the frozen E024 digest and vector:
+
+  selection digest  4e51f2edf8b152c1b7287124e79b452b0cd945c2808f33428365b0395f872f70
+  blue_iron_ore    11
+  source_ore        5
+
+Both have objective 168 and lie on the audited ore-pair optimum face with fixed
+sum 16. This establishes that a digest-only binding state is not self-restoring
+under parallel CP-SAT replay, even with the same numeric seed. E025 recovered the
+original endpoint before constructing its boundary surface; it did not substitute
+the ARM endpoint silently.
+
+Objective-168 residual surface
+------------------------------
+The recovered endpoint contains 168 mismatch-component observations and 315
+current consumer literals. Exact maximum boundary coverage is:
+
+  literal budget    observations touched
+       1                    16
+       2                    31
+       4                    57
+
+Its raw leader is still grinder_fine_buckwheat pose 7754 with coverage 16. That
+action is excluded by the outer-loop action ledger because E019 and E023 already
+proved that it worsens every tested parent by exactly two at two beam depths.
+Recomputing a high boundary score does not erase exact negative continuation
+evidence.
+
+Comparison with the three objective-173 parents
+------------------------------------------------
+The objective-168 surface and the three live 173 surfaces have different complete
+ranking digests. Pairwise top-10 Jaccard similarity ranges from 0.25 to 0.667.
+Nevertheless, four actions occur in every top ten:
+
+  grinder_fine_buckwheat pose 7754  coverage 16 in every state, retired
+  packaging_battery pose 6189       coverage 15 in every state
+  crusher_sandleaf pose 2155        coverage 14 or 15
+  refinery_blue_iron pose 5327      coverage 14 in every state
+
+After applying the action ledger, the strongest common action is:
+
+  mandatory::group::manufacturing_6x4::packaging_battery::17::6189
+
+The strongest objective-168-specific alternative not equal to that common action
+is:
+
+  mandatory::group::manufacturing_3x3::crusher_sandleaf::3::2155
+
+Architecture effect
+-------------------
+The outer loop now needs two different persistent objects:
+
+  a frozen state endpoint, including the actual binding selection and selected
+  component sets rather than only a digest;
+
+  an action ledger that preserves exact positive and negative continuation
+  evidence across later surface recomputation.
+
+Residual coverage remains a proposer. It cannot overwrite the action ledger and
+cannot reconstruct an unmaterialized endpoint by assuming same-seed replay is
+unique.
+
+Decision effect
+---------------
+Replay packaging_battery pose 6189 across all four live states. Each state has
+exactly three fixed-outside alternatives, so this is a cheap cross-state
+continuation test. Retain crusher_sandleaf pose 2155 as the next objective-168
+branch-specific candidate if the common action is weak or harmful.
+
+Truth boundary
+--------------
+This result ranks currently observed mismatch boundaries for four frozen binding
+endpoints. Coverage is not a repair theorem. The retirement of pose 7754 applies
+to the current unary ledger; it does not prove that the pose can never participate
+in a useful simultaneous multi-pose move.

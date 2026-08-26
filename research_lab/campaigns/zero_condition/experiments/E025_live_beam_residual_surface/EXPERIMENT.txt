@@ -1,0 +1,70 @@
+EXPERIMENT E025: residual action surface of the live 168/173 beam
+================================================================
+
+Question
+--------
+After the class-4-specific E024 move lowers one branch from shared mismatch 173
+to 168, does that branch expose a materially different residual action surface
+from the three retained objective-173 parents, and which non-retired action should
+be tested next?
+
+Why this experiment is necessary
+--------------------------------
+The outer loop now carries four live states rather than one canonical incumbent:
+
+  one objective-168 E024 child
+  three objective-173 E021 parents
+
+E022 showed that residual boundary coverage proposes useful action portfolios but
+is not itself continuation value. E023 then rejected the common grinder action
+7754 for a second time. A fresh surface calculation must therefore preserve both
+state identity and action history. Recomputing a high coverage score is not
+permission to resurrect a repeatedly negative action.
+
+Method
+------
+The E024 placement and its exact shared-binding endpoint are frozen by SHA-256.
+The endpoint is not re-solved. Its selected mismatch components are converted to
+boundary observations and transported to the real pose-bool consumer literals by
+the corrected E013 transport.
+
+The new objective-168 surface is compared with the frozen E022 surfaces for live
+classes 1, 2, and 3. The comparison records:
+
+  complete ranking identity
+  top-10 and top-20 overlap
+  common literal coverage across all four states
+  exact maximum boundary coverage at budgets 1, 2, and 4
+  common and state-specific leaders
+
+The action ledger then excludes grinder_fine_buckwheat pose 7754, which worsened
+all twelve E019 parents and all four E023 parents by exactly two. The next common
+and objective-168-specific candidates are selected only after this exclusion.
+
+Competing readings
+------------------
+A. The 168 surface has a new leader or weak overlap with all 173 surfaces. Expand
+   the 168 branch through its state-specific action while retaining the parents.
+
+B. The four states still share a strong non-retired portfolio. Replay the best
+   common action across all four to measure continuation-value invariance.
+
+C. No credible unary action remains after the action ledger is applied. Stop
+   unary expansion and build a simultaneous two-pose or pose-binding neighborhood.
+
+Truth boundary
+--------------
+Boundary coverage says only that changing a literal could alter an observed
+mismatch component. It is not a repair theorem, placement cut, routing proof, or
+whole-layout result. Historical negative response is contextual evidence for the
+current unary ledger, not a global theorem that the pose can never participate in
+a successful joint move.
+
+Result
+------
+Completed with verdict LIVE_BEAM_RESIDUAL_SURFACE_SHARED_PORTFOLIO. The
+objective-168 endpoint was recovered exactly after parallel replay first returned
+a different optimum. The raw coverage leader remains the already-retired grinder
+pose 7754; after applying the action ledger, packaging_battery pose 6189 is the
+strongest common action and crusher_sandleaf pose 2155 is the leading distinct
+objective-168 action. See RESULT.txt.

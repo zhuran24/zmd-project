@@ -116,7 +116,12 @@ probes and the first checked feedback replay now show a causal progression:
   * E024 exhausts the class-4-specific crusher-blue-iron pose 2053. Forty-two of
     55 alternatives empty an owner domain; 13 are OPTIMAL and pose 5278 proves
     173 -> 168. The gain repairs four non-ore fixed commodities while the ore-pair
-    optimum-face sum remains 18.
+    optimum-face sum remains 18;
+  * E025 recovers the exact E024 binding endpoint after same-seed parallel replay
+    first returns another optimum. This exposes digest-only state persistence as
+    insufficient. The 168 surface still ranks the retired grinder action first;
+    after applying the action ledger, packaging-battery pose 6189 is the strongest
+    common action and crusher-sandleaf pose 2155 is the leading 168-specific one.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -124,10 +129,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-What residual action surface does the new objective-168 class-4 child expose,
-and which state-specific expansion should be compared against the three retained
-objective-173 parents without collapsing the heterogeneous beam back into one
-canonical lineage?
+Does packaging-battery pose 6189 have positive, negative, or branch-dependent
+exact continuation value across the live objective-168/173 beam, and if it is
+weak or harmful does the objective-168-specific crusher-sandleaf pose 2155 still
+justify one final unary expansion before a simultaneous neighborhood?
 
 Current campaign posture
 ------------------------
@@ -250,13 +255,16 @@ shared objective by five, 173 -> 168, while the common leader had worsened every
 branch by two. The beam therefore cannot be represented by one score-class
 representative or one global residual ranking.
 
-The live beam now contains one objective-168 child and three objective-173
-parents. The 168 state receives expansion priority, but the three older states
-remain because their action domains and future compositions are distinct. The
-next experiment recomputes residual actions on the 168 child, compares its
-portfolio against the retained 173 states, and chooses a state-specific expansion.
-Material unary gains may continue inside the beam; renewed ties or marginal gains
-trigger a simultaneous two-pose or pose-binding neighborhood.
+The live beam contains one objective-168 child and three objective-173 parents.
+E025 has now recomputed the 168 residual surface without replacing its frozen
+binding endpoint. The raw coverage leader is still the twice-rejected grinder
+pose, proving that residual rankings require a persistent action ledger. After
+retirement filtering, packaging-battery pose 6189 has equal coverage 15 in every
+state and only three exact alternatives per parent, making it the cheapest honest
+cross-state probe. Crusher-sandleaf pose 2155 remains the first branch-specific
+fallback for the 168 state. Material unary gains may continue inside the beam;
+renewed ties or marginal gains trigger a simultaneous two-pose or pose-binding
+neighborhood.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not
