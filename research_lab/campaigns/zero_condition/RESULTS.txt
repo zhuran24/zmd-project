@@ -1084,6 +1084,41 @@ evidence:
   materialized endpoint sha256
   38b1b684d29384aa3ca81c126f3b189f0ec1fac8df4568911175cc5fa4ee326a.
 
+R-ZC-039  A simultaneous operation-to-footprint swap improves 168 -> 166
+-----------------------------------------------------------------------------
+status: exhaustive two-instance placement/power enumeration plus materialized shared endpoint
+scope: packaging_battery pose 6189 and grinder_dense_blue_iron pose 6049 under the E024 outside placement
+
+statement:
+  E028 exhausts 47 simultaneous replacement pairs. Forty-five empty an owner
+  domain and two shared bindings are OPTIMAL at 166. The selected child places
+  packaging_battery at pose 6049 and grinder_dense_blue_iron at pose 6189,
+  exchanging the operations across the two original 6x4 footprints. The free-cell
+  set and morphology are unchanged from E024, so the two-unit gain arises from
+  operation/terminal assignment rather than geometric permeability. All 19
+  commodities remain positive and exact routing is not reached.
+
+non-implications:
+  The successful swap is not a necessary condition, global no-ghost bound,
+  component-compatible binding, or routing witness. E028 fixes every outside
+  placement and power pole. The literal E026 proposal packaging pose 6186 remains
+  statically dead in all three tested pair states.
+
+effect on next problem:
+  Retain the objective-166 pair child and recompute its residual action surface
+  from the fully materialized endpoint. Treat geometry, operation-to-footprint
+  assignment, and binding continuation as distinct inner resources. Future joint
+  neighborhoods should be proposed by observed couplings but ranked by exact
+  shared binding, not by the literal form of the first failure explanation.
+
+evidence:
+  E028 RESULT.txt; local RESULT.json sha256
+  38901057591ffe6f3e3d8e0b00045e7facc86abc4f307dd46a9604c38c4a7c41;
+  materialized endpoint sha256
+  5c0089cfd1cb4376ebfe1da361142705a352b1f7507b0ce390248f6facd54a97;
+  pair-record manifest sha256
+  620ac89e579cf4a58f9a331d3dc27ad23ef445d36fb10018de267ff1c1a3378e.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

@@ -1,0 +1,123 @@
+E028 RESULT: A SIMULTANEOUS OPERATION-TO-FOOTPRINT SWAP IMPROVES 168 -> 166
+=============================================================================
+
+Status
+------
+Completed as research-only simultaneous-neighborhood evidence. No exact routing,
+whole-layout witness, certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E028_static_coupling_pair/run-001/RESULT.json
+
+SHA-256:
+  38901057591ffe6f3e3d8e0b00045e7facc86abc4f307dd46a9604c38c4a7c41
+
+Verdict:
+  SIMULTANEOUS_PAIR_MATERIAL_IMPROVEMENT
+
+Pair domain
+-----------
+E028 releases exactly two current instances from the objective-168 E024
+placement:
+
+  packaging_battery_003          pose 6189
+  grinder_dense_blue_iron_002    pose 6049
+
+Every other placement and every selected power pole remains fixed. Exact
+non-overlap and power checks admit 47 simultaneous replacement pairs:
+
+  PORT_DOMAIN_EMPTY    45
+  shared OPTIMAL        2
+
+Both base-feasible pairs reach exact shared objective 166. No pair reaches zero,
+so exact routing is not entered.
+
+What the successful pair actually does
+--------------------------------------
+The selected child places:
+
+  packaging_battery_003          at pose 6049, p_x46_y35_o0_m_BT
+  grinder_dense_blue_iron_002    at pose 6189, p_x47_y40_o0_m_BT
+
+These are the two original occupied footprints exchanged between the two
+operations. The free-cell set is therefore unchanged from E024:
+
+  free cells                  1144
+  free components               79
+  largest free component       479
+  free adjacency               1160
+  free-cell digest
+    341f75af121780e04a913a7bd135db7970f670c7dd15fd211581f843a0deafff
+
+The gain comes from assigning different operation and terminal semantics to the
+same two geometric bodies, not from opening another corridor. This is direct
+evidence that placement geometry and operation-to-footprint assignment are
+separable construction resources.
+
+Exact objective change
+----------------------
+The shared component-mismatch objective changes:
+
+  168 -> 166
+
+Relative to the E024 parent endpoint:
+
+  blue_iron_powder      -1
+  dense_source_powder   +1
+  sandleaf_powder       -1
+  steel_part            -1
+
+The net improvement is two. All 19 commodities remain positive.
+
+Unary coupling versus simultaneous repair
+-----------------------------------------
+E026 showed that moving packaging pose 6189 alone to pose 6186 empties the fixed
+grinder owner domain. E028 releases both implicated instances, but all three
+pair states using packaging pose 6186 still remain PORT_DOMAIN_EMPTY.
+
+The observed blocker therefore selected a useful simultaneous neighborhood, but
+its most literal proposed repair was not sufficient. The successful state is a
+role swap across the two current footprints. Failure explanation is a proposer;
+the exact joint interface still chooses the repair.
+
+Endpoint materialization
+------------------------
+The winning compact binding endpoint is frozen at:
+
+  research_lab/local/zero_condition/E028_static_coupling_pair/run-001/
+    BEST_PAIR_ENDPOINT.json
+
+SHA-256:
+  5c0089cfd1cb4376ebfe1da361142705a352b1f7507b0ce390248f6facd54a97
+
+It contains the actual selection, port specifications, selected components, and
+mismatch boundaries. The pair-record manifest is:
+
+  research_lab/local/zero_condition/E028_static_coupling_pair/run-001/
+    PAIR_RECORDS.json
+
+SHA-256:
+  620ac89e579cf4a58f9a331d3dc27ad23ef445d36fb10018de267ff1c1a3378e
+
+Decision effect
+---------------
+Retain the objective-166 pair child as the new leading beam state and recompute
+its residual action surface from the fully materialized endpoint. Do not return
+to geometry-only scalar proxies: the improvement occurred with identical free
+space.
+
+The simultaneous placement layer has demonstrated real leverage. Further action
+selection must distinguish geometric movement, operation/port reassignment, and
+binding continuation value. If the next surface produces another tightly coupled
+pair or a tie, the outer loop should retain multiple joint states rather than
+collapse back into one greedy lineage.
+
+Truth boundary
+--------------
+E028 is exhaustive only for these two current instances with all outside
+placements and power poles fixed. Objective 166 is not a global no-ghost bound,
+component-compatible binding, routing witness, or whole-layout result. The
+operation-to-footprint swap is a successful local construction, not a necessary
+condition for every solution.

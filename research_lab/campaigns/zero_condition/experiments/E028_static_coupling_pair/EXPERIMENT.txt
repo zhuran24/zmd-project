@@ -1,0 +1,74 @@
+EXPERIMENT E028: simultaneous repair of the packaging/grinder static coupling
+=============================================================================
+
+Question
+--------
+Can a two-pose move reopen the packaging action that is impossible under every
+fixed-outside unary context, and does the repaired domain materially reduce the
+exact shared component mismatch?
+
+Why this pair
+-------------
+E026 proves that packaging_battery pose 6189 has no usable unary alternative in
+any live beam state. Under the objective-168 leader, replacement pose 6186 fails
+for one specific reason: grinder_dense_blue_iron_002 remains at pose 6049 and its
+front-filtered owner domain becomes empty.
+
+E027 then triggers the serial-unary stop rule. The first simultaneous object is
+therefore not an arbitrary high-coverage pair. It releases exactly the two poses
+participating in the observed static coupling:
+
+  packaging_battery_003          pose 6189
+  grinder_dense_blue_iron_002    pose 6049
+
+Method
+------
+The E024 objective-168 placement is fixed outside those two instances. Both
+current poses must leave. E028 enumerates every pair of replacement poses that:
+
+  stays inside the frozen candidate pools;
+  avoids all fixed outside bodies;
+  avoids mutual overlap;
+  preserves the frozen selected power-pole set and exact power coverage.
+
+There are 47 such pairs. Every pair is evaluated through the ordered interface:
+
+  static owner domains
+  aggregate binding resources and terminal uniqueness
+  one shared component-mismatch optimum over all 19 commodities
+  exact routing only if the shared objective reaches zero
+
+The winning placement receives a fully materialized binding endpoint containing
+the actual selection, port specifications, selected components, and mismatch
+boundaries.
+
+Competing readings
+------------------
+A. At least one pair reopens the packaging domain and materially improves 168.
+   The new placement/binding seam should support bounded simultaneous pose
+   neighborhoods rather than only unary feedback.
+
+B. The pair reopens static domains but shared mismatch barely moves. Static
+   coupling and component continuation are different ledgers; the next model
+   should place pose and binding variables in the same neighborhood.
+
+C. Every pair still dies at static or aggregate binding. The observed unary
+   blocker explanation is not sufficient for repair; derive the next joint object
+   from the exact rejecting domains rather than widening blindly.
+
+D. A pair reaches zero. It enters exact routing immediately.
+
+Truth boundary
+--------------
+E028 is exhaustive only for these two current instances with every outside
+placement and selected power pole fixed. A negative result does not refute other
+pairs, larger neighborhoods, or the no-ghost problem. A positive shared-mismatch
+gain is not a routing witness.
+
+Result
+------
+Completed with verdict SIMULTANEOUS_PAIR_MATERIAL_IMPROVEMENT. Forty-seven exact
+pair states yield 45 empty owner domains and two shared optima at objective 166.
+The winning child swaps the packaging and grinder operations across their two
+existing 6x4 footprints, leaving the free-cell set unchanged while improving
+168 -> 166. The complete binding endpoint is materialized. See RESULT.txt.

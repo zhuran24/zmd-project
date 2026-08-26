@@ -129,7 +129,11 @@ probes and the first checked feedback replay now show a causal progression:
   * E027 exhausts 51 crusher-sandleaf alternatives on the objective-168 branch.
     Forty-seven empty an owner domain and four shared bindings are OPTIMAL; the
     best child reaches only 167. The predeclared two-unit material-gain threshold
-    therefore stops serial unary motion, and the exact endpoint is fully persisted.
+    therefore stops serial unary motion, and the exact endpoint is fully persisted;
+  * E028 releases packaging_battery pose 6189 and grinder_dense_blue_iron pose
+    6049 together. Only two of 47 pairs survive static domains, but both reach
+    objective 166. The winner swaps the two operations across their existing 6x4
+    footprints, improving the shared interface without changing any free cell.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -137,10 +141,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Can the first problem-derived simultaneous pair, packaging_battery pose 6189 plus
-grinder_dense_blue_iron pose 6049, reopen the statically dead packaging domain and
-produce a material exact shared-mismatch gain under the objective-168 outside
-geometry, or must placement and binding variables cohabit the next model directly?
+What residual action surface does the fully materialized objective-166
+operation-swap child expose, and does it propose another compact simultaneous
+assignment move, a branch split, or the first neighborhood in which pose and
+binding variables must cohabit directly?
 
 Current campaign posture
 ------------------------
@@ -275,15 +279,19 @@ static domains, and the best exact shared objective is 167, a one-unit gain belo
 the predeclared material threshold. The 167 child is diagnostic, not retained as
 the next greedy lineage.
 
-The first simultaneous neighborhood is derived from a concrete unary coupling,
-not from a generic pair portfolio. In E026, packaging pose 6186 fails only because
-grinder_dense_blue_iron_002 remains at pose 6049 and loses its entire static
-binding domain. Releasing both current poses exposes 47 placement-, power-, and
-non-overlap-valid pairs under the objective-168 outside geometry. E028 evaluates
-those pairs through the same ordered interface and shared component objective.
-A zero pair enters exact routing. A material positive gain validates the
-simultaneous placement layer; no useful pair moves binding variables into the
-same neighborhood next.
+E028 validates the first simultaneous placement layer, but not by the most literal
+repair. Packaging pose 6186 remains statically dead even when the implicated
+grinder is released. The two surviving pairs instead exchange packaging and
+grinder operation/port semantics across the two current 6x4 bodies. Free space is
+identical, while the exact shared objective falls 168 -> 166.
+
+The objective-166 child becomes the leading beam state and its full endpoint is
+already materialized. The next experiment rebuilds its residual boundary/action
+surface without re-solving away the selected binding. It compares that surface to
+the prior 168/173 ledgers, carries forward retired unary and static-domain actions,
+and asks whether another compact joint assignment move is visible. Renewed ties,
+weak joint gains, or actions whose value depends on binding endpoint trigger a
+pose-binding cohabitation model rather than another scalar or greedy unary chain.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not
