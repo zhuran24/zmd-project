@@ -1,0 +1,59 @@
+EXPERIMENT E030: exact replay of the objective-166 operation-swap portfolio
+============================================================================
+
+Question
+--------
+Do occupancy-preserving operation swaps form a reusable constructive layer, or was
+E028's packaging/grinder exchange an isolated local improvement?
+
+Frozen portfolio
+----------------
+E029 derives twelve same-facility-type, cross-operation swaps from the fully
+materialized objective-166 endpoint. Each pair preserves the occupied cell set by
+exchanging the two current pose assignments. The portfolio is selected by residual
+boundary union coverage with a diversity cap; coverage proposes but does not rank
+continuation value.
+
+Method
+------
+For every frozen swap, E030:
+
+  verifies both current literals and represented instances;
+  exchanges their pose indices and pose records exactly;
+  proves the occupied cell set is unchanged;
+  checks the frozen power-pole set and exact power coverage;
+  applies static owner-domain and aggregate binding gates;
+  solves one exact shared component-mismatch objective over all 19 commodities;
+  enters exact routing only if the objective reaches zero.
+
+All surviving child states are distinguished by placement and binding-selection
+digests. The best child receives a complete materialized binding endpoint.
+
+Competing readings
+------------------
+A. One or more swaps materially improve 166. Operation-to-footprint assignment is
+   a standing constructive layer and the improved states remain in the beam.
+
+B. Swaps survive static domains but are equal, harmful, or only marginal. Boundary
+   coverage is insufficient; operation-assignment and binding variables must
+   cohabit the next neighborhood.
+
+C. The portfolio is entirely static-dead. The assignment layer needs static-domain
+   propagation before candidate generation.
+
+D. A swap reaches zero. It enters exact routing immediately.
+
+Truth boundary
+--------------
+E030 is exhaustive only for the twelve E029 swaps under the objective-166 outside
+state. It does not exhaust all 8,486 candidate exchanges, prove a necessary
+assignment pattern, or establish a global no-ghost result.
+
+Result
+------
+Completed with verdict OPERATION_SWAP_PORTFOLIO_MATERIAL_IMPROVEMENT. All twelve
+occupancy-preserving swaps pass static domains and reach OPTIMAL shared bindings,
+with objectives 163-169. The best swaps crusher_blue_iron pose 2105 with
+refinery_steel pose 2947 and lowers 166 -> 163 while free space remains
+byte-identical. The exact optimum face and complete binding endpoint are frozen.
+See RESULT.txt.

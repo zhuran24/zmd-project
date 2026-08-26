@@ -1,0 +1,131 @@
+E030 RESULT: OPERATION-TO-FOOTPRINT ASSIGNMENT IS A REUSABLE CONSTRUCTIVE LAYER
+================================================================================
+
+Status
+------
+Completed as research-only exact portfolio evidence. No component-compatible
+binding, exact routing, whole-layout witness, certification, U/L, owner, or
+publication effect.
+
+Frozen results
+--------------
+Main result:
+  research_lab/local/zero_condition/E030_operation_swap_portfolio/run-001/RESULT.json
+
+SHA-256:
+  2a5c71bd0f6f15a27730c51fd19059efcb14b6aaf63948cc932e7390ccff6b57
+
+Verdict:
+  OPERATION_SWAP_PORTFOLIO_MATERIAL_IMPROVEMENT
+
+Swap records:
+  research_lab/local/zero_condition/E030_operation_swap_portfolio/run-001/
+    SWAP_RECORDS.json
+
+SHA-256:
+  e056f0473690ec43a1308e8f77ee6eec311f929940ac9978075b08690f51370f
+
+Exact portfolio response
+------------------------
+All twelve occupancy-preserving swaps selected by E029 pass static owner domains
+and reach an OPTIMAL shared-binding result. There are twelve distinct child
+placements and no static rejection:
+
+  objective 163    1
+  objective 165    1
+  objective 166    1
+  objective 167    3
+  objective 168    4
+  objective 169    2
+
+The portfolio therefore contains both helpful and harmful operation assignments
+while holding free space and power fixed. Operation-to-footprint assignment is a
+real constructive layer, not an E028 one-off.
+
+Best swap
+---------
+The best child exchanges:
+
+  crusher_blue_iron pose 2105
+    <-> refinery_steel pose 2947
+
+It is portfolio rank 12 by boundary coverage, touching 26 residual observations.
+The exact shared objective changes:
+
+  166 -> 163
+
+The free-cell set remains byte-identical to E028:
+
+  free cells                  1144
+  free components               79
+  largest free component       479
+  free adjacency               1160
+  free-cell digest
+    341f75af121780e04a913a7bd135db7970f670c7dd15fd211581f843a0deafff
+
+The exact endpoint remains positive for all 19 commodities. Relative to the E028
+parent endpoint:
+
+  blue_iron_block    -1
+  blue_iron_ore      -3
+  source_ore         +3
+  steel_block        -2
+
+The ore-pair movement is optimum-face exchange. The fixed structural gain is one
+blue-iron-block mismatch and two steel-block mismatches.
+
+Optimum-face audit
+------------------
+The exact objective-163 face varies only:
+
+  blue_iron_ore    7..11
+  source_ore       5..9
+  fixed sum           16
+
+All other 17 commodity mismatch values are fixed. Audit SHA-256:
+
+  430f1435ee9da4e8838146cc249705f12da37f0633674a72b11b5e0005858e41
+
+Coverage is a proposer, not a value function
+--------------------------------------------
+The two highest-coverage swaps, each touching 29 observations, reach objectives
+169 and 165. The best objective 163 comes from the lowest-coverage member of the
+selected twelve. Across this small portfolio, coverage and objective have weak,
+wrong-direction Pearson correlation (+0.203, where lower objective is better).
+
+Thus boundary incidence is useful for constructing a finite action set, but it
+cannot rank operation swaps. Exact shared binding remains the consumer.
+
+Endpoint materialization
+------------------------
+The complete winning endpoint is frozen at:
+
+  research_lab/local/zero_condition/E030_operation_swap_portfolio/run-001/
+    BEST_SWAP_ENDPOINT.json
+
+SHA-256:
+  6f0bcec132a08159bffb5bb655f4378cb70b71f6398280941d835305022f1b23
+
+It contains the actual selection, port specifications, selected components, and
+mismatch boundaries.
+
+Decision effect
+---------------
+Retain the objective-163 child as the leading beam state. Operation assignment is
+now a standing inner construction layer between occupied geometry and binding.
+Do not simply select the next swap by boundary coverage or continue an unbounded
+greedy swap chain.
+
+The next experiment should rebuild the residual surface from the materialized 163
+endpoint and form a bounded multi-footprint assignment neighborhood. A small set
+of current same-type footprints can be permuted jointly while one shared binding
+objective ranks the states. If gains split or tie, retain a beam of assignment
+states. If the bounded assignment neighborhood saturates with all commodities
+positive, operation assignment and binding variables must cohabit directly.
+
+Truth boundary
+--------------
+E030 is exhaustive only for the twelve E029 swaps under one objective-166 parent.
+Objective 163 is not a global no-ghost bound, component-compatible binding,
+routing witness, or whole-layout result. The successful exchange is not a
+necessary condition for every feasible layout.

@@ -1150,6 +1150,43 @@ evidence:
   E029 RESULT.txt; local RESULT.json sha256
   25ded5d381d3972bb753b4593c3f1b791303027696212fd40bd44a8612d7b6fe.
 
+R-ZC-041  Operation-to-footprint assignment is a reusable exact construction layer
+-----------------------------------------------------------------------------------
+status: twelve occupancy-preserving swaps with exact shared-binding replay and face audit
+scope: E029 portfolio under the E028 objective-166 endpoint
+
+statement:
+  E030 evaluates twelve distinct swaps and every child passes static domains and
+  reaches an OPTIMAL shared binding. Objectives range 163-169. The best exchanges
+  crusher_blue_iron pose 2105 with refinery_steel pose 2947 and proves 166 -> 163
+  while the free-cell set remains byte-identical. Its optimum face varies only
+  blue_iron_ore/source_ore with fixed sum 16; the structural gain is
+  blue_iron_block -1 and steel_block -2. All 19 commodities remain positive.
+
+non-implications:
+  The result does not make every operation swap useful, prove a necessary
+  assignment, establish component compatibility, or reach routing. It exhausts
+  only the twelve E029 proposals under one parent. Boundary union coverage does
+  not rank value: the best child was portfolio rank 12, while the top-coverage
+  action worsened to 169.
+
+effect on next problem:
+  Promote operation-to-footprint assignment to a standing research construction
+  layer between geometry and binding. Retain the objective-163 child, rebuild its
+  residual surface, and derive a bounded multi-footprint permutation neighborhood
+  rather than an unbounded greedy swap chain. Exact shared binding continues to
+  rank states; ties or saturation trigger direct assignment-binding cohabitation.
+
+evidence:
+  E030 RESULT.txt; local RESULT.json sha256
+  2a5c71bd0f6f15a27730c51fd19059efcb14b6aaf63948cc932e7390ccff6b57;
+  swap-record manifest sha256
+  e056f0473690ec43a1308e8f77ee6eec311f929940ac9978075b08690f51370f;
+  materialized endpoint sha256
+  6f0bcec132a08159bffb5bb655f4378cb70b71f6398280941d835305022f1b23;
+  optimum-face audit sha256
+  430f1435ee9da4e8838146cc249705f12da37f0633674a72b11b5e0005858e41.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the
