@@ -1,0 +1,118 @@
+E022 RESULT: THE OBJECTIVE-173 BEAM SHARES A PORTFOLIO, NOT ONE FULL RANKING
+================================================================================
+
+Status
+------
+Completed as research-only action-surface evidence. No placement move, routing
+witness, whole-layout claim, certification, U/L, owner, or publication effect is
+granted.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E022_residual_action_surface/run-003/RESULT.json
+
+SHA-256:
+  d43463034c81d1ce4185f76312a25173e880da9744bcc5bd2023e4610a1e6e83
+
+Verdict:
+  RESIDUAL_ACTION_SURFACE_SHARED_PORTFOLIO
+
+Witness-preserving reconstruction
+---------------------------------
+E022 reconstructs the four retained E021 placements and uses each retained
+binding endpoint's frozen selected-component sets. It does not re-solve the
+objective and silently substitute another optimum-face endpoint.
+
+A diagnostic replay demonstrated why this matters: a fresh objective-173 solve
+returned a different, equally optimal binding-selection digest. The residual
+boundary surface therefore belongs to the triple
+
+  exact score / optimum face
+  retained binding witness
+  placement geometry
+
+rather than to the scalar score alone.
+
+Per-state residual surfaces
+---------------------------
+Every state has objective 173 and therefore 173 mismatch-component observations.
+After transporting boundary owners to current pose-bool consumer literals, each
+state has 315 participating current literals; 312 literal identities are common
+to all four states.
+
+The four complete ranking digests are all different. Their leading literals are:
+
+  class 1  grinder_fine_buckwheat pose 7754   coverage 16
+  class 2  grinder_fine_buckwheat pose 7754   coverage 16
+  class 3  grinder_fine_buckwheat pose 7754   coverage 16
+  class 4  crusher_blue_iron pose 2053        coverage 17
+
+The exact maximum touch coverage for budgets 1, 2, and 4 is:
+
+  class       k=1      k=2      k=4
+    1          16       31       58
+    2          16       31       59
+    3          16       31       58
+    4          17       33       60
+
+Shared portfolio
+----------------
+Four literals occur in every state's top ten:
+
+  grinder_fine_buckwheat pose 7754
+  packaging_battery pose 6189
+  crusher_sandleaf pose 2155
+  refinery_blue_iron pose 5327
+
+The robust common leader is grinder_fine_buckwheat pose 7754. It touches exactly
+16 observations in every state and ranks 1, 1, 1, and 2. Packaging pose 6189 is
+second by worst-state coverage with 15 in every state.
+
+The shared portfolio does not make the full action surfaces equivalent. Pairwise
+top-10 Jaccard overlap ranges from 0.25 to 0.818; top-20 overlap ranges from 0.333
+to 0.667. Class 2 is particularly different from classes 1, 3, and 4.
+
+Outer-loop consequence
+----------------------
+The beam now has three distinct quotient levels:
+
+  action value
+    E021 permits one value class for crusher-source pose 6125.
+
+  residual portfolio
+    E022 permits a common-action probe for pose 7754 and three other shared
+    leaders.
+
+  full ranking and witness
+    The four states remain separate because their complete rankings, placements,
+    and binding endpoints differ.
+
+Historical interaction
+----------------------
+Pose 7754 was already tested at the earlier objective-176 beam in E019 and made
+every branch worse, to 178. Its renewed residual prominence at objective 173 does
+not erase that result. It creates a direct path-dependence test:
+
+  same action
+  different accumulated placement context
+  exact shared-binding response
+
+If it remains harmful, residual boundary coverage is again only a proposal and
+must yield to exact continuation value. If it becomes useful, action response is
+noncommutative and beam state must carry construction history or an equivalent
+context signature.
+
+Truth boundary
+--------------
+Boundary touch is an optimistic action selector. It does not prove that a literal
+is movable, that moving it repairs any touched component, or that the common
+portfolio is complete.
+
+Decision effect
+---------------
+Replay grinder_fine_buckwheat pose 7754 across all four objective-173 states. A
+shared improvement keeps it as a common beam action. Shared worsening retires it
+again and promotes branch-specific leaders, beginning with crusher_blue_iron pose
+2053 on class 4, or a simultaneous two-pose neighborhood if unary gains have
+saturated.

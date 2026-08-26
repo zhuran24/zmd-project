@@ -103,7 +103,12 @@ probes and the first checked feedback replay now show a causal progression:
   * E021 applies crusher-source pose 6125 to four objective-174 free-space class
     representatives. All four improve exactly one unit to 173 through pose 6123,
     but feasible child counts remain 11, 13, 23, and 11. The optimum face keeps
-    only the ore-pair exchange and lowers its fixed sum 18 -> 17.
+    only the ore-pair exchange and lowers its fixed sum 18 -> 17;
+  * E022 reconstructs each retained endpoint without re-solving away its witness.
+    Full residual rankings differ, yet 312 literals are common and four appear in
+    every top ten. Grinder pose 7754 touches exactly 16 observations in all four
+    states and ranks 1, 1, 1, and 2; class 4 instead ranks crusher-blue-iron pose
+    2053 first.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -111,10 +116,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Do the four retained objective-173 beam states expose the same residual
-boundary-action ranking, and which common or state-specific next move best
-distinguishes continued unary progress from the need for a simultaneous
-pose-binding neighborhood?
+Does grinder_fine_buckwheat pose 7754, which worsened every objective-176 beam
+state, become constructive after the accumulated objective-173 chain, or does its
+second exact rejection end common unary replay and promote branch-specific or
+simultaneous pose-binding moves?
 
 Current campaign posture
 ------------------------
@@ -221,13 +226,18 @@ face remains one-dimensional and its ore-pair sum falls to 17, so the gain is
 structural rather than an arbitrary binding endpoint. Yet the four action domains
 remain unequal and all 19 commodities stay positive.
 
-The next experiment therefore does not choose another action from one canonical
-state. It reconstructs residual mismatch-boundary rankings independently for the
-four retained objective-173 states, transports them into current group-pose
-literals, and compares their common and branch-specific action surfaces. A shared
-leader receives cross-state exact replay. Divergent leaders define a diversified
-beam. If another unary round yields only marginal gains, the sequential chain
-ends and the next object is a simultaneous two-pose or pose-binding neighborhood.
+E022 preserves the retained binding endpoints and shows that the beam shares a
+portfolio rather than one complete ranking. The robust common leader is grinder
+pose 7754 with equal coverage 16 in every state, but class 4's local leader is
+crusher-blue-iron pose 2053. The pairwise top-10 overlap ranges from 0.25 to
+0.818, so the common probe cannot erase branch-specific alternatives.
+
+The next experiment replays pose 7754 across all four objective-173 states. E019
+already proved this action harmful at objective 176. Improvement now would expose
+noncommutative, history-dependent composition; repeated worsening would retire
+the common coverage leader a second time. In that case class-specific leaders or
+a simultaneous two-pose / pose-binding neighborhood replace further common unary
+assembly.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

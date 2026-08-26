@@ -902,6 +902,36 @@ evidence:
   optimum-face audit sha256
   bc6e729eaf6d25caa35560be0f514e820162ff91c1bfde344c2d0a937e1b099f.
 
+R-ZC-033  Objective-173 states share a robust action portfolio but not one residual ranking
+------------------------------------------------------------------------------------------------
+status: witness-preserving four-state boundary transport and exact coverage analysis
+scope: four retained E021 objective-173 placement/binding witnesses
+
+statement:
+  E022 reconstructs each retained binding endpoint rather than re-solving its
+  optimum face, then transports 173 mismatch boundaries per state into current
+  group/optional pose literals. Each state has 315 participating literals and 312
+  are common to all four, but the four complete ranking digests differ. Three
+  classes rank grinder_fine_buckwheat pose 7754 first with coverage 16; class 4
+  ranks crusher_blue_iron pose 2053 first with coverage 17 and pose 7754 second.
+  Four literals occur in every top ten. Pairwise top-10 Jaccard overlap ranges
+  0.25-0.818. Exact budget-4 touch coverage ranges 58-60.
+
+non-implications:
+  Boundary coverage does not prove mobility, repair, action value, or portfolio
+  completeness. Common literal identity does not make placement or binding
+  witnesses interchangeable.
+
+effect on next problem:
+  Replay pose 7754 across all four objective-173 states as a direct path-dependence
+  test. It was harmful at the earlier objective-176 beam; improvement now would
+  prove context-dependent composition, while repeated worsening retires it and
+  promotes branch-specific leaders or a simultaneous two-pose neighborhood.
+
+evidence:
+  E022 RESULT.txt; local RESULT.json sha256
+  d43463034c81d1ce4185f76312a25173e880da9744bcc5bd2023e4610a1e6e83.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

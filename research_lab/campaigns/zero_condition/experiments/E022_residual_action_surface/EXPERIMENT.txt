@@ -1,0 +1,73 @@
+EXPERIMENT E022: residual action surfaces of the objective-173 beam
+=================================================================
+
+Question
+--------
+Do the four retained objective-173 beam states expose one common next-action
+surface, or have their residual component boundaries split into state-specific
+portfolios even though the last tested action had identical value?
+
+Why this precedes another placement replay
+------------------------------------------
+E021 proves that crusher-source pose 6125 has the same exact continuation value
+on all four classes: every parent improves 174 -> 173. It does not prove that the
+states have the same remaining causes. Choosing the next action from one
+canonical child would erase precisely the beam information that E020 and E021
+showed must be retained.
+
+Construction
+------------
+For each retained E021 state, E022 reconstructs the exact placement and its
+OPTIMAL shared binding. Every mismatch-component boundary owner is transported
+to the current pose-bool consumer object:
+
+  mandatory instance -> operation-group pose literal
+  optional instance  -> template-pose literal
+
+The experiment records:
+
+  per-state single-literal residual coverage rankings
+  exact set-cover summaries for budgets 1, 2, and 4
+  pairwise top-10 and top-20 action-set overlap
+  common literals ranked by worst-state and total residual coverage
+  branch-specific leaders absent from the other states' leading portfolios
+
+Coverage means only that changing the current literal can alter an observed
+boundary. It proposes actions; it does not prove mobility or repair.
+
+Competing readings
+------------------
+A. Every state has the same leading literal and near-identical top portfolio.
+   Replay the common action across the beam and quotient states for that action.
+
+B. Leaders differ but a high-coverage common portfolio remains. Preserve the
+   beam, replay the robust common leader, and retain action-domain signatures.
+
+C. Leading portfolios diverge substantially. Expand state-specific actions or
+   move directly to a simultaneous multi-pose neighborhood instead of forcing a
+   common unary action.
+
+D. Residual coverage is diffuse in every state. Sequential unary construction
+   has ceased to be a faithful representation of component support.
+
+Truth boundary
+--------------
+E022 analyses the four retained objective-173 shared-binding witnesses. Boundary
+coverage is an optimistic action selector and is not a placement cut, a proof of
+component feasibility, or a routing result.
+
+Decision effect
+---------------
+A shared leader becomes the next cross-state exact replay. Divergent leaders
+become separate beam actions. If no small common or branch-specific portfolio
+carries useful residual coverage, the next model co-locates two pose variables or
+pose and binding variables in one bounded neighborhood.
+
+Result
+------
+Completed with verdict RESIDUAL_ACTION_SURFACE_SHARED_PORTFOLIO. The four full
+rankings differ, but 312 current literals are common and four literals appear in
+every top ten. Grinder_fine_buckwheat pose 7754 touches 16 observations in every
+state and ranks 1, 1, 1, and 2; class 4 instead ranks crusher_blue_iron pose 2053
+first with coverage 17. Pairwise top-10 Jaccard overlap ranges 0.25-0.818. See
+RESULT.txt.
