@@ -1,0 +1,114 @@
+E020 RESULT: BEST OBJECTIVE IS INVARIANT, ACTION DOMAINS ARE NOT
+================================================================
+
+Status
+------
+Completed as research-only beam and shared-binding evidence. No child reaches
+component feasibility or exact routing. No certification, U/L, production-cut,
+owner, or publication effect is granted.
+
+Frozen outputs
+--------------
+Main result:
+  research_lab/local/zero_condition/E020_beam_refinery_action/run-001/RESULT.json
+  sha256 0afd0346da192f079cfde67d47c566e9a95f7b838c1729ba0fd95c53fc12c8a5
+
+Beam-state manifest:
+  research_lab/local/zero_condition/E020_beam_refinery_action/run-001/BEAM_STATE_MANIFEST.json
+  sha256 a6e01df86ad1d230c82ca70d17118a5a5355b2c3fd57cf5b1cea84d4517b5f91
+
+Best child assignment:
+  research_lab/local/zero_condition/E020_beam_refinery_action/run-001/BEST_CHILD_ASSIGNMENT.json
+  sha256 311eafda0ff23fdf69e317f707855b0f43c82df6bc9b0a51753c79fa462a72c9
+
+Best child layout:
+  research_lab/local/zero_condition/E020_beam_refinery_action/run-001/BEST_CHILD_LAYOUT.json
+  sha256 e0996df3bce92e8d0a7a478f56a86a1ea3987e37194789c1b05287463deaaee0
+
+Verdict:
+  KNOWN_ACTION_ELIGIBILITY_CLASS_INVARIANT
+
+Eligibility and exact result
+----------------------------
+Four E017 seeds have already moved refinery_blue_iron pose 5343 and are excluded.
+The other eight receive every exact fixed-outside alternative for the same
+literal.
+
+The candidate domains differ substantially:
+
+  seed  alternatives  owner-domain survivors
+    1       51                 11
+    2       59                 21
+    3       55                  9
+    4       55                  9
+    7       59                 23
+    8       59                 23
+    9       63                 21
+   10       63                 21
+
+Across 464 alternatives, 326 empty an owner domain and 138 reach exact shared
+binding. Yet every eligible parent has the same best child objective:
+
+  174: 8 seeds
+
+All eight improve from 176 to 174. None reaches zero or routing.
+
+Action-equivalence and domain nonequivalence
+--------------------------------------------
+At the level of the best exact objective, the eight seeds form one action-
+equivalence class. At the level of future search, they do not:
+
+* alternative counts range from 51 to 63;
+* base-feasible child counts range from 9 to 23;
+* full child-objective histograms differ;
+* some seeds realize the best value through pose 3338 at anchor (12,65), while
+  others realize it through pose 6178 at anchor (23,38);
+* the 150 parent/child placements contain 26 free-cell sets and 131 distinct
+  binding-selection identities.
+
+Thus a scalar objective alone still under-describes the outer-loop state. Two
+parents can have equal current objective and equal best one-step continuation,
+yet expose different numbers and kinds of future states.
+
+Retained objective-174 classes
+------------------------------
+The width-12 beam keeps four distinct objective-174 free-space classes before
+filling with objective-176 diversity. The leading classes include:
+
+  free digest prefix  best pose  surviving patterns  components  largest
+  a2e8c523             6178            13441              80       457
+  51acab86             6178            13433              79       439
+  008de3f2             3338            13427              81       439
+  daf0d624             6178            13425              80       439
+
+The frozen best representative is seed 2 with refinery pose 6178. Its exact
+shared objective is 174, with 80 free components, largest component 457, 1144
+free cells, and 13441 surviving binding patterns.
+
+Outer-loop architecture consequence
+-----------------------------------
+Beam state identity now has three levels:
+
+  score state      exact shared objective and optimum-face signature
+  action state     eligible alternative domain and child-objective histogram
+  witness state    placement/free-space and binding-selection identity
+
+Raw geometry alone was too broad; objective alone is too narrow. Action-response
+signatures are the missing middle layer. They tell which representational
+differences can affect future construction.
+
+Decision effect
+---------------
+The next controlled step uses crusher_source pose 6125, which remains selected in
+all four leading objective-174 free-space classes. It is applied to one
+representative per class. A differential fifth-step objective would establish
+true branch continuation-value divergence. Uniform response would allow these
+classes to be quotiented for that action while preserving their different action
+domain signatures for other moves.
+
+Truth boundary
+--------------
+E020 exhausts one refinery literal on eight eligible E017 seeds. Equal best
+objective does not prove global branch equivalence, and the child-count
+differences do not prove that any particular class will lead to a whole-layout
+witness.

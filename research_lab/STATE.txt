@@ -94,7 +94,12 @@ probes and the first checked feedback replay now show a causal progression:
     exactly two owner-domain failures and one OPTIMAL child at 178, so all parents
     worsen by two. The action is branch-invariant despite twelve placement and
     binding identities; causal coverage and continuation value are now separate
-    outer-loop ledgers.
+    outer-loop ledgers;
+  * E020 applies the known-composing refinery pose 5343 across eight eligible
+    seeds. Every branch reaches best objective 174, but alternatives range 51-63,
+    base-feasible children 9-23, and the child-objective histograms and best
+    geometries differ. Beam state now needs score, action-domain, and witness
+    identities as separate layers.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -102,10 +107,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Does the refinery-blue-iron 5343 action that improves the representative triple
-to 174 have the same value across the eight eligible objective-176 seeds, or do
-its exact outcomes finally separate branch continuation values and identify the
-beam diversity key that matters?
+When crusher-source pose 6125 is applied to one representative from each of the
+four leading objective-174 free-space classes, do the fifth-step exact objectives
+diverge, and can action-response signatures safely quotient states that raw
+placement and binding identities keep separate?
 
 Current campaign posture
 ------------------------
@@ -199,13 +204,20 @@ descendants. Representational difference is therefore necessary metadata, not
 sufficient evidence of continuation value. Boundary coverage proposes actions;
 only cross-state exact replay tells whether a branch deserves retention.
 
-The next experiment uses the refinery-blue-iron 5343 action already known to
-produce 174 on the representative seed. Four E017 seeds have already consumed
-that literal and are ineligible; the remaining eight receive the identical
-fixed-outside alternative set. Differential exact objectives would supply the
-first measured branch-value split. Invariance at 174 would instead collapse the
-eight eligible states into one action-equivalence class while preserving their
-port-mode alternatives. A zero state enters routing immediately.
+E020 has now tested that known-composing action. All eight eligible seeds reach
+174, so they are equivalent at the best one-step value. They are not equivalent
+as search states: candidate counts, domain-survival counts, objective histograms,
+and best replacement geometries differ substantially. The outer loop therefore
+records three separate identities: score/optimum-face, action-response domain,
+and placement/binding witness.
+
+The next experiment takes one representative from each of the four leading
+objective-174 free-space classes and exhausts crusher-source pose 6125, which is
+still selected in all four. This is the first fifth-step cross-class probe. If
+objectives diverge, the classes have measured continuation-value differences. If
+they remain invariant, the beam may quotient them for that action while keeping
+their distinct action-domain signatures available for other moves. A zero state
+enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

@@ -833,6 +833,39 @@ evidence:
   beam manifest sha256
   538a5e010521b0a2fe2cd59bd9ed94c6038aae20686b5e1090ab5eb3f4aff801.
 
+R-ZC-031  Best one-step value can be invariant while action domains remain distinct
+------------------------------------------------------------------------------------
+status: eight-seed exhaustive known-action replay
+scope: refinery_blue_iron pose 5343 across eligible E017 objective-176 parents
+
+statement:
+  E020 excludes four seeds that already moved pose 5343 and exhausts 464
+  alternatives on the remaining eight. Three hundred twenty-six empty an owner
+  domain and 138 shared bindings are OPTIMAL. Every eligible seed improves from
+  176 to the same best objective 174, but alternative counts range 51-63,
+  base-feasible child counts 9-23, full objective histograms differ, and the best
+  move is realized through different replacement geometries. The combined state
+  pool has 150 placement identities, 26 free-cell sets, and 131 binding-selection
+  identities.
+
+non-implications:
+  Equal best objective does not prove equal future continuation, and different
+  child-domain sizes do not prove any branch reaches a whole layout. The result
+  applies to one action and one frozen eligibility class.
+
+effect on next problem:
+  Represent beam state at three levels: exact score/face, action-response domain,
+  and placement/binding witness identity. Test crusher-source pose 6125 across one
+  representative of each leading objective-174 free-space class. Differential
+  fifth-step values justify retaining the classes; invariance permits an
+  action-specific quotient.
+
+evidence:
+  E020 RESULT.txt; main result sha256
+  0afd0346da192f079cfde67d47c566e9a95f7b838c1729ba0fd95c53fc12c8a5;
+  beam manifest sha256
+  a6e01df86ad1d230c82ca70d17118a5a5355b2c3fd57cf5b1cea84d4517b5f91.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

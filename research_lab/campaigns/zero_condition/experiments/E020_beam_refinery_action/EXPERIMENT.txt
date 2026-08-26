@@ -1,0 +1,72 @@
+EXPERIMENT E020: branch value under a known composing action
+============================================================
+
+Question
+--------
+Does refinery_blue_iron pose 5343, which lowers the representative E017 triple
+from 176 to 174, have the same exact continuation value across every eligible
+objective-176 beam state?
+
+Trigger
+-------
+E019 applied the residual-coverage leader grinder pose 7754 across all twelve
+seeds. Every branch worsened identically to 178. Representational diversity alone
+therefore did not establish beam value.
+
+E020 tests the complementary case: an action already known to compose on one
+branch.
+
+Eligible parents
+----------------
+The twelve E017 seeds are reconstructed exactly. Four have already moved the
+5343 group-pose literal and are ineligible. The remaining eight keep:
+
+  mandatory::group::manufacturing_3x3::refinery_blue_iron::7::5343
+
+at its E009 pose and receive the same complete fixed-outside alternative set.
+
+Evaluation
+----------
+Every child preserves exact placement, no-overlap, and power semantics. The
+ordered interface is:
+
+  owner-domain filtering
+  aggregate generic I/O and terminal uniqueness
+  one shared component-mismatch optimization over all 19 commodities
+  exact routing only when the shared objective reaches zero
+
+Parents and children are deduplicated by placement plus binding-selection
+identity. The beam remains width 12 and retains exact-score states while
+preserving free-cell and binding-selection diversity.
+
+Competing readings
+------------------
+A. Eligible seeds produce different best objectives. Equal-score parents have
+   different continuation value, providing direct evidence that the outer loop
+   must preserve multiple states.
+
+B. Every eligible seed reaches the same objective 174. The known fourth move is
+   action-invariant on this eligibility class; the beam may quotient these states
+   for this action while retaining port-mode alternatives for other actions.
+
+C. Some seeds cannot realize any base-feasible child. Eligibility at the literal
+   level is not enough; neighboring branch geometry changes the action domain.
+
+D. A child reaches zero. It immediately enters exact routing and supersedes beam
+   model-selection work.
+
+Truth boundary
+--------------
+The experiment is exhaustive only for one target literal on eight frozen
+objective-176 seeds. A common objective response does not prove equal future
+value for other actions, and a differential response does not establish global
+beam completeness.
+
+Result
+------
+Completed with verdict KNOWN_ACTION_ELIGIBILITY_CLASS_INVARIANT. All eight
+eligible seeds improve 176 -> 174, but their exact alternative domains differ:
+51-63 candidates and 9-23 base-feasible children. The best objective is one
+action-equivalence class while the child-domain and objective-histogram surfaces
+remain distinct. The next test applies crusher-source pose 6125 across four
+leading objective-174 free-space classes. See RESULT.txt.
