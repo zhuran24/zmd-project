@@ -1,0 +1,63 @@
+EXPERIMENT E026: common packaging-battery action across the live beam
+====================================================================
+
+Question
+--------
+Does packaging_battery pose 6189 have positive, negative, or branch-dependent
+exact continuation value across the one objective-168 and three objective-173
+live states?
+
+Why this action
+---------------
+E025 excludes the twice-rejected grinder action from the unary ledger and finds
+packaging_battery pose 6189 as the strongest remaining common boundary action. It
+touches exactly 15 residual mismatch observations in every live state.
+
+Unlike the larger manufacturing neighborhoods, the fixed-outside action domain is
+small and identical in cardinality: each parent has exactly three placement- and
+power-valid alternatives. This makes cross-state replay cheaper and more faithful
+than selecting another action from one representative state.
+
+Method
+------
+E026 reconstructs the three retained objective-173 placements from E021/E022 and
+loads the frozen objective-168 placement from E024. For each parent it verifies
+exact power coverage, exhausts every fixed-outside alternative of pose 6189, and
+evaluates one shared component-mismatch optimum over all 19 commodities.
+
+Each branch is judged relative to its own parent objective:
+
+  class 1 parent  173
+  class 2 parent  173
+  class 3 parent  173
+  E024 leader     168
+
+A child reaches exact routing only if its shared mismatch objective is zero.
+
+Competing readings
+------------------
+A. The action improves every parent by a similar amount. Retain the best children
+   and record an action-specific quotient across the beam.
+
+B. The action improves only some parents or by different amounts. This is direct
+   continuation-value evidence for branch-specific retention.
+
+C. The action is equal or harmful everywhere. Retire it from the current unary
+   ledger and expand the objective-168-specific crusher_sandleaf pose 2155.
+
+D. One child reaches zero. Send it immediately to exact routing.
+
+Truth boundary
+--------------
+The experiment is exhaustive only for one current literal under four frozen
+parents with all outside placements fixed. A harmful unary response does not ban
+the facility from a simultaneous multi-pose move. A positive shared-mismatch
+response is still only a coarse-topology improvement until exact routing passes.
+
+Result
+------
+Completed with verdict COMMON_PACKAGING_ACTION_STATIC_DOMAIN_REJECTED. All 12
+placement/power-valid alternatives empty at least one front-filtered owner domain,
+with the same three rejection patterns in all four parents. The action is retired
+before component support; crusher_sandleaf pose 2155 becomes the next
+objective-168-specific probe. See RESULT.txt.

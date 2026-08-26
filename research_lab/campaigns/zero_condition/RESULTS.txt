@@ -1025,6 +1025,35 @@ evidence:
   E025 RESULT.txt; local RESULT.json sha256
   3a2d076ba283ccfaf946c772cbbc25a530b14849bcd433516965edc3b7670c5a.
 
+R-ZC-037  A common high-coverage action can be rejected entirely by static domains
+----------------------------------------------------------------------------------
+status: exhaustive four-state action-domain replay with ordered interface diagnosis
+scope: packaging_battery pose 6189 under the live objective-168/173 beam
+
+statement:
+  E026 exhausts three placement- and power-valid alternatives under each of four
+  live parents. All 12 are PORT_DOMAIN_EMPTY before aggregate resources or
+  component support. The response is identical across states: pose 6186 empties
+  grinder_dense_blue_iron_002@6049; pose 6187 empties that owner plus the moved
+  packaging_battery owner; pose 6188 empties the moved packaging owner itself.
+  No shared component model or exact routing solve is reached.
+
+non-implications:
+  The result does not prove packaging_battery globally immovable or useless in a
+  simultaneous move. It rejects only the fixed-outside unary action in these four
+  contexts.
+
+effect on next problem:
+  Separate boundary-touch coverage, static action-domain feasibility, and exact
+  continuation value in the outer-loop ledger. Retire pose 6189 from the current
+  unary ledger without misclassifying it as a component or routing death. Expand
+  the objective-168-specific crusher_sandleaf pose 2155 next; a weak result ends
+  serial unary motion and triggers a simultaneous neighborhood.
+
+evidence:
+  E026 RESULT.txt; local RESULT.json sha256
+  7dbb42b6c255fbc89a6a904364b861a7ef28eb8487ccabbfc305dbc291c8456e.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

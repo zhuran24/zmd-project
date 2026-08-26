@@ -121,7 +121,11 @@ probes and the first checked feedback replay now show a causal progression:
     first returns another optimum. This exposes digest-only state persistence as
     insufficient. The 168 surface still ranks the retired grinder action first;
     after applying the action ledger, packaging-battery pose 6189 is the strongest
-    common action and crusher-sandleaf pose 2155 is the leading 168-specific one.
+    common action and crusher-sandleaf pose 2155 is the leading 168-specific one;
+  * E026 exhausts all 12 packaging-battery alternatives across the live beam. Every
+    candidate empties a front-filtered owner domain with the same three rejection
+    patterns, so the action is retired before component support rather than being
+    mislabeled as another topology failure.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -129,10 +133,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Does packaging-battery pose 6189 have positive, negative, or branch-dependent
-exact continuation value across the live objective-168/173 beam, and if it is
-weak or harmful does the objective-168-specific crusher-sandleaf pose 2155 still
-justify one final unary expansion before a simultaneous neighborhood?
+Does the objective-168-specific crusher-sandleaf pose 2155 produce a material
+exact shared-mismatch gain under the fixed outside geometry, or has serial unary
+motion saturated enough that the next honest object is a simultaneous two-pose
+or pose-binding neighborhood?
 
 Current campaign posture
 ------------------------
@@ -256,15 +260,18 @@ branch by two. The beam therefore cannot be represented by one score-class
 representative or one global residual ranking.
 
 The live beam contains one objective-168 child and three objective-173 parents.
-E025 has now recomputed the 168 residual surface without replacing its frozen
-binding endpoint. The raw coverage leader is still the twice-rejected grinder
-pose, proving that residual rankings require a persistent action ledger. After
-retirement filtering, packaging-battery pose 6189 has equal coverage 15 in every
-state and only three exact alternatives per parent, making it the cheapest honest
-cross-state probe. Crusher-sandleaf pose 2155 remains the first branch-specific
-fallback for the 168 state. Material unary gains may continue inside the beam;
-renewed ties or marginal gains trigger a simultaneous two-pose or pose-binding
-neighborhood.
+E025 recomputed the 168 residual surface without replacing its frozen binding
+endpoint. E026 then showed that the strongest non-retired common proposer has an
+empty exact action domain in every state: all three alternatives destroy one or
+two front-filtered owner domains before component support. This response can be
+stored once as an action-domain signature shared by the four parents.
+
+The next and deliberately final serial-unary discriminator is crusher-sandleaf
+pose 2155 on the objective-168 leader. It has 51 exact alternatives and is the
+highest branch-specific residual action after the two common actions are retired.
+A material gain may remain in this branch; equality, harm, or only a marginal
+one-unit improvement ends the serial line and moves the construction interface to
+a simultaneous two-pose or pose-binding neighborhood.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

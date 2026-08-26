@@ -1,0 +1,87 @@
+E026 RESULT: THE COMMON PACKAGING ACTION DIES BEFORE COMPONENT SUPPORT
+======================================================================
+
+Status
+------
+Completed as research-only action-domain evidence. No shared component optimum,
+exact routing, certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E026_common_packaging_action/run-003/RESULT.json
+
+SHA-256:
+  7dbb42b6c255fbc89a6a904364b861a7ef28eb8487ccabbfc305dbc291c8456e
+
+Verdict:
+  COMMON_PACKAGING_ACTION_STATIC_DOMAIN_REJECTED
+
+Exhaustive response
+-------------------
+Packaging_battery pose 6189 has exactly three placement- and power-valid
+fixed-outside alternatives under each live parent. E026 evaluates all 12:
+
+  parent class 1, objective 173    3 / 3 PORT_DOMAIN_EMPTY
+  parent class 2, objective 173    3 / 3 PORT_DOMAIN_EMPTY
+  parent class 3, objective 173    3 / 3 PORT_DOMAIN_EMPTY
+  objective-168 leader             3 / 3 PORT_DOMAIN_EMPTY
+
+No candidate reaches aggregate binding resources, component support, or exact
+routing.
+
+The rejection pattern is identical in all four states:
+
+  replacement pose 6186
+    empties grinder_dense_blue_iron_002 at pose 6049
+
+  replacement pose 6187
+    empties grinder_dense_blue_iron_002 at pose 6049
+    and packaging_battery_003 at pose 6187
+
+  replacement pose 6188
+    empties packaging_battery_003 at pose 6188
+
+Across all branches the frequency ledger is:
+
+  grinder_dense_blue_iron_002@6049    8 empty-domain occurrences
+  packaging_battery_003@6187          4 empty-domain occurrences
+  packaging_battery_003@6188          4 empty-domain occurrences
+
+Interpretation
+--------------
+Boundary coverage 15 made pose 6189 the strongest non-retired common proposer,
+but its entire exact action domain is statically unusable. The ordered interface
+ladder prevents this from being mislabeled as component disconnection or routing
+failure.
+
+The identical response across geometrically distinct beam states also shows that
+an action-domain signature can be more stable than the full placement or binding
+state. These four parents may share one contextual unary rejection record for
+this action, even though they remain distinct for other actions.
+
+Architecture effect
+-------------------
+The outer loop should preserve at least three separate ledgers:
+
+  boundary-touch coverage
+  static action-domain feasibility
+  exact continuation value after the static gates
+
+Coverage proposes an action. Static domain compilation can retire it without
+running the shared component objective. Only surviving actions receive a
+continuation-value entry.
+
+Decision effect
+---------------
+Retire packaging_battery pose 6189 from the current fixed-outside unary ledger.
+The next live candidate is the objective-168-specific crusher_sandleaf pose 2155,
+which has 51 exact alternatives under that branch. If it lacks a material gain,
+stop serial unary expansion and move to a simultaneous two-pose or pose-binding
+neighborhood.
+
+Truth boundary
+--------------
+This is exhaustive only for pose 6189 under four frozen outside placements. It
+does not prove packaging_battery globally immovable or useless in a simultaneous
+move where another facility is released at the same time.
