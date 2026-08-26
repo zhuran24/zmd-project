@@ -1,0 +1,86 @@
+E038 RESULT: NO SCIENTIFIC VERDICT; DYNAMIC OWNER CONSTRAINT PATH IS NOT YET FAITHFUL
+=====================================================================================
+
+Status
+------
+Blocked as a research-model fidelity finding. No objective value from E038 is
+admitted. No component-compatible binding, exact routing, whole-layout witness,
+certification, U/L, owner, or publication effect.
+
+Attempt 1: stale concrete owner labels
+--------------------------------------
+The first E038 construction combined block payloads whose `source_instance_ids`
+were inherited from earlier assignment states. Those labels no longer identified
+the concrete owners of the same footprints in the current E037 state. Disjoint
+pose sets therefore appeared to share concrete instances and the pre-solve
+object-space guard rejected the model.
+
+This is not a solver infeasibility result. It establishes that:
+
+  group-pose block identity is durable across assignment states
+  concrete named-owner identity is state-local materialization data
+
+The runner was changed to reconstruct each block's current owner directly from
+its pose set and the concrete endpoint before building a model.
+
+Attempt 2: fixed-assignment calibration mismatch
+------------------------------------------------
+After owner reconstruction, the first E037 calibration reproduced OPTIMAL 157.
+The second fixed E036 assignment did not reproduce its ordinary binding optimum:
+
+  ordinary fixed-layout PortBindingModel    OPTIMAL 159
+  expanded post-injection joint model       OPTIMAL 157
+
+An independent ordinary replay again proved 159 for the same concrete E036
+assignment. The lower joint value is therefore not admitted as continuation
+value.
+
+Root cause
+----------
+The campaign joint prototype called `PortBindingModel.build()` on the fixed
+outside owners and injected conditional virtual owners afterwards. The native
+builder had already generated owner-dependent constraints, including its
+port-activity, conservation, hand-carry, global distinctness, local implication,
+and search-guidance phases. The injected owners entered the later component
+objective but not every native binding phase.
+
+The earlier E034-E037 best-child claims remain valid constructive endpoint
+claims: every relaxed-model optimum was materialized as a concrete assignment and
+an ordinary fixed-layout PortBindingModel independently achieved the same value.
+The sandwich therefore fixes the exact optimum of each tested assignment context.
+What E038 exposes is that a fixed-assignment calibration cannot be assumed for an
+expanded post-build virtual-owner set, and that the prototype is not a generally
+faithful extension surface.
+
+Repair direction
+----------------
+Do not patch the scalar mismatch or accept the lower calibration. Dynamic owners
+must enter before all native owner-dependent binding phases, or those phases must
+be refactored into an explicit conditional-owner compiler and applied exactly
+once.
+
+A trial inactive-pattern approach was opened only as a diagnostic. It cannot be
+accepted unless inactive owners are proven to satisfy the native per-owner
+conservation semantics and both 157/159 calibration witnesses replay exactly.
+
+Decision effect
+---------------
+Pause E038's merged-3x3 scientific test. The next active research object is the
+binding extension seam itself:
+
+  concrete/group-pose owner transport
+  conditional owner presence
+  native port and conservation constraints
+  generic-I/O and global distinctness
+  component objective
+
+After a faithful conditional-owner builder is obtained, rerun the same frozen
+E038 footprint selection and both calibrations. No new neighborhood or objective
+claim is opened before that equivalence test passes.
+
+Truth boundary
+--------------
+This result identifies a campaign-local model-extension defect. It does not prove
+that objective 157 is saturated, that the merged 3x3 block lacks value, that any
+layout is infeasible, or that the production PortBindingModel is unsound for its
+ordinary fixed-placement use.

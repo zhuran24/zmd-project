@@ -1441,6 +1441,38 @@ evidence:
   optimum-face audit sha256
   8b56476fad1bd7935b0d64ef063ad13e94cab75bdb01192926cf99d153559d57.
 
+R-ZC-049  Dynamic binding owners cannot be injected after native owner constraints are built
+------------------------------------------------------------------------------------------------
+status: object-space rejection plus fixed-assignment differential calibration
+scope: E038 merged-3x3 prototype and the campaign-local joint assignment builder
+
+statement:
+  E038 first rejects stale `source_instance_ids`: block payloads preserve durable
+  group-pose identity but their named concrete owners can change after operation
+  reassignment. Rebuilding owners from the current pose set repairs that transport.
+  The next calibration then finds a stronger defect. The same fixed E036 concrete
+  assignment is OPTIMAL 159 in the ordinary PortBindingModel but 157 when virtual
+  conditional owners are injected after `PortBindingModel.build()`. Independent
+  ordinary replay confirms 159. The post-build prototype omitted native owner-
+  dependent phases for virtual owners, so its lower calibration is rejected.
+
+non-implications:
+  This does not invalidate ordinary fixed-placement binding, prove the E038
+  neighborhood useless, or revoke E034-E037 constructive endpoints. Each earlier
+  best assignment was independently materialized and achieved the reported value
+  in an ordinary PortBindingModel. It does show that the current prototype is not
+  a generally faithful dynamic-owner extension surface.
+
+effect on next problem:
+  Pause merged-3x3 value search. Build conditional owners before all native port,
+  conservation, hand-carry, global-distinctness, local-implication, and guidance
+  phases, or extract those phases into an explicit conditional-owner compiler.
+  Rerun the frozen 157 and 159 calibrations before accepting any E038 objective.
+
+evidence:
+  E038 RESULT.txt; local run-001 object-space FAILURE and run-002 calibration
+  FAILURE under research_lab/local/zero_condition/E038_merged_3x3_assignment/.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

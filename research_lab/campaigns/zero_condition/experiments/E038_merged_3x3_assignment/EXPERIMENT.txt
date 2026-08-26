@@ -1,0 +1,66 @@
+EXPERIMENT E038: MERGED TEN-FOOTPRINT 3x3 ASSIGNMENT BLOCK
+=========================================================
+
+Question
+--------
+Does merging the live five-footprint 3x3 block with the strongest remaining five
+3x3 footprints lower exact objective 157, or has fixed-geometry operation
+assignment reached its stop point and forced geometry release?
+
+Trigger
+-------
+E037 merges two 6x4 subsets and proves OPTIMAL 157. The live twenty-footprint
+context touches 137/157 residual observations. Exact five-footprint marginal
+coverage outside the current pose sets is +9 for 3x3, +6 for 5x5, and zero for
+6x4. The 3x3 set is therefore the last strong assignment-only extension.
+
+Method
+------
+E038 reconstructs the materialized E037 endpoint, selects five additional current
+3x3 footprints by exact marginal coverage, operation diversity, and deterministic
+tie-break, then merges them with the live five into one ten-footprint 3x3 block.
+
+The model keeps:
+
+  one merged ten-footprint 3x3 assignment block
+  the live five-footprint 5x5 block
+  the live merged ten-footprint 6x4 block
+  conditional exact binding patterns for all operation-footprint pairs
+  unchanged outside binding and generic-I/O semantics
+  terminal uniqueness and one shared component-mismatch objective
+
+The E037 objective-157 parent and the E036 objective-159 regression state are
+fixed and replayed before the free solve.
+
+Outcome interpretation
+----------------------
+OPTIMAL objective 0
+  Materialize the endpoint and enter exact routing immediately.
+
+OPTIMAL objective 1..156
+  Retain the merged-block witness and recompute the residual before deciding
+  whether another assignment context is still justified.
+
+OPTIMAL objective 157
+  Stop fixed-geometry assignment expansion. The next model releases a
+  problem-derived geometry neighborhood while preserving assignment and binding
+  cohabitation.
+
+FEASIBLE / UNKNOWN
+  Record incumbent and bound only.
+
+Truth boundary
+--------------
+The experiment fixes occupied geometry and every operation outside twenty-five
+selected manufacturing footprints. It is not a global assignment optimum,
+routing result, whole-layout infeasibility proof, lower bound, or certification
+artifact.
+
+Result
+------
+Blocked before a scientific verdict. The first build exposed stale concrete owner
+labels in cross-state block payloads. After current-owner reconstruction, a fixed
+E036 assignment calibrated to 157 in the post-build virtual-owner model but to
+159 in the ordinary PortBindingModel. The lower value is rejected. See RESULT.txt;
+the next object is a faithful conditional-owner binding extension, after which
+this same frozen merged-3x3 test must be rerun.

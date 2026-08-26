@@ -162,9 +162,9 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Does merging the live five-footprint 3x3 assignment block with the strongest
-remaining five 3x3 footprints lower exact objective 157, or has fixed-geometry
-operation assignment reached its stop point and forced geometry release?
+How can conditional operation-assignment owners enter the native binding model
+before every owner-dependent constraint phase, so the frozen E037 objective-157
+and E036 objective-159 assignments calibrate exactly in one extension surface?
 
 Current campaign posture
 ------------------------
@@ -367,10 +367,21 @@ sum remains 15; the two-unit gain is fixed outside that face.
 
 The current twenty-footprint assignment context touches 137 of 157 observations.
 Remaining five-footprint marginal coverage is +9 for 3x3, +6 for 5x5, and zero
-for 6x4. The next and strongest assignment-only discriminator merges five new
-3x3 footprints with the live five into one ten-footprint 3x3 block. Exact 157
-after that merge moves the campaign to a geometry-plus-assignment-binding
-neighborhood. A zero state enters routing immediately.
+for 6x4, so E038 opens the merged ten-footprint 3x3 discriminator.
+
+E038 does not yet receive a scientific value. Its first pre-solve guard exposes
+stale named-owner labels in cross-state block payloads; group-pose identity is
+durable, but concrete owner identity must be rebuilt per endpoint. After that
+repair, the same fixed E036 assignment scores 159 in the ordinary binding model
+and 157 in the post-build virtual-owner prototype. The lower calibration is
+rejected. Virtual owners were added after native owner-dependent port,
+conservation, hand-carry, distinctness, implication, and guidance phases had
+already run.
+
+The next research object is therefore the extension seam, not another footprint
+set. Conditional owners must enter before all native binding phases, and the
+frozen 157/159 assignments must calibrate exactly before E038 is rerun. A zero
+state still enters routing immediately once a faithful model produces it.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not
