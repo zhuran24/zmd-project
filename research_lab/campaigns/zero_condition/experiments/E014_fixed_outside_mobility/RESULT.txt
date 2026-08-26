@@ -1,0 +1,112 @@
+E014 RESULT: ONE-LITERAL MOBILITY IS REAL, BUT THE COMPONENT WALL IS AT LEAST COUPLED
+====================================================================================
+
+Status
+------
+Completed as research-only fixed-outside enumeration. No candidate reached exact
+routing. No certification, U/L, owner, production, or publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E014_fixed_outside_mobility/run-001/RESULT.json
+
+SHA-256:
+  193a114047e3e7d5d69df2d47cc5136fc1f4f4934dd47180256f4b7b17ba287c
+
+Verdict:
+  PARTIAL_MOBILITY_COMPONENT_WALL_PERSISTS
+
+Exact mobility surface
+----------------------
+E014 exhausts one-literal fixed-outside alternatives for E013's 16-literal
+budget-16 portfolio. Fifteen manufacturing group-pose arms have at least one
+placement/power-valid alternative. The selected power-pole arm has none: removing
+that pole and replacing it with one other pole while every outside placement is
+fixed cannot preserve exact power coverage.
+
+Across all completed arms:
+
+  exact placement/power alternatives       425
+  same-footprint port-mode alternatives     35
+  footprint-changing alternatives          390
+
+Every alternative preserves 266 mandatory instances, 53 selected power poles,
+cell non-overlap, fixed outside geometry, and the reconstructed master power
+coverer relation.
+
+Ordered interface outcomes
+--------------------------
+Every candidate is rebuilt through static port filtering, terminal uniqueness,
+and all 19 hard component-support rules:
+
+  PORT_DOMAIN_EMPTY          287
+  COMPONENT_INFEASIBLE       138
+  component-feasible           0
+  exact routing reached        0
+
+The split is informative. Most geometry-changing one-literal moves destroy at
+least one owner's complete front-filtered binding domain before component logic:
+280 of 390 footprint-changing alternatives die there. The remaining 110
+footprint-changing candidates and 28 same-footprint port-mode changes preserve
+all owner domains but still fail component support.
+
+Useful movement without sufficiency
+-----------------------------------
+Several one-literal repairs improve individual construction statistics beyond
+E009:
+
+  meaningful surviving patterns reach 13,456 versus E009's 13,390
+  free-component count reaches 81 versus E009's 83
+  one crusher-sandleaf move enlarges the largest component from 414 to 457
+
+None of those candidates becomes component-compatible. This independently
+confirms the E012 stop signal: pattern count, component count, free adjacency, and
+largest-component size remain useful features but do not encode the residual
+terminal-component relation.
+
+The same-footprint results are also decisive. Twenty-eight port-mode changes alter
+terminal choices without altering occupied geometry, yet all remain component-
+infeasible. Geometry-only and binding-only one-variable repairs are each too thin.
+
+New inner partition
+-------------------
+The first actionable neighborhood is no longer a single variable. E014 narrows
+the missing bridge to coordinated moves:
+
+  fixed outside geometry
+  -> small group-pose portfolio with at least two coupled choices
+  -> exact front-domain preservation
+  -> component-aware terminal selection
+  -> exact routing
+
+The locked power-pole arm adds a separate dependency: optional obstacle movement
+cannot be studied independently of the powered facilities or other poles whose
+coverage it supports.
+
+Latent project issue
+--------------------
+The historical interface treated a placement change and its downstream binding
+response as separate events. E014 shows that this separation loses essential
+bidirectional information:
+
+  moving a boundary facility often invalidates a neighbor's port domain
+  changing only a port mode preserves geometry but not component support
+  moving one pole requires compensating power changes elsewhere
+
+The minimum useful feedback object is therefore a coupling, not another unary cut
+or unary relocation heuristic.
+
+Truth boundary
+--------------
+E014 exhausts only one-literal moves with all outside placements fixed. It does
+not prove that any target is immovable jointly, that a particular pair suffices,
+or that the no-ghost problem is infeasible.
+
+Decision effect
+---------------
+E015 should soften the hard component rules on the 138 domain-valid candidates
+and minimize a shared all-commodity component-mismatch objective under one binding
+selection. The best exact one-literal gradients identify which two or few
+placement literals should be released together. Pair construction must preserve
+front domains explicitly rather than relying on scalar geometry.

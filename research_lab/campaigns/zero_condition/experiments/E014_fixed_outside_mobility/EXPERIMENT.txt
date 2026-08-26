@@ -1,0 +1,91 @@
+EXPERIMENT E014: fixed-outside mobility portfolio
+=================================================
+
+Question
+--------
+Which of E013's 16 high-coverage E009 consumer literals possess real placement
+freedom when every other selected group/optional pose is frozen, and does any
+single-literal repair survive exact component-aware binding?
+
+Why this precedes a joint placement-binding model
+-------------------------------------------------
+E013 gives an optimistic causal neighborhood: moving one selected boundary
+literal could change many observed mismatch components. It does not show that the
+literal has an alternative pose compatible with overlap, group cardinality,
+power, or binding.
+
+A large joint model would be premature if most of the proposed variables are
+actually locked. With all other placements fixed, one mandatory move reduces to
+exact pose enumeration, overlap, and power checks. One optional-pole move also
+requires preserving power coverage for every powered facility. This thinner
+problem can be exhausted before introducing dynamic connectivity variables.
+
+Frozen neighborhood
+-------------------
+The reference is E009. The portfolio is the exact budget-16 maximum-coverage set
+from E013. Each arm releases one current consumer literal and freezes all other
+E009 placements:
+
+  mandatory group-pose -> move the named current carrier to another pose of the
+                          same facility type and operation group
+  optional power pole  -> replace that selected pole pose with another pole pose
+
+All candidates preserve:
+
+  266 mandatory instances
+  fixed outside occupied geometry
+  cell non-overlap
+  current optional-pole count
+  exact power coverage under the master coverer table
+  the already-satisfied E001 pocket judgment
+
+The named mandatory carrier is only a materialization device. The durable object
+remains the operation-group pose change.
+
+Interface test
+--------------
+Every exact placement/power candidate is rebuilt as a fresh routing-aware binding
+model with:
+
+  static front-domain filtering
+  duplicate terminal-key constraints
+  all 19 commodity component-support guards fixed true
+
+Candidates with an empty front-filtered owner domain are rejected before solve.
+A component-feasible candidate immediately enters ordinary routing precheck and
+exact simultaneous routing. No point binding nogood is generated.
+
+Competing readings
+-------------------
+A. At least one one-literal repair reaches component-aware binding. The selected
+   variable and its local alternatives define the first true joint neighborhood.
+
+B. Many repairs are placement/power legal but all remain component-infeasible.
+   Boundary coverage identified real mobility, but terminal choices must cohabit
+   with pose choices in the next model.
+
+C. Most high-coverage literals are locked under fixed outside geometry. The
+   coverage portfolio is not an actionable neighborhood; release must expand by
+   exact coupling rather than by another scalar objective.
+
+Truth boundary
+--------------
+The experiment exhausts only one-literal fixed-outside repairs. An infeasible arm
+does not prove that the literal cannot move when another selected facility moves
+with it. A component-infeasible candidate is a fixed-layout result, not a no-
+ghost impossibility proof.
+
+Decision effect
+---------------
+A component-feasible arm goes directly to routing. Otherwise the exact mobility
+and rejection matrix selects whether E015 should couple a small pair/portfolio of
+poses to binding, or whether the neighborhood must be expanded by a proved
+packing/power dependency.
+
+Result
+------
+Completed with verdict PARTIAL_MOBILITY_COMPONENT_WALL_PERSISTS. Fifteen
+manufacturing arms yield 425 exact placement/power alternatives; the selected
+power-pole arm is locked under fixed outside geometry. Static port domains reject
+287 candidates and hard component support rejects the remaining 138. No candidate
+reaches exact routing. See RESULT.txt.

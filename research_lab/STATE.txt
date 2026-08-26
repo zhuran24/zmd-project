@@ -65,7 +65,10 @@ probes and the first checked feedback replay now show a causal progression:
   * E013 transports the 196 E009 mismatch boundaries into 313 real consumer
     literals and 151 coverage classes. Sixteen dispersed classes touch 87.8% of
     observations, but 15 are manufacturing group poses; a pole-only or single-
-    window repair is therefore the wrong next object.
+    window repair is therefore the wrong next object;
+  * E014 exhausts 425 exact one-literal fixed-outside alternatives. Static port
+    domains reject 287, hard component support rejects 138, the selected pole is
+    power-locked, and no candidate reaches routing.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -73,10 +76,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Which of E013's high-coverage dispersed group-pose literals are actually movable
-under fixed outside geometry and exact power, and do any one-literal repairs
-improve real port-domain survival or exact component mismatch enough to define
-the first joint placement-binding neighborhood?
+Among E014's 138 domain-valid one-literal repairs, which moves minimize a shared
+all-commodity component mismatch under one binding selection, and which pair of
+placement literals does that exact gradient identify for the first coupled
+placement-binding neighborhood?
 
 Current campaign posture
 ------------------------
@@ -124,16 +127,21 @@ budgets 1, 2, 4, 8, 16, and 32. The minimum counts for 50%, 75%, 90%, and 100%
 coverage are 7, 13, 18, and 26. Small-budget optima are manufacturing-heavy, and
 a single 24x24 window reaches only 43.4%.
 
-The next experiment is therefore an exact mobility portfolio, not yet a large
-joint encoding. It freezes every E009 selected literal outside the high-coverage
-portfolio, forces one selected portfolio literal off per arm, preserves group
-cardinality, overlap, and exact power, and caps optional poles at the E009 count.
-Every feasible repaired geometry immediately enters fresh front-domain,
-component-aware binding, and exact mismatch evaluation. This tests whether the
-optimistic coverage set contains real degrees of freedom. If it does, the best
-repair defines the first joint neighborhood. If it does not, selected pose and
-binding variables must cohabit directly rather than being connected by another
-placement proxy.
+E014 has now separated nominal coverage from actual mobility. Fifteen
+manufacturing targets can move, but most footprint changes destroy a complete
+binding domain and every domain-valid candidate still fails component support.
+Same-footprint port-mode changes also fail, so neither geometry-only nor binding-
+only unary repair is sufficient. The selected pole cannot move alone while exact
+power and the outside factory remain fixed.
+
+The next experiment does not widen the placement search blindly. It replaces the
+hard component equalities on E014's 138 domain-valid candidates with one shared
+all-commodity mismatch objective under a single binding selection. This provides
+an exact residual gradient on the real interface rather than another placement
+proxy. The best one-literal gradients select the first pair or small portfolio to
+release jointly; front-domain preservation remains a hard prerequisite. If no
+one-literal move improves the shared mismatch, the pair must be chosen from
+explicit port-domain dependencies rather than boundary coverage alone.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

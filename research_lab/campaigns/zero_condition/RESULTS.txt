@@ -627,6 +627,35 @@ evidence:
   E013 RESULT.txt; local RESULT.json sha256
   99c029fe71c2835bd5d2f5cd16d00f324856d70ce305278e2bb3aa944cbf6fd1.
 
+R-ZC-024  One-literal fixed-outside repairs cannot cross component support
+----------------------------------------------------------------------------
+status: exhaustive exact placement/power enumeration plus fresh interface replay
+scope: E013 budget-16 portfolio around fixed E009 outside geometry
+
+statement:
+  Fifteen manufacturing group-pose arms admit 425 exact non-overlap and power-
+  preserving alternatives; the selected power-pole arm admits none while all
+  outside placements and the 53-pole count stay fixed. Fresh interface models
+  reject 287 alternatives by empty front-filtered owner domains and prove the
+  remaining 138 component-infeasible. No candidate reaches exact routing. Of 390
+  footprint-changing alternatives, 280 die at port domains; 28 same-footprint
+  port-mode changes preserve domains but still fail component support.
+
+non-implications:
+  This does not prove any target immovable jointly, any pair insufficient, or
+  the no-ghost problem infeasible. The fixed-outside and one-literal scope is
+  essential.
+
+effect on next problem:
+  Unary relocation is exhausted for the selected neighborhood. Soften component
+  support on the 138 domain-valid candidates under one shared binding selection,
+  use the exact mismatch gradient to choose a coupled pair/portfolio, and make
+  front-domain preservation explicit in that joint move.
+
+evidence:
+  E014 RESULT.txt; local RESULT.json sha256
+  193a114047e3e7d5d69df2d47cc5136fc1f4f4934dd47180256f4b7b17ba287c.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the
