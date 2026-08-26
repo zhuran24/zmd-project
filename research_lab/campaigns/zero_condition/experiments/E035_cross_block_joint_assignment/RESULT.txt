@@ -1,0 +1,158 @@
+E035 RESULT: A RESIDUAL-SELECTED 6x4 BLOCK LOWERS THE JOINT OPTIMUM TO 159
+================================================================================
+
+Status
+------
+Completed as research-only exact cross-block evidence. No component-compatible
+binding, exact routing, whole-layout witness, certification, U/L, owner, or
+publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E035_cross_block_joint_assignment/run-001/RESULT.json
+
+SHA-256:
+  f2f0939b4fcdcc1b1be8896ad7406b22251a87e807c8b496ef6adf5c4c044b02
+
+Verdict:
+  CROSS_BLOCK_JOINT_MATERIAL_IMPROVEMENT
+
+Residual-selected expansion
+---------------------------
+E035 reconstructs the E034 objective-160 endpoint. The saturated five-footprint
+3x3 block touches 51 of its 160 mismatch observations. An exact three-stage
+selector then chooses five current 6x4 footprints by:
+
+  maximum marginal observation coverage
+  maximum operation diversity at that coverage
+  deterministic lexical tie-break
+
+The selected block raises covered observations from 51 to 97, a marginal gain of
+46. It contains:
+
+  filling_capsule                 pose 8370
+  grinder_dense_blue_iron         pose 6028
+  grinder_dense_blue_iron         pose 6609
+  grinder_dense_source            pose 7017
+  grinder_fine_buckwheat          pose 7895
+
+Its operation multiset has four distinct operations and 60 semantic assignments.
+The inclusion of filling_capsule is produced by the exact coverage/diversity
+selector; it is not a handwritten operation choice.
+
+Joint model
+-----------
+The previously saturated 3x3 block and the new 6x4 block share one model with the
+unchanged outside binding system and one all-commodity component objective:
+
+  assignment variables                 40
+  conditional binding-pattern vars   6,189
+  joint conditional binding owners      39
+  outside binding owners                262
+  total variables                    19,022
+  total constraints                  55,431
+
+The large conditional-pattern count comes mainly from operation/pose combinations
+such as filling_capsule. Despite that richer domain, the exact solve remains
+small after propagation.
+
+Calibration
+-----------
+Both objective-160 regression states are fixed in turn across both blocks:
+
+  first warm state     OPTIMAL 160   best bound 160   0.64 s
+  second warm state    OPTIMAL 160   best bound 160   0.65 s
+
+The free result is therefore interpreted only after the expanded model reproduces
+both known endpoints.
+
+Free exact solve
+----------------
+With both blocks released, the model proves:
+
+  status          OPTIMAL
+  objective       159
+  best bound      159
+  solve time      1.19 s
+
+The selected 3x3 assignment stays at the first E034 warm state. The 6x4 block
+exchanges the destination roles of grinder_dense_source and
+grinder_fine_buckwheat between poses 7017 and 7895:
+
+  warm 6x4 assignment
+    filling_capsule
+    grinder_dense_blue_iron
+    grinder_dense_blue_iron
+    grinder_dense_source
+    grinder_fine_buckwheat
+
+  optimum 6x4 assignment
+    filling_capsule
+    grinder_dense_blue_iron
+    grinder_dense_blue_iron
+    grinder_fine_buckwheat
+    grinder_dense_source
+
+Thus the one-unit gain is carried by the added 6x4 assignment block inside the
+already saturated 3x3 context. The joint model verifies no alternative 3x3
+assignment composes to a lower value in this expanded context.
+
+Optimum-face audit
+------------------
+The exact objective-159 face varies only:
+
+  blue_iron_ore    6..10
+  source_ore       5..9
+  fixed sum           15
+
+All other 17 commodity values are fixed. Relative to the objective-160 parent,
+blue_iron_ore/source_ore only move on the existing face; the structural gain is:
+
+  dense_source_powder    7 -> 6
+
+Audit SHA-256:
+  39390516ff35aec593ceecbb21ec67cf8cfedfa26718caa3c5e51e1f681786fb
+
+Frozen witnesses
+----------------
+Concrete assignment:
+  research_lab/local/zero_condition/E035_cross_block_joint_assignment/run-001/
+    BEST_ASSIGNMENT.json
+  sha256 1255029fce0320edd0ddb736ba5100bfbc6f5ac19a75c3d27181ba157d0e8efb
+
+Ordinary fixed-assignment endpoint:
+  research_lab/local/zero_condition/E035_cross_block_joint_assignment/run-001/
+    BEST_ENDPOINT.json
+  sha256 d21066373c9553e9f80e80cc3642cb1ac559facde8a483a2dfc4085b56b3ecdb
+
+Joint assignment-pattern witness:
+  research_lab/local/zero_condition/E035_cross_block_joint_assignment/run-001/
+    JOINT_WITNESS.json
+  sha256 5eedad19c4cdee9ace278c7be852ed315986df8f7434f3f41e3279d25a4e84c7
+
+Next-context measurement
+------------------------
+At the materialized objective-159 endpoint, the current 3x3 and 6x4 blocks jointly
+touch 96 of 159 residual observations. Exact five-footprint additions give:
+
+  additional 3x3 block     union 108    marginal +12
+  additional 5x5 block     union 125    marginal +29
+  additional 6x4 block     union 117    marginal +21
+
+The next problem-derived block is therefore 5x5. Its exact maximum-marginal
+selection contains four planter_sandleaf footprints and one planter_buckwheat
+footprint; operation diversity is two at the marginal optimum.
+
+Decision effect
+---------------
+Retain objective 159 and add the residual-selected five-footprint 5x5 block to the
+same cohabiting model. The existing 3x3 and 6x4 blocks remain live, so the next
+solve tests three-block assignment/binding composition rather than an isolated
+5x5 permutation arm.
+
+Truth boundary
+--------------
+This result is exact only for one fixed occupied geometry and the selected 3x3 and
+6x4 blocks. It is not a global assignment optimum, component-compatible binding,
+routing result, no-ghost infeasibility result, lower bound, or certified claim.

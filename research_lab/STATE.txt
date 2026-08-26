@@ -162,9 +162,9 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Can a second, residual-selected five-footprint 6x4 operation-assignment block
-compose with the exact-saturated five-footprint 3x3 block inside one shared
-assignment-binding model, lowering objective 160 or reaching component zero?
+Can a residual-selected five-footprint 5x5 assignment block compose with the
+live 3x3+6x4 joint context, lowering exact objective 159 or reaching component
+zero without releasing occupied geometry?
 
 Current campaign posture
 ------------------------
@@ -338,19 +338,26 @@ both worsen to 163. Those contextual responses can be shared, but the resulting
 endpoints remain distinct witnesses. External assignment enumeration therefore
 stops.
 
-E034 now implements the replacement rather than merely proposing it. Twenty
+E034 implements the replacement rather than merely proposing it. Twenty
 footprint-operation variables and 123 conditional binding-pattern variables share
 one CP-SAT model with the unchanged outside binding system. Both objective-160
 warm states independently recalibrate to OPTIMAL 160, and the free solve also
 proves OPTIMAL 160. The five 3x3 footprints are exactly saturated in the joint
 language; returning to another swap or permutation inside that context is closed.
 
-Residual marginal coverage selects the next expansion. The saturated 3x3 block
-touches 51 observations. Three more 3x3 footprints add only 13, a five-footprint
-5x5 block adds 35, and a five-footprint 6x4 block adds 46. The next model therefore
-keeps the saturated 3x3 block and adds the exact-selected 6x4 block, with both
-assignment families cohabiting the same binding objective. A zero state enters
-routing immediately.
+E035 expands that exact context by a residual-selected five-footprint 6x4 block.
+The selector raises boundary coverage from 51 to 97 and introduces four operation
+families. Both regression assignments still calibrate to 160. The free model then
+proves OPTIMAL 159 by exchanging grinder_dense_source and
+grinder_fine_buckwheat between poses 7017 and 7895 while leaving the 3x3 assignment
+unchanged. The audited ore-pair sum remains 15; dense_source_powder 7 -> 6 is the
+fixed gain. All 19 commodities remain positive.
+
+The current 3x3 and 6x4 blocks jointly touch 96 of the 159 residual observations.
+Exact next-block probes give marginal +12 for another 3x3 block, +29 for a 5x5
+block, and +21 for another 6x4 block. The next joint model therefore adds the
+residual-selected 5x5 block while keeping both existing blocks live. A zero state
+enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

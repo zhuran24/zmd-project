@@ -1329,6 +1329,43 @@ evidence:
   ordinary fixed endpoint sha256
   bd8d526a08f714f7c23ebe98003313483f04355bf0b8054b718b2e5ff42ba619.
 
+R-ZC-046  A residual-selected 6x4 block composes with the saturated 3x3 context
+---------------------------------------------------------------------------------
+status: two cross-block calibrations, one free exact solve, and one face audit
+scope: fixed E034 geometry with five 3x3 and five residual-selected 6x4 footprints
+
+statement:
+  E035 selects the 6x4 block by exact marginal coverage and operation diversity,
+  raising touched E034 observations from 51 to 97. The expanded model contains 40
+  assignment variables and 6,189 conditional binding-pattern variables. Both
+  objective-160 warm states recalibrate to OPTIMAL 160. The free solve proves
+  OPTIMAL 159 by exchanging grinder_dense_source and grinder_fine_buckwheat
+  between poses 7017 and 7895 while retaining the first 3x3 assignment. The exact
+  159 face varies only blue_iron_ore/source_ore with fixed sum 15; the structural
+  improvement is dense_source_powder 7 -> 6. All 19 commodities remain positive.
+
+non-implications:
+  The result does not prove that both blocks must change simultaneously, make the
+  selected footprints necessary, establish component compatibility, or reach
+  routing. It is exact only for this fixed occupied geometry and these two blocks.
+
+effect on next problem:
+  Recompute marginal context value from the fully materialized 159 endpoint. The
+  current blocks jointly touch 96 observations. Exact five-footprint additions
+  yield marginal +12 for 3x3, +29 for 5x5, and +21 for another 6x4 block. Add the
+  residual-selected 5x5 block to the same cohabiting model and test three-block
+  composition rather than an isolated permutation arm.
+
+evidence:
+  E035 RESULT.txt; local RESULT.json sha256
+  f2f0939b4fcdcc1b1be8896ad7406b22251a87e807c8b496ef6adf5c4c044b02;
+  joint witness sha256
+  5eedad19c4cdee9ace278c7be852ed315986df8f7434f3f41e3279d25a4e84c7;
+  ordinary fixed endpoint sha256
+  d21066373c9553e9f80e80cc3642cb1ac559facde8a483a2dfc4085b56b3ecdb;
+  optimum-face audit sha256
+  39390516ff35aec593ceecbb21ec67cf8cfedfa26718caa3c5e51e1f681786fb.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the
