@@ -112,7 +112,11 @@ probes and the first checked feedback replay now show a causal progression:
   * E023 replays grinder pose 7754 on all four parents. Each has two owner-domain
     failures and one OPTIMAL pose-7755 child at 175, uniformly worsening 173 ->
     175. This exactly repeats E019's earlier +2 response, so the common coverage
-    leader is retired from the current unary ledger.
+    leader is retired from the current unary ledger;
+  * E024 exhausts the class-4-specific crusher-blue-iron pose 2053. Forty-two of
+    55 alternatives empty an owner domain; 13 are OPTIMAL and pose 5278 proves
+    173 -> 168. The gain repairs four non-ore fixed commodities while the ore-pair
+    optimum-face sum remains 18.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -120,10 +124,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Does the class-4-specific residual leader crusher_blue_iron pose 2053 carry real
-continuation value on its objective-173 parent, or does its failure complete the
-stop condition for unary boundary ranking and force a simultaneous two-pose or
-pose-binding neighborhood?
+What residual action surface does the new objective-168 class-4 child expose,
+and which state-specific expansion should be compared against the three retained
+objective-173 parents without collapsing the heterogeneous beam back into one
+canonical lineage?
 
 Current campaign posture
 ------------------------
@@ -241,12 +245,18 @@ parent by two, exactly as it worsened every objective-176 parent in E019. Its
 boundary coverage is causal-touch information, not continuation value, and the
 four original objective-173 parents remain the live beam.
 
-One branch-specific discriminator remains before ending unary boundary ranking.
-Class 4 alone ranks crusher_blue_iron pose 2053 above the retired common leader,
-with coverage 17. The next experiment exhausts that action on the class-4 parent.
-A real improvement validates diversified beam actions; no improvement closes the
-unary phase and moves directly to a simultaneous two-pose or pose-binding
-neighborhood.
+E024 validates the branch split. Class 4's unique leader improves the exact
+shared objective by five, 173 -> 168, while the common leader had worsened every
+branch by two. The beam therefore cannot be represented by one score-class
+representative or one global residual ranking.
+
+The live beam now contains one objective-168 child and three objective-173
+parents. The 168 state receives expansion priority, but the three older states
+remain because their action domains and future compositions are distinct. The
+next experiment recomputes residual actions on the 168 child, compares its
+portfolio against the retained 173 states, and chooses a state-specific expansion.
+Material unary gains may continue inside the beam; renewed ties or marginal gains
+trigger a simultaneous two-pose or pose-binding neighborhood.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

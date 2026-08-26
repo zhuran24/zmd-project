@@ -1,0 +1,46 @@
+EXPERIMENT E024: class-4 branch-specific leader
+==============================================
+
+Question
+--------
+Does crusher_blue_iron pose 2053, which is the unique residual-coverage leader
+of objective-173 class 4, carry exact continuation value that the retired common
+grinder action did not?
+
+Frozen parent
+-------------
+E024 uses only the retained E021 class-4 placement/binding state at objective
+173. E022 ranks the current literal
+
+  mandatory::group::manufacturing_3x3::crusher_blue_iron::1::2053
+
+first in this state with 17 touched mismatch boundaries. It is not first in the
+other three states.
+
+Construction
+------------
+All outside placements remain fixed. Every exact non-overlap and power-preserving
+alternative for the selected crusher-blue-iron unit is enumerated. Owner-domain
+failure, aggregate binding feasibility, and the exact shared component-mismatch
+objective are applied in order. A zero child enters exact routing.
+
+Stop rule
+---------
+This is the final unary boundary-ranking discriminator. A strict improvement
+validates branch-specific beam actions. Equal or worse response ends unary action
+selection from boundary coverage and moves the next model to a simultaneous
+two-pose or pose-binding neighborhood.
+
+Truth boundary
+--------------
+The experiment is exhaustive only for one current literal under one fixed parent.
+It does not prove other class-specific actions useless or joint motion
+infeasible.
+
+Result
+------
+Completed with verdict BRANCH_SPECIFIC_LEADER_IMPROVES. Of 55 exact
+alternatives, 42 empty an owner domain and 13 shared bindings are OPTIMAL. The
+best move is pose 2053 -> 5278 and proves 173 -> 168. All 19 commodities remain
+positive; the optimum face varies only blue_iron_ore/source_ore with fixed sum
+18. Routing is not entered. See RESULT.txt.

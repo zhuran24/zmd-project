@@ -964,6 +964,37 @@ evidence:
   E019 historical control sha256
   89f37256e282a7f716092d477495d8e6ec715015d32632c97ca133b0ce40d3e7.
 
+R-ZC-035  A branch-specific leader improves 173 -> 168 after the common leader fails
+---------------------------------------------------------------------------------------
+status: exhaustive class-4 unary replay plus exact shared-binding face audit
+scope: crusher_blue_iron pose 2053 under one retained objective-173 parent
+
+statement:
+  E024 exhausts 55 fixed-outside alternatives. Forty-two empty an owner domain
+  and 13 shared-binding models are OPTIMAL. Pose 2053 -> 5278 is best and proves
+  173 -> 168. It lowers buckwheat_seed by one, dense_source_powder by two,
+  sandleaf by one, and sandleaf_powder by one; all 19 commodities remain positive.
+  The objective-168 face varies only blue_iron_ore 8-12 and source_ore 6-10 with
+  fixed sum 18. The fixed layout has 80 free components, largest 457, and 13453
+  surviving binding patterns.
+
+non-implications:
+  The value 168 is not a global no-ghost bound, routing witness, or proof that
+  pose 5278 is necessary. The result applies to one branch-specific literal under
+  one fixed parent.
+
+effect on next problem:
+  Retain the objective-168 child as the beam leader while preserving the three
+  objective-173 parents. Recompute residual action surfaces on the heterogeneous
+  beam. The contrast with E023 proves that branch identity carries continuation
+  value; do not return to one canonical common-action line.
+
+evidence:
+  E024 RESULT.txt; main result sha256
+  a0a69a8c0f9c7f59d8924f9f13e0e277fe5f254a35aeaeb34c6c721becd4d17f;
+  optimum-face audit sha256
+  b08cab6df73fc26d57e025b01f2f30138b7a2662c6555a673c3c33ff27e4c261.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

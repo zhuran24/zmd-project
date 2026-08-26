@@ -1,0 +1,142 @@
+E024 RESULT: BRANCH-SPECIFIC CONTINUATION BEATS THE COMMON UNARY LINE
+===================================================================
+
+Status
+------
+Completed as research-only branch-action evidence. The best child remains
+component-incompatible and does not enter exact routing. No whole-layout claim,
+certification, U/L, owner, or publication effect is granted.
+
+Frozen evidence
+---------------
+Main result:
+  research_lab/local/zero_condition/E024_branch_specific_leader/run-001/RESULT.json
+  sha256 a0a69a8c0f9c7f59d8924f9f13e0e277fe5f254a35aeaeb34c6c721becd4d17f
+
+Best assignment / layout:
+  BEST_BRANCH_CHILD_ASSIGNMENT.json
+  sha256 4f49e6dc8aaaf8e677596cd631f0eb34fc735612a4ff5a3e09dbb50836633018
+
+  BEST_BRANCH_CHILD_LAYOUT.json
+  sha256 7aedf1654ade17a8a5d7a8ac036ec767b853512a53272a9a275e6cb0dd341211
+
+Optimum-face audit:
+  OPTIMUM_FACE_AUDIT.json
+  sha256 b08cab6df73fc26d57e025b01f2f30138b7a2662c6555a673c3c33ff27e4c261
+
+Verdict:
+  BRANCH_SPECIFIC_LEADER_IMPROVES
+
+Exact action response
+---------------------
+E024 exhausts the class-4-specific current literal:
+
+  mandatory::group::manufacturing_3x3::crusher_blue_iron::1::2053
+
+under the fixed objective-173 class-4 parent.
+
+  exact alternatives              55
+  owner-domain empty              42
+  shared-binding OPTIMAL          13
+
+The OPTIMAL child distribution is:
+
+  objective 168     2 children
+  objective 169     1 child
+  objective 171     4 children
+  objective 172     1 child
+  objective 173     3 children
+  objective 174     2 children
+
+The best replacement is:
+
+  current pose 2053, p_x08_y11_o0_m_TB
+  replacement  5278, p_x20_y14_o0_m_TB
+
+and proves:
+
+  173 -> 168
+  delta -5
+
+This is larger than the last two common-line gains combined and occurs
+immediately after the common coverage leader was rejected at 175.
+
+Commodity change
+----------------
+Relative to the exact class-4 parent binding endpoint, the best child changes
+four fixed commodity values:
+
+  buckwheat_seed        9 ->  8   -1
+  dense_source_powder   8 ->  6   -2
+  sandleaf             15 -> 14   -1
+  sandleaf_powder      16 -> 15   -1
+
+All other endpoint values are unchanged. Every one of the 19 commodities remains
+strictly positive.
+
+Exact optimum face
+------------------
+The objective-168 optimum face is independently replayed. Only the generic-output
+ore pair varies:
+
+  blue_iron_ore   8 .. 12
+  source_ore      6 .. 10
+  fixed sum              18
+
+The other 17 commodity values are fixed. The five-unit gain therefore does not
+come from pushing the existing ore-pair sum lower. It repairs four other fixed
+component mismatches while retaining the same four-unit ore exchange.
+
+Geometry and binding
+--------------------
+The best fixed layout has:
+
+  free components                 80
+  largest free component         457
+  free cells                     1144
+  free adjacency                 1167
+  surviving binding patterns    13453
+
+These are not sufficient conditions. The exact shared component objective is
+still 168, so routing is not entered.
+
+Outer-loop consequence
+----------------------
+E023 and E024 form a controlled contrast:
+
+  common leader 7754
+    high residual coverage in all states
+    exact response +2 in every state
+    retired
+
+  class-4 leader 2053
+    uniquely first in one state
+    exact response -5 in that state
+    retained
+
+The beam split carries real continuation value. Collapsing the four objective-173
+states into one canonical representative would have discarded the current best
+construction direction.
+
+The live beam is now heterogeneous:
+
+  one class-4 child at objective 168
+  three untouched objective-173 parents
+
+Score orders expansion priority, but the 173 states are not deleted merely
+because one branch improved; their action domains and future composition remain
+distinct.
+
+Truth boundary
+--------------
+E024 is exhaustive only for one literal under one fixed class-4 parent. The 168
+value is not a global no-ghost bound, a routing witness, or proof that pose 5278
+is necessary.
+
+Decision effect
+---------------
+Retain the objective-168 child as the leading beam state. Recompute its residual
+action surface and compare it with the three objective-173 parents. Continue
+branch-specific expansion while gains remain material. If the leading branch
+again splits or unary gain collapses, construct a simultaneous two-pose or
+pose-binding neighborhood rather than returning to one common action line.
