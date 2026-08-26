@@ -1828,6 +1828,40 @@ evidence:
   92ab91774683fd127abc111e4fbf574b989bff0938872193a1b0c4ed12029099,
   4659077182863125a50c1b77d8ceaefc89628b88a0bc48de6bea7ff389595fa7.
 
+R-ZC-059  Faithful pair revaluation saturates the bounded complete-pair language
+----------------------------------------------------------------------------------
+status: three exact pair-context calibrations and geometry-conditioned joint solves
+scope: E047's three frozen pair geometries under the objective-144 parent context
+
+statement:
+  E048 reconstructs the objective-144 context with five inherited blocks, 27
+  selected instances, and twelve mode-enabled destinations. All three E047 pair
+  endpoints calibrate exactly at 146, 151, and 153. Releasing port mode, operation
+  assignment, and binding yields OPTIMAL joint values 146, 149, and 150. None
+  equals or improves the 144 parent, and all 19 commodities remain positive.
+
+non-implications:
+  The result does not prove every body pair useless. E047 covers only nineteen
+  pairs from one budget-six target set and capped fixed-outside action pools.
+  Individually dead actions may become legal when another body outside that set
+  moves, and pair pose domains can expand when both selected bodies are removed
+  from the outside obstacle set together.
+
+effect on next problem:
+  Retire external enumeration of complete singleton/pair body actions in this
+  bounded language. Derive a native simultaneous geometry context in which a
+  small selected body set chooses poses against common outside occupancy while
+  port mode, operation assignment, and component-aware binding remain in the
+  same consumer. Calibrate objective 144 before admitting a free solve.
+
+evidence:
+  E048 RESULT.txt; local RESULT.json sha256
+  4c66edf521da3211d9cb671a7af53eb5319835c390c7765522e883e7bd1b0071;
+  best Seed A endpoint sha256
+  31b2000328c62ef4901629a099c93b0d0966ec59174abc496eee5d4621f359a2;
+  runner sha256
+  97fae12907ce3a2ef3404c73cbb9dfa0e2fd8d60bfc3a7dffae72a09ccc4f7dd.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

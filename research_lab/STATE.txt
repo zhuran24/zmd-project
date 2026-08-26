@@ -162,9 +162,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-After faithfully recalibrating the three E047 body-pair geometries, does any pair
-fall below the objective-144 parent, or does the bounded pair language itself
-saturate and force a broader/native simultaneous geometry representation?
+Which smallest residual-selected body set admits a faithful native simultaneous
+pose domain when all selected bodies are removed from outside occupancy together,
+and can that geometry/port-mode/operation-assignment/binding model reproduce 144
+before lowering it or exposing the next exact wall?
 
 Current campaign posture
 ------------------------
@@ -447,12 +448,19 @@ produce 16 ordinary OPTIMAL states, but every value is worse than the parent: th
 best is 146 and almost every measured response is exactly additive. Three distinct
 pair geometries are materialized at 146, 151, and 153.
 
-Those are proposal values only. The next object carries the faithful joint port-
-mode, operation-assignment, and binding middle layer onto all three pair geometries.
-Each must first reproduce its frozen ordinary endpoint. A strict joint improvement
-below 144 becomes the next geometry state; equality or harm retires this bounded
-pair language and triggers a broader/native simultaneous geometry representation.
-A zero state enters routing immediately.
+E048 carries the faithful joint middle layer onto all three pair geometries. Their
+ordinary endpoints calibrate exactly at 146, 151, and 153. Free joint values are
+OPTIMAL 146, 149, and 150, so none equals or improves the objective-144 parent.
+All 19 commodities remain positive.
+
+The bounded complete-pair language is therefore retired. This does not prove every
+pair useless: E047's capped fixed-outside action pools cannot represent poses that
+become available only after several selected bodies are removed together. The next
+object is a native simultaneous geometry context. Residual incidence selects a
+small body set; pose domains are generated against common outside occupancy; body
+choice, port mode, operation assignment, and component-aware binding then share one
+consumer. The 144 parent must recalibrate before a free solve is interpreted. A
+zero state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

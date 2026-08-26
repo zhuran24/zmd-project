@@ -1,0 +1,76 @@
+EXPERIMENT E048: GEOMETRY-CONDITIONED REVALUATION OF THREE BODY PAIRS
+============================================================================
+
+Question
+--------
+Do any of the three E047 body-pair geometries improve below the objective-144
+parent after the faithful port-mode, operation-assignment, and binding middle
+layer is rebuilt on that geometry, or does this bounded pair language saturate?
+
+Why this experiment
+-------------------
+E047's ordinary pair values are all worse than 144, but ordinary fixed-assignment
+values have repeatedly misranked geometry. E043, E045, and E046 show that every
+new free-cell geometry must carry a freshly solved middle layer before it receives
+continuation value.
+
+A pair seed differs from the immediate parent by two bodies, while the existing
+E043 context compiler admits exactly one moved body. E048 therefore generalizes
+that compiler without changing the joint consumer:
+
+  update both moved bodies in their existing blocks when present
+  add one singleton block for each moved body outside the current context
+  enable same-body port modes at both moved destinations
+  preserve all inherited blocks, operation multisets, and selected-instance sets
+
+Method
+------
+E048 reconstructs the exact objective-144 context used by E046, including the two
+previous geometry singleton blocks. For each of the three E047 pair seeds it:
+
+  verifies exactly two body-cell changes relative to the immediate 144 parent
+  constructs the two-move conditional context
+  checks exchangeability of every mandatory operation group
+  fixes all mode, operation-assignment, and binding choices to reproduce the
+    frozen ordinary endpoint
+  only after exact calibration, releases the full faithful middle layer
+  materializes the best concrete assignment and ordinary fixed-layout endpoint
+
+Each seed is checkpointed independently. The original E041 conditional-mode owner
+implementation and shared component objective remain unchanged.
+
+Decision rule
+-------------
+Joint objective 0
+  Enter exact routing immediately.
+
+Best joint objective < 144
+  Retain the strict geometry winner and recompute its residual body surface.
+
+Every joint objective >= 144
+  Retire this bounded pair language. Broaden the rescue relation or build a native
+  simultaneous geometry model rather than enumerating more pairs of complete body
+  actions.
+
+Calibration failure
+  Reject the affected geometry result and repair context fidelity before any free
+  solve is interpreted.
+
+Truth boundary
+--------------
+E048 assigns exact bounded middle-layer values to three frozen E047 pair geometries
+only. It does not exhaust all body pairs, prove a global geometry optimum, establish
+component compatibility unless the objective reaches zero, enter routing, update
+U/L, or grant certification.
+
+Result
+------
+Completed. All three frozen ordinary endpoints calibrate exactly at 146, 151,
+and 153. Their free faithful joint values are 146, 149, and 150, so none beats
+the objective-144 parent. Verdict:
+
+  BOUNDED_BODY_PAIR_LANGUAGE_SATURATED
+
+The bounded complete-pair action language is retired. The next geometry object
+must generate pose domains natively after removing all selected bodies together,
+then cohabit with port mode, operation assignment, and binding. See RESULT.txt.

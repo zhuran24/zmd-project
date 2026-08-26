@@ -1,0 +1,186 @@
+E048 RESULT: THE BOUNDED BODY-PAIR LANGUAGE SATURATES ABOVE THE 144 PARENT
+================================================================================
+
+Status
+------
+Completed as research-only exact geometry-conditioned pair evidence. No component-
+compatible binding, exact routing, whole-layout witness, certification, U/L,
+owner, or publication effect.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/E048_revalue_body_pair_geometries/
+    run-001/RESULT.json
+
+SHA-256:
+  4c66edf521da3211d9cb671a7af53eb5319835c390c7765522e883e7bd1b0071
+
+Verdict:
+  BOUNDED_BODY_PAIR_LANGUAGE_SATURATED
+
+Decision:
+  BROADEN_OR_BUILD_NATIVE_SIMULTANEOUS_GEOMETRY_MODEL
+
+Faithful pair-context reconstruction
+------------------------------------
+E048 reconstructs the objective-144 parent as five inherited assignment/geometry
+blocks covering 27 selected instances, with twelve destinations allowed to choose
+same-body port modes. Each E047 proposal differs from that immediate materialized
+parent by exactly two occupied-body changes. A moved body already inside an
+assignment block updates that destination; an outside moved body receives one
+singleton geometry block. Both moved destinations receive native same-body mode
+choices before the unchanged operation-assignment and binding consumer is built.
+
+This is an object-space correction. Pair geometry is compared through occupied
+body cells relative to the immediate parent, not through named-instance pose churn
+caused by later operation reassignment.
+
+Exact calibrations
+------------------
+All three frozen ordinary endpoints reproduce exactly before any middle-layer
+choice is released:
+
+  Seed A   expected 146   OPTIMAL 146
+  Seed B   expected 151   OPTIMAL 151
+  Seed C   expected 153   OPTIMAL 153
+
+The pair-context extension therefore passes its fidelity gate on all three
+geometries.
+
+Geometry-conditioned joint values
+---------------------------------
+After calibration, port mode, operation assignment, and binding are freed on each
+fixed pair geometry. Every solve reaches OPTIMAL with matching best bound:
+
+  Seed A   ordinary 146   joint 146   delta  0
+  Seed B   ordinary 151   joint 149   delta -2
+  Seed C   ordinary 153   joint 150   delta -3
+
+Joint objective distribution:
+
+  146 x 1
+  149 x 1
+  150 x 1
+
+The best pair is Seed A, but 146 remains two units worse than the objective-144
+parent. Seed B and Seed C recover two and three units through the faithful middle
+layer, confirming once again that ordinary geometry value is not continuation
+value, yet neither becomes competitive with the parent.
+
+All three endpoints remain positive for all 19 commodities. Component-compatible
+binding is not reached and exact routing is not entered.
+
+Best pair geometry
+------------------
+Seed A moves:
+
+  grinder_dense_blue_iron_010
+    outside the inherited assignment context into its own geometry singleton
+
+  refinery_blue_iron_025
+    inside destination 6 of the merged 3x3 assignment block
+
+Its joint endpoint is:
+
+  research_lab/local/zero_condition/E048_revalue_body_pair_geometries/
+    run-001/SEED_A_BEST_ENDPOINT.json
+
+SHA-256:
+  31b2000328c62ef4901629a099c93b0d0966ec59174abc496eee5d4621f359a2
+
+Free-space morphology:
+
+  free cells                1144
+  free components             76
+  largest component          479
+  free adjacency            1161
+  filtered binding patterns 12674
+
+The other endpoint identities are:
+
+  Seed B endpoint
+    f966409670a5ce5b7bfc95c908ae5013f3f659e16a5c4a802eec23e92ea917a6
+
+  Seed C endpoint
+    06e2ca280b03020cb3e01fe161f58f5455518ae7705125dc6623b941250b3c77
+
+What is closed
+--------------
+E047 selected one exact budget-six residual target set, retained capped domain-
+valid body actions, and exhaustively formed nineteen admitted pair specifications.
+E048 now assigns faithful joint middle-layer values to all three distinct proposal
+geometries retained from that pair set. None equals or improves the 144 parent.
+
+Therefore the following action language is closed for the current state:
+
+  choose two complete body actions from the E047 capped pools
+    -> freeze the resulting geometry
+    -> rebuild the middle layer
+    -> rank the finished pair geometry
+
+Continuing to enumerate more complete pairs inside the same bounded language would
+repeat an externally scheduled action search whose measured responses are already
+mostly additive and noncompetitive.
+
+What is not closed
+------------------
+This result does not prove that every body pair is useless. In particular E047 did
+not expose a direct-rescue edge inside its six selected targets, and actions that
+are individually PORT_DOMAIN_EMPTY may become legal only when another body outside
+that set moves simultaneously. The selected action pools also retain only complete
+fixed-outside actions, so they cannot express pose domains that appear after several
+bodies are removed from the obstacle set at once.
+
+The scientific stop is therefore about the representation, not a universal pair
+infeasibility claim.
+
+Architecture effect
+-------------------
+The next geometry layer should no longer enumerate complete singleton or pair
+placements outside the consumer. A bounded native simultaneous context must let a
+small set of body variables choose poses while the same model also chooses port
+mode, operation assignment, aggregate binding resources, terminal uniqueness, and
+component-aware binding.
+
+The critical domain change is:
+
+  fixed-outside action pool
+    -> pose domains generated against outside occupancy with all selected bodies
+       removed together
+
+That representation can admit rescue relations and overlap tradeoffs that no
+Cartesian product of individually valid actions can see. Residual incidence may
+select the body set, but it must not rank completed geometries.
+
+Decision effect
+---------------
+Retire the current bounded complete-pair action language. Derive the smallest
+native simultaneous body context from the objective-144 residual, exact mobility,
+and empty-owner diagnostics. Measure its pose-domain and conditional-binding size
+before choosing the final bounded set. Calibrate the 144 parent inside the new
+model before interpreting a free solve. Objective zero enters exact routing
+immediately.
+
+Truth boundary
+--------------
+E048 covers exactly three E047 pair geometries, themselves selected from nineteen
+pairs generated by one budget-six target set and capped action pools. It is not a
+global geometry optimum, body-pair infeasibility proof, component-compatible
+binding, routing result, lower bound, or certified claim.
+
+Execution note
+--------------
+The first launch used the wrong parent materialization while reconstructing the
+objective-144 context and mistook operation-reassignment label churn for eleven
+body moves. It stopped before scientific calibration. The corrected runner uses
+the immediate ordinary geometry/checkpoint and counts occupied-body changes. A
+subsequent tool-window interruption left Seed A and B checkpoints; the final run
+validated and reused their exact runner SHA-256, solved Seed C, and wrote the
+terminal result.
+
+The preliminary FAILURE.json remains as a local execution record and has no
+scientific authority.
+
+Runner SHA-256:
+  97fae12907ce3a2ef3404c73cbb9dfa0e2fd8d60bfc3a7dffae72a09ccc4f7dd
