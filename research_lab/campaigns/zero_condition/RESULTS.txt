@@ -595,6 +595,38 @@ evidence:
   E012 RESULT.txt; local RESULT.json sha256
   19bd29aa579858a9138a3a05ed0fc0cbcf96bd467dfd8855670c941cba639ff4.
 
+R-ZC-023  Residual mismatch is variable-compact but spatially dispersed
+------------------------------------------------------------------------
+status: exact consumer-space transport and coverage-class optimization
+scope: E009 placement and E010's 196 mismatch-component observations
+
+statement:
+  E013 transports named boundary owners to 313 actual group/optional pose
+  literals and quotients identical observation-incidence sets into 151 exact
+  coverage classes. Maximum coverage is 19/196 with one literal, 36 with two, 67
+  with four, 115 with eight, 172 with 16, and all 196 with a budget of 32. The
+  exact minimum counts for 50%, 75%, 90%, and 100% coverage are 7, 13, 18, and
+  26. Small-budget optima are manufacturing-heavy: budgets 1-8 require only
+  mandatory group-pose classes, and the budget-16 optimum still requires 15
+  non-pole classes. The best 24x24 window covers 85 observations (43.4%); a
+  40x40 window covers 146 (74.5%).
+
+non-implications:
+  Touching a mismatch boundary does not prove that moving the literal repairs
+  it. Coverage-equivalent literals are interchangeable only for the set-cover
+  calculation, not for placement, power, or binding.
+
+effect on next problem:
+  Reject both a pole-only repair and one spatial window. Test exact fixed-outside
+  mobility for the dispersed high-coverage group-pose portfolio, then evaluate
+  every feasible repair by real port-domain survival and exact component
+  mismatch. If the portfolio lacks useful mobility, selected pose and binding
+  variables must cohabit the next local model.
+
+evidence:
+  E013 RESULT.txt; local RESULT.json sha256
+  99c029fe71c2835bd5d2f5cd16d00f324856d70ce305278e2bb3aa944cbf6fd1.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

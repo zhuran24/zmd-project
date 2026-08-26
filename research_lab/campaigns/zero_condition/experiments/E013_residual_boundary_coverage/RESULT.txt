@@ -1,0 +1,130 @@
+E013 RESULT: RESIDUAL CAUSE IS VARIABLE-COMPACT, SPATIALLY DISPERSED, AND MANUFACTURING-HEAVY
+================================================================================================
+
+Status
+------
+Completed as research-only neighborhood-selection evidence. No placement search,
+binding solve, exact routing, cut attachment, certification, U/L, owner, or
+publication effect.
+
+Frozen result
+-------------
+Local result:
+  research_lab/local/zero_condition/E013_residual_boundary_coverage/run-004/RESULT.json
+
+SHA-256:
+  99c029fe71c2835bd5d2f5cd16d00f324856d70ce305278e2bb3aa944cbf6fd1
+
+Verdict:
+  DISPERSED_GROUP_POSE_NEIGHBORHOOD_PLAUSIBLE
+
+Transport and quotient
+----------------------
+E013 starts from E010's 196 exact mismatch-component observations. Each named
+boundary owner is transported to the pose-bool consumer object that can actually
+change placement:
+
+  mandatory owner -> operation-group pose literal
+  optional owner  -> template-pose literal
+
+The transported atlas contains 313 distinct consumer literals. For the set-cover
+question only, literals touching exactly the same observation set are quotiented
+into 151 coverage-equivalence classes. This quotient does not claim that class
+members are interchangeable in placement or power.
+
+Exact maximum coverage
+----------------------
+A mismatch observation is covered when at least one selected current boundary
+literal could be changed. Exact maximum-coverage results are:
+
+  literal budget     observations touched     fraction
+       1                      19                 9.7%
+       2                      36                18.4%
+       4                      67                34.2%
+       8                     115                58.7%
+      16                     172                87.8%
+      32                     196               100.0%
+      64                     196               100.0%
+
+The exact minimum class counts for target coverage are:
+
+  target coverage     minimum classes
+       50%                    7
+       75%                   13
+       90%                   18
+      100%                   26
+
+The small-budget optimum is not power-pole dominated. At budgets 1, 2, 4, and 8,
+every selected optimum class requires a mandatory manufacturing group-pose
+literal. At budget 16, the best coverage solution with minimum non-pole use still
+requires 15 manufacturing classes and only one power-pole class. No reported
+budget admits an all-power-pole maximum-coverage solution.
+
+The high-coverage manufacturing literals are distributed across several
+operation families and regions, including crusher_source, crusher_sandleaf,
+refinery_blue_iron, grinder and packaging groups. Power poles touch 91 of the 196
+observations, but they do not explain the dominant small-budget coverage.
+
+Spatial compactness
+-------------------
+A literal is considered movable by a window only when its complete current body
+lies inside the window. Best single-window upper bounds are:
+
+  window       observations touched     fraction
+   8x8                  32                16.3%
+  12x12                 38                19.4%
+  16x16                 45                23.0%
+  20x20                 56                28.6%
+  24x24                 85                43.4%
+  28x28                 95                48.5%
+  32x32                116                59.2%
+  40x40                146                74.5%
+
+One rectangular neighborhood therefore misses too much of the residual cause.
+The causal surface is compact in selected-variable count but dispersed in
+coordinates.
+
+New inner partition
+-------------------
+The next research neighborhood should not be pole-only and should not be one
+spatial window. The problem-derived object is a dispersed portfolio of current
+operation-group pose literals, with optional poles retained where they occur:
+
+  fixed outside group/optional poses
+  -> bounded dispersed release set
+  -> exact placement and power repair
+  -> fresh static-port and component-aware binding
+  -> exact routing only after component support survives
+
+Before building a large joint placement-binding encoding, the cheapest faithful
+probe is to test which selected high-coverage literals are actually movable under
+fixed outside geometry. Coverage is only an optimistic causal upper bound; a
+literal may be locked by packing, group cardinality, or power.
+
+Latent project issue
+--------------------
+The corrected transport exposes a broader version of the old partition problem.
+Residual component failure is not owned by one facility family. Manufacturing
+poses and power poles jointly form the boundaries, while the master sees mainly
+placement, overlap, and power semantics. Binding sees terminal choice only after
+those boundary decisions are frozen.
+
+The missing layer is therefore not a special power-pole optimizer. It is a
+bounded cause-bearing bridge from group-pose geometry into component-aware
+terminal feasibility.
+
+Truth boundary
+--------------
+Boundary touch does not prove that moving a literal repairs an observation.
+Maximum coverage selects a candidate neighborhood; it is not a sound cut, a
+sufficiency theorem, or evidence that every selected literal has an available
+replacement pose.
+
+Decision effect
+---------------
+E014 should first run exact fixed-outside mobility arms for the high-coverage
+portfolio. Every feasible repaired geometry is immediately scored by actual
+front-filtered binding domains and exact per-commodity component mismatch. If the
+portfolio has little mobility or cannot improve the interface, the next model
+must make selected pose and binding variables cohabit rather than widening a
+scalar placement search.

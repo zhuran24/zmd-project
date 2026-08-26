@@ -1,0 +1,73 @@
+EXPERIMENT E013: residual mismatch boundary coverage
+===================================================
+
+Question
+--------
+Is E009's residual component wall controlled by a bounded set of current
+master literals and a compact spatial neighborhood, or is the causal surface too
+distributed for one local joint placement-binding model?
+
+Why this precedes the joint model
+---------------------------------
+E012 proves that another scalar placement proxy is no longer justified. It does
+not prove that one small local neighborhood carries enough of the residual cause.
+Choosing a window by visual intuition would repeat the project's old ansatz error.
+
+E013 takes the 196 exact mismatch-component observations from E010. Every occupied
+boundary owner is transported from its named instance identity to the actual
+pose-bool consumer object:
+
+  mandatory instance -> (operation group, selected pose)
+  power pole / required optional -> (template, selected pose)
+
+It then computes:
+
+  exact maximum observation coverage for literal budgets 1,2,4,8,16,32,64
+  exact minimum literal count for 50%,75%,90%,100% coverage when reachable
+  best single axis-aligned windows of sizes 8..40, where a literal is movable only
+  if its current occupied body is fully contained in the window
+  operation-family and power-pole participation
+
+Coverage means only that moving at least one selected boundary literal could
+change that mismatch component. It is an optimistic causal-surface upper bound,
+not a repair theorem.
+
+Competing readings
+------------------
+A. A small literal set and one compact window touch most observations. Build one
+   exact local placement-binding neighborhood.
+
+B. A small literal set covers broadly but is spatially dispersed. Use a bounded
+   group-pose neighborhood or several small regions, not one geometric window.
+
+C. Even 16 or 32 literals cover little of the residual. The local-cut/joint-window
+   hypothesis is too narrow; move toward a solver-chosen global backbone or a
+   decomposed multi-region representation.
+
+Frozen inputs
+-------------
+E009 assignment/layout and E010 mismatch atlas are SHA-pinned in the runner,
+along with mandatory instances, candidate placements, rules, and the master
+source defining group identity.
+
+Truth boundary
+--------------
+Boundary touch is necessary only for changing the currently observed component
+boundary. Moving one touched literal may fail to repair it, may alter other
+components, or may require an alternative pose outside the reported window. The
+set-cover result therefore chooses a research neighborhood; it does not prove
+that neighborhood sufficient.
+
+Decision effect
+---------------
+The exact coverage curve and spatial compactness determine whether E014 is a
+single local joint model, a dispersed group-pose portfolio, or a global positive
+backbone representation.
+
+Result
+------
+Completed with verdict DISPERSED_GROUP_POSE_NEIGHBORHOOD_PLAUSIBLE. After
+transport there are 313 consumer literals and 151 exact coverage-equivalence
+classes. Eight literals cover 58.7%, 16 cover 87.8%, and 26 are sufficient for
+100% coverage. Small-budget optima are manufacturing-heavy, not pole-only. A
+best 24x24 window covers 43.4%, while 40x40 covers 74.5%. See RESULT.txt.

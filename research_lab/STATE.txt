@@ -1,7 +1,7 @@
 ZMD RESEARCH WORKTREE STATE
 ===========================
 
-Updated: 2026-08-25
+Updated: 2026-08-26
 Branch: research/main
 Mode: RESEARCH
 Active campaign: zero_condition
@@ -61,7 +61,11 @@ probes and the first checked feedback replay now show a causal progression:
     adjacencies, +30 actual meaningful patterns, +20 free cells, and -5 poles;
   * E012 shows the residual rule is no longer explained by those scalars: exact
     mismatch worsens 196 to 198, leaving all commodities positive despite both
-    proxy gains.
+    proxy gains;
+  * E013 transports the 196 E009 mismatch boundaries into 313 real consumer
+    literals and 151 coverage classes. Sixteen dispersed classes touch 87.8% of
+    observations, but 15 are manufacturing group poses; a pole-only or single-
+    window repair is therefore the wrong next object.
 
 This is enough to reopen the binding-to-routing seam as a derived research
 object. The old point-nogood package is no longer the default feedback language,
@@ -69,10 +73,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Which bounded set of E009 pose units and power poles controls the residual
-component mismatch, and can an exact local model let those placement literals and
-component-aware binding variables cohabit while the outside placement remains
-frozen?
+Which of E013's high-coverage dispersed group-pose literals are actually movable
+under fixed outside geometry and exact power, and do any one-literal repairs
+improve real port-domain survival or exact component mismatch enough to define
+the first joint placement-binding neighborhood?
 
 Current campaign posture
 ------------------------
@@ -114,14 +118,22 @@ actual pattern survival, pole economy, and free-cell quantity can improve togeth
 but E012 supplies the stop signal: exact component mismatch does not follow those
 proxies beyond the E009 point.
 
-The next experiment therefore changes the inner grouping. Exact routing remains
-downstream, but a bounded neighborhood around E009 must contain both pose choices
-and component-aware binding choices. The outside factory stays frozen. Residual
-mismatch witnesses choose the movable neighborhood; the local model must preserve
-front viability, duplicate-terminal rules, and exact component support for the
-affected commodities. Scalar resources survive only as hints or secondary
-objectives. If no small neighborhood carries enough causal boundary, the next
-representation is a solver-chosen global backbone rather than another local cut.
+E013 has now selected the neighborhood without presuming its geometry. The
+corrected exact coverage curve is 19, 36, 67, 115, 172, and 196 observations for
+budgets 1, 2, 4, 8, 16, and 32. The minimum counts for 50%, 75%, 90%, and 100%
+coverage are 7, 13, 18, and 26. Small-budget optima are manufacturing-heavy, and
+a single 24x24 window reaches only 43.4%.
+
+The next experiment is therefore an exact mobility portfolio, not yet a large
+joint encoding. It freezes every E009 selected literal outside the high-coverage
+portfolio, forces one selected portfolio literal off per arm, preserves group
+cardinality, overlap, and exact power, and caps optional poles at the E009 count.
+Every feasible repaired geometry immediately enters fresh front-domain,
+component-aware binding, and exact mismatch evaluation. This tests whether the
+optimistic coverage set contains real degrees of freedom. If it does, the best
+repair defines the first joint neighborhood. If it does not, selected pose and
+binding variables must cohabit directly rather than being connected by another
+placement proxy.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not
