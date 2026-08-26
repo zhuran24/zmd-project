@@ -162,10 +162,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Which of the best distinct E042 body geometries remains strongest after the
-faithful joint port-mode, operation-assignment, and binding consumer is rebuilt on
-that geometry, and does the resulting joint value select a geometry seed or force
-a simultaneous body-pair neighborhood?
+Which body-response neighborhood is selected by the fully materialized
+objective-147 Seed A endpoint, and does the next singleton geometry remain
+material after joint middle-layer reoptimization or trigger a simultaneous
+body-pair neighborhood?
 
 Current campaign posture
 ------------------------
@@ -406,12 +406,20 @@ six-target body portfolio reaches 150 by shifting grinder_dense_blue_iron pose
 faces keep the ore-pair sum at 14; the body's fixed gain is buckwheat -1 and
 sandleaf_powder -1.
 
-The body move was still valued under one concrete E041 operation/mode assignment.
-The next object carries the faithful joint middle layer across a small portfolio
-of distinct E042 body geometries. Each frozen endpoint is first recalibrated, then
-port mode, operation assignment, and binding are freed on that geometry. Those
-joint values, not stale fixed-assignment values, select the next geometry seed or
-simultaneous body-pair neighborhood. A zero state enters routing immediately.
+E043 carries the faithful joint middle layer across two distinct E042 body
+geometries. Seed A, the in-block 6x4 move, calibrates at 150 and reoptimizes to
+OPTIMAL 147. Seed B, the outside 3x3 move, calibrates at 151 and reoptimizes to
+OPTIMAL 150. Ordinary replay agrees. Seed A's exact face has ore-pair fixed sum 15;
+its joint middle layer accepts one extra ore mismatch while reducing the fixed
+ledger by four.
+
+The fixed-assignment geometry ranking survives, but the three-unit and one-unit
+joint gains prove that geometry cannot be carried with a stale middle-layer value.
+Seed A's fully materialized 147 endpoint now replaces the E042 atlas. Rebuild its
+residual causes and actual body mobility, propose a finite next geometry set, and
+rank any admitted geometry with a fresh joint port-mode/assignment/binding solve.
+Marginal singleton continuation triggers a simultaneous body-pair neighborhood.
+A zero state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

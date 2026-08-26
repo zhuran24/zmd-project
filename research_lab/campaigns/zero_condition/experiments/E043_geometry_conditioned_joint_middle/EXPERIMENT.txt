@@ -1,0 +1,78 @@
+EXPERIMENT E043: GEOMETRY-CONDITIONED JOINT PORT-MODE/ASSIGNMENT/BINDING PORTFOLIO
+===================================================================================
+
+Question
+--------
+Which of two structurally distinct E042 body geometries remains strongest after
+the faithful E041 port-mode, operation-assignment, and binding middle layer is
+rebuilt and freed on that geometry?
+
+Geometry seeds
+--------------
+Seed A is E042's best body child:
+
+  grinder_dense_blue_iron pose 6228 -> 6098
+  fixed concrete endpoint objective 150
+  move occurs inside the existing merged 6x4 assignment block
+
+Seed B is the next distinct occupied geometry:
+
+  crusher_sandleaf pose 2155 -> 5342
+  fixed concrete endpoint objective 151
+  move occurs outside the existing 25-body assignment context
+
+Pose 5343 is the same body geometry as 5342 with another port mode, so it is
+quotiented into Seed B's joint mode model rather than treated as a third geometry.
+
+Method
+------
+For each seed, E043 updates the E041 body destinations to the seed geometry. The
+nine original E041 mode-enabled destinations remain enabled. A moved destination
+inside an assignment block is additionally mode-enabled; an outside moved body is
+added as a one-body conditional mode block with fixed operation multiplicity.
+
+Each seed first fixes every operation, mode, and binding choice and must reproduce
+its materialized E042 endpoint exactly. Only a successful calibration admits a
+free solve. The free solve jointly chooses:
+
+  same-body port modes
+  operation-to-body assignment inside the existing blocks
+  binding patterns
+  aggregate and component-aware shared mismatch
+
+Occupied body geometry is fixed separately for each seed.
+
+Decision rule
+-------------
+Objective 0
+  Enter exact routing immediately.
+
+One seed has a strictly lower OPTIMAL joint value
+  Retain that geometry and recompute its residual surface before selecting a body
+  partner.
+
+The two seeds tie with distinct witnesses
+  Retain a small geometry beam and compare their next body-response domains.
+
+Neither seed improves its fixed calibration value
+  The carried middle layer is saturated on both singleton geometries; build a
+  simultaneous body-pair neighborhood.
+
+Truth boundary
+--------------
+E043 compares only two frozen single-body geometry states under bounded
+conditional mode/assignment contexts. It does not optimize body placement inside
+one model, exhaust body pairs, prove component compatibility, reach routing,
+establish a lower bound, or grant certified effect.
+
+Result
+------
+Completed. Both frozen geometries calibrate exactly. Seed A reoptimizes from 150
+to OPTIMAL 147; Seed B reoptimizes from 151 to OPTIMAL 150. The fixed-assignment
+geometry ranking survives, but the joint middle layer contributes three additional
+units on Seed A and one on Seed B.
+
+Seed A is retained as the leading geometry. Its objective-147 endpoint is fully
+materialized and becomes the sole source for the next residual/body-partner
+surface. See RESULT.txt for exact model sizes, optimum-face audits, and frozen
+artifact identities.

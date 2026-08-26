@@ -1,0 +1,194 @@
+E043 RESULT: GEOMETRY MUST BE RANKED WITH THE JOINT MIDDLE LAYER; THE BEST SEED REACHES 147
+================================================================================================
+
+Status
+------
+Completed as research-only exact geometry-conditioned middle-layer evidence. No
+component-compatible binding, exact routing, whole-layout witness,
+certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/E043_geometry_conditioned_joint_middle/run-001/RESULT.json
+
+SHA-256:
+  4ed1a66ef93e28e2e6521b1bd0458a0603db02a6a54731648f62df139dd4e335
+
+Verdict:
+  GEOMETRY_CONDITIONED_JOINT_MATERIAL_IMPROVEMENT
+
+Two geometry seeds
+------------------
+E043 carries E041's faithful port-mode, operation-assignment, and binding middle
+layer across two structurally distinct E042 body geometries.
+
+Seed A:
+
+  grinder_dense_blue_iron pose 6228 -> 6098
+  body move inside the merged 6x4 assignment block
+  frozen concrete endpoint objective 150
+
+Seed B:
+
+  crusher_sandleaf pose 2155 -> 5342
+  body move outside the original 25-body assignment context
+  frozen concrete endpoint objective 151
+
+For Seed B, pose 5343 is the same occupied body with another port mode and is
+therefore admitted inside the singleton mode block rather than counted as another
+geometry.
+
+Exact calibrations
+------------------
+Each geometry first fixes every operation, port mode, and binding choice. Both
+ordinary frozen endpoints are reproduced exactly:
+
+  Seed A    expected 150    OPTIMAL 150
+  Seed B    expected 151    OPTIMAL 151
+
+The free joint solves are therefore scientifically admitted.
+
+Seed A joint response
+---------------------
+Seed A adds the moved 6x4 destination to the E041 mode-enabled set. The free model
+has:
+
+  mode-operation variables            200
+  conditional pattern variables    17,360
+  joint conditional owners            200
+  total variables                  29,280
+  total constraints                85,958
+
+It reaches:
+
+  status       OPTIMAL
+  objective    147
+  best bound   147
+  solve time   77.0 s
+
+The concrete ordinary fixed-layout replay agrees at 147. Relative to its frozen
+150 endpoint, the direct vector changes:
+
+  blue_iron_block          -1
+  buckwheat                -1
+  buckwheat_powder         +2
+  dense_blue_iron_powder   -2
+  fine_buckwheat_powder    -1
+  qiaoyu_capsule           -2
+  sandleaf                 +1
+  source_ore               +1
+
+The exact optimum-face audit shows blue_iron_ore/source_ore vary over a four-unit
+range with fixed sum 15. Compared with the frozen Seed A face at fixed sum 14, the
+joint middle layer accepts one extra ore mismatch while reducing the fixed ledger
+by four, for a net gain of three.
+
+The occupied geometry remains Seed A's 77-component body partition:
+
+  free cells             1144
+  free components          77
+  largest component       479
+  free adjacency         1159
+  free-cell digest
+    8e22154e0d4614cf542fcd307de9558baf5eb17ce722824d8e3994f8e8c7037b
+
+Seed A endpoint SHA-256:
+
+  6ee527af5f84d652a351e7e00e22cddda990d121f2cdb25839af214f11c2051a
+
+Seed B joint response
+---------------------
+Seed B adds one singleton 3x3 body-mode block while preserving the original three
+assignment blocks. Its free model has:
+
+  mode-operation variables            199
+  conditional pattern variables    18,096
+  joint conditional owners            199
+  total variables                  30,026
+  total constraints                88,087
+
+It reaches:
+
+  status       OPTIMAL
+  objective    150
+  best bound   150
+  solve time   85.7 s
+
+Ordinary replay agrees. The exact face keeps the ore-pair fixed sum at 14. Seed B
+therefore improves its frozen 151 endpoint by only one unit and remains three
+units behind Seed A.
+
+Seed B endpoint SHA-256:
+
+  563bc5a5165b797444a1feeca955bfc7a045c6fea96a07f39a8104deed5df46e
+
+Combined optimum-face audit SHA-256:
+
+  b8d8ae52b178856f7d89606c5145d33d2bb3b83c14fee42e78da94d673bf0664
+
+Interpretation
+--------------
+E042's fixed-assignment ranking survives the faithful reoptimization, but the
+numerical values change materially:
+
+  Seed A    150 -> 147
+  Seed B    151 -> 150
+
+Thus body geometry cannot be scored once and then carried forward with a stale
+binding or operation assignment. The middle layer is part of the geometry state's
+value function.
+
+The result also distinguishes two ways to add geometry:
+
+  moving a body already inside an assignment block can reshape both geometry and
+  the assignment/mode response domain;
+
+  moving an outside body and adding a singleton mode block creates less joint
+  leverage in this comparison.
+
+Architecture effect
+-------------------
+The outer loop now proposes bounded body geometries. Each admitted geometry owns a
+fresh inner context:
+
+  occupied body state
+    -> conditional port modes
+    -> operation assignment
+    -> native binding and aggregate resources
+    -> component-aware shared objective
+
+Only the resulting joint value ranks geometry. A fixed-endpoint body score is a
+cheap proposer, not a final continuation value.
+
+Decision effect
+---------------
+Retain the fully materialized Seed A objective-147 endpoint as the leading state.
+Rebuild its residual cause and mobility surface from scratch. The next body
+partner or body-pair neighborhood must be selected from that 147 state, not from
+E042's 152 atlas.
+
+A zero state enters exact routing immediately. If the next single-body geometry
+portfolio becomes marginal after carrying the joint middle layer, stop singleton
+geometry expansion and construct a simultaneous body-pair neighborhood.
+
+Truth boundary
+--------------
+E043 compares only two frozen single-body geometries, each with one exact fixed
+calibration and one free bounded joint solve. Objective 147 is not a global body
+geometry optimum, component-compatible binding, routing witness, lower bound, or
+certified claim. All 19 commodity mismatch counts remain positive.
+
+Frozen artifact identities
+--------------------------
+Seed A best assignment:
+  302c9ab02b839a9924ed9aecd7c2e23ba9c5c7a571052600c6514bf7292d846a
+
+Seed A joint witness:
+  b49c1bab2b49b5435b294a0785536f827774015fd385468b813eac8b3eddfb98
+
+Seed B best assignment:
+  02d4fabc0aa1f13be70bac2df7eb16d0f5df58be09d3664fa98acd6176736e0c
+
+Seed B joint witness:
+  50b956348ce355ce6241081d72526cdaad8e9b67699a9418c3e23e5bf2556be5

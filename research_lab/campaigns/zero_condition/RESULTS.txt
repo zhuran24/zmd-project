@@ -1627,6 +1627,43 @@ evidence:
   optimum-face audits sha256
   dd052a9dc94af393b8994d43bd385256128c8e5ad26795107629dd23af0cd656.
 
+R-ZC-054  Geometry value requires the joint middle layer; the leading seed reaches 147
+-----------------------------------------------------------------------------------------
+status: two geometry calibrations, two free joint solves, and exact face audits
+scope: E042 body seeds A and B under geometry-conditioned E041 contexts
+
+statement:
+  E043 carries E041's native port-mode, operation-assignment, and binding model
+  across two distinct body geometries. Seed A, the in-block 6x4 move 6228 -> 6098,
+  calibrates at 150 and reoptimizes to OPTIMAL 147. Seed B, the outside 3x3 move
+  2155 -> 5342, calibrates at 151 and reoptimizes to OPTIMAL 150. Ordinary replay
+  agrees for both. Seed A's exact face has ore-pair fixed sum 15; the joint middle
+  layer accepts one extra ore mismatch while reducing its fixed ledger by four.
+  All 19 commodities remain positive.
+
+non-implications:
+  Objective 147 is not a global body-geometry optimum, component-compatible
+  binding, routing witness, lower bound, or certified claim. Only two singleton
+  body geometries are compared, and neither result establishes a necessary move or
+  an adequate simultaneous geometry neighborhood.
+
+effect on next problem:
+  Retain Seed A's fully materialized 147 endpoint. Rebuild residual causes and
+  actual mobility from that endpoint; E042's 152 action surface is now stale.
+  Geometry candidates remain outer proposals, but every admitted geometry must be
+  ranked by a fresh joint port-mode/assignment/binding solve. Marginal singleton
+  continuation triggers a simultaneous body-pair neighborhood.
+
+evidence:
+  E043 RESULT.txt; local RESULT.json sha256
+  4ed1a66ef93e28e2e6521b1bd0458a0603db02a6a54731648f62df139dd4e335;
+  Seed A endpoint sha256
+  6ee527af5f84d652a351e7e00e22cddda990d121f2cdb25839af214f11c2051a;
+  Seed B endpoint sha256
+  563bc5a5165b797444a1feeca955bfc7a045c6fea96a07f39a8104deed5df46e;
+  optimum-face audits sha256
+  b8d8ae52b178856f7d89606c5145d33d2bb3b83c14fee42e78da94d673bf0664.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the
