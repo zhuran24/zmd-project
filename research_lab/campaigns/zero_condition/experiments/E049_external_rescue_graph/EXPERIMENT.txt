@@ -1,0 +1,75 @@
+EXPERIMENT E049: STRUCTURED EXTERNAL RESCUE GRAPH
+==================================================
+
+Question
+--------
+Do any E047 body actions that are individually rejected by an external empty
+binding owner become admissible when that named external owner is moved or changes
+same-body port mode, and can the rescued pair improve the objective-144 parent?
+
+Why this experiment
+-------------------
+E048 saturates the bounded pair language built from complete fixed-outside actions,
+but that language cannot express a pose that becomes legal only after another body
+moves. E047 already recorded 94 exact PORT_DOMAIN_EMPTY actions. Its consumer,
+however, serialized each empty-owner record into a string and then intersected
+those strings directly with instance IDs. The actual selected six-body set happens
+to contain no internal rescue edge, but the transport is type-invalid and discards
+all external owner relations.
+
+E049 repairs only that missing edge language. It parses and validates the frozen
+owner records, constructs a structured source-action -> empty-owner graph, and
+selects the cleanest external relations where the source action has exactly one
+empty owner distinct from itself.
+
+Method
+------
+For each of at most eight exact external edges, E049 freezes one representative
+dead source action, confirms that action still reproduces PORT_DOMAIN_EMPTY and
+names the expected owner, then:
+
+  applies the dead source body action
+  removes the external owner from fixed occupancy while enumerating its exact
+  non-overlapping, power-valid pose domain
+  includes both same-body port modes and real body relocations
+  evaluates every resulting two-object state with the ordinary static-domain,
+  aggregate-binding, terminal-uniqueness, and exact shared component objective
+  checkpoints each edge independently
+
+The graph proposer is frequency plus diagnostic cleanliness only. Exact shared
+binding ranks rescued states. Up to three distinct rescued pose states are fully
+materialized for later faithful joint-middle revaluation.
+
+Decision rule
+-------------
+Objective 0
+  Enter exact routing immediately.
+
+At least one OPTIMAL rescued state
+  Confirm external rescue as a missing pair language and revalue the strongest
+  distinct rescued states with the faithful port-mode/operation-assignment/binding
+  middle layer.
+
+No OPTIMAL rescued state
+  The clean external graph does not repair the bounded pair language. Move to a
+  native simultaneous geometry model or broaden to multi-owner rescue sets.
+
+Truth boundary
+--------------
+E049 tests at most eight clean external edges selected from E047's frozen 94 dead
+actions. It does not exhaust every external owner, every source action, multi-owner
+rescue, all body pairs, or native simultaneous pose domains. A rescued ordinary
+state is not yet a geometry-conditioned continuation value, component-compatible
+binding, routing witness, lower bound, or certified result.
+
+Result
+------
+Completed. Structured parsing confirms zero actual internal edge in the E047 six-
+target set but exposes the stringified-owner transport defect. Eight clean external
+edges yield 55 OPTIMAL rescued states; the strongest relation reaches ordinary
+objective 143. Verdict:
+
+  EXTERNAL_RESCUE_RELATIONS_CONFIRMED
+
+The three best rescued pose states are frozen for faithful joint-middle
+revaluation. See RESULT.txt.

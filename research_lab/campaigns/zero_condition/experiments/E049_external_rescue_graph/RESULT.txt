@@ -1,0 +1,180 @@
+E049 RESULT: STRUCTURED EXTERNAL RESCUE EDGES REVIVE 55 DEAD STATES
+==================================================================
+
+Status
+------
+Completed as research-only structured-diagnostic and exact rescued-pair evidence.
+No geometry-conditioned joint value is assigned here. No component-compatible
+binding, exact routing, whole-layout witness, certification, U/L, owner, or
+publication effect.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/E049_external_rescue_graph/run-001/RESULT.json
+
+SHA-256:
+  23f6fb09bb81a24aaade376483059f6329e9dfd592409ad5391cc468fddee662
+
+Verdict:
+  EXTERNAL_RESCUE_RELATIONS_CONFIRMED
+
+Decision:
+  REVALUE_RESCUED_GEOMETRIES_WITH_JOINT_MIDDLE
+
+Hidden transport defect
+-----------------------
+E047 recorded each empty binding owner as the string representation of a mapping,
+for example:
+
+  "{'instance_id': 'crusher_sandleaf_004', ...}"
+
+Its direct-rescue consumer then intersected those complete strings with bare
+instance IDs. That comparison is type-invalid and can never discover an edge.
+
+For the actual E047 six-target set, structured parsing confirms that the true
+internal rescue-edge count is also zero. Thus the published local fact happens to
+be correct, but its implementation did not prove it. A synthetic control adds the
+first external owner to the selected-ID set:
+
+  legacy string/ID intersections       0
+  structured owner-ID intersections  16
+
+The missing edge language is therefore real even though it did not change E047's
+six-target internal-edge count.
+
+Structured external graph
+-------------------------
+E049 parses and validates all 94 frozen dead diagnostics. It selects eight clean
+external edges where the source action has exactly one empty owner distinct from
+itself. One representative dead source action is frozen per edge, and every exact
+non-overlapping, power-valid pose of that external owner is tested.
+
+Across 212 owner alternatives:
+
+  OPTIMAL             55
+  PORT_DOMAIN_EMPTY  157
+
+Per-edge exact response:
+
+  refinery_blue_iron_025 -> crusher_sandleaf_004
+    55 alternatives, 10 OPTIMAL, best 147
+
+  grinder_dense_blue_iron_008 -> grinder_dense_blue_iron_009
+     3 alternatives,  1 OPTIMAL, best 147
+
+  refinery_blue_iron_025 -> crusher_sandleaf_003
+    47 alternatives,  3 OPTIMAL, best 152
+
+  refinery_blue_iron_025 -> refinery_blue_iron_026
+    47 alternatives, 16 OPTIMAL, best 153
+
+  refinery_blue_iron_025 -> refinery_blue_iron_028
+    51 alternatives, 22 OPTIMAL, best 147
+
+  grinder_dense_blue_iron_008 -> grinder_dense_blue_iron_005
+     3 alternatives,  0 OPTIMAL
+
+  grinder_dense_blue_iron_010 -> grinder_dense_blue_iron_011
+     3 alternatives,  0 OPTIMAL
+
+  packaging_battery_001 -> grinder_dense_source_003
+     3 alternatives,  3 OPTIMAL, best 143
+
+The objective distribution of all 55 rescued states ranges from 143 to 161. The
+source actions were individually PORT_DOMAIN_EMPTY, so every OPTIMAL state is a
+true rescue rather than ordinary additive composition.
+
+Best rescue relation
+--------------------
+The strongest edge moves:
+
+  packaging_battery_001
+    pose 7754 -> 7757
+
+and then moves or changes the mode of:
+
+  grinder_dense_source_003
+    pose 7895 -> 7897 / 7896 / 7894
+
+The two body-relocation variants at poses 7897 and 7896 both reach ordinary shared
+objective 143. They share the same free-cell geometry but use different port modes.
+The third variant keeps the owner's body fixed at pose 7894 and reaches 144.
+
+Materialized seeds:
+
+  Seed 1  objective 143  owner pose 7897
+    endpoint sha256
+      bdf813c969c8991c294a9b64b5befc9d8e08805532e59f5cf0f49966485e55c6
+
+  Seed 2  objective 143  owner pose 7896
+    endpoint sha256
+      9370569cac042911268f6404675ef21746201abe0b87e768cb5d2a6b4d05b414
+
+  Seed 3  objective 144  owner pose 7894, same owner body
+    endpoint sha256
+      907fa3242501240ce8aa6caa480221d87b2caae213db6536196201bd4a1fb361
+
+All three retain positive mismatch for all 19 commodities. Exact routing is not
+entered.
+
+Architecture effect
+-------------------
+E048 did not show that simultaneous body pairs lack value. It showed that a pair
+language built only from complete fixed-outside actions and selected-set rescue
+edges was incomplete. E049 exposes the missing feedback object:
+
+  dead source action
+    -> structured empty-owner set
+    -> conditional rescue relation
+    -> owner pose domain under the source move
+
+This object is richer than a point nogood and narrower than a global native
+geometry model. It can propose body sets from actual causal ownership rather than
+mere boundary incidence.
+
+The diagnostic schema itself must preserve owner records as structured data. A
+stringified mapping is unsuitable for equality, joins, graph construction, or
+consumer transport.
+
+Decision effect
+---------------
+Carry the three rescued pose states into the faithful objective-144 middle layer.
+The context compiler must compare pose changes relative to the immediate parent,
+allow one or two occupied-body changes, and enable same-body modes at both changed
+instances. Each frozen ordinary endpoint must calibrate before port mode,
+operation assignment, and binding are released.
+
+A strict joint value below 144 becomes the new leading state. Equality or harm
+means the rescue relation is useful for admission but not continuation value and
+pushes the work toward a broader native simultaneous geometry context. Objective
+zero enters exact routing immediately.
+
+Truth boundary
+--------------
+E049 tests eight clean external edges selected from E047's 94 frozen dead actions,
+one representative source action per edge, and every exact owner alternative
+under that source move. It does not exhaust multi-owner rescue, all external
+owners, all source actions, every body pair, or native simultaneous pose domains.
+Objective 143 is an ordinary fixed-assignment proposal value, not a final geometry-
+conditioned value, component-compatible binding, routing witness, lower bound, or
+certified claim.
+
+Evidence identities
+-------------------
+Structured rescue graph:
+  research_lab/local/zero_condition/E049_external_rescue_graph/run-001/
+    RESCUE_GRAPH.json
+
+SHA-256:
+  851ed58b2a2ebb5459c0e8d111b2bafc64cd25608ae2fba62dbc321863b51fa6
+
+Arm manifest:
+  research_lab/local/zero_condition/E049_external_rescue_graph/run-001/
+    ARM_MANIFEST.json
+
+SHA-256:
+  60b5c6e7c89f8d63c08d16cf974c7ac8d405e44d4b2a2ea39ec5d7e79df9d39a
+
+Runner SHA-256:
+  1f5d5fe11d21434d8d7a3e97d99958c04420e927698241eb437f8d39f225067a

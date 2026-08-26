@@ -162,10 +162,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Which smallest residual-selected body set admits a faithful native simultaneous
-pose domain when all selected bodies are removed from outside occupancy together,
-and can that geometry/port-mode/operation-assignment/binding model reproduce 144
-before lowering it or exposing the next exact wall?
+After exact calibration, what joint continuation values do the three E049 rescued
+pose states receive under the objective-144 port-mode/operation-assignment/binding
+context, and does the external rescue relation produce a true state below 144 or
+only an ordinary admission gain?
 
 Current campaign posture
 ------------------------
@@ -453,14 +453,23 @@ ordinary endpoints calibrate exactly at 146, 151, and 153. Free joint values are
 OPTIMAL 146, 149, and 150, so none equals or improves the objective-144 parent.
 All 19 commodities remain positive.
 
-The bounded complete-pair language is therefore retired. This does not prove every
-pair useless: E047's capped fixed-outside action pools cannot represent poses that
-become available only after several selected bodies are removed together. The next
-object is a native simultaneous geometry context. Residual incidence selects a
-small body set; pose domains are generated against common outside occupancy; body
-choice, port mode, operation assignment, and component-aware binding then share one
-consumer. The 144 parent must recalibrate before a free solve is interpreted. A
-zero state enters routing immediately.
+The bounded complete-pair language is therefore retired, but E049 repairs the
+missing rescue relation before building a larger native model. E047's empty-owner
+mappings had been stringified and then compared directly with instance IDs; the
+actual internal edge count is zero, yet that transport could never discover an
+edge. Structured parsing exposes eight clean external edges.
+
+Exhausting 212 owner alternatives under those source moves revives 55 OPTIMAL
+states. The strongest packaging_battery_001 -> grinder_dense_source_003 relation
+reaches ordinary 143 through two body-relocation mode variants; a third same-owner-
+body variant reaches 144. All 19 commodities remain positive.
+
+Those values are proposal values only. The next object rebuilds the faithful 144
+middle layer on all three rescued pose states, supporting two pose changes and one
+or two occupied-body changes. A strict joint value below 144 becomes the new
+leading geometry; equality or harm separates admission value from continuation
+value and returns the work to a broader native simultaneous context. A zero state
+enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

@@ -1862,6 +1862,39 @@ evidence:
   runner sha256
   97fae12907ce3a2ef3404c73cbb9dfa0e2fd8d60bfc3a7dffae72a09ccc4f7dd.
 
+R-ZC-060  Structured external rescue edges revive 55 fixed-outside dead states
+--------------------------------------------------------------------------------
+status: schema-transport audit plus eight exact external rescue-edge exhaustions
+scope: E047's 94 frozen PORT_DOMAIN_EMPTY body actions under the objective-144 parent
+
+statement:
+  E049 proves that E047 stringified each empty-owner mapping and then intersected
+  those strings with instance IDs. Structured parsing confirms the actual six-
+  target internal edge count is still zero, but the consumer was type-invalid.
+  Eight clean external edges are tested exhaustively over 212 owner alternatives:
+  55 reach OPTIMAL shared bindings and 157 remain PORT_DOMAIN_EMPTY. The strongest
+  packaging_battery_001 -> grinder_dense_source_003 rescue reaches ordinary 143.
+
+non-implications:
+  The result does not assign geometry-conditioned continuation value or prove all
+  external/multi-owner rescue covered. Objective 143 is an ordinary proposal value;
+  all 19 commodities remain positive and routing is not reached.
+
+effect on next problem:
+  Preserve empty-owner records as structured data and promote conditional rescue
+  relations to an outer-loop proposer. Rebuild the faithful objective-144 middle
+  layer on the three materialized rescued pose states, supporting one or two body
+  changes plus mode changes at both implicated instances. Exact joint value, not
+  ordinary rescue value, selects the next state.
+
+evidence:
+  E049 RESULT.txt; local RESULT.json sha256
+  23f6fb09bb81a24aaade376483059f6329e9dfd592409ad5391cc468fddee662;
+  structured rescue graph sha256
+  851ed58b2a2ebb5459c0e8d111b2bafc64cd25608ae2fba62dbc321863b51fa6;
+  arm manifest sha256
+  60b5c6e7c89f8d63c08d16cf974c7ac8d405e44d4b2a2ea39ec5d7e79df9d39a.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the
