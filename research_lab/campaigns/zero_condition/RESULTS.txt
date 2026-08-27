@@ -2097,6 +2097,40 @@ evidence:
   concrete assignment sha256
   bf6d1cfcd4c6aaf649a16b9513044b2023b5a9a1a5b39267ebcaad15ffe2c46b.
 
+R-ZC-067  Admitted port modes cannot create a second zero in the causal context
+--------------------------------------------------------------------------------
+status: exact positive-count optimum plus nonterminal secondary-total and bound solves
+scope: E054/E055 occupied geometry and selected causal relation with free 14-body 6x4 operation assignment and admitted modes
+
+statement:
+  E056 exactly recalibrates the materialized E055 state at positive count 18 and
+  total mismatch 139. Releasing all admitted same-body modes and the remaining
+  operation assignments in the merged 6x4 block still proves positive-count
+  OPTIMAL 18. Therefore no second zero exists in this bounded mode/assignment
+  context. A total-minimization solve at count 18 and a direct total<=138
+  feasibility discriminator both return UNKNOWN. The E055 18/139 state remains a
+  valid witness in the wider context, but 139 is not proved secondary-optimal.
+
+non-implications:
+  The exact positive-count result does not cover new body poses, unregistered
+  modes, additional rescue relations, or non-6x4 assignment freedom. UNKNOWN on
+  the secondary objective does not prove total 139 minimal.
+
+effect on next problem:
+  Close operation assignment and admitted port mode as sources of a second zero
+  under the selected causal relation. Retain the verified 18/139 witness and run a
+  fresh structured-cause audit across the remaining 18 commodities. Select the
+  next context by causal compressibility and available consumer freedom, not by
+  another sum-only descent.
+
+evidence:
+  E056 RESULT.txt; positive checkpoint sha256
+  e18b93e374318077752a6b054e228a66c67aecfae14e152900613138f3fc1d66;
+  nonterminal total result sha256
+  f515b94165bed656f567de2f6be63759d98f4fb3e4628538810650962e74dab8;
+  total<=138 discriminator sha256
+  bfc79533c00666cca856bff170b6530ab850f3ae30b9db8103f54ffd25ee67fb.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

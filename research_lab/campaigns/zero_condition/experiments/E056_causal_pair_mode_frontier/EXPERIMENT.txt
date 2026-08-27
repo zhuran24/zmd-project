@@ -1,0 +1,65 @@
+EXPERIMENT E056: CAUSAL-PAIR PORT-MODE FRONTIER
+================================================
+
+Question
+--------
+After E055 proves the selected causal relation plus fourteen-body operation
+assignment is lexicographically exact at positive count 18 and total mismatch 139,
+can admitted same-body port modes in that 6x4 context create a second zero without
+changing occupied geometry?
+
+Why this experiment
+-------------------
+The current inner hierarchy has now been measured one layer at a time:
+
+  causal source-body/capsule-body relation  creates the first zero
+  operation assignment with modes fixed    saturates at (18,139)
+  admitted same-body port modes             not yet tested jointly
+
+E056 releases only that next layer. It preserves the selected causal body
+locations, keeps `fine_buckwheat_powder = 0`, fixes every non-6x4 operation and
+mode, and frees operation assignment plus the eighteen already-admitted same-body
+mode destinations in the merged 6x4 context.
+
+Method
+------
+The materialized E055 state must first recalibrate exactly at positive count 18
+and total mismatch 139.
+
+The primary free solve minimizes positive commodity count. A separate resumable
+stage fixes the exact positive optimum and minimizes total mismatch. Any terminal
+winner is materialized and replayed through the fixed conditional-owner model and
+production component precheck.
+
+Decision rule
+-------------
+Positive optimum <= 17
+  The admitted port-mode layer creates a second zero. Minimize total on that face
+  and retain the exact state.
+
+Positive optimum = 18
+  The causal relation, operation assignment, and admitted port modes are jointly
+  saturated at one zero. Minimize total secondarily, then select a new structured
+  commodity cause or body/rescue expansion.
+
+UNKNOWN / FEASIBLE
+  Preserve the scoped status and refine the mode-search container without claiming
+  saturation.
+
+Positive optimum = 0
+  Materialize and enter exact routing immediately.
+
+Truth boundary
+--------------
+E056 fixes occupied geometry, the selected causal relation, and all non-6x4
+operation/mode choices. It releases only the admitted mode and operation variables
+inside the fourteen-body 6x4 block. It does not exhaust new body poses, additional
+rescue relations, global geometry, routing, throughput, U/L, or certification.
+
+Result
+------
+Completed. The E055 state recalibrates at 18/139. Releasing admitted 6x4 modes and
+operation assignment proves positive-count OPTIMAL 18, so no second zero exists in
+this bounded context. Secondary total minimization and the total<=138 discriminator
+remain UNKNOWN; 18/139 is retained as a known feasible witness, not a proved
+secondary optimum. See RESULT.txt.

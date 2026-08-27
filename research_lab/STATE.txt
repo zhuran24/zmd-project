@@ -162,9 +162,9 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-After E055 proves operation assignment exact at positive count 18 and total 139,
-can the admitted same-body port modes inside the selected causal context create a
-second zero while occupied geometry and the causal body relation remain fixed?
+Which remaining positive commodity exposes the smallest structured cause that can
+create the second zero from the verified 18/139 witness, once the current causal
+relation's operation-assignment and admitted port-mode layers are closed?
 
 Current campaign posture
 ------------------------
@@ -509,11 +509,19 @@ reassignment, the causal bodies must be addressed by block/destination, not by t
 old symmetric instance names.
 
 Operation assignment is therefore closed at this geometry and causal relation.
-The next model keeps the causal body locations fixed but releases their admitted
-same-body port modes, together with the rest of the 6x4 mode surface, while
-positive count remains primary. A result of 17 or less creates a second zero; an
-exact 18 selects the next structured commodity cause or body/rescue expansion. A
-fully zero state enters routing immediately.
+E056 then releases all admitted same-body modes in the merged 6x4 block while
+keeping the causal relation, occupied geometry, and non-6x4 choices fixed. The
+primary positive-count solve proves OPTIMAL 18, so this mode layer also cannot
+create a second zero.
+
+The secondary total solve and a direct total<=138 discriminator both remain
+UNKNOWN. The E055 18/139 state is still a valid witness in the wider E056 context,
+but 139 is not claimed secondary-optimal there. Because positive count is the
+primary progress measure, the next step does not continue burning budget on that
+secondary bound. It audits the remaining 18 commodities, beginning with low
+mismatch values but selecting the next context by structured causal compression,
+consumer freedom, and relation novelty rather than scalar size alone. A fully zero
+state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

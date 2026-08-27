@@ -1,0 +1,123 @@
+E056 RESULT: ADMITTED PORT MODES CANNOT CREATE A SECOND ZERO
+=============================================================
+
+Status
+------
+Completed as research-only exact primary-objective evidence with a nonterminal
+secondary objective. No second zero, routing, whole-layout completion,
+certification, U/L, owner, or publication effect is claimed.
+
+Frozen artifacts
+----------------
+Positive-count result:
+  research_lab/local/zero_condition/E056_causal_pair_mode_frontier/
+    run-001/POSITIVE_RESULT.json
+  sha256 e18b93e374318077752a6b054e228a66c67aecfae14e152900613138f3fc1d66
+
+Secondary total run:
+  research_lab/local/zero_condition/E056_causal_pair_mode_frontier/
+    run-001/RESULT.json
+  sha256 f515b94165bed656f567de2f6be63759d98f4fb3e4628538810650962e74dab8
+
+Total<=138 discriminator:
+  research_lab/local/zero_condition/E056_causal_pair_mode_frontier/
+    run-001/BOUND_RESULT.json
+  sha256 bfc79533c00666cca856bff170b6530ab850f3ae30b9db8103f54ffd25ee67fb
+
+Primary verdict:
+  MODE_FRONTIER_ONE_ZERO_OPTIMAL
+
+Secondary status:
+  NONTERMINAL
+
+Exact scope
+-----------
+E056 fixes occupied geometry and the E054 causal body relation. Every operation
+and mode outside the merged fourteen-body 6x4 block is fixed. Inside that block:
+
+  the selected causal pair operations stay fixed
+  all other operation assignments are free
+  all previously admitted same-body port modes are free
+  binding remains free
+  fine_buckwheat_powder mismatch is fixed to zero
+
+Fidelity calibration
+--------------------
+The materialized E055 state recalibrates exactly:
+
+  status                  OPTIMAL
+  total mismatch              139
+  positive commodities         18
+  zero commodity
+    fine_buckwheat_powder
+
+Primary positive-count result
+-----------------------------
+With the admitted 6x4 mode and operation variables free, the primary solve proves:
+
+  status                  OPTIMAL
+  best bound                  18
+  positive commodity count    18
+  zero commodities             1
+  elapsed                   97.60 s
+
+Therefore no state in this bounded mode/assignment context can create a second
+zero. The selected causal relation remains necessary only as a context premise;
+the exact optimizer may reassign the other operations and modes freely.
+
+The arbitrary positive-count optimum has total mismatch 151. It is not adopted as
+the active construction state.
+
+Secondary total result
+----------------------
+A fresh model fixes positive count to 18 and minimizes total mismatch. After 180
+seconds it returns UNKNOWN without a terminal objective. A second decision model
+fixes positive count 18 and asks whether total mismatch can be at most 138. After
+210 seconds it also returns UNKNOWN.
+
+The previously materialized E055 18/139 state is a valid witness inside this wider
+E056 context, so the secondary optimum is known to be at most 139. The current
+runs do not prove whether 138 or lower exists. No secondary saturation claim is
+made.
+
+Decision effect
+---------------
+The first-zero operation/port-mode language is closed for the primary progress
+measure:
+
+  causal relation
+    -> operation assignment: positive optimum 18
+    -> admitted same-body modes: positive optimum 18
+
+Do not spend the next research step merely shaving total mismatch while positive
+count remains fixed. Retain the verified E055 18/139 witness as the active state.
+Select the next candidate zero by a fresh structured-cause audit of the remaining
+18 commodities, starting from the lowest mismatch values but ranking causal
+compressibility and available consumer freedom rather than scalar size alone.
+
+Object and search boundary
+--------------------------
+The primary theorem does not depend on the unfinished secondary solve. Conversely,
+UNKNOWN on total and on the <=138 discriminator is not evidence that 139 is
+optimal. The distinction is explicit:
+
+  positive commodity count  exact at 18
+  best known total at 18     139
+  exact minimum total at 18  unknown in E056
+
+Truth boundary
+--------------
+E056 does not release new occupied-body poses, unregistered modes, additional
+rescue relations, or non-6x4 assignments. It does not establish component
+compatibility, enter routing, update U/L, or grant certification.
+
+Implementation identities
+-------------------------
+Primary runner:
+  sha256 840a30a26e25c485e71b4891dbc68dc9e2c18d8608ffcc0404eda512d17d9e34
+
+Secondary runner:
+  sha256 051cb1ba91cc5d3bdc0b0bc74349363b2ac2b1b63ad74e2022118b850bcbc55c
+
+Bound discriminator:
+  sha256 468d9397bfde83a8d0221266541626f3ca5089dd46407360f5e4ff1a3b34a387

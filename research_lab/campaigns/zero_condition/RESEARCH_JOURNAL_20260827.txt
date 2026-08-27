@@ -149,3 +149,50 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-27
   第二个零不在 operation assignment 轴里。这个层已经完整闭合为 lexicographic optimum
   (18,139)。下一层只释放已登记的 same-body port modes，仍然不动 occupied geometry；若
   positive count 仍精确等于 18，再从剩余商品的结构化 cause 选择新的 rescue/body context。
+
+2026-08-27 11:44
+----------------
+数据：
+  E056 POSITIVE_RESULT.json
+  research_lab/local/zero_condition/E056_causal_pair_mode_frontier/
+    run-001/POSITIVE_RESULT.json
+  sha256 e18b93e374318077752a6b054e228a66c67aecfae14e152900613138f3fc1d66
+
+注意／发现：
+  causal relation 保持不变，14-body 6x4 block 的 operation assignment 和已登记 same-body
+  modes 全部放开。positive count 仍被精确证明为 18；第二个零没有藏在 mode 层里。
+
+推理：
+  当前 first-zero inner language 的 primary 能力已经闭合：relation 产生第一个零，assignment
+  与 mode 都不能再产一个。下一步不能继续扩大同一自由度或只压总和，必须换 commodity
+  cause 或 body/rescue context。
+
+2026-08-27 11:48
+----------------
+数据：
+  E056 RESULT.json
+  research_lab/local/zero_condition/E056_causal_pair_mode_frontier/run-001/RESULT.json
+  sha256 f515b94165bed656f567de2f6be63759d98f4fb3e4628538810650962e74dab8
+
+注意／发现：
+  固定 positive count=18 后最小化 total，180 秒返回 UNKNOWN，没有 terminal objective。
+  但 E055 的 18/139 witness 明确属于这个更宽 context，所以 best known 仍是 139。
+
+推理：
+  primary 结论不依赖 secondary 是否闭合。为了避免又被总和拖回惯性，只再做一次更窄的
+  total<=138 证伪；若仍不终结，就保留 18/139，转向下一商品 cause。
+
+2026-08-27 11:52
+----------------
+数据：
+  E056 BOUND_RESULT.json
+  research_lab/local/zero_condition/E056_causal_pair_mode_frontier/run-001/BOUND_RESULT.json
+  sha256 bfc79533c00666cca856bff170b6530ab850f3ae30b9db8103f54ffd25ee67fb
+
+注意／发现：
+  positive=18 且 total<=138 的直接 feasibility 问题在 210 秒后仍是 UNKNOWN。
+
+推理：
+  不把 UNKNOWN 写成 139 最优，也不继续为 secondary bound 烧主线预算。当前最诚实状态是：
+  positive count 精确为 18，已知 witness total=139，exact secondary minimum 未知。下一轮从
+  剩余 18 种商品里重新做结构化 cause 选择，首要目标仍是 18 -> 17。
