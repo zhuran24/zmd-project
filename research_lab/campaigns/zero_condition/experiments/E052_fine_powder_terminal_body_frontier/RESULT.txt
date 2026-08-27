@@ -1,0 +1,120 @@
+E052 RESULT: NO RELEVANT ONE-BODY MOVE CAN CREATE THE FIRST ZERO
+================================================================
+
+Status
+------
+Completed as research-only exact single-commodity body-frontier evidence. No
+component-compatible all-commodity binding, exact routing, whole-layout witness,
+certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/E052_fine_powder_terminal_body_frontier/
+    run-001/RESULT.json
+
+SHA-256:
+  6f96f86d21d956f82edbb5995440676910691d5b30ada76cdb5e49cbb0049e8c
+
+Verdict:
+  ONE_BODY_FIRST_ZERO_INFEASIBLE_ASSIGNMENT_BLOCK_INCOMPLETE
+
+Decision:
+  MERGE_RELEVANT_6X4_BODIES_INTO_ASSIGNMENT_CONTEXT
+
+Target
+------
+E051 proves the current bounded joint context cannot make any commodity reach
+component mismatch zero. The closest commodity at the E050 endpoint is:
+
+  fine_buckwheat_powder = 1
+
+Its three `grinder_fine_buckwheat` sources lie in one source-only component, while
+its three `filling_capsule` sinks lie in other components.
+
+Same-body mode audit
+--------------------
+Every same-body pose mode of the six directly relevant instances is enumerated in
+the exact front-filtered owner domain.
+
+The three source grinders remain confined to the same source-only component under
+both modes. The three capsule sinks can reach components 4, 15, 21, or 40, but not
+the source-only component; one capsule alternate mode has an empty owner domain.
+Therefore port-mode expansion alone cannot create the first zero.
+
+One-body frontier
+-----------------
+E052 then exhausts every placement- and power-valid fixed-outside pose alternative
+of the six instances:
+
+  total alternatives       44
+  body-changing alternatives 38
+  zero-bearing candidates    0
+
+Exact target minima are:
+
+  grinder_fine_buckwheat_004   1
+  grinder_fine_buckwheat_005   1
+  grinder_fine_buckwheat_006   1
+  filling_capsule_001          4
+  filling_capsule_002          3
+  filling_capsule_003          1
+
+Every OPTIMAL target witness is checked against production routing precheck by the
+E004 single-commodity compiler. No one-body candidate makes
+`fine_buckwheat_powder` component-compatible.
+
+Assignment-context gap
+----------------------
+The live merged 6x4 assignment block contains ten bodies, including
+`filling_capsule_001` and `filling_capsule_003`. Four directly relevant bodies are
+outside the block:
+
+  filling_capsule_002
+  grinder_fine_buckwheat_004
+  grinder_fine_buckwheat_005
+  grinder_fine_buckwheat_006
+
+E052 freezes a proposed fourteen-footprint merged 6x4 block with operation
+multiset:
+
+  filling_capsule             3
+  grinder_dense_blue_iron     4
+  grinder_dense_source        1
+  grinder_fine_buckwheat      5
+  packaging_battery           1
+
+This is the smallest current context that allows a capsule sink operation to
+inherit a right-edge source body while a fine-powder grinder operation moves to a
+sink-side body, without introducing another external body-relocation language.
+
+Proposed block:
+  research_lab/local/zero_condition/E052_fine_powder_terminal_body_frontier/
+    run-001/PROPOSED_6X4_BLOCK.json
+
+SHA-256:
+  faf0e48478218c15561230090f672717ec5d0c3b6f1a2be297b7300414842437
+
+Architecture effect
+-------------------
+The first-zero obstruction has now rejected two lighter axes:
+
+  same-body port modes of the six direct terminals
+  fixed-outside one-body relocation of the six direct terminals
+
+The next inner object is not a larger global geometry portfolio. It is a targeted
+operation-to-body expansion inside the existing joint assignment/binding
+consumer. The new context must recalibrate the objective-139 state before any
+first-zero or total-mismatch result is interpreted.
+
+Truth boundary
+--------------
+E052 exhausts only six named instances and their placement-/power-valid
+fixed-outside pose alternatives on E050 Seed C. It does not exhaust simultaneous
+body moves, the proposed merged assignment block, global geometry, routing,
+throughput, U/L, or certification.
+
+Evidence identities
+-------------------
+Runner SHA-256:
+  2539c2b4fce6ddeeb4a9520b7dfe947f9e1163f1cd212321fa483ad96245b658

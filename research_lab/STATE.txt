@@ -162,11 +162,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Which one-body or operation-to-body extension among the three
-`grinder_fine_buckwheat` sources and three `filling_capsule` sinks can make
-`fine_buckwheat_powder` component-compatible, now that the complete objective-139
-joint context and all six same-body mode axes are proved unable to produce any
-first zero?
+Can the fourteen-footprint merged 6x4 assignment context, formed by adding
+`filling_capsule_002` and the three right-edge `grinder_fine_buckwheat` bodies to
+the live ten-footprint block, recalibrate objective 139 and produce the first
+zero commodity before any wider geometry language is introduced?
 
 Current campaign posture
 ------------------------
@@ -482,13 +481,20 @@ positive commodities in the same context is INFEASIBLE. No internal mode,
 operation-assignment, or binding choice can create even one zero.
 
 The nearest obstruction is `fine_buckwheat_powder = 1`. Its three source grinders
-all feed a source-only component on the right boundary. Exhaustive same-body mode
-inspection keeps every source in that component, while the three capsule sinks
-reach only components 4, 15, 21, or 40; one sink mode is domain-empty. The next
-context must therefore release relevant occupied-body placement or add an
-operation-to-body destination outside the current block set. Proposal must be
-ranked first by whether it crosses 19/19 -> 18/19, then by total mismatch. A fully
-zero state enters routing immediately.
+all feed a source-only component on the right boundary. E052 exhausts all six
+same-body mode surfaces and all 44 placement-/power-valid fixed-outside pose
+alternatives of the three sources and three capsule sinks; none reaches target
+mismatch zero. Source minima remain one, while capsule minima are four, three, and
+one.
+
+Four relevant 6x4 bodies are still outside the live assignment block:
+`filling_capsule_002` and all three right-edge fine-powder grinders. The next
+context merges those bodies into the existing ten-footprint 6x4 block, allowing
+capsule and grinder operations to exchange footprints while geometry stays fixed.
+It must first recalibrate objective 139, then minimize positive commodity count
+before total mismatch. Failure to create a first zero closes operation assignment
+on this obstruction and forces a native simultaneous body context. A fully zero
+state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

@@ -1960,6 +1960,39 @@ evidence:
   runner sha256
   e287c3c4323494b894792435b44fe2c23458345ca2f7409b06309170e9c4ca87.
 
+R-ZC-063  Direct fine-powder terminals cannot cross the first-zero boundary one body at a time
+------------------------------------------------------------------------------------------------
+status: exact same-body mode audit and 44 fresh single-commodity body-frontier solves
+scope: six fine_buckwheat_powder source/sink instances under fixed E050 Seed C outside geometry
+
+statement:
+  E052 exhausts all same-body modes and all 44 placement-/power-valid pose
+  alternatives of the three `grinder_fine_buckwheat` sources and three
+  `filling_capsule` sinks. Thirty-eight alternatives change occupied body. No
+  candidate reaches target mismatch zero. Source-grinder minima remain one; the
+  three capsule minima are four, three, and one. Same-body source modes stay in
+  the source-only component, while sink modes reach components 4, 15, 21, or 40.
+
+non-implications:
+  This does not prove the target commodity globally unavoidable, reject
+  simultaneous moves, or exhaust operation-to-body reassignment. Outside geometry
+  and every other body remain fixed.
+
+effect on next problem:
+  Stop moving these six bodies individually. Four relevant 6x4 bodies remain
+  outside the current ten-footprint assignment block: one capsule and all three
+  right-edge fine-powder grinders. Merge them into a fourteen-footprint 6x4 block,
+  recalibrate objective 139, and optimize positive commodity count before total
+  mismatch. This tests operation-to-body transfer before any wider geometry model.
+
+evidence:
+  E052 RESULT.txt; local RESULT.json sha256
+  6f96f86d21d956f82edbb5995440676910691d5b30ada76cdb5e49cbb0049e8c;
+  proposed block sha256
+  faf0e48478218c15561230090f672717ec5d0c3b6f1a2be297b7300414842437;
+  runner sha256
+  2539c2b4fce6ddeeb4a9520b7dfe947f9e1163f1cd212321fa483ad96245b658.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

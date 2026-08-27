@@ -45,3 +45,23 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-27
   第一个零不可能靠给现有六台 source/sink 机器单独开放 port mode 得到。至少要移动一具
   relevant body，或者把 filling_capsule / grinder operation 分配到一个能跨组件的 6x4
   body。下一问应围绕这六台机器的 body mobility，而不是重新做全局 coverage 排名。
+
+2026-08-27 10:10
+----------------
+数据：
+  E052 RESULT.json
+  research_lab/local/zero_condition/E052_fine_powder_terminal_body_frontier/
+    run-001/RESULT.json
+  sha256 6f96f86d21d956f82edbb5995440676910691d5b30ada76cdb5e49cbb0049e8c
+
+注意／发现：
+  把三台 source grinder 和三台 capsule sink 的所有合法 pose 都跑完了。44 个 alternative，
+  其中 38 个真的改变 body，没有一个让 fine_buckwheat_powder 归零。三台 grinder 最好
+  仍是 1；三个 capsule 最好分别是 4、3、1。
+
+推理：
+  “先搬一台直接相关机器”这条动作语言已经穷尽。真正还没开放的是 operation-to-body
+  assignment：当前 6x4 block 只有 10 个 body，filling_capsule_002 和右边三台 fine grinder
+  都在 block 外。把它们并进同一个 14-footprint block，可能让 capsule sink 继承右边 body，
+  同时让 grinder source 去现有 sink-side body。这比继续加全局 geometry 候选更窄，也更贴
+  当前唯一 mismatch=1 的因果结构。

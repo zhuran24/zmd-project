@@ -1,0 +1,61 @@
+EXPERIMENT E052: FINE-BUCKWHEAT TERMINAL BODY FRONTIER
+======================================================
+
+Question
+--------
+After E051 proves the current bounded joint context cannot produce any first zero,
+can one body move among the three `grinder_fine_buckwheat` sources and three
+`filling_capsule` sinks make `fine_buckwheat_powder` component-compatible under
+fixed outside geometry? If not, what is the smallest operation-to-body context
+suggested by the obstruction?
+
+Why this experiment
+-------------------
+`fine_buckwheat_powder` is the only commodity at mismatch one in the objective-139
+endpoint. Its three source fronts lie in one source-only component; all capsule
+sinks lie elsewhere. This is the narrowest available first-zero target and avoids
+returning to global shared-sum descent.
+
+Method
+------
+E052 reconstructs the exact E050 Seed C placement and E051 context. For the six
+relevant named instances it:
+
+1. enumerates every same-body port mode and records every component reachable by
+   the target commodity in the exact front-filtered owner domain;
+2. enumerates every placement- and power-valid fixed-outside pose alternative;
+3. for each candidate, builds a fresh binding model and minimizes only
+   `fine_buckwheat_powder` component mismatch;
+4. verifies every OPTIMAL target witness against production routing precheck;
+5. identifies which relevant 6x4 bodies already belong to the current merged
+   assignment block and which remain outside it.
+
+No candidate is selected by shared mismatch sum unless it first reaches target
+mismatch zero.
+
+Decision rule
+-------------
+Any one-body candidate reaches target mismatch zero
+  Materialize the distinct zero-bearing geometries and revalue them under a
+  positive-count-constrained joint middle model.
+
+No one-body candidate reaches zero, but relevant bodies remain outside the current
+6x4 assignment block
+  Merge those bodies into one operation-to-footprint context before moving more
+  geometry. This tests whether a filling-capsule sink can inherit a right-edge
+  body while a grinder source moves to an existing sink-side body.
+
+No one-body zero and every relevant body is already in the block
+  Move to a native simultaneous body context selected by the target boundary.
+
+Truth boundary
+--------------
+E052 exhausts only fixed-outside one-body alternatives of six target instances on
+the E050 Seed C placement. It does not exhaust simultaneous body moves, broader
+operation assignment, global geometry, routing, U/L, or certification.
+
+Result
+------
+Completed. All six same-body mode surfaces miss the source-only component, and all
+44 placement-/power-valid pose alternatives retain positive target mismatch. Four
+relevant 6x4 bodies remain outside the live assignment block. See RESULT.txt.
