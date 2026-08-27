@@ -148,6 +148,7 @@ VOLATILE_KEYS = {
     "wall_time",
     "branches",
     "conflicts",
+    "domain_build_seconds",
     "runner_sha256",
     "research_head",
     "tracked_status",
@@ -448,6 +449,200 @@ def stable_result_record(
     }
 
 
+def normalized_pattern_set(payload: Mapping[str, Any]) -> list[str]:
+    return sorted(
+        json.dumps(
+            scientific_projection(row),
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        for row in payload["patterns"]
+    )
+
+
+def optimization_summary(payload: Mapping[str, Any]) -> dict[str, Any]:
+    projected = scientific_projection(payload)
+    projected.pop("presence", None)
+    return projected
+
+
+def representative_difference(
+    *,
+    label: str,
+    old: Mapping[str, Any],
+    fresh: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    old_presence = old.get("presence")
+    fresh_presence = fresh.get("presence")
+    if old_presence == fresh_presence:
+        return None
+    return {
+        "label": label,
+        "old_presence": old_presence,
+        "fresh_presence": fresh_presence,
+    }
+
+
+def verify_e059(
+    old: Mapping[str, Any],
+    fresh: Mapping[str, Any],
+) -> dict[str, Any]:
+    for key in ("verdict", "decision"):
+        if old.get(key) != fresh.get(key):
+            raise RuntimeError(f"E059 source replay changed {key}")
+    old_other = scientific_projection(old)
+    fresh_other = scientific_projection(fresh)
+    for payload in (old_other, fresh_other):
+        payload.pop("tradeoffs", None)
+        payload.pop("qiaoyu_hard_optimum_face", None)
+    if old_other != fresh_other:
+        raise RuntimeError("E059 non-tradeoff scientific fields changed")
+
+    representative_differences: list[dict[str, Any]] = []
+    old_tradeoffs = old["tradeoffs"]
+    fresh_tradeoffs = fresh["tradeoffs"]
+    if set(old_tradeoffs) != set(fresh_tradeoffs):
+        raise RuntimeError("E059 tradeoff-arm set changed")
+    for name in sorted(old_tradeoffs):
+        if optimization_summary(old_tradeoffs[name]) != optimization_summary(
+            fresh_tradeoffs[name]
+        ):
+            raise RuntimeError(f"E059 tradeoff arm changed: {name}")
+        difference = representative_difference(
+            label=name,
+            old=old_tradeoffs[name],
+            fresh=fresh_tradeoffs[name],
+        )
+        if difference is not None:
+            representative_differences.append(difference)
+
+    old_face = old["qiaoyu_hard_optimum_face"]
+    fresh_face = fresh["qiaoyu_hard_optimum_face"]
+    for key in (
+        "common_sink_components",
+        "common_source_components",
+        "exact_relaxed_pattern_sets_equal",
+        "sink_only_component_class",
+        "source_only_component_class",
+    ):
+        if old_face.get(key) != fresh_face.get(key):
+            raise RuntimeError(f"E059 optimum-face field changed: {key}")
+    face_digests: dict[str, str] = {}
+    for arm in ("exact", "relaxed"):
+        old_arm = old_face[arm]
+        fresh_arm = fresh_face[arm]
+        for key in ("status", "complete", "pattern_count"):
+            if old_arm.get(key) != fresh_arm.get(key):
+                raise RuntimeError(f"E059 {arm} face changed: {key}")
+        old_patterns = normalized_pattern_set(old_arm)
+        fresh_patterns = normalized_pattern_set(fresh_arm)
+        if old_patterns != fresh_patterns:
+            raise RuntimeError(f"E059 {arm} optimum-face pattern set changed")
+        face_digests[arm] = hashlib.sha256(
+            "\n".join(old_patterns).encode("utf-8")
+        ).hexdigest()
+    return {
+        "label": "E059",
+        "status": "OBJECTIVES_AND_COMPLETE_FACE_IDENTICAL",
+        "verdict": fresh.get("verdict"),
+        "decision": fresh.get("decision"),
+        "face_pattern_set_digests": face_digests,
+        "representative_difference_count": len(representative_differences),
+        "representative_differences": representative_differences,
+    }
+
+
+def repair_summary(payload: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "feasible_filling_components": payload["feasible_filling_components"],
+        "feasible_grinder_components": payload["feasible_grinder_components"],
+        "filling": sorted(
+            (int(row["component"]), str(row["status"]))
+            for row in payload["filling_capsule"]
+        ),
+        "grinder": sorted(
+            (int(row["component"]), str(row["status"]))
+            for row in payload["grinder_fine_buckwheat"]
+        ),
+    }
+
+
+def verify_e060(
+    old: Mapping[str, Any],
+    fresh: Mapping[str, Any],
+) -> dict[str, Any]:
+    for key in ("verdict", "decision"):
+        if old.get(key) != fresh.get(key):
+            raise RuntimeError(f"E060 source replay changed {key}")
+    old_other = scientific_projection(old)
+    fresh_other = scientific_projection(fresh)
+    for payload in (old_other, fresh_other):
+        payload.pop("arms", None)
+        payload.pop("qiaoyu_hard_optimum_face", None)
+        payload.pop("single_signature_repairs", None)
+    if old_other != fresh_other:
+        raise RuntimeError("E060 non-arm scientific fields changed")
+
+    representative_differences: list[dict[str, Any]] = []
+    old_arms = old["arms"]
+    fresh_arms = fresh["arms"]
+    if set(old_arms) != set(fresh_arms):
+        raise RuntimeError("E060 arm set changed")
+    for name in sorted(old_arms):
+        if optimization_summary(old_arms[name]) != optimization_summary(
+            fresh_arms[name]
+        ):
+            raise RuntimeError(f"E060 arm changed: {name}")
+        difference = representative_difference(
+            label=name,
+            old=old_arms[name],
+            fresh=fresh_arms[name],
+        )
+        if difference is not None:
+            representative_differences.append(difference)
+
+    old_face = old["qiaoyu_hard_optimum_face"]
+    fresh_face = fresh["qiaoyu_hard_optimum_face"]
+    for key in (
+        "all_selected_sink_components",
+        "common_sink_components",
+        "common_source_components",
+        "exact_relaxed_pattern_sets_equal",
+        "sink_only_component_class",
+        "source_only_component_class",
+    ):
+        if old_face.get(key) != fresh_face.get(key):
+            raise RuntimeError(f"E060 optimum-face field changed: {key}")
+    face_digests: dict[str, str] = {}
+    for arm in ("exact", "relaxed"):
+        old_arm = old_face[arm]
+        fresh_arm = fresh_face[arm]
+        for key in ("status", "complete", "pattern_count"):
+            if old_arm.get(key) != fresh_arm.get(key):
+                raise RuntimeError(f"E060 {arm} face changed: {key}")
+        old_patterns = normalized_pattern_set(old_arm)
+        fresh_patterns = normalized_pattern_set(fresh_arm)
+        if old_patterns != fresh_patterns:
+            raise RuntimeError(f"E060 {arm} optimum-face pattern set changed")
+        face_digests[arm] = hashlib.sha256(
+            "\n".join(old_patterns).encode("utf-8")
+        ).hexdigest()
+    if repair_summary(old["single_signature_repairs"]) != repair_summary(
+        fresh["single_signature_repairs"]
+    ):
+        raise RuntimeError("E060 synthetic repair outcomes changed")
+    return {
+        "label": "E060",
+        "status": "OBJECTIVES_AND_COMPLETE_FACE_IDENTICAL",
+        "verdict": fresh.get("verdict"),
+        "decision": fresh.get("decision"),
+        "face_pattern_set_digests": face_digests,
+        "representative_difference_count": len(representative_differences),
+        "representative_differences": representative_differences,
+    }
+
+
 def improvement_identity(row: Mapping[str, Any]) -> tuple[Any, ...]:
     tradeoff = dict(row["tradeoff"])
     return (
@@ -571,8 +766,14 @@ def verify_all() -> dict[str, Any]:
 
     stable = [
         stable_result_record(label, old_results[label], fresh_results[label])
-        for label in ("E057", "E058", "E059", "E060", "E061")
+        for label in ("E057", "E058", "E061")
     ]
+    stable.extend(
+        [
+            verify_e059(old_results["E059"], fresh_results["E059"]),
+            verify_e060(old_results["E060"], fresh_results["E060"]),
+        ]
+    )
     e062 = verify_e062(old_results["E062"], fresh_results["E062"])
     result = {
         "schema": "zmd_zero_condition_e065_source_stable_replay_v1",
