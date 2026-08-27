@@ -1,0 +1,498 @@
+ZERO-CONDITION RESEARCH JOURNAL
+===============================
+
+范围
+----
+2026-08-25 13:56 至 2026-08-26 18:52，时区 America/New_York。
+
+记录规则
+--------
+* “数据”只给机器结果、冻结端点或耐久汇总的指针。
+* “注意／发现”和“推理”从当时的会话可见表述、EXPERIMENT、RESULT、STATE
+  与 Git 提交中抽取，尽量保留当时措辞。没有留下逐字句子的地方标为〔重构〕。
+* 本日志记录研究如何改变下一题，不把后来知道的结论提前塞回早期条目。
+* 所有 objective 都是研究用 shared component-mismatch，不是项目正式目标、
+  下界、完整布局见证或认证结论。
+
+2026-08-25 13:56
+数据：git:d5b61f9；experiments/E001_pocket_cut_replay/EXPERIMENT.txt
+注意／发现：我不想先造完整 Judgment 平台。先让一条已经独立检查过的四姿态
+  口袋判断真实回灌 master，看看它是否真的改变下一道问题。
+推理：外环先只长出冻结输入、命题、运输检查、lowering 和后继终态这几个必需
+  器官。平台不能先于知识生产。
+
+2026-08-25 14:13
+数据：local/zero_condition/E001_pocket_cut_replay/run-002/RESULT.json
+注意／发现：四姿态 cut 只增加一条约束，master 得到替代布局；但替代布局仍在
+  component support 死亡，exact routing 没有进入。
+推理：这条判断确实把死亡向下游推了一层。下一步不能回到完整 selection nogood，
+  要按 static port domain、terminal uniqueness、component support、routing 的顺序拆死因。
+
+2026-08-25 14:19
+数据：RESULTS.txt，R-ZC-008；E001 lowering audit
+注意／发现：具名实例证书不直接住在 group-pose consumer 的变量空间里；具名实例
+  churn 也不是布局距离。大模型上的 ConstraintProto.has_linear() 还会直接崩溃。
+推理：以后证书到 consumer 必须显式证明运输；状态距离要用 group-pose 语义；
+  关键检查不能依赖这个不安全的原生 proto introspection 表面。
+
+2026-08-25 14:24
+数据：local/zero_condition/E002_component_commodity_core/run-001/RESULT.json
+注意／发现：我先把 component failure 缩成 commodity assumptions，blue_iron_block
+  单独就能杀死原 A1；但替代布局看起来不再只是一个蓝铁口袋。
+推理：不要把已有解释硬套到新布局。继续问每个商品单独启用 component support
+  时会怎样。
+
+2026-08-25 14:26
+数据：local/zero_condition/E002_component_commodity_core/run-002/FAILURE.json
+注意／发现：ClearAssumptions 后重复求解，SufficientAssumptionsForInfeasibility()
+  返回了上一轮残留 literal。这个 API 在当前 OR-Tools/Python 组合里会给陈旧 core。
+推理：core 诊断不能在同一模型上反复切 assumptions。每个 singleton 必须重建新模型，
+  或者完全不用这个 API 做承重判断。
+
+2026-08-25 14:31
+数据：local/zero_condition/E002_component_commodity_core/run-004/RESULT.json
+注意／发现：19 个 fresh model 全部独立复现 INFEASIBLE。替代布局不是某一个商品
+  的局部事故，而是 19/19 商品都被 component fragmentation 卡住。
+推理：停止围绕单一蓝铁口袋继续挖。先用另一种目标直接测每个商品不可避免的
+  component mismatch，再决定是局部 separator 还是正向 permeability 表示。
+
+2026-08-25 15:54
+数据：local/zero_condition/E004_component_mismatch_atlas/run-001/RESULT.json
+注意／发现：19 个商品的 minimum mismatch 全部严格为正，范围 4 到 32；边界规模
+  从 3 个 owner 到 154 个 owner 都有。
+推理：这更像全局碎裂，不像一两个可枚举口袋。我要先测形态是否可压缩，再选择
+  “局部障碍家族”还是“正向可渗透空间”。
+
+2026-08-25 16:08
+数据：local/zero_condition/E005_component_morphology_and_f4_gap/run-001/RESULT.json
+注意／发现：component shape 很重复，但 owner/pose 因果边界是长尾。历史 F4 验证的
+  是相邻对象，而且当前没有 live consumer、没有 compiler、没有 placement cause。
+推理：不能把“已有 validator”误当作“已有被消费的规则”。主方向转向 solver-chosen
+  permeability proxy，局部 cut 只作次级工具。
+
+2026-08-25 16:20
+数据：local/zero_condition/E006_free_adjacency_master/run-001/RESULT.json
+注意／发现：把 free adjacency 直接做成全模型目标，预算主要烧在 presolve，没有
+  给出可解释的构造进展。
+推理：语义该放在哪一层，和用哪个 solver container 承载，是两件事。不要因为
+  monolithic encoding 失败就撤销 permeability 这个知识位置。
+
+2026-08-25 16:32
+数据：local/zero_condition/E006_free_adjacency_master/run-003/RESULT.json
+注意／发现：同一语义放进 complete-hint LNS 后得到候选。free adjacency 1081→1166，
+  component 97→91，power pole 64→54。
+推理：可渗透性和 optional-obstacle economy 都是 placement 的真实构造资源。马上送
+  exact interface，不能只看 proxy 变好。
+
+2026-08-25 16:40
+数据：local/zero_condition/E007_permeability_interface/run-001/RESULT.json
+注意／发现：E006 候选在 cheap component-aware binding 中 0.013 秒即 INFEASIBLE；
+  exact routing 仍未进入。
+推理：permeability 有用但不充分。cheap component-aware binding 应固定成为 routing
+  前的接口闸，下一步比较真实 mismatch，不急着再换表示。
+
+2026-08-25 16:43
+数据：local/zero_condition/E008_permeability_mismatch_delta/run-001/RESULT.json
+注意／发现：总 mismatch 281→214，但 surviving binding patterns 反而减少。连通性改善
+  同时挤压了 terminal exposure。
+推理：free-space connectivity 和 usable terminal exposure 共用 placement 变量，必须
+  在同一构造上下文里考虑，不能各自单独优化后期待自然兼容。
+
+2026-08-25 17:04
+数据：local/zero_condition/E009_selected_pattern_linearization/run-001/FAILURE.json；
+  E009/EXPERIMENT.txt
+注意／发现：raw front_clear 总和在 E006 上更高，真实 surviving patterns 却更低。
+  它把未选 pose 的假想 terminal 也算进去了，目标对象空间错了。
+推理：front_clear 只能是局部 primitive。新分数必须条件化在 selected group pose 和
+  当前 occupancy 上。
+
+2026-08-25 17:09
+数据：local/zero_condition/E009_selected_pattern_linearization/run-001/RESULT.json
+注意／发现：selected-pose contextual pattern score 预测 13374，真实得到 13390，误差
+  仅 16；surviving patterns 比 E006 多 1101，component 91→83。
+推理：外环第一次有了忠实的正向 producer：从当前 context 推局部系数，在 trust
+  region 内移动，再由 exact interface 重算，不能把系数假装成全局定理。
+
+2026-08-25 17:12
+数据：local/zero_condition/E010_pattern_exposed_mismatch_delta/run-001/RESULT.json
+注意／发现：总 mismatch 281→214→196。permeability 与 exposure 的交替确实继续买到
+  真正接口收益，但没有一个商品归零。
+推理：再做一次受 guard 的 permeability 步。如果 exact mismatch 不再跟随，就停止
+  scalar alternation，转 bounded joint placement-binding。
+
+2026-08-25 17:24
+数据：local/zero_condition/E011_guarded_joint_step/run-001/RESULT.json
+注意／发现：pattern guard 下，free adjacency、真实 patterns、free cells 和 pole count
+  可以同时改善；component-aware binding 仍 INFEASIBLE。
+推理：这只证明两个 scalar resource 能共存，不证明它们解释 residual component rule。
+  先测 exact mismatch，不继续凭“指标都变好”自我说服。
+
+2026-08-25 17:26
+数据：local/zero_condition/E012_joint_step_mismatch_delta/run-001/RESULT.json
+注意／发现：scalar 全部变好，exact mismatch 却 196→198。residual rule 取决于 selected
+  source/sink 落在哪些 component，不是全局几何总量。
+推理：停止 scalar alternation。下一层要让局部 pose movement 和 component-aware
+  terminal selection 同住，scalar 只作 hint 或 secondary objective。
+
+2026-08-26 05:42 至 05:49
+数据：local/zero_condition/E013_residual_boundary_coverage/run-001..004/
+注意／发现：前三次先后暴露 owner cells、component role 和 coverage-equivalence 的
+  重建错误。修正后，196 个 residual observations 可由 32 个 literal 全覆盖；小预算
+  在变量上紧凑，但空间上分散，单一窗口不够。
+推理：拒绝 pole-only 和 single-window 两种先验。先测高覆盖 literal 的真实 mobility，
+  再由 static domain 与 exact mismatch 定价。
+
+2026-08-26 06:11
+数据：local/zero_condition/E014_fixed_outside_mobility/run-001/RESULT.json
+注意／发现：15 个制造目标共有 425 个 placement/power-valid alternatives；287 个先死于
+  empty owner domain，135 个 base-feasible 状态全部仍死于 component support。
+推理：fixed-outside unary 已经不能跨墙。先把 aggregate binding capacity 从 component
+  support 前面分出来，再用一个 shared binding objective 选耦合对象。
+
+2026-08-26 06:26
+数据：local/zero_condition/E015_shared_binding_gradient/run-001/RESULT.json
+注意／发现：独立 commodity minima 的和是 196，但一个共同 binding 的真实 optimum 是
+  200。最佳 unary move 把 200→186；protocol-core 另有 48/49 对 52 的 aggregate slot
+  shortage，和 topology 无关。
+推理：以后只用一个 shared binding 给状态定价。接口顺序增加 aggregate resource
+  feasibility；下一步固定最佳 move，释放最强 residual partner。
+
+2026-08-26 06:43
+数据：local/zero_condition/E016_coupled_pair_search/run-001/RESULT.json
+注意／发现：第一个证据驱动 pair 继续把 186→178，说明两个局部梯度能组合，而不是
+  互相抵消。
+推理：保留 pair，开一个小型 third-member portfolio；只有 shared mismatch 到零才进
+  routing，不能把下降本身当成功。
+
+2026-08-26 06:54
+数据：local/zero_condition/E017_third_member_portfolio/run-001/RESULT.json
+注意／发现：176 有十二个并列状态，来自不同 operation family；coverage leader 反而
+  只到 180。
+推理：单一 greedy lineage 已不可信。再做一个受控 fourth step，然后切到小 beam 或
+  simultaneous pose-binding。
+
+2026-08-26 07:04
+数据：local/zero_condition/E018_fourth_member_stop_test/run-001/RESULT.json
+注意／发现：代表分支 176→174，但另外十一条 176 分支仍活着。这是有效增益，也是
+  预设的单线停止点。
+推理：结束一条线顺着数字爬。beam state 不能只保留最先出现的 optimum，要保留不同
+  placement、free-space 和 binding identity。
+
+2026-08-26 07:30
+数据：local/zero_condition/E019_beam_common_action/run-002/RESULT.json
+注意／发现：同一个 grinder action 在十二个不同 parent 上全部 176→178。状态表示很
+  不同，不代表这个动作的 continuation value 不同。
+推理：把 causal coverage 与 exact action value 分开记账。保留 parent，丢弃 grinder
+  descendants，用另一个已知 composing action 测真正的 branch divergence。
+
+2026-08-26 07:40
+数据：local/zero_condition/E020_beam_refinery_action/run-001/RESULT.json
+注意／发现：八个 parent 的 best value 都是 174，但可行动域、objective histogram、
+  best geometry 和 binding identity 明显不同。
+推理：beam state 至少有三层身份：score/optimum face、action-response domain、
+  placement/binding witness。相同分数不能直接商掉。
+
+2026-08-26 07:49
+数据：local/zero_condition/E021_fifth_step_class_probe/run-001/RESULT.json
+注意／发现：四类 parent 对同一 action 都 174→173，但 feasible children 是 11、13、
+  23、11，状态仍不同。
+推理：只对“已测动作的 value”做 action-specific quotient，不能全局合并状态。下一步
+  比较 residual ranking；若 unary gain 继续变小，就转 simultaneous neighborhood。
+
+2026-08-26 08:11
+数据：local/zero_condition/E022_residual_action_surface/run-003/RESULT.json
+注意／发现：四个 173 状态有 312 个共同 literal，却没有相同完整 ranking；共享的是
+  小型 portfolio，不是一张统一动作表。
+推理：common leader 做跨状态 replay，branch-specific leader 也要保留。proposer 只能
+  提出有限候选，不能替 exact continuation 排名。
+
+2026-08-26 08:20
+数据：local/zero_condition/E023_common_action_path_dependence/run-001/RESULT.json
+注意／发现：高 coverage grinder leader 再次在四个 173 parent 上统一退化到 175；
+  它在两个 beam depth、十六个 parent 上都是稳定负动作。
+推理：把它从当前 unary ledger 退休。高 causal touch 不等于有益 continuation；转测
+  真正 branch-specific leader。
+
+2026-08-26 08:26
+数据：local/zero_condition/E024_branch_specific_leader/run-001/RESULT.json
+注意／发现：class 4 独有 leader 把 173→168，而 common leader 刚刚统一变差。
+推理：branch identity 确实携带未来价值。保留一个 168 child 和三个 173 parent，不再
+  用一个“代表状态”覆盖整个 beam。
+
+2026-08-26 09:09
+数据：local/zero_condition/E025_live_beam_residual_surface/run-004/RESULT.json
+注意／发现：相同 seed/worker 重放同一 placement，第一次返回另一个 168 optimum，
+  第二次才恢复冻结 digest。digest-only state 不可续跑。
+推理：凡是后续还要扩展的状态，保存完整 endpoint，不只保存 score/digest；同时用
+  action ledger 防止被退休动作因重新排名而复活。
+
+2026-08-26 09:20
+数据：local/zero_condition/E026_common_packaging_action/run-003/RESULT.json
+注意／发现：packaging common action 的十二个候选全部在 component 之前死于具体
+  empty owner domain。
+推理：外环至少分三本账：boundary touch、static action-domain admission、exact
+  continuation value。这个动作应按静态域死亡退休，不能误标成 topology death。
+
+2026-08-26 09:37
+数据：local/zero_condition/E027_final_unary_discriminator/run-002/RESULT.json
+注意／发现：最后一个 serial unary 只把 168→167，低于预先设定的两单位阈值。
+推理：结束 fixed-outside unary。下一步不是再挑一个 literal，而是用已观察到的
+  owner coupling 同时释放 packaging 与 grinder。
+
+2026-08-26 09:50
+数据：local/zero_condition/E028_static_coupling_pair/run-001/RESULT.json
+注意／发现：两个 surviving pair 都到 166；最佳状态只是把两种 operation 在原有
+  6x4 footprint 上交换，free-cell set 完全不变。
+推理：新自由度不是几何，而是 operation-to-footprint assignment。geometry、operation
+  assignment、binding 必须分开表示。
+
+2026-08-26 09:59
+数据：local/zero_condition/E029_operation_assignment_surface/run-001/RESULT.json
+注意／发现：固定 occupied geometry 下有 8486 个同尺寸跨 operation swaps；可以生成
+  一个有限 portfolio，但 coverage 仍只是 proposer。
+推理：穷尽小 portfolio 的真实 static domain 和 shared binding value。若有稳定收益，
+  operation assignment 就成为正式构造层。
+
+2026-08-26 10:07
+数据：local/zero_condition/E030_operation_swap_portfolio/run-001/RESULT.json
+注意／发现：十二个 swap 全部 base-feasible，objective 163 到 169；最低 coverage 的
+  候选反而最好，166→163。
+推理：operation assignment 是可复用层，但 coverage 不能排序。下一步做 bounded
+  multi-footprint assignment，不再一对一手工交换。
+
+2026-08-26 11:02
+数据：local/zero_condition/E031_bounded_assignment_neighborhood/run-001/RESULT.json
+注意／发现：97 个 semantic assignments 中，3x3 block 产生两个不同的 161 optimum；
+  5x5 和 6x4 不改善。
+推理：同分不等于同状态。保留两个 161 endpoint，先比较 continuation surface；若
+  bounded assignment 饱和，就让 assignment 和 binding 同模。
+
+2026-08-26 11:15
+数据：local/zero_condition/E032_assignment_tie_surface/run-001/RESULT.json
+注意／发现：两个 161 state 共享 9/10 top literal 和同一个 leading swap，但完整
+  ranking 与两个 branch action 不同。
+推理：可以共享 proposal ledger，不能合并 witness。用 common action 与各自 branch
+  action 做精确 replay，测 tie 是否真可商掉。
+
+2026-08-26 11:25
+数据：local/zero_condition/E033_tied_state_action_replay/run-001/RESULT.json
+注意／发现：common swap 在两边都 161→160，branch actions 都退化到 163；child
+  identity 仍不同。
+推理：结束外环枚举完整 assignment action。把 response 存成 contextual value，转入
+  assignment variables 与 binding variables 共处的最小模型。
+
+2026-08-26 11:58
+数据：local/zero_condition/E034_joint_assignment_binding/run-001/RESULT.json
+注意／发现：五个 3x3 footprint 的 assignment+binding 联合模型精确校准两个 160
+  warm state，自由求解也 OPTIMAL 160。
+推理：这个 context 已饱和，不能再回去枚举 permutation。按 residual marginal coverage
+  增加下一个 block。
+
+2026-08-26 12:16
+数据：local/zero_condition/E035_cross_block_joint_assignment/run-001/RESULT.json
+注意／发现：加入 residual-selected 6x4 block 后 160→159，结构性收益来自
+  dense_source_powder -1。
+推理：跨 block 组合有效。继续在同一 consumer 中加入 5x5 block，而不是另开孤立
+  permutation 实验。
+
+2026-08-26 12:29
+数据：local/zero_condition/E036_three_block_joint_assignment/run-001/RESULT.json
+注意／发现：5x5 block 覆盖很高，也改变 assignment，却仍 OPTIMAL 159，净收益为零。
+推理：coverage 仍不能等于 value。下一步不是继续独立加 block，而是消除同类型 block
+  间的人工边界，让 operation 能跨旧分区流动。
+
+2026-08-26 12:41
+数据：local/zero_condition/E037_merged_6x4_assignment/run-001/RESULT.json
+注意／发现：把两个 6x4 子集并成一个 block 后，隐藏的 159→157 出现。旧独立 block
+  人为禁止了跨子集 operation assignment。
+推理：layer boundary 本身必须被问题证明。相同类型的人工分区会藏掉价值；下一步
+  同样合并 3x3，并以校准保护模型忠实性。
+
+2026-08-26 12:52 至 13:08
+数据：local/zero_condition/E038_merged_3x3_assignment/run-001..003/
+注意／发现：先发现 stale source_instance_ids；修后又发现 post-build 注入 virtual
+  owner 让同一 concrete assignment 从 ordinary 159 伪降到 157。这个“改进”是模型
+  extension 漏掉 native owner-dependent phases。
+推理：暂停数值搜索。dynamic owner 必须在 native domain、conservation、distinctness、
+  implication 和 guidance 之前存在；校准不通过就不承认自由求解结果。
+
+2026-08-26 13:32 至 13:35
+数据：local/zero_condition/E039_native_conditional_owner_binding/run-001..002/
+注意／发现：prebuild native conditional owner 加 inactive pattern 后，157 与 159 两个
+  frozen calibration 全部复现；自由模型也 OPTIMAL 157，ordinary replay 一致。
+推理：E038 是 extension-seam defect，不是科学增益。assignment-only 在当前 geometry
+  饱和，下一步释放 geometry，但保留 faithful joint middle layer。
+
+2026-08-26 13:48 至 14:30
+数据：local/zero_condition/E040_geometry_mobility_discriminator/run-001..002/
+注意／发现：第一次启动因 runner hash pin 陈旧而停止。修正后发现最佳 157→154 完全
+  不改变 occupied/free cells，只把同一 5x5 body 的 port mode 9653→9650；最佳真实
+  body relocation 只有 156。
+推理：过去把 pose 当一个对象太粗。内层要拆成 body footprint 与 pose/port mode；
+  先让 mode、operation assignment、binding 同模，再回到 body geometry。
+
+2026-08-26 14:50
+数据：local/zero_condition/E041_joint_port_mode_assignment/run-001/RESULT.json
+注意／发现：九个 mode-enabled destination 的联合模型精确校准 157 与 154，自由求解
+  OPTIMAL 152；occupied geometry 完全不变。
+推理：port mode 是正式 inner variable，不再由外环枚举完整动作。重新比较尚未纳入的
+  mode 与真实 body relocation。
+
+2026-08-26 15:10
+数据：local/zero_condition/E042_mode_vs_body_discriminator/run-001/RESULT.json
+注意／发现：residual mode 最好 152→151，body relocation 最好 152→150，并把 free
+  components 79→77。
+推理：当前轴转向 body geometry。但 geometry 不能沿用一个陈旧 middle assignment
+  定价，必须在每个 geometry 上重新求 joint continuation。
+
+2026-08-26 15:29
+数据：local/zero_condition/E043_geometry_conditioned_joint_middle/run-001/RESULT.json
+注意／发现：ordinary 150 的 Seed A 经 joint middle 重估到 147；ordinary 151 的 Seed B
+  重估到 150。geometry 排名保留，但 continuation value 改变了三单位和一单位。
+推理：每个 geometry 都必须携带 freshly solved port-mode/assignment/binding state。
+  旧 action surface 立即作废，从 147 endpoint 重新生成下一批候选。
+
+2026-08-26 15:42
+数据：local/zero_condition/E044_objective147_body_portfolio/run-001/RESULT.json
+注意／发现：147 endpoint 产生两个不同 ordinary-146 geometry，一个 5x5 move，一个
+  外部 3x3 move；ordinary score 无法区分 continuation。
+推理：两个都做 exact calibration 与 joint revaluation。tie 不能凭 morphology 或第一
+  个到达者裁掉。
+
+2026-08-26 15:57
+数据：local/zero_condition/E045_revalue_objective146_geometries/run-001/RESULT.json
+注意／发现：两个 ordinary 146 在 joint 中分成 146 与 145。外部 3x3 Seed B 是严格
+  winner。按具名实例对老 assignment 做差会虚构十几个“body move”，相对直接 parent
+  才只有一个真实 body move。
+推理：geometry delta 必须相对直接 materialized parent 的 occupied-body state。再允许
+  一轮 bounded singleton；若 joint gain 只剩一单位，就切到 simultaneous pair。
+
+2026-08-26 17:00 至 17:13
+数据：local/zero_condition/E046_objective145_integrated_geometry_portfolio/run-001/
+注意／发现：145 residual 的最佳 singleton 只到 joint 144，低于两单位阈值。第一次
+  工具窗口中断还暴露 manifest 重写、seed 不能 reload、timestamp 比较三个续跑缺陷。
+推理：停止 singleton-body line，转 simultaneous body-pair。实验 runner 必须能验证并
+  重用已冻结 checkpoint，不能把续跑失败混成科学结论。
+
+2026-08-26 17:42
+数据：local/zero_condition/E047_simultaneous_body_pair_proposer/run-001/RESULT.json
+注意／发现：十九个 bounded pair 中十六个 ordinary OPTIMAL，但全部比 parent 144 差，
+  最好 146；十五个几乎完全 additive。六目标集合内看不到 direct rescue edge。
+推理：ordinary pair 仍只是 proposer。先做三份 joint revaluation；若都不低于 144，
+  retire complete-pair enumeration，转 native simultaneous geometry context。
+
+2026-08-26 17:56 至 18:13
+数据：local/zero_condition/E048_revalue_body_pair_geometries/run-001/
+注意／发现：第一次 context reconstruction 把 named-instance reassignment 误算成十一
+  个 move，校准前即失败。修正到 immediate parent 后，三份 pair 精确复现 146/151/153，
+  joint 仍为 146/149/150，全部不如 144。
+推理：bounded complete-pair language 饱和。下一表示必须让一组 body 对共同 outside
+  occupancy 选择 pose，不能继续枚举预先完成的 pair action。
+
+2026-08-26 18:35
+数据：local/zero_condition/E049_external_rescue_graph/run-001/RESULT.json
+注意／发现：回头检查 E047 的 empty-owner 数据时，我发现 owner mapping 被 stringify
+  后直接和 instance ID 求交，consumer 类型上永远匹配不到。真实六目标内部边仍为零，
+  但结构化解析得到八条外部 rescue edge；212 个 owner alternatives 复活 55 个状态，
+  最佳 ordinary 143。
+推理：不要把旧死亡只当失败档案。structured empty-owner relation 本身是 outer-loop
+  proposer。频率和 coverage 只负责提出关系，joint continuation 才负责定价。
+
+2026-08-26 18:52
+数据：local/zero_condition/E050_revalue_external_rescues/run-001/RESULT.json
+注意／发现：三个 rescued context 精确校准 143/143/144，joint 后变成 141/141/139。
+  ordinary 最差的 144 state 反而是 joint winner；它由一个真实 body move、一个同足迹
+  mode change 和全局 assignment/binding 重组组成。矿石对 fixed sum 仍是 14，五单位
+  改善来自固定商品账。
+推理：外部 rescue 不是 admission 技巧，而是真 continuation mechanism。旧 144 action
+  ledger 作废，从完整 139 endpoint 重建 residual causes、mobility 与 structured rescue。
+
+研究惯性复盘
+============
+
+总判定
+------
+没有完全陷入研究惯性，但已经出现过两段明显的惯性带，并且当前仍有三种高风险惯性。
+真正的突破几次都来自“退一步重新审查对象和接口”，不是来自把同一种搜索再跑久一点。
+
+为什么不能说已经僵死
+--------------------
+这段时间内，问题语言实际发生了多次不可逆变化：
+
+  point nogood
+    -> static port-domain compilation
+    -> aggregate binding resources
+    -> component-aware shared binding
+    -> beam state / action-value ledger
+    -> operation-to-footprint assignment
+    -> assignment-binding cohabitation
+    -> native conditional owners
+    -> body footprint / port mode 分离
+    -> geometry-conditioned joint value
+    -> structured rescue relation
+
+每次变化都有旧表示无法解释的新数据，不只是换名字。E038 的伪增益被主动拒绝，E027、
+E033、E046、E048 也都按照预设 stop signal 停掉了原动作语言。这说明研究仍能推翻自己。
+
+已经出现的惯性带
+----------------
+1. E015 到 E027 的 unary/beam 数值爬坡。
+   我一度连续问“再释放哪一个 literal 能把总和再压一点”。虽然它最终逼出了 beam、
+   action-domain 和 simultaneous pair，但 E017 出现十二路并列时，其实已经提示应该更早
+   转 joint model。E027 才正式结束 unary，偏晚。
+
+2. E044 到 E048 的 singleton -> singleton -> pair -> pair revaluation。
+   这段有明确停止阈值，因此没有无限延长，但工作形状开始重复。E048 得出 pair language
+   饱和后，本来准备直接造 native simultaneous model。真正的 139 突破却来自回头检查
+   E047 没被消费的死亡诊断，说明我们当时的注意力已偏向“扩大邻域”，而不是“旧数据
+   是否在接口中被压坏”。
+
+当前最危险的三种惯性
+--------------------
+1. 指标惯性。
+   shared mismatch 已从 200 降到 139，但 19/19 commodities 始终全部为正，routing solve
+   进入次数仍是零。总和持续下降不等于正在接近 component-compatible binding。下一轮
+   不能只以 139 -> 更小为成功，还必须观察 positive commodity count、是否有商品归零、
+   最大 mismatch 或直接 feasibility 是否发生结构变化。
+
+2. 单一谱系／局部盆地惯性。
+   E015 以后几乎所有状态都沿同一 E009/E024 祖先局部变形。我们越来越擅长优化这一
+   盆地，但尚未证明这个盆地靠近零。应当保留当前 139 线，同时让一个异源 constructor
+   或 native simultaneous geometry context 产生真正不同的 occupied-body state，防止把
+   “在当前盆地继续下降”误认成“全问题正在闭合”。
+
+3. 实验装置惯性。
+   E038 的 post-build owner 漏阶段、E040 的 hash drift、E046 的续跑缺陷、E048 的 parent
+   对象错位、E047 的 stringified-owner transport，都来自重复复制 campaign-local runner
+   和 context reconstruction。最初避免过早平台化是对的，但这些机制现在已经重复承重：
+
+     structured cause
+     immediate-parent geometry delta
+     conditional owner/mode registration
+     calibration before free solve
+     endpoint materialization
+     joint continuation valuation
+
+   它们已达到应从单个 E-number 中抽出为可复用 research method 的阈值。继续复制脚本会
+   让隐藏接口 bug 的增长速度超过研究收益。
+
+还有一个 proposer 偏置
+----------------------
+coverage 和 edge frequency 多次被证明不是价值函数。E049 最强的 139 关系只出现两次，
+而频率更高的边只到 147 或更差。今后 coverage/frequency 仍可缩小候选集，但必须加入
+“因果类型新颖性、owner 关系结构、是否跨当前选择集”等维度，不能总是优先高频高覆盖。
+
+当前方向判断
+------------
+E049/E050 是一次真实的脱离惯性，因为它没有继续扩大 pair，而是回看旧死亡数据的运输。
+但不能把“再挖下一批 rescue edge”本身变成新的惯性。
+
+下一轮至少要同时满足两件事：
+
+1. 从 139 endpoint 继续结构化 cause/rescue，只在产生新的关系类型或显著改变
+   positive-commodity 结构时保留该线。
+2. 开始把 native simultaneous geometry context 变成真实 consumer，让若干 body 的 pose
+   domain 在共同 outside occupancy 下生成，而不是继续由外环枚举完整动作。
+
+若下一批实验只是把总和从 139 再压几单位、19/19 仍全正、routing 仍为零，并且没有
+新规则语言或新 consumer 出现，就应判定当前线已进入研究惯性，停止继续沿该谱系爬坡。

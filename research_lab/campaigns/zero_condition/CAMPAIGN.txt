@@ -67,7 +67,9 @@ Current evidence
    family of front-blocked death. They justify re-deriving the interface, not
    assuming the existing seam is adequate.
 
-The precise evidence identities are recorded in INPUTS.txt and RESULTS.txt.
+The precise evidence identities are recorded in INPUTS.txt and RESULTS.txt. The
+chronological reasoning log and research-inertia audit for 2026-08-25 through
+2026-08-26 are in RESEARCH_JOURNAL_20260825_20260826.txt.
 
 Research conclusion already earned
 ----------------------------------
