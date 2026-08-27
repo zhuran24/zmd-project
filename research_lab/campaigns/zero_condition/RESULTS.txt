@@ -2351,6 +2351,45 @@ evidence:
   runner sha256
   91770f3ba9a96a3c79bd95c42a4e40b9a540ab537e97079b02f7c57c6fedb67e.
 
+R-ZC-074  Source-isolated replay preserves E057-E061 and corrects E062's pole witness
+------------------------------------------------------------------------------------------------
+status: executable-origin audit plus six source-isolated full replays
+scope: E057-E062 frozen research models and their Python module-loading path
+
+statement:
+  Default-cache imports of E057-E062 expose 83 module-level functions whose code
+  filename belongs to a neighboring experiment; fresh `PYTHONPYCACHEPREFIX`
+  imports expose zero. Full source-isolated reruns preserve every scientific field
+  of E057-E061. E062 preserves its exact distribution {1:5, 2:5084, 3:64}, all
+  five physical near-miss actions, and their objective values. The four pole
+  candidates' selected optimum-face witness changes from source-only component 1
+  to source-only component 4; qiaoyu sink component 15 and the absence of sink-only
+  components remain. The fifth 6x4 witness remains source-only component 40.
+
+non-implications:
+  The representative correction does not invalidate E062's five near misses or
+  prove any pair sufficient. E064 does not certify the research models or imply
+  CP-SAT status unsoundness. It identifies a Python executable-identity failure:
+  source hashes matched while stale bytecode supplied foreign function objects.
+
+effect on next problem:
+  Retain E057-E061 and E062's numerical/physical candidate result. Supersede every
+  component-1 pole interpretation with the source-isolated component-4 witness.
+  Run subsequent campaign-local imports under an explicit fresh cache prefix, or
+  verify loaded code-object origins. Derive the next two-object cause from the
+  complete source-isolated directional optimum face rather than one arbitrary
+  representative.
+
+evidence:
+  E064 RESULT.txt; source-isolated E062 RESULT.json sha256
+  cb4bc810696b1ffaa70fa0af5a3fc6554f8e86566cef465cbacf57a12530e055;
+  E057-E061 source-isolated RESULT.json sha256 values
+  b1bc0f99d479ecf4430374c7dacbc62227db832e017cf6469f3c22ef4027e763,
+  3f77839b71adaf3e183c9a857a1158e43726f6380db081082d6a8e470524917b,
+  c3afb92e46c3ebad534fbda403b3c0c171362b7fae38844f43d5f75a3f743652,
+  6527eb4d78772458f5925c16b96b322fb360959cae165b0c8a2d41b6e59f8e7f,
+  f9b858659695fa3ccb822779dd947db15acbb306e1440865bd5416c325cb2a88.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

@@ -1,0 +1,151 @@
+E064 RESULT: SOURCE-ISOLATED REPLAY PRESERVES E057-E061 AND CORRECTS E062'S POLE WITNESS
+================================================================================================
+
+Status
+------
+Completed as research-only runtime-identity and source-replay evidence. No routing,
+whole-layout witness, certification, U/L, owner, or publication effect.
+
+Trigger reproduced
+------------------
+The default project bytecode cache does not load E057-E062 as their tracked source
+files describe. Module-level function origins are:
+
+  E057   17 foreign functions
+  E058   16 foreign functions
+  E059    6 foreign functions
+  E060    6 foreign functions
+  E061   19 foreign functions
+  E062   19 foreign functions
+
+Total:
+
+  83 foreign function objects
+
+E061 is the clearest example. Under the default cache its `reconstruct`,
+`import_module`, `enumerate_alternatives`, and `run` functions originate from E056,
+E058, or E060 rather than the requested E061 source file.
+
+The same six modules imported under a fresh `PYTHONPYCACHEPREFIX` expose zero
+foreign module-level functions.
+
+Origin audits:
+
+  research_lab/local/zero_condition/E064_source_cache_revalidation/
+    DEFAULT_ORIGINS.json
+    FRESH_ORIGINS.json
+
+Source-isolated replay
+----------------------
+E057 through E062 were rerun under separate fresh cache prefixes into new ignored
+output directories. The original machine outputs were preserved unchanged.
+
+E057-E061
+~~~~~~~~~
+After removing only timestamps, runtime counters, identity envelopes, and evidence
+locators, every scientific field is identical between the original and
+source-isolated results:
+
+  E057 external relation/cycle verdict and exact statuses     unchanged
+  E058 38-body terminal-signature exhaustion                  unchanged
+  E059 fixed-sink two-zero tradeoff certificate               unchanged
+  E060 corrected generic-qiaoyu-sink tradeoff                 unchanged
+  E061 10,016-alternative all-one-object frontier             unchanged
+
+Fresh result identities:
+
+  E057  b1bc0f99d479ecf4430374c7dacbc62227db832e017cf6469f3c22ef4027e763
+  E058  3f77839b71adaf3e183c9a857a1158e43726f6380db081082d6a8e470524917b
+  E059  c3afb92e46c3ebad534fbda403b3c0c171362b7fae38844f43d5f75a3f743652
+  E060  6527eb4d78772458f5925c16b96b322fb360959cae165b0c8a2d41b6e59f8e7f
+  E061  f9b858659695fa3ccb822779dd947db15acbb306e1440865bd5416c325cb2a88
+
+E062
+~~~~
+E062's main scientific result also survives:
+
+  objective distribution   {1: 5, 2: 5084, 3: 64}
+  physical near misses      5
+  strict-improvement count  5
+  physical candidate IDs    unchanged
+  replacement poses         unchanged
+  exact objective values    unchanged
+
+The source-isolated E062 result is:
+
+  research_lab/local/zero_condition/E064_source_cache_revalidation/
+    e062-source/RESULT.json
+
+SHA-256:
+
+  cb4bc810696b1ffaa70fa0af5a3fc6554f8e86566cef465cbacf57a12530e055
+
+One part does not survive: the selected optimum-face presence witness for the four
+power-pole near misses.
+
+Old cached representative:
+
+  source-only component 1
+  sink-only components []
+  qiaoyu sink component 15
+
+Source-isolated representative:
+
+  source-only component 4
+  sink-only components []
+  qiaoyu sink component 15
+
+The fifth, manufacturing-6x4 near miss keeps its previous source-only component 40
+representative. Therefore the five actions and their objective-one status remain
+valid, but the old component-1 pole explanation is superseded.
+
+Why this escaped the earlier checks
+-----------------------------------
+The runners hashed their tracked source bytes. They did not record the filenames
+of the code objects actually loaded into the Python process. A stale cache could
+therefore satisfy every source SHA check while executing functions compiled from a
+neighboring experiment.
+
+This is a runtime-object identity failure, not evidence that CP-SAT returned an
+incorrect status. The source-isolated reruns show which scientific conclusions
+survive the corrected execution path.
+
+Architecture effect
+-------------------
+Future research runners that import campaign-local Python modules must execute
+under a fresh, explicit `PYTHONPYCACHEPREFIX` or record and verify loaded function
+origins. Source-file hashes alone are not a complete executable identity.
+
+For the active science:
+
+  * retain E057-E061 without scientific revision;
+  * retain E062's five physical near misses and exact distribution;
+  * replace the four pole candidates' component-1 representative with the
+    source-isolated component-4 representative;
+  * derive E063's causal second-object set from the complete source-isolated
+    directional optimum face, not from the retired representative.
+
+Truth boundary
+--------------
+E064 validates only E057-E062 under their frozen research models and source-
+isolated Python imports. It does not certify those models, fix the global Python
+installation, establish component compatibility, enter routing, or update U/L.
+
+Machine evidence
+----------------
+Verifier result:
+
+  research_lab/local/zero_condition/E064_source_cache_revalidation/RESULT.json
+
+Its SHA-256 and both origin-audit SHA-256 values are recorded in:
+
+  research_lab/local/zero_condition/E064_source_cache_revalidation/
+    RESULT_RECEIPT.json
+
+Verifier:
+
+  verify_source_replays.py
+
+Origin auditor:
+
+  audit_module_origins.py

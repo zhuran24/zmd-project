@@ -1,0 +1,55 @@
+EXPERIMENT E064: SOURCE-CACHE REVALIDATION OF E057-E062
+=======================================================
+
+Question
+--------
+Did stale Python bytecode change the scientific conclusions of E057-E062, and
+which exact statements survive a source-isolated replay?
+
+Trigger
+-------
+While calibrating E063, the same E062 pole geometry returned a different
+objective-one presence pattern. Module-origin inspection then showed that default
+imports of E057-E062 contained function objects compiled from neighboring runner
+files. E061 was the clearest example: its default-loaded `reconstruct`,
+`import_module`, `enumerate_alternatives`, and `run` originated from E056, E058,
+and E060 rather than E061 source.
+
+Method
+------
+1. Import E057-E062 once with the existing project bytecode cache and record every
+   module-level function whose code filename differs from the requested source.
+2. Import the same files under a fresh `PYTHONPYCACHEPREFIX` and require zero
+   foreign function origins.
+3. Re-run E057-E062 under separate fresh cache prefixes into new ignored output
+   directories. Preserve all original frozen outputs unchanged.
+4. Compare scientific fields. Paths, timestamps, runner identities, runtime
+   counters, and regenerated artifact hashes are not treated as scientific
+   differences.
+5. For E062, compare the physical candidate identities and objective values
+   separately from the selected presence witness, because the latter lies on an
+   optimization face.
+
+Decision rule
+-------------
+Any changed verdict, feasibility status, exact objective distribution, physical
+candidate identity, or exhaustion count
+  Quarantine that result and every descendant depending on it; restart from the
+  last source-stable result.
+
+Only representative optimum-witness changes
+  Keep the proved objective/candidate statement, retire the old representative
+  witness, and issue a source-isolated successor for downstream work.
+
+No scientific changes
+  Retain the chain and require source-isolated imports for future runners.
+
+Truth boundary
+--------------
+E064 revalidates E057-E062 research-only claims under their existing frozen model
+semantics. It does not certify those models, change U/L, establish routing, or
+repair Python's cache globally.
+
+Result
+------
+Pending verifier result.
