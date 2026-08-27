@@ -162,9 +162,9 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Which remaining positive commodity exposes the smallest structured cause that can
-create the second zero from the verified 18/139 witness, once the current causal
-relation's operation-assignment and admitted port-mode layers are closed?
+What is the shortest exact tradeoff certificate behind E058's fixed-geometry
+fine-powder/qiaoyu conflict, and which missing terminal signature or component
+relation should a minimal geometry-changing proposer create?
 
 Current campaign posture
 ------------------------
@@ -518,10 +518,26 @@ The secondary total solve and a direct total<=138 discriminator both remain
 UNKNOWN. The E055 18/139 state is still a valid witness in the wider E056 context,
 but 139 is not claimed secondary-optimal there. Because positive count is the
 primary progress measure, the next step does not continue burning budget on that
-secondary bound. It audits the remaining 18 commodities, beginning with low
-mismatch values but selecting the next context by structured causal compression,
-consumer freedom, and relation novelty rather than scalar size alone. A fully zero
-state enters routing immediately.
+secondary bound.
+
+E057 selects qiaoyu_capsule because it is the smallest downstream obstruction and
+shares the first-zero filling-capsule chain. Appending the sole outside 6x4 body
+with a component-15 qiaoyu-output mode recalibrates 18/139 exactly, but its
+operation-count-preserving three-operation cycle is INFEASIBLE. The body exposes a
+direct terminal tradeoff: one mode places qiaoyu output in component 15 and fine
+input in 54, while the reverse mode swaps those roles.
+
+E058 then removes the residual block/operation-split doubt. It compiles every
+native active pattern from all 38 current 6x4 bodies into 338 exact terminal-
+signature options. Fine-only and qiaoyu-only are each feasible, but the two-zero
+condition is INFEASIBLE even after all unrelated 6x4 operations are collapsed into
+one `other` class. The fixed geometry therefore lacks a compatible fine-input /
+fine-output / qiaoyu-output signature allocation.
+
+The next step compresses this relaxed infeasibility into a short tradeoff
+certificate and derives a geometry target. It must not return to another complete
+swap portfolio or total-mismatch descent. A fully zero state enters routing
+immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

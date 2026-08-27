@@ -1,0 +1,119 @@
+E057 RESULT: ONE CORE-SIDE BODY AND ITS THREE-OPERATION CYCLE CANNOT CREATE THE SECOND ZERO
+================================================================================================
+
+Status
+------
+Completed as research-only exact context and relation evidence. No all-commodity
+component compatibility, exact routing, whole-layout witness, certification, U/L,
+owner, or publication effect.
+
+Frozen terminal result
+----------------------
+Main result:
+  research_lab/local/zero_condition/E057_qiaoyu_external_body_relation/
+    run-004/RESULT.json
+
+SHA-256:
+  1cb96ea6785c0ded75f68f42f0d2d829e0a1c5bc6401b949710a9e524eb708c3
+
+Verdict:
+  QIAOYU_EXTERNAL_BODY_RELATION_INFEASIBLE
+
+Decision:
+  SELECT_NEXT_STRUCTURED_CAUSE
+
+Question and selected body
+--------------------------
+The verified E055 state has:
+
+  fine_buckwheat_powder = 0
+  qiaoyu_capsule        = 2
+
+The qiaoyu sink is fixed in free component 15. A complete conditional-domain scan
+of the 24 current 6x4 bodies outside the fourteen-body block finds only one same-
+body mode that can emit a filling-capsule qiaoyu output into component 15:
+
+  grinder_dense_blue_iron_004
+  current pose 6239  p_x47_y65_o0_m_BT
+  admitted mode 6238 p_x47_y65_o0_m_TB
+
+E057 appends this physical body to the merged 6x4 assignment context without
+moving any occupied cell.
+
+Fidelity calibration
+--------------------
+The final context contains fifteen 6x4 bodies and nineteen mode-enabled
+destinations. With the appended body fixed to its inherited operation and pose,
+the expanded conditional-owner model reproduces the parent exactly:
+
+  status          OPTIMAL
+  positive count       18
+  total mismatch      139
+  zero commodity       fine_buckwheat_powder
+
+The added context is therefore not an accidental relaxation.
+
+Component-15 capacity audit
+---------------------------
+The expanded native domains contain four filling-capsule mode choices whose
+qiaoyu output can reach component 15:
+
+  destination 2   pose 6098
+  destination 3   pose 6609
+  destination 5   pose 7016
+  destination 14  pose 6238  (the appended body)
+
+The inherited first-zero relation reserves one of the original component-15 bodies
+for grinder_fine_buckwheat. E057 therefore tests the corresponding three-operation
+cycle:
+
+  former first-zero source body  <- grinder_dense_blue_iron
+  former capsule body            <- grinder_fine_buckwheat
+  appended core-side body        <- filling_capsule
+
+Binding, all other 6x4 operation assignments, and all admitted modes remain free,
+while both fine_buckwheat_powder and qiaoyu_capsule are required to have mismatch
+zero.
+
+Exact result
+------------
+The primary positive-count model returns:
+
+  status      INFEASIBLE
+  branches             0
+  conflicts            0
+  elapsed        0.083 s
+
+Thus the most direct one-body capacity repair and its operation-count-preserving
+cycle do not create the second zero in the current occupied geometry.
+
+Terminal tradeoff exposed for E058
+----------------------------------
+The appended body itself has a two-sided signature tradeoff:
+
+  pose 6238  qiaoyu output -> component 15
+             fine-powder input -> component 54
+
+  pose 6239  fine-powder input -> component 15
+             qiaoyu output -> component 54
+
+This explains why adding one apparent component-15 qiaoyu destination is not
+sufficient. E057 does not yet prove that every current 6x4 assignment shares this
+conflict, so E058 expands the question to all 38 current 6x4 bodies and quotients
+native patterns by their two-commodity terminal signatures.
+
+Execution boundary
+------------------
+Runs 001 and 002 rejected malformed expanded contexts before scientific solving.
+Run 003 was an exploratory predecessor. The durable claim above is the final
+run-004 result reproduced by the tracked runner:
+
+  runner sha256
+  d6180ebdabd5b1ef23b39fc7bddd8b76f39c87e10999d473f7f98f144b84f850
+
+Truth boundary
+--------------
+E057 covers one appended body, one operation-count-preserving cycle, the inherited
+first-zero occupied geometry, and the current conditional assignment/mode/binding
+consumer. It does not exhaust all 6x4 assignments, body relocation, other
+first-zero geometries, routing, U/L, or certification.

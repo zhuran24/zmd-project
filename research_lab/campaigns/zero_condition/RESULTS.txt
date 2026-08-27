@@ -2131,6 +2131,78 @@ evidence:
   total<=138 discriminator sha256
   bfc79533c00666cca856bff170b6530ab850f3ae30b9db8103f54ffd25ee67fb.
 
+R-ZC-068  The only external core-side 6x4 body cannot create the second zero
+--------------------------------------------------------------------------------
+status: exact expanded-context calibration and exact three-operation-cycle infeasibility
+scope: one appended 6x4 body under the E055 occupied geometry and inherited first-zero state
+
+statement:
+  E057 appends `grinder_dense_blue_iron_004`, the only block-external current
+  6x4 body with a same-body filling-capsule mode whose qiaoyu output reaches the
+  protocol-core component 15. The fifteen-body context recalibrates exactly at
+  18/139. Four filling-capsule mode choices can emit qiaoyu into component 15, but
+  the operation-count-preserving cycle that assigns the appended body to
+  filling_capsule while preserving the first-zero grinder placement is
+  INFEASIBLE with both fine_buckwheat_powder and qiaoyu_capsule fixed to zero.
+
+non-implications:
+  The result does not exhaust all 6x4 assignments, body relocation, other
+  first-zero states, or non-6x4 geometry. It closes one appended-body causal
+  relation only.
+
+effect on next problem:
+  Stop treating an extra component-15 output body as sufficient capacity. The
+  appended body exposes a terminal tradeoff: pose 6238 gives qiaoyu output in
+  component 15 but fine input in 54, while pose 6239 reverses those components.
+  Quotient all 38 current 6x4 bodies by fine-input, fine-output, and qiaoyu-output
+  component signatures and ask the two-zero question exhaustively in that
+  relaxed object space.
+
+evidence:
+  E057 RESULT.txt; local run-004 RESULT.json sha256
+  1cb96ea6785c0ded75f68f42f0d2d829e0a1c5bc6401b949710a9e524eb708c3;
+  runner sha256
+  d6180ebdabd5b1ef23b39fc7bddd8b76f39c87e10999d473f7f98f144b84f850.
+
+R-ZC-069  All current 6x4 terminal signatures prove a fixed-geometry two-zero conflict
+------------------------------------------------------------------------------------------------
+status: exact native-domain census plus exact and relaxed signature infeasibility
+scope: all 38 current manufacturing-6x4 bodies under the E055 occupied geometry
+
+statement:
+  E058 builds 380 native same-body mode/operation owners with 97,950 active
+  patterns and collapses them to 338 options by exactly three terminal component
+  sets: fine input, fine output, and qiaoyu output. The current first-zero witness
+  calibrates with zero assignment or mode changes. Fine-only and qiaoyu-only are
+  each OPTIMAL, but the joint condition is INFEASIBLE. It remains INFEASIBLE after
+  grinder_dense_blue_iron, grinder_dense_source, and packaging_battery are merged
+  into one `other` operation class.
+
+  The nearest qiaoyu-only state places all qiaoyu sources in component 15 but has
+  fine source components {1,4,40} and fine sink components {6,15,21}. Thus each
+  zero condition is individually attainable, while their terminal-signature
+  allocations cannot coexist in the current component partition.
+
+non-implications:
+  E058 fixes occupied geometry and current free components. It does not cover body
+  relocation, component changes, a different first-zero geometry, non-6x4
+  terminal context, routing, U/L, or certification.
+
+effect on next problem:
+  Close current-geometry 6x4 assignment/mode search for the qiaoyu second zero.
+  Compress the infeasibility into a short exact tradeoff certificate, then derive
+  the missing terminal signature or component relation that a geometry-changing
+  proposer must create. Do not return to sum descent or another complete swap
+  portfolio.
+
+evidence:
+  E058 RESULT.txt; local run-004 RESULT.json sha256
+  d1295cd0988e751512968d1ad248f3e6da53ce912f52f6f28820f491c6fe27b4;
+  signature census sha256
+  2af0d107eaba7a638047b42b0aab58f83a52c37008221692bb4b8e8cadf27b5d;
+  runner sha256
+  0d90380eace78a7831a91bebf3148fbbf301be61e3352a6de6002e8b831820a9.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

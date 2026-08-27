@@ -196,3 +196,47 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-27
   不把 UNKNOWN 写成 139 最优，也不继续为 secondary bound 烧主线预算。当前最诚实状态是：
   positive count 精确为 18，已知 witness total=139，exact secondary minimum 未知。下一轮从
   剩余 18 种商品里重新做结构化 cause 选择，首要目标仍是 18 -> 17。
+
+2026-08-27 12:56
+----------------
+数据：
+  E057 run-004 RESULT.json
+  research_lab/local/zero_condition/E057_qiaoyu_external_body_relation/run-004/RESULT.json
+  sha256 1cb96ea6785c0ded75f68f42f0d2d829e0a1c5bc6401b949710a9e524eb708c3
+
+注意／发现：
+  qiaoyu_capsule=2 是第一零的直接下游。我找遍 block 外 24 个当前 6x4 body，只有
+  grinder_dense_blue_iron_004 的 pose 6238 能把 filling-capsule 输出送进 core component 15。
+  把它加入 assignment context 后，18/139 精确校准通过；但保持 operation 数量的三操作
+  cycle 在 fine=0、qiaoyu=0 下 0.08 秒 INFEASIBLE。
+
+  新 body 不是简单“多一个 core-side 位置”：pose 6238 是 qiaoyu output=15、fine input=54；
+  pose 6239 则是 fine input=15、qiaoyu output=54。它把两个目标对调，而不是桥接起来。
+
+推理：
+  单个看似正确的 body capacity 仍可能被双侧 terminal signature 抵消。下一步不要再挑第二
+  个完整 swap；把全部 38 个当前 6x4 body 的 native patterns 只按 fine-in / fine-out /
+  qiaoyu-out components 商掉，直接问当前 geometry 是否存在任何两零分配。
+
+2026-08-27 14:01
+----------------
+数据：
+  E058 RESULT.json
+  research_lab/local/zero_condition/E058_all6x4_terminal_signature_frontier/
+    run-004/RESULT.json
+  sha256 d1295cd0988e751512968d1ad248f3e6da53ce912f52f6f28820f491c6fe27b4
+
+注意／发现：
+  38 个 body、380 个 mode/operation owner、97,950 个 active pattern 被压成 338 个 terminal
+  signatures。当前 first-zero 状态零改动校准通过。fine-only 和 qiaoyu-only 都 OPTIMAL；
+  joint 却 INFEASIBLE。把 dense-blue、dense-source、packaging 三类全合成一个 `other`，joint
+  仍在 presolve INFEASIBLE。
+
+  qiaoyu-only 最近状态把 qiaoyu source 全放进 component 15，但 fine source set 是
+  {1,4,40}，sink set 是 {6,15,21}。两个零不是“还差一次更聪明的 assignment”，而是在
+  当前 component partition 下没有可共存的 terminal-signature allocation。
+
+推理：
+  当前 occupied geometry 的 6x4 assignment/mode 轴可以正式关闭。下一步先把冲突压成一条
+  短 tradeoff certificate，找出 geometry 必须新增的 terminal signature 或 component
+  relation；不能又回到总和下降或完整动作 portfolio。

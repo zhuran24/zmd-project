@@ -1,0 +1,150 @@
+E058 RESULT: CURRENT GEOMETRY CANNOT SUPPORT BOTH FINE-POWDER AND QIAOYU ZERO IN ANY 6X4 ASSIGNMENT
+======================================================================================================
+
+Status
+------
+Completed as research-only exact terminal-signature evidence. No body-relocation
+claim, exact routing, whole-layout witness, certification, U/L, owner, or
+publication effect.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/E058_all6x4_terminal_signature_frontier/
+    run-004/RESULT.json
+
+SHA-256:
+  d1295cd0988e751512968d1ad248f3e6da53ce912f52f6f28820f491c6fe27b4
+
+Signature census:
+  research_lab/local/zero_condition/E058_all6x4_terminal_signature_frontier/
+    run-004/SIGNATURE_CENSUS.json
+
+SHA-256:
+  2af0d107eaba7a638047b42b0aab58f83a52c37008221692bb4b8e8cadf27b5d
+
+Verdict:
+  FIXED_GEOMETRY_6X4_TWO_ZERO_SIGNATURE_CONFLICT
+
+Decision:
+  REQUIRE_GEOMETRY_CHANGE_OR_DIFFERENT_FIRST_ZERO_STATE
+
+Representation
+--------------
+E058 freezes the E055 occupied geometry and includes every current
+manufacturing-6x4 body:
+
+  bodies                         38
+  same-body mode/operation owners 380
+  native active patterns       97,950
+  collapsed signature options     338
+
+Each active native binding pattern is quotiented only by:
+
+  fine_buckwheat_powder input component set
+  fine_buckwheat_powder output component set
+  qiaoyu_capsule output component set
+
+The exact operation multiset is retained:
+
+  filling_capsule              3
+  grinder_dense_blue_iron     17
+  grinder_dense_source         9
+  grinder_fine_buckwheat       6
+  packaging_battery            3
+
+All dynamic-block current signatures are transported by frozen
+block/destination/pose/pattern identity. Only block-external owners use named
+instance port records. This avoids reusing symmetric instance names as physical
+body identities.
+
+Calibration
+-----------
+The exact materialized first-zero state maps to one signature option per body and
+reproduces with no changes:
+
+  status             OPTIMAL
+  operation changes        0
+  mode changes             0
+  fine source set      {1,4,15}
+  fine sink set        {1,4,15}
+  qiaoyu source set    {1,15,40}
+  qiaoyu sink set      {15}
+
+The signature compiler therefore preserves the existing fine-powder zero.
+
+Single-condition arms
+---------------------
+Fine-only is immediately feasible at the current state:
+
+  status             OPTIMAL
+  operation changes        0
+  mode changes             0
+
+Qiaoyu-only is also exact-feasible. Its nearest solution requires four operation
+changes and no mode changes:
+
+  qiaoyu source set        {15}
+  fine source set          {1,4,40}
+  fine sink set            {6,15,21}
+
+The four changed assignments place filling_capsule on poses 6609 and 7016 and
+move two grinder_fine_buckwheat operations onto poses 8192 and 8380. This closes
+qiaoyu but tears the fine-powder component-presence equality apart.
+
+Joint result
+------------
+Requiring both zero conditions gives:
+
+  exact five-operation model          INFEASIBLE
+  other-collapsed relaxation          INFEASIBLE
+
+Both proofs finish in presolve with zero branches and conflicts. In the relaxed
+arm, grinder_dense_blue_iron, grinder_dense_source, and packaging_battery are
+collapsed into one `other` class with count 29. Therefore the conflict cannot be
+attributed to the historical split among those unrelated operations.
+
+Why the negative result is sound in scope
+-----------------------------------------
+The signature model discards unrelated terminal uniqueness, generic resources,
+and full binding coupling. It is a relaxation of the fixed-geometry 6x4
+assignment/mode/binding problem, not a strengthening. Every native active pattern
+has a represented signature option. Consequently joint infeasibility proves:
+
+  no assignment of the current 38 physical 6x4 bodies,
+  their admitted same-body modes,
+  and the complete current 6x4 operation multiset
+
+can simultaneously preserve fine_buckwheat_powder mismatch zero and make
+qiaoyu_capsule mismatch zero under the current component partition.
+
+Architecture effect
+-------------------
+The second zero is not hidden behind a larger operation-assignment block or an
+unopened same-body port mode. The fixed geometry lacks a compatible two-commodity
+terminal-signature allocation. The next proposer must therefore change at least
+one of:
+
+  occupied-body geometry / free-component partition
+  the selected first-zero geometry
+  a non-6x4 terminal context that changes the relevant component relation
+
+The next step should compress the conflict into a short tradeoff certificate and
+then ask what new terminal signature a minimal geometry change must create, rather
+than returning to sum descent or another complete swap portfolio.
+
+Execution provenance
+--------------------
+Runs 001-003 ended before scientific solving while repairing three apparatus
+seams: missing project-root import, named-instance/body transport inside dynamic
+blocks, and `in/out` versus `input/output` terminal schema normalization. Run 004
+contains the terminal scientific result.
+
+Runner SHA-256:
+  0d90380eace78a7831a91bebf3148fbbf301be61e3352a6de6002e8b831820a9
+
+Truth boundary
+--------------
+E058 fixes occupied geometry and current free components. It does not cover body
+relocation, component merging/splitting caused by geometry changes, a different
+first-zero state, non-6x4 geometry, exact routing, U/L, or certification.

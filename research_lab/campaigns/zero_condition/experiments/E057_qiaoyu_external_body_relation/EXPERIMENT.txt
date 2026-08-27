@@ -1,0 +1,68 @@
+EXPERIMENT E057: ONE EXTERNAL CORE-SIDE BODY FOR THE SECOND ZERO
+================================================================
+
+Question
+--------
+Can one causally selected external 6x4 body create `qiaoyu_capsule = 0` while
+preserving the verified `fine_buckwheat_powder = 0` state, thereby lowering the
+positive commodity count from 18 to at most 17 without changing occupied geometry?
+
+Why this context
+----------------
+The E055 witness has `qiaoyu_capsule = 2`. Its sole sink is the protocol-core
+terminal in free component 15. The three capsule sources occupy components 15, 1,
+and 40. Inside the fourteen-body merged 6x4 context, exactly three body/mode choices
+can emit a filling-capsule output into component 15, but the first-zero causal
+relation reserves one of those bodies for `grinder_fine_buckwheat`. Hence only two
+remain for three filling-capsule operations.
+
+A complete conditional-domain audit of the 24 current 6x4 bodies outside the block
+finds exactly one same-body mode whose filling-capsule output reaches component 15:
+
+  grinder_dense_blue_iron_004
+  current pose 6239  p_x47_y65_o0_m_BT
+  admitted mode 6238 p_x47_y65_o0_m_TB
+
+E057 appends only this body to the existing block. It does not move the body or
+open a global geometry portfolio.
+
+Method
+------
+1. Reconstruct the exact E055 18/139 witness and E056 mode context.
+2. Append `grinder_dense_blue_iron_004` to the merged 6x4 block, preserving all
+   existing destination identities and adding its two same-body modes.
+3. Recalibrate the expanded fixed state at positive count 18 and total 139 without
+   imposing the new qiaoyu relation.
+4. In the free model, retain the original first-zero causal body relation, require
+   the appended body to carry `filling_capsule`, require both
+   `fine_buckwheat_powder = 0` and `qiaoyu_capsule = 0`, and leave the remaining
+   merged-block operation assignment, admitted modes, and binding free.
+5. Minimize positive commodity count, then total mismatch on that face. Materialize
+   and replay any exact winner through the production component precheck.
+
+Decision rule
+-------------
+Positive count <= 17
+  Retain the materialized second-zero state and recompute the residual frontier.
+
+INFEASIBLE
+  Close this single-external-body qiaoyu relation only. Do not infer that qiaoyu
+  cannot reach zero through body relocation or a different causal context.
+
+UNKNOWN
+  Preserve the calibrated context and change the solver container or add a narrower
+  relation; do not classify the relation as absent.
+
+Truth boundary
+--------------
+E057 covers one external body, one fixed occupied geometry, the inherited
+fine-powder causal relation, and the current conditional assignment/mode/binding
+consumer. It does not prove global positive-count optimality, enter exact routing,
+update U/L, or grant certification.
+
+Result
+------
+Completed. The expanded context recalibrates exactly at 18/139, but the
+operation-count-preserving three-operation cycle is INFEASIBLE while requiring
+both fine_buckwheat_powder and qiaoyu_capsule mismatch zero. See RESULT.txt and
+run-004/RESULT.json.

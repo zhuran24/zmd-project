@@ -1,0 +1,76 @@
+EXPERIMENT E058: ALL-6X4 TERMINAL-SIGNATURE FRONTIER
+====================================================
+
+Question
+--------
+Under the fixed E055 occupied geometry, can any assignment of the complete 38-body
+6x4 operation multiset and admitted same-body modes preserve
+`fine_buckwheat_powder = 0` while also making `qiaoyu_capsule = 0`?
+
+Why this experiment
+-------------------
+E057 appends the only outside 6x4 body whose filling-capsule output can reach the
+protocol-core component, yet both the inherited pair relation and the corresponding
+three-operation cycle are exactly infeasible. Direct domain inspection exposes a
+two-sided terminal tradeoff on that body:
+
+  pose 6238  fine input component 54, qiaoyu output component 15
+  pose 6239  fine input component 15, qiaoyu output component 54
+
+Rather than enumerate another list of complete operation swaps, E058 quotients all
+active binding patterns by the only data relevant to these two zero conditions:
+
+  fine-powder input component set
+  fine-powder output component set
+  qiaoyu output component set
+
+Method
+------
+1. Freeze the E055 18/139 occupied geometry and all 38 current manufacturing-6x4
+   bodies.
+2. For every body, every same-footprint pose mode, and every 6x4 operation, build
+   the native front-filtered conditional-owner domain.
+3. Collapse active patterns with identical three-part terminal signatures.
+4. Build a small exact assignment model with one signature option per body and the
+   exact 6x4 operation counts.
+5. Solve three discriminators:
+
+     fine-only       fine source/sink component-presence sets must match
+     qiaoyu-only     all qiaoyu sources must occupy the fixed core sink component 15
+     joint           both conditions simultaneously
+
+6. Repeat the joint discriminator after collapsing all unrelated 6x4 operations
+   into one `other` class. This is a weaker relaxation; infeasibility there cannot
+   be blamed on the dense-grinder/source-grinder/packaging split.
+
+Each feasible arm minimizes operation changes first and mode changes second. The
+objective is diagnostic only.
+
+Decision rule
+-------------
+Fine-only and qiaoyu-only feasible, joint infeasible
+  The two zero conditions conflict in the current occupied geometry at the 6x4
+  terminal-signature level. Stop current-geometry qiaoyu assignment/mode search and
+  require a geometry-changing cause or a different first-zero geometry.
+
+Joint feasible
+  Materialize the signature assignment as a candidate for the full conditional
+  binding consumer. The relaxation does not by itself prove a second zero.
+
+Any single-condition arm infeasible
+  Audit the signature compiler before interpreting the joint arm; the current
+  witness must calibrate the fine-only condition.
+
+Truth boundary
+--------------
+E058 ignores every other commodity, terminal uniqueness across unrelated terminals,
+generic resources, and full binding coupling. Its joint model is a relaxation of
+the fixed-geometry 6x4 operation/mode/binding problem. Therefore joint
+infeasibility is a sound scoped negative result; feasibility is proposal-only. It
+does not cover body relocation, non-6x4 geometry, routing, U/L, or certification.
+
+Result
+------
+Completed. Fine-only and qiaoyu-only are individually OPTIMAL, but both the exact
+five-operation model and the weaker other-collapsed joint relaxation are
+INFEASIBLE. See RESULT.txt and run-004/RESULT.json.
