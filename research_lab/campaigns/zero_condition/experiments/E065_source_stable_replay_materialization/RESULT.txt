@@ -1,0 +1,149 @@
+E065 RESULT: SOURCE-STABLE E057-E062 REPLAY SET IS MATERIALIZED
+================================================================
+
+Status
+------
+Completed as research-only executable-identity and evidence-materialization work.
+E065 supersedes E064's absent fresh-result locators as the active machine premise
+for E063. It does not certify the frozen models, create a second zero, enter
+routing, or update U/L.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/
+    E065_source_stable_replay_materialization/run-001/RESULT.json
+
+SHA-256:
+  c5ced5b70bc70cd3c881741b7703a4cee80ba6a625fe78350db3663e9ef38c06
+
+Receipt:
+  research_lab/local/zero_condition/
+    E065_source_stable_replay_materialization/run-001/RESULT_RECEIPT.json
+
+Verdict:
+  SOURCE_STABLE_REPLAY_SET_MATERIALIZED
+
+Decision:
+  USE_E065_E062_RESULT_FOR_COMPLETE_FACE_E063
+
+Evidence defect repaired
+------------------------
+At independent inspection, E064's six named `e057-source` through `e062-source`
+directories existed but contained no machine files. Its two surviving origin
+reports both contained zero foreign functions and therefore could not reproduce
+the historical cache-contamination claim recorded in E064's prose.
+
+E065 does not infer why those bytes were absent. It creates a new, independently
+checkable source-stable set instead of treating the narrative locator as evidence.
+
+Execution identity
+------------------
+Each E057-E062 runner executed in a separate Python process with:
+
+  * the exact `EXPECTED_ENV` declared by that runner;
+  * a fresh private `PYTHONPYCACHEPREFIX` set before interpreter startup;
+  * the original tracked runner source, not a copied or patched source file;
+  * output globals redirected in memory to the E065 ignored run directory;
+  * a pre-run audit requiring every module-defined function's code filename to
+    resolve to the requested source file.
+
+All six source-origin receipts report zero foreign functions.
+
+Replayed result identities
+--------------------------
+  E057  6ec121984244d610df97b1c04864961d5c2b06c5fd057067a1839a97cb6a06be
+  E058  fc13c2af27a37ef5d8e6d266499f6a253d3afe91ddd410725d8142ef0dbc12d9
+  E059  4a48b537d6cd63ab56b8c3d52cbeee031038469135dbce991d59193a28eac3e8
+  E060  acbf258b1000116d2d7d8cd55b5dcc3c648018f85ff0a2c3f263f0434a9bdacb
+  E061  4ad613d6a51b76b2cb697eefa378994dc15fe8dfc9fb5ac38badde3862f30d53
+  E062  8ddff564f9359da582bbb212d77a736c2651294c8d335d35c4104b73c0b7d361
+
+E061 and E062 exceeded one external tool window. Their native NON6 checkpoints
+were preserved and the second invocation resumed the remaining SIX4 arm under a
+new fresh cache. No checkpoint was silently regenerated under changed runner
+source.
+
+Scientific comparison
+---------------------
+E057, E058, and E061
+~~~~~~~~~~~~~~~~~~~~
+After removing timestamps, runtime counters, identity envelopes, and evidence
+locators, their scientific projections are byte-equivalent to the original
+results:
+
+  E057  QIAOYU_EXTERNAL_BODY_RELATION_INFEASIBLE
+  E058  FIXED_GEOMETRY_6X4_TWO_ZERO_SIGNATURE_CONFLICT
+  E061  ALL_ONE_OBJECT_TWO_ZERO_SIGNATURE_CHANGES_INFEASIBLE
+
+E058's only raw difference is `domain_build_seconds`, which is runtime telemetry,
+not a semantic result.
+
+E059 and E060
+~~~~~~~~~~~~~
+Their exact objectives, statuses, complete optimum-face pattern sets, component
+classes, and synthetic-repair outcomes are unchanged. Individual optimum witnesses
+and enumeration order are not stable and are no longer compared as if they were a
+unique theorem object.
+
+E059 retains:
+
+  qiaoyu zero hard -> minimum fine mismatch     2
+  fine zero hard   -> minimum qiaoyu mismatch   1
+  complete face pattern count                  12
+  source-only class            {1,4,8,12,22,26}
+  sink-only class                         {21,54}
+
+E060 retains the same corrected tradeoff, complete face, generic sink conclusion,
+and filling-signature target. E059 has two representative-witness differences;
+E060 has one. Their normalized complete face sets are identical to the originals.
+
+E062
+~~~~
+The complete physical/objective frontier is unchanged:
+
+  objective distribution   {1: 5, 2: 5084, 3: 64}
+  strict near misses        5
+  nonterminal candidates    0
+  physical candidate IDs    unchanged
+  replacement poses         unchanged
+  exact objective values    unchanged
+
+The four pole moves and the one 6x4 move therefore remain valid directional
+near-miss actions.
+
+Representative presence is not unique. In this replay:
+
+  pose 3725 -> 3794  retains source-only component 1
+  pose 3725 -> 3863  returns source-only component 4
+  pose 3725 -> 3932  returns source-only component 26
+  pose 3725 -> 4001  retains source-only component 1
+  pose 7006 -> 6878  retains source-only component 40
+
+Two of the five representatives differ from the original E062 output. This does
+not change the objective-one claim. It does prove that one selected presence
+witness cannot define E063's causal component set.
+
+Architecture effect
+-------------------
+A runner source hash is not a complete executable identity, and a scalar optimum
+is not a complete state identity. The active successor must therefore carry both:
+
+  source-stable executable provenance
+  complete optimum-face coverage
+
+E063 must pin the E065 E062 result and enumerate the complete directional face for
+its selected pole geometry. It may use the union of unmatched components across
+that face to propose second objects; it may not inherit component 1, 4, 26, or any
+other single representative as the theorem.
+
+Truth boundary
+--------------
+E065 replays the frozen E057-E062 research models and verifies the stated
+scientific invariants. It does not reproduce or prove E064's historical cache
+incident, establish that the relaxations match full binding, close simultaneous
+pairs, enter exact routing, or change any certification or ledger state.
+
+Runner:
+  research_lab/campaigns/zero_condition/experiments/
+    E065_source_stable_replay_materialization/run_e065.py

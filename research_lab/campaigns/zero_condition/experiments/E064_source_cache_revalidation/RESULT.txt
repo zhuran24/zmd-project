@@ -3,8 +3,22 @@ E064 RESULT: SOURCE-ISOLATED REPLAY PRESERVES E057-E061 AND CORRECTS E062'S POLE
 
 Status
 ------
-Completed as research-only runtime-identity and source-replay evidence. No routing,
-whole-layout witness, certification, U/L, owner, or publication effect.
+Historical runtime-identity investigation, superseded for active machine evidence
+by E065. At the next independent inspection, E064's six named fresh-result
+directories were empty and its two remaining origin reports both recorded zero
+foreign functions. The historical cache-contamination event and the exact fresh
+hashes below therefore cannot be re-established from the surviving E064 bytes.
+
+E065 re-executes E057-E062 under fresh caches, verifies every loaded function's
+source filename, and materializes a complete successor result set. Its active E062
+SHA-256 is
+`8ddff564f9359da582bbb212d77a736c2651294c8d335d35c4104b73c0b7d361`.
+E057, E058, and E061 retain identical scientific projections; E059 and E060 retain
+their exact objectives and complete optimum-face sets but not unique representative
+witnesses; E062 retains its five physical/objective near misses while two selected
+presence representatives differ. Use E065 for all downstream work.
+
+No routing, whole-layout witness, certification, U/L, owner, or publication effect.
 
 Trigger reproduced
 ------------------

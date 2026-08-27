@@ -68,4 +68,6 @@ update U/L.
 
 Result
 ------
-Not run yet.
+Completed. The source-stable replay set is materialized and verified. See
+`RESULT.txt`; the active E062 replay SHA-256 is
+`8ddff564f9359da582bbb212d77a736c2651294c8d335d35c4104b73c0b7d361`.
