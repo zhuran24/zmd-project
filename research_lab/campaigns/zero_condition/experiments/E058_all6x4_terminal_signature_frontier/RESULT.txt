@@ -3,9 +3,12 @@ E058 RESULT: CURRENT GEOMETRY CANNOT SUPPORT BOTH FINE-POWDER AND QIAOYU ZERO IN
 
 Status
 ------
-Completed as research-only exact terminal-signature evidence. No body-relocation
-claim, exact routing, whole-layout witness, certification, U/L, owner, or
-publication effect.
+Historical fixed-sink predecessor. This run correctly solves the model it encoded,
+but it fixed qiaoyu sink presence to the materialized component 15 and therefore
+was not, by itself, a complete relaxation of generic-input binding. E060 restores
+sink-slot freedom and independently revalidates the same infeasibility and target.
+No body-relocation claim, exact routing, whole-layout witness, certification, U/L,
+owner, or publication effect.
 
 Frozen result
 -------------
@@ -104,12 +107,14 @@ arm, grinder_dense_blue_iron, grinder_dense_source, and packaging_battery are
 collapsed into one `other` class with count 29. Therefore the conflict cannot be
 attributed to the historical split among those unrelated operations.
 
-Why the negative result is sound in scope
------------------------------------------
-The signature model discards unrelated terminal uniqueness, generic resources,
-and full binding coupling. It is a relaxation of the fixed-geometry 6x4
-assignment/mode/binding problem, not a strengthening. Every native active pattern
-has a represented signature option. Consequently joint infeasibility proves:
+Original proof-surface defect and successor disposition
+-------------------------------------------------------
+The model discarded unrelated terminal uniqueness, generic resources, and full
+binding coupling, but it also fixed qiaoyu sink component 15. Because qiaoyu is a
+required generic input whose physical slot is selected by binding, that fixed sink
+was an extra restriction. The following negative conclusion is therefore carried
+only by E060, which restores all seven usable sink slots across components 15 and
+39 and reproduces the same exact/relaxed infeasibility:
 
   no assignment of the current 38 physical 6x4 bodies,
   their admitted same-body modes,

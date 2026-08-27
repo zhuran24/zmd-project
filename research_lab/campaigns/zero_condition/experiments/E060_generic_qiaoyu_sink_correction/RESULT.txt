@@ -1,0 +1,124 @@
+E060 RESULT: GENERIC QIAOYU SINK FREEDOM REVALIDATES THE TWO-ZERO TARGET
+================================================================================
+
+Status
+------
+Completed as research-only correction and revalidation evidence. E058's original
+fixed-sink proof surface is rejected; its conclusion and E059's target are carried
+only by this corrected successor. No exact routing, whole-layout witness,
+certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/E060_generic_qiaoyu_sink_correction/
+    run-001/RESULT.json
+
+SHA-256:
+  feb697f506cb2ca2422c1d0e96a02250cb33afcaa21fc86fda939f6ce79409b8
+
+Verdict:
+  GENERIC_QIAOYU_SINK_FREEDOM_REVALIDATES_TWO_ZERO_TARGET
+
+Decision:
+  CONTINUE_FILLING_SIGNATURE_GEOMETRY_SEARCH
+
+Scope defect found
+------------------
+E058 fixed qiaoyu sink presence to component 15 because the materialized E055
+binding selected:
+
+  protocol_core_001:in:3
+  cell (58,63)
+  component 15
+
+That is an endpoint choice, not a game rule. `qiaoyu_capsule` is a required
+generic input. Production binding may assign it to any front-usable physical input
+slot of any selected generic-input provider.
+
+The E055 layout has no protocol storage box. Its protocol core exposes seven usable
+input slots:
+
+  one slot in component 15
+  six slots in component 39
+
+Therefore E058's fixed-sink model was a strengthening rather than a complete
+relaxation. Its original infeasibility could not by itself support a fixed-geometry
+negative claim.
+
+Corrected model
+---------------
+E060 restores exactly one qiaoyu sink-slot variable across all seven usable slots
+and defines sink-component presence from that choice. Qiaoyu source-component
+presence is then compared with the selected sink component rather than with a
+hard-coded component.
+
+The corrected exact and `other`-collapsed joint models both remain:
+
+  INFEASIBLE
+
+and close in presolve with zero branches/conflicts.
+
+Corrected directional tradeoffs
+--------------------------------
+With qiaoyu zero hard:
+
+  exact minimum fine mismatch       2
+  relaxed minimum fine mismatch     2
+
+With fine zero hard:
+
+  exact minimum qiaoyu mismatch     1
+  relaxed minimum qiaoyu mismatch   1
+
+Every optimum automatically selects the component-15 core slot. The six
+component-39 slots are available but never occur in the optimum face.
+
+Corrected optimum face
+----------------------
+The complete qiaoyu-hard fine-mismatch-2 face again contains exactly twelve
+presence patterns. Every pattern selects qiaoyu sink component 15 and has:
+
+  common fine source/sink backbone  {6,15}
+  source-only class                 {1,4,8,12,22,26}
+  sink-only class                   {21,54}
+
+The exact and `other`-collapsed pattern sets remain identical to E059's reported
+sets.
+
+Corrected synthetic discriminator
+---------------------------------
+Under variable generic sink choice:
+
+  one filling-capsule signature
+    qiaoyu output -> component 15
+    fine input    -> any source-only component
+  remains sufficient;
+
+  one fine-grinder output -> component 21 or 54
+  remains insufficient.
+
+Thus E059's geometry target is numerically and structurally unchanged, but its
+scientific authority now derives from E060.
+
+Architecture effect
+-------------------
+This is another instance of endpoint identity being mistaken for semantic
+identity:
+
+  selected generic slot != fixed terminal rule
+
+The inner representation must transport generic-input assignment freedom into
+any component-level abstraction. A component certificate that freezes one
+materialized generic slot is not a relaxation unless slot necessity has been
+proved separately.
+
+Truth boundary
+--------------
+E060 fixes E055 occupied geometry and uses E058's all-6x4 terminal-signature
+relaxation, now with exact qiaoyu generic sink-slot choice. It does not cover body
+relocation, other first-zero states, full unrelated binding constraints, routing,
+U/L, or certification.
+
+Runner SHA-256:
+  05395a59d594eab9dc54eccf4a4c0d1164dd2addf4e7604648e6d866ecd0e143

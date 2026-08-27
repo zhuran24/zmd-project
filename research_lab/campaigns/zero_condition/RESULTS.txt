@@ -2164,9 +2164,9 @@ evidence:
   runner sha256
   d6180ebdabd5b1ef23b39fc7bddd8b76f39c87e10999d473f7f98f144b84f850.
 
-R-ZC-069  All current 6x4 terminal signatures prove a fixed-geometry two-zero conflict
-------------------------------------------------------------------------------------------------
-status: exact native-domain census plus exact and relaxed signature infeasibility
+R-ZC-069  All current 6x4 terminal signatures expose a fixed-geometry two-zero conflict
+-------------------------------------------------------------------------------------------------
+status: historical fixed-sink predecessor; conclusion revalidated by R-ZC-071
 scope: all 38 current manufacturing-6x4 bodies under the E055 occupied geometry
 
 statement:
@@ -2205,7 +2205,7 @@ evidence:
 
 R-ZC-070  The fixed-geometry conflict has an exact one-signature filling target
 ----------------------------------------------------------------------------------
-status: exact directional tradeoffs, complete optimum-face enumeration, synthetic signature discriminators
+status: historical fixed-sink predecessor; target revalidated by R-ZC-071
 scope: E058 fixed component partition and all-6x4 terminal-signature relaxation
 
 statement:
@@ -2238,6 +2238,40 @@ evidence:
   c1404d1b41b5b6dd3069b9692387d35ab5962bfee0d0b3dfcc0d970915c7daff;
   runner sha256
   f93eedfc989e81184593be94c310a730b4e53f6daa8518c87ae517b1e6ce1504.
+
+R-ZC-071  Generic qiaoyu sink freedom revalidates the conflict and filling target
+-----------------------------------------------------------------------------------
+status: exact generic-slot reconstruction, corrected joint/relaxed infeasibility, complete corrected face
+scope: E055 occupied geometry, all current 6x4 terminal signatures, every usable selected generic-input slot
+
+statement:
+  E060 identifies a proof-surface defect in E058/E059: qiaoyu sink component 15
+  was a materialized generic-input assignment, not a fixed rule. The E055 protocol
+  core has seven usable slots, one in component 15 and six in component 39. A
+  corrected model restores exactly one qiaoyu sink-slot choice. Exact and `other`-
+  collapsed joint two-zero models remain INFEASIBLE. Both directional tradeoffs
+  remain 2 and 1. The complete corrected qiaoyu-zero optimum face again has exactly
+  twelve patterns, all selecting sink component 15, and the same source-only and
+  sink-only classes. The same synthetic filling target remains sufficient while
+  both synthetic grinder targets remain infeasible.
+
+non-implications:
+  E060 fixes occupied geometry and remains a terminal-signature relaxation. It
+  does not prove a legal filling pose exists, cover body relocation, enter routing,
+  or update U/L. E058/E059's original fixed-sink proof surfaces are not used as
+  standalone authority.
+
+effect on next problem:
+  Continue the filling-signature geometry search, but derive generic sink freedom
+  anew for every moved geometry, including protocol-core moves. Record the broader
+  lesson that selected generic slot identity cannot be promoted into a component
+  theorem without a necessity proof.
+
+evidence:
+  E060 RESULT.txt; local run-001 RESULT.json sha256
+  feb697f506cb2ca2422c1d0e96a02250cb33afcaa21fc86fda939f6ce79409b8;
+  runner sha256
+  05395a59d594eab9dc54eccf4a4c0d1164dd2addf4e7604648e6d866ecd0e143.
 
 Current synthesis
 -----------------

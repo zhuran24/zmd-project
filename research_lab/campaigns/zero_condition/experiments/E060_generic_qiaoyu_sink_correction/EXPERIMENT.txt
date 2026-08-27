@@ -1,0 +1,59 @@
+EXPERIMENT E060: GENERIC QIAOYU SINK FREEDOM CORRECTION
+=======================================================
+
+Question
+--------
+Do E058's fixed-geometry two-zero conflict and E059's missing filling-signature
+target survive after qiaoyu's generic-input sink is restored as a variable rather
+than frozen to the materialized protocol-core slot?
+
+Why this experiment
+-------------------
+E058 modeled qiaoyu sink presence as fixed in component 15. The production binding
+model does not: `qiaoyu_capsule` is a required generic input and may be assigned to
+any usable physical generic-input slot. In the E055 layout the protocol core has
+seven usable input slots spanning components 15 and 39.
+
+A fixed sink is an extra restriction, so E058's infeasibility was not yet a sound
+relaxation proof of the complete current-geometry assignment space. E060 restores
+this omitted freedom before any geometry conclusion is used.
+
+Method
+------
+1. Reconstruct the E055 materialized solution and enumerate every selected generic-
+   input provider and every front-usable physical input slot from the frozen plan.
+2. Build a corrected E058 signature model with exactly one qiaoyu sink-slot choice.
+3. Require qiaoyu source-component presence to equal the selected sink-component
+   presence while requiring fine source/sink presence equality.
+4. Run exact five-operation and `other`-collapsed joint arms.
+5. Recompute both directional tradeoffs and completely enumerate the qiaoyu-hard
+   optimum presence face, including sink component identity.
+6. Re-run E059's one-synthetic-signature discriminators under variable sink choice.
+
+Decision rule
+-------------
+Corrected joint feasible
+  Withdraw E058/E059 geometry claims and validate the signature assignment in the
+  full joint consumer.
+
+Corrected joint infeasible, face/repair target unchanged
+  Mark E058/E059 as revalidated by E060 and continue the filling-signature geometry
+  search.
+
+Corrected joint infeasible, target changed
+  Supersede E059's old target with the corrected optimum face.
+
+Truth boundary
+--------------
+E060 remains a terminal-signature relaxation on the E055 occupied geometry. It
+restores generic qiaoyu sink mobility but still omits unrelated terminal uniqueness,
+full generic-resource coupling, and other commodity binding structure. Corrected
+infeasibility is scoped sound; corrected feasibility would remain proposal-only.
+
+Result
+------
+Completed. The E055 core exposes seven usable generic-input slots across components
+15 and 39. Restoring exact sink-slot choice leaves the exact and `other`-collapsed
+joint models INFEASIBLE. All directional optima select component 15, reproduce the
+2/1 tradeoff, the same twelve-pattern face, and the same filling-signature target.
+See RESULT.txt and run-001/RESULT.json.

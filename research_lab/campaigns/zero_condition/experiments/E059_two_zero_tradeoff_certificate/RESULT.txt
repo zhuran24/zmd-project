@@ -3,10 +3,12 @@ E059 RESULT: THE TWO-ZERO CONFLICT HAS AN EXACT ONE-SIGNATURE GEOMETRY TARGET
 
 Status
 ------
-Completed as research-only exact tradeoff and proposal evidence. The synthetic
-signature scan does not prove that a legal body relocation realizes the target.
-No exact routing, whole-layout witness, certification, U/L, owner, or publication
-effect.
+Historical fixed-sink predecessor, revalidated by E060. E059's numerical tradeoff
+and synthetic target are unchanged after restoring generic qiaoyu sink-slot
+freedom, but their scientific authority now derives from E060 rather than this
+fixed-sink proof surface. The synthetic scan does not prove that a legal body
+relocation realizes the target. No exact routing, whole-layout witness,
+certification, U/L, owner, or publication effect.
 
 Frozen result
 -------------
@@ -89,14 +91,16 @@ E057's appended body failed precisely because its two modes split these properti
 across different components. E059 now supplies a positive geometry specification
 rather than another complete operation-swap portfolio.
 
-Truth boundary
---------------
-The six synthetic filling signatures are sufficient only in E058's terminal-
-signature relaxation and fixed component partition. E059 does not assert that a
-legal pose exists, that unrelated binding constraints survive, or that one body
-move is globally sufficient. Every actual candidate must rebuild its component
-partition, native front-filtered domain, operation assignment, and full joint
-binding consumer.
+Successor correction and truth boundary
+---------------------------------------
+E059 inherited E058's fixed qiaoyu sink component. E060 restores all seven usable
+protocol-core generic-input slots across components 15 and 39, then reproduces the
+same 2/1 tradeoff, the same complete twelve-pattern face, and the same synthetic
+filling target. The six filling signatures remain sufficient only in the corrected
+terminal-signature relaxation and fixed component partition. No legal pose,
+unrelated binding survival, or one-body sufficiency is asserted. Every actual
+candidate must rebuild its component partition, native front-filtered domain,
+generic sink assignment, operation assignment, and full joint consumer.
 
 Runner SHA-256:
   f93eedfc989e81184593be94c310a730b4e53f6daa8518c87ae517b1e6ce1504

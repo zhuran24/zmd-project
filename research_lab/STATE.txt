@@ -543,11 +543,22 @@ component from {21,54}; exact and other-collapsed pattern sets are identical.
 
 One synthetic filling-capsule signature with qiaoyu output in component 15 and
 fine input in any source-only component repairs the two-zero signature model. One
-synthetic fine-grinder output in either sink-only component does not. The next
-proposer therefore scans legal body relocations for that filling signature and
-sends only matching geometries into the full joint positive-count consumer. It
-must not return to another complete swap portfolio or total-mismatch descent. A
-fully zero state enters routing immediately.
+synthetic fine-grinder output in either sink-only component does not.
+
+E060 then catches a proof-surface defect before geometry search: qiaoyu sink
+component 15 was the materialized generic-input slot, not a fixed rule. The E055
+protocol core has seven usable slots across components 15 and 39. Restoring exact
+sink-slot choice leaves both corrected joint models INFEASIBLE, reproduces the 2/1
+tradeoff, and reproduces the same twelve-pattern face; every optimum chooses
+component 15. E058/E059's original fixed-sink surfaces no longer carry standalone
+scientific authority, but their conclusion and filling target are independently
+revalidated by E060.
+
+The next proposer therefore scans legal body relocations for that filling
+signature, deriving generic sink freedom anew on every geometry, and sends only
+matching geometries into the full joint positive-count consumer. It must not
+return to another complete swap portfolio or total-mismatch descent. A fully zero
+state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

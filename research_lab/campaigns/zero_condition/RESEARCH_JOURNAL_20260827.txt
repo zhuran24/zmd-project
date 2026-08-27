@@ -262,3 +262,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-27
   geometry 的任务终于不再是“改善连通性”或“搬一台看看”，而是制造一条双用途 terminal
   signature。下一步只扫描能同时把 qiaoyu 送到 core component、把 fine 输入接到 source
   class 的合法 body/mode；其他几何不进入 full joint consumer。
+
+2026-08-27 14:50
+----------------
+数据：
+  E060 RESULT.json
+  research_lab/local/zero_condition/E060_generic_qiaoyu_sink_correction/run-001/RESULT.json
+  sha256 feb697f506cb2ca2422c1d0e96a02250cb33afcaa21fc86fda939f6ce79409b8
+
+注意／发现：
+  准备扫 geometry 时才注意到：qiaoyu_capsule 是 required_generic_input，component 15 只是
+  E055 endpoint 选中的 core slot，不是固定 sink。当前 core 实际有 7 个可用输入槽：1 个在
+  component 15，6 个在 39。E058 把 sink=15 固定住了，原 proof surface 过强。
+
+  把 sink slot 恢复成变量后，exact 和 `other`-collapsed joint 仍然 INFEASIBLE；tradeoff
+  仍是 2/1，完整 optimum face 仍是同一 12 种，而且所有 optimum 自己选择 component 15。
+  synthetic filling target 也完全不变。
+
+推理：
+  结论碰巧正确不等于证明对象正确。E058/E059 不能独立承重，改由 E060 successor
+  revalidation 承重。以后任何 component theorem 都必须把 generic slot assignment 一起运
+  输，不能把 materialized slot 当成规则。geometry 扫描也必须对每个候选重新生成 sink
+  space，特别是 protocol-core relocation。
