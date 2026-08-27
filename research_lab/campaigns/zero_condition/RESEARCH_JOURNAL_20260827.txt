@@ -115,3 +115,37 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-27
   operation-to-body 人工边界，而不是新几何。此后排序必须改成 positive count 优先、total
   mismatch 次优。下一问是在保住这个 causal swap 的前提下释放其余 assignment/mode，看看
   同一 inner language 能否长出第二个零；若不能，再从剩余 18 种商品的结构化原因选扩张。
+
+2026-08-27 11:31
+----------------
+数据：
+  E055 run-001 FAILURE.json
+  research_lab/local/zero_condition/E055_causal_pair_assignment_frontier/
+    run-001/FAILURE.json
+  sha256 3d692b18f41a996e4dc3aa2d92437426a655ef71fd348dd205d873a46a6011b4
+
+注意／发现：
+  我用 `grinder_fine_buckwheat_004` 去找 E054 物化后的 source body，结果那张 body 上已经
+  不是 capsule operation。operation reassignment 后，同质 named instance 被重新配给 body；
+  历史实例名不再是 body identity。
+
+推理：
+  这与前面的 named-instance / group-pose 问题是同一类。causal relation 必须运输成冻结的
+  block/destination 坐标，实例名只能保留为来源标签。run-001 在建模前终止，没有科学效力。
+
+2026-08-27 11:35
+----------------
+数据：
+  E055 RESULT.json
+  research_lab/local/zero_condition/E055_causal_pair_assignment_frontier/run-002/RESULT.json
+  sha256 5a81cd6c58151643b345a888f8bd782ba9c5bbdfe00c21e5ac2beccc90576efa
+
+注意／发现：
+  固定所有 port mode，只释放 14-body 6x4 block 里除 causal pair 外的 operation assignment。
+  positive count 的精确最优仍是 18；再固定 18 最小化总和，精确回到 139。materialized
+  replay 和 production precheck 都保持 fine_buckwheat_powder=0、另外 18 种 disconnected。
+
+推理：
+  第二个零不在 operation assignment 轴里。这个层已经完整闭合为 lexicographic optimum
+  (18,139)。下一层只释放已登记的 same-body port modes，仍然不动 occupied geometry；若
+  positive count 仍精确等于 18，再从剩余商品的结构化 cause 选择新的 rescue/body context。

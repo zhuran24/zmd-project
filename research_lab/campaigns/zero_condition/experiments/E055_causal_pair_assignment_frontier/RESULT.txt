@@ -1,0 +1,139 @@
+E055 RESULT: OPERATION ASSIGNMENT ALONE SATURATES AT ONE ZERO AND TOTAL 139
+================================================================================
+
+Status
+------
+Completed as research-only exact lexicographic assignment-frontier evidence. No
+second zero, exact routing, whole-layout completion, certification, U/L, owner, or
+publication effect is claimed.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/E055_causal_pair_assignment_frontier/
+    run-002/RESULT.json
+
+SHA-256:
+  5a81cd6c58151643b345a888f8bd782ba9c5bbdfe00c21e5ac2beccc90576efa
+
+Verdict:
+  ASSIGNMENT_FRONTIER_LEX_SATURATED_AT_18_139
+
+Decision:
+  RELEASE_CAUSAL_CONTEXT_PORT_MODES
+
+Exact scope
+-----------
+E055 retains the E054 causal relation:
+
+  original grinder-004 body  carries filling_capsule
+  original capsule-003 body  carries grinder_fine_buckwheat
+  fine_buckwheat_powder mismatch = 0
+
+All occupied bodies and all current port modes are fixed. Operations outside the
+merged fourteen-body 6x4 block are fixed. Inside that block, the selected pair
+operations remain fixed while the other twelve operation-to-body assignments and
+binding are released.
+
+Fidelity calibration
+--------------------
+The materialized E054 state is rebuilt with every operation and mode fixed. The
+fresh model proves:
+
+  status                  OPTIMAL
+  total mismatch              139
+  positive commodities         18
+  zero commodity
+    fine_buckwheat_powder
+
+This reproduces the frozen first-zero state exactly.
+
+Positive-count optimum
+----------------------
+With the remaining twelve 6x4 operation assignments free and all modes fixed, the
+primary solve proves:
+
+  status                  OPTIMAL
+  best bound                  18
+  positive commodity count    18
+  zero commodities             1
+  elapsed                    7.98 s
+
+Therefore no reassignment inside the fourteen-body block can create a second zero
+while the current port modes and causal pair relation are retained.
+
+The arbitrary positive-count optimum has total mismatch 144. It is not used as the
+lexicographic state.
+
+Secondary total optimum
+-----------------------
+A fresh model fixes positive commodity count to the exact optimum 18 and minimizes
+total mismatch. It proves:
+
+  status                  OPTIMAL
+  best bound                 139
+  total mismatch             139
+  positive commodity count    18
+
+The concrete state is materialized and replayed with operation/mode choices fixed.
+The replay again proves 18/139 and preserves `fine_buckwheat_powder = 0`.
+Production component precheck reports no blocked ports and exactly the same 18
+positive commodities as disconnected.
+
+Thus the exact lexicographic optimum of this assignment-only context is:
+
+  (positive commodity count, total mismatch) = (18, 139)
+
+Object-space correction
+-----------------------
+The first E055 launch stopped before model construction because it tried to find
+the selected causal bodies by named instance IDs in the E054 materialized state.
+Operation reassignment had already quotiented and remapped those symmetric names,
+so the names no longer identified the original bodies.
+
+The corrected run transports the relation by its frozen consumer coordinates:
+
+  6x4_merged destination 8
+  6x4_merged destination 5
+
+and only uses the old instance names as historical source labels. The preliminary
+run-001 FAILURE.json has no scientific authority.
+
+Architecture effect
+-------------------
+The first-zero relation is real, but the second zero is not hidden in operation
+assignment alone. The inner hierarchy is now experimentally ordered:
+
+  selected causal body relation
+    -> operation assignment: exact saturation at 18/139
+    -> admitted same-body port modes: next untested freedom
+    -> body geometry/rescue expansion only if mode release also saturates
+
+This is also another instance of the named-instance versus body-location transport
+problem. Outer-loop relations that survive operation reassignment must bind to
+block/destination or another permutation-invariant body identity.
+
+Truth boundary
+--------------
+E055 is exact only for E054 occupied geometry, one selected causal pair relation,
+fixed port modes, fixed non-6x4 operations, and free operation assignment inside
+the fourteen-body 6x4 block. It does not exhaust port-mode freedom, body movement,
+other rescue relations, global geometry, routing, throughput, U/L, or
+certification.
+
+Frozen artifacts
+----------------
+Positive-count checkpoint:
+  sha256 e39b89f95fdd995eef582e672c97c2ca70ab2a742877bfd3fa0448dae3995b6e
+
+Joint witness:
+  sha256 3b36ad647149af238567b3746e165fc60fbd107d47b10d8ba92bf15e4e2ab559
+
+Concrete assignment:
+  sha256 bf6d1cfcd4c6aaf649a16b9513044b2023b5a9a1a5b39267ebcaad15ffe2c46b
+
+Primary runner:
+  sha256 5722d921d66f4bd4b7126c42a9be50d47ee4cb2c7c0873f2a3f161d402cabad6
+
+Resume executor:
+  sha256 6220d63198f538aa58602d99bace80b3c7488b92e55d90a547e5eddddd335b1f

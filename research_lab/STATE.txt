@@ -162,10 +162,9 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Inside the causal first-zero relation selected by E054, can the remaining
-fourteen-body port-mode and operation-assignment freedom reduce the positive
-commodity count below 18 while preserving `fine_buckwheat_powder = 0`, or is 18
-the exact limit of this occupied geometry and assignment context?
+After E055 proves operation assignment exact at positive count 18 and total 139,
+can the admitted same-body port modes inside the selected causal context create a
+second zero while occupied geometry and the causal body relation remain fixed?
 
 Current campaign posture
 ------------------------
@@ -502,11 +501,19 @@ commodities and `fine_buckwheat_powder = 0`. Fixed replay and production compone
 precheck agree exactly.
 
 The active progress order is now positive commodity count first and total mismatch
-second. The next model retains the selected causal relation but releases the
-remaining fourteen-body operation assignments and admitted port modes. If it
-reaches 17 or less, the same inner language contains another zero. If it proves 18
-optimal, the next expansion must be selected from the remaining commodity causes,
-not from another sum-only descent. A fully zero state enters routing immediately.
+second. E055 retains the selected causal relation, fixes every current port mode,
+and releases the other twelve operation assignments in the fourteen-body 6x4
+block. It proves the exact lexicographic optimum is still (18,139). The first
+launch also catches another instance-name transport error: after operation
+reassignment, the causal bodies must be addressed by block/destination, not by the
+old symmetric instance names.
+
+Operation assignment is therefore closed at this geometry and causal relation.
+The next model keeps the causal body locations fixed but releases their admitted
+same-body port modes, together with the rest of the 6x4 mode surface, while
+positive count remains primary. A result of 17 or less creates a second zero; an
+exact 18 selects the next structured commodity cause or body/rescue expansion. A
+fully zero state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

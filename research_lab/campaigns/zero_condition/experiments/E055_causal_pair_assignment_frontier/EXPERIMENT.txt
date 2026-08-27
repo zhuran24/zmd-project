@@ -1,0 +1,75 @@
+EXPERIMENT E055: CAUSAL-PAIR OPERATION-ASSIGNMENT FRONTIER
+==========================================================
+
+Question
+--------
+After E054 fixes one causal source-body/capsule-body operation relation and creates
+the first zero at total mismatch 139, can the remaining operation assignment of
+the fourteen-body 6x4 block create a second zero while all occupied bodies and
+port modes stay fixed?
+
+Why this experiment
+-------------------
+E054 changes the progress axis from total mismatch to positive commodity count:
+
+  parent       total 139, positive 19
+  causal swap  total 139, positive 18
+
+The next step must not return to sum-only descent. At the same time, releasing all
+port modes and every assignment block at once would recreate E053's symmetry wall.
+E055 therefore asks the smallest exact continuation question:
+
+  retain the selected grinder-004 / capsule-003 operation relation
+  retain fine_buckwheat_powder mismatch = 0
+  fix every current port mode
+  fix all operations outside the merged fourteen-body 6x4 block
+  release the other twelve 6x4 operation-to-body assignments
+  minimize positive commodity count first
+  then minimize total mismatch on that exact positive-count face
+
+Method
+------
+The E054 concrete state is first rebuilt as a fixed-state calibration and must
+reproduce OPTIMAL total 139, positive count 18, and the fine-powder zero.
+
+The free assignment model keeps native conditional owners, aggregate binding
+resources, terminal uniqueness, and the component-aware shared objective. It
+changes only the operation assignment inside the fourteen-body 6x4 block. The
+selected pair operations remain fixed, all pose modes remain at the E054 witness,
+and binding remains free.
+
+The positive-count and total stages are separate resumable executions. A material
+winner is replayed with fixed operation/mode state and checked against production
+component precheck.
+
+Decision rule
+-------------
+Positive optimum <= 17
+  The same operation-assignment layer contains a second zero. Minimize total on
+  that face, materialize the state, and recompute residual causes.
+
+Positive optimum = 18
+  The selected causal pair plus operation assignment is exact at one zero. Minimize
+  total secondarily, then release bounded port-mode freedom before changing body
+  geometry.
+
+Positive solve UNKNOWN/FEASIBLE
+  Preserve any witness but make no saturation claim. Refine symmetry or continue
+  the exact solve.
+
+Positive optimum = 0
+  Materialize and enter exact routing immediately.
+
+Truth boundary
+--------------
+E055 fixes occupied geometry, the selected causal pair relation, every current port
+mode, and all non-6x4 operation assignments. It does not exhaust port-mode freedom,
+body relocation, other rescue relations, global geometry, routing, throughput,
+U/L, or certification.
+
+Result
+------
+Completed. The fixed E054 state recalibrates at 18/139. Releasing the remaining
+twelve operation assignments while fixing every port mode proves positive-count
+OPTIMAL 18; the exact secondary total optimum is again 139. Operation assignment
+alone therefore cannot create a second zero. See RESULT.txt.
