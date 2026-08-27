@@ -1,0 +1,74 @@
+EXPERIMENT E053: MERGED 6X4 FIRST-ZERO JOINT CONTEXT
+====================================================
+
+Question
+--------
+Can the smallest operation-to-body expansion selected by E052 create the first
+component-compatible commodity without changing occupied geometry?
+
+The expansion merges four relevant bodies into the live ten-footprint 6x4 block:
+
+  filling_capsule_002
+  grinder_fine_buckwheat_004
+  grinder_fine_buckwheat_005
+  grinder_fine_buckwheat_006
+
+The resulting fourteen-footprint block lets all three capsule operations and all
+five fine-buckwheat grinder operations exchange 6x4 bodies while native port mode
+and binding remain in the same consumer.
+
+Why this experiment
+-------------------
+E051 proves the old bounded context cannot make any commodity reach mismatch zero.
+E052 then proves that same-body modes and all 38 relevant one-body relocations
+cannot make `fine_buckwheat_powder` reach zero. Four directly implicated bodies
+remain outside the operation-assignment block. Merging those bodies is narrower
+than another geometry portfolio and directly tests the missing freedom.
+
+Method
+------
+E053 reconstructs E050 Seed C and the faithful E051 context, replaces only the
+6x4 assignment block, preserves all occupied cells, and enables same-body modes at
+the four added destinations while retaining every previously enabled mode.
+
+It performs four exact stages:
+
+1. fixed-state calibration, which must reproduce objective 139;
+2. free sum-optimal solve in the expanded context;
+3. positive-count optimization over the complete expanded joint model;
+4. total-mismatch minimization with positive count fixed to its exact optimum.
+
+A zero-bearing lexicographic state is materialized and replayed with operation and
+mode fixed while binding remains free under the same positive-count constraint.
+The selected port set is checked against the production component precheck.
+
+Decision rule
+-------------
+Positive commodity count = 0
+  Enter exact routing immediately.
+
+Positive commodity count < 19
+  Retain the lexicographic first-zero state. Recompute residual causes with
+  positive-count preservation as the primary progress axis.
+
+Positive commodity count = 19
+  The operation-to-body extension is saturated for first-zero progress. Move to a
+  native simultaneous body context selected by the fine-powder boundary rather
+  than continue shared-sum descent.
+
+Calibration failure
+  Reject all free results and repair the expanded conditional-owner context.
+
+Truth boundary
+--------------
+E053 is exact only for E050 Seed C occupied geometry and the expanded fourteen-body
+6x4 assignment block together with the inherited 3x3, 5x5, and singleton blocks.
+It does not prove a global first-zero bound, routing, throughput, U/L, or
+certification.
+
+Result
+------
+Completed as a faithful but nonterminal context experiment. Both fixed-state
+calibrations reproduce 139. The unrestricted sum solve and direct target-zero
+solve return UNKNOWN without incumbents under the free fourteen-body symmetry.
+E054 therefore supplies nine causal operation-swap seeds. See RESULT.txt.

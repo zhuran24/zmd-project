@@ -1993,6 +1993,73 @@ evidence:
   runner sha256
   2539c2b4fce6ddeeb4a9520b7dfe947f9e1163f1cd212321fa483ad96245b658.
 
+R-ZC-064  The faithful fourteen-body 6x4 context is free-search symmetry-bound
+--------------------------------------------------------------------------------
+status: dual exact parent calibrations plus two scoped nonterminal free solves
+scope: E050 Seed C occupied geometry with four E052-relevant bodies merged into the live 6x4 assignment block
+
+statement:
+  E053 expands the ten-body 6x4 operation-assignment block to fourteen bodies and
+  exactly recalibrates the objective-139 parent. The unrestricted sum solve returns
+  UNKNOWN without an incumbent after 106.58 seconds; a direct
+  `fine_buckwheat_powder = 0` solve likewise returns UNKNOWN without an incumbent
+  after 228.67 seconds. Both report zero branches and conflicts. The context is
+  faithful, but its free symmetric assignment search does not yet supply a usable
+  proposer.
+
+non-implications:
+  Neither UNKNOWN proves target-zero infeasibility, first-zero absence, or block
+  irrelevance. The 139 parent remains a valid calibration witness.
+
+effect on next problem:
+  Preserve the fourteen-body inner language but break its symmetry with the exact
+  E052 cause. Test the nine capsule/right-edge-grinder operation swaps while
+  leaving pair port mode and binding free. A feasible pair is a first-zero witness;
+  all-pair infeasibility would close only that causal transfer form.
+
+evidence:
+  E053 RESULT.txt; run-001 RESULT.json sha256
+  eeda91f905778c1a9a266c30c401cc897485bb638e8151be6f4d269512f6401e;
+  run-002 RESULT.json sha256
+  4637ba7a8314ab5ea70359d56b405f4cf1365253b87a161303443815d32bfe0b.
+
+R-ZC-065  A causal operation/body swap creates the first zero at unchanged total 139
+------------------------------------------------------------------------------------------------
+status: nine exact pair-feasibility solves, selected total optimum, fixed replay, and production component precheck
+scope: capsule/right-edge fine-grinder operation swaps in the E053 fourteen-body context
+
+statement:
+  E054 tests all nine swaps between three right-edge
+  `grinder_fine_buckwheat` bodies and three `filling_capsule` bodies while fixing
+  every other operation and pose. Six are OPTIMAL first-zero states and three
+  capsule-002 pairs are INFEASIBLE. The selected grinder-004/capsule-003 swap is
+  OPTIMAL at total mismatch 139 with positive commodity count 18 and
+  `fine_buckwheat_powder = 0`. It changes no occupied cell. Fixed conditional
+  replay reproduces 139/18, and production component precheck reports no blocked
+  ports and exactly the same 18 disconnected commodities.
+
+non-implications:
+  Positive count 18 is not proved globally minimal, and the result does not make
+  the remaining commodities routable. The nine swaps do not exhaust all expanded
+  operation assignments, body movement, or rescue relations.
+
+effect on next problem:
+  Retain the materialized first-zero state and promote positive commodity count to
+  the primary progress axis, with total mismatch secondary. Before changing
+  geometry again, minimize positive count inside the selected causal-pair context;
+  a further zero remains in the same inner language, while saturation selects the
+  next structured geometry/rescue cause.
+
+evidence:
+  E054 RESULT.txt; local RESULT.json sha256
+  c2055940969cd97e7e2d454fc9e859acd06d154e710bb362af34a97238d38412;
+  pair manifest sha256
+  3ee0e70b6a9d6ac97c98b98fbb398991a56cc8b5abe5f0803cb1e466882f15c1;
+  joint witness sha256
+  16102d76fd94694cd99d7ac554c78bb4af03f76af82b69962e906352f6d8eeb5;
+  concrete assignment sha256
+  c32d7516e52b0d84b10520b998c3ac7d65bdb4d18ab5763ad09a717fc71be131.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

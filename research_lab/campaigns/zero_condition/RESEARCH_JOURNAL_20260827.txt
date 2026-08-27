@@ -65,3 +65,53 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-27
   都在 block 外。把它们并进同一个 14-footprint block，可能让 capsule sink 继承右边 body，
   同时让 grinder source 去现有 sink-side body。这比继续加全局 geometry 候选更窄，也更贴
   当前唯一 mismatch=1 的因果结构。
+
+2026-08-27 10:30
+----------------
+数据：
+  E053 run-001 RESULT.json
+  research_lab/local/zero_condition/E053_merged_6x4_first_zero_joint/run-001/RESULT.json
+  sha256 eeda91f905778c1a9a266c30c401cc897485bb638e8151be6f4d269512f6401e
+
+注意／发现：
+  14-body block 能精确复现 139，但一放开完整 assignment，sum objective 在 106 秒里没有
+  incumbent、branch 或 conflict。不是先得到一个差解再爬不动，而是连搜索入口都没穿过。
+
+推理：
+  这不能解释成“14-body context 没价值”。语义容器通过了 calibration，死的是自由搜索
+  形状。先不要再扩 body；用 E052 已指出的 source-body / capsule-body 因果关系破掉对称。
+
+2026-08-27 10:45
+----------------
+数据：
+  E053 run-002 RESULT.json
+  research_lab/local/zero_condition/E053_merged_6x4_first_zero_joint/run-002/RESULT.json
+  sha256 4637ba7a8314ab5ea70359d56b405f4cf1365253b87a161303443815d32bfe0b
+
+注意／发现：
+  直接要求 fine_buckwheat_powder = 0、再最小化总和，228 秒后仍是 UNKNOWN，仍无 incumbent、
+  branch、conflict。把目标换成 first-zero 本身也没有穿过 assignment symmetry。
+
+推理：
+  目标函数不是唯一问题。下一步应把“capsule operation 到右侧 source body，同时 grinder
+  operation 到 capsule body”写成窄关系，逐个判断九种因果交换，而不是让 14 个 body 的
+  全排列自己从雾里长出来。
+
+2026-08-27 11:08
+----------------
+数据：
+  E054 RESULT.json
+  research_lab/local/zero_condition/E054_causal_fine_powder_operation_swaps/run-001/RESULT.json
+  sha256 c2055940969cd97e7e2d454fc9e859acd06d154e710bb362af34a97238d38412
+
+注意／发现：
+  九种 source-grinder / capsule-body operation swap 中六种精确可行。选中的 grinder-004 /
+  capsule-003 交换不动任何 occupied cell，却把 positive count 从 19 降到 18；总和仍是
+  139，fine_buckwheat_powder 首次变成 0。production component precheck 也恰好只报告另外
+  18 种商品 disconnected。
+
+推理：
+  这是对惯性复盘最直接的回应：不再拿“总和下降”冒充唯一进展。第一零来自解除一个
+  operation-to-body 人工边界，而不是新几何。此后排序必须改成 positive count 优先、total
+  mismatch 次优。下一问是在保住这个 causal swap 的前提下释放其余 assignment/mode，看看
+  同一 inner language 能否长出第二个零；若不能，再从剩余 18 种商品的结构化原因选扩张。

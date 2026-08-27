@@ -1,0 +1,63 @@
+EXPERIMENT E054: CAUSAL FINE-POWDER OPERATION SWAPS
+===================================================
+
+Question
+--------
+Does the fourteen-body E053 context contain a first-zero state that the free
+symmetric search could not find, when the operation-to-body relation is seeded by
+the exact fine-powder obstruction?
+
+Why this experiment
+-------------------
+E053 faithfully recalibrates objective 139, but a 180-second free target-zero
+solve returns UNKNOWN without an incumbent. This is not evidence of infeasibility.
+The expanded 6x4 block has strong operation symmetry.
+
+E052 identifies three right-edge `grinder_fine_buckwheat` bodies whose outputs lie
+in the source-only component and three `filling_capsule` bodies whose inputs lie in
+other components. A direct operation swap should place a capsule sink on the
+right-edge body and a grinder source on a sink-side body while preserving the
+operation multiset and occupied geometry.
+
+Method
+------
+E054 enumerates the nine source-body/capsule-body pairs. For each pair:
+
+  all other block destinations keep their current operation and pose mode
+  the right-edge body is fixed to operation `filling_capsule`
+  the capsule body is fixed to operation `grinder_fine_buckwheat`
+  the two swapped destinations retain all admitted same-body modes
+  binding remains free
+  `fine_buckwheat_powder` mismatch is fixed to zero
+
+Each pair first receives a constant-objective exact feasibility solve. If one or
+more pairs are feasible, the best observed seed is rebuilt and total mismatch is
+minimized under the same swap and target-zero constraints. The resulting state is
+materialized and replayed before it becomes a research state.
+
+Decision rule
+-------------
+At least one feasible swap
+  The merged assignment layer crosses 19/19 -> at most 18/19. Retain the exact or
+  best feasible first-zero state and recompute residual causes with positive count
+  as primary progress.
+
+All nine swaps INFEASIBLE
+  This specific one-for-one operation-transfer mechanism is closed. Return to the
+  free fourteen-body context or build a simultaneous multi-operation/body model.
+
+Any solve UNKNOWN
+  Preserve the scoped nonterminal result; do not call the pair infeasible.
+
+Truth boundary
+--------------
+E054 tests nine exact operation-pair constraints inside E053's frozen occupied
+geometry and inherited conditional context. It does not exhaust all fourteen-body
+assignments, body movement, routing, throughput, U/L, or certification.
+
+Result
+------
+Completed. Six of nine causal swaps are exact first-zero states. The selected
+`grinder_fine_buckwheat_004 <-> filling_capsule_003` relation is OPTIMAL at total
+139 with positive commodity count 18 and `fine_buckwheat_powder = 0`. See
+RESULT.txt.

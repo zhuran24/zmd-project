@@ -1,0 +1,160 @@
+E054 RESULT: A CAUSAL OPERATION SWAP CROSSES THE FIRST-ZERO BOUNDARY AT TOTAL 139
+================================================================================================
+
+Status
+------
+Completed as research-only exact first-zero construction evidence. Exact routing,
+whole-layout completion, certification, U/L, owner, and publication remain
+unreached.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/E054_causal_fine_powder_operation_swaps/
+    run-001/RESULT.json
+
+SHA-256:
+  c2055940969cd97e7e2d454fc9e859acd06d154e710bb362af34a97238d38412
+
+Verdict:
+  CAUSAL_OPERATION_SWAP_FIRST_ZERO_OPTIMAL
+
+Decision:
+  RECOMPUTE_RESIDUAL_WITH_POSITIVE_COUNT_PRIORITY
+
+Nine causal swaps
+-----------------
+E054 fixes every operation and pose outside one right-edge source-body / capsule-
+body pair. At the pair, it swaps operations:
+
+  right-edge body   <- filling_capsule
+  capsule body      <- grinder_fine_buckwheat
+
+Both destinations retain admitted same-body port modes and binding remains free.
+`fine_buckwheat_powder` mismatch is fixed to zero.
+
+The exact feasibility matrix is:
+
+  source grinder 004 <-> capsule 001   OPTIMAL, total 140, positive 18
+  source grinder 004 <-> capsule 002   INFEASIBLE
+  source grinder 004 <-> capsule 003   OPTIMAL, total 139, positive 18
+
+  source grinder 005 <-> capsule 001   OPTIMAL, total 140, positive 18
+  source grinder 005 <-> capsule 002   INFEASIBLE
+  source grinder 005 <-> capsule 003   OPTIMAL, total 139, positive 18
+
+  source grinder 006 <-> capsule 001   OPTIMAL, total 140, positive 18
+  source grinder 006 <-> capsule 002   INFEASIBLE
+  source grinder 006 <-> capsule 003   OPTIMAL, total 139, positive 18
+
+Thus six of nine causal relations cross 19/19 -> 18/19. The three failures are
+specific to `filling_capsule_002`; they do not make that body globally unusable.
+
+Selected exact state
+--------------------
+The deterministic tie-break selects:
+
+  grinder_fine_buckwheat_004 <-> filling_capsule_003
+
+The selected operation/mode realization is:
+
+  original capsule-003 body  pose 7016
+    carries grinder_fine_buckwheat
+
+  original grinder-004 body  pose 8192
+    carries filling_capsule
+
+All occupied and free cells remain unchanged. Only operation-to-body assignment,
+same-body port mode, and binding change.
+
+The total-mismatch solve under this swap and target-zero constraint is:
+
+  status                     OPTIMAL
+  best bound                    139
+  total mismatch                139
+  positive commodity count       18
+  zero commodities                1
+
+The unique zero commodity is:
+
+  fine_buckwheat_powder
+
+Relative to the objective-139 parent, the exact representative vector changes:
+
+  buckwheat_powder       +1
+  fine_buckwheat_powder  -1
+  sandleaf_powder        +1
+  steel_bottle           -1
+
+The net total remains zero. This is precisely the progress-axis change requested
+by the inertia audit: the first zero appears without another decrease in the
+shared sum.
+
+Independent replay
+------------------
+The concrete assignment is materialized. With operation and port mode fixed and
+binding reoptimized under positive count 18 plus the fine-powder-zero constraint,
+the fresh conditional-owner model again proves OPTIMAL 139.
+
+Production component precheck reports:
+
+  blocked ports                  none
+  disconnected commodities        18
+  fine_buckwheat_powder disconnected no
+
+The disconnected commodity set exactly equals the 18 positive entries in the
+joint objective. This independently checks the first-zero transport from the
+conditional joint model to the production component semantics.
+
+Frozen artifacts
+----------------
+Pair manifest:
+  research_lab/local/zero_condition/E054_causal_fine_powder_operation_swaps/
+    run-001/PAIR_MANIFEST.json
+  sha256 3ee0e70b6a9d6ac97c98b98fbb398991a56cc8b5abe5f0803cb1e466882f15c1
+
+Joint witness:
+  sha256 16102d76fd94694cd99d7ac554c78bb4af03f76af82b69962e906352f6d8eeb5
+
+Concrete assignment:
+  sha256 c32d7516e52b0d84b10520b998c3ac7d65bdb4d18ab5763ad09a717fc71be131
+
+Layout:
+  sha256 4ab131e1205a28d82cb4202b69dbbbf9341151c6420401974b5183f53b72f599
+
+Execution provenance
+--------------------
+The first invocation completed all nine pair solves and the selected total solve,
+then failed during materialization because the helper context omitted its E051
+module reference. The runner was corrected; the frozen pair manifest was reused
+byte-for-byte, and only the selected total solve and materialization were rerun.
+The preliminary FAILURE.json has no scientific authority.
+
+Architecture effect
+-------------------
+The first zero does not require new occupied geometry. It requires a new inner
+freedom that the earlier ten-body assignment block excluded:
+
+  operation may transfer between a source-side and sink-side 6x4 body
+  port mode follows the destination body
+  binding is reoptimized jointly
+
+The external causal relation is therefore not merely a search hint. It identifies
+which operation/body assignment boundary must be removed. The next state must be
+ranked first by positive commodity count, then by total mismatch; returning to
+sum-only descent would discard the new structural progress.
+
+Truth boundary
+--------------
+E054 is exact only for nine operation swaps inside E053's frozen occupied geometry
+and expanded relevant-mode context. It does not prove positive count 18 globally
+minimal, establish all-commodity component compatibility, enter exact routing,
+update U/L, or grant certification.
+
+Runner identities
+-----------------
+Primary runner SHA-256:
+  5b92368f3219b4e5f4d62c58e9a9f8cae4bc6f2d9f4d07932fdcfac4e60e5ad2
+
+Resume executor SHA-256:
+  cec1badbe58510778e7ff10041fda4b261a6a7b58ce043128b079570d7ceab3a

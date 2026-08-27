@@ -1,0 +1,112 @@
+E053 RESULT: THE FOURTEEN-BODY CONTEXT IS FAITHFUL BUT FREE SEARCH IS SYMMETRY-BOUND
+================================================================================================
+
+Status
+------
+Completed as research-only context-construction and nonterminal search evidence.
+No infeasibility, first-zero absence, routing, whole-layout witness, certification,
+U/L, owner, or publication effect is claimed.
+
+Context
+-------
+E053 merges four E052-selected bodies into the live ten-footprint 6x4 operation-
+assignment block:
+
+  filling_capsule_002
+  grinder_fine_buckwheat_004
+  grinder_fine_buckwheat_005
+  grinder_fine_buckwheat_006
+
+The resulting block has fourteen bodies and operation multiset:
+
+  filling_capsule             3
+  grinder_dense_blue_iron     4
+  grinder_dense_source        1
+  grinder_fine_buckwheat      5
+  packaging_battery           1
+
+Occupied geometry remains fixed. Native port modes, operation assignment,
+aggregate binding resources, terminal uniqueness, and component-aware binding
+remain in one conditional-owner model.
+
+Fidelity calibration
+--------------------
+Both executions reproduce the frozen E050 state exactly:
+
+  fixed expanded context  OPTIMAL 139
+
+The context expansion therefore preserves the parent state. Its value cannot be
+interpreted as an accidental relaxation.
+
+Run-001: free sum objective
+--------------------------
+The initial four-stage runner asks the expanded free model to minimize total
+mismatch before positive-count optimization. It returns:
+
+  status       UNKNOWN
+  incumbent    none
+  best bound   0
+  elapsed      106.58 s
+  branches     0
+  conflicts    0
+
+The terminal summary then raises a non-scientific `KeyError` because it assumes
+later-stage fields exist after the early nonterminal return. RESULT.json was
+already written and remains the scoped result; FAILURE.json records only the
+summary defect.
+
+Run-001 result SHA-256:
+  eeda91f905778c1a9a266c30c401cc897485bb638e8151be6f4d269512f6401e
+
+Run-002: direct target-zero objective
+------------------------------------
+The target-first executor removes the sum-optimality front door and directly
+requires:
+
+  fine_buckwheat_powder mismatch = 0
+
+while minimizing total mismatch. It returns:
+
+  status       UNKNOWN
+  incumbent    none
+  best bound   0
+  elapsed      228.67 s
+  branches     0
+  conflicts    0
+
+Run-002 result SHA-256:
+  4637ba7a8314ab5ea70359d56b405f4cf1365253b87a161303443815d32bfe0b
+
+Interpretation
+--------------
+Neither run proves infeasibility. The model reaches no branch and no conflict,
+which is consistent with a heavy presolve/symmetry wall in the free fourteen-body
+operation assignment. The current 139 assignment remains an exact feasible
+calibration witness.
+
+The correct next response is not to broaden geometry or call the merged block
+useless. E052 supplies a causal symmetry breaker: pair one of the three right-edge
+fine-powder source bodies with one of the three capsule bodies, swap their
+operations, retain port-mode and binding freedom, and test target-zero feasibility
+under each of the nine relations.
+
+Architecture effect
+-------------------
+E053 distinguishes semantic context adequacy from solver-container adequacy. The
+fourteen-body representation is faithful, but its unrestricted symmetric search
+is not yet a usable proposer. A narrow causal assignment relation can be used as a
+seed without changing the inner language.
+
+Truth boundary
+--------------
+The two UNKNOWN results say nothing about existence of a first-zero state in the
+expanded block. They do not establish a lower bound, routing fact, whole-layout
+infeasibility, or certification.
+
+Evidence identities
+-------------------
+Main helper SHA-256:
+  4d7e19c30471ffcb9abe68e7b5324bf9703881d6159aa91a46f79ba61ad605ef
+
+Target-first executor SHA-256:
+  abe8dc45d61fc95c6ba1f40e6fb1ff39948ca145611e020c93ee4f8796cb3762

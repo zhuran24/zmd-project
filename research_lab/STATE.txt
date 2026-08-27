@@ -162,10 +162,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Can the fourteen-footprint merged 6x4 assignment context, formed by adding
-`filling_capsule_002` and the three right-edge `grinder_fine_buckwheat` bodies to
-the live ten-footprint block, recalibrate objective 139 and produce the first
-zero commodity before any wider geometry language is introduced?
+Inside the causal first-zero relation selected by E054, can the remaining
+fourteen-body port-mode and operation-assignment freedom reduce the positive
+commodity count below 18 while preserving `fine_buckwheat_powder = 0`, or is 18
+the exact limit of this occupied geometry and assignment context?
 
 Current campaign posture
 ------------------------
@@ -487,14 +487,26 @@ alternatives of the three sources and three capsule sinks; none reaches target
 mismatch zero. Source minima remain one, while capsule minima are four, three, and
 one.
 
-Four relevant 6x4 bodies are still outside the live assignment block:
-`filling_capsule_002` and all three right-edge fine-powder grinders. The next
-context merges those bodies into the existing ten-footprint 6x4 block, allowing
-capsule and grinder operations to exchange footprints while geometry stays fixed.
-It must first recalibrate objective 139, then minimize positive commodity count
-before total mismatch. Failure to create a first zero closes operation assignment
-on this obstruction and forces a native simultaneous body context. A fully zero
-state enters routing immediately.
+Four relevant 6x4 bodies were still outside the live assignment block:
+`filling_capsule_002` and all three right-edge fine-powder grinders. E053 merges
+them into one fourteen-body block and exactly recalibrates 139, but unrestricted
+sum and target-zero solves remain UNKNOWN without incumbents or search branches.
+The representation is faithful; the free symmetric assignment container is not
+yet a usable proposer.
+
+E054 supplies a causal symmetry breaker rather than broadening geometry. It tests
+all nine swaps between three right-edge grinder bodies and three capsule bodies.
+Six swaps are exact first-zero states. The selected grinder-004/capsule-003 swap
+keeps occupied geometry unchanged and proves total mismatch 139 with 18 positive
+commodities and `fine_buckwheat_powder = 0`. Fixed replay and production component
+precheck agree exactly.
+
+The active progress order is now positive commodity count first and total mismatch
+second. The next model retains the selected causal relation but releases the
+remaining fourteen-body operation assignments and admitted port modes. If it
+reaches 17 or less, the same inner language contains another zero. If it proves 18
+optimal, the next expansion must be selected from the remaining commodity causes,
+not from another sum-only descent. A fully zero state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not
