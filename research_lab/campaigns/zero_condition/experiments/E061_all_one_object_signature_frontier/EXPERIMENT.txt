@@ -1,0 +1,68 @@
+EXPERIMENT E061: ALL ONE-OBJECT TWO-ZERO SIGNATURE FRONTIER
+==========================================================
+
+Question
+--------
+Can any legal one-object pose change in the E055 layout create a terminal-signature
+allocation with both fine_buckwheat_powder and qiaoyu_capsule mismatch zero after
+generic qiaoyu sink freedom is derived anew on the changed geometry?
+
+Why this experiment
+-------------------
+E060 revalidates a specific missing filling signature under the current component
+partition, but a real pose change can merge/split components, unblock or block
+native patterns, and move protocol-core generic sink slots. Testing only poses
+that resemble the old synthetic target risks false negatives.
+
+E061 therefore uses the two-zero signature relaxation itself as the geometry gate
+and exhausts every placement- and power-valid one-object pose change.
+
+Method
+------
+1. Reconstruct the E055 18/139 first-zero occupied state.
+2. Enumerate all placement-/power-valid pose alternatives with the E014 exact
+   fixed-outside mobility primitive.
+3. Quotient body-changing alternatives by facility type plus removed and added
+   occupied-cell sets.
+4. For each changed geometry:
+
+     rebuild the exact free-component partition
+     derive every front-usable selected generic-input slot
+     regenerate all 38 current 6x4 bodies' same-body native terminal signatures
+     retain exact filling count 3, fine-grinder count 6, and relaxed other count 29
+     require fine source/sink component equality
+     require qiaoyu source presence to equal one selectable generic sink component
+
+5. Scan 6x4-body relocations separately because their terminal coordinates move.
+   For all other relocations, precompute raw active-port descriptors once and remap
+   them into each new component partition.
+6. Enumerate non-6x4 same-footprint modes. Modes that change neither occupancy,
+   selected generic-input slots, nor either target terminal family are proved
+   signature-equivalent to E060. The protocol-core input orientation is solved
+   explicitly.
+
+The signature model omits unrelated binding constraints and collapses the three
+non-target 6x4 operations into `other`. It is therefore a relaxation. Infeasibility
+is scoped sound; feasibility would only nominate a geometry for full joint replay.
+
+Decision rule
+-------------
+At least one relaxed candidate
+  Rank only the signature-feasible geometries in the full positive-count consumer.
+
+No relaxed candidate
+  Close all one-object pose changes for the second zero. Move to a simultaneous
+  two-object geometry relation or a different first-zero state.
+
+Truth boundary
+--------------
+E061 fixes every object outside one pose change and preserves exact placement and
+power. It does not cover simultaneous body pairs, a different 18/139 first-zero
+state, full routing, throughput, U/L, or certification.
+
+Result
+------
+Completed. Across 10,016 legal body-changing alternatives, 4,714 distinct
+occupancy changes, 538 non-6x4 same-body modes, and the already-joint 6x4 mode
+surface, no candidate is feasible in the corrected two-zero signature relaxation
+and no solve is nonterminal. See RESULT.txt and run-001/RESULT.json.

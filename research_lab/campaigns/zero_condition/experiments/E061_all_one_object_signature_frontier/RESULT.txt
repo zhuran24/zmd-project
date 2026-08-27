@@ -1,0 +1,145 @@
+E061 RESULT: EVERY LEGAL ONE-OBJECT POSE CHANGE FAILS THE CORRECTED TWO-ZERO SIGNATURE RELAXATION
+====================================================================================================
+
+Status
+------
+Completed as research-only exhaustive one-object signature evidence. No
+simultaneous-pair claim, exact routing, whole-layout witness, certification, U/L,
+owner, or publication effect.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/E061_all_one_object_signature_frontier/
+    run-001/RESULT.json
+
+SHA-256:
+  0559401660d99c69127c7f65f287900a6ca205b9f6bfce64b9e607d1dda785b2
+
+Verdict:
+  ALL_ONE_OBJECT_TWO_ZERO_SIGNATURE_CHANGES_INFEASIBLE
+
+Decision:
+  BUILD_SIMULTANEOUS_TWO_OBJECT_OR_ALTERNATE_FIRST_ZERO_CONTEXT
+
+Corrected calibration
+---------------------
+The unchanged E055 geometry is re-evaluated with candidate-derived generic sink
+components. Its usable qiaoyu sink components are {15,39}, and the corrected
+all-6x4 signature model remains INFEASIBLE, reproducing E060.
+
+Body-changing frontier
+----------------------
+E061 exhausts all placement- and power-valid body-changing alternatives while
+fixing every other object:
+
+  raw alternatives             10,016
+  distinct occupancy changes    4,714
+
+Non-6x4 distinct geometries:
+
+  boundary_storage_port             1
+  manufacturing_3x3             1,656
+  manufacturing_5x5                70
+  power_pole                     2,845
+  protocol_core                     1
+  total                          4,573
+
+Their corrected signature outcomes are:
+
+  INFEASIBLE                    4,542
+  STRUCTURAL_EMPTY                 32
+  FEASIBLE / OPTIMAL                0
+  nonterminal                       0
+
+The structural-empty cases lose either a required operation-signature option or a
+usable generic sink before solving; they are exact negative admissions, not
+UNKNOWN.
+
+6x4-body distinct geometries:
+
+  raw alternatives                282
+  distinct occupancy changes      141
+
+For each, E061 regenerates all moved-body native patterns and every unchanged
+body's signature under the new component partition. Outcomes are:
+
+  INFEASIBLE                       78
+  STRUCTURAL_EMPTY                 63
+  FEASIBLE / OPTIMAL                0
+  nonterminal                       0
+
+Same-body modes
+---------------
+There are 538 non-6x4 same-footprint modes:
+
+  manufacturing_3x3              394
+  manufacturing_5x5              143
+  protocol_core                    1
+
+The 537 manufacturing modes change neither occupied cells, selected generic-input
+providers, nor either target terminal family. They are therefore exactly
+signature-equivalent to E060's current-geometry INFEASIBLE model.
+
+The protocol-core input orientation is solved explicitly. Its usable generic sink
+components become {21,32,61,64}; the joint two-zero signature model remains
+INFEASIBLE.
+
+All 38 6x4 same-body modes are already represented simultaneously in E060's
+corrected all-6x4 model and need not be replayed as separate one-object states.
+
+Representation and proof scope
+------------------------------
+Every candidate rebuilds:
+
+  occupied/free cells and connected components
+  all front-usable selected generic-input slots
+  qiaoyu sink-component choice
+  all current 6x4 bodies' native same-body target signatures
+
+The three unrelated 6x4 operation types are collapsed into one `other` class. The
+model omits unrelated binding constraints, so it is a relaxation. A legal full
+binding would project into this signature model. Since every one-object candidate
+is infeasible or structurally empty in the relaxation, none can create the second
+zero from this first-zero state.
+
+Architecture effect
+-------------------
+The missing bridge cannot be obtained by:
+
+  moving one 3x3 or 5x5 body
+  moving one power pole
+  moving one boundary port or protocol core
+  moving one 6x4 body
+  changing one relevant same-body mode
+
+The next geometry language must be genuinely simultaneous or must begin from a
+different occupied first-zero state. The causal next candidate is not an arbitrary
+pair: E057's core-side filling mode already has qiaoyu output in component 15 and
+fine input in component 54. A second object must change the component relation so
+54 joins a certified fine source-side component, or an equivalent two-object
+terminal bridge must appear.
+
+Execution provenance
+--------------------
+The first invocation completed the 4,573 non-6x4 frontier and reached the external
+tool timeout. NON6_SCAN.json was durably checkpointed. The second invocation
+validated and reused it, completed the 141 6x4 frontier, and wrote the terminal
+result. No scientific state was recomputed under changed code.
+
+Checkpoint SHA-256 values:
+
+  NON6_SCAN
+    5695de47da0a378ac0f067d865007fa1b3446a48c2723120276d1a8c44a58d96
+
+  SIX4_SCAN
+    ac1f63b725bc404a0b903f664a817d6dea6b933513aae2146b8890abbffa2101
+
+Runner SHA-256:
+  45a9a95eedb22062a7052dc40b81cb32fe39a1e0f6a5d71457b518fd95cda3d5
+
+Truth boundary
+--------------
+E061 fixes the E055 first-zero parent and changes exactly one selected object's
+pose at a time under placement and power. It does not cover simultaneous pairs,
+a different first-zero geometry, routing, throughput, U/L, or certification.

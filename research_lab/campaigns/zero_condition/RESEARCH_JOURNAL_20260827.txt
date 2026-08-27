@@ -284,3 +284,26 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-27
   revalidation 承重。以后任何 component theorem 都必须把 generic slot assignment 一起运
   输，不能把 materialized slot 当成规则。geometry 扫描也必须对每个候选重新生成 sink
   space，特别是 protocol-core relocation。
+
+2026-08-27 15:18
+----------------
+数据：
+  E061 RESULT.json
+  research_lab/local/zero_condition/E061_all_one_object_signature_frontier/run-001/RESULT.json
+  sha256 0559401660d99c69127c7f65f287900a6ca205b9f6bfce64b9e607d1dda785b2
+
+注意／发现：
+  所有 selected object 的合法单体 pose change 都扫完了：10,016 个 body-changing
+  alternative，按 occupancy delta 商成 4,714 个不同几何。非 6x4 是 4,573 个，6x4 是 141
+  个。每个候选都重新建 components、generic sink slots、38-body native signatures。
+  FEASIBLE=0，UNKNOWN=0。
+
+  另有 538 个非 6x4 same-body modes：537 个 3x3/5x5 mode 不改变 occupancy、generic sink
+  或目标 terminal，和 E060 严格同构；protocol-core 唯一 input orientation 把 sink space
+  改成 {21,32,61,64}，joint 仍 INFEASIBLE。6x4 modes 已经全在 E060 联合模型里。
+
+推理：
+  “搬一件东西就得到第二个零”这条语言已经闭合。现在必须真做 simultaneous relation，
+  但不是全 pair 笛卡尔积。最短因果线是 E057 的 filling mode 已经有 qiaoyu-out=15、
+  fine-in=54；第二个对象只需要改变 component relation，让 54 接到 source-side class，或
+  形成等价 bridge。下一步从这个结构生成 pair，而不是从 coverage 生成 pair。

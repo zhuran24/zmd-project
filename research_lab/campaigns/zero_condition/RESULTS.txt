@@ -2273,6 +2273,46 @@ evidence:
   runner sha256
   05395a59d594eab9dc54eccf4a4c0d1164dd2addf4e7604648e6d866ecd0e143.
 
+R-ZC-072  Every legal one-object pose change fails the corrected two-zero relaxation
+--------------------------------------------------------------------------------------
+status: exhaustive placement/power one-object frontier with corrected generic sink and target signatures
+scope: E055 first-zero state, exactly one selected object pose changed at a time
+
+statement:
+  E061 exhausts 10,016 placement- and power-valid body-changing alternatives,
+  quotienting them into 4,714 distinct occupancy changes. The 4,573 non-6x4
+  geometries yield 4,542 INFEASIBLE and 32 STRUCTURAL_EMPTY signature states; the
+  141 6x4 geometries yield 78 INFEASIBLE and 63 STRUCTURAL_EMPTY states. There are
+  no feasible or nonterminal candidates.
+
+  Of 538 non-6x4 same-footprint modes, 537 manufacturing modes are exactly
+  signature-invariant because they change neither occupancy, generic sink
+  providers, nor target terminals. The protocol-core mode is solved explicitly:
+  its usable sink components become {21,32,61,64}, but the two-zero signature
+  model remains INFEASIBLE. All 6x4 modes were already joint in E060.
+
+non-implications:
+  E061 fixes the selected E055 first-zero state and changes one object only. It
+  does not close simultaneous pairs, other first-zero geometries, routing, U/L,
+  or certification.
+
+effect on next problem:
+  Close the one-object pose language for the second zero. Build a genuinely
+  simultaneous causal pair or switch occupied first-zero state. The sharpest pair
+  target uses E057's filling mode with qiaoyu output in component 15 and fine input
+  in component 54, plus one geometry change that joins component 54 to a certified
+  fine source-side component.
+
+evidence:
+  E061 RESULT.txt; local run-001 RESULT.json sha256
+  0559401660d99c69127c7f65f287900a6ca205b9f6bfce64b9e607d1dda785b2;
+  NON6 checkpoint sha256
+  5695de47da0a378ac0f067d865007fa1b3446a48c2723120276d1a8c44a58d96;
+  SIX4 checkpoint sha256
+  ac1f63b725bc404a0b903f664a817d6dea6b933513aae2146b8890abbffa2101;
+  runner sha256
+  45a9a95eedb22062a7052dc40b81cb32fe39a1e0f6a5d71457b518fd95cda3d5.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

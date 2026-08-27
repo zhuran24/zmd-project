@@ -162,10 +162,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Which legal one-body geometry changes realize E059's missing filling-capsule
-signature: qiaoyu output in the protocol-core component and fine input in one of
-the certified source-side components, and do any such candidates survive the full
-joint positive-count consumer to create the second zero?
+Which smallest simultaneous two-object relation can cross E061's closed one-object
+frontier: specifically, can E057's core-side filling mode be paired with one
+geometry change that joins its fine-input component 54 to a certified source-side
+component while preserving qiaoyu sink compatibility?
 
 Current campaign posture
 ------------------------
@@ -554,11 +554,21 @@ component 15. E058/E059's original fixed-sink surfaces no longer carry standalon
 scientific authority, but their conclusion and filling target are independently
 revalidated by E060.
 
-The next proposer therefore scans legal body relocations for that filling
-signature, deriving generic sink freedom anew on every geometry, and sends only
-matching geometries into the full joint positive-count consumer. It must not
-return to another complete swap portfolio or total-mismatch descent. A fully zero
-state enters routing immediately.
+E061 performs that scan exhaustively. It evaluates 10,016 placement-/power-valid
+body-changing alternatives, quotiented into 4,714 distinct occupancy changes,
+with candidate-specific components, target signatures, and generic sink slots.
+No candidate is feasible and none is nonterminal in the corrected relaxation. It
+also closes 538 non-6x4 same-body modes: 537 are signature-invariant and the one
+protocol-core orientation remains INFEASIBLE; all 6x4 modes were already joint in
+E060.
+
+The one-object pose language is therefore closed for this first-zero state. The
+next proposer must be genuinely simultaneous or use a different occupied
+first-zero state. The sharpest current relation pairs E057's filling mode
+(qiaoyu-output component 15, fine-input component 54) with one obstacle/body move
+that joins component 54 to a certified fine source-side component. It must not
+return to another unconstrained complete pair portfolio or total-mismatch descent.
+A fully zero state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not
