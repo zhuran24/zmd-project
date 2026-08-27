@@ -20,6 +20,10 @@ Start from the problem: rules, resource accounts, death shapes, constructive str
 
 Do not preload `PROJECT_LOCK.md`, `docs/CURRENT.md`, the ledgers, or the full operations manual for ordinary discovery. Read them on demand for exact current authority, certified semantics, promotion, publication, shared-Git repair, or a specific operational contract.
 
+## CodeGraph first
+
+For indexed code, use the CodeGraph MCP as the default first and recurring instrument, not as a ceremonial one-time lookup. Before understanding a code path or editing code, call `tools.codegraph.org.default.codegraph_explore` with `projectPath=/home/zhuran24/zmd-research`; name concrete files and symbols, inspect the returned call paths and blast radius, and call it again when the question moves to another code surface. Treat returned source as already read. Fall back to direct file reads only for unindexed material, a detail the graph did not return, or a file explicitly marked stale. After edits, respect the MCP staleness banner or wait for its auto-sync. CodeGraph supplies structural context; compilation, tests, checkers, and runtime evidence still decide correctness.
+
 ## Research freedom and truth discipline
 
 Conjectures, heuristic search, temporary sufficient restrictions, alternative models, throwaway prototypes, and small counterexamples are allowed. Label their status and cost. Do not silently convert them into necessary conditions.
