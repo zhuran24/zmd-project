@@ -25,7 +25,7 @@ History/material tree
   evidence. Read-only from certification sessions.
 
 Research tree
-  /home/zhuran24/.devspace/worktrees/zmd-pj-983df854, branch research/main.
+  /home/zhuran24/zmd-research, branch research/main.
   Produces conjectures, theorems, constructions, algorithms, experiments, and
   frozen promotion packets. Read-only from certification sessions.
 

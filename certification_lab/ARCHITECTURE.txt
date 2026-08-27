@@ -24,7 +24,7 @@ History/material tree
   Certification access: read-only.
 
 Research tree
-  Path: /home/zhuran24/.devspace/worktrees/zmd-pj-983df854
+  Path: /home/zhuran24/zmd-research
   Branch: research/main
   Function: all active discovery, construction, mathematics, experiments, and
             promotion packet creation.

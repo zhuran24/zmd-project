@@ -21,7 +21,7 @@ history_role: preserve prior Git history, tracked project material, local large
               evidence, and the shared project Python environment
 history_write_policy: read-only from certification sessions
 
-research_tree: /home/zhuran24/.devspace/worktrees/zmd-pj-983df854
+research_tree: /home/zhuran24/zmd-research
 research_branch: research/main
 research_head_observed_at_creation: b97361de162bcc2384b517df456c95019833f4e9
 research_role: candidate producer only

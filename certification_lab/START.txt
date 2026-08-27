@@ -10,7 +10,7 @@ A healthy entry reports:
   mode             = certification
   branch           = certification/main
   history tree     = /home/zhuran24/zmd-pj, branch main
-  research tree    = /home/zhuran24/.devspace/worktrees/zmd-pj-983df854,
+  research tree    = /home/zhuran24/zmd-research,
                      branch research/main
   active packet    = the value in certification_lab/MODE.txt
 

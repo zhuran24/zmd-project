@@ -7,7 +7,7 @@ metadata:
   role: certification
 ---
 
-本树是 `/home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57` 的 `certification/main`。研究树和历史／材料树均只读。
+本树是 `/home/zhuran24/zmd-certification` 的 `certification/main`。研究树和历史／材料树均只读。
 
 认证的默认对象是显式提交、身份冻结的 promotion packet。`active_packet=NONE` 时保持 IDLE，不浏览研究树寻找“值得认证”的对象，也不把旧研究结论自动当成当前事实。
 

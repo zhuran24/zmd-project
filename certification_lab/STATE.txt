@@ -42,7 +42,7 @@ History/material tree:
   branch main
 
 Research tree at certification-tree creation:
-  /home/zhuran24/.devspace/worktrees/zmd-pj-983df854
+  /home/zhuran24/zmd-research
   branch research/main
   observed head b97361de162bcc2384b517df456c95019833f4e9
 

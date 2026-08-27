@@ -17,4 +17,4 @@
 - 时序敏感的席位改令先停止再重发；活阈值与运维细节回源手册，不复制进记忆。
 
 稳定入口：`certification_lab/START.txt`、`certification_lab/CHARTER.txt`、`certification_lab/CHECKS.txt`。
-研究树只读：`/home/zhuran24/.devspace/worktrees/zmd-pj-983df854`。历史／材料树只读：`/home/zhuran24/zmd-pj`。
+研究树只读：`/home/zhuran24/zmd-research`。历史／材料树只读：`/home/zhuran24/zmd-pj`。

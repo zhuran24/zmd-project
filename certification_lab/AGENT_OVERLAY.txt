@@ -41,7 +41,7 @@ This tree may produce independent verdicts, certification-side code, verified in
 ## Repository roles
 
 - History/material tree: `/home/zhuran24/zmd-pj`, branch `main`, read-only.
-- Research tree: `/home/zhuran24/.devspace/worktrees/zmd-pj-983df854`, branch `research/main`, read-only from certification sessions.
+- Research tree: `/home/zhuran24/zmd-research`, branch `research/main`, read-only from certification sessions.
 - Certification tree: this worktree, branch `certification/main`.
 
 Never send certification writes into the history or research worktree. Import exact commits, diffs, or frozen packet bytes into this branch.
