@@ -25,7 +25,7 @@ HISTORY_ROOT = Path("/home/zhuran24/zmd-pj")
 OUT = (
     ROOT
     / "research_lab/local/zero_condition/"
-    "E063_pole_conditioned_second_object_frontier/run-007"
+    "E063_pole_conditioned_second_object_frontier/run-008"
 )
 RESULT_PATH = OUT / "RESULT.json"
 FAILURE_PATH = OUT / "FAILURE.json"
@@ -65,7 +65,7 @@ E055_WITNESS = (
 
 EXPECTED_ENV = {
     "PYTHONHASHSEED": "0",
-    "PYTHONPYCACHEPREFIX": "/tmp/zmd_e063_source_cache_v7",
+    "PYTHONPYCACHEPREFIX": "/tmp/zmd_e063_source_cache_v8",
     "EXACT_USE_POSE_BOOL_MASTER": "1",
     "EXACT_USE_PORT_ACTIVE": "1",
     "EXACT_MASTER_HINT_PERSISTENCE": "0",
@@ -498,7 +498,7 @@ def parent_context(e061: Any, e062: Any) -> dict[str, Any]:
     ):
         raise RuntimeError(f"E063 pole-parent calibration drift: {calibration}")
     directional_face = enumerate_directional_face(
-        operation_counts=base["e058"].OPERATION_COUNTS,
+        operation_counts=e061.OPERATION_COUNTS,
         e062=e062,
         options=options,
         sink_space=sink_space,
@@ -866,7 +866,7 @@ def evaluate_candidate(
     if directional.get("status") in {"OPTIMAL", "FEASIBLE"} and int(
         directional.get("objective", -1)
     ) == 0:
-        joint_replay = context["base"]["e058"].solve_signature(
+        joint_replay = e061.solve_signature(
             options=options,
             sink_space=sink_space,
             random_seed=64100 + int(spec["candidate_index"]),
