@@ -188,27 +188,31 @@ if foreign:
 
 out.mkdir(parents=True, exist_ok=True)
 origin_path = out / "SOURCE_ORIGINS.json"
-with origin_path.open("xb") as handle:
-    handle.write(
-        (
-            json.dumps(
-                {
-                    "schema": "zmd_zero_condition_e065_source_origins_v1",
-                    "source": str(source),
-                    "source_sha256": module.sha256_file(source),
-                    "function_count": len(origins),
-                    "foreign_function_count": len(foreign),
-                    "functions": origins,
-                },
-                ensure_ascii=False,
-                sort_keys=True,
-                indent=2,
-            )
-            + "\n"
-        ).encode("utf-8")
+origin_payload = {
+    "schema": "zmd_zero_condition_e065_source_origins_v1",
+    "source": str(source),
+    "source_sha256": module.sha256_file(source),
+    "function_count": len(origins),
+    "foreign_function_count": len(foreign),
+    "functions": origins,
+}
+origin_bytes = (
+    json.dumps(
+        origin_payload,
+        ensure_ascii=False,
+        sort_keys=True,
+        indent=2,
     )
-    handle.flush()
-    os.fsync(handle.fileno())
+    + "\n"
+).encode("utf-8")
+if origin_path.exists():
+    if origin_path.read_bytes() != origin_bytes:
+        raise RuntimeError(f"source-origin receipt drift: {origin_path}")
+else:
+    with origin_path.open("xb") as handle:
+        handle.write(origin_bytes)
+        handle.flush()
+        os.fsync(handle.fileno())
 
 for name, relative in patches.items():
     setattr(module, name, out if relative == "." else out / relative)
@@ -314,7 +318,21 @@ def run_label(label: str) -> dict[str, Any]:
             "outputs": [output_record(path) for path in paths],
         }
     if output_dir.exists() and any(output_dir.iterdir()):
-        raise RuntimeError(f"partial E065 output directory: {output_dir}")
+        existing = {path.name for path in output_dir.iterdir() if path.is_file()}
+        allowed = {
+            *(str(name) for name in spec["required"]),
+            "FAILURE.json",
+        }
+        allowed.update(
+            path.name for path in output_dir.glob("PROCESS_RECEIPT_*.json")
+        )
+        unknown = sorted(existing - allowed)
+        if unknown:
+            raise RuntimeError(
+                f"partial E065 output directory has unknown files: {unknown}"
+            )
+        if (output_dir / "FAILURE.json").exists():
+            raise RuntimeError(f"prior runner failure requires a new E065 run: {output_dir}")
 
     env = {
         key: value
@@ -354,7 +372,8 @@ def run_label(label: str) -> dict[str, Any]:
         "expected_env": expected_env(source),
         "ledger_effect": "none",
     }
-    receipt_path = output_dir / "PROCESS_RECEIPT.json"
+    receipt_index = 1 + len(list(output_dir.glob("PROCESS_RECEIPT_*.json")))
+    receipt_path = output_dir / f"PROCESS_RECEIPT_{receipt_index:03d}.json"
     dump_exclusive(receipt_path, process_receipt)
     if completed.returncode != 0:
         raise RuntimeError(
