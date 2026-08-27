@@ -1,0 +1,71 @@
+EXPERIMENT E065: SOURCE-STABLE REPLAY MATERIALIZATION
+====================================================
+
+Question
+--------
+Can E057-E062 be re-executed from their tracked source under fresh Python bytecode
+caches, with durable machine outputs present on disk, so the active E063 frontier
+has a real source-stable premise rather than a narrative-only locator?
+
+Trigger
+-------
+E064 recorded a source-cache investigation and named six fresh replay results, but
+at the next independent inspection those six directories were empty. Its two
+remaining origin-audit files also both reported zero foreign functions, so they do
+not reproduce the historical contamination described by E064's prose. The current
+research tree therefore lacks the machine objects that E063 attempted to pin.
+
+This is an evidence-materialization defect, not a new scientific counterexample.
+E065 does not assume E064's historical cache event can still be reproduced after
+the worktree move and later interpreter activity.
+
+Method
+------
+1. Execute each tracked runner E057-E062 in its own Python process.
+2. Give every process a fresh private `PYTHONPYCACHEPREFIX` before interpreter
+   startup and the exact `EXPECTED_ENV` declared by that runner.
+3. Import the original tracked source without copying or editing it. Before
+   execution, verify that every module-defined function's code filename resolves
+   to that exact source file.
+4. Redirect only the runner's output/checkpoint globals into a new ignored E065
+   run directory. All frozen semantic inputs and source hashes remain those of the
+   original experiment.
+5. Compare E057-E061 with their original machine results after removing only
+   timestamps, runtime counters, identity envelopes, and evidence locators.
+6. For E062, compare the complete objective distribution, physical near-miss
+   identities, exact objective values, atlas content, and exhaustion counts
+   separately from the arbitrary representative chosen on an optimum presence
+   face.
+7. Freeze the new output hashes in one terminal result and a receipt. E063 may pin
+   only the resulting E062 replay, not E064's absent locator.
+
+The six runs are checkpointed by label. A completed label is reused only when its
+source-origin receipt and required output files are present.
+
+Decision rule
+-------------
+E057-E061 scientific projections identical, E062 physical/objective frontier
+stable, and every source-origin audit clean
+  Establish the E065 replay set as the active source-stable premise. Resume E063
+  from its complete directional optimum face.
+
+Any changed verdict, exact objective, physical near-miss identity, exhaustion
+count, or atlas content
+  Quarantine that result and every dependent frontier. Restart from the last
+  source-stable predecessor.
+
+Only E062 representative-presence changes
+  Preserve the physical/objective result, record all representative differences,
+  and require E063 to enumerate the complete optimum face rather than inherit one
+  representative.
+
+Truth boundary
+--------------
+E065 re-executes the frozen E057-E062 research models and repairs their local
+machine-evidence availability. It does not prove the historical cause of E064's
+missing artifacts, certify any model, establish a second zero, enter routing, or
+update U/L.
+
+Result
+------
+Not run yet.
