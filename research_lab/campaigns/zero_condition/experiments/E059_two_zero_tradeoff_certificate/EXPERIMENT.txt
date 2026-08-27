@@ -1,0 +1,74 @@
+EXPERIMENT E059: TWO-ZERO TRADEOFF CERTIFICATE AND MISSING SIGNATURE
+===================================================================
+
+Question
+--------
+What is the exact terminal-signature distance between the separately feasible
+fine-powder and qiaoyu zero conditions, and what single new signature would be
+sufficient to bridge them in the current component partition?
+
+Why this experiment
+-------------------
+E058 proves joint infeasibility in a relaxation containing every native active
+pattern from all 38 current 6x4 bodies. That result says geometry must change, but
+not yet what the geometry should produce.
+
+E059 turns the negative result into a constructive specification. It keeps the
+same exact signature census and asks:
+
+  qiaoyu zero hard -> minimize fine component-set mismatch
+  fine zero hard   -> minimize qiaoyu component-set mismatch
+
+It then enumerates every optimum fine source/sink presence pattern under qiaoyu
+zero and tests whether one hypothetical new filling-capsule or fine-grinder
+signature can repair the joint condition.
+
+Method
+------
+1. Load and identity-pin E058's 338-option signature census.
+2. Solve the two directional tradeoff objectives under both the exact five-
+   operation counts and the weaker `other`-collapsed counts.
+3. Fix the qiaoyu-hard fine-mismatch optimum and enumerate all distinct
+   (fine-source-set, fine-sink-set) optima by no-gooding only the presence pattern.
+4. Derive source-only and sink-only component classes from that complete face.
+5. Add exactly one synthetic signature option to one existing body at a time:
+
+     filling target:
+       qiaoyu output = {15}
+       fine input    = one source-only component
+
+     grinder target:
+       fine output   = one sink-only component
+
+   Preserve the exact five-operation multiset and require both zero conditions.
+
+Synthetic feasibility is proposal-only. It identifies a terminal signature for a
+geometry search; it does not assert that any legal body relocation realizes it.
+
+Decision rule
+-------------
+One filling signature sufficient, grinder signature insufficient
+  Search actual geometry for a filling-capsule body/mode whose qiaoyu output is in
+  component 15 and fine input lies in the certified source-only class.
+
+One grinder signature sufficient
+  Search actual geometry for a fine-grinder output in the certified sink-only
+  class.
+
+No one-signature repair
+  Move to a two-body or component-partition geometry relation.
+
+Truth boundary
+--------------
+E059 stays inside E058's fixed component partition and terminal-signature
+relaxation. It does not prove a legal geometry move exists, preserve unrelated
+binding semantics, enter routing, update U/L, or grant certification.
+
+Result
+------
+Completed. Qiaoyu-zero forces fine mismatch minimum 2; fine-zero forces qiaoyu
+mismatch minimum 1. The complete qiaoyu-zero optimum face has source-only class
+{1,4,8,12,22,26} and sink-only class {21,54}. One synthetic filling-capsule
+signature with qiaoyu output 15 and fine input in any source-only component is
+sufficient; one synthetic grinder output in either sink-only component is not.
+See RESULT.txt and run-001/RESULT.json.

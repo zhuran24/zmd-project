@@ -2203,6 +2203,42 @@ evidence:
   runner sha256
   0d90380eace78a7831a91bebf3148fbbf301be61e3352a6de6002e8b831820a9.
 
+R-ZC-070  The fixed-geometry conflict has an exact one-signature filling target
+----------------------------------------------------------------------------------
+status: exact directional tradeoffs, complete optimum-face enumeration, synthetic signature discriminators
+scope: E058 fixed component partition and all-6x4 terminal-signature relaxation
+
+statement:
+  E059 proves that qiaoyu zero forces minimum fine mismatch 2, while fine zero
+  forces minimum qiaoyu mismatch 1; both distances survive the `other`-collapsed
+  relaxation. The complete qiaoyu-zero optimum face contains exactly twelve fine
+  presence patterns. Every pattern shares source/sink components {6,15}; its sole
+  source-only component lies in {1,4,8,12,22,26}, and its sole sink-only component
+  lies in {21,54}. Exact and relaxed pattern sets are identical.
+
+  Adding one hypothetical filling-capsule signature with qiaoyu output in component
+  15 and fine input in any source-only component makes the two-zero signature
+  model feasible. Adding one hypothetical fine-grinder output in either sink-only
+  component remains INFEASIBLE.
+
+non-implications:
+  Synthetic signatures are proposal-only. E059 does not prove that any legal pose,
+  one-body relocation, or full binding state realizes the target, and it fixes the
+  E058 component partition.
+
+effect on next problem:
+  Search actual geometry only for filling-capsule bodies/modes that simultaneously
+  expose qiaoyu output in the protocol-core component and fine input in the
+  certified source-side class. Rebuild components and native domains on every
+  candidate, then send only signature-matching geometries to the full joint
+  positive-count consumer. Do not enumerate unrelated complete swaps.
+
+evidence:
+  E059 RESULT.txt; local run-001 RESULT.json sha256
+  c1404d1b41b5b6dd3069b9692387d35ab5962bfee0d0b3dfcc0d970915c7daff;
+  runner sha256
+  f93eedfc989e81184593be94c310a730b4e53f6daa8518c87ae517b1e6ce1504.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

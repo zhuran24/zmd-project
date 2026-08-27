@@ -162,9 +162,10 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-What is the shortest exact tradeoff certificate behind E058's fixed-geometry
-fine-powder/qiaoyu conflict, and which missing terminal signature or component
-relation should a minimal geometry-changing proposer create?
+Which legal one-body geometry changes realize E059's missing filling-capsule
+signature: qiaoyu output in the protocol-core component and fine input in one of
+the certified source-side components, and do any such candidates survive the full
+joint positive-count consumer to create the second zero?
 
 Current campaign posture
 ------------------------
@@ -534,10 +535,19 @@ condition is INFEASIBLE even after all unrelated 6x4 operations are collapsed in
 one `other` class. The fixed geometry therefore lacks a compatible fine-input /
 fine-output / qiaoyu-output signature allocation.
 
-The next step compresses this relaxed infeasibility into a short tradeoff
-certificate and derives a geometry target. It must not return to another complete
-swap portfolio or total-mismatch descent. A fully zero state enters routing
-immediately.
+E059 compresses that relaxed infeasibility into an exact tradeoff. With qiaoyu
+zero hard, minimum fine mismatch is two; with fine zero hard, minimum qiaoyu
+mismatch is one. The complete qiaoyu-zero optimum face has common fine components
+{6,15}, one source-only component from {1,4,8,12,22,26}, and one sink-only
+component from {21,54}; exact and other-collapsed pattern sets are identical.
+
+One synthetic filling-capsule signature with qiaoyu output in component 15 and
+fine input in any source-only component repairs the two-zero signature model. One
+synthetic fine-grinder output in either sink-only component does not. The next
+proposer therefore scans legal body relocations for that filling signature and
+sends only matching geometries into the full joint positive-count consumer. It
+must not return to another complete swap portfolio or total-mismatch descent. A
+fully zero state enters routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

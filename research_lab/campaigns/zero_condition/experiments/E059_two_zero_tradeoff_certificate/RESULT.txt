@@ -1,0 +1,102 @@
+E059 RESULT: THE TWO-ZERO CONFLICT HAS AN EXACT ONE-SIGNATURE GEOMETRY TARGET
+================================================================================
+
+Status
+------
+Completed as research-only exact tradeoff and proposal evidence. The synthetic
+signature scan does not prove that a legal body relocation realizes the target.
+No exact routing, whole-layout witness, certification, U/L, owner, or publication
+effect.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/E059_two_zero_tradeoff_certificate/
+    run-001/RESULT.json
+
+SHA-256:
+  c1404d1b41b5b6dd3069b9692387d35ab5962bfee0d0b3dfcc0d970915c7daff
+
+Verdict:
+  TWO_ZERO_TRADEOFF_AND_FILLING_SIGNATURE_TARGET_EXACT
+
+Decision:
+  SEARCH_GEOMETRY_FOR_Q15_FILLING_INPUT_IN_SOURCE_CLASS
+
+Directional distance
+--------------------
+Inside E058's fixed component partition and exact five-operation counts:
+
+  qiaoyu zero hard -> minimum fine mismatch      2
+  fine zero hard   -> minimum qiaoyu mismatch    1
+
+The same optima hold after all unrelated 6x4 operations are collapsed into one
+`other` class. The tradeoff is therefore carried by filling-capsule / fine-grinder
+terminal signatures, not by the dense-grinder/source-grinder/packaging split.
+
+Complete qiaoyu-zero optimum face
+---------------------------------
+E059 fixes qiaoyu source presence to the protocol-core component 15 and enumerates
+every distinct fine source/sink presence pattern at the exact optimum mismatch 2.
+The enumeration terminates after exactly twelve patterns.
+
+Every pattern has the same shared backbone:
+
+  fine sources contain  {6,15}
+  fine sinks contain    {6,15}
+
+and exactly one unmatched component on each side:
+
+  source-only class  {1,4,8,12,22,26}
+  sink-only class    {21,54}
+
+All six-by-two combinations occur. The exact five-operation and `other`-collapsed
+optimum-face pattern sets are identical.
+
+Single-signature discriminator
+------------------------------
+E059 inserts one hypothetical terminal signature into exactly one existing body
+while preserving the exact five-operation multiset.
+
+A filling-capsule signature of the form
+
+  qiaoyu output  -> component 15
+  fine input     -> s
+
+is sufficient for every
+
+  s in {1,4,8,12,22,26}.
+
+The resulting signature relaxation reaches both fine and qiaoyu zero.
+
+By contrast, adding one fine-grinder output in either sink-only component
+
+  {21,54}
+
+does not repair the joint condition. Both synthetic grinder targets remain
+INFEASIBLE.
+
+Constructive meaning
+--------------------
+The current geometry does not merely need “more qiaoyu capacity.” It needs one
+physical filling-capsule body/mode that simultaneously exposes:
+
+  qiaoyu output in the protocol-core component 15
+  fine-powder input in one source-side component from
+    {1,4,8,12,22,26}
+
+E057's appended body failed precisely because its two modes split these properties
+across different components. E059 now supplies a positive geometry specification
+rather than another complete operation-swap portfolio.
+
+Truth boundary
+--------------
+The six synthetic filling signatures are sufficient only in E058's terminal-
+signature relaxation and fixed component partition. E059 does not assert that a
+legal pose exists, that unrelated binding constraints survive, or that one body
+move is globally sufficient. Every actual candidate must rebuild its component
+partition, native front-filtered domain, operation assignment, and full joint
+binding consumer.
+
+Runner SHA-256:
+  f93eedfc989e81184593be94c310a730b4e53f6daa8518c87ae517b1e6ce1504

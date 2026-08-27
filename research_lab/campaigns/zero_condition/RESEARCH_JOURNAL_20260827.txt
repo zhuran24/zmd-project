@@ -240,3 +240,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-27
   当前 occupied geometry 的 6x4 assignment/mode 轴可以正式关闭。下一步先把冲突压成一条
   短 tradeoff certificate，找出 geometry 必须新增的 terminal signature 或 component
   relation；不能又回到总和下降或完整动作 portfolio。
+
+2026-08-27 14:20
+----------------
+数据：
+  E059 RESULT.json
+  research_lab/local/zero_condition/E059_two_zero_tradeoff_certificate/run-001/RESULT.json
+  sha256 c1404d1b41b5b6dd3069b9692387d35ab5962bfee0d0b3dfcc0d970915c7daff
+
+注意／发现：
+  qiaoyu=0 时，fine mismatch 的精确最小值是 2；fine=0 时，qiaoyu mismatch 最小值是 1。
+  qiaoyu-hard 的完整 optimum face 只有 12 种 presence pattern：source/sink 都固定含 {6,15}，
+  多出来的 source 只能是 {1,4,8,12,22,26}，多出来的 sink 只能是 {21,54}，六乘二全部出现。
+  exact operation counts 和把其他 operation 合成 `other` 得到完全相同的 12 种。
+
+  再加入一条 synthetic signature：filling_capsule 的 qiaoyu output=15、fine input=s，只要
+  s 属于上面的 source-only class，joint 就可行。反过来只加 grinder output=21 或 54，仍然
+  INFEASIBLE。
+
+推理：
+  geometry 的任务终于不再是“改善连通性”或“搬一台看看”，而是制造一条双用途 terminal
+  signature。下一步只扫描能同时把 qiaoyu 送到 core component、把 fine 输入接到 source
+  class 的合法 body/mode；其他几何不进入 full joint consumer。
