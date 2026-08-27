@@ -7,7 +7,7 @@ metadata:
   role: research
 ---
 
-本树是 `/home/zhuran24/.devspace/worktrees/zmd-pj-983df854` 的 `research/main`，负责数学推导、构造、反例、表示、切分、求解器实验和候选证明机器。
+本树是 `/home/zhuran24/zmd-research` 的 `research/main`，负责数学推导、构造、反例、表示、切分、求解器实验和候选证明机器。
 
 三层目标不可压成一条：
 1. 当前 campaign 是零条件完整布局；
@@ -18,4 +18,4 @@ metadata:
 
 本树可以提出 theorem、cut、模型、witness 和 promotion packet，但不能更新 U/L、授予 production/certified、替 owner 作 authority 动作或发布结果。动态现状只读 `research_lab/STATE.txt` 和 active `CAMPAIGN.txt`，不要把旧战况抄进长期记忆。
 
-历史材料树 `/home/zhuran24/zmd-pj` 和认证树 `/home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57` 对研究会话均只读。成熟对象按 packet 过境，不能整体合并研究分支。
+历史材料树 `/home/zhuran24/zmd-pj` 和认证树 `/home/zhuran24/zmd-certification` 对研究会话均只读。成熟对象按 packet 过境，不能整体合并研究分支。

@@ -30,7 +30,7 @@ This tree may create candidate theorems, algorithms, representations, cut forms,
 
 ## Repository roles
 
-`/home/zhuran24/zmd-pj` is the history/material tree and remains read-only. The independent certification tree is `/home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57` on `certification/main`.
+`/home/zhuran24/zmd-pj` is the history/material tree and remains read-only. The independent certification tree is `/home/zhuran24/zmd-certification` on `certification/main`.
 
 Do not merge this branch wholesale into the certification tree. Mature work crosses by a compact promotion packet containing the exact claim, premises, selected commits or diff, reproduction commands, controls, known unknowns, and requested effect. Certification is a fresh-session cold review.
 

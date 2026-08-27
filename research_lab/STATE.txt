@@ -605,7 +605,7 @@ packet-only promotion boundary. The old combined-tree memory was extracted into
 stable research habits; dynamic campaign state remains here and in the campaign
 instead of being copied into auto-memory. The old main tree is history/material
 only. The independent certification tree now exists at
-/home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57 on certification/main; it is
+/home/zhuran24/zmd-certification on certification/main; it is
 read-only from research sessions and receives only frozen candidate packets.
 
 Orientation guards

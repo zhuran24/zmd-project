@@ -6,7 +6,7 @@
 
 - `/home/zhuran24/zmd-pj`：旧主树，今后作为 Git 历史与既有材料的保留树，只读使用。
 - 当前 worktree：研究树，允许大胆探索，但不得自授 production、certified、U/L 或发布效力。
-- `/home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57`：认证树，分支 `certification/main`；只接收冻结的 promotion packet，负责独立冷审与晋级，不整体合并研究分支。
+- `/home/zhuran24/zmd-certification`：认证树，分支 `certification/main`；只接收冻结的 promotion packet，负责独立冷审与晋级，不整体合并研究分支。
 
 ## 进入研究树
 

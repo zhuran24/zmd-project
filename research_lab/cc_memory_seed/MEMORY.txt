@@ -17,4 +17,4 @@
 - 时序敏感的席位改令先停止再重发；稳定操作细节回读 `docs/AGENT_OPERATIONS.md` 与 ops runbook，不在记忆里复制活阈值。
 
 稳定入口：`research_lab/START.txt`、`research_lab/PROGRAM.txt`、`research_lab/CHECKS.txt`。
-历史／材料树只读：`/home/zhuran24/zmd-pj`。认证树：`/home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57`。
+历史／材料树只读：`/home/zhuran24/zmd-pj`。认证树：`/home/zhuran24/zmd-certification`。

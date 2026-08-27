@@ -10,7 +10,7 @@ A healthy entry must report:
   mode              = research
   branch            = research/main
   history tree      = /home/zhuran24/zmd-pj, branch main
-  certification tree = /home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57,
+  certification tree = /home/zhuran24/zmd-certification,
                        branch certification/main
   active campaign   = the campaign named in .zmd-worktree-mode
 
@@ -83,7 +83,7 @@ Before committing
 Tree boundaries
 ---------------
 /home/zhuran24/zmd-pj is the preserved history/material tree. The independent
-certification tree is /home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57 on
+certification tree is /home/zhuran24/zmd-certification on
 certification/main. Both are read-only from research sessions. Mature candidates
 cross only as frozen promotion packets; do not send research writes into either
 worktree.

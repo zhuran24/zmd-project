@@ -82,7 +82,7 @@ Utility evidence does not substitute for soundness.
 
 9. Certification handoff
 ------------------------
-certification tree: /home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57
+certification tree: /home/zhuran24/zmd-certification
 certification branch: certification/main
 required reviewer posture: fresh-session, cold object, independent attack
 whole research branch merge allowed: no

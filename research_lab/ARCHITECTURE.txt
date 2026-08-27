@@ -15,7 +15,7 @@ and certification have different default questions:
                  effect under a fixed context?
 
 The second question has its own worktree at
-/home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57 on certification/main. The old
+/home/zhuran24/zmd-certification on certification/main. The old
 main worktree is neither role; it is retained as history and source material.
 
 1. Repository roles
@@ -34,7 +34,7 @@ research tree
   Authority: research only.
 
 certification tree
-  Path: /home/zhuran24/.devspace/worktrees/zmd-pj-89d26f57
+  Path: /home/zhuran24/zmd-certification
   Branch: certification/main
   Role: cold, independent review and promotion of selected frozen research
         candidates. It does not inherit research conclusions merely by sharing
