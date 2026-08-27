@@ -1,0 +1,85 @@
+EXPERIMENT E063: POLE-CONDITIONED SECOND-OBJECT FRONTIER
+========================================================
+
+Question
+--------
+After fixing the smallest E062 pole near miss, which causally selected second
+object, if any, removes the unmatched fine-powder component on one of its complete
+objective-one face states and reaches the corrected fine/qiaoyu two-zero
+terminal-signature condition?
+
+Why this experiment
+-------------------
+E065's source-stable replay confirms that only five one-object states reduce the
+qiaoyu-hard fine mismatch from two to one. Four are translations of the same
+lower-right optional pole. The smallest move
+
+  power_pole pose 3725 -> 3794
+  p_x53_y68_o0_m_omni -> p_x54_y68_o0_m_omni
+
+has a valid source-only-component-1 representative, but E065 also demonstrates
+that other pole actions can return components 4 or 26 as equally optimal
+representatives. More importantly, one returned representative is not the complete
+optimum face of a fixed geometry. E063 therefore enumerates the complete
+directional optimum face of the selected 3725->3794 geometry before selecting any
+second object; no E062 representative is treated as canonical.
+
+A full 4,714-by-4,714 pair product would discard the causal information. E063
+conditions on this pole parent and admits a second object only when it belongs to
+one of three problem-derived classes:
+
+  * a selected owner touching any unmatched optimum-face component and at least
+    one other free component;
+  * any current manufacturing-6x4 body, because moving it can create a new target
+    terminal signature;
+  * the generic-input provider, because its pose controls the qiaoyu sink space.
+
+Symmetric occupancy aliases are quotiented before exact evaluation.
+
+Method
+------
+1. Reconstruct E055's first-zero parent and apply the exact pole move 3725->3794.
+2. Rebuild the corrected generic sink space and all 38 current 6x4 native target
+   signatures. Reproduce qiaoyu-hard fine mismatch one, then enumerate every
+   distinct source/sink presence pattern on that exact optimum face.
+3. Derive boundary owners for the union of all source-only and sink-only
+   components on the complete face; retain the multi-component separators, all
+   6x4 bodies, and the protocol core.
+4. Enumerate every placement- and power-valid second pose change in that causal
+   set. Quotient identical `(facility type, old body, new body)` geometry changes;
+   all 6x4 same-body modes remain simultaneous inside the signature consumer.
+5. For each distinct pair geometry, rebuild components, candidate-specific generic
+   sink slots, and all 6x4 signatures. Require qiaoyu zero and minimize fine
+   mismatch exactly.
+6. For every objective-zero candidate, independently replay the corrected joint
+   two-zero feasibility model. Materialize a small deterministic candidate set for
+   full conditional-binding validation.
+
+The scan is checkpointed in deterministic chunks. Qiaoyu-hard objective zero is
+proposal evidence from a relaxation, not a complete binding witness.
+
+Decision rule
+-------------
+At least one objective-zero pair
+  Carry the smallest deterministic candidates into the full conditional
+  port-mode/operation-assignment/binding consumer. Exact full-consumer success
+  creates the second zero state; rejection refines the missing coupling.
+
+No zero, but objective-one states remain
+  This causal two-object language cannot finish the bridge. Use the residual
+  presence patterns to derive a third relation or switch to the distinct E062 6x4
+  near-miss parent. Do not scan the unrestricted pair product.
+
+Any UNKNOWN
+  Preserve the completed chunks and continue only nonterminal candidates.
+
+Truth boundary
+--------------
+E063 fixes E055's first-zero parent, fixes one specific pole move, and changes one
+additional selected object's pose inside a complete-face-derived causal set. It uses the
+corrected target-signature relaxation with candidate-specific generic sink space.
+It does not establish full binding feasibility, routing, U/L, or certification.
+
+Result
+------
+Not run yet.
