@@ -1,0 +1,162 @@
+ZMD RESEARCH HISTORICAL REFERENCE REGISTER
+==========================================
+
+Purpose
+-------
+This is a question-routed pointer index into the read-only history/material tree.
+It is not a truth source, a default reading list, a certification ledger, or a
+replacement for campaign INPUTS. Read it only after the current research question
+is clear and the question asks whether an older fact, failed route, theorem,
+game-side observation, or outer-loop design already exists.
+
+Root
+----
+/history-material tree: /home/zhuran24/zmd-pj
+
+Master handoff inventory
+------------------------
+path:
+  /home/zhuran24/zmd-pj/.artifacts/handoff_registration_points_20260827/
+    REGISTRATION_POINTS_INVENTORY.md
+sha256:
+  f5036144da2ea32289e547dc1c13652f765cc5b894e44badaa724b383b5337a2
+size:
+  8434 bytes
+use:
+  First lookup for dormant research material, known dead routes, zero-condition
+  completion semantics, and historical registration points. Research reads A;
+  certification-border material in B is not active inside this tree.
+
+Game semantics and unresolved measurements
+------------------------------------------
+path:
+  /home/zhuran24/zmd-pj/.artifacts/ingame_confirmation_inventory_20260824/
+    INVENTORY_INGAME_CONFIRMATIONS.md
+sha256:
+  c9df6c5f724645f526ef09379fc403c5a6a9780140d21d48e32ef43b605a2486
+size:
+  30108 bytes
+use:
+  Before claiming a game rule was or was not measured. It contains 43 confirmed
+  or owner-decided facts plus an explicit unresolved list. It is a dated evidence
+  inventory, not permission to silently extend solver semantics.
+
+Zero-condition completion and future throughput
+------------------------------------------------
+completion charter:
+  /home/zhuran24/zmd-pj/.artifacts/lowerbound_ladder_20260824/
+    CHARTER_PROPOSAL_LOWERBOUND_LADDER.md
+  sha256 acf9d2142e8cd1dc45c0fa5f07b732a0048477bf4b620bc2370472769bc67edb
+  size 4147 bytes
+
+throughput feasibility assessment:
+  /home/zhuran24/zmd-pj/.artifacts/lowerbound_ladder_20260824/
+    FLOW_PROOF_FEASIBILITY_ASSESSMENT.md
+  sha256 4f434d308c78d33f4a3b217c8e00de4c491369170bd3518be5ae300e979dfefc
+  size 28824 bytes
+
+use:
+  The inherited meaning of a completed zero-condition layout includes placement,
+  power, binding, exact belt connectivity, flow validation with Fraction-level
+  replay, and owner game-side construction as bridge evidence. Throughput remains
+  a final project obligation, but the current flow_subproblem.py must not be
+  promoted: its production path has a dummy_commodity versus real-demand-key
+  mismatch and is diagnostic-only. The assessment recommends a new selected-route
+  throughput model rather than laundering the old flow diagnostic into proof.
+
+Dormant supply-side theorem and future consumer hook
+----------------------------------------------------
+theorem edge:
+  ARM2-30X39-F2-EXTERNAL-SATURATION -> future C1 consumer
+
+lowering specification:
+  /home/zhuran24/zmd-pj/.artifacts/arm2_supplyside_newword_20260823/
+    cc_b_theorem_checker_v3_birth_certificate/LOWERING_MAPPING_V3.json
+  sha256 627d1c36cb6a44c00c2409fabbd9a67f97ad42620956cfcf6b67c062cb64e91e
+  size 2841 bytes
+
+round-6 verdict:
+  /home/zhuran24/zmd-pj/.artifacts/arm2_supplyside_newword_20260823/
+    15_ROUND6_VERDICT_20260824.md
+  sha256 b0d0c6133b8270be7eddb96b25811d38f7da15ba4019d3d97a31996483adf094
+  size 16593 bytes
+
+quarantined consumer shell:
+  /home/zhuran24/zmd-pj/.artifacts/arm2_supplyside_newword_20260823/
+    cc_c_consumer/QUARANTINE_STATUS.md
+  sha256 e27d1f98c8563dcf5ed270bcac8d909b3a7c31b5aa9b3bccfbc47306bab998e4
+  size 2441 bytes
+
+use:
+  Research material only until a concrete consumer question exists. The inventory
+  records a six-round-reviewed theorem and a nine-constraint lowering mapping, but
+  no model consumer or actual pruning edge. The quarantined shell is reusable
+  construction material, not an active front door. Before implementing a new
+  external-access/C1 consumer, inspect these bytes rather than rebuilding the
+  theorem and admission shape from memory.
+
+Outer-loop design and precedents
+--------------------------------
+design draft:
+  /home/zhuran24/zmd-pj/.artifacts/solver_rethink_20260808/DESIGN_DOC_v2.md
+  sha256 8b583a13c6fd0dd92d9474fc6529c5309ea5b4d71f559c71840789d39f167f96
+  size 116787 bytes
+
+four-lens precedent survey:
+  /home/zhuran24/zmd-pj/.artifacts/outer_loop_precedents_20260824/
+    OUTER_LOOP_PRECEDENT_SURVEY.md
+  sha256 c407dd2c65b70985f9fc6f739e9f7a1e4095a0f8835c13ec6b60bd4bed2b2492
+  size 72402 bytes
+
+blind-sweep supplement:
+  /home/zhuran24/zmd-pj/.artifacts/outer_loop_precedents_20260824/
+    SUPPLEMENT_BLIND_SWEEP.md
+  sha256 cce3523ed2d71cd5a58826b9d1e25c303291a8280d6a947eaf13d8619a95e638
+  size 68059 bytes
+
+use:
+  Consult when a repeated research action is ready to become an outer-loop
+  interface, not before every experiment. The surveys reduce the scientific bet
+  to two falsifiable questions:
+
+    interface compressibility
+      Can one typed cause remove or construct a broad family rather than one ID?
+
+    proof economy
+      After generation, checking, transport, lowering, and invalidation, is the
+      residual exact problem actually cheaper, especially in the tail?
+
+  Particularly relevant precedents are guarded explanations, small obstructions,
+  interface summaries, assumptions-based subcontexts, stable object maps,
+  construction rules, premise selection, four-state resolution separated from
+  consumption capability, and anchored coverage trees.
+
+External review disposition
+---------------------------
+review letter:
+  /home/zhuran24/zmd-pj/.artifacts/research_work_review_letter_20260827/LETTER.md
+  sha256 7723955c1ab1760fc233ba073f919d1b35f7cc1c7cad5a8af89da4d0572588a1
+  size 5792 bytes
+
+adopted now:
+  * Preserve the E055 versus E056 effect boundary. The current durable text already
+    distinguishes assignment-only lexicographic optimum (18,139) from E056's exact
+    positive optimum 18 with unknown secondary total.
+  * Treat compressed derived objects as candidate inputs, not decorative outputs.
+    The standing method is in research_lab/methods/DERIVED_KNOWLEDGE_REUSE.txt.
+  * Register the dormant theorem and precedent stock without building a full
+    Judgment platform prematurely.
+  * Add completion, throughput, and game-semantics sources to the active campaign
+    input surface.
+
+not acted on here:
+  * STATE.txt length. The letter says another line is preparing a lightweight
+    proposal; this task does not pre-empt it.
+
+Loading rule
+------------
+A pointer being registered does not make its conclusion active. Before use, open
+the true source, verify path plus digest, identify the exact problem/objective/
+context and executable semantics, and state whether the object is logically
+portable and whether it is still useful. Soundness and portable utility are
+separate questions.

@@ -1,0 +1,109 @@
+DERIVED KNOWLEDGE REUSE
+=======================
+
+Status
+------
+Lightweight research method, earned from two materially different contexts:
+
+  E049 RESCUE_GRAPH
+    A structured causal graph was produced, but the immediate successor consumed
+    the broad RESULT envelope instead of making the graph its default interface.
+
+  E058 SIGNATURE_CENSUS
+    A 97,950-pattern domain was compressed into 338 terminal signatures and the
+    successor E059 consumed the census directly. The compressed object changed the
+    cost and clarity of the next problem.
+
+This is not a global Judgment store, a new approval process, or a requirement to
+cache every intermediate object.
+
+Default rule
+------------
+When an experiment emits a normalized graph, atlas, signature table, component
+map, response surface, or other derived object whose semantics match the next
+question, the next consumer should try that object before reconstructing the same
+knowledge from raw solver state.
+
+A broad RESULT.json is an envelope. It is not a substitute for a typed derived
+object when the successor needs the object's internal relations.
+
+Minimum reusable identity
+-------------------------
+A reusable derived object should carry, directly or through its frozen receipt:
+
+  schema and object kind
+  path, SHA-256, and byte size
+  problem / objective / context identities
+  semantic-model identity
+  subject or binder identities
+  construction provenance
+  executable-code provenance or code-origin check
+  dependencies
+  invalidation keys
+  exact scope and non-implications
+
+The E064 bytecode-cache incident adds an important requirement: source-file hashes
+alone do not prove which code objects executed. A derived object that depends on
+Python runners should preserve enough runtime provenance to detect foreign code
+origins or be reproduced under a source-isolated cache before it becomes a new
+long-lived premise.
+
+Reuse decision
+--------------
+Before consuming an existing object, answer two separate questions.
+
+1. Logical portability
+   Does its original context entail the assumptions needed here? Did the object,
+   terminal assignment, body identity, generic slot, operation assignment, or
+   representation change? If transport is not immediate, add the premise, prove a
+   mapping, or recompute.
+
+2. Portable utility
+   Even if still sound, does the object expose the relation needed by this
+   consumer cheaply enough to matter? A locally useful graph or ranking may be
+   irrelevant in a sibling context. Re-estimate value without re-litigating truth.
+
+Consumer behavior
+-----------------
+  * Pin the object identity before use.
+  * Prefer typed fields and stable body/destination IDs over display strings or
+    symmetric named-instance labels.
+  * Record which part of the object was actually consumed.
+  * If the object is insufficient, recompute deliberately and record the missing
+    field, context mismatch, or excessive access cost.
+  * Do not silently rebuild the same table and call it the old observation.
+  * Do not load every cached theorem or table into every model. Select premises by
+    the current wall and consumer vocabulary.
+
+When to promote the mechanism
+-----------------------------
+Campaign-local path constants and INPUTS entries are sufficient while reuse is
+rare. A real manager/store is earned only when at least one of these becomes a
+material recurring cost:
+
+  the same relation is reconstructed across several experiments;
+  invalidation and transport checks are repeatedly handwritten;
+  multiple consumers need premise selection over the same derived objects;
+  proof/checking cost can no longer be separated from recomputation cost;
+  useful objects are repeatedly orphaned or stale objects repeatedly imported.
+
+At that point, consult:
+
+  research_lab/HISTORICAL_REFERENCE_REGISTER.txt
+  outer-loop precedent survey sections 2.3, 2.7, 2.9 and 3
+  blind-sweep supplement sections 3.2 through 3.4
+
+Scientific success measure
+--------------------------
+Caching is useful only when it changes the next problem more cheaply and without
+weakening truth boundaries. Track, when material:
+
+  producer cost
+  validation / transport cost
+  consumer cost saved
+  number of distinct contexts or decisions served
+  residual exact-search reduction
+  stale / rejected / unused rate
+
+A larger cache is not itself progress. A short object that is consumed twice and
+removes a real residual wall is worth more than a warehouse of unqueried facts.

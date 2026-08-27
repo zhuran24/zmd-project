@@ -96,6 +96,46 @@ Canonical semantics and current code substrate
   src/models/routing_subproblem.py
   src/search/benders_loop.py
 
+Historical registration and final-scope sources
+-----------------------------------------------
+
+Handoff registration inventory
+  path: .artifacts/handoff_registration_points_20260827/REGISTRATION_POINTS_INVENTORY.md
+  sha256: f5036144da2ea32289e547dc1c13652f765cc5b894e44badaa724b383b5337a2
+  size: 8434
+  role: pointer index for dormant theorem material, dead routes, completion
+        semantics, game measurements, and outer-loop precedents; A is research
+        material, B is inactive until a certification border is crossed
+
+Game-side confirmation inventory
+  path: .artifacts/ingame_confirmation_inventory_20260824/INVENTORY_INGAME_CONFIRMATIONS.md
+  sha256: c9df6c5f724645f526ef09379fc403c5a6a9780140d21d48e32ef43b605a2486
+  size: 30108
+  role: first lookup before claiming a game rule was or was not measured; includes
+        both confirmed facts and an unresolved-measurement list
+
+Zero-condition completion charter
+  path: .artifacts/lowerbound_ladder_20260824/CHARTER_PROPOSAL_LOWERBOUND_LADDER.md
+  sha256: acf9d2142e8cd1dc45c0fa5f07b732a0048477bf4b620bc2370472769bc67edb
+  size: 4147
+  role: inherited success-object semantics; completion extends beyond a placement
+        or component-compatible binding to routing, exact flow replay, and the
+        owner game-side bridge stated in the charter
+
+Flow / throughput feasibility assessment
+  path: .artifacts/lowerbound_ladder_20260824/FLOW_PROOF_FEASIBILITY_ASSESSMENT.md
+  sha256: 4f434d308c78d33f4a3b217c8e00de4c491369170bd3518be5ae300e979dfefc
+  size: 28824
+  role: final throughput remains required, but current flow_subproblem.py is a
+        diagnostic with a dummy_commodity/real-demand-key mismatch; do not promote
+        it into proof or silently reuse it as the eventual throughput consumer
+
+Outer-loop reference register
+  research path: research_lab/HISTORICAL_REFERENCE_REGISTER.txt
+  role: question-routed pointers to the precedent surveys, dormant supply-side
+        theorem, review letter, and selected adoption decisions; not a default
+        premise set
+
 External large input
 --------------------
 candidate placements

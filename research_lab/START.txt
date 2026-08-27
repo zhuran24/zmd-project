@@ -35,7 +35,10 @@ Role memory:
 
 Only after the current question is clear:
 
-  6. the smallest relevant subset of rules, source code, evidence, and history
+  6. research_lab/HISTORICAL_REFERENCE_REGISTER.txt when asking whether an older
+     theorem, game measurement, dead route, compressed artifact, or precedent
+     already exists
+  7. the smallest relevant subset of rules, source code, evidence, and history
 
 Do not begin ordinary research by loading the complete certification/governance
 corpus. PROJECT_LOCK, CURRENT, ledgers, and AGENT_OPERATIONS are on-demand
