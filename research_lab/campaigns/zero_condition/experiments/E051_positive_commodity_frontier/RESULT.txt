@@ -1,0 +1,124 @@
+E051 RESULT: OBJECTIVE 139 CANNOT PRODUCE EVEN ONE ZERO COMMODITY IN THE BOUNDED JOINT CONTEXT
+================================================================================================
+
+Status
+------
+Completed as research-only exact positive-commodity frontier evidence. No exact
+routing, whole-layout witness, certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/E051_positive_commodity_frontier/
+    run-001/RESULT.json
+
+SHA-256:
+  7c0b50f8ce92e8e12e7be89a7e7e2f612facd650173abd823e4867ce9e984c04
+
+Verdict:
+  FIRST_ZERO_INFEASIBLE_IN_BOUNDED_JOINT_CONTEXT
+
+Decision:
+  EXPAND_GEOMETRY_OR_RESCUE_CONTEXT
+
+Fidelity checks
+---------------
+E051 reconstructs E050 Seed C's five-block conditional context with 27 selected
+instances and thirteen mode-enabled destinations.
+
+The materialized state recalibrates exactly:
+
+  fixed state       OPTIMAL 139
+  free joint replay OPTIMAL 139, best bound 139
+
+Thus the positive-count experiment operates on the same faithful joint language
+that produced E050 rather than on a simplified fixed assignment.
+
+Primary optimum-face result
+---------------------------
+With total mismatch fixed to 139, E051 minimizes the number of commodities whose
+component mismatch is positive.
+
+The exact result is:
+
+  status                    OPTIMAL
+  positive commodity count       19
+  zero-mismatch commodities       0
+  best bound                      19
+
+Therefore every state on the complete bounded joint optimum face at total 139
+still has all 19 commodities disconnected at the component-support level. The
+materialized E050 endpoint was not merely an unlucky member of a wider optimum
+face containing a zero-bearing state.
+
+First-zero frontier
+-------------------
+E051 then removes the total=139 restriction, requires at most 18 positive
+commodities, and minimizes total mismatch in a fresh copy of the same model.
+
+The model proves:
+
+  INFEASIBLE
+
+with zero branches and zero conflicts after presolve/propagation. Consequently the
+bounded context cannot make any commodity component-compatible at any total
+mismatch value. This is stronger than saying the first zero is expensive: it does
+not exist while occupied geometry and the current conditional pose/mode,
+operation-assignment, and binding context remain fixed.
+
+Metric effect
+-------------
+The shared mismatch sum remains useful, but E051 proves that its descent inside
+this context cannot cross the first positive-count boundary. The trajectory
+200 -> 139 therefore does not imply that another assignment or binding choice on
+the same geometry can produce 18/19 commodities.
+
+The next construction must change the geometry/rescue context itself. Scalar
+reoptimization inside the current context is closed.
+
+Targeted obstruction
+--------------------
+The smallest current mismatch is:
+
+  fine_buckwheat_powder = 1
+
+Its materialized endpoint has one source-only component. Three
+`grinder_fine_buckwheat` sources emit into that component, while all three
+`filling_capsule` sinks lie in other components. A follow-up static audit shows:
+
+  * both same-body modes of each of the three source grinders still emit only into
+    the source-only component;
+  * the available same-body modes of the three capsule sinks reach components
+    4, 15, 21, or 40, never the source-only component;
+  * one capsule mode is front-domain empty.
+
+Thus source/sink port-mode expansion alone cannot create the first zero. At least
+one relevant occupied body must move, or operation assignment must gain access to
+a body whose terminal front reaches the missing component relation.
+
+Architecture effect
+-------------------
+Positive commodity count is now a separate exact progress axis rather than an
+informal report field. The outer loop must distinguish:
+
+  total component mismatch
+  positive commodity count
+  first-zero feasibility within a context
+
+A context that lowers the sum but cannot cross 19/19 is saturated for the current
+whole-layout purpose even if further scalar improvements are numerically possible.
+
+Truth boundary
+--------------
+E051 is exact only for E050 Seed C's occupied geometry and bounded conditional
+port-mode, operation-assignment, and binding context. It does not prove a global
+19-commodity lower bound, zero-condition infeasibility, routing, throughput, U/L,
+or certification.
+
+Evidence identities
+-------------------
+Runner SHA-256:
+  e287c3c4323494b894792435b44fe2c23458345ca2f7409b06309170e9c4ca87
+
+E050 best endpoint SHA-256:
+  04999122509a580c501eb0458d9909abf65dbd5075fd3f06b5ca928355be9b86

@@ -1,0 +1,47 @@
+ZERO-CONDITION RESEARCH JOURNAL — 2026-08-27
+=============================================
+
+2026-08-27 09:48
+----------------
+数据：
+  E051 RESULT.json
+  research_lab/local/zero_condition/E051_positive_commodity_frontier/run-001/RESULT.json
+  sha256 7c0b50f8ce92e8e12e7be89a7e7e2f612facd650173abd823e4867ce9e984c04
+
+注意／发现：
+  不能再默认“139 继续往下掉”就是主要进展。先把 total mismatch 固定在 139，直接问
+  整个 joint optimum face 能不能让至少一种 commodity 归零。结果 positive count 的精确
+  最小值仍是 19。然后放开总和，只要求 positive count <= 18，模型直接 INFEASIBLE。
+
+推理：
+  这不是 E050 恰好抽到一个坏 endpoint，也不是第一个零代价太高。当前五个 block、27
+  个 selected instances、13 个 mode-enabled destinations 组成的 bounded joint context，
+  根本没有任何 zero-bearing state。shared mismatch 在这个 context 里就算还能换 endpoint，
+  也跨不过 19/19 -> 18/19。下一步必须改变 geometry/rescue context，不能继续在原模型里
+  优化同一个总和。
+
+  这也补上了一个隐藏审计缺口：此前 optimum-face audit 固定的是物化后的具体
+  operation/mode assignment，不是完整 joint face。E051 第一次对 joint face 本身做了
+  positive-count 量化。
+
+2026-08-27 09:57
+----------------
+数据：
+  E050 Seed C endpoint
+  research_lab/local/zero_condition/E050_revalue_external_rescues/run-001/
+    SEED_C_BEST_ENDPOINT.json
+  sha256 04999122509a580c501eb0458d9909abf65dbd5075fd3f06b5ca928355be9b86
+
+注意／发现：
+  最接近归零的是 fine_buckwheat_powder = 1。它只有一个 source-only component：三台
+  grinder_fine_buckwheat 的 source 都在右侧 component 1，三个 filling_capsule sink 则在
+  component 4 或 15。
+
+  快速同足迹 mode 审计又排除了一条轻量路线：三台 source grinder 的两个 mode 仍只把
+  fine powder 输出到 component 1；三个 capsule 的可用 mode 只能把 sink 放到 component
+  4、15、21 或 40，其中 filling_capsule_001 的反向 mode 还是空域。
+
+推理：
+  第一个零不可能靠给现有六台 source/sink 机器单独开放 port mode 得到。至少要移动一具
+  relevant body，或者把 filling_capsule / grinder operation 分配到一个能跨组件的 6x4
+  body。下一问应围绕这六台机器的 body mobility，而不是重新做全局 coverage 排名。

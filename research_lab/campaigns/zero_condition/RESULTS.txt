@@ -1927,6 +1927,39 @@ evidence:
   optimum-face audits sha256
   aec0bb6c0f2916df7117b638bb35dd6052d098dd4df046ff9b20513847a0881c.
 
+R-ZC-062  The bounded objective-139 joint context cannot produce a first zero
+--------------------------------------------------------------------------------
+status: exact fixed-state calibration, free primary replay, joint-face positive-count optimization, and first-zero feasibility proof
+scope: E050 Seed C occupied geometry and its five-block conditional mode/assignment/binding context
+
+statement:
+  E051 recalibrates the materialized E050 state and freely reproduces OPTIMAL 139.
+  With total mismatch fixed to 139, minimizing the number of positive commodities
+  is OPTIMAL at 19. In a fresh model, removing the total restriction and requiring
+  at most 18 positive commodities is INFEASIBLE. Therefore no binding, port-mode,
+  or operation-assignment state inside this bounded context can make even one
+  commodity component-compatible. The closest materialized commodity is
+  fine_buckwheat_powder at mismatch one.
+
+non-implications:
+  This is not a global 19-commodity lower bound, zero-condition infeasibility,
+  routing evidence, U/L, or certification. Geometry and rescue context remain
+  fixed. A body relocation or a broader operation-to-body domain may cross the
+  first-zero boundary.
+
+effect on next problem:
+  Stop treating further shared-sum descent inside the current context as useful
+  progress. Target the fine_buckwheat_powder source-only component. Same-body mode
+  audit already shows its three source grinders remain in component 1 and the
+  three capsule sinks reach only components 4, 15, 21, or 40. Test relevant body
+  mobility or operation-to-body reassignment before broad global geometry search.
+
+evidence:
+  E051 RESULT.txt; local RESULT.json sha256
+  7c0b50f8ce92e8e12e7be89a7e7e2f612facd650173abd823e4867ce9e984c04;
+  runner sha256
+  e287c3c4323494b894792435b44fe2c23458345ca2f7409b06309170e9c4ca87.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

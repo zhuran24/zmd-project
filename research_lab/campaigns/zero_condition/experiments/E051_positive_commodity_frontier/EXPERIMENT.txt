@@ -1,0 +1,77 @@
+EXPERIMENT E051: JOINT POSITIVE-COMMODITY FRONTIER AT OBJECTIVE 139
+===================================================================
+
+Question
+--------
+Is the persistent 19/19 positive-commodity count intrinsic to the full E050 Seed C
+joint optimum face, or only to the materialized endpoint? If every objective-139
+joint state remains positive on all commodities, what is the exact minimum total
+mismatch required in the same bounded geometry/mode/assignment/binding context to
+make at least one commodity component-compatible?
+
+Why this experiment
+-------------------
+The shared mismatch sum has fallen from 200 to 139, yet no commodity has reached
+zero and exact routing has never started. Continuing to optimize the sum without
+checking the positive-commodity frontier would risk turning a useful diagnostic
+into the research target.
+
+The prior optimum-face audits freeze one materialized operation/mode assignment.
+They do not quantify over the complete E050 joint context. E051 therefore audits
+the native joint model itself before proposing another geometry action.
+
+Method
+------
+E051 reconstructs E050 Seed C's exact rescue geometry and conditional context. It
+uses the fully materialized objective-139 state as the warm witness and performs:
+
+1. a fixed-state calibration that must reproduce objective 139;
+2. a free primary solve that must reproduce the exact joint optimum 139;
+3. a primary-face solve with total mismatch fixed to 139 and the number of
+   positive commodities minimized;
+4. a fresh first-zero frontier solve that requires at most 18 positive commodities
+   and minimizes total mismatch;
+5. if the frontier is feasible, a concrete assignment/materialization plus a
+   fixed-state constrained replay of the same zero-bearing state.
+
+For each commodity c, a Boolean positive[c] is equivalent to:
+
+  sum(component_mismatch[c]) >= 1
+
+Thus positive[c] = 0 means that commodity has exact source/sink component support
+inside the compiled shared-binding model.
+
+Decision rule
+-------------
+Primary-face positive count < 19
+  The current joint optimum already contains a zero-bearing state. Materialize it
+  and replace arbitrary endpoint selection with the positive-count-refined state.
+
+Primary-face count = 19, first-zero frontier total <= 141
+  Retain a two-objective beam: the sum-optimal 139 state and the nearest exact
+  zero-bearing state. Continue with positive-count preservation rather than sum
+  alone.
+
+Primary-face count = 19, first-zero frontier total > 141
+  Record the exact price of the first zero. Geometry/rescue proposal should target
+  that obstruction instead of continuing blind scalar descent.
+
+First-zero frontier INFEASIBLE
+  The current bounded pose-mode/assignment/binding context cannot make any
+  commodity component-compatible. A geometry-context expansion is mandatory.
+
+Objective 0
+  Enter exact routing immediately.
+
+Truth boundary
+--------------
+E051 is exact only for E050 Seed C's frozen occupied geometry and its bounded
+conditional port-mode, operation-assignment, and binding context. It does not
+prove a global positive-commodity bound, whole-layout infeasibility, routing,
+throughput, U/L, or certification.
+
+Result
+------
+Completed. The fixed state and free joint model both reproduce OPTIMAL 139. The
+primary total-139 face has exact minimum positive count 19. Requiring positive
+count <= 18 makes the same bounded joint context INFEASIBLE. See RESULT.txt.
