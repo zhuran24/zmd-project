@@ -1,0 +1,133 @@
+E062 RESULT: FIVE ONE-OBJECT GEOMETRIES REDUCE THE QIAOYU-HARD FINE DISTANCE FROM TWO TO ONE
+=================================================================================================
+
+Status
+------
+Completed as research-only exact directional-tradeoff evidence. No two-object
+sufficiency, full binding feasibility, routing, whole-layout witness,
+certification, U/L, owner, or publication effect.
+
+Frozen result
+-------------
+Main result:
+  research_lab/local/zero_condition/E062_one_object_tradeoff_atlas/
+    run-001/RESULT.json
+
+SHA-256:
+  87141cbc5db98e45b69422d4b1b5e486d38c15a0dc6f677066b55b099108ff08
+
+Verdict:
+  ONE_OBJECT_TRADEOFF_NEAR_MISSES_FOUND
+
+Decision:
+  BUILD_COMPLEMENTARY_TWO_OBJECT_RELATIONS
+
+Baseline and complete distribution
+----------------------------------
+The corrected E060 parent recalibrates at:
+
+  qiaoyu mismatch zero
+  minimum fine mismatch = 2
+
+E062 then optimizes the same directional objective on every E061 one-object
+geometry. All non-structural solves reach OPTIMAL; there are no UNKNOWN results.
+The complete distribution, including signature-invariant same-body modes, is:
+
+  objective 1       5
+  objective 2   5,084
+  objective 3      64
+
+The remaining candidates are exact structural-empty or infeasible admissions.
+Thus strict directional progress is extremely sparse: five states among the full
+one-object frontier.
+
+Power-pole near-miss family
+---------------------------
+Four strict improvements move the same optional pole:
+
+  current  p_x53_y68_o0_m_omni  pose 3725
+
+  -> p_x54_y68_o0_m_omni        pose 3794
+  -> p_x55_y68_o0_m_omni        pose 3863
+  -> p_x56_y68_o0_m_omni        pose 3932
+  -> p_x57_y68_o0_m_omni        pose 4001
+
+All four are placement-/power-valid and prove qiaoyu-zero fine mismatch one. Their
+optimum presence has no sink-only component; the sole mismatch is source-only
+component 1.
+
+The first target retains fine source/sink component 54. The latter three relabel
+that shared region as component 38. In every case qiaoyu selects generic sink
+component 15.
+
+6x4-body near miss
+------------------
+The fifth strict improvement moves:
+
+  grinder_dense_source_002
+  pose 7006 -> 6878
+  p_x52_y64_o0_m_BT -> p_x52_y60_o0_m_TB
+
+It also proves directional mismatch one, but in a different component regime:
+
+  qiaoyu sink component      29
+  shared fine components     {6,7,15}
+  sole source-only component 40
+
+This is not the same near-miss under a renamed endpoint. The geometry and selected
+generic sink component differ.
+
+First complement test
+---------------------
+The four pole moves were combined with the unique 6x4 near miss. All four pairs
+remain INFEASIBLE in the corrected two-zero signature relaxation while preserving
+placement and power. Therefore the two near-miss families are not directly
+complementary merely because both have distance one.
+
+A further occupied-destination audit on each pole state finds no existing
+manufacturing-6x4 pose whose current-component native filling signature already
+has:
+
+  qiaoyu output in an available generic sink component
+  fine input in the remaining source-only component 1
+
+The second geometry change must therefore alter the component/terminal relation,
+not simply vacate an already suitable target footprint.
+
+Architecture effect
+-------------------
+E062 converts E061's flat negative frontier into a sparse causal atlas. A
+one-object state can improve the directional distance without being two-zero
+feasible, and only two physical degrees of freedom do so:
+
+  one specific lower-right power pole
+  one specific dense-source 6x4 body
+
+The next pair proposer should be conditioned on one near-miss parent and search
+for a second change that removes its single source-only component. It should not
+pair states solely by equal objective or scan the full 4,714-by-4,714 Cartesian
+product.
+
+Execution provenance
+--------------------
+The first invocation completed the non-6x4 atlas and reached the external tool
+window. The checkpoint was validated and reused; the second invocation completed
+the 6x4 atlas and terminal result.
+
+Checkpoint SHA-256 values:
+
+  NON6_ATLAS
+    3598df8b4c77df17680377bab67af706703995e940c2e0163e8048a565e23c8b
+
+  SIX4_ATLAS
+    b8962249729cac887cbb32ab48e3b7c0d1ccbbd959dc4499b31ed61de30b023a
+
+Runner SHA-256:
+  91770f3ba9a96a3c79bd95c42a4e40b9a540ab537e97079b02f7c57c6fedb67e
+
+Truth boundary
+--------------
+E062 changes exactly one selected object pose and optimizes qiaoyu-hard fine
+mismatch in the corrected target-signature relaxation. Objective one is proposal
+evidence only. It does not prove any pair useful or close another first-zero
+state.

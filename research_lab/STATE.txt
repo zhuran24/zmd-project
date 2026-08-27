@@ -162,10 +162,9 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-Which smallest simultaneous two-object relation can cross E061's closed one-object
-frontier: specifically, can E057's core-side filling mode be paired with one
-geometry change that joins its fine-input component 54 to a certified source-side
-component while preserving qiaoyu sink compatibility?
+Under the representative E062 pole near miss, which smallest second-object move
+removes the sole source-only fine component 1 and reaches the corrected two-zero
+signature condition, without expanding into an unconstrained all-pairs portfolio?
 
 Current campaign posture
 ------------------------
@@ -562,13 +561,21 @@ also closes 538 non-6x4 same-body modes: 537 are signature-invariant and the one
 protocol-core orientation remains INFEASIBLE; all 6x4 modes were already joint in
 E060.
 
-The one-object pose language is therefore closed for this first-zero state. The
-next proposer must be genuinely simultaneous or use a different occupied
-first-zero state. The sharpest current relation pairs E057's filling mode
-(qiaoyu-output component 15, fine-input component 54) with one obstacle/body move
-that joins component 54 to a certified fine source-side component. It must not
-return to another unconstrained complete pair portfolio or total-mismatch descent.
-A fully zero state enters routing immediately.
+The one-object pose language is therefore closed for this first-zero state. E062
+then asks a directional question rather than repeating the flat negative scan:
+with qiaoyu zero hard, can one object reduce fine mismatch below the corrected
+baseline two? Exactly five states reach one and none reaches zero. Four are the
+same lower-right power-pole move family and leave only source-only component 1;
+the fifth is a distinct 6x4 relocation leaving source-only component 40.
+
+The pole family and 6x4 near miss are not automatically complementary: all four
+direct combinations remain INFEASIBLE, and no already occupied 6x4 footprint in
+the pole states supplies the missing filling signature. The next proposer is
+therefore conditioned on one representative pole parent and the boundary/terminal
+causes of component 1. It enumerates only second objects that can change that
+relation, not the full one-object Cartesian square. A corrected-signature feasible
+pair is sent to the full conditional binding consumer; a fully zero binding enters
+routing immediately.
 
 The experiment must continue to serve the zero-condition witness directly.
 General outer-loop lessons are welcome outputs, but method validation must not

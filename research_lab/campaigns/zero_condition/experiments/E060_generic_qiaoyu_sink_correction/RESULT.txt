@@ -101,6 +101,22 @@ Under variable generic sink choice:
 Thus E059's geometry target is numerically and structurally unchanged, but its
 scientific authority now derives from E060.
 
+Compact Hall-style synopsis
+---------------------------
+A mechanically derived synopsis of the component-15 optimum branch records the
+same deficit in body language. Four fixed-geometry 6x4 bodies can host a
+component-15 qiaoyu source. Their fine-input components are 6, 15, 21, and 54;
+the component-21 and component-54 fine sources can only be supplied by the same
+body that would have to carry `filling_capsule`. Only two bodies therefore have
+an external fine source, while three capsule operations are mandatory. This is a
+compact explanation of the one-bridge-body deficit, not a replacement for E060's
+variable-sink proof.
+
+Hall synopsis:
+  research_lab/local/zero_condition/E058_all6x4_terminal_signature_frontier/
+    run-004/HALL_CERTIFICATE_V2.json
+  sha256 85f8b53cb76209481c02d73b63127ebf65511bb9f957ea8b8e1039333e82fc0c
+
 Architecture effect
 -------------------
 This is another instance of endpoint identity being mistaken for semantic

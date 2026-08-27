@@ -1,0 +1,59 @@
+EXPERIMENT E062: ONE-OBJECT QIAOYU-HARD FINE-MISMATCH ATLAS
+============================================================
+
+Question
+--------
+Among all legal one-object pose changes closed by E061, which changes reduce the
+corrected qiaoyu-zero fine-powder distance from two mismatch components to one,
+and what unmatched component remains in each near-miss?
+
+Why this experiment
+-------------------
+E061 proves no one-object state reaches both zero conditions, but an arbitrary
+pair search over 4,714 geometry deltas would recreate portfolio inertia. E060
+provides a sharper scalar with exact causal meaning:
+
+  qiaoyu mismatch zero hard
+  minimize fine source/sink component symmetric difference
+
+The current optimum is two. A one-object geometry with optimum one has crossed one
+side of the terminal tradeoff and is a principled endpoint for a simultaneous pair.
+
+Method
+------
+1. Import E061's corrected candidate enumeration, component reconstruction,
+   all-6x4 native signature mapping, and candidate-specific generic sink space.
+2. Re-enumerate every distinct one-object body geometry and the only relevant
+   non-6x4 same-body mode.
+3. Retain exact filling count 3, fine-grinder count 6, and relaxed `other` count 29.
+4. Require qiaoyu source presence to equal one selected generic sink component.
+5. Minimize fine component mismatch and require OPTIMAL status for every
+   non-structural candidate.
+6. Record the complete objective distribution and every strict improvement below
+   the corrected baseline value two, including source-only/sink-only components.
+
+The three unrelated 6x4 operations remain collapsed, so this is a relaxation.
+Objective one is proposal evidence, not a complete binding witness.
+
+Decision rule
+-------------
+At least one objective-one geometry
+  Pair only complementary near-miss geometries or combine a near-miss with a
+  directly implicated owner move. Validate pairs in the corrected two-zero model.
+
+No objective-one geometry
+  Single moves do not even reduce the directional tradeoff. Build a two-object
+  proposer from component-boundary interaction rather than one-object value.
+
+Any UNKNOWN
+  Preserve the atlas as nonterminal and continue only those candidates.
+
+Truth boundary
+--------------
+E062 fixes E055's first-zero parent and changes one selected object pose at a time.
+It does not establish pair sufficiency, full binding feasibility, routing, U/L, or
+certification.
+
+Result
+------
+Completed. See `RESULT.txt` and the frozen local `run-001/RESULT.json`.

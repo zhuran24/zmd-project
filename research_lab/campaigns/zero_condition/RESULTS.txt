@@ -2313,6 +2313,44 @@ evidence:
   runner sha256
   45a9a95eedb22062a7052dc40b81cb32fe39a1e0f6a5d71457b518fd95cda3d5.
 
+R-ZC-073  Five one-object states reduce the corrected two-zero distance from two to one
+------------------------------------------------------------------------------------------------
+status: complete qiaoyu-hard one-object tradeoff atlas with no nonterminal candidates
+scope: E055 first-zero parent, every E061 one-object state, corrected generic sink choice
+
+statement:
+  E062 requires qiaoyu component compatibility and minimizes fine-powder component
+  mismatch on the complete E061 frontier. Every non-structural solve is OPTIMAL.
+  The objective distribution is {1:5, 2:5084, 3:64}. Four objective-one states
+  move the same optional pole from pose 3725 to poses 3794/3863/3932/4001 and
+  leave one source-only fine component, component 1. The fifth moves
+  grinder_dense_source_002 from pose 7006 to 6878 and leaves source-only component
+  40 under a different generic-sink/component regime. No one-object state reaches
+  the corrected two-zero condition.
+
+non-implications:
+  Objective one is directional proposal evidence, not full binding feasibility.
+  Equal distance does not make the pole and 6x4 near-miss families complementary.
+  Their four direct pair combinations remain INFEASIBLE in the corrected signature
+  relaxation, and the result does not exhaust all simultaneous pairs.
+
+effect on next problem:
+  Retain one representative pole near miss and condition the second-object proposer
+  on its sole source-only component 1. Enumerate objects that alter that component's
+  boundary or generate a new filling-capsule terminal relation; do not form the
+  4714-by-4714 Cartesian product. A feasible corrected signature pair is proposal
+  evidence for the full conditional binding consumer.
+
+evidence:
+  E062 RESULT.txt; local RESULT.json sha256
+  87141cbc5db98e45b69422d4b1b5e486d38c15a0dc6f677066b55b099108ff08;
+  NON6_ATLAS sha256
+  3598df8b4c77df17680377bab67af706703995e940c2e0163e8048a565e23c8b;
+  SIX4_ATLAS sha256
+  b8962249729cac887cbb32ab48e3b7c0d1ccbbd959dc4499b31ed61de30b023a;
+  runner sha256
+  91770f3ba9a96a3c79bd95c42a4e40b9a540ab537e97079b02f7c57c6fedb67e.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

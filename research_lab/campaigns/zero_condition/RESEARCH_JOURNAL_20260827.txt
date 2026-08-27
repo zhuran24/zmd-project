@@ -307,3 +307,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-27
   但不是全 pair 笛卡尔积。最短因果线是 E057 的 filling mode 已经有 qiaoyu-out=15、
   fine-in=54；第二个对象只需要改变 component relation，让 54 接到 source-side class，或
   形成等价 bridge。下一步从这个结构生成 pair，而不是从 coverage 生成 pair。
+
+2026-08-27 15:37
+----------------
+数据：
+  E062 RESULT.json
+  research_lab/local/zero_condition/E062_one_object_tradeoff_atlas/run-001/RESULT.json
+  sha256 87141cbc5db98e45b69422d4b1b5e486d38c15a0dc6f677066b55b099108ff08
+
+注意／发现：
+  E061 的 4,714 个平坦负结果里，其实只有五个 one-object state 把 qiaoyu-hard fine distance
+  从 2 降到 1。四个都在移动同一根右下角电杆 pose 3725，留下唯一 source-only component
+  1；第五个是 grinder_dense_source_002 7006->6878，留下 component 40。其他 5,084 个状态
+  仍是 2，64 个变成 3，没有 UNKNOWN。
+
+  把四个 pole near miss 分别和唯一 6x4 near miss 合并，四组仍全 INFEASIBLE。distance=1
+  只是说明跨过了一侧，不代表两个 near miss 自然互补。pole parent 中也没有一张现成 6x4
+  footprint 已经能提供 qiaoyu-to-sink 且 fine-input=component1 的 filling signature。
+
+推理：
+  下一步不应该做 4714×4714 pair。固定最小 pole move 3725->3794，把 component1 当成唯一
+  未清偿账，只枚举会改动它的 boundary 或 terminal relation 的第二对象。若这个因果子集仍
+  无解，再换 6x4 near-miss parent 或 first-zero geometry，而不是扩大成无方向的 pair 海洋。
