@@ -1,0 +1,148 @@
+E075 RESULT: THE COMPLETE TWO-BODY NATIVE CONTEXT REACHES NO TARGET-26 ZERO
+================================================================================
+
+Status
+------
+Completed as research-only exhaustive evidence inside one fixed-outside two-body
+geometry and its native terminal-signature context. No full binding, routing,
+throughput, whole-layout witness, certification, U/L, owner, or publication
+effect.
+
+Frozen evidence
+---------------
+Main result:
+  research_lab/local/zero_condition/
+    E075_target26_two_body_native_frontier/run-002/RESULT.json
+
+SHA-256:
+  051f86c15fdfd637b015fa5328c1c6d5306ccef9ca10efffbd4f4c05a007a132
+
+Two-body frontier atlas:
+  research_lab/local/zero_condition/
+    E075_target26_two_body_native_frontier/run-002/TWO_BODY_FRONTIER.json
+
+SHA-256:
+  79cc453234f7b0553b837315872502a987a8db86be35eb7b99b31d8ec3e7a665
+
+Superseded first execution:
+  research_lab/local/zero_condition/
+    E075_target26_two_body_native_frontier/run-001/RESULT.json
+
+SHA-256:
+  3757305872126272d766e19d3e2f929cab7b4775c2294a2a66ab5788df1bed46
+
+Verdict:
+  TARGET26_TWO_BODY_NATIVE_FRONTIER_EXHAUSTED
+
+Decision:
+  DERIVE_THIRD_STABLE_BODY_FROM_TERMINAL_OBSTRUCTION
+
+Pinned parents
+--------------
+The run pins E074's transport core by content hash:
+
+  E074 run-001 RESULT.json
+    e3e59cc773b88f033d754a97ec16e28e9e18980c9f02b55ab8980851b95fa7c9
+  E074 run-001 TARGET_026_TRANSPORT.json
+    609e0be6613f27531e9a24bc757b3dbeb7574d6422e9eb55615cf117d74658f4
+
+and inherits E074's pinned E069 run-001 and E070 run-004 artifacts unchanged. The
+same caveat applies: those are the E069 artifacts currently on disk, not the ones
+whose hashes appear in E069 RESULT.txt.
+
+Stable owners
+-------------
+  owner A  grinder_dense_source_001
+           parent body digest da277903...
+  owner B  grinder_fine_buckwheat_002
+           parent body digest ef71d17d...
+
+Both are resolved back to current destination rows by stable source_instance_id
+after body sorting, never by reusing parent destination integers.
+
+Enumerated context
+------------------
+Removing both current footprints from outside occupancy exposes:
+
+  legal 6x4 footprints available to either body      9
+  raw footprint modes across those footprints       18
+  ordered non-overlapping footprint pairs           12
+
+All twelve ordered pairs are ADMITTED: each passes mandatory/pole cardinality,
+non-overlap, and exact power coverage. This is the complete two-body context, not
+a sample.
+
+Outcome
+-------
+Three native arms were solved on every admitted pair. All three produce the same
+distribution:
+
+  arm FREE              INFEASIBLE 2, STRUCTURAL_EMPTY 10
+  arm CORE_OPERATIONS   INFEASIBLE 2, STRUCTURAL_EMPTY 10
+  arm PAIR_COUPLED      INFEASIBLE 2, STRUCTURAL_EMPTY 10
+
+No arm has a positive on any pair. There is no materialized endpoint, no
+objective zero, and no nonterminal or UNKNOWN result.
+
+What the two status classes mean
+--------------------------------
+The ten STRUCTURAL_EMPTY pairs are not a solver negative and are not a separator
+argument. Every one of the ten carries a non-empty empty_destinations list: after
+the two bodies move, at least one of the 38 destination rows has an empty native
+option domain, so the arm returns before any model is built. The vacated
+destinations are {4,9,17} on six pairs, {4} on two, and {8,9} on two.
+
+Only two pairs, indices 1 and 9, reach a solver at all, and both are INFEASIBLE
+on all three arms. They are exactly the two placements in which the transported
+target region is still component 26 and the transported parent qiaoyu sink slots
+still land in component 29. On the other ten pairs the physically transported
+target and sink land in other components entirely; the pairs are
+(target 26, sink 32) on six, (target 25, sink 28) on two, (target 27, sink 1) on
+two, and (target 25, sink 31) on two of those ten, so the parent target region
+and the parent sink region never coincide with the parent labelling anywhere in
+this context.
+
+This is an exhaustive observation over twelve enumerated cases in one fixed
+context. It is not a theorem, and it establishes no separator, membrane, or
+capacity statement.
+
+Superseded run-001
+------------------
+run-001 reused the parent numeric component labels 26 and 29 after changing
+geometry, which is unsound because free-component IDs are enumeration-local and
+renumber. run-002 performs explicit physical-slot and physical-cell transport and
+is the only scientific result. For the record, run-001 reported the same
+enumeration counts (9 footprints, 18 raw modes, 12 ordered pairs) and the same
+per-arm distribution of 2 INFEASIBLE and 10 STRUCTURAL_EMPTY; its third arm was
+named TARGET26_SIGNATURES where run-002 names it PAIR_COUPLED. The agreement is
+recorded as a fact, not as retroactive support: run-001's semantics were wrong
+regardless of its counts.
+
+Constructive meaning
+--------------------
+E074's two-row core does not survive contact with real geometry, and the reason
+is sharper than a plain negative. In ten of twelve placements the obstruction is
+not that the assignment fails but that moving A and B destroys some other row's
+entire native option domain. The binding cost of a two-body move is paid by third
+bodies. The next object should therefore be derived from that specific
+option-domain collapse, not from another broad owner scan.
+
+Runtime provenance
+------------------
+Five direct and eight nested campaign-local modules report zero foreign
+module-level functions under the explicit source cache. Recorded research head
+690737d6d1db517a7abe94a17653d905be0c5c89 on research/main; result created
+2026-08-28T09:49:19Z; authority research_only_noncertified; ledger effect none.
+
+Truth boundary
+--------------
+E075 covers E069 fixed-outside two-body geometry over stable owners A/B, all
+native same-footprint modes, collapsed 38-row operation classes, physical
+transport of E069's stable qiaoyu sink slots and target-26 seed cells, and
+terminal-signature equality only. Its negative applies to this two-body native
+context alone. It does not close target 26, does not close E074's other five
+targets, and says nothing about three-body contexts, full binding, routing,
+throughput, or certification.
+
+Runner SHA-256:
+  608fa239680d943bde2c6e08ff1e585fc021d48d39bd406a56b88381b85fc826

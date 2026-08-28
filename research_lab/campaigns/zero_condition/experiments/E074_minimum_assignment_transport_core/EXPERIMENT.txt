@@ -83,4 +83,7 @@ certification result.
 
 Result
 ------
-Not run yet.
+Completed in run-001. Six of the twelve targets admit a paired solution and six
+are INFEASIBLE, matching E070. Target 26 closes at a minimum of two changed rows
+and the other five feasible targets at three, each OPTIMAL on the paired model.
+The six cores touch eight stable bodies with empty intersection; see RESULT.txt.

@@ -26,9 +26,9 @@ only two:
 On E069 geometry, body A is the unique occupied owner directly adjacent to both
 free components 6 and 26. Its one-body domain is only three poses; the two real
 body moves make its row structurally empty. Removing both A and B from the fixed
-outside occupancy exposes only nine legal 6x4 footprints, twelve ordered
-non-overlapping footprint pairs, and 48 raw mode pairs. This is the complete
-smallest physical context suggested by the assignment core.
+outside occupancy exposes only nine legal 6x4 footprints, eighteen raw footprint
+modes across them, and twelve ordered non-overlapping footprint pairs. This is
+the complete smallest physical context suggested by the assignment core.
 
 Method
 ------
@@ -104,4 +104,7 @@ run-002 performs explicit physical-slot/cell transport.
 
 Result
 ------
-run-002 not run yet.
+Completed in run-002. All twelve ordered pairs are admitted; every arm returns
+2 INFEASIBLE and 10 STRUCTURAL_EMPTY, with no positive, no zero, and no UNKNOWN.
+The ten structural-empty pairs come from destination rows losing their entire
+native option domain once A and B move, not from any separator; see RESULT.txt.

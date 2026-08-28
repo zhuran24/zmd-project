@@ -1,0 +1,157 @@
+E074 RESULT: SIX SYNTHETIC TARGETS ADMIT TWO- OR THREE-ROW ASSIGNMENT CORES
+================================================================================
+
+Status
+------
+Completed as research-only paired-assignment evidence on E069's fixed occupied
+geometry. No physical realization, full binding, routing, throughput,
+whole-layout witness, certification, U/L, owner, or publication effect.
+
+Frozen evidence
+---------------
+Main result:
+  research_lab/local/zero_condition/
+    E074_minimum_assignment_transport_core/run-001/RESULT.json
+
+SHA-256:
+  e3e59cc773b88f033d754a97ec16e28e9e18980c9f02b55ab8980851b95fa7c9
+
+Transport core atlas:
+  research_lab/local/zero_condition/
+    E074_minimum_assignment_transport_core/run-001/TRANSPORT_CORE_ATLAS.json
+
+SHA-256:
+  b1e7e2b4ad9b4d01e185a644c534e6528343cf1eba1be7d79f678dc6867ad459
+
+Target-26 transport witness:
+  research_lab/local/zero_condition/
+    E074_minimum_assignment_transport_core/run-001/TARGET_026_TRANSPORT.json
+
+SHA-256:
+  609e0be6613f27531e9a24bc757b3dbeb7574d6422e9eb55615cf117d74658f4
+
+The same run directory holds five further per-target witnesses,
+TARGET_001/004/008/012/022_TRANSPORT.json, not separately hashed here.
+
+Verdict:
+  SMALL_ASSIGNMENT_TRANSPORT_CORES_FOUND
+
+Decision:
+  BUILD_BOUNDED_STABLE_BODY_JOINT_CONSUMER
+
+Pinned parent
+-------------
+The run pins the source-stable E069 artifacts by content hash:
+
+  E069 run-001 RESULT.json
+    cc16d6f308856201cfe06d85617290481ecde85815e5c83f1d9a4acbeb4efcaa
+  E069 run-001 PARENT_SOLUTION.json
+    b8e4d61d2a5e2befcedcb815b558d07ae84b3620b0bcab82644610154301b49a
+  E069 run-001 FACE_CONTEXT.json
+    c05a4e94ea370e8b674e44cd7206a9189ddd2102b824d36acd65975395c46c3e
+
+and the E070 run-004 RESULT.json at
+e15599c5c967cdc5ab74fb755b41d32cb476d68544a1f09b0b4c8be57a1829ed.
+
+These are the E069 artifacts currently on disk. They are not the ones named in
+E069 RESULT.txt, whose recorded hashes and twelve-component list belong to an
+earlier E069 execution; free-component labels renumbered when E069 was re-run
+under the source-stable rebind. E074's parent face is therefore stated below in
+the current labelling, and any comparison with E069 RESULT.txt must go through
+physical identity, not component integers.
+
+Parent face reproduced
+----------------------
+The pinned parent face is complete with twelve patterns, qiaoyu sink component
+29, no sink-only component, and exactly one source-only component per pattern.
+The source-only component ranges over:
+
+  {1,4,8,12,14,22,26,32,37,38,40,41}
+
+Its intersection is empty: no unmatched component is stable across the face.
+
+Paired feasibility
+------------------
+Twelve targets were solved, one per face component. Six admit a paired
+baseline/zero solution with exactly one synthetic dual filling option:
+
+  feasible    {1,4,8,12,22,26}
+  INFEASIBLE  {14,32,37,38,40,41}
+
+No target is UNKNOWN and no target is nonterminal. This reproduces E070's
+six-feasible / six-infeasible split on the same targets.
+
+Minimum changed-row counts
+--------------------------
+For each feasible target the row-wise Hamming objective closes:
+
+  target 26                  minimum 2 changed rows
+  targets 1, 4, 8, 12, 22    minimum 3 changed rows
+
+Every one of the six reports primary_status OPTIMAL with primary_best_bound
+equal to the reported minimum, and secondary_status OPTIMAL for the deterministic
+materialization pass. The six infeasible targets report primary_status
+INFEASIBLE.
+
+These minima are CP-SAT optimality claims on one paired assignment model over
+E069's fixed occupied geometry and its native option domains. They are not a
+combinatorial theorem, and no matching, alternating-path, or symmetric-difference
+argument was used to obtain them.
+
+The six cores together touch eight distinct stable bodies. Their intersection is
+empty: no body is changed by every core, so the record supports no single
+universal transport body.
+
+Target-26 core
+--------------
+The unique two-row core changes no operation. Both rows keep their current
+operation and change only the port mode / terminal signature. Bodies are named by
+stable source_instance_id, which is an identity label and not the operation the
+body currently carries:
+
+  destination row 8
+    source_instance_id  grinder_dense_source_001
+    body digest         da277903...
+    operation           grinder_fine_buckwheat, unchanged
+    fine output         component 6 -> component 26
+    native option, not synthetic
+
+  destination row 9
+    source_instance_id  grinder_fine_buckwheat_002
+    body digest         ef71d17d...
+    operation           filling_capsule, unchanged
+    fine input          component 6 -> component 26
+    qiaoyu output       component 29, unchanged
+    this is the one synthetic option the zero copy is allowed
+
+So the whole two-row core is one same-operation mode/signature pair on two stable
+bodies, with a single synthetic filling signature carrying the change. That is
+what makes target 26 the cheapest candidate for a physical realization attempt,
+and it is the reason E075 exists.
+
+Constructive meaning
+--------------------
+The missing dual filling signature is not consumed by a large global
+reassignment. On this abstraction it is absorbed by two or three rows. The next
+question is therefore physical rather than combinatorial: whether the two-row
+target-26 core survives when its two bodies are actually moved and restricted to
+native port modes.
+
+Runtime provenance
+------------------
+Five direct and eight nested campaign-local modules report zero foreign
+module-level functions under the explicit source cache. Recorded research head
+66d0566ba168f709a16f94e30837194e7f652ef7 on research/main; result created
+2026-08-28T09:17:36Z; authority research_only_noncertified; ledger effect none.
+
+Truth boundary
+--------------
+E074 is a paired baseline/zero operation-assignment model on E069's fixed
+occupied geometry and native terminal-signature domains, with one hypothetical
+dual filling option and row-wise Hamming minimization only. A small row core is a
+constructive assignment specification. It is not a physical pose, full binding,
+routing, throughput, whole-layout witness, or certification result, and the
+synthetic option is not known to be realizable.
+
+Runner SHA-256:
+  74e2720cf4b7aaa56fb004864f54c99710b004ae15bb77c5582a205558c67b25
