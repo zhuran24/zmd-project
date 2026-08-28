@@ -1,6 +1,6 @@
 # 研究纲领
 
-权威正文已迁至全局 skill `research-charter`(`~/.claude/skills/research-charter/SKILL.md`),每个新会话与每次上下文压缩后必读。本页保留当前押注板——它是研究押注的唯一可写真源。
+权威正文已迁至项目级 skill `research-charter`(本仓 `.claude/skills/research-charter/SKILL.md`,研究树与认证树经符号链接可见),每个新会话与每次上下文压缩后必读。本页保留当前押注板——它是研究押注的唯一可写真源。
 
 ## 当前押注板(2026-08-23)
 
