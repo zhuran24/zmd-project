@@ -1,0 +1,77 @@
+EXPERIMENT E068: FINAL CACHED FOURTH-ACTION DISCRIMINATOR
+========================================================
+
+Question
+--------
+Can one remaining cached E066 objective-one action, composed with a deterministic
+representative of E067's strict-narrowest four-pattern face, create the corrected
+fine/qiaoyu two-zero terminal-signature state?
+
+Why this experiment
+-------------------
+E063 closes the complete-face-derived second-object language at directional
+objective one. E066 finds only twelve actions that narrow the complete face from
+six alternatives to five. E067 composes those actions and obtains six
+four-alternative face classes, but no zero and no stable single unmatched
+component.
+
+The most frequent strict-narrowest class is:
+
+  unmatched components  {1,4,8,12}
+  qiaoyu sink component  15
+  face frequency         16
+
+E068 is the explicit stop test promised by E067. It does not invent a new action
+universe. It fixes one deterministic representative of that class and composes it
+once with every remaining objective-one action already frozen in E063/E066.
+
+Method
+------
+1. Reconstruct the source-stable E063 pole parent and all 780 objective-one E063
+   action specifications from the frozen chunk/manifest set.
+2. Reconstruct all E067 admitted pair records. Verify that {1,4,8,12}/sink-15 is
+   the unique most frequent four-pattern class, then choose its representative by
+   minimum occupied symmetric difference and lowest pair index. This selects E067
+   pair 27: candidate 596 plus candidate 729.
+3. Rebuild the representative triple geometry from order-free parent deltas and
+   reproduce its complete four-pattern face exactly.
+4. For each remaining objective-one action with a distinct source object, merge
+   its parent delta with the two representative deltas. Reject conflicting writes,
+   cardinality drift, overlap, and power loss.
+5. For every admitted fourth-action state, rebuild components, candidate-specific
+   generic qiaoyu sink slots, and all manufacturing-6x4 target signatures. Require
+   qiaoyu compatibility and minimize fine mismatch exactly. Enumerate the complete
+   objective-one face when the result remains one.
+6. Materialize a small deterministic set of objective-zero states for the full
+   conditional port-mode/operation-assignment/binding consumer.
+
+The scan consumes the existing E063/E066 action cache instead of re-enumerating
+raw placement alternatives. It is checkpointed in deterministic chunks.
+
+Decision rule
+-------------
+Any objective-zero state
+  Enter the full conditional binding consumer immediately. A signature zero is
+  proposal evidence, not yet the second zero of the full binding problem.
+
+No zero and any UNKNOWN
+  Preserve only the nonterminal states. Do not retire the lineage on incomplete
+  evidence.
+
+No zero and all states terminal
+  Retire the pole-conditioned external-action lineage, regardless of whether a
+  complete face narrows further. Switch to E062's distinct manufacturing-6x4
+  near-miss parent. Further pole-lineage action composition would be search
+  inertia rather than a new interface language.
+
+Truth boundary
+--------------
+E068 fixes E055's first-zero state, the E063 pole move, the deterministic E067
+pair-27 representative, and at most one additional cached E063 objective-one
+action. It is a corrected terminal-signature relaxation. It does not establish
+full binding, routing, throughput, U/L, certification, or a negative result for
+other near-miss parents.
+
+Result
+------
+Not run yet.
