@@ -1,0 +1,68 @@
+EXPERIMENT E070: DUAL FILLING-SIGNATURE TARGETS
+===============================================
+
+Question
+--------
+For each of E069's twelve source-only components, is one hypothetical
+filling-capsule signature with fine-powder input in that component and qiaoyu
+output in component 29 sufficient to close both terminal-signature zeros?
+
+Why this experiment
+-------------------
+E069's complete face is regular:
+
+  fine source backbone  {6,7,15} plus one extra component x
+  fine sink set         {6,7,15}
+  qiaoyu sink           29
+
+where x ranges over twelve components. A physical second-object scan over 103
+owners would ignore this algebra. E070 first asks whether the proposed dual
+signature is actually sufficient, then records which half-signatures already
+exist on current bodies and modes.
+
+Method
+------
+1. Reconstruct the frozen E069 6x4 parent under source-isolated imports and
+   reproduce its complete twelve-pattern face.
+2. For each unmatched component x, add one tagged hypothetical option to every
+   manufacturing-6x4 destination:
+
+     operation       filling_capsule
+     fine input      x
+     fine output     none
+     qiaoyu output   29
+
+3. Preserve all 38-body operation counts and actual generic qiaoyu sink choice.
+   Require exactly one tagged option, exact fine source/sink component equality,
+   and exact qiaoyu source/sink component equality.
+4. Solve every target to a terminal status and record the selected destination.
+5. Separately audit all real current filling-capsule options:
+   * signatures already outputting qiaoyu in component 29 and their fine inputs;
+   * signatures already accepting fine input in each target component and their
+     qiaoyu outputs;
+   * exact dual signatures, if any.
+6. Write a typed target atlas for the next physical consumer.
+
+Decision rule
+-------------
+At least one synthetic target is feasible
+  Search physical body/mode or component-relation changes only for feasible dual
+  targets, prioritizing targets with an existing half-signature. Do not scan the
+  full E069 causal inventory.
+
+No synthetic target is feasible
+  Refute the one-signature hypothesis and derive a higher-order relation from the
+  exact failure shape.
+
+Any UNKNOWN
+  Preserve only nonterminal targets; do not turn target absence into a negative.
+
+Truth boundary
+--------------
+Synthetic signatures are a terminal-signature relaxation. Feasibility proves a
+constructive specification is sufficient in that abstraction, not that a legal
+pose realizes it or that full binding/routing succeeds.
+
+Result
+------
+Not run yet.
