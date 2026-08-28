@@ -1,0 +1,96 @@
+E070 RESULT: SIX OF TWELVE SYNTHETIC DUAL FILLING SIGNATURES CLOSE THE TERMINAL-SIGNATURE RELAXATION
+====================================================================================================
+
+Status
+------
+Completed as research-only terminal-signature evidence on E069's fixed occupied
+geometry. No physical pose, full binding, routing, throughput, whole-layout
+witness, certification, U/L, owner, or publication effect.
+
+Frozen evidence
+---------------
+Main result:
+  research_lab/local/zero_condition/
+    E070_dual_filling_signature_targets/run-004/RESULT.json
+
+SHA-256:
+  e15599c5c967cdc5ab74fb755b41d32cb476d68544a1f09b0b4c8be57a1829ed
+
+Target atlas:
+  research_lab/local/zero_condition/
+    E070_dual_filling_signature_targets/run-004/TARGET_ATLAS.json
+
+SHA-256:
+  e3fb175c713c98ff7556b91fb237336fa3f1f47255a8d8af62396b074b8474c2
+
+Verdict:
+  DUAL_FILLING_SIGNATURE_TARGETS_SUFFICIENT
+
+Decision:
+  SEARCH_PHYSICAL_DUAL_SIGNATURE_RELATIONS
+
+Machine result
+--------------
+E069's complete face has twelve source-only target components:
+
+  {1,4,8,12,14,22,26,32,37,38,40,41}
+
+For each target x, E070 adds exactly one hypothetical filling-capsule option
+with:
+
+  fine input    x
+  fine output   none
+  qiaoyu output 29
+
+while preserving the 38-body operation counts, selecting an actual generic
+qiaoyu sink, and requiring exact fine and qiaoyu component equality in the
+terminal-signature abstraction.
+
+The twelve target solves terminate with no UNKNOWN:
+
+  OPTIMAL     {1,4,8,12,22,26}
+  INFEASIBLE  {14,32,37,38,40,41}
+  UNKNOWN     none
+
+Thus one dual filling signature is sufficient in the abstraction for six targets
+and insufficient for the other six.
+
+Existing-signature audit
+------------------------
+The current native option inventory contains:
+
+  filling options                      68
+  options outputting qiaoyu to 29       4
+  exact native dual options             0
+  targets with an exact native dual      0
+
+The unmodified parent remains at terminal-signature objective 1 and cannot reach
+zero. Therefore the positive six targets identify missing constructive
+specifications; they do not reveal an already-present native mode that was merely
+unselected.
+
+Effect on the next problem
+--------------------------
+Do not scan all 103 E069 causal objects. Restrict physical realization work to
+the six synthetic-feasible targets and use their existing half-signatures as
+proposers. E074 subsequently showed that the corresponding semantic repair is
+absorbed by two or three assignment rows, with target 26 requiring two.
+
+Truth boundary
+--------------
+The experiment fixes E069's occupied geometry and reasons only about terminal
+component signatures, exact 38-body operation counts, and the actual generic
+qiaoyu sink choice. A synthetic positive does not prove that any legal body,
+pose, port mode, physical component relation, full binding, or route realizes the
+signature. Component integers are local handles for this frozen E069 context and
+must not be transported across a geometry change without stable physical
+remapping.
+
+Runtime provenance
+------------------
+Result created 2026-08-28T09:09:46.364954Z. The run's direct and nested module
+origin audit reports zero foreign module-level functions. Current runner SHA-256:
+
+  1e3e8cffd629938a5b429aea369ba686e10fef2255fb349fa9732e22730455c8
+
+The result is research-only and has ledger_effect none.

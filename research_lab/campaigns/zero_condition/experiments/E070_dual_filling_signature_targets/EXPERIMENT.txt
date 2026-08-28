@@ -65,4 +65,22 @@ pose realizes it or that full binding/routing succeeds.
 
 Result
 ------
-Not run yet.
+Completed in run-004.
+
+  verdict   DUAL_FILLING_SIGNATURE_TARGETS_SUFFICIENT
+  decision  SEARCH_PHYSICAL_DUAL_SIGNATURE_RELATIONS
+
+Six targets are OPTIMAL in the synthetic abstraction:
+
+  {1,4,8,12,22,26}
+
+Six are INFEASIBLE:
+
+  {14,32,37,38,40,41}
+
+There is no UNKNOWN. The current native inventory contains no exact dual filling
+signature, so every positive is a missing constructive specification rather than
+an already-present mode. Durable result and scope:
+
+  research_lab/campaigns/zero_condition/experiments/
+    E070_dual_filling_signature_targets/RESULT.txt
