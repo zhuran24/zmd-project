@@ -65,4 +65,6 @@ a second object, prove full binding feasibility, enter routing, or update U/L.
 
 Result
 ------
-Not run yet.
+Completed. The complete objective-one face contains twelve source-only patterns
+with fixed backbone {6,7,15}, qiaoyu sink 29, and no stable unmatched component.
+The broad 103-object inventory is not scanned; see RESULT.txt.

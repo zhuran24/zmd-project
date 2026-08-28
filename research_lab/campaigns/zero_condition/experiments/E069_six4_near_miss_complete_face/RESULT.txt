@@ -1,0 +1,106 @@
+E069 RESULT: THE DISTINCT 6X4 NEAR MISS HAS A TWELVE-WAY SOURCE-ONLY FACE
+================================================================================
+
+Status
+------
+Completed as research-only complete-face evidence for E062's physically distinct
+manufacturing-6x4 near miss. No second-object change, full binding, routing,
+certification, U/L, owner, or publication effect.
+
+Frozen evidence
+---------------
+Main result:
+  research_lab/local/zero_condition/
+    E069_six4_near_miss_complete_face/run-001/RESULT.json
+
+SHA-256:
+  38cd4ec548bd18ad70b3549e04d225a4e4a226489bd8ed111c9f72554640769f
+
+Materialized parent solution:
+  research_lab/local/zero_condition/
+    E069_six4_near_miss_complete_face/run-001/PARENT_SOLUTION.json
+
+SHA-256:
+  6eb5b4708fb616ab5d03c126eb8603626fd50180d78fa10be64a2688538b4137
+
+Typed face context:
+  research_lab/local/zero_condition/
+    E069_six4_near_miss_complete_face/run-001/FACE_CONTEXT.json
+
+SHA-256:
+  9265a64a4caaddbf67ff0925e5b984bb789ab39ff7a455acfb1ae7ee3fcdf584
+
+Verdict:
+  SIX4_PARENT_COMPLETE_FACE_BROAD
+
+Decision:
+  DERIVE_NARROWER_RELATION_BEFORE_SECOND_OBJECT_SCAN
+
+Parent action
+-------------
+The frozen source-stable E062 action is reproduced exactly:
+
+  grinder_dense_source_002
+  pose 7006 -> 6878
+  p_x52_y64_o0_m_BT -> p_x52_y60_o0_m_TB
+
+The qiaoyu-hard minimum fine mismatch is OPTIMAL at one.
+
+Complete face
+-------------
+The full objective-one presence face contains exactly twelve patterns. Every
+pattern has:
+
+  common fine source components  {6,7,15}
+  common fine sink components    {6,7,15}
+  qiaoyu sink component          29
+  sink-only components           none
+  exactly one source-only component
+
+The source-only component ranges over:
+
+  {1,4,8,12,17,21,25,29,35,36,39,60}
+
+All twelve alternatives occur once. Their intersection is empty, so component 40
+from E062's former selected representative is not a stable property of the
+complete face.
+
+Causal inventory
+----------------
+The union of twelve unmatched components touches 190 boundary owners. Sixty-five
+owners touch more than one free component. Adding every current manufacturing-6x4
+body and the selected generic-input provider, while excluding the fixed parent
+body, yields 103 candidate objects.
+
+This inventory is recorded for reuse, but it is not admitted as the next search
+space. The face is broader than the retired pole parent, so mechanically running
+another E063-style second-object scan would repeat the same action-composition
+pattern at larger width.
+
+Constructive meaning
+--------------------
+The obstruction is highly regular rather than arbitrary. Fine sinks are already
+fixed at {6,7,15}; every optimum introduces one additional fine source component.
+A natural short discriminator is therefore a single filling-capsule terminal
+signature that simultaneously provides:
+
+  fine input in the selected extra source component
+  qiaoyu output compatible with generic sink component 29
+
+The next experiment should test that signature family synthetically before any
+physical second-object scan.
+
+Runtime provenance
+------------------
+All direct and nested campaign-local modules report zero foreign module-level
+functions under the explicit source cache.
+
+Truth boundary
+--------------
+E069 changes exactly one selected manufacturing-6x4 body in E055's first-zero
+state and enumerates the corrected qiaoyu-hard objective-one terminal-signature
+face. It does not establish that the proposed filling signature is sufficient or
+physically realizable.
+
+Runner SHA-256:
+  e71e8bd00d5238fc86dfbfb5eab36e9acf9561e87e626b57ba5ab2e0982a2367

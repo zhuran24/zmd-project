@@ -162,13 +162,12 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-E068 has retired the pole-conditioned external-action lineage: all 678 admitted
-fourth-action states are terminal, none reaches objective zero, and no complete
-face has a stable unmatched component. Under E062's physically distinct
-manufacturing-6x4 near miss, `grinder_dense_source_002` pose 7006 -> 6878, what is
-the complete objective-one presence face, and which smallest face-derived second
-object can remove its residual tradeoff without recreating the retired pole-line
-search pattern?
+E069 shows that the distinct 6x4 near miss has a twelve-pattern source-only face:
+fine source/sink backbone {6,7,15}, qiaoyu sink 29, and one extra source component
+from {1,4,8,12,17,21,25,29,35,36,39,60}. Is one synthetic filling-capsule
+signature with fine input in the extra component and qiaoyu output in component
+29 sufficient for both zeros, and which existing body/mode relations come closest
+to that dual signature?
 
 Current campaign posture
 ------------------------

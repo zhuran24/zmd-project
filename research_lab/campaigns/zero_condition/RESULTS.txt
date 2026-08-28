@@ -2539,6 +2539,42 @@ evidence:
   ACTION_RECORDS.json sha256
   ced6cd339745d71fea7594c12796cf6a4b7fdd69f3279c99825879cfa2491e3b.
 
+R-ZC-080  The distinct 6x4 near miss exposes a regular twelve-way source-only face
+----------------------------------------------------------------------------------
+status: complete objective-one face with cached parent and typed causal inventory
+scope: E055 first-zero state with grinder_dense_source_002 pose 7006 -> 6878
+
+statement:
+  E069 reproduces the source-stable 6x4 near miss at qiaoyu-hard fine mismatch
+  one and enumerates its complete face. All twelve patterns share fine source and
+  sink backbone {6,7,15}, select qiaoyu sink component 29, have no sink-only
+  component, and add exactly one source-only component from
+  {1,4,8,12,17,21,25,29,35,36,39,60}. No unmatched component is stable across
+  the face.
+
+  The face union yields 190 boundary owners, 65 multi-component separators, and
+  a 103-object causal inventory after adding all current 6x4 bodies and the
+  generic-input provider. This inventory is recorded but not scanned.
+
+non-implications:
+  The former selected component 40 was only an optimum representative and is not
+  part of the complete face. E069 does not prove a second-object negative, a
+  physical dual signature, full binding, or routing.
+
+effect on next problem:
+  Do not copy E063's second-object scan onto the broader face. First test a single
+  synthetic filling-capsule signature with fine input in one of the twelve extra
+  source components and qiaoyu output compatible with sink component 29. Use the
+  result to derive a narrow physical relation.
+
+evidence:
+  E069 RESULT.txt; local RESULT.json sha256
+  38cd4ec548bd18ad70b3549e04d225a4e4a226489bd8ed111c9f72554640769f;
+  PARENT_SOLUTION.json sha256
+  6eb5b4708fb616ab5d03c126eb8603626fd50180d78fa10be64a2688538b4137;
+  FACE_CONTEXT.json sha256
+  9265a64a4caaddbf67ff0925e5b984bb789ab39ff7a455acfb1ae7ee3fcdf584.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the
