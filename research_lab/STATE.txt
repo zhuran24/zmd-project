@@ -18,7 +18,10 @@ condition is existential — EXISTS r, EXISTS binding, FORALL S — an LP),
 the geometric transport-core matching equality (set-packing, matching gives
 only a lower bound), the "6-body shortest vacancy chain" number, E075 as the
 membrane's proof, and the theorem's novelty (already shipped as SAC-Hull /
-F2+Lean / F4; the genuine contribution is b_c(S) as a rate).
+F2+Lean / F4; the genuine contribution is b_c(S) as a rate). The
+owner-adjudicated revision absorbing all corrections has landed (commit
+b9efab7): the membrane is renamed owner separator and a Disputes section
+governs any later disagreement.
 Evidence ref: research_lab/campaigns/zero_condition/DIRECTION_CUT_TRANSPORT_20260828.txt
 Review ref: research_lab/campaigns/zero_condition/DIRECTION_CUT_TRANSPORT_20260828_REVIEW.txt
 Full review (local, git-ignored): research_lab/local/reviews/20260828_cut_transport_refutation.md
@@ -33,30 +36,25 @@ survive as a sub-question or fold into the cut-deficiency frame?
 
 Inflight / recovery
 -------------------
-- E070_dual_filling_signature_targets | status=machine-complete (run-004); durable record closure pending | ref=research_lab/campaigns/zero_condition/experiments/E070_dual_filling_signature_targets/EXPERIMENT.txt
+- NONE
 
 Recent consequential results
 ----------------------------
 - The cut/transport candidate direction was frozen and heterogeneously reviewed: theorem CONFIRMED witness-conditionally, forced-rate premise and geometric-core equality refuted, novelty reframed as a rate-strengthening of shipped SAC-Hull/F2/F4. | evidence=research_lab/campaigns/zero_condition/DIRECTION_CUT_TRANSPORT_20260828_REVIEW.txt | effect=campaign main line moves to the corrected cut-deficiency/transport-core frame
+- The blind rediscovery lab collided with the mainline: independent convergence on necessity accounts, finite structural bases, and partition/seam construction; the blind K=47 boundary-packing theorem passed heterogeneous recheck. | evidence=research_lab/campaigns/zero_condition/BLIND_COLLISION_20260828.txt | effect=tight-equality accounts promoted as the route to finite macro-structures
 - E063 exhausted 858 pole-conditioned second-object states with no zero and no UNKNOWN. | evidence=research_lab/campaigns/zero_condition/experiments/E063_pole_conditioned_second_object_frontier/RESULT.txt | effect=individual representatives were replaced by a complete-face atlas
-- E065 materialized source-stable E057-E062 replays and proved that one optimum representative is not a complete face. | evidence=research_lab/campaigns/zero_condition/experiments/E065_source_stable_replay_materialization/RESULT.txt | effect=complete-face evidence became mandatory
 - E068 exhausted 678 admitted final cached actions with no zero or UNKNOWN. | evidence=research_lab/campaigns/zero_condition/experiments/E068_final_cached_fourth_action/RESULT.txt | effect=retired the pole-conditioned external-action lineage
 - E069 exposed the distinct 6x4 parent's regular twelve-way source-only face. | evidence=research_lab/campaigns/zero_condition/experiments/E069_six4_near_miss_complete_face/RESULT.txt | effect=selected a synthetic dual filling-signature discriminator before any physical scan
 
 Current unknowns and guards
 ---------------------------
-- There is no complete zero-condition whole-layout witness; exact routing has not been reached on the current line.
-- E069 is a terminal-signature relaxation and does not test any second-object change, full binding, or routing.
-- E070 run-004 terminated with machine results: verdict DUAL_FILLING_SIGNATURE_TARGETS_SUFFICIENT, twelve synthetic targets scored 6 OPTIMAL / 6 INFEASIBLE / 0 UNKNOWN, decision SEARCH_PHYSICAL_DUAL_SIGNATURE_RELATIONS (research_lab/local/zero_condition/E070_dual_filling_signature_targets/run-004/RESULT.json). Durable record closure (EXPERIMENT.txt/RESULT.txt) stays with its in-flight owner. Synthetic feasibility still does not prove that a legal body, mode, or component relation physically realizes the signature.
-- Synthetic feasibility would not prove that a legal body, mode, or component relation physically realizes the signature.
-- E069's 103-object causal inventory is recorded but is not an admitted second-object search space.
-- E068's negative conclusion applies only to the retired pole-conditioned lineage, not the distinct 6x4 parent or another first-zero state.
-- Component 40 and every other single returned representative are not stable complete-face properties.
-- No numerical cut-capacity inequality is an admitted solver cut; separator INFEASIBLE remains telemetry/core-shrinking only (specs/10 10.10 binds Stage 1 of the direction, not only Stage 4).
-- Every consumer of the direction must keep its witness-conditional phrasing; the review note's standing qualifications apply.
-- Record hygiene repaired through R-ZC-086: E069 rebuilt against current artifacts with an audit trail (conclusions unchanged across the re-run), E071-E073 recorded as entry failures on the same identity drift, E074/E075/E076/E077 given honest retrospective records. Residual opens, recorded inside the E069 record: the superseded E069 run used an uncommitted runner (its recorded hash matches no git version), and the 190-vs-225 boundary-owner count is unreconciled. E073's stated premise (an E072 one-owner bridge) has no machine evidence anywhere. E070's EXPERIMENT.txt closure stays with its in-flight owner.
-- The direction file's owner-adjudicated revision has landed (commit b9efab7): all review corrections adopted, the membrane renamed owner separator, and a Disputes section now governs any later disagreement.
-- The blind-lab collision report corroborates the direction's skeleton/partition line from an independent blind seat and warns that direct coordinate-master solves can hit a solve-side memory wall (28 GiB, no CpSolverResponse in the blind tree). The E077 integrated port master has at least one partially persisted run (checkpoint with 207 cores; terminal status unrecorded — see experiments/E077_port_domain_benders_cores/); absorb the blind tree's encoding fix and add memory telemetry before any further direct full-master run. See research_lab/campaigns/zero_condition/BLIND_COLLISION_20260828.txt. The K=47 boundary-packing theorem passed this tree's independent heterogeneous recheck (third-path Algorithm-X enumeration, packing-by-packing equality, adversarial negatives rejected; R1, research-only) with two standing qualifications — boundary-only object space, and a five-condition up-to-K consumption license (rank 1 is a choice, never WLOG; consumers must keep the 47-packing disjunction and be instance-permutation equivariant) — recorded in research_lab/local/reviews/20260828_k47_boundary_packing_recheck.md. Other blind-tree numeric claims (D2-D4) remain unrechecked candidates.
+- There is no complete zero-condition whole-layout witness; exact routing has not been reached on any line — neither the mainline's relaxation scouting nor the blind tree's direct assault.
+- E069 is a terminal-signature relaxation (no second-object change, full binding, or routing), and its 103-object causal inventory is not an admitted second-object search space.
+- E070 run-004 terminated: verdict DUAL_FILLING_SIGNATURE_TARGETS_SUFFICIENT, 6 OPTIMAL / 6 INFEASIBLE / 0 UNKNOWN, decision SEARCH_PHYSICAL_DUAL_SIGNATURE_RELATIONS (research_lab/local/zero_condition/E070_dual_filling_signature_targets/run-004/RESULT.json); durable record closure is pending on the executor line, and synthetic feasibility does not prove a legal physical realization.
+- E068's negative conclusion applies only to the retired pole-conditioned lineage; component 40 and every other single representative are not stable complete-face properties; all cross-context transport is bound by research_lab/methods/STABLE_IDENTITY_TRANSPORT.txt (component/destination integers are enumeration-local).
+- Direction consumption guards: keep the witness-conditional phrasing; no numerical cut-capacity inequality is an admitted solver cut; separator INFEASIBLE remains telemetry/core-shrinking only (specs/10 10.10 binds Stage 1, not only Stage 4); the REVIEW note's standing qualifications apply.
+- Master memory-wall preflight: direct coordinate-master solves can hit a 28 GiB solve-side wall (blind tree evidence); E077's only persisted run is a 207-core checkpoint with unrecorded terminal status; absorb the blind encoding fix and run with memory telemetry before any further full-master attempt (BLIND_COLLISION_20260828.txt).
+- Evidence qualifications: K=47 holds only in its boundary-local object space under the five-condition up-to-K license (rank 1 is never WLOG; keep the 47-packing disjunction; research_lab/local/reviews/20260828_k47_boundary_packing_recheck.md); blind D2-D4 numeric claims are unrechecked; post-hygiene residual opens are the superseded E069 run's uncommitted runner, the unreconciled 190-vs-225 boundary-owner count, and E073's premise (an E072 one-owner bridge) with no machine evidence anywhere.
 - All results here are research-only and have no certification, U/L, owner, production, or publication effect.
 
 History pointers
