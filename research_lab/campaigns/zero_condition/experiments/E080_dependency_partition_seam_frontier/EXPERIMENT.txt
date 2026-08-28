@@ -1,0 +1,91 @@
+E080 DEPENDENCY PARTITION / SEAM FRONTIER
+=========================================
+
+Status
+------
+Completed in run-001 as the first cheap discriminator for the partition-plus-seam
+sufficient-construction line. Research-only. No certification, U/L, production,
+owner, pruning, or publication effect.
+
+Question
+--------
+Before building any new coordinate master, does the frozen 17-operation recipe
+graph admit a balanced two-module partition with a small, explicit typed seam?
+
+The seam is a construction interface, not a necessary cut and not a throughput
+proof. E080 works at operation-type level: all mandatory copies of one operation
+type remain in the same module.
+
+Inputs
+------
+
+- frozen mandatory exact instances;
+- canonical operation port profiles;
+- frozen candidate-placement pool, used only to verify facility body area;
+- E079's exact 47-state boundary macro and its complete consumption license.
+
+Enumeration
+-----------
+Fix one operation type in module A to quotient A/B symmetry, then exhaust every
+nontrivial bipartition of the remaining operation types.
+
+For every partition record:
+
+- operation types, mandatory copy counts, body area, and instance count per
+  module;
+- whether each induced dependency subgraph is connected;
+- every producer-to-consumer commodity dependency crossing the partition;
+- directional concrete input/output slot incidences on the seam;
+- named external-source input obligations per module, while keeping their
+  generic-provider binding existential;
+- final-sink output obligations per module;
+- area and instance imbalance.
+
+No per-machine duty or terminal rate is frozen. Slot incidence is a discrete
+interface count, not a lane-throughput certificate.
+
+Outputs
+-------
+
+- the complete metric histogram over all canonical bipartitions;
+- the Pareto frontier among partitions whose two induced operation graphs are
+  connected;
+- deterministic best candidates under three declared balance bands;
+- one selected 1/3--2/3 connected partition, if it exists;
+- an explicit seam-interface contract referencing all 47 E079 boundary states.
+
+Success / refutation
+--------------------
+A small connected balanced seam is positive evidence that partition-plus-seam is
+worth a geometric constructor. Failure to find one refutes only this type-level
+bipartition language; it does not refute instance-level partitioning, more than
+two modules, or the general skeleton direction.
+
+Truth boundary
+--------------
+Operation copies cannot move independently in E080. Crossing slot counts do not
+prove required throughput, and generic source slots are not assigned to named
+commodities until binding. The selected partition is a deterministic research
+choice, never WLOG. The K=47 macro remains a complete 47-way boundary
+disjunction.
+
+Run
+---
+
+/home/zhuran24/zmd-pj/.venv/bin/python \
+  research_lab/campaigns/zero_condition/experiments/\
+E080_dependency_partition_seam_frontier/run_e080.py
+
+Default durable output
+----------------------
+
+research_lab/local/zero_condition/E080_dependency_partition_seam_frontier/run-001/
+
+Result
+------
+
+  verdict   CONNECTED_BALANCED_TYPE_PARTITION_WITH_EXPLICIT_SEAM_FOUND
+  decision  BUILD_GEOMETRIC_BAY_AND_SEAM_CONSTRUCTOR_AROUND_SELECTED_CONTRACT
+
+See RESULT.txt for the selected type partition, the complete Pareto frontier,
+seam obligations, input identities, and truth boundary.

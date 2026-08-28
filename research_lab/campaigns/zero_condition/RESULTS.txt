@@ -2811,6 +2811,127 @@ effect on next problem:
 evidence:
   E076 RESULT.txt; the six probe script hashes recorded in E076 EXPERIMENT.txt.
 
+R-ZC-087  The target-26 reference two-row rewrite is full-face stable but not unique
+-----------------------------------------------------------------------------------
+status: all four run-003 discriminators terminal; no UNKNOWN
+scope: E069 frozen occupied geometry, complete target-26 parent face,
+       terminal-signature abstraction with one synthetic dual filling option
+
+statement:
+  E078 exhausts 168 one-option substitutions around E074's target-26 baseline;
+  exactly 25 remain parent-face neighbors. Every one has OPTIMAL minimum
+  changed-row count 2 and admits the reference rewrite on stable bodies
+  grinder_dense_source_001 and grinder_fine_buckwheat_002. A whole-face model
+  proves no parent assignment changes either reference native row, and another
+  whole-face model finds no counterexample to the fixed reference rewrite.
+
+  The minimum core is not unique. For every one of the 25 neighbors, an
+  equal-size optimum exists that does not use both reference rows, and another
+  equal-size optimum places the synthetic option on a different destination.
+  Thus E078 establishes one stable constructive rewrite, not "the" unique
+  minimum transport core.
+
+non-implications:
+  No legal pose realizes the synthetic option; no full binding, routing,
+  throughput or whole-layout witness follows. Rows 8/9 and components 26/29 are
+  frozen-context handles only. Cross-geometry use requires unique remapping of
+  stable body/occupied-cell witnesses and a fresh exact check. No master cut is
+  licensed.
+
+effect on next problem:
+  Keep the reference rewrite as a bounded physical-construction target; reject
+  unique-core wording; test stable-identity remapping and physical realization
+  in genuinely neighboring geometries.
+
+evidence:
+  E078 RESULT.txt; local run-003 RESULT.json sha256
+  b1309e4684513743a5613bbffd51f4d3d8f4147df9d5f353cc61f6e8f6612886;
+  STABILITY_ATLAS.json sha256
+  ed665ee4add7f848e2ce825d21432ae4622feb16d185f6decb5619a32eeb0028;
+  RESULT_RECEIPT.json sha256
+  d863cddef2b05ea2c5e593db915f63cd34df86c9d52e57ec3c067a13954195e4.
+
+R-ZC-088  K=47 is compiled into an exact reversible boundary macro
+-----------------------------------------------------------------
+status: complete enumeration and two exact encoding replays
+scope: frozen 136-pose boundary_storage_port pool, 46 homogeneous boundary
+       instances, mutual boundary-body exclusion only
+
+statement:
+  E079 independently enumerates exactly 47 complete boundary pose sets. Every
+  state has 23 left and 23 bottom bodies, 138 occupied allowed-L cells, 46
+  distinct inward fronts and one unique omitted allowed-L cell; the 47 omitted
+  cells exhaust the legal set. The complete state set equals the blind-tree
+  47-packing artifact, while the main-tree recheck supplies the same K and rank-1
+  member.
+
+  E079 emits a 47-variable ExactlyOne macro with reversible canonical
+  instance-label recovery. A channelled control model reconstructs every one of
+  the 136 pose indicators exactly. The direct one-hot macro uses 47 variables and
+  one constraint versus the baseline's 136 variables and 138 constraints;
+  materializing all pose channels is a correctness control, not the recommended
+  consumer shape.
+
+non-implications:
+  This is not a full-layout quotient. Rank 1 is never WLOG; all 47 states remain
+  live unless separately proved removable. Every consumer must preserve frozen
+  identities, instance-permutation semantics or canonical recovery, and reapply
+  all omitted facility, front, power, binding, routing, throughput, export and
+  game constraints.
+
+effect on next problem:
+  Use the full 47-way macro as the first proved finite structural basis in a
+  bounded partition/seam constructor before any direct full-master integration.
+
+evidence:
+  E079 RESULT.txt; local run-001 RESULT.json sha256
+  9442e6568238edfe6aa7c37f1bddaf8a9f10c7017320c6af0cea092c80583662;
+  BOUNDARY_MACRO_V1.json sha256
+  f7f4cf3c70046e02bd434929570e6d177994198d7a588cbc02d24751b35c1810;
+  ENCODING_BENCHMARK.json sha256
+  43be1146c9e85904466e8349c4c686fcba1f77d639d6949b4e669366e2e83cb6.
+
+R-ZC-089  A complete type-partition sweep yields a connected two-commodity seam
+--------------------------------------------------------------------------------
+status: all 65,535 canonical type bipartitions enumerated
+scope: 17 recipe operation types; all mandatory copies of a type kept together;
+       discrete dependency and slot-incidence interface only
+
+statement:
+  E080 finds 53 bipartitions whose two induced dependency graphs are connected
+  and a six-member Pareto frontier. The selected deterministic partition places
+  ten operation types / 140 instances / 1,922 body cells in module A and seven
+  types / 79 instances / 1,403 body cells in module B.
+
+  Its typed seam contains exactly two intermediate commodities and three
+  producer-consumer dependency edges: steel_block from refinery_steel in A to
+  parts_maker in B, and sandleaf_powder from crusher_sandleaf in B to the two
+  fine/dense grinders in A. Directional producer/consumer slot incidences are
+  A->B 17/6 and B->A 33/23. External obligations remain blue_iron_ore into A,
+  source_ore into B, qiaoyu_capsule out of A and valley_battery out of B, with
+  generic provider/sink assignment still existential.
+
+non-implications:
+  The partition is a sufficient-construction seed, never WLOG. No body is
+  placed, no physical seam or dock exists, no generic commodity is bound, no
+  duty/rate or lane count is frozen, and slot incidence is not a throughput or
+  required-crossing quantity. Instance-level splits and more than two modules
+  remain open languages.
+
+effect on next problem:
+  Build a bounded geometric two-bay constructor that retains E079's complete
+  47-way boundary disjunction, materializes typed docks, and runs native
+  non-overlap, power, front, terminal-uniqueness and component-aware binding
+  before exact routing.
+
+evidence:
+  E080 RESULT.txt; local run-001 RESULT.json sha256
+  47f497a3f8ee26351bdc1616c8061f80d03646089c266be66f979f7393080077;
+  PARTITION_FRONTIER.json sha256
+  96e4e84fb88c666aee38c7be2c421a59ca4fbe7e59d570eacee5f4391fe867b7;
+  SEAM_CONTRACT.json sha256
+  c44ee40995fcdd44a2ec9a8443245d1be75b51258ca9b347cd0fe1ae3563e6fc.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

@@ -9,30 +9,36 @@ Campaign ref: research_lab/campaigns/zero_condition/CAMPAIGN.txt
 
 Current endpoint
 ----------------
-Statement: The cut/transport candidate direction is frozen (commit b32da59)
-and has passed heterogeneous adversarial review with corrections. The
-cut-necessity theorem in its witness-conditional form was independently
-re-derived and CONFIRMED; the direction survives. Refuted alongside it:
-the forced-rate premise (r ranges over a duty polytope, so the layout-level
-condition is existential — EXISTS r, EXISTS binding, FORALL S — an LP),
-the geometric transport-core matching equality (set-packing, matching gives
-only a lower bound), the "6-body shortest vacancy chain" number, E075 as the
-membrane's proof, and the theorem's novelty (already shipped as SAC-Hull /
-F2+Lean / F4; the genuine contribution is b_c(S) as a rate). The
-owner-adjudicated revision absorbing all corrections has landed (commit
-b9efab7): the membrane is renamed owner separator and a Disputes section
-governs any later disagreement.
-Evidence ref: research_lab/campaigns/zero_condition/DIRECTION_CUT_TRANSPORT_20260828.txt
-Review ref: research_lab/campaigns/zero_condition/DIRECTION_CUT_TRANSPORT_20260828_REVIEW.txt
-Full review (local, git-ignored): research_lab/local/reviews/20260828_cut_transport_refutation.md
+Statement: Three structure-level links now survive their first explicit
+discriminators. E078 proves that one target-26 reference two-row semantic
+rewrite works across the complete frozen E069 target-26 parent face; it also
+proves the minimum two-row core is nonunique, so the rewrite is a constructive
+specification rather than "the" unique core. This is within-context stability
+only, not cross-geometry stability. E079 compiles the independently confirmed
+K=47 boundary-only packing theorem into an exact 47-state macro with stable
+pose/front witnesses, reversible canonical label recovery, and the complete
+five-condition up-to-K license. E080 then exhausts all 65,535 canonical
+bipartitions of the 17 recipe operation types and finds a connected
+one-third/two-thirds area-balanced partition with an explicit typed seam
+contract that imports all 47 boundary states.
+Evidence refs:
+  research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
+  research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
+  research_lab/campaigns/zero_condition/experiments/E080_dependency_partition_seam_frontier/RESULT.txt
+Direction ref:
+  research_lab/campaigns/zero_condition/DIRECTION_CUT_TRANSPORT_20260828.txt
 
 Live question
 -------------
-Q: Under the corrected direction (duty-polytope existential cut condition;
-geometric core demoted to a lower bound), do E074's 2-3 row semantic
-transport cores remain stable across neighboring contexts — the direction's
-own go/no-go — and does the previous E069/E070 twelve-signature line
-survive as a sub-question or fold into the cut-deficiency frame?
+Q: Can a bounded geometric bay-and-seam constructor consume E080's selected
+interface contract while preserving E079's complete 47-state boundary
+disjunction, materialize stable docks for every named seam obligation, and
+produce at least one candidate that passes native non-overlap, power, front,
+terminal-uniqueness and component-aware binding checks before exact routing?
+In parallel, does E078's stable reference two-body rewrite remain a small
+constructive specification after unique stable-identity remapping into genuinely
+neighboring geometries, or does the rewrite/core family fragment once the
+occupied/free graph changes?
 
 Inflight / recovery
 -------------------
@@ -46,6 +52,9 @@ Recent consequential results
 - E068 exhausted 678 admitted final cached actions with no zero or UNKNOWN. | evidence=research_lab/campaigns/zero_condition/experiments/E068_final_cached_fourth_action/RESULT.txt | effect=retired the pole-conditioned external-action lineage
 - E069 exposed the distinct 6x4 parent's regular twelve-way source-only face. | evidence=research_lab/campaigns/zero_condition/experiments/E069_six4_near_miss_complete_face/RESULT.txt | effect=selected a synthetic dual filling-signature discriminator before any physical scan
 - E070 closed the discriminator: six synthetic dual signatures are OPTIMAL and six INFEASIBLE, with no native exact dual option. | evidence=research_lab/campaigns/zero_condition/experiments/E070_dual_filling_signature_targets/RESULT.txt | effect=the twelve-signature line becomes a bounded constructive specification feeding E074 rather than an open scan
+- E078 closes the frozen-face discriminator: the reference target-26 two-row rewrite works across the full parent face, while alternate equal-size minima prove the core is nonunique. | evidence=research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt | effect=keep one stable constructive rewrite, reject unique-core wording, and move the go/no-go to physical/cross-geometry remapping
+- E079 compiles all 47 boundary-only packings into a reversible one-hot macro with the full up-to-K license. | evidence=research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt | effect=the first proved finite structural basis is ready for a bounded constructor
+- E080 exhausts 65,535 operation-type bipartitions and selects a connected balanced two-module contract with a two-commodity typed seam. | evidence=research_lab/campaigns/zero_condition/experiments/E080_dependency_partition_seam_frontier/RESULT.txt | effect=the sufficient side now has a concrete bay/seam constructor input rather than a prose sketch
 
 Current unknowns and guards
 ---------------------------
@@ -57,6 +66,11 @@ Current unknowns and guards
 - Master memory-wall preflight: direct coordinate-master solves can hit a 28 GiB solve-side wall (blind tree evidence); E077's only persisted run is a 207-core checkpoint with unrecorded terminal status; absorb the blind encoding fix and run with memory telemetry before any further full-master attempt (BLIND_COLLISION_20260828.txt).
 - Evidence qualifications: K=47 holds only in its boundary-local object space under the five-condition up-to-K license (rank 1 is never WLOG; keep the 47-packing disjunction; research_lab/local/reviews/20260828_k47_boundary_packing_recheck.md); blind D2-D4 numeric claims are unrechecked; post-hygiene residual opens are the superseded E069 run's uncommitted runner, the unreconciled 190-vs-225 boundary-owner count, and E073's premise (an E072 one-owner bridge) with no machine evidence anywhere.
 - All results here are research-only and have no certification, U/L, owner, production, or publication effect.
+
+- E078 is confined to one frozen occupied geometry and a terminal-signature abstraction with one synthetic dual option. The reference rewrite is stable but minimum cores are nonunique. Local destination/component integers remain non-transportable; cross-geometry use requires unique stable-witness remapping and a fresh exact check.
+- E079 is exact only for boundary body packing. Rank 1 is never WLOG, all 47 states remain live unless a separate proof removes states, and every omitted full-layout constraint must be reintroduced.
+- E080 is a type-level sufficient-construction seed. All copies of one operation type are kept together; no facility has been placed, no generic commodity has been bound, no duty/rate is frozen, and seam slot incidence is not throughput.
+- Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
 
 History pointers
 ----------------
