@@ -1,0 +1,72 @@
+EXPERIMENT E072: HALF-SIGNATURE COMPONENT-BRIDGE ATLAS
+=====================================================
+
+Question
+--------
+For every E071 synthetic-feasible destination that already has a real half of the
+target-36 dual filling signature, what is the shortest occupied-owner relation
+between the half-signature's current terminal component and its missing target
+component?
+
+Why this experiment
+-------------------
+E071 separates raw signature existence from destination compatibility. The real
+exact dual mode lives at an infeasible destination, while other destinations can
+carry the synthetic dual signature. A full 103-object move scan would discard this
+new structure.
+
+A feasible destination may already provide either:
+
+  qiaoyu output in component 29, but fine input in another component; or
+  fine input in component 36, but qiaoyu output in another component.
+
+The missing physical relation is then a component transport problem. E072 builds
+a bipartite graph of free components and occupied owners and asks for the shortest
+owner chain connecting the existing half-signature component to its target.
+
+Method
+------
+1. Freeze E071's result and destination atlas by hash, verify its runner identity,
+   and reconstruct the same E069 parent.
+2. For each synthetic-feasible destination with a qiaoyu-29 half or fine-36 half,
+   re-enumerate the real filling-capsule patterns for the recorded pose and recover
+   exact terminal cells. Match the same component signature used by E071.
+3. Build a bipartite graph:
+
+     free component <-> selected occupied owner
+
+   An owner is adjacent to every free component touching one of its occupied
+   cells orthogonally.
+4. For a qiaoyu-29 half, connect its fine-input component to component 36. For a
+   fine-36 half, connect its qiaoyu-output component to component 29.
+5. Enumerate shortest owner-count paths. Mark whether a path moves the destination
+   body itself, which may destroy the half-signature it is meant to preserve.
+6. Rank a compact proposal set by owner count, destination-body preservation,
+   half-signature class, and stable object identity. Write the full typed atlas.
+
+Decision rule
+-------------
+At least one one-owner bridge preserving the destination body
+  Test those owner moves first in the exact destination-conditioned signature
+  consumer, then in full conditional binding if a terminal zero appears.
+
+Only longer owner chains
+  Build a bounded simultaneous bridge context from the shortest chains. Do not
+  scan unrelated objects.
+
+Only paths that move the destination body
+  The component-bridge language conflicts with preserving the half-signature;
+  switch to body/mode transport rather than treating the path as a rescue.
+
+No real half-signature on any feasible destination
+  Search for a new dual mode directly instead of component transport.
+
+Truth boundary
+--------------
+A graph path is a causal proposal, not a proof that moving its owners merges the
+components or preserves placement, power, operation assignment, binding, or
+routing. Every proposed relation must be tested in the actual consumer.
+
+Result
+------
+Not run yet.
