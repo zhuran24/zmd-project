@@ -1,0 +1,223 @@
+E082 RESULT: BAY-COUNT ALIGNMENT REORDERS THE BALANCED SEAM FRONTIER
+========================================================================
+
+Status
+------
+Completed as research-only compatibility evidence between E080's operation-type
+partitions and a historical 17-bay template-count plan. No current bay selection,
+facility pose, physical seam, binding, routing, throughput, whole-layout witness,
+certification, U/L, production, owner, pruning, or publication effect.
+
+Frozen machine evidence
+-----------------------
+Main result:
+
+  research_lab/local/zero_condition/
+  E082_bay_alignment_partition_frontier/run-001/RESULT.json
+
+SHA-256:
+
+  4c9242b8068ceb1189cfbf2f076ba929568b45ec4ded8c451c33ddd805c1d489
+
+Complete alignment frontier:
+
+  research_lab/local/zero_condition/
+  E082_bay_alignment_partition_frontier/run-001/BAY_ALIGNMENT_FRONTIER.json
+
+SHA-256:
+
+  56e5b924a05b5e393798402bed983061f2fe6642f0ada6859d7bb4ee495c44de
+
+Geometry-aware seed:
+
+  research_lab/local/zero_condition/
+  E082_bay_alignment_partition_frontier/run-001/GEOMETRY_AWARE_SEED.json
+
+SHA-256:
+
+  030493d7e1cb3ea5fe06edef581114d5dc4aadadec323b2f23add90724c0ca9d
+
+Receipt SHA-256:
+
+  e259120ad2f938d190c0d3840877b9750823bc6ae1acf8bbd3653ec111694a33
+
+Verdict
+-------
+
+BAY_ALIGNMENT_REORDERS_BALANCED_SEAM_FRONTIER
+
+Decision
+--------
+
+BUILD_ONE_MIXED_BAY_GEOMETRY_AWARE_SEED_KEEP_E080_SEAM_FIRST_AS_CONTROL
+
+Reproduced partition universe
+-----------------------------
+E082 independently reconstructs E080's operation graph and exact partition
+universe:
+
+  canonical type bipartitions             65,535
+  connected on both sides                     53
+  within one-third/two-thirds area band       16
+  distinct module-A template targets          44
+
+Every one of the 53 connected partitions terminates OPTIMAL in the bay-count
+model. Their minimum mixed-bay distribution is:
+
+  0 mixed bay    1 partition
+  1 mixed bay   10 partitions
+  2 mixed bays   8 partitions
+  3 mixed bays  11 partitions
+  4 mixed bays   5 partitions
+  5 mixed bays   2 partitions
+  7 mixed bays   3 partitions
+  8 mixed bays   1 partition
+  9 mixed bays   5 partitions
+ 10 mixed bays   4 partitions
+ 12 mixed bays   1 partition
+ 13 mixed bays   2 partitions
+
+Inside the area-balanced set, only one partition reaches one mixed bay. E080's
+old selected partition needs four.
+
+Historical scaffold boundary
+----------------------------
+The consumed 17-bay count plan is:
+
+  docs/research/witness_constructor_20260717/07_routing_aware/recovery_runs/
+  restart-20260720T075344Z-kYNVbm/count_closure_plan_20260720_v3.json
+
+SHA-256:
+
+  1c9d42b00221436518f8e3635828bdad6261d0a5b005714f8817eca6194499e5
+
+It is explicitly `SEARCH_PLAN_ONLY`. Its own claim boundary says the planned G
+and H big-bay rows are unusable until local solve, strict replay, combined-pole
+replay, assembler replay and routing dry precheck accept them. E082 therefore
+measures compatibility with a historical template-count scaffold, not a finished
+geometric constructor.
+
+Seam-first control from E080
+----------------------------
+Partition:
+
+  partition_29914
+
+Module-A template target:
+
+  (97 x 3x3, 17 x 5x5, 26 x 6x4)
+
+Count-plan alignment:
+
+  minimum mixed bays     4
+  mixed bay IDs          1, 2, 3, 4
+  exact whole-bay subset none
+
+Seam:
+
+  directions             2
+  commodities            sandleaf_powder, steel_block
+  dependency edges       3
+  consumer slot incidence 29
+  producer slot incidence 50
+
+Balance:
+
+  body-area imbalance    519
+  instance imbalance      61
+
+Geometry-aware balanced seed
+----------------------------
+Partition:
+
+  partition_38931
+
+Module A contains:
+
+  crusher_blue_iron
+  crusher_sandleaf
+  grinder_dense_blue_iron
+  planter_sandleaf
+  refinery_blue_iron
+  seed_collector_sandleaf
+
+Module-A template target:
+
+  (79 x 3x3, 32 x 5x5, 17 x 6x4)
+
+Count-plan alignment:
+
+  minimum mixed bays     1
+  mixed bay ID           2
+  exact whole-bay subset none
+
+The deterministic optimum assigns bay 2's planned capacity `(11,6,4)` as
+`(10,6,0)` to module A and `(1,0,4)` to module B. This allocation is one witness,
+not claimed unique.
+
+Seam:
+
+  directions             1, A -> B only
+  commodities            dense_blue_iron_powder, sandleaf_powder
+  dependency edges       3
+  consumer slot incidence 32
+  producer slot incidence 50
+
+Balance:
+
+  body-area imbalance    513
+  instance imbalance      37
+
+Relative to E080's seam-first seed, this candidate:
+
+  reduces mixed bays        4 -> 1
+  reduces seam directions   2 -> 1
+  preserves commodity count 2 -> 2
+  raises consumer incidence 29 -> 32
+  improves area imbalance   519 -> 513
+  improves instance balance 61 -> 37
+
+The two seeds therefore expose a real tradeoff rather than a free dominance: the
+geometry-aware seed pays three additional consumer-slot incidences to remove
+three mixed bays and one seam direction. E082's declared constructor-first
+criterion selects it, while the original E080 seed remains the seam-first
+control.
+
+Whole-bay-aligned control
+-------------------------
+One connected partition has zero mixed bays and six exact whole-bay subset
+realizations, but it falls outside the one-third/two-thirds area band:
+
+  partition             partition_38967
+  template target       (97,32,26)
+  seam directions       1
+  seam commodities      3
+  body-area imbalance   1269
+  instance imbalance     91
+
+It is retained as a control, not promoted as the construction seed.
+
+Effect on the next problem
+--------------------------
+The immediate successor must first audit the F/G/H row premises consumed by the
+one-mixed-bay allocation. Only an all-positive premise audit would license a
+historical 17-bay materialization attempt.
+
+Successor correction
+--------------------
+E083 performed that audit and blocked the unchanged v3 carrier: G=(10,5,5) is
+already exact INFEASIBLE in the recorded final35 context and H=(11,6,4) has no
+admitted positive result. E082 therefore remains a template-count lower bound and
+an independent corroboration of E081's operation partition, not a current
+historical-bay seed. See:
+
+  research_lab/campaigns/zero_condition/experiments/
+  E083_historical_bay_carrier_premise_audit/RESULT.txt
+
+Truth boundary
+--------------
+The mixed-bay optimum is exact only for integer template counts in a historical
+`SEARCH_PLAN_ONLY` scaffold. Arbitrary same-template slots may be assigned to
+either module; operation-specific modes, docks and geometry are absent. The
+number is therefore an optimistic lower bound on mixed physical bays, not a
+physical realization or a theorem about every bay constructor.

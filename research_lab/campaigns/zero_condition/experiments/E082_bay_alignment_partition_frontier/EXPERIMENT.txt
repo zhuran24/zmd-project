@@ -1,0 +1,125 @@
+E082 HISTORICAL BAY-COUNT ALIGNMENT FRONTIER
+============================================
+
+Status
+------
+Completed in run-001 as the cheapest geometry-aware discriminator after E080.
+Research-only. No certification, U/L, production, owner, pruning, or publication
+effect.
+
+Question
+--------
+E080 selected a connected, area-balanced, two-commodity operation-type partition
+using dependency and seam metrics only. Does that partition align with the
+17-bay template-count plan of the earlier routing-aware constructor, or does a
+nearby connected partition preserve a comparably small seam while requiring far
+fewer bays to mix the two modules?
+
+This experiment measures **bay-count alignment**, not physical bay feasibility.
+The historical plan is explicitly `SEARCH_PLAN_ONLY`; some planned rows still
+owed local construction and replay. Its 17 template-capacity vectors are used as
+an optimistic geometric scaffold and nothing more.
+
+Object space
+------------
+Inputs are pinned by SHA-256:
+
+- E080 runner, RESULT.json, PARTITION_FRONTIER.json and SEAM_CONTRACT.json;
+- the historical count-closure plan `count_closure_plan_20260720_v3.json`;
+- the historical connected-bay assembler and composition sources that define the
+  intended 17-bay / 219-manufacturing-instance context.
+
+E082 reconstructs all 53 E080 partitions whose two induced operation graphs are
+connected. All mandatory copies of one operation type remain in the same module,
+as in E080.
+
+Bay-count model
+---------------
+For each connected partition, let its module-A template demand be:
+
+  (# manufacturing_3x3, # manufacturing_5x5, # manufacturing_6x4).
+
+For every historical bay b and template t, choose an integer `a[b,t]` between 0
+and that bay's planned capacity. The module-A totals must match exactly; module B
+receives the complement.
+
+A bay is:
+
+- full A when every planned slot is assigned to A;
+- full B when every planned slot is assigned to B;
+- mixed otherwise.
+
+CP-SAT minimizes the number of mixed bays and proves the optimum for every one of
+the 53 connected partitions. A complete 2^17 whole-bay subset table independently
+identifies every zero-mixed target. The deterministic secondary solution is only
+one count allocation; it is not claimed unique.
+
+Metrics and selection
+---------------------
+E082 records:
+
+- minimum mixed-bay count and one exact allocation;
+- whether a whole-bay subset realizes the target;
+- seam direction count, commodity count, dependency edges and slot incidences;
+- body-area and instance-count imbalance;
+- the complete connected and one-third/two-thirds-balanced Pareto frontiers.
+
+The geometry-aware construction seed is selected only inside the same
+one-third/two-thirds area band used by E080, under the declared lexicographic
+research criterion:
+
+  minimum mixed bays
+  -> minimum seam directions
+  -> minimum seam commodities
+  -> minimum consumer input-slot incidence
+  -> minimum dependency edges
+  -> minimum area imbalance
+  -> minimum instance imbalance
+  -> stable operation-type order
+
+E080's original seam-first seed remains an explicit control. The new criterion
+is a constructor choice, never WLOG.
+
+Decision rule
+-------------
+A balanced connected candidate uses fewer mixed bays than E080's selected seed
+without increasing seam commodity count
+  Reorder the constructor frontier. Build the geometry-aware seed first and keep
+  the old seam-first seed as a control.
+
+No such candidate exists
+  Keep E080's seed and proceed to the bounded geometric constructor.
+
+Any UNKNOWN, input drift, count mismatch, or failure to reproduce E080's 53
+connected partitions
+  No frontier verdict.
+
+Truth boundary
+--------------
+Minimum mixed-bay count is exact only in the historical **template-count** plan.
+It ignores actual bay coordinates, mode/front domains, operation-specific dock
+compatibility, power, non-overlap across the composed layout, generic binding,
+routing and throughput. Because arbitrary same-template slots may be assigned to
+A or B, it is an optimistic lower bound on mixed physical bays in any faithful
+operation-aware realization.
+
+Run
+---
+
+/home/zhuran24/zmd-pj/.venv/bin/python \
+  research_lab/campaigns/zero_condition/experiments/\
+E082_bay_alignment_partition_frontier/run_e082.py
+
+Default durable output
+----------------------
+
+research_lab/local/zero_condition/E082_bay_alignment_partition_frontier/run-001/
+
+Result
+------
+
+  verdict   BAY_ALIGNMENT_REORDERS_BALANCED_SEAM_FRONTIER
+  decision  BUILD_ONE_MIXED_BAY_GEOMETRY_AWARE_SEED_KEEP_E080_SEAM_FIRST_AS_CONTROL
+
+See RESULT.txt for the exact 53-partition frontier, old/new seed comparison,
+historical-plan limitations and next discriminator.
