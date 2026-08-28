@@ -1,7 +1,7 @@
 # 稳定主题索引
 
 > 本页由 `data/knowledge/topics.json` 自动生成；禁止手工修改。
-> 账本审阅日：`2026-08-18`；源摘要：`sha256:d3a53eaf9c14ee35ae69308449341b740dd64914f466e3ae57dd83e3088e1baa`。
+> 账本审阅日：`2026-08-18`；源摘要：`sha256:3f72745d9017e3bb5658f4864a35421c706395b505dfbde3d089c6d1c5055fd9`。
 
 主题是读取路径，不是新的 authority。一个 claim 可以出现在多个主题中；topic membership 只表示相关性，不改变 statement、scope 或 status。
 

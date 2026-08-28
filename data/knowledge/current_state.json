@@ -1,6 +1,6 @@
 {
   "schema_version": "zmd_current_state_v2",
-  "ledger_reviewed_at": "2026-08-18",
+  "ledger_reviewed_at": "2026-08-24",
   "title": "ZMD 当前知识状态",
   "sources": {
     "project_lock": "PROJECT_LOCK.md",
@@ -203,6 +203,7 @@
       }
     ],
     "exclude_paths": [
+      ".artifacts/gpt_bound_exit_20260821",
       "docs/research/README.md",
       "docs/research/INDEX.md"
     ]

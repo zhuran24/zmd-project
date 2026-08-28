@@ -1,7 +1,7 @@
 # 项目知识目录
 
 > 本页由 `devtools/build_knowledge_docs.py` 自动生成，禁止手工修改。
-> 账本人工审阅日：`2026-08-18`；源摘要：`sha256:d3a53eaf9c14ee35ae69308449341b740dd64914f466e3ae57dd83e3088e1baa`。
+> 账本人工审阅日：`2026-08-24`；源摘要：`sha256:3f72745d9017e3bb5658f4864a35421c706395b505dfbde3d089c6d1c5055fd9`。
 
 这里登记稳定 ID。claim 回答“我们知道什么”，decision 回答“谁改变了什么规则或门”，
 dossier 回答“原始证据包在哪里”，validity profile 回答“旧结论为何失效、怎样换代、能否复用”。目录不把历史材料自动升级为当前权威。
@@ -11,7 +11,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 - claim：`96` 条，其中当前 / 开放 `74` 条，带 validity profile `37` 条。
 - decision：`11` 条。
 - backfill review：`58` 条，其中 current `45` 条。
-- dossier：`277` 个，其中 tracked `159` 个、local optional `118` 个、当前证据标记 `17` 个、人工精编 `97` 个。
+- dossier：`301` 个，其中 tracked `159` 个、local optional `142` 个、当前证据标记 `17` 个、人工精编 `98` 个。
 - `docs/research/` 的一级目录和一级 Markdown 已全登记；`.artifacts/` 只登记一级目录，其路径允许在轻量 checkout 中缺失。
 
 ## Claim 索引
@@ -134,13 +134,13 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 ## Topic 索引
 
 - `p1_2-proof-chain`：74 个 dossier。
+- `other`：71 个 dossier。
 - `reasoning-system`：56 个 dossier。
-- `solver-architecture`：55 个 dossier。
-- `other`：50 个 dossier。
+- `solver-architecture`：56 个 dossier。
 - `witness-lower-bound`：43 个 dossier。
 - `upper-bound`：29 个 dossier。
 - `solver-experiment`：27 个 dossier。
-- `cut-framework`：22 个 dossier。
+- `cut-framework`：24 个 dossier。
 - `formal-verification`：16 个 dossier。
 - `rules-semantics`：12 个 dossier。
 - `industrial-delivery`：8 个 dossier。
@@ -211,6 +211,7 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
+| `DOSSIER-OUTER-LOOP-PRECEDENTS-20260824-1C4F82D991` | `2026-08-24` | [推理外环与搜索内层先行架构综述](<../.artifacts/outer_loop_precedents_20260824/OUTER_LOOP_PRECEDENT_SURVEY.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `solver-architecture` | `active` | `unreviewed` |
 | `DOSSIER-SIXPRED-UPPER-NEXT-BAND-20260821-CAA91F9B9A` | `2026-08-21` | [六谓词上界下一带力竭收口](<../.artifacts/sixpred_upper_next_band_20260821/enum/REPORT.md>)<br>Inventory-only 登记。CLOSEOUT 终判 NO_STRICTLY_LOWER_U_PRIME_ESTABLISHED，条件性 research upper 保持 U=(1170,30)；十二带 A/B 共 24/24 为 RELAXATION_EXHAUSTED。严格方法天花板、经验外推、RHS 条… | `upper-bound` | `active` | `unreviewed` |
 | `DOSSIER-P5-RETRIAL-20260821-428061A300` | `2026-08-21` | [P5 水平封锁族 lowering 重审](<../.artifacts/p5_retrial_20260821/GATE_CARD_20260821.md>)<br>Inventory-only 登记。原 group-labeled lowering 经异源审计判为抽象层欠覆盖，ADDENDUM 以 pose 层 24-literal OR lowering 修正；冻结首解身份改变，但运行时性能不可分离，ΔL=0、ΔU=0，无 certified/production effec… | `cut-framework` | `active` | `unreviewed` |
 | `DOSSIER-GHOST-COND-DIVERGENCE-20260821-3D2338886C` | `2026-08-21` | [Ghost 条件域分歧计数静态测量](<../.artifacts/ghost_cond_divergence_20260821/GATE_CARD.md>)<br>Inventory-only 登记。包内终态判词/状态：MEASURED_FACE_ZERO_INCREMENT，作用域为单一 canonical case 的完整 30×39 anchor 域；异源审计未推翻零增量，ADDENDUM 已收窄重开闸并限定半构建字段与 aggregate coefficient 来源。… | `reasoning-system` | `active` | `unreviewed` |
@@ -479,11 +480,35 @@ dossier 回答“原始证据包在哪里”，validity profile 回答“旧结�
 
 | Dossier ID | 日期 | 标题 / 入口 | topics | lifecycle | relevance |
 |---|---|---|---|---|---|
+| `DOSSIER-HANDOFF-REGISTRATION-POINTS-20260827-42AE5EB4B1` | `2026-08-27` | [历史树登记点移交清单](<../.artifacts/handoff_registration_points_20260827/REGISTRATION_POINTS_INVENTORY.md>)<br>--- | `other` | `historical` | `unreviewed` |
+| `DOSSIER-RESEARCH-WORK-REVIEW-LETTER-20260827-93D0FDA815` | `2026-08-27` | [一封信:我们从外面看你这一个月的工作](<../.artifacts/research_work_review_letter_20260827/LETTER.md>)<br>写信人:owner 和历史树主会话(CC)。这几天我们把 E001–E059 完整读了一遍——成果总账、两份日志、纲领与立案,还下到实验脚本层看了 import 和约束的写法。owner 让我把我们聊下来的看法整理成一封信给你,聊天的语气,不带任何要求;里面的"建议"全是外部视角的观察,采不采、怎么采都由你。 | `other` | `historical` | `unreviewed` |
+| `DOSSIER-PORT-CLEARANCE-CONFIRMATION-HUNT-20260824-5BC285302F` | `2026-08-24` | [端口前沿游戏内实测确认检索报告](<../.artifacts/port_clearance_confirmation_hunt_20260824/HUNT_REPORT.md>)<br>最佳落点： | `other` | `historical` | `unreviewed` |
+| `DOSSIER-LOWERBOUND-LADDER-20260824-5DB141FDEA` | `2026-08-24` | [立项书 · 下界阶梯线(零条件可行性起步)](<../.artifacts/lowerbound_ladder_20260824/CHARTER_PROPOSAL_LOWERBOUND_LADDER.md>)<br>日期:2026-08-24 · 立项人:主会话 · 依据:docs/项目说明/30researchcharter.md 立项律;基线臂(下界线)封账后的后继构造线。owner 已批立案(2026-08-24)。 | `other` | `historical` | `unreviewed` |
+| `DOSSIER-INGAME-CONFIRMATION-INVENTORY-20260824-808BF4ABF2` | `2026-08-24` | [游戏内确认总清单](<../.artifacts/ingame_confirmation_inventory_20260824/INVENTORY_INGAME_CONFIRMATIONS.md>)<br>路径缩写： | `other` | `historical` | `unreviewed` |
+| `DOSSIER-OUTER-LOOP-PRECEDENTS-20260824-1C4F82D991` | `2026-08-24` | [推理外环与搜索内层先行架构综述](<../.artifacts/outer_loop_precedents_20260824/OUTER_LOOP_PRECEDENT_SURVEY.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `solver-architecture` | `active` | `unreviewed` |
+| `DOSSIER-INNER-LOOP-ARCHAEOLOGY-20260823-082713845F` | `2026-08-23` | [镜头一·操作顺序：内环时期实际思路 vs 求解面方法论 对表](<../.artifacts/inner_loop_archaeology_20260823/COMPARE_LENS1_OPS.md>)<br>文档性质：盲态对比分析（research-only，不动 tracked 文件、不 commit）。 镜头：以「思路的实际操作顺序」为主轴——方法论规定的动作顺序／优先级／判据，对表时期实践里实际的动作顺序／优先级／判据。 时间窗口：2026-07-16T20:03:01.171Z → 2026-08-08T02:4… | `other` | `historical` | `unreviewed` |
+| `DOSSIER-ARM1-OLDWORD-CRAFT-20260823-DA4CC9BECB` | `2026-08-23` | [立项书 · 旧词臂(工艺修复后的既有词汇 cut 判别)](<../.artifacts/arm1_oldword_craft_20260823/CHARTER_PROPOSAL_ARM1.md>)<br>日期:2026-08-23 · 立项人:主会话(项目推进) · 依据:docs/项目说明/30researchcharter.md 立项律;三臂判别之第①臂。 | `cut-framework` | `historical` | `unreviewed` |
+| `DOSSIER-BASELINE-ARM-WHOLE-LAYOUT-20260823-AA64A7F760` | `2026-08-23` | [立案书 · 基线臂（下界侧 whole-layout 构造）](<../.artifacts/baseline_arm_whole_layout_20260823/CHARTER_PROPOSAL_BASELINE_ARM.md>)<br>--- | `other` | `historical` | `unreviewed` |
+| `DOSSIER-RESEARCH-PROGRAM-SYNTHESIS-20260823-3B13C1A76B` | `2026-08-23` | [研究纲领草案](<../.artifacts/research_program_synthesis_20260823/CHARTER_DRAFT_A.md>)<br>状态：方向草案 日期：2026-08-23 | `other` | `historical` | `unreviewed` |
+| `DOSSIER-ARM2-SUPPLYSIDE-NEWWORD-20260823-B7F36C02C6` | `2026-08-23` | [Retired option-(a) probe evidence](<../.artifacts/arm2_supplyside_newword_20260823/RETIRED_OPTION_A_EVIDENCE/README.md>)<br>This directory preserves the probe-only Ed25519 payload, signature, public key, expected bindings and consumer invocation used during the fifth-round investiga… | `other` | `historical` | `unreviewed` |
+| `DOSSIER-MATH-TRANSLATION-DERIVATION-20260823-4D5847E507` | `2026-08-23` | [Owner“推理外环”数学翻译的可实例化推导](<../.artifacts/math_translation_derivation_20260823/GPTPRO_MATH_DERIVATION.md>)<br>日期： 2026-08-23 研究对象： 70×70 当前 certified-exact 最大空矩形问题，以及由其参数化得到的一般布局问题族 问题来源： .artifacts/mathtranslationderivation20260823/MATHTRANSLATIONSDIGEST.md 正式问题定义： do… | `other` | `historical` | `unreviewed` |
+| `DOSSIER-KERNEL112-RERUN-FEASIBILITY-20260823-27E9CB0033` | `2026-08-23` | [112 核重跑可行性调查 · 下界线](<../.artifacts/kernel112_rerun_feasibility_20260823/RERUN_FEASIBILITY_LINE3.md>)<br>这不是执行困难，是任务书的前提已不成立，需要重新定义本次重跑要证明什么。 | `other` | `historical` | `unreviewed` |
+| `DOSSIER-SKELETON-COMPLETION-20260822-CCF39635F7` | `2026-08-22` | [骨架补全构造契约](<../.artifacts/skeleton_completion_20260822/CONSTRUCTION_CONTRACT_GPT_PRO.md>)<br>完整成功只由以下命令裁断： | `other` | `historical` | `unreviewed` |
+| `DOSSIER-OUTER-LOOP-ARCHAEOLOGY-20260822-A9FE6ADF3D` | `2026-08-22` | [推理外环生成循环最早提案复核](<../.artifacts/outer_loop_archaeology_20260822/EARLIEST_PROPOSAL_RECHECK.md>)<br>最早可定位的、直接属于本题生成思想的 owner 原话是： | `other` | `historical` | `unreviewed` |
+| `DOSSIER-OUTER-LOOP-DRIFT-PROBE-20260822-DF1B033BBC` | `2026-08-22` | [推理外环漂移探针：直觉、数学翻译与当前研究内容的对位裁断](<../.artifacts/outer_loop_drift_probe_20260822/GPTPRO_DRIFT_ANALYSIS.md>)<br>owner 的感觉基本是对的，但不应裁成“当前数学走错了”。项目已经做出过一次非常纯正的推理外环成果，也正在挖到新的正确概念。真正的偏差是：许多近期研究把“发现一个局部结构、压缩一批日志、判定一个固定邻域”本身当成了闭环，而 owner 最初说的是让这个新结构成为以后推理可以直接使用的新字母，再与老规则组合，继续推出… | `other` | `historical` | `unreviewed` |
+| `DOSSIER-FQ-ALLTARGET-BUDGET-R1-20260822-3944D8E8DD` | `2026-08-22` | [批① G(a,136) 全目标版 · 桥接与模型合同预注册](<../.artifacts/fq_alltarget_budget_r1_20260822/BRIDGE_MODEL_CONTRACT_PREREGISTERED.md>)<br>模型只消费并 hash-pin： | `other` | `historical` | `unreviewed` |
+| `DOSSIER-FQ-ALLTARGET-PROBE-20260822-680F95E4AC` | `2026-08-22` | [批① G(a,136) · 求解器 proto 导出 API 勘误（R2，首个 Solve 前冻结）](<../.artifacts/fq_alltarget_probe_20260822/ADDENDUM_PROTO_EXPORT_API_R2_PREREGISTERED.md>)<br>第一次执行 H0 时，完整 CpModel 已在内存中构建，但程序在保存 model proto 时抛出： | `other` | `historical` | `unreviewed` |
+| `DOSSIER-DUAL-BATCH-20260822-8B12C909BE` | `2026-08-22` | [双批监视清单（执行线硬步骤）](<../.artifacts/dual_batch_20260822/MONITORING_CHECKLIST_20260822.md>)<br>凡是用来抵消怀疑的断言——证明对方独立、说明对方做了额外工作、论证某风险不成立—— 在入档前必须回被引用的原文逐字核对，并在档案里写明核对方式（搜了哪些词、看了哪几行）。 | `other` | `historical` | `unreviewed` |
+| `DOSSIER-ACCESS-CAPACITY-PROBE-20260822-E9AA72AF77` | `2026-08-22` | [FINALINPUTALLOWANCE = 2 来源考据](<../.artifacts/access_capacity_probe_20260822/ALLOWANCE_ORIGIN_SOL_20260822.md>)<br>--- | `other` | `historical` | `unreviewed` |
+| `DOSSIER-FQ-SHELL-PROBE-20260822-85AAA0B55E` | `2026-08-22` | [F(a,136) 单锚实验 · 锚位选择预注册](<../.artifacts/fq_shell_probe_20260822/ANCHOR_SELECTION_PREREGISTERED.md>)<br>本实验的目的不是让地图边界先把 Craw>=136 杀掉，而是检验在接触阈值仍存活时，selected-contact power-witness 条件能否补出新的供电税。 | `other` | `historical` | `unreviewed` |
+| `DOSSIER-METABOLISM-GPT-REVIEW-20260822-543D8A452F` | `2026-08-22` | [CC 协作体系全面评审 · gpt-pro 逐字收割(2026-08-22)](<../.artifacts/metabolism_gpt_review_20260822/CC_COLLAB_SYSTEM_REVIEW_RAW_20260822.md>)<br>--- | `other` | `historical` | `unreviewed` |
 | `DOSSIER-SIXPRED-UPPER-NEXT-BAND-20260821-CAA91F9B9A` | `2026-08-21` | [六谓词上界下一带力竭收口](<../.artifacts/sixpred_upper_next_band_20260821/enum/REPORT.md>)<br>Inventory-only 登记。CLOSEOUT 终判 NO_STRICTLY_LOWER_U_PRIME_ESTABLISHED，条件性 research upper 保持 U=(1170,30)；十二带 A/B 共 24/24 为 RELAXATION_EXHAUSTED。严格方法天花板、经验外推、RHS 条… | `upper-bound` | `active` | `unreviewed` |
+| `DOSSIER-CUT-ROUTE-SURVEY-20260821-D4A08A214C` | `2026-08-21` | [③线路线空间 · 概念视图](<../.artifacts/cut_route_survey_20260821/ROUTE_SPACE_CONCEPT_VIEW_20260821.md>)<br>盘面上每个设施要开工就得有电，有电意味着它周围某处能摆下一座供电桩。 反过来说，把所有能摆桩的位置都堵死，这个设施就不可能落在这儿—— 这是一条可以提前算好、直接告诉求解器的死刑判决。 | `cut-framework` | `historical` | `unreviewed` |
 | `DOSSIER-P5-RETRIAL-20260821-428061A300` | `2026-08-21` | [P5 水平封锁族 lowering 重审](<../.artifacts/p5_retrial_20260821/GATE_CARD_20260821.md>)<br>Inventory-only 登记。原 group-labeled lowering 经异源审计判为抽象层欠覆盖，ADDENDUM 以 pose 层 24-literal OR lowering 修正；冻结首解身份改变，但运行时性能不可分离，ΔL=0、ΔU=0，无 certified/production effec… | `cut-framework` | `active` | `unreviewed` |
 | `DOSSIER-GHOST-COND-DIVERGENCE-20260821-3D2338886C` | `2026-08-21` | [Ghost 条件域分歧计数静态测量](<../.artifacts/ghost_cond_divergence_20260821/GATE_CARD.md>)<br>Inventory-only 登记。包内终态判词/状态：MEASURED_FACE_ZERO_INCREMENT，作用域为单一 canonical case 的完整 30×39 anchor 域；异源审计未推翻零增量，ADDENDUM 已收窄重开闸并限定半构建字段与 aggregate coefficient 来源。… | `reasoning-system` | `active` | `unreviewed` |
 | `DOSSIER-GPT-CUT-SHAPES-20260821-745509BF6B` | `2026-08-21` | [Certified-native 供电联合约束形态与单 tuple 实验](<../.artifacts/gpt_cut_shapes_20260821/NATIVE_TUPLE_REPORT.md>)<br>Inventory-only 登记。包内终态判词/状态：PASS_SOUND_NATIVE_TUPLE / ROOT_GAP_CONFIRMED / SHORT_RUNTIME_EFFECT_NOT_SEPARABLE；异源审计 CONFIRMED，但短预算未进入搜索，不能写成运行时收益或无收益结论。研究对象是 ce… | `cut-framework` | `active` | `unreviewed` |
 | `DOSSIER-POLE-GATE-CANARY-20260821-7F3338D139` | `2026-08-21` | [C 批供电桩证伪闸(外环阶梯第 2 层)](<../.artifacts/pole_gate_canary_20260821/AT_BUILD_PROGRESS.md>)<br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `reasoning-system`, `solver-experiment`, `cut-framework` | `active` | `unreviewed` |
+| `DOSSIER-DOC-HYGIENE-RECHECK-20260821-B8EF1CC2D9` | `2026-08-21` | [2026-08-21 文档卫生复查报告](<../.artifacts/doc_hygiene_recheck_20260821/REPORT.md>)<br>同类错误已经复发。 异源反证后，86 条候选中保留 25 条实质问题，其中 8 条为 high、12 条为 medium、5 条为 low。复发不再以大面积命名漂移、受众泄漏或一般叙事赘余为主，而集中在以下四维： | `other` | `historical` | `unreviewed` |
 | `DOSSIER-P-REINSERTION-AUDIT-20260820-8BB5417ED3` | `2026-08-20` | [PREINSERTIONGAP 异源验收报告](<../.artifacts/p_reinsertion_audit_20260820/AUDIT_REPORT.md>)<br>异源验收证据包；包内总判词/状态：PASS_WITH_SCOPED_ERRATA_LOCALIZATION_UNDER_DETERMINED。本条仅登记验收材料的 inventory 与 provenance，不构成对验收包的二次 semantic review，也不提升 claim、owner、certified… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-P-MUS-LANDSCAPE-20260820-CC6900A234` | `2026-08-20` | p mus landscape 20260820<br><code>.artifacts/p_mus_landscape_20260820</code><br>本地 research/support evidence inventory；包内终态判词/状态：NO_EXPLICIT_TERMINAL_VERDICT_RECORDED；验收状态：在途、未封账。仅作为 active open workflow 进入 inventory，不进入 historical triage，… | `reasoning-system`, `solver-architecture`, `witness-lower-bound` | `active` | `unreviewed` |
 | `DOSSIER-I1-ROUND4-SELF-CHECK-20260820-0CFC3F056C` | `2026-08-20` | I1 第四轮自检收据与日志<br><code>.artifacts/i1_round4_self_check_20260820</code><br>Local-optional evidence registered through docctl; semantic outcome is pending closure review. | `p1_2-proof-chain`, `solver-architecture` | `active` | `unreviewed` |

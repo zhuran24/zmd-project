@@ -1,6 +1,6 @@
 {
   "schema_version": "zmd_dossiers_v1",
-  "ledger_reviewed_at": "2026-08-21",
+  "ledger_reviewed_at": "2026-08-24",
   "records": [
     {
       "id": "DOSSIER-AB16-ARMS-20260802-DC229C4539",
@@ -37,6 +37,22 @@
       "summary": "日期：2026-08-01"
     },
     {
+      "id": "DOSSIER-ACCESS-CAPACITY-PROBE-20260822-E9AA72AF77",
+      "path": ".artifacts/access_capacity_probe_20260822",
+      "entry_file": ".artifacts/access_capacity_probe_20260822/ALLOWANCE_ORIGIN_SOL_20260822.md",
+      "title": "FINALINPUTALLOWANCE = 2 来源考据",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-22",
+      "topics": [
+        "other"
+      ],
+      "summary": "---"
+    },
+    {
       "id": "DOSSIER-ADAPT-BATCH-GATES-EC7F30EDA7",
       "path": ".artifacts/adapt_batch_gates",
       "entry_file": null,
@@ -67,6 +83,38 @@
         "other"
       ],
       "summary": "---"
+    },
+    {
+      "id": "DOSSIER-ARM1-OLDWORD-CRAFT-20260823-DA4CC9BECB",
+      "path": ".artifacts/arm1_oldword_craft_20260823",
+      "entry_file": ".artifacts/arm1_oldword_craft_20260823/CHARTER_PROPOSAL_ARM1.md",
+      "title": "立项书 · 旧词臂(工艺修复后的既有词汇 cut 判别)",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-23",
+      "topics": [
+        "cut-framework"
+      ],
+      "summary": "日期:2026-08-23 · 立项人:主会话(项目推进) · 依据:docs/项目说明/30researchcharter.md 立项律;三臂判别之第①臂。"
+    },
+    {
+      "id": "DOSSIER-ARM2-SUPPLYSIDE-NEWWORD-20260823-B7F36C02C6",
+      "path": ".artifacts/arm2_supplyside_newword_20260823",
+      "entry_file": ".artifacts/arm2_supplyside_newword_20260823/RETIRED_OPTION_A_EVIDENCE/README.md",
+      "title": "Retired option-(a) probe evidence",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-23",
+      "topics": [
+        "other"
+      ],
+      "summary": "This directory preserves the probe-only Ed25519 payload, signature, public key, expected bindings and consumer invocation used during the fifth-round investigation of automatic custody option (a)."
     },
     {
       "id": "DOSSIER-AXIOM-ANALYSIS-20260806-A86B1853BB",
@@ -261,6 +309,22 @@
         "upper-bound"
       ],
       "summary": "【已证明】本目录给出严格空地语义下的坐标级 (area, minside) = (42, 6) 见证。最终孔为 x=32..38, y=64..69，尺寸 7×6；孔与强制设施机身、电杆、路由的交集均为 0。"
+    },
+    {
+      "id": "DOSSIER-BASELINE-ARM-WHOLE-LAYOUT-20260823-AA64A7F760",
+      "path": ".artifacts/baseline_arm_whole_layout_20260823",
+      "entry_file": ".artifacts/baseline_arm_whole_layout_20260823/CHARTER_PROPOSAL_BASELINE_ARM.md",
+      "title": "立案书 · 基线臂（下界侧 whole-layout 构造）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-23",
+      "topics": [
+        "other"
+      ],
+      "summary": "---"
     },
     {
       "id": "DOSSIER-BATCH4-20260718-37902EF1B5",
@@ -504,6 +568,38 @@
       }
     },
     {
+      "id": "DOSSIER-CUT-ROUTE-SURVEY-20260821-D4A08A214C",
+      "path": ".artifacts/cut_route_survey_20260821",
+      "entry_file": ".artifacts/cut_route_survey_20260821/ROUTE_SPACE_CONCEPT_VIEW_20260821.md",
+      "title": "③线路线空间 · 概念视图",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-21",
+      "topics": [
+        "cut-framework"
+      ],
+      "summary": "盘面上每个设施要开工就得有电，有电意味着它周围某处能摆下一座供电桩。 反过来说，把所有能摆桩的位置都堵死，这个设施就不可能落在这儿—— 这是一条可以提前算好、直接告诉求解器的死刑判决。"
+    },
+    {
+      "id": "DOSSIER-DOC-HYGIENE-RECHECK-20260821-B8EF1CC2D9",
+      "path": ".artifacts/doc_hygiene_recheck_20260821",
+      "entry_file": ".artifacts/doc_hygiene_recheck_20260821/REPORT.md",
+      "title": "2026-08-21 文档卫生复查报告",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-21",
+      "topics": [
+        "other"
+      ],
+      "summary": "同类错误已经复发。 异源反证后，86 条候选中保留 25 条实质问题，其中 8 条为 high、12 条为 medium、5 条为 low。复发不再以大面积命名漂移、受众泄漏或一般叙事赘余为主，而集中在以下四维："
+    },
+    {
       "id": "DOSSIER-DOC-SWEEP-20260717-54167D9495",
       "path": ".artifacts/doc_sweep_20260717",
       "entry_file": null,
@@ -518,6 +614,22 @@
         "other"
       ],
       "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-DUAL-BATCH-20260822-8B12C909BE",
+      "path": ".artifacts/dual_batch_20260822",
+      "entry_file": ".artifacts/dual_batch_20260822/MONITORING_CHECKLIST_20260822.md",
+      "title": "双批监视清单（执行线硬步骤）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-22",
+      "topics": [
+        "other"
+      ],
+      "summary": "凡是用来抵消怀疑的断言——证明对方独立、说明对方做了额外工作、论证某风险不成立—— 在入档前必须回被引用的原文逐字核对，并在档案里写明核对方式（搜了哪些词、看了哪几行）。"
     },
     {
       "id": "DOSSIER-EMPTINESS-RITUAL-20260805-7CDD6F4EA4",
@@ -550,6 +662,54 @@
         "other"
       ],
       "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-FQ-ALLTARGET-BUDGET-R1-20260822-3944D8E8DD",
+      "path": ".artifacts/fq_alltarget_budget_r1_20260822",
+      "entry_file": ".artifacts/fq_alltarget_budget_r1_20260822/BRIDGE_MODEL_CONTRACT_PREREGISTERED.md",
+      "title": "批① G(a,136) 全目标版 · 桥接与模型合同预注册",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-22",
+      "topics": [
+        "other"
+      ],
+      "summary": "模型只消费并 hash-pin："
+    },
+    {
+      "id": "DOSSIER-FQ-ALLTARGET-PROBE-20260822-680F95E4AC",
+      "path": ".artifacts/fq_alltarget_probe_20260822",
+      "entry_file": ".artifacts/fq_alltarget_probe_20260822/ADDENDUM_PROTO_EXPORT_API_R2_PREREGISTERED.md",
+      "title": "批① G(a,136) · 求解器 proto 导出 API 勘误（R2，首个 Solve 前冻结）",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-22",
+      "topics": [
+        "other"
+      ],
+      "summary": "第一次执行 H0 时，完整 CpModel 已在内存中构建，但程序在保存 model proto 时抛出："
+    },
+    {
+      "id": "DOSSIER-FQ-SHELL-PROBE-20260822-85AAA0B55E",
+      "path": ".artifacts/fq_shell_probe_20260822",
+      "entry_file": ".artifacts/fq_shell_probe_20260822/ANCHOR_SELECTION_PREREGISTERED.md",
+      "title": "F(a,136) 单锚实验 · 锚位选择预注册",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-22",
+      "topics": [
+        "other"
+      ],
+      "summary": "本实验的目的不是让地图边界先把 Craw>=136 杀掉，而是检验在接触阈值仍存活时，selected-contact power-witness 条件能否补出新的供电税。"
     },
     {
       "id": "DOSSIER-FRONT-OFFSET-INCIDENT-20260718-2B25E2B21B",
@@ -727,6 +887,22 @@
       "summary": "性质：research-only 执行记录 截止日期：2026-08-03 状态：H20ROWPOWERUNSATBOTHR1INTERPRETATIONS 冻结输入：Git 3b4e859a0ffe080edd88953e2ad24811b3ecdeb7；16 号文书 SHA-256 b3980eccdc629612c5371f862a1a31891b48f8b6530d6452512ee9d1dd25ca8f 状态边界：U=(1188,18)、L=absent 未改变。"
     },
     {
+      "id": "DOSSIER-HANDOFF-REGISTRATION-POINTS-20260827-42AE5EB4B1",
+      "path": ".artifacts/handoff_registration_points_20260827",
+      "entry_file": ".artifacts/handoff_registration_points_20260827/REGISTRATION_POINTS_INVENTORY.md",
+      "title": "历史树登记点移交清单",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-27",
+      "topics": [
+        "other"
+      ],
+      "summary": "---"
+    },
+    {
       "id": "DOSSIER-I1-ROUND4-SELF-CHECK-20260820-0CFC3F056C",
       "path": ".artifacts/i1_round4_self_check_20260820",
       "entry_file": null,
@@ -752,6 +928,38 @@
         "recovery_instructions": ".artifacts/README.md",
         "source_locator": "worktree-local audit receipts; reproduce from the commands recorded in each receipt"
       }
+    },
+    {
+      "id": "DOSSIER-INGAME-CONFIRMATION-INVENTORY-20260824-808BF4ABF2",
+      "path": ".artifacts/ingame_confirmation_inventory_20260824",
+      "entry_file": ".artifacts/ingame_confirmation_inventory_20260824/INVENTORY_INGAME_CONFIRMATIONS.md",
+      "title": "游戏内确认总清单",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-24",
+      "topics": [
+        "other"
+      ],
+      "summary": "路径缩写："
+    },
+    {
+      "id": "DOSSIER-INNER-LOOP-ARCHAEOLOGY-20260823-082713845F",
+      "path": ".artifacts/inner_loop_archaeology_20260823",
+      "entry_file": ".artifacts/inner_loop_archaeology_20260823/COMPARE_LENS1_OPS.md",
+      "title": "镜头一·操作顺序：内环时期实际思路 vs 求解面方法论 对表",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-23",
+      "topics": [
+        "other"
+      ],
+      "summary": "文档性质：盲态对比分析（research-only，不动 tracked 文件、不 commit）。 镜头：以「思路的实际操作顺序」为主轴——方法论规定的动作顺序／优先级／判据，对表时期实践里实际的动作顺序／优先级／判据。 时间窗口：2026-07-16T20:03:01.171Z → 2026-08-08T02:42:00Z（与年表同窗）。 产出日期：2026-08-23。"
     },
     {
       "id": "DOSSIER-IP-ADAPTER-V3-20260805-463C50D116",
@@ -786,6 +994,22 @@
       "summary": "状态：任务取消，代码零改动。模拟器现有的「10 秒固定窗配额」实现是对的，不需要修改。"
     },
     {
+      "id": "DOSSIER-KERNEL112-RERUN-FEASIBILITY-20260823-27E9CB0033",
+      "path": ".artifacts/kernel112_rerun_feasibility_20260823",
+      "entry_file": ".artifacts/kernel112_rerun_feasibility_20260823/RERUN_FEASIBILITY_LINE3.md",
+      "title": "112 核重跑可行性调查 · 下界线",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-23",
+      "topics": [
+        "other"
+      ],
+      "summary": "这不是执行困难，是任务书的前提已不成立，需要重新定义本次重跑要证明什么。"
+    },
+    {
       "id": "DOSSIER-LAYER2-GATES-EC926F69A7",
       "path": ".artifacts/layer2_gates",
       "entry_file": null,
@@ -802,6 +1026,22 @@
       "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
     },
     {
+      "id": "DOSSIER-LOWERBOUND-LADDER-20260824-5DB141FDEA",
+      "path": ".artifacts/lowerbound_ladder_20260824",
+      "entry_file": ".artifacts/lowerbound_ladder_20260824/CHARTER_PROPOSAL_LOWERBOUND_LADDER.md",
+      "title": "立项书 · 下界阶梯线(零条件可行性起步)",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-24",
+      "topics": [
+        "other"
+      ],
+      "summary": "日期:2026-08-24 · 立项人:主会话 · 依据:docs/项目说明/30researchcharter.md 立项律;基线臂(下界线)封账后的后继构造线。owner 已批立案(2026-08-24)。"
+    },
+    {
       "id": "DOSSIER-M5-REVALIDATION-20260803-40F267675F",
       "path": ".artifacts/m5_revalidation_20260803",
       "entry_file": ".artifacts/m5_revalidation_20260803/NOTES.md",
@@ -816,6 +1056,22 @@
         "other"
       ],
       "summary": "一直跑，不设时限；停机条件 = 左线程真的需要机器资源时，届时停掉按「枚举 censored@N 小时」入账（三大发现已在案，无损科学结论）。此前我建议的 24h 复查点作废。"
+    },
+    {
+      "id": "DOSSIER-MATH-TRANSLATION-DERIVATION-20260823-4D5847E507",
+      "path": ".artifacts/math_translation_derivation_20260823",
+      "entry_file": ".artifacts/math_translation_derivation_20260823/GPTPRO_MATH_DERIVATION.md",
+      "title": "Owner“推理外环”数学翻译的可实例化推导",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-23",
+      "topics": [
+        "other"
+      ],
+      "summary": "日期： 2026-08-23 研究对象： 70×70 当前 certified-exact 最大空矩形问题，以及由其参数化得到的一般布局问题族 问题来源： .artifacts/mathtranslationderivation20260823/MATHTRANSLATIONSDIGEST.md 正式问题定义： docs/项目说明/01overview.md、PROJECTLOCK.md、rules/canonicalrules.json、data/preprocessed/mandatoryexactinsta…"
     },
     {
       "id": "DOSSIER-MEMSYS-MEETING-20260808-1BB4142581",
@@ -848,6 +1104,22 @@
         "other"
       ],
       "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
+    },
+    {
+      "id": "DOSSIER-METABOLISM-GPT-REVIEW-20260822-543D8A452F",
+      "path": ".artifacts/metabolism_gpt_review_20260822",
+      "entry_file": ".artifacts/metabolism_gpt_review_20260822/CC_COLLAB_SYSTEM_REVIEW_RAW_20260822.md",
+      "title": "CC 协作体系全面评审 · gpt-pro 逐字收割(2026-08-22)",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-22",
+      "topics": [
+        "other"
+      ],
+      "summary": "---"
     },
     {
       "id": "DOSSIER-MIXFLOW-DEMIX-BAN-20260807-FFEA2B3CE4",
@@ -949,6 +1221,64 @@
         "manifest_sha256": "a14fd39600c915ab7e6561e01bb0ee4dcd064aca96fc742e4dc1eaae82d73067",
         "recovery_instructions": ".artifacts/README.md",
         "source_locator": ".artifacts/np_theorem_correspondence_20260817/GPT_CORRESPONDENCE.md"
+      }
+    },
+    {
+      "id": "DOSSIER-OUTER-LOOP-ARCHAEOLOGY-20260822-A9FE6ADF3D",
+      "path": ".artifacts/outer_loop_archaeology_20260822",
+      "entry_file": ".artifacts/outer_loop_archaeology_20260822/EARLIEST_PROPOSAL_RECHECK.md",
+      "title": "推理外环生成循环最早提案复核",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-22",
+      "topics": [
+        "other"
+      ],
+      "summary": "最早可定位的、直接属于本题生成思想的 owner 原话是："
+    },
+    {
+      "id": "DOSSIER-OUTER-LOOP-DRIFT-PROBE-20260822-DF1B033BBC",
+      "path": ".artifacts/outer_loop_drift_probe_20260822",
+      "entry_file": ".artifacts/outer_loop_drift_probe_20260822/GPTPRO_DRIFT_ANALYSIS.md",
+      "title": "推理外环漂移探针：直觉、数学翻译与当前研究内容的对位裁断",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-22",
+      "topics": [
+        "other"
+      ],
+      "summary": "owner 的感觉基本是对的，但不应裁成“当前数学走错了”。项目已经做出过一次非常纯正的推理外环成果，也正在挖到新的正确概念。真正的偏差是：许多近期研究把“发现一个局部结构、压缩一批日志、判定一个固定邻域”本身当成了闭环，而 owner 最初说的是让这个新结构成为以后推理可以直接使用的新字母，再与老规则组合，继续推出第二级、第三级规则。"
+    },
+    {
+      "id": "DOSSIER-OUTER-LOOP-PRECEDENTS-20260824-1C4F82D991",
+      "path": ".artifacts/outer_loop_precedents_20260824",
+      "entry_file": ".artifacts/outer_loop_precedents_20260824/OUTER_LOOP_PRECEDENT_SURVEY.md",
+      "title": "推理外环与搜索内层先行架构综述",
+      "kind": "directory",
+      "lifecycle": "active",
+      "relevance": "unreviewed",
+      "curation": "curated",
+      "tracked_state": "local_optional",
+      "date": "2026-08-24",
+      "topics": [
+        "solver-architecture"
+      ],
+      "summary": "Local-optional evidence registered through docctl; semantic outcome is pending closure review.",
+      "workflow": {
+        "opened_at": "2026-08-24",
+        "closure": null
+      },
+      "portability": {
+        "manifest_path": ".artifacts/outer_loop_precedents_20260824/MANIFEST.json",
+        "manifest_sha256": "05390354d666f381071d278090ea1c74c58bc8ee8aa036cb1d920e4c33150e8b",
+        "recovery_instructions": ".artifacts/README.md",
+        "source_locator": ".artifacts/outer_loop_precedents_20260824/OUTER_LOOP_PRECEDENT_SURVEY.md"
       }
     },
     {
@@ -2232,6 +2562,22 @@
       }
     },
     {
+      "id": "DOSSIER-PORT-CLEARANCE-CONFIRMATION-HUNT-20260824-5BC285302F",
+      "path": ".artifacts/port_clearance_confirmation_hunt_20260824",
+      "entry_file": ".artifacts/port_clearance_confirmation_hunt_20260824/HUNT_REPORT.md",
+      "title": "端口前沿游戏内实测确认检索报告",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-24",
+      "topics": [
+        "other"
+      ],
+      "summary": "最佳落点："
+    },
+    {
       "id": "DOSSIER-POSTMEM-BLIND-COLLISION-20260818-4DB4F7129F",
       "path": ".artifacts/postmem_blind_collision_20260818",
       "entry_file": ".artifacts/postmem_blind_collision_20260818/COLLISION_REPORT.md",
@@ -2334,6 +2680,38 @@
       "summary": "本目录未提供 Markdown 入口；请从目录内的结构化收据、日志或脚本下钻。"
     },
     {
+      "id": "DOSSIER-RESEARCH-PROGRAM-SYNTHESIS-20260823-3B13C1A76B",
+      "path": ".artifacts/research_program_synthesis_20260823",
+      "entry_file": ".artifacts/research_program_synthesis_20260823/CHARTER_DRAFT_A.md",
+      "title": "研究纲领草案",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-23",
+      "topics": [
+        "other"
+      ],
+      "summary": "状态：方向草案 日期：2026-08-23"
+    },
+    {
+      "id": "DOSSIER-RESEARCH-WORK-REVIEW-LETTER-20260827-93D0FDA815",
+      "path": ".artifacts/research_work_review_letter_20260827",
+      "entry_file": ".artifacts/research_work_review_letter_20260827/LETTER.md",
+      "title": "一封信:我们从外面看你这一个月的工作",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-27",
+      "topics": [
+        "other"
+      ],
+      "summary": "写信人:owner 和历史树主会话(CC)。这几天我们把 E001–E059 完整读了一遍——成果总账、两份日志、纲领与立案,还下到实验脚本层看了 import 和约束的写法。owner 让我把我们聊下来的看法整理成一封信给你,聊天的语气,不带任何要求;里面的\"建议\"全是外部视角的观察,采不采、怎么采都由你。"
+    },
+    {
       "id": "DOSSIER-SIXPRED-UPPER-NEXT-BAND-20260821-CAA91F9B9A",
       "path": ".artifacts/sixpred_upper_next_band_20260821",
       "entry_file": ".artifacts/sixpred_upper_next_band_20260821/enum/REPORT.md",
@@ -2358,6 +2736,22 @@
         "recovery_instructions": ".artifacts/README.md",
         "source_locator": ".artifacts/gpt_harvest_20260818/TASK_SIXPRED_UPPER_CLOSEOUT_20260821.md（§12 MANIFEST 终态、§14 关键 SHA、§15 冻结输入承诺）"
       }
+    },
+    {
+      "id": "DOSSIER-SKELETON-COMPLETION-20260822-CCF39635F7",
+      "path": ".artifacts/skeleton_completion_20260822",
+      "entry_file": ".artifacts/skeleton_completion_20260822/CONSTRUCTION_CONTRACT_GPT_PRO.md",
+      "title": "骨架补全构造契约",
+      "kind": "directory",
+      "lifecycle": "historical",
+      "relevance": "unreviewed",
+      "curation": "auto_indexed",
+      "tracked_state": "local_optional",
+      "date": "2026-08-22",
+      "topics": [
+        "other"
+      ],
+      "summary": "完整成功只由以下命令裁断："
     },
     {
       "id": "DOSSIER-SOLVER-REASONING-OUTER-LOOP-PHASE-MINUS1-20260815-7FA2A0E225",
