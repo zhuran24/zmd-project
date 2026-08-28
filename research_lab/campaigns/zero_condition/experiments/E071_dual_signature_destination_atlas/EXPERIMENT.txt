@@ -1,0 +1,73 @@
+EXPERIMENT E071: DUAL-SIGNATURE DESTINATION ATLAS
+================================================
+
+Question
+--------
+For the feasible E070 target-36 dual filling signature, which of the 38 current
+manufacturing-6x4 destinations can carry it while preserving exact operation
+counts and both terminal-signature zeros, and why does the one real exact dual
+mode not close the actual parent model?
+
+Why this experiment
+-------------------
+E070 proves that every hypothetical filling-capsule signature
+
+  fine input      x
+  qiaoyu output   29
+
+is sufficient for the E069 face when it may be inserted at any destination. It
+also finds one real exact dual option for x=36:
+
+  filling_capsule_002
+  destination 24
+  pose 8064
+  fine input component 36
+  qiaoyu output component 29
+
+Yet the all-real E069 model has exact minimum mismatch one. Signature existence is
+therefore not the same as globally consumable signature placement. E071 resolves
+that distinction at destination granularity.
+
+Method
+------
+1. Reconstruct the E069 parent and exact target-36 option space under
+   source-isolated imports.
+2. For each of the 38 destinations, add the same tagged synthetic target-36
+   filling signature only at that destination. Require exactly one tagged option,
+   exact filling/fine-grinder/other operation counts, actual generic qiaoyu sink
+   choice, fine source/sink equality, and qiaoyu source/sink equality.
+3. Solve every destination to a terminal status.
+4. Independently remove all synthetic options and force the unique real exact dual
+   option (pose 8064 at destination 24). Solve the same two-zero model.
+5. For every synthetic-feasible destination, inventory its real filling options
+   and classify them as exact dual, qiaoyu-29 half, fine-36 half, or neither.
+6. Write a typed destination atlas for the next physical relation.
+
+Decision rule
+-------------
+The real destination is feasible
+  The all-real parent optimum contradicts the forced-option model; stop and repair
+  option identity or model transport before further research.
+
+The real destination is infeasible, but other destinations are feasible
+  The missing object is destination compatibility. Search only for a way to
+  transport or realize the dual signature on one feasible destination,
+  prioritizing destinations with a real half-signature.
+
+No destination is feasible
+  E070's free-destination synthetic result is inconsistent; quarantine E070 and
+  repair its model.
+
+Any UNKNOWN
+  Preserve only nonterminal destinations; do not infer a destination exclusion.
+
+Truth boundary
+--------------
+E071 remains inside the corrected terminal-signature relaxation. A feasible
+synthetic destination is a constructive specification, not a legal pose, full
+binding witness, or route. The forced real option tests only this frozen E069
+parent and exact operation-count abstraction.
+
+Result
+------
+Not run yet.
