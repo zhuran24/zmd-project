@@ -1,0 +1,86 @@
+EXPERIMENT E074: MINIMUM ASSIGNMENT TRANSPORT CORE
+=================================================
+
+Question
+--------
+For each of E070's six synthetically sufficient dual filling signatures, what is
+the minimum number of fixed 6x4 body rows whose selected operation/mode option
+must change when moving from some E069 objective-one witness for that component
+to some terminal-signature-zero witness using exactly one synthetic dual option?
+
+Why this experiment
+-------------------
+E070 source-stably corrected the earlier phantom chain. Exactly six of E069's
+twelve source-only components admit the proposed synthetic filling signature:
+
+  {1,4,8,12,22,26}
+
+No current real filling option has both fine input in one of those targets and
+qiaoyu output in component 29. The next uncertainty is therefore not yet a broad
+geometry bridge. It is whether the missing option can be consumed by a tiny
+operation-assignment transport core or requires a large global reassignment.
+
+A single arbitrary E069 witness would be an unsafe baseline. E074 instead solves
+two assignment copies simultaneously: the baseline copy may choose any witness
+on the target's complete objective-one face, and the zero copy may choose any
+terminal-signature-zero witness with one synthetic dual filling option. The
+objective minimizes their row-wise Hamming distance directly.
+
+Method
+------
+1. Pin the source-stable E069 parent and the completed E070 run-004 result/atlas.
+2. Reconstruct the same 38 fixed 6x4 bodies, current native option domains, and
+   actual generic qiaoyu sink space.
+3. For every E069 face component x, build paired assignment models:
+
+   baseline copy
+     * native options only;
+     * exact operation counts;
+     * qiaoyu sink fixed to component 29;
+     * fine source-only mismatch exactly at x.
+
+   zero copy
+     * the same native options plus one synthetic filling option on every body;
+     * exact operation counts;
+     * exactly one synthetic option;
+     * fine source/sink equality on every component;
+     * qiaoyu source/sink equality with sink fixed to component 29.
+
+4. Introduce one changed-row Boolean per fixed body. A row is unchanged only when
+   both copies select the identical native option. Minimize the changed-row sum.
+5. Fix the optimum and solve a deterministic secondary objective to materialize a
+   stable pair of assignments.
+6. Report each changed row by stable occupied-body identity (body digest and
+   cells), not only by the geometry-dependent destination index. Record operation
+   transitions, mode/signature changes, the synthetic destination, and full
+   baseline/zero assignments.
+7. Check that paired feasibility agrees exactly with E070's six feasible and six
+   infeasible targets.
+
+Decision rule
+-------------
+Minimum core size 1
+  The missing structure is a same-body mode/signature gap. Stop broad geometry
+  search and synthesize or realize that one local option.
+
+Minimum core size 2 or 3
+  Build one bounded simultaneous assignment/mode consumer on those stable bodies.
+  Do not scan E069's 103-owner inventory.
+
+All feasible targets require larger cores
+  The assignment-transport shortcut is not the expected order-of-magnitude win;
+  return to a broader representation without claiming a small core.
+
+Any UNKNOWN or E070 disagreement
+  Preserve the nonterminal target and do not derive a transport rule.
+
+Truth boundary
+--------------
+E074 is still a corrected terminal-signature abstraction on E069's fixed occupied
+geometry. A small row core is a constructive assignment specification, not a
+physical pose, full binding, routing, throughput, whole-layout witness, or
+certification result.
+
+Result
+------
+Not run yet.
