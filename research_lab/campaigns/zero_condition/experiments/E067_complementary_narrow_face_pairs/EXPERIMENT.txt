@@ -1,0 +1,72 @@
+EXPERIMENT E067: COMPLEMENTARY COMPOSITION OF NARROW PAIR FACES
+================================================================
+
+Question
+--------
+Can two of E066's twelve face-narrowing actions compose on the fixed E063 pole
+parent to reach the corrected two-zero signature condition, or at least shrink the
+complete residual face below five unmatched components?
+
+Why this experiment
+-------------------
+E066 exhausts all 780 objective-one E063 pair states. None has a stable singleton
+face. Exactly twelve states, drawn from two dense-blue-iron grinder bodies and two
+remote power-pole bodies, reduce the complete face from six patterns/components to
+five. They form six face classes and remove different source-only alternatives.
+
+This supplies a bounded, causal third relation. E067 does not add an arbitrary
+third object to 780 states. It composes only the twelve actions that have already
+proved complete-face narrowing, yielding at most 66 unordered pairs before same-
+object and physical-admission rejection.
+
+Method
+------
+1. Pin E063 run-008, E066 result/atlas, the twelve selected candidate identities,
+   and the source-stable E061/E062/E063/E066 runners.
+2. Reconstruct the E063 pole parent and each selected action's exact single-action
+   child. Extract an order-free mapping delta from parent to child, including
+   optional-pole key replacement.
+3. For each unordered action pair with distinct source objects, merge the two
+   deltas simultaneously against the frozen parent. Reject conflicting writes,
+   duplicate occupation targets, cardinality drift, overlap, and power loss. The
+   current twelve-action set contains no target-key swap, so no broader swap
+   semantics are claimed.
+4. Independently validate mandatory/pole counts, no-overlap occupancy, and exact
+   power coverage on the merged state.
+5. Rebuild components, generic sink space, and all current 6x4 signatures. Require
+   qiaoyu compatibility and minimize fine mismatch.
+6. Replay every objective-zero state in the joint signature model and materialize
+   a small deterministic set for full conditional-binding validation.
+7. For objective-one states, enumerate the complete face and compare it with the
+   five-component parents rather than trusting one representative.
+
+Decision rule
+-------------
+At least one objective-zero composition
+  Materialize it and immediately validate the full conditional port-mode,
+  operation-assignment, and binding consumer.
+
+No zero, but a complete face has one stable unmatched component
+  Derive one final narrow relation from that stable component. Do not broaden the
+  triple lineage outside the E067 states.
+
+No singleton, but a complete face has fewer than five unmatched components
+  Retain only the strict narrowest class and test one more relation under an
+  explicit stop boundary.
+
+No face below five
+  Retire the pole-conditioned lineage and switch to E062's distinct 6x4 near-miss
+  parent.
+
+Any UNKNOWN
+  Preserve the state and continue only the nonterminal candidates.
+
+Truth boundary
+--------------
+E067 changes the fixed E055 first-zero state by the E063 pole action plus two
+E066-selected actions and evaluates the corrected terminal-signature relaxation.
+It does not establish full binding, routing, throughput, U/L, or certification.
+
+Result
+------
+Not run yet.
