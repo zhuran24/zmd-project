@@ -25,7 +25,7 @@ if str(ROOT) not in sys.path:
 OUT = (
     ROOT
     / "research_lab/local/zero_condition/"
-    "E070_dual_filling_signature_targets/run-001"
+    "E070_dual_filling_signature_targets/run-002"
 )
 RESULT_PATH = OUT / "RESULT.json"
 FAILURE_PATH = OUT / "FAILURE.json"
@@ -50,7 +50,7 @@ E069_FACE = E069_RESULT.parent / "FACE_CONTEXT.json"
 
 EXPECTED_ENV = {
     "PYTHONHASHSEED": "0",
-    "PYTHONPYCACHEPREFIX": "/tmp/zmd_e070_source_cache_v1",
+    "PYTHONPYCACHEPREFIX": "/tmp/zmd_e070_source_cache_v2",
     "EXACT_USE_POSE_BOOL_MASTER": "1",
     "EXACT_USE_PORT_ACTIVE": "1",
     "EXACT_MASTER_HINT_PERSISTENCE": "0",
@@ -458,13 +458,14 @@ def existing_signature_audit(
     qiaoyu_29: list[dict[str, Any]] = []
     for destination, options in sorted(context["options"].items()):
         body = bodies[int(destination)]
-        for operation, pose_idx, signature in options:
+        for option_index, (operation, pose_idx, signature) in enumerate(options):
             if str(operation) != FILLING:
                 continue
             fine_input = tuple(int(value) for value in signature[0])
             qiaoyu_output = tuple(int(value) for value in signature[2])
             record = {
                 "destination": int(destination),
+                "option_index": int(option_index),
                 "source_instance_id": str(body["source_instance_id"]),
                 "current_operation": str(body["current_operation"]),
                 "pose_idx": int(pose_idx),
@@ -479,15 +480,36 @@ def existing_signature_audit(
                     fine_input_by_target[str(target)].append(record)
                     if TARGET_QIAOYU_COMPONENT in qiaoyu_output:
                         exact_dual_by_target[str(target)].append(record)
+    recomputed_exact_dual: dict[str, list[dict[str, Any]]] = {}
+    for target in targets:
+        key = str(target)
+        recomputed_exact_dual[key] = [
+            row
+            for row in qiaoyu_29
+            if int(target) in set(row["fine_input_components"])
+        ]
+        if stable_digest(recomputed_exact_dual[key]) != stable_digest(
+            exact_dual_by_target[key]
+        ):
+            raise RuntimeError(f"E070 exact-dual audit mismatch for target {target}")
+    exact_dual_targets = [
+        int(target)
+        for target, values in recomputed_exact_dual.items()
+        if values
+    ]
     return {
         "filling_option_count": len(rows),
         "qiaoyu_29_option_count": len(qiaoyu_29),
         "qiaoyu_29_options": qiaoyu_29,
         "fine_input_options_by_target": fine_input_by_target,
-        "exact_dual_options_by_target": exact_dual_by_target,
-        "exact_dual_target_count": sum(
-            bool(values) for values in exact_dual_by_target.values()
+        "exact_dual_options_by_target": recomputed_exact_dual,
+        "exact_dual_option_count": sum(
+            len(values) for values in recomputed_exact_dual.values()
         ),
+        "exact_dual_targets": exact_dual_targets,
+        "exact_dual_target_count": len(exact_dual_targets),
+        "actual_parent_joint_minimum": 1,
+        "actual_parent_joint_zero_feasible": False,
         "audit_digest": stable_digest(rows),
     }
 
