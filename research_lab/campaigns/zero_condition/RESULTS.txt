@@ -2575,6 +2575,11 @@ evidence:
   FACE_CONTEXT.json sha256
   9265a64a4caaddbf67ff0925e5b984bb789ab39ff7a455acfb1ae7ee3fcdf584.
 
+  Superseded by R-ZC-084. The three hashes above, the twelve-component list and
+  the owner counts in the statement belong to an earlier run whose artifacts were
+  overwritten and are not recoverable. The conclusion is unchanged; for current
+  values see R-ZC-084 and E069 RESULT.txt.
+
 R-ZC-081  A missing dual filling signature is absorbed by two or three assignment rows
 --------------------------------------------------------------------------------------
 status: OPTIMAL or INFEASIBLE on every one of twelve paired assignment models
@@ -2693,6 +2698,118 @@ evidence:
   0689fd9ea0e96a5c8ab9070efe4696735fcb73b652f461fb20bb475d60526614;
   E077_BENDERS_R30.json sha256
   accf6e133b87f5029ecfefcf3905a1d3326695d6abdf723732c3ddbcb3738863.
+
+R-ZC-084  E069's committed record described an unrecoverable earlier run
+------------------------------------------------------------------------
+status: superseded record; current artifacts authoritative
+scope: E069 run-001 artifacts and every downstream pin
+
+statement:
+  E069 RESULT.txt and R-ZC-080 recorded three artifact hashes, a runner hash and
+  a twelve-component source-only list that no longer match the files on disk. The
+  run-001 artifacts were overwritten in place by the source-stable re-run and are
+  not recoverable, so the superseded record cannot be re-verified. Current values
+  are RESULT.json cc16d6f3..., PARENT_SOLUTION.json b8e4d61d...,
+  FACE_CONTEXT.json c05a4e94..., runner 2061d59f..., source-only components
+  {1,4,8,12,14,22,26,32,37,38,40,41}, 225 boundary owners, 92 multi-component
+  separators and 103 candidate objects.
+
+  The verdict, the decision, the parent action grinder_dense_source_002 pose
+  7006 -> 6878, the twelve-pattern complete face, the backbone, the qiaoyu sink,
+  the absence of any stable unmatched component and the 103-object inventory size
+  are identical across the two runs. What changed is the component labelling, two
+  owner counts and the hashes.
+
+  Two provenance facts are recorded rather than resolved. The previously recorded
+  runner hash e71e8bd0... matches no version of run_e069.py that has ever existed
+  in this repository, which was added at bbe8026 with content 2061d59f... and
+  never changed; the superseded run therefore used an uncommitted runner. And the
+  previous 190 boundary owners reconciles with no current figure, although the
+  previous 65 separators equals the current count of non-6x4 separators exactly
+  and the 103 inventory is unchanged.
+
+non-implications:
+  This does not refute E069, whose conclusion is unchanged, and does not show the
+  superseded run was wrong. It shows only that it cannot be verified. The
+  190-versus-225 discrepancy is recorded as open, not resolved, and the identical
+  103 must not be read as proof that the two runs saw the same geometry.
+
+effect on next problem:
+  Cite the current hashes. Resolve E069's face regions by physical witness, such
+  as the protocol_core_001 input slots 0-3 at cells (58,60) through (58,63) that
+  anchor the qiaoyu sink region, and never by copying component integers between
+  runs. Component integers in this campaign are enumeration-local indices.
+
+evidence:
+  E069 RESULT.txt as retrospectively updated 2026-08-28; local run-001
+  RESULT.json sha256
+  cc16d6f308856201cfe06d85617290481ecde85815e5c83f1d9a4acbeb4efcaa;
+  PARENT_SOLUTION.json sha256
+  b8e4d61d2a5e2befcedcb815b558d07ae84b3620b0bcab82644610154301b49a;
+  FACE_CONTEXT.json sha256
+  c05a4e94ea370e8b674e44cd7206a9189ddd2102b824d36acd65975395c46c3e.
+
+R-ZC-085  Renumbering drift silently killed E071, E072 and E073
+---------------------------------------------------------------
+status: three entry failures, each with a persisted failure record
+scope: E071, E072 and E073 run-001
+
+statement:
+  All three runners pin the superseded E069 hash 38cd4ec5... at run_e071.py:73,
+  run_e072.py:71 and run_e073.py:81. All three aborted inside verify_identity
+  before building any model, raising the identical frozen identity drift against
+  the current cc16d6f3..., at 2026-08-28T01:48:45Z, 01:56:30Z and 02:07:41Z. The
+  only persisted artifacts are three FAILURE.json files with status
+  EXECUTION_FAILURE and ledger_effect none. E070 was rebound to the current E069
+  artifact and ran to run-004; these three were never rebound.
+
+  The damage is not only mechanical. All three are posed in the retired component
+  labelling. E071 targets the dual filling signature at "component 36", which does
+  not appear in the current face at all, and E072 and E073 each consume outputs
+  that the previous link never produced.
+
+non-implications:
+  These are execution failures, not negative results. Nothing may be cited from
+  them about destination compatibility, half-signature component bridges, or
+  owner-bridge replay. In particular no artifact anywhere supports E073's stated
+  premise that E072 found a one-owner destination-preserving bridge.
+
+effect on next problem:
+  Rebinding these three is not a hash edit. Their targets must first be
+  re-identified by physical witness against the current E069 face, after which
+  the questions can be re-posed or dropped.
+
+evidence:
+  E071, E072 and E073 RESULT.txt; local run-001 FAILURE.json sha256
+  e1819a5c945f172a2c606098495d795031d68043983e3969cfde77b2ac386b05,
+  1ed07b478f50ed226a524994498117094ae25786746e92a3091ccfad985f6613 and
+  400e10a300fb7fdfb3f53ab0aaa67ac5786a267efd9ffff8d337195c93b89448.
+
+R-ZC-086  E076 persisted nothing and cannot be cited
+----------------------------------------------------
+status: record status only; no durable evidence
+scope: six disposable probes on the E075 frontier
+
+statement:
+  E076 ran six probe scripts asking which body causes the native option-domain
+  collapse that killed ten of E075's twelve pairs, and whether a third body
+  repairs it. None of the six contains write_text, a .write( call, or an
+  open(..., 'w'); all output went to stdout and was not captured.
+  research_lab/local/zero_condition/ holds the six scripts and no E076 output of
+  any kind, and that directory is git-ignored.
+
+non-implications:
+  Nothing about blocking bodies, joint filling/blocker geometry domains, the six
+  filling/planter009 geometries, causal third owners, or three-body exhaustion may
+  be cited from E076. This is an absence of evidence and not a negative result.
+
+effect on next problem:
+  Any of those questions must be recomputed with persisted output. Numbers
+  recalled from the session that ran the probes are not evidence and must not be
+  written into any record.
+
+evidence:
+  E076 RESULT.txt; the six probe script hashes recorded in E076 EXPERIMENT.txt.
 
 Current synthesis
 -----------------
