@@ -26,7 +26,7 @@ if str(ROOT) not in sys.path:
 OUT = (
     ROOT
     / "research_lab/local/zero_condition/"
-    "E078_target26_transport_core_stability/run-001"
+    "E078_target26_transport_core_stability/run-002"
 )
 RESULT_PATH = OUT / "RESULT.json"
 FAILURE_PATH = OUT / "FAILURE.json"
@@ -239,7 +239,9 @@ def verify_identity() -> dict[str, Any]:
         result.get("verdict") != "SMALL_ASSIGNMENT_TRANSPORT_CORES_FOUND"
         or int(target_record["minimum_changed_row_count"]) != 2
         or int(target["minimum_changed_row_count"]) != 2
-        or tuple(int(value) for value in target["changed_destinations"])
+        or tuple(
+            sorted(int(row["destination"]) for row in target["changed_rows"])
+        )
         != CORE_ROWS
     ):
         raise RuntimeError("E078 E074 target-26 witness drift")
