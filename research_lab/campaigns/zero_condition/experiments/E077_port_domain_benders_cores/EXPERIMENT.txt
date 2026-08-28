@@ -1,0 +1,81 @@
+EXPERIMENT E077: PORT-DOMAIN BENDERS CORES OVER THE A+B VACANCY
+==============================================================
+
+Record status
+-------------
+This directory is a retrospective record, written after the fact. E077 was run as
+a series of disposable probe scripts under research_lab/local/zero_condition/,
+not as a tracked runner in this tree, and no question, decision rule, or stop
+boundary was declared in advance. The sections below transcribe the model that
+the surviving scripts actually build and the results that were actually
+persisted. Everything the probes printed only to stdout is gone; RESULT.txt marks
+those items unverifiable rather than reconstructing them.
+
+Question
+--------
+E075 closed the two-body native context by showing that moving owners A and B
+empties other rows' native option domains. The follow-on question is how much of
+the 38-body footprint layout must be rebuilt to keep the A+B cells clear while
+every operation still gets a legal port domain: how many current bodies can be
+retained, and what minimal footprint combinations are already impossible.
+
+Probe scripts
+-------------
+All five live in research_lab/local/zero_condition/ and are untracked. Pinned by
+content so this record identifies exact versions:
+
+  E077_vacancy_chain_probe.py
+    75885e2dca62e003f9b35d820b164a716ceecbabcfcd530e72bc4630bfeaf874
+  E077_iterative_probe.py
+    b03723a35cf8569ddd28b5c3178e1885c2369574b7e05b5ae382bb89f62fc0d6
+  E077_port_cut_probe.py
+    c6944ce013bc054ef4df9a7ecc0fafe623489182d50f5ff387ad0d320a477c3b
+  E077_port_cut_ladder.py
+    5a57befad7d832cb5e7fc4b9de05963aecb49fdd75554f5684332aab969c7e15
+  E077_integrated_port_master.py
+    3fa3bebff190f11539ee96e201f5122937945d45b0b57804605198d3c1c8a8f0
+
+Only the last one writes a file. The other four print to stdout and persist
+nothing.
+
+Model actually built
+--------------------
+The integrated master is the only script whose output survives. It builds:
+
+1. A footprint atlas of 6x4 placements, excluding any footprint meeting the fixed
+   outside occupancy or the critical cells, where critical cells are the union of
+   owner A's and owner B's current cells taken from E075.
+2. A set-packing selection: one Boolean per candidate footprint, per-cell
+   disjointness, and Sum(y) == 38.
+3. Power coverage through the existing coverer tables.
+4. Operation demand classes derived from port profiles rather than named
+   operations, quotienting the 38 rows into three classes by required input and
+   output slot counts, with exact per-class cardinality.
+5. Per-footprint, per-pose, per-demand-class option variables gated by port front
+   usability.
+6. A Benders loop over a master with a retained-body cardinality target, in which
+   each subproblem infeasibility is replayed in a checker and stored as a
+   no-good over the footprint indices it assumed.
+
+The retained target is an environment parameter; retained r corresponds to
+38 - r moved bodies.
+
+What the model does not contain
+-------------------------------
+No routing, no connectivity, no component binding, no commodity terminals, no
+throughput, and no named-operation identity beyond the three port-profile demand
+classes. A footprint combination this model rejects is rejected on port-domain
+and packing grounds only.
+
+Truth boundary
+--------------
+E077 is a port-domain relaxation over 6x4 footprint geometry with the A+B cells
+forbidden. Cores it produces bound that relaxation. They are not placement cuts
+for the certified problem, not a separator or membrane result, and not evidence
+about any layout property the model does not represent.
+
+Result
+------
+Two checkpoint artifacts survive and are transcribed in RESULT.txt. No terminal
+verdict was persisted, and the minimum moved-body count E077 was built to find is
+not recoverable from any artifact.

@@ -2575,6 +2575,125 @@ evidence:
   FACE_CONTEXT.json sha256
   9265a64a4caaddbf67ff0925e5b984bb789ab39ff7a455acfb1ae7ee3fcdf584.
 
+R-ZC-081  A missing dual filling signature is absorbed by two or three assignment rows
+--------------------------------------------------------------------------------------
+status: OPTIMAL or INFEASIBLE on every one of twelve paired assignment models
+scope: E069 fixed occupied geometry, native terminal-signature domains, at most one
+       synthetic dual filling option
+
+statement:
+  E074 solves twelve paired baseline/zero assignment models, one per source-only
+  component of the pinned E069 face {1,4,8,12,14,22,26,32,37,38,40,41}. Six admit
+  a paired solution, {1,4,8,12,22,26}, and six are INFEASIBLE, reproducing E070's
+  split. No target is UNKNOWN or nonterminal. Each feasible target closes at
+  OPTIMAL with the bound equal to the optimum: target 26 at a minimum of two
+  changed rows, the other five at three. The six cores touch eight distinct stable
+  bodies and their intersection is empty. Target 26's core changes no operation at
+  all; it is one mode/signature change on grinder_dense_source_001 and one on
+  grinder_fine_buckwheat_002, the latter carrying the single synthetic option.
+
+non-implications:
+  The two-to-three row minima are CP-SAT optimality claims on one model each, not
+  a combinatorial theorem. No matching, alternating-path, or symmetric-difference
+  argument was used or proved. A row core is an assignment specification, not a
+  physical pose, full binding, routing, throughput, or whole-layout witness, and
+  the synthetic filling option is not known to be realizable. Because no body is
+  common to all six cores, no universal transport body is licensed.
+
+effect on next problem:
+  Do not scan E069's 103-owner inventory. Target 26's core is the cheapest and is
+  a same-operation mode change on two stable adjacent bodies, so test it
+  physically in the smallest complete two-body context first.
+
+evidence:
+  E074 RESULT.txt; local run-001 RESULT.json sha256
+  e3e59cc773b88f033d754a97ec16e28e9e18980c9f02b55ab8980851b95fa7c9;
+  TRANSPORT_CORE_ATLAS.json sha256
+  b1e7e2b4ad9b4d01e185a644c534e6528343cf1eba1be7d79f678dc6867ad459;
+  TARGET_026_TRANSPORT.json sha256
+  609e0be6613f27531e9a24bc757b3dbeb7574d6422e9eb55615cf117d74658f4.
+  The E069 parent artifacts E074 pins are the ones now on disk, whose hashes and
+  component labels differ from those recorded in R-ZC-080; see E074 RESULT.txt.
+
+R-ZC-082  The complete two-body native context reaches no target-26 zero
+------------------------------------------------------------------------
+status: exhaustive over the complete twelve-pair two-body context
+scope: E069 fixed outside occupancy, stable owners A/B, native same-footprint
+       modes, terminal-signature equality only
+
+statement:
+  E075 run-002 removes grinder_dense_source_001 and grinder_fine_buckwheat_002
+  from outside occupancy, exposing nine legal 6x4 footprints, eighteen raw
+  footprint modes across them, and twelve ordered non-overlapping pairs, all
+  twelve admitted on cardinality, non-overlap and exact power coverage. Each of
+  the three native arms FREE, CORE_OPERATIONS and PAIR_COUPLED returns 2
+  INFEASIBLE and 10 STRUCTURAL_EMPTY. There is no positive on any arm, no zero, no
+  materialized endpoint, no nonterminal and no UNKNOWN. All ten STRUCTURAL_EMPTY
+  pairs carry a non-empty empty_destinations list: once A and B move, some other
+  destination row loses its entire native option domain, the vacated sets being
+  {4,9,17}, {4} and {8,9}. The two INFEASIBLE pairs are exactly the two placements
+  whose transported target region is still component 26 and whose transported
+  parent qiaoyu sink slots still land in component 29.
+
+non-implications:
+  This is an exhaustive observation over twelve enumerated cases in one fixed
+  context, not a theorem. STRUCTURAL_EMPTY here is an empty option domain, not a
+  separator, membrane, or capacity argument; E075 proves no separator and must not
+  be cited as evidence for one. It does not close target 26 in general, does not
+  close E074's other five targets, and says nothing about three-body contexts,
+  full binding, routing, throughput, or certification. run-001 reported the same
+  counts but reused parent numeric component labels after changing geometry and is
+  superseded on semantics regardless of that agreement.
+
+effect on next problem:
+  Derive the next stable body from the specific option-domain collapse on the
+  vacated destinations rather than from the assignment failure, and do not reopen
+  a broad owner scan.
+
+evidence:
+  E075 RESULT.txt; local run-002 RESULT.json sha256
+  051f86c15fdfd637b015fa5328c1c6d5306ccef9ca10efffbd4f4c05a007a132;
+  TWO_BODY_FRONTIER.json sha256
+  79cc453234f7b0553b837315872502a987a8db86be35eb7b99b31d8ec3e7a665;
+  superseded run-001 RESULT.json sha256
+  3757305872126272d766e19d3e2f929cab7b4775c2294a2a66ab5788df1bed46.
+
+R-ZC-083  E077's port-domain core run has no persisted verdict
+--------------------------------------------------------------
+status: record status only; no durable conclusion reached
+scope: port-domain relaxation over 6x4 footprints with the A+B cells forbidden
+
+statement:
+  E077 ran as disposable local probes with no tracked runner and produced no
+  RESULT.json, verdict, or decision. Two Benders checkpoints survive: a legacy
+  file carrying 39 cores at retained target 30, and the current shared core store
+  carrying 207 cores over a 1090-footprint atlas. The 39 are a strict subset of
+  the 207, so the store is that same line resumed with 168 further cores. The
+  terminal Benders status exists only in stdout that was not captured.
+
+non-implications:
+  E077 supports no shortest vacancy chain. The figure 6 survives only as the loop
+  start START_MOVED at E077_port_cut_ladder.py:19, which is where the search was
+  told to begin, not what it found; the only moved-body count any artifact
+  supports is 8, from retained target 30 under the master's own moved = 38 -
+  retained convention. The cores bound a relaxation containing footprint packing,
+  power coverage, port-profile demand classes and port front usability, with no
+  routing, connectivity, binding, commodity or throughput content. They are not
+  placement cuts for the certified problem and carry no separator or membrane
+  claim. The store's own statement that each core was replayed INFEASIBLE in its
+  checker is the producing script's assertion and has not been independently
+  replayed.
+
+effect on next problem:
+  Anything downstream of E077 must either re-run the integrated master with a
+  persisted terminal result or cite only the two checkpoint artifacts below.
+
+evidence:
+  E077 RESULT.txt; local E077_BENDERS_SHARED_CORES.json sha256
+  0689fd9ea0e96a5c8ab9070efe4696735fcb73b652f461fb20bb475d60526614;
+  E077_BENDERS_R30.json sha256
+  accf6e133b87f5029ecfefcf3905a1d3326695d6abdf723732c3ddbcb3738863.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

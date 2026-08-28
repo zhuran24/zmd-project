@@ -1,0 +1,108 @@
+E077 RESULT: TWO CORE CHECKPOINTS SURVIVE; NO TERMINAL VERDICT WAS PERSISTED
+================================================================================
+
+Status
+------
+Partial and unfinished as a record. Research-only. E077 produced no RESULT.json,
+no verdict field, and no decision field. What exists is two Benders core
+checkpoints written by the integrated master; everything else the probes computed
+was printed to stdout and is lost. No full binding, routing, throughput,
+whole-layout witness, certification, U/L, owner, or publication effect.
+
+Frozen evidence
+---------------
+Shared core store, current:
+  research_lab/local/zero_condition/E077_BENDERS_SHARED_CORES.json
+
+SHA-256:
+  0689fd9ea0e96a5c8ab9070efe4696735fcb73b652f461fb20bb475d60526614
+
+Legacy checkpoint:
+  research_lab/local/zero_condition/E077_BENDERS_R30.json
+
+SHA-256:
+  accf6e133b87f5029ecfefcf3905a1d3326695d6abdf723732c3ddbcb3738863
+
+Verdict:
+  none recorded
+
+Decision:
+  none recorded
+
+What the two artifacts contain
+------------------------------
+Legacy checkpoint, schema zmd_e077_port_domain_benders_checkpoint_v1:
+
+  candidate_footprint_count   1090
+  retained_target             30
+  cores                       39, of sizes {1: 4, 2: 35}
+
+Shared core store, schema zmd_e077_port_domain_shared_core_store_v2:
+
+  candidate_footprint_count   1090
+  cores                       207, of sizes {1: 7, 2: 163, 3: 37}
+  demand_class_counts         in3_out1 32, in4_out1 3, in5_out1 3
+
+The store carries an identity block digesting the fixed occupancy, the selected
+poles, the footprint atlas, the critical cells, and the checker prototype, with
+6159 mode/operation variables and 12318 port constraints.
+
+The 39 legacy cores are a strict subset of the 207 stored cores, so the store is
+the same line of work resumed from the legacy checkpoint with 168 further cores
+added. The legacy file's producing script version is not present in the tree; the
+current master only reads that path as a legacy import and never writes it, and
+its schema is a version behind. That artifact is therefore self-describing but
+its producer is not recoverable.
+
+The store states its own core semantics:
+
+  "Each core was independently replayed INFEASIBLE in the checker with only its
+  footprint assumptions enabled; because checker sum(y)=38, the core forbids
+  every 38-footprint completion containing it."
+
+That is the producing script's assertion about its own checker, recorded here as
+the artifact's self-description. It has not been independently replayed.
+
+Retained and moved counts
+-------------------------
+The master defines moved bodies as 38 minus the retained target, in its own
+summary construction. The legacy checkpoint's retained_target of 30 therefore
+corresponds to 8 moved bodies under that convention. This is the only
+moved-body figure any E077 artifact supports.
+
+Not persisted, not recoverable
+------------------------------
+The following are explicitly recorded as unverifiable. They must not be cited as
+E077 results.
+
+1. A shortest six-body vacancy chain. No artifact contains it. The number 6
+   survives only as START_MOVED = 6 at E077_port_cut_ladder.py:19, which is the
+   lower bound of a loop over moved-body targets, that is, where the search was
+   told to begin, not what it found. The one moved-body count any artifact does
+   support is 8, from the legacy checkpoint above.
+
+2. Whether the Benders loop terminated. The master holds its terminal status only
+   in a summary printed to stdout; the checkpoint writer stores cores and identity
+   and never stores the terminal. Nothing on disk says whether the retained-30
+   master was proved infeasible, ran out of iterations, or was interrupted.
+
+3. Any output of the four probe scripts. E077_vacancy_chain_probe.py,
+   E077_iterative_probe.py, E077_port_cut_probe.py and E077_port_cut_ladder.py
+   contain no file write of any kind. All their results were printed and are gone.
+
+Scope limit on what the cores mean
+----------------------------------
+Even taken at face value, a core forbids a footprint combination only inside the
+port-domain relaxation described in EXPERIMENT.txt: 6x4 footprint packing, power
+coverage, port-profile demand classes, port front usability, and the A+B critical
+cell exclusion. The model has no routing, connectivity, binding, commodity, or
+throughput content. These cores are not placement cuts for the certified problem
+and carry no separator or membrane claim.
+
+Truth boundary
+--------------
+E077 is a port-domain relaxation probe whose record is incomplete by
+construction. It supports the existence of 207 replayed port-domain no-goods over
+a 1090-footprint atlas with the A+B cells forbidden, and nothing further. Any use
+of E077 downstream should either re-run the master with a persisted terminal
+result or cite only the two checkpoint artifacts named above.
