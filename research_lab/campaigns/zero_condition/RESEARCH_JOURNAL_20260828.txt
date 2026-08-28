@@ -1,0 +1,102 @@
+ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
+==============================================
+
+2026-08-28 14:45
+----------------
+数据：
+  E078 run-003 RESULT.json
+  research_lab/local/zero_condition/E078_target26_transport_core_stability/run-003/RESULT.json
+  sha256 b1309e4684513743a5613bbffd51f4d3d8f4147df9d5f353cc61f6e8f6612886
+
+注意／发现：
+  E074 的 rows 8/9 改写不是某个 parent endpoint 的偶然：168 个单行替换里 25 个仍属
+  target-26 parent face，25/25 都能以两行完成参考改写；整张 face 没有状态改变这两行，
+  固定改写也没有反例。但 25/25 都存在别的同样大小 support，synthetic destination 也可换。
+
+推理：
+  稳定的是一个两行构造规格和最小值 2，不是唯一核心。保留 reference rewrite，撤回
+  “the core”措辞；下一问移到跨几何稳定身份重映射和物理实现。
+
+2026-08-28 14:51
+----------------
+数据：
+  E079 run-001 RESULT.json
+  research_lab/local/zero_condition/E079_k47_boundary_macro/run-001/RESULT.json
+  sha256 9442e6568238edfe6aa7c37f1bddaf8a9f10c7017320c6af0cea092c80583662
+
+注意／发现：
+  136 个 boundary poses 选 46 个的局部模型完整枚举恰为 47；47 个 omitted L-cell 各不相同。
+  one-hot macro 只需 47 个变量和一条 ExactlyOne，且能按需无损恢复 pose 与实例标签。
+  全量展开 136 个 pose channels 反而把模型吹到 183 变量。
+
+推理：
+  K=47 应作为第一个已证有限结构基底被消费，而不是报告里的数字。消费者默认直接读
+  macro 字段；只有真需要 pose-level 行时才 channel。全 47 析取继续保留，rank 1 非 WLOG。
+
+2026-08-28 14:52
+----------------
+数据：
+  E080 run-001 RESULT.json
+  research_lab/local/zero_condition/E080_dependency_partition_seam_frontier/run-001/RESULT.json
+  sha256 47f497a3f8ee26351bdc1616c8061f80d03646089c266be66f979f7393080077
+
+注意／发现：
+  17 个 operation types 的 65,535 个 canonical bipartitions 中，53 个两侧都连通；选中的
+  一组三分之一/三分之二区间候选只留下 steel_block 与 sandleaf_powder 两种 seam commodity，
+  共三条跨区 dependency edge。边界输入仍是完整 47-state macro。
+
+推理：
+  分区+seam 已从比喻变成机器合同。下一步不该再扩充抽象，而应先测它是否贴合已有几何
+  bay，再做 bounded constructor；slot incidence 只作接口库存，不冻结流率或必过量。
+
+2026-08-28 15:19
+----------------
+数据：
+  E081 run-001 RESULT.json
+  research_lab/local/zero_condition/E081_axis_seam_recolor_frontier/run-001/RESULT.json
+  sha256 e9a53e0a14b34bfac96817f44e29142127007909f934ffabc9d1809572ab0547
+
+注意／发现：
+  E080 的单一 type-level winner 经 E069 真实 219-body 几何重新定价后降到 rank 3，但仍在
+  7 项 Pareto beam 内。另一个平衡 partition 在保持 E078 两具稳定 body 的条件下，只需在
+  straight-seam/template quotient 中搬 16 台；E080 seed 需搬 26 台。两者都不是彼此免费支配。
+
+推理：
+  proposer 不能给自己定价。保留一个 partition 不够，重开全部 53 个也过宽；下一对象应是
+  7 项 geometry-aware beam 的 moved-body set-packing。16/26 只是当前 footprint 保留下界，
+  moved bodies 尚未落位，power/front/binding 仍未进入。
+
+2026-08-28 15:31
+----------------
+数据：
+  E082 run-001 RESULT.json
+  research_lab/local/zero_condition/E082_bay_alignment_partition_frontier/run-001/RESULT.json
+  sha256 4c9242b8068ceb1189cfbf2f076ba929568b45ec4ded8c451c33ddd805c1d489
+
+注意／发现：
+  E080 的 seam-first seed 在历史 17-bay count plan 上至少要混 4 座 bay。E082 对 53 个连通 partition
+  全部重估后，面积同样平衡、仍只跨 2 种商品的 partition_38931 只需混 bay 2 一座；seam
+  还是单向 A→B。代价是 consumer slot incidence 从 29 增到 32。另有一个零 mixed-bay
+  partition，但面积严重失衡且跨 3 种商品。
+
+推理：
+  原分区评分漏了 constructor compatibility。E082 与 E081 从不同几何投影独立选中同一 operation set；下一步同时保留两种货币：partition_38931
+  作 geometry-aware seed，旧 partition_29914 作 seam-first control。先复验历史计划里的
+  G/H 行与单个 mixed bay，失败就返回具体 bay/dock 前提；不再直接开全局 coordinate master。
+
+2026-08-28 15:32
+----------------
+数据：
+  E083 run-001 RESULT.json
+  research_lab/local/zero_condition/E083_historical_bay_carrier_premise_audit/run-001/RESULT.json
+  sha256 de8e13088cb08971463b4aa63cc8c5fbe3cf7ce8792adb59197b8be17acc8139
+
+注意／发现：
+  E082 的一座 mixed-bay carrier 依赖 F/G/H 三行；F=(10,5,4) 有正例，G=(10,5,5)
+  在同一历史目录的 final35 记录里已被两种连通模型精确判 INFEASIBLE，H=(11,6,4)
+  仍只是计划要求，没有 admitted positive。
+
+推理：
+  E082 的 count optimum 与 partition 会师仍有效，但 v3 历史几何不是可直接施工的载体。
+  不应为了延续漂亮叙事去重跑一个已坏前提；主线切回 E081 的当前 E069 16-body repair，
+  或另建只消费正例 bay 行的新计划。

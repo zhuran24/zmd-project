@@ -9,36 +9,39 @@ Campaign ref: research_lab/campaigns/zero_condition/CAMPAIGN.txt
 
 Current endpoint
 ----------------
-Statement: Three structure-level links now survive their first explicit
-discriminators. E078 proves that one target-26 reference two-row semantic
-rewrite works across the complete frozen E069 target-26 parent face; it also
-proves the minimum two-row core is nonunique, so the rewrite is a constructive
-specification rather than "the" unique core. This is within-context stability
-only, not cross-geometry stability. E079 compiles the independently confirmed
-K=47 boundary-only packing theorem into an exact 47-state macro with stable
-pose/front witnesses, reversible canonical label recovery, and the complete
-five-condition up-to-K license. E080 then exhausts all 65,535 canonical
-bipartitions of the 17 recipe operation types and finds a connected
-one-third/two-thirds area-balanced partition with an explicit typed seam
-contract that imports all 47 boundary states.
+Statement: Six structure-level links now survive explicit discriminators.
+E078 proves one target-26 reference two-row semantic rewrite works across the
+complete frozen E069 parent face while equal-size alternatives show the minimum
+core is nonunique. E079 compiles K=47 boundary-only packing into an exact
+47-state macro. E080 turns partition/seam from prose into a complete 65,535-case
+type-partition frontier. E081 prices the balanced partition language on E069's
+actual 219-body geometry: the original E080 seed falls to rank 3 but remains in a
+seven-member Pareto beam, while the best E078-preserving straight-seam quotient
+moves 16 bodies. E082 independently selects the same operation partition because
+it needs only one mixed bay in a historical count plan. E083 then blocks that
+historical v3 carrier: its G row is already exact INFEASIBLE in the recorded
+final35 context and H has no admitted positive result. The shared partition
+survives; E081's current-geometry repair becomes the live construction path.
 Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E080_dependency_partition_seam_frontier/RESULT.txt
+  research_lab/campaigns/zero_condition/experiments/E081_axis_seam_recolor_frontier/RESULT.txt
+  research_lab/campaigns/zero_condition/experiments/E082_bay_alignment_partition_frontier/RESULT.txt
+  research_lab/campaigns/zero_condition/experiments/E083_historical_bay_carrier_premise_audit/RESULT.txt
 Direction ref:
   research_lab/campaigns/zero_condition/DIRECTION_CUT_TRANSPORT_20260828.txt
 
 Live question
 -------------
-Q: Can a bounded geometric bay-and-seam constructor consume E080's selected
-interface contract while preserving E079's complete 47-state boundary
-disjunction, materialize stable docks for every named seam obligation, and
-produce at least one candidate that passes native non-overlap, power, front,
-terminal-uniqueness and component-aware binding checks before exact routing?
-In parallel, does E078's stable reference two-body rewrite remain a small
-constructive specification after unique stable-identity remapping into genuinely
-neighboring geometries, or does the rewrite/core family fragment once the
-occupied/free graph changes?
+Q: Can an exact moved-body set-packing repair re-embed E081's 16 displaced
+manufacturing bodies around the horizontal y=41 seam while keeping the other 203
+footprints, the two stable E078 bodies, the protocol core and a complete E079
+boundary state? The first positive must then reclose power, native front and
+terminal uniqueness, and component-aware binding before exact routing. Use E080's
+26-body seam-first state and the other E081 Pareto members as bounded controls.
+E082 remains a corroborating count lens only; E083 forbids using the unchanged
+historical v3 F/G/H carrier.
 
 Inflight / recovery
 -------------------
@@ -55,6 +58,9 @@ Recent consequential results
 - E078 closes the frozen-face discriminator: the reference target-26 two-row rewrite works across the full parent face, while alternate equal-size minima prove the core is nonunique. | evidence=research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt | effect=keep one stable constructive rewrite, reject unique-core wording, and move the go/no-go to physical/cross-geometry remapping
 - E079 compiles all 47 boundary-only packings into a reversible one-hot macro with the full up-to-K license. | evidence=research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt | effect=the first proved finite structural basis is ready for a bounded constructor
 - E080 exhausts 65,535 operation-type bipartitions and selects a connected balanced two-module contract with a two-commodity typed seam. | evidence=research_lab/campaigns/zero_condition/experiments/E080_dependency_partition_seam_frontier/RESULT.txt | effect=the sufficient side now has a concrete bay/seam constructor input rather than a prose sketch
+- E081 exhausts 12,864 balanced straight-seam states on E069's real body geometry: the E080 seed ranks 3 with 26 moves, while a seven-member Pareto beam contains an E078-preserving 16-move winner. | evidence=research_lab/campaigns/zero_condition/experiments/E081_axis_seam_recolor_frontier/RESULT.txt | effect=replace the single semantic seed with a bounded geometry-aware moved-body repair beam
+- E082 independently selects the same operation partition by minimizing mixed bays in a historical 17-bay count scaffold: one mixed bay versus E080's four. | evidence=research_lab/campaigns/zero_condition/experiments/E082_bay_alignment_partition_frontier/RESULT.txt | effect=corroborates the partition at count level but does not supply geometry
+- E083 audits the historical carrier and finds G=(10,5,5) already exact INFEASIBLE in the recorded final35 context while H=(11,6,4) has no admitted positive row. | evidence=research_lab/campaigns/zero_condition/experiments/E083_historical_bay_carrier_premise_audit/RESULT.txt | effect=retire unchanged v3 carrier and make E081 current-geometry set packing the live path
 
 Current unknowns and guards
 ---------------------------
@@ -70,12 +76,15 @@ Current unknowns and guards
 - E078 is confined to one frozen occupied geometry and a terminal-signature abstraction with one synthetic dual option. The reference rewrite is stable but minimum cores are nonunique. Local destination/component integers remain non-transportable; cross-geometry use requires unique stable-witness remapping and a fresh exact check.
 - E079 is exact only for boundary body packing. Rank 1 is never WLOG, all 47 states remain live unless a separate proof removes states, and every omitted full-layout constraint must be reintroduced.
 - E080 is a type-level sufficient-construction seed. All copies of one operation type are kept together; no facility has been placed, no generic commodity has been bound, no duty/rate is frozen, and seam slot incidence is not throughput.
+- E081's 16- and 26-body figures are exact only for retaining current footprints outside one straight corridor while same-template operation assignment is quotiented. Moved bodies are not placed, an intersected pole is not repaired, and no power/front/binding/routing consequence follows.
+- E082 is exact only in the historical `SEARCH_PLAN_ONLY` template-count scaffold. Its one-mixed-bay number is an optimistic lower bound and independent partition corroboration, not an admitted physical carrier.
+- E083 blocks only the unchanged historical v3 carrier. The G-row negative is contextual to its pole phase and connectivity models; H is unadmitted rather than globally infeasible.
 - Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
 
 History pointers
 ----------------
 - Campaign: research_lab/campaigns/zero_condition/CAMPAIGN.txt
 - Results: research_lab/campaigns/zero_condition/RESULTS.txt
-- Journals: research_lab/campaigns/zero_condition/RESEARCH_JOURNAL_20260825_20260826.txt; research_lab/campaigns/zero_condition/RESEARCH_JOURNAL_20260827.txt
+- Journals: research_lab/campaigns/zero_condition/RESEARCH_JOURNAL_20260825_20260826.txt; research_lab/campaigns/zero_condition/RESEARCH_JOURNAL_20260827.txt; research_lab/campaigns/zero_condition/RESEARCH_JOURNAL_20260828.txt
 - Experiments: research_lab/campaigns/zero_condition/experiments/
 - Historical material register: research_lab/HISTORICAL_REFERENCE_REGISTER.txt

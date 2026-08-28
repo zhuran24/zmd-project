@@ -2932,16 +2932,156 @@ evidence:
   SEAM_CONTRACT.json sha256
   c44ee40995fcdd44a2ec9a8443245d1be75b51258ca9b347cd0fe1ae3563e6fc.
 
+R-ZC-090  Straight-seam geometry continuation preserves a seven-state partition beam
+------------------------------------------------------------------------------------------
+status: complete straight-seam sweep plus independent CP-SAT replay
+scope: E069 fixed manufacturing footprints; connected one-third/two-thirds
+       E080 type partitions; width-1/2/3 straight axis seams; same-template
+       operation reassignment quotient
+
+statement:
+  E081 reconstructs all 65,535 canonical operation-type bipartitions, recovers
+  the 53 connected partitions and retains the 16 whose module body areas lie in
+  the one-third/two-thirds band. It evaluates 12,864
+  partition/corridor/orientation states against E069's 219 manufacturing bodies.
+
+  The geometry-conditioned winner is the same operation partition later selected
+  independently by E082's historical bay-count alignment. It moves 14 bodies
+  without the E078 constraint and exactly 16 when the two stable E078 body
+  witnesses must remain on the side carrying grinder_fine_buckwheat and
+  filling_capsule. Its reference-preserving seam is horizontal y=41, width 1,
+  with module A below and B above; it moves body area 359 and intersects one
+  current pole body. An independent CP-SAT replay proves the maximum retained
+  count is 203.
+
+  E080's original selected partition ranks third: its horizontal y=21 seam
+  retains 193 bodies and therefore moves exactly 26, with no extra penalty for
+  preserving the E078 rewrite. It carries a lighter seam pressure (two
+  commodities and consumer-slot incidence 29 versus the geometry winner's 32),
+  so no competitor dominates it. Seven partitions remain on the combined
+  geometry/seam Pareto frontier.
+
+non-implications:
+  A moved-body count is exact only inside the current-footprint straight-seam
+  quotient. Moved bodies are not re-embedded; one intersected pole is not
+  relocated; operation choices are quotiented within facility templates; no
+  front, binding, routing, throughput or whole-layout condition is tested. The
+  source instance operation labels are not used as transported semantic
+  assignments. No cut, layout witness or global lower bound follows.
+
+effect on next problem:
+  Do not freeze E080's one semantic winner and do not reopen all 53 connected
+  partitions. E081 and E082 independently select the same geometry-aware
+  operation set from different geometric projections. Use it as the first moved-
+  body repair context, retain E080's seed as the seam-first control, and keep the
+  remaining geometry Pareto members as bounded fallbacks. Run power/front/binding
+  consumers only after a moved-body embedding exists.
+
+evidence:
+  E081 RESULT.txt; local run-001 RESULT.json sha256
+  e9a53e0a14b34bfac96817f44e29142127007909f934ffabc9d1809572ab0547;
+  AXIS_SEAM_FRONTIER.json sha256
+  e8dbf00d61bcf01f9a0cb11ab9b16a918597d8a2552f932d1977a9c57b4d75b1;
+  INDEPENDENT_CHECK.json sha256
+  a7135e5b5cc07995a6bb46568973036451fcf519701c44968505513d2cb223ca.
+
+R-ZC-091  Historical bay-count alignment reorders the balanced seam frontier
+-----------------------------------------------------------------------------
+status: all 53 connected E080 partitions solved OPTIMAL in the count-alignment model
+scope: E080 operation-type partitions against the 17 template-capacity rows of a
+       historical SEARCH_PLAN_ONLY connected-bay count plan
+
+statement:
+  E082 reproduces E080's 65,535 canonical type bipartitions, 53 connected pairs
+  and 16 one-third/two-thirds area-balanced pairs. It minimizes, for every
+  connected partition, the number of historical bays whose planned template
+  slots must be shared by modules A and B.
+
+  E080's seam-first partition_29914 has target (97,17,26), needs four mixed bays,
+  has a bidirectional two-commodity seam and consumer incidence 29. The new
+  geometry-aware partition_38931 has target (79,32,17), needs one mixed bay,
+  keeps two seam commodities, makes the seam one-way A->B, and has consumer
+  incidence 32. It also improves area imbalance 519->513 and instance imbalance
+  61->37. A zero-mixed connected control exists but is outside the balance band,
+  has three seam commodities and area imbalance 1269.
+
+non-implications:
+  The historical plan is explicitly SEARCH_PLAN_ONLY and says its G/H rows still
+  owe local and composed replay. E082 allocates integer template counts only;
+  arbitrary same-template slots may serve either module. Its mixed-bay optimum is
+  therefore an optimistic lower bound on mixed physical bays, not a current bay
+  selection, pose, dock, power, binding, routing or throughput result. The
+  geometry-aware score is a declared constructor choice, never WLOG.
+
+effect on next problem:
+  E083 audits the consumed F/G/H row premises before any materialization. Until
+  that successor check passes, retain partition_38931 only as a count-level
+  compatibility result and independent corroboration of E081's geometry winner.
+
+evidence:
+  E082 RESULT.txt; local run-001 RESULT.json sha256
+  4c9242b8068ceb1189cfbf2f076ba929568b45ec4ded8c451c33ddd805c1d489;
+  BAY_ALIGNMENT_FRONTIER.json sha256
+  56e5b924a05b5e393798402bed983061f2fe6642f0ada6859d7bb4ee495c44de;
+  GEOMETRY_AWARE_SEED.json sha256
+  030493d7e1cb3ea5fe06edef581114d5dc4aadadec323b2f23add90724c0ca9d.
+
+R-ZC-092  The historical v3 carrier is blocked by a negative G row and unadmitted H row
+------------------------------------------------------------------------------------------------
+status: fail-closed premise audit; all consumed F/G/H rows classified
+scope: E082's proposed historical 17-bay carrier only
+
+statement:
+  E083 pins E082's geometry-aware seed, the v3 count plan and both persistent
+  big-bay status records. The seed consumes F=(10,5,4), G=(10,5,5) and
+  H=(11,6,4). F has an OPTIMAL local result and independent periodic replay PASS.
+  G is recorded exact INFEASIBLE, never UNKNOWN, under both the
+  all-residual-connected and selected-active-terminal-connected models in the
+  final35 pole phase. H is named by the plan as a required new local result but
+  has no admitted positive evidence.
+
+  Therefore the unchanged historical v3 geometry cannot carry E082's one-mixed-
+  bay allocation. E082's mixed-bay optimum remains a valid optimistic count
+  lower bound and independently selects the same operation partition as E081,
+  but it is not a materialization seed on that historical scaffold.
+
+non-implications:
+  The G negative is contextual to the recorded pole phase and connectivity
+  models; it does not prove target (10,5,5) impossible in every future geometry.
+  H is unadmitted, not proved infeasible by E083. The partition, E082's count
+  optimum and all bay-based constructors are not refuted.
+
+effect on next problem:
+  Do not compose the v3 F/G/H carrier. Make E081's E069 current-geometry moved-
+  body set-packing context the live construction path, or derive a new bay plan
+  using only admitted positive rows. E082 remains a corroborating count lens.
+
+evidence:
+  E083 RESULT.txt; local run-001 RESULT.json sha256
+  de8e13088cb08971463b4aa63cc8c5fbe3cf7ce8792adb59197b8be17acc8139;
+  PREMISE_AUDIT.json sha256
+  d3c3bed66f34cd38bf495e3650629fcdf9fea434d79866af84769b2aac0ed67d.
+
 Current synthesis
 -----------------
-The campaign has crossed the threshold from "collect more deaths" to "change the
-interface language". The evidence already supports this ordered conceptual
-split:
+The sufficient-side search language now has an explicit chain:
 
-  static port-domain compilation
+  47-state boundary macro
+    -> connected typed operation partition
+    -> geometry-conditioned partition beam
+    -> bounded moved-body set-packing repair
+    -> power/front/terminal-uniqueness reclosure
     -> component-aware binding
     -> exact simultaneous routing
 
-Placement-level feedback should carry the smallest obstacle cause that survives
-independent replay. The final physical layer count and feedback families remain
-open and are to be derived from the next candidates.
+Two independent continuation metrics, E081's current-footprint straight-seam
+projection and E082's historical bay-count alignment, select the same operation
+partition. That convergence is evidence for the partition, not for either
+carrier. E083 rejects the historical v3 carrier on its own premises, so the live
+consumer is E081's 16-body current-geometry repair context. A future bay plan may
+re-enter only with admitted positive rows.
+
+The outer loop should continue transporting compact constructive objects rather
+than complete layouts: boundary macro state, typed seam contract, stable E078
+body rewrite, displaced-body set and the first failed reclosure premise. The
+final physical layer count and exact repair family remain open.
