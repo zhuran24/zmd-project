@@ -696,6 +696,27 @@ independent checker establish:
 Until these obligations are discharged, the skeleton is a research proposal
 language, not a proof of binding or routing existence.
 
+6.1 First proved finite macro instance: K=47 boundary packing
+
+The boundary-only body-packing subproblem now supplies one concrete finite-base
+instance. Under the frozen 136-pose `boundary_storage_port` pool and 46 homogeneous
+mandatory boundary instances, exactly 47 unlabeled, mutually body-disjoint
+packings exist. E079 compiles the full set into an exact 47-state one-hot macro
+with stable pose/body/front witnesses and canonical label recovery.
+
+This macro is useful because it replaces repeated search over raw boundary poses
+with a complete finite disjunction. It is not a whole-layout quotient. Every
+consumer must retain all 47 states unless a separate proof removes some, preserve
+instance-permutation semantics or use canonical recovery, keep the frozen pool
+identity, and reapply all omitted facility, front, binding, routing, throughput,
+export, and game constraints. Rank 1 is a deterministic construction choice,
+never WLOG.
+
+Evidence:
+  research_lab/campaigns/zero_condition/experiments/
+    E079_k47_boundary_macro/RESULT.txt
+  research_lab/local/reviews/20260828_k47_boundary_packing_recheck.md
+
 7. Candidate base: typed material-interface quotient graph
 ----------------------------------------------------------
 The useful base is not the raw 70x70 cell graph and not a purely unlabeled free-

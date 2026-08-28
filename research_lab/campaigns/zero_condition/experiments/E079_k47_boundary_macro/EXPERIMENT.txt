@@ -1,0 +1,94 @@
+E079 K=47 BOUNDARY MACRO
+========================
+
+Status
+------
+Completed in run-001 from the independently rechecked K=47 boundary-packing
+theorem. Research-only. No certification, U/L, production, owner, pruning, or
+publication effect.
+
+Question
+--------
+Can the frozen 46-body `boundary_storage_port` placement subproblem be replaced
+by one exact 47-state macro without losing any locally legal packing, pose/front
+identity, or canonical instance-label recovery?
+
+This is the first concrete test of the direction file's “necessary account ->
+finite structural base” proposal. It is deliberately boundary-only.
+
+Object space
+------------
+The experiment consumes the frozen candidate-placement pool and the 46 mandatory
+boundary-port instances. It enforces exactly the K=47 theorem's local object:
+
+- each selected row is one legal `boundary_storage_port` pose;
+- exactly 46 poses are selected;
+- selected body cells are mutually disjoint.
+
+It does not enforce other facility bodies, front clearance against other
+facilities, binding, routing, throughput, export, or game review.
+
+Arms
+----
+1. Baseline pose model
+
+   Build 136 pose Booleans, select exactly 46, and impose per-cell body
+   exclusivity. Exhaustively enumerate every feasible pose set.
+
+2. Boundary macro
+
+   Canonically order the baseline solutions and emit one macro state per complete
+   46-pose packing. Each state carries stable pose indices, body/front cells and
+   digests, the omitted allowed-L cell, side anchors, and the canonical sorted-ID
+   to sorted-pose label recovery.
+
+3. Exact one-hot encoding
+
+   Encode 47 state Booleans with ExactlyOne. Separately build an optional
+   state-to-pose channeling model without `AddElement`, using linear incidence
+   equalities. Enumerate and roundtrip both encodings against the baseline.
+
+Success criterion
+-----------------
+
+- frozen full candidate-pool identity matches the independently rechecked pool;
+- the boundary pool contains exactly 136 poses;
+- the baseline model has exactly 47 complete solutions;
+- each solution has 23 left and 23 bottom bodies, 138 distinct body cells, 46
+  distinct inward fronts, and one omitted cell in the 139-cell allowed L-lane;
+- all 47 omitted cells are distinct and exhaust the legal omitted-cell set;
+- macro -> pose set -> macro is bijective;
+- canonical instance-label recovery is complete and reversible;
+- one-hot and channelled macro encodings each enumerate exactly the same 47
+  states;
+- all five up-to-K consumption conditions and the rank-1 non-WLOG guard are
+  embedded in the artifact.
+
+Truth boundary
+--------------
+A successful E079 proves an exact quotient of the boundary-only body-packing
+subproblem. It does not prove that any macro state extends to a full layout. A
+consumer must preserve all 47 alternatives unless it separately proves a subset
+complete, remain instance-permutation equivariant or use the canonical recovery
+mapping, and reapply every omitted full-layout constraint.
+
+Run
+---
+
+/home/zhuran24/zmd-pj/.venv/bin/python \
+  research_lab/campaigns/zero_condition/experiments/\
+E079_k47_boundary_macro/run_e079.py
+
+Default durable output
+----------------------
+
+research_lab/local/zero_condition/E079_k47_boundary_macro/run-001/
+
+Result
+------
+
+  verdict   K47_BOUNDARY_PACKING_EXACTLY_COMPILED_TO_47_STATE_MACRO
+  decision  USE_MACRO_IN_PARTITION_SEAM_PROTOTYPE_BEFORE_FULL_MASTER_INTEGRATION
+
+See RESULT.txt for identities, benchmark numbers, consumer license, and truth
+boundary.

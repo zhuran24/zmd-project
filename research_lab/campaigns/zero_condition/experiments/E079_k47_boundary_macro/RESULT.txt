@@ -1,0 +1,118 @@
+E079 RESULT: K=47 BOUNDARY PACKINGS COMPILE TO AN EXACT 47-STATE MACRO
+============================================================================
+
+Status
+------
+Completed as research-only boundary-body packing evidence. No full-layout,
+binding, routing, throughput, certification, U/L, production, owner, pruning,
+or publication effect.
+
+Frozen machine evidence
+-----------------------
+Main result:
+
+  research_lab/local/zero_condition/
+  E079_k47_boundary_macro/run-001/RESULT.json
+
+SHA-256:
+
+  9442e6568238edfe6aa7c37f1bddaf8a9f10c7017320c6af0cea092c80583662
+
+Macro artifact:
+
+  research_lab/local/zero_condition/
+  E079_k47_boundary_macro/run-001/BOUNDARY_MACRO_V1.json
+
+SHA-256:
+
+  f7f4cf3c70046e02bd434929570e6d177994198d7a588cbc02d24751b35c1810
+
+Encoding benchmark SHA-256:
+
+  43be1146c9e85904466e8349c4c686fcba1f77d639d6949b4e669366e2e83cb6
+
+Receipt SHA-256:
+
+  c1288f276eec2525d529a3dea177beaec761261a5c960a0c0953f2ddbbf0cd87
+
+Verdict
+-------
+
+K47_BOUNDARY_PACKING_EXACTLY_COMPILED_TO_47_STATE_MACRO
+
+Decision
+--------
+
+USE_MACRO_IN_PARTITION_SEAM_PROTOTYPE_BEFORE_FULL_MASTER_INTEGRATION
+
+Exact local quotient
+--------------------
+The baseline model uses the frozen candidate-pool identity and creates one
+Boolean variable for each of 136 legal `boundary_storage_port` poses. It selects
+exactly 46 poses and enforces body-cell exclusivity. Complete solution
+enumeration returns exactly 47 distinct pose sets.
+
+Every state has:
+
+  left bodies                    23
+  bottom bodies                  23
+  occupied allowed-L cells      138
+  distinct inward fronts         46
+  omitted allowed-L cells         1
+
+The 47 omitted cells are distinct and exhaust the legal omitted-cell set. Every
+macro state carries the complete pose set, body/front digests, side anchors, the
+omitted cell, and canonical sorted-instance-to-sorted-pose label recovery.
+
+The main-tree recheck result independently reports K=47 and embeds the same
+canonical rank-1 packing. The blind-tree artifact embeds all 47 packings; its
+pose-index set is exactly equal to E079's complete set under the same frozen
+boundary-pool ordering.
+
+Encoding comparison
+-------------------
+Baseline pose model:
+
+  variables              136
+  constraints            138
+  text proto bytes     23,991
+
+One-hot macro:
+
+  variables               47
+  constraints              1
+  text proto bytes      3,728
+
+Macro with all 136 pose channels materialized:
+
+  variables              183
+  constraints            138
+  text proto bytes     89,185
+
+The raw decision-variable ratio from baseline poses to one-hot macro states is
+approximately 2.894. The channelled model deliberately demonstrates reversible
+pose recovery, not a recommended always-on encoding: materializing every pose
+channel can erase the representation gain. Consumers should use macro fields
+directly unless a pose-level constraint actually needs channeling.
+
+Consumer license
+----------------
+K=47 authorizes only the frozen boundary-body packing quotient. Every consumer
+must preserve all five conditions:
+
+1. canonical rules, 46-instance count, and candidate-pool identity remain fixed;
+2. the 46 instances remain homogeneous except for stable ID;
+3. the consumer is instance-permutation equivariant or uses the canonical label
+   recovery;
+4. all 47 states remain in the disjunction unless a separate proof removes some;
+5. every omitted full-layout constraint is reapplied downstream.
+
+`boundary_macro_01`, the deterministic rank-1 state, is a construction choice
+and never WLOG.
+
+Truth boundary
+--------------
+E079 proves an exact quotient only for legal boundary poses plus mutual boundary
+body exclusion. It does not include other facilities, front clearance against
+other bodies, power, binding, routing, throughput, export, or game review. A
+macro state need not extend to a complete layout.
