@@ -108,6 +108,12 @@ Research principles
    re-derived, attacked, and replayed there. The whole research branch is not the
    unit of promotion.
 
+Method origin
+-------------
+These principles compress the owner method-origin record in
+research_lab/METHOD_ORIGIN.txt. Read it on first entry to this tree and whenever
+method or architecture is disputed; keep interpretations traceable to its quotes.
+
 Historical coordinates
 ----------------------
 The goal hierarchy is reconstructed from these durable history/material sources:

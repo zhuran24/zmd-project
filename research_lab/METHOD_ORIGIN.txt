@@ -1,0 +1,320 @@
+ZMD METHOD ORIGIN
+=================
+
+Identity and use
+----------------
+This file is the tracked source anchor for the owner's original solving-method
+intuitions and the later owner-supplied anti-drift rule. It preserves the words
+that should constrain future interpretations of the research program; it is not
+a current campaign status page, a complete methodology specification, or a
+production or certification authority.
+
+The Research principles in research_lab/PROGRAM.txt are a compressed form of
+this record. When a compressed principle admits conflicting readings, prefer
+the reading that can be traced back to the source quotations here. Later names,
+formal objects, checkers, and platform designs may implement or repair these
+intuitions, but must not be retroactively presented as the original intuition.
+
+Source cutoff: 2026-08-28. Quotations below preserve the source wording.
+Explanatory text states the durable reading, not a claim that the explanation
+itself was spoken verbatim by the owner.
+
+1. Inner-loop methodology: the birth of a problem-derived architecture
+-----------------------------------------------------------------------
+Here "inner-loop methodology" means the July solving-side method for deciding
+layers, representations, order, and cuts. It does not mean the later use of
+"inner solver" for CP-SAT inside a reasoning outer loop.
+
+At 2026-07-16T20:03:01.171Z, the owner first stated the core intuition:
+
+  等下，如果放在同一层效果就会好的话，那么为什么不把所有约束都放在同一层呢，肯定会有什么原因吧，而我的直觉告诉我这个原因，不对，应该说这个原因让我的直觉开始动了起来，有些地方是薄的，那么那个地方应该分开，有些地方是厚的，那么那些地方应该放在一起，所以分层不能随便做，说实话我总感觉，分层作为最上层的架构，这个项目一直都选的吊儿郎当的，就是，理由是有，但是不够充分，或者说，换句我之前一直说的话，“嗯，你说的有道理，但是然后呢”，就是说，一个选择应该是有一个结束点的，这个结束点应该与这个选择紧紧相连，就是一阵推倒下来，那个选择自己就浮现出来了，而不是，因为这个这个，所以就选这样这样
+
+Source:
+/home/zhuran24/zmd-pj/.artifacts/inner_loop_archaeology_20260823/METHODOLOGY_ORIGIN.md:68-80
+Raw coordinate recorded there:
+/home/zhuran24/zmd-pj/.artifacts/outer_loop_archaeology_20260822/recheck_scratch/retirement_sessions/.claude/projects/-home-zhuran24-zmd-pj/5c4e70f0-8e60-497e-b217-46e01be6da76.jsonl:3640
+
+Four minutes later, the owner made the reasoning-versus-measurement split
+explicit:
+
+  等一下这个只能测不能先推理出一部分吗，每个都端到端实测，我的直觉告诉我，这似乎会直接在工程上不可行
+
+Source:
+/home/zhuran24/zmd-pj/.artifacts/inner_loop_archaeology_20260823/scratch/owner_origin_quotes.txt:4-5
+
+The next two blocks are contiguous carrying excerpts from longer owner
+messages; no internal wording has been changed. First, the owner rejected
+"move up or move down" as an adequate one-dimensional description of rule
+placement:
+
+  就是说，我们目前的某条规则应该放哪里，不应该只是说下放上收，而是更新它的位置，说，它应该跟哪些一起，不跟哪些一起，又要在哪些前面，在哪些后面。你能理解我的意思吧
+
+Source:
+/home/zhuran24/zmd-pj/.artifacts/inner_loop_archaeology_20260823/scratch/owner_origin_quotes.txt:13-14
+
+The owner then made layer count and cut position outputs rather than inherited
+constants:
+
+  你会发现就像我这里举的例子一样，前面是4层后面是5层，那这个层数也是需要确定的东西之一不是吗，或者说，我觉得我们是不是没有好好想过这个层数或者说切分点
+
+Source:
+/home/zhuran24/zmd-pj/.artifacts/inner_loop_archaeology_20260823/scratch/owner_origin_quotes.txt:16-17
+
+Durable reading: an architecture choice is not justified because several
+reasons can be listed after choosing it. The problem must expose the real
+information dependencies, shared variables, mutual pruning, proof obligations,
+and cost gradients; those relations must then force which pieces live together,
+which remain separated, how many layers exist, in what order they run, and what
+crosses each cut. "A choice has an ending point" means the derivation terminates
+at the choice so that the choice emerges from the problem. Reasoning, arithmetic,
+and cheap discriminating probes should do what they can before end-to-end
+measurement is asked to decide the survivors.
+
+2. Reasoning outer loop: its three-step birth
+---------------------------------------------
+The outer loop was born as forward rule growth, then became a recursive closure,
+and only then became a solver-level outer structure. A failure compiler is one
+later producer inside this loop, not the loop's defining ontology.
+
+2.1 2026-07-30: derive secondary and multilevel consequences
+
+  哦对了，突然想到，能否先从逻辑上从游戏的基础机制推理出一些它里面的二级或者多级结论来作为人工cut
+
+Source:
+/mnt/wd_external/archives/zmd-codex-autonomy-20260801/codex-sessions/2026/07/20/rollout-2026-07-20T18-51-44-019f7ef0-4a42-7272-9d42-4322ef9b3445.jsonl:43825
+Digest coordinate:
+/home/zhuran24/zmd-pj/.artifacts/math_translation_derivation_20260823/MATH_TRANSLATIONS_DIGEST.md:5-10
+
+The initial direction is positive: start from game mechanisms, derive logical
+consequences, and turn useful consequences into knowledge that the solver can
+consume. It does not wait for a failed candidate to supply the first idea.
+
+2.2 2026-08-07: rules generate rules and feed themselves back
+
+  就是，所有基础游戏规则会不断推出新的次级规则，而这些次级规则又会跟已有的基础规则跟其他的次级规则又产生新的下一级规则，这些规则之间的某些合起来会形成一个约束，而这个约束可能会让某个解空间变小，小到稍微验算一下就会出现新的规则，然后有根之前一样新产出的规则会跟老规则一起产出下一级的规则，你能理解我的意思吗，而这里的5满一半，就是我的直觉告诉我他可能是一个刚才说的稍微验算一下就能产出的新规则
+
+Source:
+/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/0e0796c6-a439-4e55-90af-d9b5b3e50a3d.jsonl:14604
+Digest coordinate:
+/home/zhuran24/zmd-pj/.artifacts/math_translation_derivation_20260823/MATH_TRANSLATIONS_DIGEST.md:12-17
+
+This is the recursive core: rules combine into constraints; constraints shrink
+or reshape the current space; facts that were previously expensive or obscure
+become cheap enough to calculate; the new facts re-enter the rule system as the
+next round's inputs. A static theorem library, a one-shot presolve, or a store
+that records results without changing the next problem does not close this loop.
+
+The later mathematical translation summarizes the motion as
+`R_{t+1}=R_t∪T(R_t)`: proved statements grow while the residual candidate sets
+shrink as `F_0⊇F_1⊇F_2⊇…⊇F`. This correspondence depends on every added
+statement being valid for the intended problem; it is a mathematical rendering
+of the owner's loop, not an additional owner quotation.
+
+Translation source:
+/home/zhuran24/zmd-pj/.artifacts/math_translation_derivation_20260823/MATH_TRANSLATIONS_DIGEST.md:52-66
+
+2.3 2026-08-08: make the closure the solver's outer structure
+
+  好吧，我说的直白一点，我想重写一个求解器，因为现在的求解器不能系统性的根据游戏规则来裁剪解空间，而原本的，坏了那五个英文叫啥来着，那个求解器就用来在被规则裁出来的解空间里面求解，然后，等下，但是这个解空间又不太能说是我们原本要求的解空间，而是，就是，就像我们之前推理那些规则的时候一样，我们会先根据已有的一些游戏规则来得出某个，emmm算式？然后那个算式算出来之后就能确定出新的规则，然后继续一直重复这样的循环直到最后解出来为止，你能理解我的意思吗
+
+  不过说实话，我感觉这个思路好像，就是有些问题，就是，这个求解思路有些东西没有考虑到，但是我又说不出来，甚至，就是只有一些模模糊糊的不对劲的感觉
+
+Source:
+/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/0e0796c6-a439-4e55-90af-d9b5b3e50a3d.jsonl:16374
+Archaeology cross-check:
+/home/zhuran24/zmd-pj/.artifacts/outer_loop_archaeology_20260822/OUTER_LOOP_ORIGIN_DOSSIER.md:41-47,123-142
+
+The solver-level division follows from this statement: the outer process grows
+and applies semantic knowledge; exact low-level computation consumes the
+residual freedom. The owner's interruption -- "这个解空间又不太能说是我们原本要求的解空间"
+-- is part of the birth, not a later objection. It forbids treating a fact
+proved only after a particular restriction as if it were automatically a fact
+of the original problem. Later context-indexed judgments and transport
+contracts answer this warning; they are not the warning's original wording.
+
+2.4 Knowledge sources and constructive obligation
+
+The corrected 2026-08 handoff identified five knowledge sources that must remain
+visible together. Its exact list is:
+
+  1. 基础规则之间的正向组合；
+  2. 容量、面积、端口、整除等算式；
+  3. 上界取等或近取等所逼出的结构；
+  4. 成功构造中反复出现的充分模板；
+  5. 下游失败的最小原因及其可泛化版本。
+
+Source:
+/home/zhuran24/Documents/Codex/2026-08-27/new-chat-8/outputs/分支-接手项目推进工作-完整对话-28轮.txt:627-649
+
+Failure compilation is only source 5. The outer loop must also produce the
+constructive side: sufficient templates, composable local structures, required
+corridors and interfaces, equality-derived construction specifications, and
+sufficient conditions for realizable binding or routing. An outer loop that
+only says "no" deepens the project's strong-upper-bound/empty-lower-bound
+imbalance rather than solving it.
+
+Constructive source:
+/home/zhuran24/Documents/Codex/2026-08-27/new-chat-8/outputs/分支-接手项目推进工作-完整对话-28轮.txt:651-667
+
+3. Gaps the owner supplied, and the later consumption boundary
+---------------------------------------------------------------
+The first three gaps below were raised directly by the owner in the 2026-08-08
+origin discussion. The fourth is preserved as a later corrected handoff
+conclusion and is not retroactively attributed as an 08-08 phrase.
+
+3.1 The closed reasoning system carries validation
+
+  不不不，关于确定性上，只要我们有方法可以对每个推出来的规则考虑到所有影响它的前置规则，哦不对，这是从结果倒推过程了，应该说，在推新规则的时候考虑到所有的前置规则，等下，感觉这么说还是有点问题，嗯，不是到怎么说，简而言之就是确立一个封闭的推理体系就可以保证这个推理不需要验证，或者说这个推理本身就是验证，又或者说验证已经在做这个推理体系的时候就做好了，emmm，感觉还是没有把自己想表达的意思说清楚
+
+Source:
+/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/0e0796c6-a439-4e55-90af-d9b5b3e50a3d.jsonl:16397
+Archaeology cross-check:
+/home/zhuran24/zmd-pj/.artifacts/outer_loop_archaeology_20260822/LANE1_LIVE_TRANSCRIPTS.md:96-116
+
+The durable requirement is not "never check a result". Primitive inference
+steps must have proved semantics, every premise must have an origin, and the
+recorded derivation must itself be a mechanically checkable proof object. A
+new conclusion should not require an equally hard solver to rediscover its
+truth from scratch every time.
+
+3.2 Model on demand rather than model the whole world in advance
+
+  等下那按照我想出的这套求解器的架构的话，是否就得提前建模所有的机器和机制了，毕竟在这个求解器推出某个机器或者建模是完全不需要的之前，他应该是不能提前确定，等下，我有个想法或者说感觉但是说不出来，就是我感觉应该是可以先试着去固定搜索一下某个机器或者机制是否是不用建模的，如果确定不了也就是搜索不出来又或者其他什么我现在想不到的问题那就再去建模，但是，好吧还是那句话，没有把感觉完整的表达出来
+
+Source:
+/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/0e0796c6-a439-4e55-90af-d9b5b3e50a3d.jsonl:16512
+Archaeology cross-check:
+/home/zhuran24/zmd-pj/.artifacts/outer_loop_archaeology_20260822/LANE1_LIVE_TRANSCRIPTS.md:118-136
+
+Claude's immediate operationalization, retained as a later repair rather than
+owner wording, was: every relevant mechanism must be named, but need not be
+fully modeled before it is known to carry weight. First try to prove that it can
+be omitted, dominated, or represented by an equivalent reduction. If that
+succeeds, preserve the proof and omit the model; if the opposite is proved,
+model it as load-bearing; if neither is established, keep an explicit gap
+rather than silently excluding it or paying every modeling cost in advance.
+
+3.3 Reliability is not production completeness
+
+  哦对了我突然想到，之前那个求解器的架构当时只想过每个新规则都考虑到所有的老规则，但是我们要如何确定，嗯，或者说如何把当前所有老规则能推出来的新规则全部推出来呢，这也是一个很重要的问题
+
+Source:
+/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/0e0796c6-a439-4e55-90af-d9b5b3e50a3d.jsonl:16913
+
+The owner then challenged a claim that small-world gap detection had converted
+all silent unknowns into visible alarms:
+
+  “只能探到小尺度上显形的缺、只覆盖声明片段内的语句”那照这么说的话“把最阴险的「静默不知道」变成了响铃的「知道缺哪」”也是只能在小尺度上确定吧，或者说，这里面有其他的逻辑吗
+
+Source:
+/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/0e0796c6-a439-4e55-90af-d9b5b3e50a3d.jsonl:16975
+Archaeology cross-check:
+/home/zhuran24/zmd-pj/.artifacts/outer_loop_archaeology_20260822/OUTER_LOOP_ORIGIN_DOSSIER.md:54-57
+
+Reliability asks whether every produced rule is true under its recorded
+premises. Production completeness asks whether the useful consequences in a
+declared language and obligation scope are actually being produced. A sound
+checker answers only the first question. It does not justify waiting for a
+proposer to guess useful rules, nor does a bounded small-model search establish
+open-world saturation.
+
+3.4 A true proposition is not automatically consumable
+
+The later corrected handoff stated the consumption boundary explicitly:
+
+  一个命题为真，不代表可以任意消费。局部命题、WLOG、保最优归约、逐候选排除和构造充分条件所需的证明方向不同。外环 checker 不只是判真假，还必须限制它能被下译到哪个位置。
+
+Source:
+/home/zhuran24/Documents/Codex/2026-08-27/new-chat-8/outputs/分支-接手项目推进工作-完整对话-28轮.txt:417-429
+
+Truth, scope, and permission to affect a search space are distinct obligations.
+A theorem must carry the contract for how it may be lowered or used. In
+particular, a WLOG transform, a local lemma, a necessary condition, a
+point-candidate UNSAT result, and a sufficient construction rule do not license
+the same consumer action.
+
+4. Anti-drift checklist from the corrected 2026-08 handoff
+-----------------------------------------------------------
+This checklist is the 2026-08 project-handoff correction conclusion. It tests
+direction and causal effect, not whether later platform vocabulary is present.
+
+1. "是不是先选了一条漂亮路线，再给它补理由？"
+   If yes, the route violates the inner-loop birth intuition.
+
+2. "外环这一轮有没有真正生成新规则？"
+   A richer platform, checker, or report is not outer-loop progress by itself.
+
+3. "新规则有没有重新成为下一轮的输入？"
+   A stored result that does not change the successor problem leaves the loop
+   open.
+
+4. "知识来源是不是被窄化成了失败样本？"
+   Keep forward rule composition, arithmetic, equality structure,
+   construction, and failure inference in view together.
+
+5. "外环是不是只会排除，不会构造？"
+   In a campaign with no lower-side witness, exclusion-only drift is especially
+   damaging.
+
+6. "方法研究有没有反过来推迟既定前沿？"
+   Method research must ride on and help the whole-layout campaign, not postpone
+   it behind another validation program.
+
+7. "后来的技术修补有没有冒充你的原始直觉？"
+   Preserve source layers: later judgments, failure-compilation hypotheses,
+   organs, and validation ladders may repair or test the loop, but are not the
+   loop's birth statement.
+
+Source:
+/home/zhuran24/Documents/Codex/2026-08-27/new-chat-8/outputs/分支-接手项目推进工作-完整对话-28轮.txt:728-751
+
+5. 2026-08-28 owner iron rule: an unbroken derivation chain for witnesses
+----------------------------------------------------------------------------
+The owner added this rule while directing the zero-condition campaign:
+
+  但问题就在于我们要用跟求有条件布局一样的方法来求零条件布局，那这样的话启发式，嗯，也不是不能有但是，不对，不能有启发式，或者说某个构造一定需要从某个原理出发一步步推理得出，它可以是启发式，但不能是靠猜想的启发式，或者说摸索的过程中可以有猜想，但是最后的某个布局某个框架一定得是被一个个理由和定理从问题接力接出来的，中间不能断，你懂我意思吧，至于为什么要这样，我说的不太能详细，因为零条件布局需要做的是给有条件布局探路
+
+Source:
+/home/zhuran24/.claude/projects/-home-zhuran24-zmd-research/03952551-eece-4926-a44b-27a65dd1e9b8.jsonl:754
+Raw source timestamp: 2026-08-28T09:17:45.820Z.
+
+The owner-approved landing instruction fixes the operational clauses as follows:
+
+1. 零条件布局须与有条件布局同法求解。
+
+2. 摸索中允许猜想与启发式。
+
+3. 最终布局/框架的每个结构决定必须由从问题出发的不断链推导接住。
+
+4. 不能有任何节点唯一依据是「猜了且碰巧行」。
+
+5. 理由：零条件为有条件探路，可迁移的是定理链不是布局，无推导的
+   witness 在约束回填时整体作废，不断链只断局部、可见可修。
+
+"同法" requires the same epistemic standard and transportable knowledge, not
+necessarily the same sequence of machines. The rule is constructive, not a ban
+on discovery: conjectures may serve as scaffolding, but every load-bearing
+structure in the final object must be replaced by a problem-derived chain.
+
+Landing-instruction coordinate:
+/home/zhuran24/.claude/projects/-home-zhuran24-zmd-research/03952551-eece-4926-a44b-27a65dd1e9b8.jsonl:796
+
+Source map
+----------
+Inner-loop origin report:
+/home/zhuran24/zmd-pj/.artifacts/inner_loop_archaeology_20260823/METHODOLOGY_ORIGIN.md
+
+Inner-loop owner quote extract:
+/home/zhuran24/zmd-pj/.artifacts/inner_loop_archaeology_20260823/scratch/owner_origin_quotes.txt
+
+Outer-loop origin dossier:
+/home/zhuran24/zmd-pj/.artifacts/outer_loop_archaeology_20260822/OUTER_LOOP_ORIGIN_DOSSIER.md
+
+Outer-loop live-transcript archaeology:
+/home/zhuran24/zmd-pj/.artifacts/outer_loop_archaeology_20260822/LANE1_LIVE_TRANSCRIPTS.md
+
+Mathematical translation digest:
+/home/zhuran24/zmd-pj/.artifacts/math_translation_derivation_20260823/MATH_TRANSLATIONS_DIGEST.md
+
+Corrected 2026-08 project handoff:
+/home/zhuran24/Documents/Codex/2026-08-27/new-chat-8/outputs/分支-接手项目推进工作-完整对话-28轮.txt
