@@ -15,7 +15,7 @@ It must contain one current endpoint, one live question, and any inflight recove
 For cross-tree handoff, owner matters, or cross-session external work only, read `/home/zhuran24/.claude/ops/zmd-pj/membrane/NOW.md`.
 Ordinary R0 work remains local and does not enter O.
 
-Read `PROGRAM.txt` on first entry or when the goal hierarchy changes. Read the active campaign named by `.zmd-worktree-mode` after STATE or when the current question needs it. Load old governance and history only on demand.
+Read `research_lab/PROGRAM.txt` on first entry or when the goal hierarchy changes. Read the active campaign named by `.zmd-worktree-mode` after STATE or when the current question needs it. Load old governance and history only on demand.
 
 Claude Code auto-memory is bound to the research-only directory recorded in `research_lab/CC_MEMORY.txt`. It carries stable research habits, not current campaign state; `STATE.txt` and the active campaign remain authoritative for what is happening now.
 
