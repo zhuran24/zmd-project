@@ -27,7 +27,7 @@ if str(ROOT) not in sys.path:
 OUT = (
     ROOT
     / "research_lab/local/zero_condition/"
-    "E075_target26_two_body_native_frontier/run-001"
+    "E075_target26_two_body_native_frontier/run-002"
 )
 RESULT_PATH = OUT / "RESULT.json"
 FAILURE_PATH = OUT / "FAILURE.json"
@@ -66,10 +66,17 @@ E074_RUN = (
 )
 E074_RESULT = E074_RUN / "RESULT.json"
 E074_TARGET26 = E074_RUN / "TARGET_026_TRANSPORT.json"
+E075_RUN1 = (
+    ROOT
+    / "research_lab/local/zero_condition/"
+    "E075_target26_two_body_native_frontier/run-001"
+)
+E075_RUN1_RESULT = E075_RUN1 / "RESULT.json"
+E075_RUN1_ATLAS = E075_RUN1 / "TWO_BODY_FRONTIER.json"
 
 EXPECTED_ENV = {
     "PYTHONHASHSEED": "0",
-    "PYTHONPYCACHEPREFIX": "/tmp/zmd_e075_source_cache_v1",
+    "PYTHONPYCACHEPREFIX": "/tmp/zmd_e075_source_cache_v2",
     "EXACT_USE_POSE_BOOL_MASTER": "1",
     "EXACT_USE_PORT_ACTIVE": "1",
     "EXACT_MASTER_HINT_PERSISTENCE": "0",
@@ -90,6 +97,8 @@ EXPECTED_HASHES = {
     E070_RESULT: "e15599c5c967cdc5ab74fb755b41d32cb476d68544a1f09b0b4c8be57a1829ed",
     E074_RESULT: "e3e59cc773b88f033d754a97ec16e28e9e18980c9f02b55ab8980851b95fa7c9",
     E074_TARGET26: "609e0be6613f27531e9a24bc757b3dbeb7574d6422e9eb55615cf117d74658f4",
+    E075_RUN1_RESULT: "3757305872126272d766e19d3e2f929cab7b4775c2294a2a66ab5788df1bed46",
+    E075_RUN1_ATLAS: "d041ad9b2672643ae86693260b1a3fe039ebafad8d15cc22e0b69f5992438eba",
 }
 
 SIX4 = "manufacturing_6x4"
@@ -108,7 +117,7 @@ FILLING = "filling_capsule"
 EXPECTED_FOOTPRINT_COUNT = 9
 EXPECTED_RAW_MODE_COUNT = 18
 EXPECTED_ORDERED_PAIR_COUNT = 12
-ARMS = ("FREE", "CORE_OPERATIONS", "TARGET26_SIGNATURES")
+ARMS = ("FREE", "CORE_OPERATIONS", "PAIR_COUPLED")
 SOLVE_SECONDS = 30.0
 SOLVE_WORKERS = 8
 MAX_MATERIALIZED_PER_ARM = 5
@@ -296,6 +305,15 @@ def verify_identity() -> dict[str, Any]:
     }
     if changed != expected_changed:
         raise RuntimeError(f"E075 target-26 body identity drift: {changed}")
+    run1 = load_json(E075_RUN1_RESULT)
+    if (
+        run1.get("verdict") != "TARGET26_TWO_BODY_NATIVE_FRONTIER_EXHAUSTED"
+        or int(run1.get("ordered_pair_count", -1)) != EXPECTED_ORDERED_PAIR_COUNT
+        or int(run1.get("nonterminal_count", -1)) != 0
+        or str(run1["identity"].get("runner_sha256"))
+        != "2e5d9b4b62b139f1badf827649e1f2779637059ea6405bd90fcfd49209c088f0"
+    ):
+        raise RuntimeError("E075 run-001 predecessor drift")
     return {
         "research_head": git_output("rev-parse", "HEAD"),
         "research_branch": "research/main",
@@ -504,6 +522,31 @@ def build_candidate_context(
         inputs=base["inputs"],
         is_port_front_usable=base["is_port_front_usable"],
     )
+    parent_sink_slot_ids = {
+        str(row["slot_id"])
+        for row in context["sink_space"]["slots"]
+        if int(row["component"]) == TARGET_QIAOYU_COMPONENT
+    }
+    if not parent_sink_slot_ids:
+        raise RuntimeError("E075 parent qiaoyu sink-slot identity is empty")
+    transported_sink_slots = [
+        dict(row)
+        for row in sink_space["slots"]
+        if str(row["slot_id"]) in parent_sink_slot_ids
+    ]
+    transported_sink_components = sorted(
+        {int(row["component"]) for row in transported_sink_slots}
+    )
+    parent_target_cells = set(
+        context["routing_context"].cells_by_component[TARGET_COMPONENT]
+    )
+    transported_target_components = sorted(
+        {
+            int(routing_context.component_by_cell[cell])
+            for cell in parent_target_cells
+            if cell in routing_context.component_by_cell
+        }
+    )
     bodies = e061.body_rows(solution, pools, base["e014"])
     destination_by_owner = {
         str(body["source_instance_id"]): int(destination)
@@ -521,6 +564,10 @@ def build_candidate_context(
         "actual_options": actual_options,
         "empty_destinations": empty_destinations,
         "sink_space": sink_space,
+        "parent_sink_slot_ids": sorted(parent_sink_slot_ids),
+        "transported_sink_slots": transported_sink_slots,
+        "transported_sink_components": transported_sink_components,
+        "transported_target_components": transported_target_components,
         "bodies": bodies,
         "destination_by_owner": destination_by_owner,
         "free_component_count": len(routing_context.cells_by_component),
@@ -528,6 +575,108 @@ def build_candidate_context(
             (len(cells) for cells in routing_context.cells_by_component.values()),
             reverse=True,
         ),
+    }
+
+
+def add_assignment_copy_transported(
+    *,
+    e074: Any,
+    model: cp_model.CpModel,
+    prefix: str,
+    rows_by_destination: Mapping[int, Sequence[Mapping[str, Any]]],
+    operation_counts: Mapping[str, int],
+    sink_components: Sequence[int],
+    allowed_sink_components: Sequence[int],
+) -> dict[str, Any]:
+    x_vars: dict[tuple[int, int], Any] = {}
+    for destination, rows in rows_by_destination.items():
+        variables: list[Any] = []
+        for option_index, _option in enumerate(rows):
+            variable = model.NewBoolVar(f"{prefix}_x_{destination}_{option_index}")
+            x_vars[(destination, option_index)] = variable
+            variables.append(variable)
+        model.AddExactlyOne(variables)
+    for operation, expected in operation_counts.items():
+        model.Add(
+            cp_model.LinearExpr.Sum(
+                [
+                    x_vars[(destination, option_index)]
+                    for destination, rows in rows_by_destination.items()
+                    for option_index, option in enumerate(rows)
+                    if str(option["operation"]) == str(operation)
+                ]
+            )
+            == int(expected)
+        )
+    components = sorted(
+        {
+            int(component)
+            for rows in rows_by_destination.values()
+            for option in rows
+            for part in option["signature"]
+            for component in part
+        }
+        | {int(value) for value in sink_components}
+    )
+    fine_sources: dict[int, Any] = {}
+    fine_sinks: dict[int, Any] = {}
+    qiaoyu_sources: dict[int, Any] = {}
+    for component in components:
+        fine_sources[component] = e074.add_exact_or(
+            model,
+            name=f"{prefix}_fine_source_{component}",
+            contributors=[
+                x_vars[(destination, option_index)]
+                for destination, rows in rows_by_destination.items()
+                for option_index, option in enumerate(rows)
+                if component in set(option["signature"][1])
+            ],
+        )
+        fine_sinks[component] = e074.add_exact_or(
+            model,
+            name=f"{prefix}_fine_sink_{component}",
+            contributors=[
+                x_vars[(destination, option_index)]
+                for destination, rows in rows_by_destination.items()
+                for option_index, option in enumerate(rows)
+                if component in set(option["signature"][0])
+            ],
+        )
+        qiaoyu_sources[component] = e074.add_exact_or(
+            model,
+            name=f"{prefix}_qiaoyu_source_{component}",
+            contributors=[
+                x_vars[(destination, option_index)]
+                for destination, rows in rows_by_destination.items()
+                for option_index, option in enumerate(rows)
+                if component in set(option["signature"][2])
+            ],
+        )
+    qiaoyu_sink_vars = {
+        int(component): model.NewBoolVar(f"{prefix}_qiaoyu_sink_{component}")
+        for component in sorted({int(value) for value in sink_components})
+    }
+    model.AddExactlyOne(list(qiaoyu_sink_vars.values()))
+    for component in components:
+        model.Add(
+            qiaoyu_sources[component]
+            == qiaoyu_sink_vars.get(component, 0)
+        )
+    allowed = [
+        qiaoyu_sink_vars[int(component)]
+        for component in sorted({int(value) for value in allowed_sink_components})
+        if int(component) in qiaoyu_sink_vars
+    ]
+    add_one_of(model=model, variables=allowed)
+    model.Add(cp_model.LinearExpr.Sum(list(fine_sources.values())) >= 1)
+    model.Add(cp_model.LinearExpr.Sum(list(fine_sinks.values())) >= 1)
+    return {
+        "x_vars": x_vars,
+        "components": components,
+        "fine_sources": fine_sources,
+        "fine_sinks": fine_sinks,
+        "qiaoyu_sources": qiaoyu_sources,
+        "qiaoyu_sink_vars": qiaoyu_sink_vars,
     }
 
 
@@ -578,16 +727,40 @@ def solve_arm(
             "arm": arm,
             "status": "STRUCTURAL_EMPTY",
             "empty_destinations": list(candidate["empty_destinations"]),
+            "transported_sink_components": list(
+                candidate["transported_sink_components"]
+            ),
+            "transported_target_components": list(
+                candidate["transported_target_components"]
+            ),
             "elapsed_seconds": 0.0,
             "branches": 0,
             "conflicts": 0,
         }
-    if TARGET_QIAOYU_COMPONENT not in set(candidate["sink_space"]["components"]):
+    if not candidate["transported_sink_components"]:
         return {
             "arm": arm,
             "status": "STRUCTURAL_EMPTY",
-            "detail": "qiaoyu sink component 29 absent",
+            "detail": "all stable parent qiaoyu sink slots became unusable",
             "empty_destinations": [],
+            "transported_sink_components": [],
+            "transported_target_components": list(
+                candidate["transported_target_components"]
+            ),
+            "elapsed_seconds": 0.0,
+            "branches": 0,
+            "conflicts": 0,
+        }
+    if arm == "PAIR_COUPLED" and not candidate["transported_target_components"]:
+        return {
+            "arm": arm,
+            "status": "STRUCTURAL_EMPTY",
+            "detail": "no surviving physical seed from parent target component 26",
+            "empty_destinations": [],
+            "transported_sink_components": list(
+                candidate["transported_sink_components"]
+            ),
+            "transported_target_components": [],
             "elapsed_seconds": 0.0,
             "branches": 0,
             "conflicts": 0,
@@ -596,18 +769,20 @@ def solve_arm(
     if actual is None:
         raise RuntimeError("E075 actual options missing without structural empty")
     model = cp_model.CpModel()
-    built = e074.add_assignment_copy(
+    built = add_assignment_copy_transported(
+        e074=e074,
         model=model,
         prefix=f"e075_{arm.lower()}_{random_seed}",
         rows_by_destination=actual,
         operation_counts=e061.OPERATION_COUNTS,
         sink_components=candidate["sink_space"]["components"],
+        allowed_sink_components=candidate["transported_sink_components"],
     )
     add_zero_constraints(model=model, built=built)
     destination_a = int(candidate["destination_by_owner"][OWNER_A])
     destination_b = int(candidate["destination_by_owner"][OWNER_B])
 
-    if arm in {"CORE_OPERATIONS", "TARGET26_SIGNATURES"}:
+    if arm in {"CORE_OPERATIONS", "PAIR_COUPLED"}:
         add_one_of(
             model=model,
             variables=[
@@ -624,27 +799,55 @@ def solve_arm(
                 if str(option["operation"]) == FILLING
             ],
         )
-    if arm == "TARGET26_SIGNATURES":
-        add_one_of(
-            model=model,
-            variables=[
-                built["x_vars"][(destination_a, option_index)]
-                for option_index, option in enumerate(actual[destination_a])
-                if str(option["operation"]) == FINE_GRINDER
-                and tuple(option["signature"])
-                == ((), (TARGET_COMPONENT,), ())
-            ],
-        )
-        add_one_of(
-            model=model,
-            variables=[
-                built["x_vars"][(destination_b, option_index)]
-                for option_index, option in enumerate(actual[destination_b])
-                if str(option["operation"]) == FILLING
-                and tuple(option["signature"])
-                == ((TARGET_COMPONENT,), (), (TARGET_QIAOYU_COMPONENT,))
-            ],
-        )
+    compatible_pairs: list[dict[str, Any]] = []
+    if arm == "PAIR_COUPLED":
+        transported_targets = {
+            int(value) for value in candidate["transported_target_components"]
+        }
+        transported_sinks = {
+            int(value) for value in candidate["transported_sink_components"]
+        }
+        pair_vars: list[Any] = []
+        for a_index, a_option in enumerate(actual[destination_a]):
+            a_signature = tuple(a_option["signature"])
+            if (
+                str(a_option["operation"]) != FINE_GRINDER
+                or tuple(a_signature[0])
+                or tuple(a_signature[2])
+                or len(tuple(a_signature[1])) != 1
+                or int(tuple(a_signature[1])[0]) not in transported_targets
+            ):
+                continue
+            for b_index, b_option in enumerate(actual[destination_b]):
+                b_signature = tuple(b_option["signature"])
+                if (
+                    str(b_option["operation"]) != FILLING
+                    or tuple(b_signature[1])
+                    or tuple(b_signature[0]) != tuple(a_signature[1])
+                    or len(tuple(b_signature[2])) != 1
+                    or int(tuple(b_signature[2])[0]) not in transported_sinks
+                ):
+                    continue
+                pair_var = model.NewBoolVar(
+                    f"e075_pair_{random_seed}_{a_index}_{b_index}"
+                )
+                a_var = built["x_vars"][(destination_a, a_index)]
+                b_var = built["x_vars"][(destination_b, b_index)]
+                model.Add(pair_var <= a_var)
+                model.Add(pair_var <= b_var)
+                model.Add(pair_var >= a_var + b_var - 1)
+                pair_vars.append(pair_var)
+                compatible_pairs.append(
+                    {
+                        "owner_a_option_index": int(a_index),
+                        "owner_b_option_index": int(b_index),
+                        "fine_component": int(tuple(a_signature[1])[0]),
+                        "qiaoyu_component": int(tuple(b_signature[2])[0]),
+                        "owner_a_pose_idx": int(a_option["pose_idx"]),
+                        "owner_b_pose_idx": int(b_option["pose_idx"]),
+                    }
+                )
+        add_one_of(model=model, variables=pair_vars)
 
     deterministic_terms = [
         ((destination + 1) * 10_000 + option_index + 1)
@@ -667,6 +870,15 @@ def solve_arm(
         "branches": int(solver.NumBranches()),
         "conflicts": int(solver.NumConflicts()),
         "destination_by_owner": dict(candidate["destination_by_owner"]),
+        "parent_sink_slot_ids": list(candidate["parent_sink_slot_ids"]),
+        "transported_sink_components": list(
+            candidate["transported_sink_components"]
+        ),
+        "transported_target_components": list(
+            candidate["transported_target_components"]
+        ),
+        "compatible_pair_count": len(compatible_pairs),
+        "compatible_pairs": compatible_pairs,
         "selected_sink_component": None,
         "fine_components": None,
         "selected_core_rows": [],
@@ -687,9 +899,18 @@ def solve_arm(
         ]
         if len(core_rows) != 2:
             raise RuntimeError(f"E075 selected core-row count drift: {core_rows}")
+        selected_sink_components = [
+            int(component)
+            for component, variable in built["qiaoyu_sink_vars"].items()
+            if solver.Value(variable) == 1
+        ]
+        if len(selected_sink_components) != 1:
+            raise RuntimeError(
+                f"E075 selected transported sink count drift: {selected_sink_components}"
+            )
         result.update(
             {
-                "selected_sink_component": TARGET_QIAOYU_COMPONENT,
+                "selected_sink_component": selected_sink_components[0],
                 "fine_components": [
                     int(component)
                     for component, variable in built["fine_sources"].items()
@@ -759,7 +980,7 @@ def materialize_positive(
         raise RuntimeError("E075 positive selected-mode placement lost power")
     path = OUT / f"POSITIVE_{arm}_{rank:02d}.json"
     payload = {
-        "schema": "zmd_zero_condition_e075_positive_endpoint_v1",
+        "schema": "zmd_zero_condition_e075_positive_endpoint_v2",
         "created_at_utc": utc_now(),
         "authority": "research_only_noncertified",
         "rank": int(rank),
@@ -868,6 +1089,16 @@ def run() -> dict[str, Any]:
                     "free_component_sizes": candidate["free_component_sizes"],
                     "empty_destinations": candidate["empty_destinations"],
                     "sink_components": list(candidate["sink_space"]["components"]),
+                    "parent_sink_slot_ids": list(candidate["parent_sink_slot_ids"]),
+                    "transported_sink_slots": list(
+                        candidate["transported_sink_slots"]
+                    ),
+                    "transported_sink_components": list(
+                        candidate["transported_sink_components"]
+                    ),
+                    "transported_target_components": list(
+                        candidate["transported_target_components"]
+                    ),
                     "destination_by_owner": dict(candidate["destination_by_owner"]),
                 }
             )
@@ -951,13 +1182,13 @@ def run() -> dict[str, Any]:
                 )
             )
 
-    target26_positive_count = len(positives_by_arm["TARGET26_SIGNATURES"])
+    pair_coupled_positive_count = len(positives_by_arm["PAIR_COUPLED"])
     core_positive_count = len(positives_by_arm["CORE_OPERATIONS"])
     free_positive_count = len(positives_by_arm["FREE"])
     if nonterminal:
         verdict = "TWO_BODY_NATIVE_FRONTIER_NONTERMINAL"
         decision = "CONTINUE_ONLY_NONTERMINAL_PAIR_ARMS"
-    elif target26_positive_count:
+    elif pair_coupled_positive_count:
         verdict = "TARGET26_NATIVE_TWO_BODY_REALIZATION_FOUND"
         decision = "ENTER_FULL_ASSIGNMENT_COMPONENT_BINDING_CONSUMER"
     elif core_positive_count or free_positive_count:
@@ -968,7 +1199,7 @@ def run() -> dict[str, Any]:
         decision = "DERIVE_THIRD_STABLE_BODY_FROM_TERMINAL_OBSTRUCTION"
 
     atlas = {
-        "schema": "zmd_zero_condition_e075_two_body_frontier_v1",
+        "schema": "zmd_zero_condition_e075_two_body_frontier_v2",
         "created_at_utc": utc_now(),
         "authority": "research_only_noncertified",
         "manifest": manifest,
@@ -987,7 +1218,7 @@ def run() -> dict[str, Any]:
     }
     dump_exclusive(ATLAS_PATH, atlas)
     return {
-        "schema": "zmd_zero_condition_e075_two_body_native_frontier_result_v1",
+        "schema": "zmd_zero_condition_e075_two_body_native_frontier_result_v2",
         "created_at_utc": utc_now(),
         "authority": "research_only_noncertified",
         "verdict": verdict,
@@ -1012,7 +1243,7 @@ def run() -> dict[str, Any]:
         "admission_status_counts": atlas["admission_status_counts"],
         "status_counts_by_arm": atlas["status_counts_by_arm"],
         "positive_count_by_arm": atlas["positive_count_by_arm"],
-        "target26_signature_positive_count": target26_positive_count,
+        "pair_coupled_positive_count": pair_coupled_positive_count,
         "core_operation_positive_count": core_positive_count,
         "free_positive_count": free_positive_count,
         "nonterminal_count": len(nonterminal),
@@ -1022,8 +1253,9 @@ def run() -> dict[str, Any]:
         "decision": decision,
         "truth_boundary": (
             "E069 fixed-outside two-body geometry over stable owners A/B, all native "
-            "same-footprint modes, collapsed 38-row operation classes, qiaoyu sink "
-            "component 29, and terminal-signature equality only."
+            "same-footprint modes, collapsed 38-row operation classes, physical "
+            "transport of E069's stable qiaoyu sink slots and target-26 seed cells, "
+            "and terminal-signature equality only."
         ),
         "ledger_effect": "none",
     }
@@ -1054,7 +1286,7 @@ def main() -> int:
         return 0
     except Exception as exc:
         failure = {
-            "schema": "zmd_zero_condition_e075_two_body_native_frontier_failure_v1",
+            "schema": "zmd_zero_condition_e075_two_body_native_frontier_failure_v2",
             "created_at_utc": utc_now(),
             "status": "EXECUTION_FAILURE",
             "error": type(exc).__name__,

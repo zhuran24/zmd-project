@@ -46,8 +46,13 @@ Method
    sink space, and all 38 body option rows. Resolve A/B back to current destination
    rows by stable source_instance_id after body sorting; never reuse E069's parent
    destination integers.
-6. Solve three native terminal-signature arms with exact operation counts and
-   qiaoyu sink fixed to component 29:
+6. Transport component semantics by stable physical witnesses, not numeric labels:
+   * qiaoyu uses the same protocol_core input slot IDs that belonged to parent
+     component 29, mapped to their candidate components;
+   * the fine target uses surviving physical cells of parent component 26, mapped
+     to their candidate components.
+7. Solve three native terminal-signature arms with exact operation counts and the
+   transported qiaoyu sink identity:
 
    FREE
      Any native operation/mode assignment with fine source/sink equality.
@@ -56,11 +61,12 @@ Method
      As above, with A forced to grinder_fine_buckwheat and B forced to
      filling_capsule.
 
-   TARGET26_SIGNATURES
-     As above, with A forced to the exact native signature fine output {26} and B
-     forced to the exact native signature fine input {26}, qiaoyu output {29}.
+   PAIR_COUPLED
+     As above, with A/B options coupled so A's native fine-output component equals
+     B's native fine-input component, that component is the transported target-26
+     region, and B's qiaoyu output reaches the transported parent sink slots.
 
-7. Materialize all terminal results and any positive assignment endpoint by stable
+8. Materialize all terminal results and any positive assignment endpoint by stable
    body identity. If a positive exists, preserve the full native option assignment
    and the corresponding two-body placement state for the next, fuller consumer.
 
@@ -89,6 +95,13 @@ E075 exhausts a fixed-outside two-body geometry and native terminal-signature
 context. Even a positive is not yet full named-operation assignment, component
 binding, routing, throughput, a whole-layout witness, or certification.
 
+Correction note
+---------------
+run-001 incorrectly reused the parent numeric component labels 26 and 29 after
+changing geometry. Component IDs are enumeration-local and can renumber even when
+the same physical region survives. Its negative verdict is therefore superseded;
+run-002 performs explicit physical-slot/cell transport.
+
 Result
 ------
-Not run yet.
+run-002 not run yet.
