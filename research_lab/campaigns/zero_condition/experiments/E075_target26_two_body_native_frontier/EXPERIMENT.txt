@@ -1,0 +1,94 @@
+EXPERIMENT E075: TARGET-26 TWO-BODY NATIVE FRONTIER
+==================================================
+
+Question
+--------
+Can E074's minimum two-row target-26 assignment core be physically realized by
+moving only its two stable adjacent 6x4 bodies and selecting native port modes, so
+that the corrected terminal-signature model reaches zero without any synthetic
+option?
+
+Why this experiment
+-------------------
+E074 replaced a 103-owner geometry inventory with exact row-transport cores. Five
+synthetically sufficient targets require three changed rows; target 26 requires
+only two:
+
+  body A  grinder_dense_source_001
+          stable body digest da277903...
+          fine-grinder output moves from component 6 to component 26
+
+  body B  grinder_fine_buckwheat_002
+          stable body digest ef71d17d...
+          filling input must move from component 6 to component 26 while qiaoyu
+          output remains in component 29
+
+On E069 geometry, body A is the unique occupied owner directly adjacent to both
+free components 6 and 26. Its one-body domain is only three poses; the two real
+body moves make its row structurally empty. Removing both A and B from the fixed
+outside occupancy exposes only nine legal 6x4 footprints, twelve ordered
+non-overlapping footprint pairs, and 48 raw mode pairs. This is the complete
+smallest physical context suggested by the assignment core.
+
+Method
+------
+1. Pin source-stable E069, actual E070 run-004, and E074's target-26 transport
+   witness.
+2. Reconstruct E069 and identify A/B by stable source_instance_id and body digest.
+3. Remove both current footprints from outside occupancy. Enumerate every legal
+   6x4 footprint available to either body, quotient same-footprint modes, then
+   enumerate all ordered non-overlapping footprint pairs. Assert the expected
+   nine footprints and twelve pairs.
+4. For every pair, construct a real two-body placement state using canonical pose
+   representatives. Recheck mandatory/pole cardinality, no overlap, and exact
+   power coverage.
+5. Rebuild the free components, native same-footprint mode domains, generic qiaoyu
+   sink space, and all 38 body option rows. Resolve A/B back to current destination
+   rows by stable source_instance_id after body sorting; never reuse E069's parent
+   destination integers.
+6. Solve three native terminal-signature arms with exact operation counts and
+   qiaoyu sink fixed to component 29:
+
+   FREE
+     Any native operation/mode assignment with fine source/sink equality.
+
+   CORE_OPERATIONS
+     As above, with A forced to grinder_fine_buckwheat and B forced to
+     filling_capsule.
+
+   TARGET26_SIGNATURES
+     As above, with A forced to the exact native signature fine output {26} and B
+     forced to the exact native signature fine input {26}, qiaoyu output {29}.
+
+7. Materialize all terminal results and any positive assignment endpoint by stable
+   body identity. If a positive exists, preserve the full native option assignment
+   and the corresponding two-body placement state for the next, fuller consumer.
+
+Decision rule
+-------------
+TARGET26_SIGNATURES feasible
+  The synthetic target has been physically realized in the complete two-body
+  context. Promote this bounded geometry plus native mode/assignment endpoint to
+  the full operation-assignment/component-binding consumer.
+
+Only FREE or CORE_OPERATIONS feasible
+  Preserve the native zero but derive the exact operation/signature difference
+  before entering the fuller consumer.
+
+No native zero and every pair terminal
+  Close the complete two-body geometry/mode context. Derive the next stable body
+  only from the exact structural-empty or signature obstruction; do not reopen a
+  broad owner scan.
+
+Any UNKNOWN
+  Preserve only the nonterminal pair/arm. Do not convert it into a negative.
+
+Truth boundary
+--------------
+E075 exhausts a fixed-outside two-body geometry and native terminal-signature
+context. Even a positive is not yet full named-operation assignment, component
+binding, routing, throughput, a whole-layout witness, or certification.
+
+Result
+------
+Not run yet.
