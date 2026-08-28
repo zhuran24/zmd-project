@@ -1,0 +1,648 @@
+ZMD ZERO-CONDITION CANDIDATE DIRECTION
+CUT NECESSITY, MEMBRANES, AND TRANSPORT CORES
+================================================
+
+Identity and effect
+-------------------
+Date: 2026-08-28
+Status: R0 CANDIDATE DIRECTION
+Mode: research-only, non-certified
+Campaign: zero_condition
+
+This file freezes a candidate mathematical and architectural direction. It does
+not certify a theorem implementation, admit a production consumer, update U or
+L, establish a whole-layout witness, or authorize pruning in the certified
+solver. Every result below must still be instantiated, checked, and transported
+to a concrete consumer before it can affect a search space.
+
+An independent heterogeneous review of the originating discussion may produce
+objections or corrections. Such review does not block this R0 landing; material
+changes require a later owner-adjudicated revision.
+
+Candidate direction in one sentence
+-----------------------------------
+A feasible layout need not contain one visually prescribed corridor, but its
+free space, selected terminals, and physical route channels must support a typed
+material-circulation network satisfying component balance and every applicable
+cut-capacity inequality. A violated cut yields a separator or membrane; repairing
+that obstruction can then be reduced to a minimum semantic or geometric
+transport core. A restricted typed skeleton with a verified constructor supplies
+the sufficient direction.
+
+The proposed unbroken chain is:
+
+  frozen rules and terminal obligations
+    -> component/cut necessity
+    -> minimum deficient cut or zero-capacity membrane
+    -> minimum semantic assignment transport core
+    -> minimum geometric vacancy/relocation transport core
+    -> bounded joint placement/mode/binding consumer
+    -> typed skeleton constructor
+    -> exact routing and later selected-route throughput verification
+
+This direction is intended to produce structure-level chain links. It is not a
+license to replace the current whole-layout campaign with an isolated theorem
+program.
+
+1. Scope and semantic split
+---------------------------
+The frozen grid is Omega = {0,...,69} x {0,...,69}. For a candidate layout L,
+let:
+
+  B(L)       facility-body occupied cells;
+  P(L)       selected power-pole occupied cells;
+  H(L)       reserved empty-rectangle cells;
+  O(L)       B(L) union P(L) union H(L);
+  F(L)       Omega minus O(L).
+
+For the zero-condition campaign, H(L) is empty. In a conditioned campaign, H(L)
+is the selected strict-empty rectangle and therefore removes cells from the same
+routing substrate as bodies and poles.
+
+The current preprocessed instance contains 266 mandatory instances. Under the
+current discrete port-slot semantics, the binding ledger contains 310 exact
+input slots, 264 exact output slots, 52 required generic source slots, and 2
+required generic sink slots, for 628 selected terminal obligations in total.
+This count is context evidence, not the theorem itself.
+
+Two semantic levels must remain separate.
+
+A. Current routing/connectivity semantics
+
+The existing exact routing layer proves selected terminal-front availability,
+component compatibility, physical component legality, directed edge balance,
+and source-to-sink connectivity. It does not prove quantitative production
+throughput. Different commodities may share one physical belt component when
+the union of their selected sides is a legal physical pattern. Therefore a
+numeric "one commodity per belt" capacity assumption is not currently licensed.
+
+B. Future selected-route throughput semantics
+
+A quantitative cut-capacity theorem requires a selected physical route graph,
+exact terminal rates, exact per-channel capacities, shared-capacity equations,
+and an independent exact verifier. That model is not yet the current certified
+routing theorem. The numerical theorem below is mathematically precise, but its
+use as a solver cut remains pending the selected-route throughput model.
+
+2. Typed circulation model
+--------------------------
+Let N_L = (V,E) be a directed physical material network induced by a candidate
+layout and a selected route realization. Vertices may represent legal physical
+channel states, terminal-front incidences, or a verifier-equivalent expansion.
+Every selected terminal t is attached to a stable network vertex v(t), has a
+commodity c(t), a sign sigma(t) in {+1,-1}, and a nonnegative exact rate r(t):
+
+  sigma(t) = +1 for a material source/output terminal;
+  sigma(t) = -1 for a material sink/input terminal.
+
+Generic boundary/protocol sources and final generic sinks are represented as
+explicit external terminal vertices rather than omitted from the balance.
+
+For each commodity c and directed edge e, let f[c,e] >= 0 be exact flow. Let
+u[e] >= 0 be the shared physical capacity of e. The selected-route model must
+satisfy:
+
+  conservation at every vertex v:
+
+    sum_{e leaves v} f[c,e] - sum_{e enters v} f[c,e] = b[c,v]
+
+  where
+
+    b[c,v] = sum_{t: v(t)=v, c(t)=c} sigma(t) * r(t),
+
+  and shared edge capacity:
+
+    sum_c f[c,e] <= u[e].
+
+If the physical model uses undirected channels, replace each channel by the
+verifier's directed expansion and use its actual shared-capacity contract.
+
+For S subseteq V, define:
+
+  b[c,S] = sum_{v in S} b[c,v]
+
+  delta+(S) = directed edges leaving S
+  delta-(S) = directed edges entering S
+
+  cap+(S) = sum_{e in delta+(S)} u[e]
+  cap-(S) = sum_{e in delta-(S)} u[e]
+
+and [x]+ = max(x,0).
+
+3. Component-cut circulation necessity
+---------------------------------------
+Theorem candidate T-CUT-NECESSITY
+
+Assume a selected-route witness satisfies the conservation and shared-capacity
+semantics in Section 2. Then for every S subseteq V:
+
+  sum_c [ b[c,S] ]+ <= cap+(S)                         (1)
+
+  sum_c [ -b[c,S] ]+ <= cap-(S).                      (2)
+
+Equivalently, every region's forced net material export and import must fit
+through the corresponding physical cuts.
+
+Proof skeleton
+
+1. Fix one commodity c and sum its vertex-conservation equations over all
+   v in S.
+
+2. Every edge internal to S appears once as outgoing and once as incoming, so
+   all internal terms cancel. The remaining equality is:
+
+     b[c,S]
+       = sum_{e in delta+(S)} f[c,e]
+         - sum_{e in delta-(S)} f[c,e].
+
+3. Therefore:
+
+     [b[c,S]]+ <= sum_{e in delta+(S)} f[c,e].
+
+4. Sum over commodities and apply the shared-capacity rows:
+
+     sum_c [b[c,S]]+
+       <= sum_{e in delta+(S)} sum_c f[c,e]
+       <= sum_{e in delta+(S)} u[e]
+       = cap+(S).
+
+5. Apply the same argument to -b[c,S] for the incoming inequality.
+
+No geometric intuition is used in this proof. The theorem is obtained by adding
+local forced-balance equations and then applying physical cut capacities.
+
+3.1 Currently provable Boolean/component corollary
+
+Before the quantitative selected-route model exists, the current routing
+semantics already supports the zero-capacity Boolean specialization.
+
+Let G_free(L) be the undirected graph on free routing cells, with grid-adjacent
+free cells joined. Let C be one connected component. For commodity c, let
+T+[c,C] and T-[c,C] be the selected source and sink terminal fronts in C,
+including explicit generic source/sink terminals.
+
+A necessary condition for current exact connectivity is:
+
+  T+[c,C] is nonempty if and only if T-[c,C] is nonempty,
+
+for every component that contains any selected terminal of c, subject to the
+exact external-terminal representation of that commodity. More generally, all
+selected c terminals in C must belong to a source-to-sink-connected selected
+route subgraph accepted by the connectivity guard.
+
+This is the cap(C)=0 degeneration of the circulation theorem. It is fully within
+the current component/precheck semantics and does not require a throughput
+claim.
+
+3.2 Power poles and the empty rectangle
+
+Power coverage and circulation are conjunctive obligations:
+
+  PowerCover(P(L))
+  AND
+  CutFeasible(B(L),P(L),H(L),selected terminals).
+
+A pole may improve PowerCover while deleting four free cells and reducing one or
+more cut capacities. The pole's obstacle effect is therefore not a downstream
+accident; it belongs in the same context as the cut calculation.
+
+When the strict empty rectangle is reintroduced, H(L) simply removes additional
+cells and channel edges. Its competition with the material structure becomes a
+measurable change in cut capacity and separator structure, rather than the vague
+claim that the rectangle "uses corridor space."
+
+4. Membrane as the zero-capacity cut special case
+-------------------------------------------------
+Definition: body membrane
+
+Fix a candidate layout L and stable terminal regions A and Z. Let M be a set of
+selected body or pole owners. Let G_free(L) be the current free-cell graph, and
+let G_free(L | release M) be the graph obtained by restoring the occupied cells
+of M as potentially free while keeping every other owner fixed.
+
+M is an A-Z membrane when:
+
+  A and Z are disconnected in G_free(L),
+  A and Z are connected in G_free(L | release M).
+
+It is minimal when no proper subset of M has this property.
+
+Membrane corollary
+
+If a fixed terminal assignment requires nonzero material transfer from the A
+side to the Z side, and the current A-side cut has zero capacity, then the
+candidate is infeasible. Under fixed outside geometry, any repair must do at
+least one of the following:
+
+  1. alter operation, mode, or binding assignments so the cross-membrane demand
+     disappears or is balanced on each side;
+  2. move or otherwise deactivate at least one member of M;
+  3. create a different legal channel path outside the membrane by changing
+     other geometry.
+
+A bridge crossing does not tunnel through an occupied facility body. It may
+cross another legal route only at a free cell and under the exact ground/bridge
+compatibility rules.
+
+Thus a membrane is not merely a visual wall. It is a zero-capacity cut whose
+forced terminal balance is nonzero. The E075-style delete/recompute observation
+is a local instance of this general form.
+
+5. Transport-core theorem
+-------------------------
+The same obstruction may be repaired in two assignment spaces:
+
+  semantic transport:
+    operation/mode/terminal responsibilities -> stable body rows;
+
+  geometric transport:
+    stable bodies -> legal footprints.
+
+Both can be represented by a bipartite compatibility graph.
+
+5.1 Exact matching decomposition
+
+Let A=(U,W,E_A) be a bipartite graph. U is a set of stable items and W is a set
+of stable slots. A feasible assignment M is a matching or b-matching satisfying
+the declared degree/capacity vector. Examples are:
+
+  operation copies assigned to body rows;
+  bodies assigned to footprints;
+  terminal responsibilities assigned to compatible modes.
+
+Theorem candidate T-TRANSPORT-CORE
+
+For two ordinary matchings M0 and M1 on the same stable vertex universe, every
+connected component of the symmetric difference
+
+  M0 triangle M1
+
+is an alternating even cycle or an alternating path. Components are
+vertex-disjoint. If both matchings cover the same vertices with the same degree
+requirements, only alternating cycles remain. If their matched/unmatched
+boundary differs, alternating paths end at the discrepancy vertices.
+
+For a b-matching with the same degree vector, split each capacity-d vertex into
+d unit copies, or use the equivalent edge-colored multigraph. The symmetric
+difference then decomposes into edge-disjoint alternating cycles; paths occur
+only at vertices whose endpoint degree requirements differ.
+
+Proof skeleton
+
+Color M0-only edges old and M1-only edges new. At every interior vertex with the
+same assignment degree in both states, the number of incident old edges equals
+the number of incident new edges. Following unused edges while alternating
+colors therefore either returns to the starting vertex, producing an even
+cycle, or terminates at a vertex with degree discrepancy, producing an
+alternating path. Repeating this partitions the symmetric-difference edges.
+
+5.2 Minimum transport core
+
+Let T be a target class of feasible assignments. Introduce change indicator
+z[u] for every stable item u, with z[u]=1 exactly when u's assignment differs
+from the parent state M0. Solve:
+
+  minimize sum_u weight[u] * z[u]
+  subject to M1 in T.
+
+The support of an optimum symmetric difference is a minimum weighted transport
+core. Its nontrivial changes are organized by the alternating paths/cycles
+above. This is the formal version of an assignment transport core or a vacancy
+chain.
+
+5.3 Applicability premises and limits
+
+The decomposition is licensed only when all of the following are explicit:
+
+  * U and W have stable identities. Geometry-dependent destination indices and
+    freshly numbered free-space components are not stable identities.
+
+  * M0 and M1 live in the same context and use the same object universe. A
+    context change must be transported before the comparison.
+
+  * Compatibility edges encode the actual local admissibility being claimed.
+    If non-overlap, power, terminal uniqueness, or port-domain conditions are
+    global, they must remain as side constraints in the optimization model.
+
+  * Capacity greater than one is represented as b-matching capacity or by unit
+    copies. Interchangeable copies may be quotiented only after proving the
+    relevant metadata and obligations are identical.
+
+  * The theorem compares feasible endpoint assignments. It does not claim that
+    flipping one alternating edge at a time preserves feasibility.
+
+  * A small transport core is a constructive modification specification, not a
+    routing, throughput, or whole-layout witness.
+
+Under these premises, E074-style semantic row cores and E075/E077-style vacancy
+chains are two instances of one transport theorem, not unrelated tricks.
+
+6. Sufficient direction: typed orthogonal skeletons
+---------------------------------------------------
+The necessary property P is cut feasibility, not one visually fixed corridor.
+For constructive search, define a stronger condition P'. As a constraint set,
+P' contains P; as a set of admitted layouts, solutions(P') is a subset of
+solutions(P). A first P' class may intentionally exclude unusual valid routes
+if it carries a complete constructive proof.
+
+Candidate sufficient class: admissible typed orthogonal skeleton
+
+A skeleton certificate K contains:
+
+  * an embedded directed graph whose arcs map to reserved legal grid/layer
+    channel paths;
+  * node types from the exact physical dictionary: dock, straight, turn,
+    splitter, merger, and legal orthogonal ground/bridge crossing;
+  * a stable dock assignment for every selected terminal front, including
+    direction, commodity, slot/rate, and operation/mode provenance;
+  * exact commodity flow on skeleton arcs satisfying terminal balance;
+  * physical shared-capacity rows for every arc/channel;
+  * edge/cell occupancy compatibility, including power poles and the empty
+    rectangle;
+  * local degree/pattern compatibility at every skeleton node.
+
+A tree or cactus skeleton with typed docks is a plausible first restricted
+constructor class because its realization and flow decomposition are easier to
+prove. It is not claimed necessary.
+
+Constructor obligations
+
+A skeleton class is not sufficient merely because a graph optimizer returns a
+solution. A deterministic constructor and independent checker must establish:
+
+  1. every skeleton dock maps to one real selected port front;
+  2. every required terminal is used exactly as prescribed;
+  3. every abstract arc maps to legal physical belt/bridge states;
+  4. every turn, split, merge, and crossing maps to a legal local component;
+  5. physical cell/layer capacity and exact side-union rules hold;
+  6. directed edge balance and terminal adherence hold;
+  7. the constructed binding and route witness survives the existing exact
+     precheck, routing solver/guard, serializer, and independent verifier;
+  8. when quantitative throughput is claimed, the selected-route Fraction-level
+     verifier independently replays rates and shared capacities.
+
+Only after these obligations are discharged does P' imply binding/routing
+existence. Until then, the skeleton is a research proposal language.
+
+7. Candidate base: typed material-interface quotient graph
+----------------------------------------------------------
+The useful base is not the raw 70x70 cell graph and not a purely unlabeled free-
+component graph. It must be spatially coarser while preserving the semantic
+features that have changed continuation value in prior experiments.
+
+Definition: typed material-interface quotient graph Q(L)
+
+Q(L) is a canonically labeled attributed graph or hypergraph with these node
+classes:
+
+  R: free-space regions, trunks, bays, or cut regions;
+  B: stable occupied-body owners;
+  X: explicit external material sources and final sinks.
+
+Required attributes and incidences include:
+
+  Region nodes R
+    * canonical identity under region renaming, never transient component ID;
+    * free-cell size and optional geometric digest;
+    * adjacency/portal relations to other regions;
+    * cut or portal capacity when a quantitative model exists;
+    * incident terminal-signature multiset.
+
+  Body nodes B
+    * stable owner/body identity and occupied-cell digest;
+    * facility type;
+    * admissible operation domain;
+    * admissible same-body mode domain;
+    * power requirement and coverage relation;
+    * candidate footprint compatibility when geometry is mobile.
+
+  Terminal incidences
+    * stable body owner and terminal-cell coordinate;
+    * commodity;
+    * source/sink sign;
+    * direction;
+    * slot count or exact rate;
+    * operation and mode provenance;
+    * incident region/portal.
+
+  Transport relations
+    * operation-to-body compatibility;
+    * body-to-footprint compatibility;
+    * membrane/separator membership;
+    * skeleton docking compatibility.
+
+Canonicalization may quotient permutations of unlabeled region nodes and truly
+interchangeable instance copies, but it must not quotient away operation
+assignment, port mode, terminal incidence, or cut capacity unless an invariance
+proof exists.
+
+A minimal implementation may start with Q0, one node per connected free
+component plus typed terminal incidences. A later Q1 may partition a large
+component by cut-relevant portals or separators and carry nonzero capacities.
+
+8. Cheapest falsification tests for the base
+--------------------------------------------
+8.1 Quotient-space collision test
+
+Purpose
+  Falsify a candidate Q by finding two states that Q declares identical but that
+  have materially different exact continuation behavior.
+
+Procedure
+
+  1. Collect diverse frozen, fully materialized campaign states, not only one
+     ancestry basin. Preserve direct-parent identity and exact context hashes.
+
+  2. Compute and canonicalize the proposed Q signature for each state. Do not
+     use transient component IDs or destination indices as semantic labels.
+
+  3. Group states by identical Q signature.
+
+  4. Within each group compare exact observables, including:
+
+       static port-domain status;
+       component-compatible binding existence;
+       positive-commodity count;
+       shared component objective/optimum face;
+       exact routing status when reached;
+       continuation value under the same admitted action/context.
+
+  5. A group containing materially different outcomes is a quotient collision.
+     Identify the smallest missing distinguishing feature, add it to Q, and
+     rerun the test.
+
+  6. Absence of observed collisions is evidence, not proof. Hold out states from
+     a different constructor or geometry basin for the next test round.
+
+Existing evidence already falsifies a quotient containing only free-cell
+geometry: identical occupied/free geometry with different operation assignment
+or port mode can have different binding continuation values.
+
+8.2 Skeleton-decoding test
+
+Purpose
+  Falsify a proposed skeleton language or constructor by showing that coarse
+  certificates require repeated unrecorded repairs before exact realization.
+
+Procedure
+
+  1. Generate a bounded set of skeleton certificates from frozen rules and a
+     coarse optimizer. Include both known-friendly and held-out geometries.
+
+  2. Run one deterministic constructor with no manual patching. Materialize
+     stable body/mode assignments, binding, physical route states, and all
+     certificate-to-grid mappings.
+
+  3. Run the exact static precheck, component-aware binding, exact routing,
+     connectivity guard, serializer, and independent verifier.
+
+  4. Classify the first failure by missing coordinate: docking, direction,
+     operation assignment, mode, separator capacity, crossing legality,
+     terminal uniqueness, or another explicit category.
+
+  5. If many skeletons fail for the same omitted coordinate, the base is too
+     coarse. Add that coordinate to the skeleton language rather than patching
+     individual outputs.
+
+  6. Measure the number of discretionary repairs/backtracks after skeleton
+     selection. A correct high-level base should leave mostly deterministic
+     construction. If hundreds of local choices remain, the claimed short
+     derivation basis is falsified.
+
+9. Natural integration with E077: staged lazy separation
+--------------------------------------------------------
+The cut/transport direction is not a parallel theory project. Its intended first
+consumer is the bounded E077-style integrated placement/port master.
+
+Stage 0: calibration and identity
+
+  * Reproduce known E077 parent states and bounds under frozen inputs.
+  * Use stable body/footprint/terminal identities.
+  * Reject transient component and destination indices as transported facts.
+  * Keep all current in-flight experiment files outside this direction landing.
+
+Stage 1: currently fully provable Boolean separation
+
+For each E077 candidate:
+
+  1. build the exact routing placement core;
+  2. compile static front availability and duplicate-terminal facts;
+  3. compute free components and selected terminal incidence;
+  4. detect source-only/sink-only component violations;
+  5. extract a stable minimum or inclusion-minimal body/pole membrane when
+     available;
+  6. return one of these bounded research cuts/disjunctions:
+
+       remove the offending operation/mode/terminal assignment;
+       move or deactivate at least one membrane owner;
+       activate an explicitly represented alternative portal/context.
+
+These rows are within current connectivity semantics. They make no quantitative
+throughput claim.
+
+Stage 2: transport-core repair
+
+When a violated component or membrane is found:
+
+  * formulate the relevant semantic assignment graph;
+  * solve the minimum changed-row transport core;
+  * formulate the body-to-footprint graph for any required vacancy chain;
+  * solve the minimum geometric transport core with non-overlap, power, and
+    port-domain side constraints;
+  * expose only the resulting bounded core to the next joint E077 solve.
+
+The outer loop proposes and proves the deficient cut and transport context. The
+inner model chooses the complete assignment inside that context.
+
+Stage 3: skeleton construction and exact routing
+
+Once E077 produces a component-compatible candidate:
+
+  * derive or solve a typed skeleton certificate;
+  * run the deterministic constructor;
+  * invoke exact routing and its connectivity guard;
+  * convert any exact failure into a new typed cut or skeleton-language defect,
+    not an unstructured complete-assignment nogood when a shorter explanation
+    exists.
+
+Stage 4: quantitative throughput separation, explicitly pending
+
+Do not use numerical cut capacities to prune production or certified search
+until all of the following exist:
+
+  * a selected physical route graph bound to the actual binding/routing witness;
+  * exact terminal rates;
+  * exact shared channel capacities;
+  * an independently replayable Fraction-level verifier;
+  * a proved lowering from a violated inequality to the intended consumer.
+
+After those prerequisites, separate inequalities (1) and (2) on candidate
+selected-route graphs, beginning with connected-region cuts and minimum cuts.
+Until then, numerical circulation results remain research-only diagnostics.
+
+10. Initial go/no-go criteria
+-----------------------------
+Continue this candidate main direction if at least one of the following occurs:
+
+  * Boolean component/membrane cuts remove many E077 candidates per proved
+    explanation rather than one full assignment at a time;
+  * transport-core optimization reduces a broad geometry search to a small,
+    stable set of body/assignment variables;
+  * quotient signatures predict exact continuation behavior without collisions
+    on held-out states;
+  * a skeleton certificate decodes with little or no discretionary repair;
+  * the line reaches exact routing sooner than the current local-action lineage.
+
+Narrow or retire the direction if:
+
+  * useful violated cuts cannot be compressed below near-complete assignments;
+  * transport cores remain large or unstable across neighboring contexts;
+  * quotient collisions require restoring nearly the full cell state;
+  * skeleton decoding repeatedly requires unmodeled local repairs;
+  * theorem/checker work delays the whole-layout campaign without changing its
+    next candidate or consumer.
+
+11. Evidence and implementation pointers
+----------------------------------------
+Method origin and owner anti-drift/witness rule:
+  research_lab/METHOD_ORIGIN.txt
+
+Current zero-condition campaign:
+  research_lab/campaigns/zero_condition/CAMPAIGN.txt
+
+Assignment transport-core experiment:
+  research_lab/campaigns/zero_condition/experiments/
+    E074_minimum_assignment_transport_core/
+
+Two-body membrane/native frontier:
+  research_lab/campaigns/zero_condition/experiments/
+    E075_target26_two_body_native_frontier/
+
+Current experimental integrated consumer and vacancy-chain probes:
+  research_lab/local/zero_condition/E077_integrated_port_master.py
+  research_lab/local/zero_condition/E077_vacancy_chain_probe.py
+  research_lab/local/zero_condition/E077_port_cut_ladder.py
+
+Production routing semantics:
+  src/models/routing_subproblem.py
+  src/models/binding_subproblem.py
+  src/models/port_binding.py
+  src/preprocess/operation_profiles.py
+
+12. Explicit nonclaims
+----------------------
+This R0 candidate direction does not establish that:
+
+  * every feasible layout has one unique or visually fixed main corridor;
+  * a tree/cactus skeleton contains every feasible routing;
+  * current six-predicate routing proves throughput;
+  * any numerical cut-capacity inequality is presently an admitted solver cut;
+  * E074 or E075 is a complete whole-layout construction;
+  * E077 has already implemented this lazy separation loop;
+  * the current zero-condition lower-side campaign is complete;
+  * U, L, certification, production authority, or publication status changes.
+
+The intended claim is narrower and constructive: component/cut necessity,
+membranes, and assignment transport share one mathematical backbone, and that
+backbone is a plausible structure-level consumer/proposer interface for the
+next zero-condition solver iteration.
