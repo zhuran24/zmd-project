@@ -8,6 +8,7 @@ intuitions and the later owner-supplied anti-drift rule. It preserves the words
 that should constrain future interpretations of the research program; it is not
 a current campaign status page, a complete methodology specification, or a
 production or certification authority.
+Owner quotations about research stance, collaboration, and resource decisions are preserved in the companion source anchor research_lab/STANCE_ORIGIN.txt; they are not solving-method material.
 
 The Research principles in research_lab/PROGRAM.txt are a compressed form of
 this record. When a compressed principle admits conflicting readings, prefer
@@ -373,3 +374,150 @@ Corrected 2026-08 project handoff:
 
 Later-derived standing methods (not owner-origin material):
 research_lab/methods/STABLE_IDENTITY_TRANSPORT.txt
+
+6. Method scope, target integrity, and two-way fidelity
+------------------------------------------------------
+
+6.1 The method applies across the scientific, solving, and mathematical side
+
+  而且我发现这个方法论应该不限定范围，或者说范围应该扩大到整个科学/求解/数学面，不然的话一直堆案例总会有尾巴留下来的
+
+Source:
+`/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/0e0796c6-a439-4e55-90af-d9b5b3e50a3d.jsonl:3560`；会话 `0e0796c6-a439-4e55-90af-d9b5b3e50a3d`；`2026-08-03T23:09:46.417Z`。
+
+Durable reading: the method is not confined to solver layering. Its scope is
+the full scientific, solving, and mathematical side. A method that exists only
+as an accumulating list of local cases leaves an open-ended tail and cannot
+govern new problem surfaces.
+
+6.2 A weakened proposition is another line, not the original target's fallback
+
+  奇怪，我记得之前好像有说过把命题降级是相当于另开线而不是当退路的，或者说这个项目的目标从一开始就没有退路可言，哦，可能是当时说的不够清楚导致当时的cc没有把文档写清楚应该是，我的“退路”意思其实是，换种方法把这个cut的问题，或者说这个目标解不出来的问题再想办法解决掉
+
+Source:
+`/home/zhuran24/zmd-pj/.artifacts/outer_loop_archaeology_20260822/recheck_scratch/retirement_sessions/.claude/projects/-home-zhuran24-zmd-pj/3e9c4e4c-c0ae-4a71-98f5-05f8b3a5a644.jsonl:1095`；会话 `3e9c4e4c-c0ae-4a71-98f5-05f8b3a5a644`；`2026-07-12T22:34:37.096Z`。
+
+Durable reading: weakening a proposition may create a legitimate separate
+research line, but it does not close the original target and must not be called
+that target's fallback. When one route fails, the obligation is to seek another
+way to solve the same cut problem or target; any reduced claim keeps a distinct
+identity.
+
+6.3 Fidelity is bidirectional
+
+  我发现我们的操作有许多守卫，就，之前的想法一直是说，哦，这里我们做了一个守卫，是的，这个孔堵住了，我们放心了，不对！我们要做的不止是堵住孔，看起来我们这个项目最关键的是不能把可行性解给排除掉，但是同样重要的是把所有可行的规则都放进来，不然同样会有把可行解给减掉的风险，但是我们之前一直都几乎无视了这个
+
+Source:
+`/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/0e0796c6-a439-4e55-90af-d9b5b3e50a3d.jsonl:14442`；会话 `0e0796c6-a439-4e55-90af-d9b5b3e50a3d`；`2026-08-07T17:47:58.163Z`。
+
+Durable reading: guards must reject what is illegal, while the model and rule
+system must also retain every legal behavior needed to express feasible
+solutions. Green exclusion safeguards establish only one direction. A missing
+legal rule or capability can make the represented space too small and destroy
+feasible solutions just as surely as an unsound guard.
+
+7. Systemic diagnosis and structural correction
+------------------------------------------------
+
+7.1 Case-by-case repair cannot cover undiscovered omissions
+
+  那这里是能用这个简单的方法来直接解决，那其他地方呢，那完全不确定啊，而且最重要的是，这个问题只能遇到一个解决一个，但是如果我们找不出来呢（还是说这个诊断层足够详细不会有这个问题？），就没有什么系统性的解决方法吗
+
+Source:
+`/home/zhuran24/zmd-pj/.artifacts/outer_loop_archaeology_20260822/recheck_scratch/retirement_sessions/.claude/projects/-home-zhuran24-zmd-pj/3e9c4e4c-c0ae-4a71-98f5-05f8b3a5a644.jsonl:6196`；会话 `3e9c4e4c-c0ae-4a71-98f5-05f8b3a5a644`；`2026-07-14T12:27:57.528Z`。
+
+Durable reading: repairing each problem only after it appears cannot cover
+problems that have not been found. Diagnosis and repair need a systematic
+coverage story; a detailed diagnostic layer is not assumed to supply one
+unless its reach is itself established.
+
+7.2 Recurrence calls for root cause and structural leverage
+
+  虽然其他东西有点听不懂，但是既然一个问题多次重复在犯，那重复之前的措施应该就没用了，至少能说他没解决到点子上，要先把为什么犯这个问题的深层次的原因找到，然后在结构杠杆最大最稳健的几个地方下手，当然我觉得大概率是找不到的，那就不需要其他方法了，就让纠错流程托底就好了
+
+Source:
+`/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/0e0796c6-a439-4e55-90af-d9b5b3e50a3d.jsonl:6350`；会话 `0e0796c6-a439-4e55-90af-d9b5b3e50a3d`；`2026-08-05T17:33:57.229Z`。
+
+Durable reading: recurrence is evidence that the earlier measures did not
+reach the cause. The preferred response is to find the deeper mechanism and
+intervene at the most stable, high-leverage structural points. If no such
+robust intervention can be found, the correction process remains an explicit
+backstop rather than being hidden beneath another ineffective local measure.
+
+8. Research evidence, framing, and knowledge sources
+----------------------------------------------------
+
+8.1 A question's frame can contain its answer
+
+  问的时候注意一下，这个其实不限于这个问题，之前其实就想说了但是现在才想起来
+
+  向同的视角和看待问题的方式会引出相同的推理过程，或者说它本身暗含了某种答案，用这种方式去问只能确定推理过程没错，但是不能的到我们真正想要的回答，如果我们需要新的视角就要把自己问题中的视角也去掉，但是怎么去或者说怎么问这个，嗯，不会（理直气壮），交给你了，顺便这个也要记下
+
+Source:
+`/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl:3450`；会话 `3aff26c7-fc81-4e12-8561-b144140f6db2`；`2026-08-16T08:44:33.674Z`。
+
+Durable reading: terminology, viewpoint, and offered options can preselect a
+reasoning path and encode an answer in the question. Agreement produced inside
+the same frame may confirm that path without producing the independent view
+that was sought. A request for a new view must remove the requester's own
+solution frame rather than hide it in the prompt.
+
+8.2 Experimental data drives the next conjecture; verdict labels are a backstop
+
+  不对我发现你有点标签倾向，搞研究是做实验然后看实验的结果，或者说实验的各项数据来判断后续猜想实验，而不是看所谓的比如“INCONCLUSIVE”，这玩意最多当个流程，它起到的是纪律上的托底机制，但是分析实验的时候虽然我知道你不会反标签主义错误吧，但是我也感觉你被这个标签吸引走了不少注意力，或者说，太把他当回事了，虽然这么说有点奇怪，因为作为纪律性的托底流程它其实本身是要求必须把它当回事的，但是，好吧我这能说，搞研究是这样的，你必须在往前突破的时候把所有纪律都不当一回事，然后后面再回头搞纪律
+
+Source:
+`/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl:4463`；会话 `3aff26c7-fc81-4e12-8561-b144140f6db2`；`2026-08-16T17:31:23.972Z`。
+
+Durable reading: research attention follows measurements, mechanisms, and the
+next discriminating conjecture, not a typed verdict in isolation. Verdict
+labels remain mandatory as a disciplinary backstop when results are recorded
+and consumed, but they are not evidence and must not become the center of the
+analysis. Generative attention and retrospective discipline have different
+jobs.
+
+8.3 External mathematics and NP research are outer-loop knowledge sources
+
+  我突然想到了，咱们这个不是np问题吗，那cp-sat它里面应该用了不少np问题方面的研究成果吧，但是在我们这个项目上却容易卡壳，那既然推理外环差不多搭好了，我们能否多搜集一下更多的研究成果特别是数学方面的来通过这个外环接入进我们这个求解器，嗯，或者说说的更抽象更大一点，我最开始的想法是，找np方面的东西看看能不能帮助我们定理的推进
+
+Source:
+`/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl:6649`；会话 `3aff26c7-fc81-4e12-8561-b144140f6db2`；`2026-08-17T18:12:13.608Z`。
+
+Durable reading: the reasoning outer loop may import knowledge from external
+mathematics and research on NP problems, not only derive knowledge from this
+project's rules, arithmetic, constructions, and failures. The work is to
+translate those results into checked forms that can advance theorem production
+for this problem.
+
+8.4 New conclusions must reconcile with existing conclusions
+
+  哦对了，它还犯了“出新结论前必须先跟已有结论对账”的问题，具体情况我也说不清楚你可以问问它，那这样一说，这个纪律得再好好想想，到底为什么做不到
+
+Source:
+`/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl:13400`；会话 `3aff26c7-fc81-4e12-8561-b144140f6db2`；`2026-08-21T18:17:38.823Z`。
+
+Durable reading: before presenting a result as new, designing work around it,
+or reusing an earlier theorem, reconcile it with the existing conclusions and
+their current force. Otherwise research can repeat an old result, conflict
+silently with a correction, or build on a conclusion that no longer stands.
+
+8.5 A mathematical translation still needs an applicability proof
+
+  咱们把所有的【数学翻译】都整理一下，给gpt pro看看，因为这些都只是对我的直觉的翻译，这些数学能否运用到这个问题里面还是要再仔细的，或者说研究的推导一下，这个只是数学方面的提问，不要让他往其他方向比如工程或者纪律方向看了，不知道是项目内容的问题还是它的模型倾向的问题，不稍微提一嘴的话（也只需要稍微提一嘴）它很容易自觉或不自觉的就往那边偏了
+
+Source:
+`/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/4bcb4ea4-e77c-4ea3-8d61-50319a48e74b.jsonl:1384`；会话 `4bcb4ea4-e77c-4ea3-8d61-50319a48e74b`；`2026-08-23T10:18:19.949Z`。
+
+Durable reading: translating an intuition into an existing mathematical
+concept does not establish that the mathematics applies to the current
+problem. Its structural premises and instance bridge must be derived and
+checked separately. The applicability question should be answered on the
+mathematical side rather than displaced by engineering or disciplinary
+narratives.
+
+Source-layer note: the quoted message treats the collected "mathematical
+translations" as translations of the owner's intuition, not as established
+applicability proofs. Any later bridge theorem remains later work rather than
+owner-origin wording.
+
+未定级候选与二手线索见 CANDIDATES.md（路径：/home/zhuran24/.claude/ops/zmd-pj/evidence_vault/method_origin_completeness_sweep_20260828/CANDIDATES.md；sha256：1d672be1e86ee1b19f91b3251260869a20d4d4a12bce78c69ec003236fbdb826）。

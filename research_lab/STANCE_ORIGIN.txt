@@ -1,0 +1,109 @@
+ZMD STANCE ORIGIN
+=================
+
+Identity and use
+----------------
+This file is the tracked source anchor for the owner's original words about
+research stance, collaboration arrangements, and resource decisions. It is a
+prominent companion to research_lab/METHOD_ORIGIN.txt, which preserves the
+solving-method body; material here must not be substituted for that method.
+This is not a current status page, an operating schedule, or a production or
+certification authority.
+
+Later explanations, operating rules, model assignments, and platform designs
+may implement or repair these intuitions, but must not be retroactively
+presented as the owner's original wording.
+
+Source cutoff: 2026-08-28. Quotations below preserve the source wording.
+Explanatory text states the durable reading, not a claim that the explanation
+itself was spoken verbatim by the owner.
+
+1. Load-bearing conclusions require independent and adversarial confirmation
+---------------------------------------------------------------------------
+
+  “必须穷尽理解 + 独立算 + 对抗复核”
+
+  那记得两种模型都派
+
+Source:
+`/home/zhuran24/zmd-pj/.artifacts/outer_loop_archaeology_20260822/recheck_scratch/retirement_sessions/.claude/projects/-home-zhuran24-zmd-pj/3e9c4e4c-c0ae-4a71-98f5-05f8b3a5a644.jsonl:6786`；会话 `3e9c4e4c-c0ae-4a71-98f5-05f8b3a5a644`；`2026-07-14T13:44:55.498Z`。
+
+Durable reading: a load-bearing conclusion should be attacked through separate
+paths of exhaustive understanding, independent calculation, and adversarial
+review. Using different model families is part of reducing shared blind spots;
+more work along one inherited perspective is not equivalent to independent
+confirmation.
+
+Source-layer note: the phrase “必须穷尽理解 + 独立算 + 对抗复核” is the
+wording the owner explicitly adopted and directed for use in the sourced
+2026-07-14 turn. That adoption does not identify or retroactively assign the
+phrase's original coiner.
+
+2. Cleanroom re-derivation counters project path dependence
+-----------------------------------------------------------
+
+  那这样的话，我想让gpt pro来独立的重新推一下整个lbdd的架构和cut，我的直觉告诉我这应该能带来一个好的参考，那这样的话就需要给它打一个干净的，emmm，不对，咱们的项目已经很绕了吧，就是各种东西全都绞缠在一起，如果真的要让他在不受我们项目信息的影响，那我们到底该怎么给它或者说给它什么呢，是否需要重写一些什么东西呢？还是说这个包其实没我想的这么复杂？
+
+Source:
+`/home/zhuran24/zmd-pj/.artifacts/outer_loop_archaeology_20260822/recheck_scratch/retirement_sessions/.claude/projects/-home-zhuran24-zmd-pj/5c4e70f0-8e60-497e-b217-46e01be6da76.jsonl:5197`；会话 `5c4e70f0-8e60-497e-b217-46e01be6da76`；`2026-07-17T17:48:31.182Z`。
+
+Durable reading: an independent reference requires more than assigning the
+same project narrative to another reasoner. The input should isolate the
+problem from inherited architecture, cuts, and accumulated path dependence so
+that the other reasoner can reconstruct them, while still supplying enough of
+the underlying problem to make the reconstruction meaningful.
+
+3. Owner decisions allocate resources; they do not create doctrine
+------------------------------------------------------------------
+
+  而我的决定，就我来看，我在确定资源的分配，通过我的直觉，仅此而已
+
+  我的决定只是我的直觉而已，而不是某种圣谕，你也不是信徒，等下，或许，难道你在一定程度上，也是一种【信徒】？算了这有点太超出了
+
+Source:
+`/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl:3019`；会话 `3aff26c7-fc81-4e12-8561-b144140f6db2`；`2026-08-16T06:34:14.458Z`。
+
+Durable reading: an owner decision chiefly allocates resources and transmits a
+directional intuition. It does not turn a factual or mathematical claim into
+doctrine. Allocation authority and evidentiary truth remain distinct, so the
+signal may be questioned or revised when better evidence appears.
+
+4. Accuracy without mindless conservatism or silent abandonment
+---------------------------------------------------------------
+
+  哦哦我想起来了，咳咳，我直觉倒是对的但是感觉太模糊了就给你指错了
+
+  就是说，保守是可以，但是可以不可以无脑保守，之前我忘了什么时候了，七月，经常会为了不杀可行解就选择放慢速度，但是这个项目放慢速度也是慢性自杀
+
+  所以保守，呃，嗯，保守是不可以的（上面说的你当没看见），但是又必须保证准确性，同时也要使劲往上找定理
+
+  哦，应该说，不管怎样，都不要放弃解决问题的冲动和希望，emmm，等下，有感觉你好像会不太好把握这个东西，emmm，那这个具体让我来把握吧，毕竟我是【感觉位】嘛，你只要不静默的把这个问题丢掉就可以了
+
+Source:
+`/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl:3110`；会话 `3aff26c7-fc81-4e12-8561-b144140f6db2`；`2026-08-16T06:49:51.941Z`。
+
+Durable reading: accuracy is non-negotiable, but defaulting to slower and
+weaker action merely because it appears conservative can also destroy the
+project. Keep pressing upward for stronger theorems and surface the cost of any
+conservative move. The owner may hold the directional feeling; the minimum
+collaborator obligation is not to discard an unresolved problem silently.
+
+5. Research surveys require adversarially different perspectives
+----------------------------------------------------------------
+
+  欸你是有些部分派的codex吗，不过没看你派opus来着，啊刚好看了一下额度，opus 30,codex 20,到时候这波回来再派opus去找找吧，毕竟视角不一样，哦或者在现在的这两个wf回来之后在找东西层加上opus席位然后重跑一次，这样总结席位可以两个都总结一下，欸不对，哦反应过来了，根据5月份的经验，当时也有调研过一大波来着，当时出了好多问题（啊wf回来了一个我先给你停了），然后的得出结论是调研必须有对抗，那这样的话wf你再想想吧，不过动的时候不要动到老席位了，不然缓存没了老席位就白跑了
+
+Source:
+`/home/zhuran24/.claude/projects/-home-zhuran24-zmd-pj/3aff26c7-fc81-4e12-8561-b144140f6db2.jsonl:6874`；会话 `3aff26c7-fc81-4e12-8561-b144140f6db2`；`2026-08-17T18:39:52.422Z`。
+
+Durable reading: broad research is not made adversarial by accumulating more
+searches from the same viewpoint. Different-perspective attack paths should be
+present in discovery and synthesis so that one framing does not validate
+itself.
+
+Source-layer note: the named models, quota figures, workflow timing, and cache
+handling are historical logistics. The durable owner rule is that research
+itself needs adversarially different perspectives; the quotation does not fix
+a permanent tool roster or allocation.
+
+未定级候选与二手线索见 CANDIDATES.md（路径：/home/zhuran24/.claude/ops/zmd-pj/evidence_vault/method_origin_completeness_sweep_20260828/CANDIDATES.md；sha256：1d672be1e86ee1b19f91b3251260869a20d4d4a12bce78c69ec003236fbdb826）。
