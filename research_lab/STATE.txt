@@ -162,13 +162,13 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-E067 has reduced the pole-conditioned complete directional face from six
-alternatives to four, but no bounded triple reaches objective zero and no face has
-a stable unmatched component. Under one explicit final stop boundary, can the
-highest-frequency class {1,4,8,12} with qiaoyu sink 15 compose with any remaining
-cached E066 objective-one action to create the second zero? A zero enters the full
-conditional binding consumer immediately; no zero retires this pole lineage and
-switches to E062's distinct manufacturing-6x4 near-miss parent.
+E068 has retired the pole-conditioned external-action lineage: all 678 admitted
+fourth-action states are terminal, none reaches objective zero, and no complete
+face has a stable unmatched component. Under E062's physically distinct
+manufacturing-6x4 near miss, `grinder_dense_source_002` pose 7006 -> 6878, what is
+the complete objective-one presence face, and which smallest face-derived second
+object can remove its residual tradeoff without recreating the retired pole-line
+search pattern?
 
 Current campaign posture
 ------------------------

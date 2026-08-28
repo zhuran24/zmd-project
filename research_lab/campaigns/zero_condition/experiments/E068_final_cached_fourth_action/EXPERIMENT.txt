@@ -74,4 +74,6 @@ other near-miss parents.
 
 Result
 ------
-Not run yet.
+Completed in run-002. The 678 admitted fourth-action states produce 671 exact
+objective-one results, seven structural-empty states, no objective zero, and no
+UNKNOWN. The pole-conditioned external-action lineage is retired; see RESULT.txt.

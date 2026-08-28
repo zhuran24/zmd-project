@@ -1,0 +1,131 @@
+E068 RESULT: THE POLE-CONDITIONED EXTERNAL-ACTION LINEAGE ENDS WITHOUT A TWO-ZERO STATE
+================================================================================================
+
+Status
+------
+Completed as the explicit final stop test for the E063 pole-conditioned action
+lineage. Research-only evidence; no full binding, routing, whole-layout witness,
+certification, U/L, owner, or publication effect.
+
+Frozen evidence
+---------------
+Main result:
+  research_lab/local/zero_condition/
+    E068_final_cached_fourth_action/run-002/RESULT.json
+
+SHA-256:
+  5d45ee5027229c66be7a921376c592c572fbf31d0be34f2bfeacc209a5ad548d
+
+Complete action records:
+  research_lab/local/zero_condition/
+    E068_final_cached_fourth_action/run-002/ACTION_RECORDS.json
+
+SHA-256:
+  ced6cd339745d71fea7594c12796cf6a4b7fdd69f3279c99825879cfa2491e3b
+
+Verdict:
+  POLE_LINEAGE_EXHAUSTED_WITHOUT_TWO_ZERO
+
+Decision:
+  SWITCH_TO_DISTINCT_SIX4_NEAR_MISS_PARENT
+
+Frozen representative
+---------------------
+E068 selects the unique most frequent E067 four-pattern class:
+
+  unmatched components  {1,4,8,12}
+  qiaoyu sink component  15
+  frequency              16
+
+The deterministic representative is E067 pair 27:
+
+  E063 candidate 596
+  E063 candidate 729
+
+It is selected by minimum occupied symmetric difference and then lowest pair
+index. The reconstructed complete face matches the frozen E067 record before any
+fourth action is admitted.
+
+Final cached-action scan
+------------------------
+E068 composes that representative with all 780 cached E063 objective-one actions.
+It introduces no new raw placement universe.
+
+Admission classification:
+
+  ADMITTED               678
+  SAME_SOURCE             92
+  OVERLAP_INVALID          7
+  REPRESENTATIVE_ACTION    2
+  CARDINALITY_INVALID      1
+
+Among the 678 admitted geometries:
+
+  objective 1 / OPTIMAL       671
+  STRUCTURAL_EMPTY              7
+  objective 0                   0
+  UNKNOWN                       0
+
+Complete objective-one face widths:
+
+  3 components       2
+  4 components     586
+  5 components      35
+  6 components      47
+ 12 components       1
+
+No complete face has a stable unmatched component.
+
+Narrowest residuals
+-------------------
+Both three-pattern faces move the same optional pole:
+
+  current:
+    p_x68_y46_o0_m_omni, pose 4738
+
+  replacement pose 3806:
+    unmatched components {1,4,8}
+    qiaoyu sink component 14
+
+  replacement pose 3891:
+    unmatched components {1,4,12}
+    qiaoyu sink component 15
+
+Every pattern remains source-only. Components 1 and 4 occur in both narrowest
+classes, but neither occurs in every pattern of either complete face. They are
+persistent alternatives, not singleton obstructions and not sound
+component-specific cuts.
+
+Stop interpretation
+-------------------
+The pole lineage has demonstrated genuine face-narrowing leverage:
+
+  6 alternatives
+    -> 5 under one selected second action
+    -> 4 under a bounded third relation
+    -> 3 under the final cached fourth action
+
+It has not produced the second zero, a stable missing component, or a new consumer
+language. Continuing to add external actions would now be an action-composition
+search over the same abstraction rather than another structural inference.
+Therefore the predeclared stop condition fires even though two faces narrow
+further.
+
+Runtime provenance
+------------------
+All five direct imported runners and all nested campaign-local modules report zero
+foreign module-level functions under the explicit source cache. The first
+invocation, written to run-001, failed before scientific evaluation because the
+producer referenced a nonexistent helper name. Run-002 contains the repaired
+inline admission semantics and is the only scientific result.
+
+Truth boundary
+--------------
+E068 fixes the E055 first-zero state, the E063 pole move, E067 pair 27, and at most
+one additional cached E063 objective-one action. Its negative conclusion applies
+only to this pole-conditioned external-action lineage in the corrected terminal-
+signature relaxation. It does not apply to E062's distinct manufacturing-6x4
+near-miss parent or to other first-zero geometries.
+
+Runner SHA-256:
+  231bae918700f0eb605feb12a83a7c8ef25ab91d2578d46c83b8d7661c06ecdc

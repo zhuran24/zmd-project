@@ -2504,6 +2504,41 @@ evidence:
   PAIR_RECORDS.json sha256
   fa8b8850ea5ed63f17cac12d07e1e732a2fcb09c2cf03051aebfe20c4d2f2de6.
 
+R-ZC-079  Final cached fourth actions retire the pole-conditioned lineage
+---------------------------------------------------------------------------
+status: terminal exhaustive stop test over the E063 cached objective-one action set
+scope: fixed E063 pole parent, deterministic E067 pair 27, at most one cached fourth action
+
+statement:
+  E068 composes the unique most frequent E067 four-pattern class
+  {1,4,8,12}/sink-15 with all 780 cached E063 objective-one actions. Of 678
+  physically admitted states, 671 are OPTIMAL at directional objective one and 7
+  are STRUCTURAL_EMPTY. No state reaches zero and no state is UNKNOWN. Complete
+  face widths are 3 for two states, 4 for 586, 5 for 35, 6 for 47, and 12 for one;
+  no face has a stable unmatched component.
+
+  The two narrowest states move the same optional pole at pose 4738 to poses 3806
+  and 3891. Their complete faces are {1,4,8}/sink-14 and
+  {1,4,12}/sink-15. Components 1 and 4 recur across both classes but are not
+  present in every pattern of either face.
+
+non-implications:
+  E068 does not close all four-object geometries, other first-zero states, full
+  binding, or routing. Class-level recurrence of components 1 and 4 is not a
+  singleton obstruction and does not authorize a component-specific cut.
+
+effect on next problem:
+  Fire the predeclared stop condition. Retire further external-action composition
+  on the pole parent and switch to E062's physically distinct manufacturing-6x4
+  near-miss, `grinder_dense_source_002` pose 7006 -> 6878. Reconstruct its complete
+  objective-one face before selecting any second object.
+
+evidence:
+  E068 RESULT.txt; local RESULT.json sha256
+  5d45ee5027229c66be7a921376c592c572fbf31d0be34f2bfeacc209a5ad548d;
+  ACTION_RECORDS.json sha256
+  ced6cd339745d71fea7594c12796cf6a4b7fdd69f3279c99825879cfa2491e3b.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the
