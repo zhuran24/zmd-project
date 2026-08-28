@@ -47,7 +47,8 @@ manifest 给出：
 - 真实仓库非破坏性落地协议、ACK schema、runner 与操作指南坐标；
 - 可选 workspace overlay 及其 tracked canonical target；
 - evidence 的 `git_tracked`、`workspace_untracked` 与 `external_root` 存在方式；
-- legacy `doc_classes.json` 投影的源和输出。
+- legacy `doc_classes.json` 投影的源和输出；
+- 受文档 policy 管理的 Markdown include globs，以及明确不属于文档系统的 exclude globs。
 
 这是一层有意保留的最小公理。继续为 manifest 再设计一个 manifest，只会制造无限向上的楼梯。
 

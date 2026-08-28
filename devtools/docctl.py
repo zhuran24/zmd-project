@@ -2215,10 +2215,15 @@ class DocumentSystem:
     def _check_markdown_coverage(self) -> list[str]:
         failures: list[str] = []
         globs = tuple(str(value) for value in self.manifest["governed_markdown_globs"])
+        exclude_globs = tuple(
+            str(value) for value in self.manifest["governed_markdown_exclude_globs"]
+        )
         for relpath in self.visible_paths():
             if not relpath.endswith(".md"):
                 continue
             if not any(_glob_match(relpath, pattern) for pattern in globs):
+                continue
+            if any(_glob_match(relpath, pattern) for pattern in exclude_globs):
                 continue
             try:
                 resolution = self.resolve(relpath, "read")

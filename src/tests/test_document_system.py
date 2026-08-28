@@ -206,6 +206,21 @@ def test_external_evidence_links_are_checkout_stable(tmp_path: Path) -> None:
     assert _md_link(tmp_path / "nested" / "checkout-b", target, "docs/CATALOG.md", target) == expected
 
 
+def test_governed_markdown_exclude_globs_skip_non_document_packages(tmp_path: Path) -> None:
+    root = _copy_framework_fixture(tmp_path)
+    skill_path = root / ".claude/skills/example/SKILL.md"
+    skill_path.parent.mkdir(parents=True)
+    skill_path.write_text("# Example skill\n", encoding="utf-8")
+    unmanaged_path = root / "UNMANAGED.md"
+    unmanaged_path.write_text("# Unmanaged document\n", encoding="utf-8")
+    _stage_paths(root, ".claude/skills/example/SKILL.md", "UNMANAGED.md")
+
+    failures = DocumentSystem(root)._check_markdown_coverage()
+
+    assert not any(".claude/skills/example/SKILL.md" in failure for failure in failures)
+    assert "governed markdown has no effective policy: UNMANAGED.md" in failures
+
+
 def test_real_repository_document_system_is_self_consistent() -> None:
     system = DocumentSystem(PROJECT_ROOT)
     failures = system.doctor()
