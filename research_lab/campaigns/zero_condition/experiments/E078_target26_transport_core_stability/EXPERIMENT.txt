@@ -1,0 +1,67 @@
+EXPERIMENT E078: TARGET-26 SEMANTIC TRANSPORT-CORE STABILITY
+============================================================
+
+Question
+--------
+Is E074's two-row target-26 semantic transport core an artifact of one jointly
+chosen baseline endpoint, or is the same stable-body rewrite valid and optimal
+throughout the complete target-26 parent face on E069's fixed geometry?
+
+Why this experiment
+-------------------
+The corrected cut/transport direction makes small semantic-core stability across
+nearby contexts its own first go/no-go. E074 proved a global paired minimum of two
+changed rows, but the baseline and synthetic-zero assignments were optimized
+together. That alone does not show that an arbitrary parent endpoint can consume
+the same core.
+
+Scope
+-----
+The object universe is one frozen E069 occupied geometry and its 38 stable 6x4
+body rows. Component and destination integers are local handles only inside this
+frozen context. Durable conclusions are carried by body digests, source-instance
+identity, target free-cell-set digest, and qiaoyu slot witnesses.
+
+Method
+------
+1. Reconstruct the source-stable E069 parent and E074's target-26 witness under a
+   source-isolated Python cache.
+2. Reproduce the target-26 baseline face and the E074 paired minimum.
+3. Ask whether any target-26 parent assignment can change either of the two core
+   rows from its E074 baseline option.
+4. Substitute the fixed E074 zero options on those two rows while leaving every
+   other parent row arbitrary, then search the complete parent face for any fine
+   or qiaoyu mismatch after the rewrite.
+5. Exhaust all 168 one-option alternatives to the E074 baseline. Retain only
+   alternatives that remain in the exact target-26 parent face; for every such
+   baseline independently minimize the synthetic-zero row distance and refute an
+   optimum whose support differs from the two stable core bodies.
+6. Persist a typed atlas with local handles and stable body identities separated.
+
+Decision rule
+-------------
+All of the following close:
+
+  paired global minimum              2
+  either core row changed in parent  INFEASIBLE
+  universal rewrite counterexample   INFEASIBLE
+  every valid one-option neighbor    OPTIMAL at 2 on the same stable bodies
+
+Then the target-26 semantic core passes the fixed-geometry stability gate. Keep
+it as a bounded constructive object and test the same stable physical witnesses
+under a neighboring geometry with unique remapping.
+
+Any counterexample, core growth, alternate optimum support, or UNKNOWN
+  Do not promote the two-row support as stable. Record the exact drift and narrow
+  or retire the semantic-core shortcut.
+
+Truth boundary
+--------------
+This experiment proves nothing about physical realization of the synthetic
+filling option, body relocation, full binding, routing, throughput, a whole
+layout, certification, U/L, owner authority, or publication. Passing the fixed
+E069 face is not yet cross-geometry stability.
+
+Result
+------
+Not run yet.
