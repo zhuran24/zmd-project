@@ -1,67 +1,107 @@
-EXPERIMENT E078: TARGET-26 SEMANTIC TRANSPORT-CORE STABILITY
-============================================================
+E078 TARGET-26 REFERENCE TRANSPORT-REWRITE STABILITY
+====================================================
+
+Status
+------
+Completed in run-003. Research-only. No certification, U/L, production,
+pruning, owner, or publication effect.
 
 Question
 --------
-Is E074's two-row target-26 semantic transport core an artifact of one jointly
-chosen baseline endpoint, or is the same stable-body rewrite valid and optimal
-throughout the complete target-26 parent face on E069's fixed geometry?
+E074 returned one minimum two-row target-26 rewrite on E069's frozen occupied
+geometry. Two distinct questions must be separated:
 
-Why this experiment
--------------------
-The corrected cut/transport direction makes small semantic-core stability across
-nearby contexts its own first go/no-go. E074 proved a global paired minimum of two
-changed rows, but the baseline and synthetic-zero assignments were optimized
-together. That alone does not show that an arbitrary parent endpoint can consume
-the same core.
+1. Is that concrete two-row rewrite a stable constructive specification across
+   the complete target-26 parent face?
+2. Is it the unique minimum two-row transport core?
 
-Scope
------
-The object universe is one frozen E069 occupied geometry and its 38 stable 6x4
-body rows. Component and destination integers are local handles only inside this
-frozen context. Durable conclusions are carried by body digests, source-instance
-identity, target free-cell-set digest, and qiaoyu slot witnesses.
+This is the first within-context go/no-go discriminator for the semantic
+transport-core direction. It does not test cross-geometry stability or physical
+realizability.
 
-Method
-------
-1. Reconstruct the source-stable E069 parent and E074's target-26 witness under a
-   source-isolated Python cache.
-2. Reproduce the target-26 baseline face and the E074 paired minimum.
-3. Ask whether any target-26 parent assignment can change either of the two core
-   rows from its E074 baseline option.
-4. Substitute the fixed E074 zero options on those two rows while leaving every
-   other parent row arbitrary, then search the complete parent face for any fine
-   or qiaoyu mismatch after the rewrite.
-5. Exhaust all 168 one-option alternatives to the E074 baseline. Retain only
-   alternatives that remain in the exact target-26 parent face; for every such
-   baseline independently minimize the synthetic-zero row distance and refute an
-   optimum whose support differs from the two stable core bodies.
-6. Persist a typed atlas with local handles and stable body identities separated.
+Pinned context
+--------------
+The runner pins by SHA-256:
 
-Decision rule
--------------
-All of the following close:
+- E069 RESULT.json, PARENT_SOLUTION.json, and FACE_CONTEXT.json;
+- E070 run-004 RESULT.json;
+- E074 RESULT.json, TRANSPORT_CORE_ATLAS.json, and
+  TARGET_026_TRANSPORT.json;
+- every source used by the four probe arms.
 
-  paired global minimum              2
-  either core row changed in parent  INFEASIBLE
-  universal rewrite counterexample   INFEASIBLE
-  every valid one-option neighbor    OPTIMAL at 2 on the same stable bodies
+The local destination integers 8 and 9 are frozen-context handles only. The
+transportable objects are the stable body witnesses:
 
-Then the target-26 semantic core passes the fixed-geometry stability gate. Keep
-it as a bounded constructive object and test the same stable physical witnesses
-under a neighboring geometry with unique remapping.
+  grinder_dense_source_001
+  grinder_fine_buckwheat_002
 
-Any counterexample, core growth, alternate optimum support, or UNKNOWN
-  Do not promote the two-row support as stable. Record the exact drift and narrow
-  or retire the semantic-core shortcut.
+Any later geometry must uniquely remap these bodies and recheck their carried
+properties under STABLE_IDENTITY_TRANSPORT.txt.
+
+Arms
+----
+1. Nearest-support enumeration
+
+   Enumerate every Hamming-distance-one parent support relative to E074's
+   baseline and re-solve the minimum zero-copy repair. For each parent, test both
+   the reference 8/9 rewrite and the existence of an alternative optimum support
+   or synthetic destination.
+
+2. Exhaustive one-option substitution
+
+   Test all 168 one-row native-option substitutions. Retain exactly those still
+   in the target-26 parent face, then re-solve the same reference and alternative
+   questions.
+
+3. Core-row touch refuter
+
+   Search the complete target-26 parent face for any assignment that changes the
+   reference native options on either stable core body.
+
+4. Universal reference-rewrite refuter
+
+   Search the complete parent face for any assignment on which replacing the two
+   fixed native options by E074's reference zero options leaves a fine-powder or
+   qiaoyu terminal-signature defect.
+
+Decision logic
+--------------
+Reference rewrite stable
+  All parent-face neighbors retain an OPTIMAL two-row reference rewrite; no
+  parent changes either reference row; and no whole-face rewrite counterexample
+  exists. Keep the rewrite as a constructive specification and test physical and
+  cross-geometry realization.
+
+Minimum core unique
+  In addition, no optimum of equal size may use another support or synthetic
+  destination. Only this stronger result would license wording such as "the
+  unique minimum core".
+
+Alternative optimum found
+  Keep the reference rewrite if stable, but explicitly record that the minimum
+  core is nonunique. Do not turn one deterministic materialization into a theorem
+  about all optima.
+
+Any UNKNOWN, identity drift, malformed output, failed reference witness, or
+whole-face counterexample
+  No stability verdict; preserve the nonterminal or counterexample.
 
 Truth boundary
 --------------
-This experiment proves nothing about physical realization of the synthetic
-filling option, body relocation, full binding, routing, throughput, a whole
-layout, certification, U/L, owner authority, or publication. Passing the fixed
-E069 face is not yet cross-geometry stability.
+E078 fixes E069's occupied geometry and terminal-signature abstraction and
+permits one hypothetical dual filling option. It proves neither a legal physical
+pose/mode, full binding, routing, throughput, cross-geometry stability, nor any
+master cut.
 
-Result
-------
-Not run yet.
+Run
+---
+
+/home/zhuran24/zmd-pj/.venv/bin/python \
+  research_lab/campaigns/zero_condition/experiments/\
+E078_target26_transport_core_stability/run_e078.py
+
+Durable output
+--------------
+
+research_lab/local/zero_condition/
+E078_target26_transport_core_stability/run-003/

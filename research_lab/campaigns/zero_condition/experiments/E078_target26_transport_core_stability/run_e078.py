@@ -1,80 +1,58 @@
 #!/usr/bin/env python3
-"""E078: fixed-face stability of E074's target-26 semantic transport core."""
+"""E078: test target-26 semantic transport-core stability on the frozen parent face."""
 
 from __future__ import annotations
 
-from collections import Counter
-import datetime
+import argparse
+import datetime as dt
 import hashlib
-import importlib.util
-import inspect
 import json
 import os
 from pathlib import Path
 import subprocess
-import sys
 import time
-import traceback
-from typing import Any, Mapping, Sequence
+from typing import Any, Iterable, Mapping
 
-from ortools.sat.python import cp_model
+ROOT = Path("/home/zhuran24/zmd-research")
+EXPERIMENT_DIR = ROOT / "research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability"
+DEFAULT_RUN_DIR = ROOT / "research_lab/local/zero_condition/E078_target26_transport_core_stability/run-003"
+PROJECT_PYTHON = Path("/home/zhuran24/zmd-pj/.venv/bin/python")
 
-ROOT = Path(__file__).resolve().parents[5]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-OUT = (
-    ROOT
-    / "research_lab/local/zero_condition/"
-    "E078_target26_transport_core_stability/run-002"
+PROBES = (
+    ("support_neighbors", EXPERIMENT_DIR / "probe_support_neighbors.py"),
+    ("one_option_neighbors", EXPERIMENT_DIR / "probe_one_option_neighbors.py"),
+    ("core_touch", EXPERIMENT_DIR / "probe_core_touch.py"),
+    ("universal_rewrite", EXPERIMENT_DIR / "probe_universal_rewrite.py"),
 )
-RESULT_PATH = OUT / "RESULT.json"
-FAILURE_PATH = OUT / "FAILURE.json"
-ATLAS_PATH = OUT / "ONE_OPTION_NEIGHBOR_ATLAS.json"
 
-EXPERIMENT_ROOT = ROOT / "research_lab/campaigns/zero_condition/experiments"
-E074_RUNNER = (
-    EXPERIMENT_ROOT
-    / "E074_minimum_assignment_transport_core/run_e074.py"
-)
-E074_RUN = (
-    ROOT
-    / "research_lab/local/zero_condition/"
-    "E074_minimum_assignment_transport_core/run-001"
-)
-E074_RESULT = E074_RUN / "RESULT.json"
-E074_TARGET = E074_RUN / "TARGET_026_TRANSPORT.json"
-
-EXPECTED_ENV = {
-    "PYTHONHASHSEED": "0",
-    "PYTHONPYCACHEPREFIX": "/tmp/zmd_e078_source_cache_v1",
-    "EXACT_USE_POSE_BOOL_MASTER": "1",
-    "EXACT_USE_PORT_ACTIVE": "1",
-    "EXACT_MASTER_HINT_PERSISTENCE": "0",
-    "EXACT_MASTER_SEARCH_BRANCHING": "automatic",
-    "EXACT_MASTER_RANDOM_SEED": "297000",
-    "EXACT_MASTER_CP_SAT_WORKERS": "8",
-    "EXACT_BINDING_CP_SAT_WORKERS": "4",
-}
-EXPECTED_HASHES = {
-    E074_RUNNER: "74e2720cf4b7aaa56fb004864f54c99710b004ae15bb77c5582a205558c67b25",
-    E074_RESULT: "e3e59cc773b88f033d754a97ec16e28e9e18980c9f02b55ab8980851b95fa7c9",
-    E074_TARGET: "609e0be6613f27531e9a24bc757b3dbeb7574d6422e9eb55615cf117d74658f4",
+PINNED_INPUTS = {
+    "e069_result": ROOT / "research_lab/local/zero_condition/E069_six4_near_miss_complete_face/run-001/RESULT.json",
+    "e069_parent_solution": ROOT / "research_lab/local/zero_condition/E069_six4_near_miss_complete_face/run-001/PARENT_SOLUTION.json",
+    "e069_face_context": ROOT / "research_lab/local/zero_condition/E069_six4_near_miss_complete_face/run-001/FACE_CONTEXT.json",
+    "e070_result": ROOT / "research_lab/local/zero_condition/E070_dual_filling_signature_targets/run-004/RESULT.json",
+    "e074_result": ROOT / "research_lab/local/zero_condition/E074_minimum_assignment_transport_core/run-001/RESULT.json",
+    "e074_atlas": ROOT / "research_lab/local/zero_condition/E074_minimum_assignment_transport_core/run-001/TRANSPORT_CORE_ATLAS.json",
+    "e074_target26": ROOT / "research_lab/local/zero_condition/E074_minimum_assignment_transport_core/run-001/TARGET_026_TRANSPORT.json",
 }
 
-TARGET_COMPONENT = 26
-TARGET_QIAOYU_COMPONENT = 29
-CORE_ROWS = (8, 9)
-EXPECTED_RAW_ONE_OPTION_ALTERNATIVES = 168
-EXPECTED_VALID_ONE_OPTION_NEIGHBORS = 25
-SOLVE_SECONDS = 45.0
-SOLVE_WORKERS = 8
+EXPECTED_INPUT_SHA256 = {
+    "e069_result": "cc16d6f308856201cfe06d85617290481ecde85815e5c83f1d9a4acbeb4efcaa",
+    "e069_parent_solution": "b8e4d61d2a5e2befcedcb815b558d07ae84b3620b0bcab82644610154301b49a",
+    "e069_face_context": "c05a4e94ea370e8b674e44cd7206a9189ddd2102b824d36acd65975395c46c3e",
+    "e070_result": "e15599c5c967cdc5ab74fb755b41d32cb476d68544a1f09b0b4c8be57a1829ed",
+    "e074_result": "e3e59cc773b88f033d754a97ec16e28e9e18980c9f02b55ab8980851b95fa7c9",
+    "e074_atlas": "b1e7e2b4ad9b4d01e185a644c534e6528343cf1eba1be7d79f678dc6867ad459",
+    "e074_target26": "609e0be6613f27531e9a24bc757b3dbeb7574d6422e9eb55615cf117d74658f4",
+}
+
+EXPECTED_CORE_BODY_IDS = (
+    "grinder_dense_source_001",
+    "grinder_fine_buckwheat_002",
+)
 
 
 def utc_now() -> str:
-    return datetime.datetime.now(datetime.timezone.utc).isoformat().replace(
-        "+00:00", "Z"
-    )
+    return dt.datetime.now(dt.timezone.utc).isoformat().replace("+00:00", "Z")
 
 
 def sha256_file(path: Path) -> str:
@@ -85,1035 +63,386 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def json_safe(value: Any) -> Any:
-    return json.loads(
-        json.dumps(
-            value,
-            ensure_ascii=False,
-            sort_keys=True,
-            allow_nan=False,
-            default=str,
-        )
-    )
-
-
 def stable_digest(value: Any) -> str:
-    return hashlib.sha256(
-        json.dumps(
-            json_safe(value),
-            ensure_ascii=False,
-            sort_keys=True,
-            separators=(",", ":"),
-        ).encode("utf-8")
-    ).hexdigest()
-
-
-def encoded(value: Any) -> bytes:
-    return (
-        json.dumps(
-            json_safe(value),
-            ensure_ascii=False,
-            sort_keys=True,
-            indent=2,
-            allow_nan=False,
-        )
-        + "\n"
+    payload = json.dumps(
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
     ).encode("utf-8")
-
-
-def dump_exclusive(path: Path, value: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("xb") as handle:
-        handle.write(encoded(value))
-        handle.flush()
-        os.fsync(handle.fileno())
+    return hashlib.sha256(payload).hexdigest()
 
 
 def load_json(path: Path) -> Any:
-    return json.loads(path.read_text(encoding="utf-8"))
+    value = json.loads(path.read_text(encoding="utf-8"))
+    return value
 
 
-def git_output(*args: str) -> str:
+def atomic_json(path: Path, value: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(
+        json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    temporary.replace(path)
+
+
+def parse_last_json(stdout: str, *, label: str) -> Mapping[str, Any]:
+    for raw_line in reversed(stdout.splitlines()):
+        line = raw_line.strip()
+        if not line:
+            continue
+        try:
+            value = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(value, Mapping):
+            return dict(value)
+    raise RuntimeError(f"{label} emitted no terminal JSON object")
+
+
+def run_probe(*, name: str, path: Path, run_dir: Path) -> dict[str, Any]:
+    cache_dir = run_dir / "pycache" / name
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    env = dict(os.environ)
+    env["PYTHONPYCACHEPREFIX"] = str(cache_dir)
+    started = time.monotonic()
     completed = subprocess.run(
-        ["git", *args],
+        [str(PROJECT_PYTHON), str(path)],
         cwd=ROOT,
-        check=True,
+        env=env,
+        capture_output=True,
         text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        timeout=300,
+        check=False,
     )
-    return completed.stdout.strip()
-
-
-def import_module(name: str, path: Path) -> Any:
-    spec = importlib.util.spec_from_file_location(name, path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"cannot import {path}")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[name] = module
-    spec.loader.exec_module(module)
-    return module
-
-
-def audit_module(module: Any, expected_path: Path) -> dict[str, Any]:
-    expected = expected_path.resolve()
-    functions: list[dict[str, str]] = []
-    foreign: list[dict[str, str]] = []
-    for name, value in sorted(vars(module).items()):
-        if not inspect.isfunction(value) or value.__module__ != module.__name__:
-            continue
-        actual = Path(value.__code__.co_filename).resolve()
-        record = {"name": str(name), "code_filename": str(actual)}
-        functions.append(record)
-        if actual != expected:
-            foreign.append(record)
-    if foreign:
-        raise RuntimeError(f"foreign functions loaded for {expected_path}: {foreign[:10]}")
-    return {
-        "module": str(module.__name__),
-        "source": str(expected_path.relative_to(ROOT)),
-        "source_sha256": sha256_file(expected_path),
-        "function_count": len(functions),
-        "foreign_function_count": 0,
-    }
-
-
-def audit_nested_modules(prefixes: Sequence[str]) -> list[dict[str, Any]]:
-    rows: list[dict[str, Any]] = []
-    for name, module in sorted(sys.modules.items()):
-        if module is None or not any(name.startswith(prefix) for prefix in prefixes):
-            continue
-        file_value = getattr(module, "__file__", None)
-        if not isinstance(file_value, str):
-            continue
-        path = Path(file_value).resolve()
-        source = (
-            Path(importlib.util.source_from_cache(str(path))).resolve()
-            if path.suffix == ".pyc"
-            else path
-        )
-        rows.append(audit_module(module, source))
-    return rows
-
-
-def verify_identity() -> dict[str, Any]:
-    if Path.cwd().resolve() != ROOT.resolve():
-        raise RuntimeError(f"run E078 from research root: {Path.cwd()}")
-    if git_output("branch", "--show-current") != "research/main":
-        raise RuntimeError("E078 must run on research/main")
-    tracked_status = git_output(
-        "status", "--porcelain=v1", "--untracked-files=no"
-    )
-    if tracked_status:
-        raise RuntimeError(f"E078 requires a clean tracked worktree: {tracked_status}")
-    mismatches = {
-        key: {"expected": expected, "actual": os.environ.get(key)}
-        for key, expected in EXPECTED_ENV.items()
-        if os.environ.get(key) != expected
-    }
-    unexpected_exact = sorted(
-        key
-        for key in os.environ
-        if key.startswith("EXACT_") and key not in EXPECTED_ENV
-    )
-    if mismatches or unexpected_exact:
-        raise RuntimeError(
-            f"environment mismatch: {mismatches}; unexpected={unexpected_exact}"
-        )
-    checked: dict[str, str] = {}
-    for path, expected in EXPECTED_HASHES.items():
-        if not path.is_file():
-            raise FileNotFoundError(path)
-        actual = sha256_file(path)
-        checked[str(path.relative_to(ROOT))] = actual
-        if actual != expected:
-            raise RuntimeError(f"frozen identity drift: {path}: {actual} != {expected}")
-    result = load_json(E074_RESULT)
-    target = load_json(E074_TARGET)
-    target_record = next(
-        row
-        for row in result["target_records"]
-        if int(row["target_component"]) == TARGET_COMPONENT
-    )
-    if (
-        result.get("verdict") != "SMALL_ASSIGNMENT_TRANSPORT_CORES_FOUND"
-        or int(target_record["minimum_changed_row_count"]) != 2
-        or int(target["minimum_changed_row_count"]) != 2
-        or tuple(
-            sorted(int(row["destination"]) for row in target["changed_rows"])
-        )
-        != CORE_ROWS
-    ):
-        raise RuntimeError("E078 E074 target-26 witness drift")
-    return {
-        "checked_sha256": checked,
-        "research_head": git_output("rev-parse", "HEAD"),
-        "research_branch": git_output("branch", "--show-current"),
-    }
-
-
-def configure_solver(*, seed: int, seconds: float = SOLVE_SECONDS) -> cp_model.CpSolver:
-    solver = cp_model.CpSolver()
-    solver.parameters.max_time_in_seconds = float(seconds)
-    solver.parameters.num_search_workers = SOLVE_WORKERS
-    solver.parameters.search_branching = cp_model.AUTOMATIC_SEARCH
-    solver.parameters.symmetry_level = 3
-    solver.parameters.cp_model_probing_level = 3
-    solver.parameters.random_seed = int(seed)
-    return solver
-
-
-def add_parent_face_constraints(
-    *,
-    model: cp_model.CpModel,
-    built: Mapping[str, Any],
-) -> None:
-    for component in built["components"]:
-        source = built["fine_sources"][component]
-        sink = built["fine_sinks"][component]
-        if int(component) == TARGET_COMPONENT:
-            model.Add(source == 1)
-            model.Add(sink == 0)
-        else:
-            model.Add(source == sink)
-
-
-def build_parent_model(
-    *,
-    e074: Any,
-    e061: Any,
-    context: Mapping[str, Any],
-    actual: Mapping[int, Sequence[Mapping[str, Any]]],
-    prefix: str,
-) -> tuple[cp_model.CpModel, dict[str, Any]]:
-    model = cp_model.CpModel()
-    built = e074.add_assignment_copy(
-        model=model,
-        prefix=prefix,
-        rows_by_destination=actual,
-        operation_counts=e061.OPERATION_COUNTS,
-        sink_components=context["sink_space"]["components"],
-    )
-    add_parent_face_constraints(model=model, built=built)
-    return model, built
-
-
-def selected_assignment(
-    *,
-    e074: Any,
-    solver: cp_model.CpSolver,
-    rows: Mapping[int, Sequence[Mapping[str, Any]]],
-    built: Mapping[str, Any],
-    bodies: Sequence[Mapping[str, Any]],
-) -> list[dict[str, Any]]:
-    return e074.selected_assignment(
-        solver=solver,
-        rows_by_destination=rows,
-        x_vars=built["x_vars"],
-        bodies=bodies,
-    )
-
-
-def build_zero_model(
-    *,
-    e074: Any,
-    e061: Any,
-    context: Mapping[str, Any],
-    actual: Mapping[int, Sequence[Mapping[str, Any]]],
-    baseline_assignment: Sequence[Mapping[str, Any]],
-    prefix: str,
-) -> tuple[
-    cp_model.CpModel,
-    dict[str, Any],
-    dict[int, Any],
-    Any,
-    dict[int, Any],
-]:
-    zero_rows = e074.tagged_zero_options(
-        actual,
-        target_component=TARGET_COMPONENT,
-    )
-    model = cp_model.CpModel()
-    zero = e074.add_assignment_copy(
-        model=model,
-        prefix=prefix,
-        rows_by_destination=zero_rows,
-        operation_counts=e061.OPERATION_COUNTS,
-        sink_components=context["sink_space"]["components"],
-    )
-    for component in zero["components"]:
-        model.Add(zero["fine_sources"][component] == zero["fine_sinks"][component])
-    synthetic_by_destination: dict[int, Any] = {}
-    for destination, rows in zero_rows.items():
-        synthetic = [
-            zero["x_vars"][(destination, option_index)]
-            for option_index, option in enumerate(rows)
-            if bool(option["synthetic"])
-        ]
-        if len(synthetic) != 1:
-            raise RuntimeError(f"E078 synthetic-option count drift: {destination}")
-        synthetic_by_destination[int(destination)] = synthetic[0]
-    model.Add(
-        cp_model.LinearExpr.Sum(list(synthetic_by_destination.values())) == 1
-    )
-    changed: dict[int, Any] = {}
-    for row in baseline_assignment:
-        destination = int(row["destination"])
-        native_index = row["selected_option"].get("native_option_index")
-        if native_index is None:
-            raise RuntimeError("E078 baseline contains a synthetic option")
-        variable = model.NewBoolVar(f"{prefix}_changed_{destination}")
-        model.Add(
-            variable
-            + zero["x_vars"][(destination, int(native_index))]
-            == 1
-        )
-        changed[destination] = variable
-    changed_sum = cp_model.LinearExpr.Sum(list(changed.values()))
-    return model, zero, changed, changed_sum, synthetic_by_destination
-
-
-def minimum_zero_transport(
-    *,
-    e074: Any,
-    e061: Any,
-    context: Mapping[str, Any],
-    actual: Mapping[int, Sequence[Mapping[str, Any]]],
-    bodies: Sequence[Mapping[str, Any]],
-    baseline_assignment: Sequence[Mapping[str, Any]],
-    seed: int,
-) -> dict[str, Any]:
-    model, zero, changed, changed_sum, synthetic = build_zero_model(
-        e074=e074,
-        e061=e061,
-        context=context,
-        actual=actual,
-        baseline_assignment=baseline_assignment,
-        prefix=f"e078_zero_{seed}",
-    )
-    model.Minimize(changed_sum)
-    primary = configure_solver(seed=seed)
-    started = time.monotonic()
-    primary_status = primary.Solve(model)
     elapsed = time.monotonic() - started
-    record: dict[str, Any] = {
-        "primary_status": primary.StatusName(primary_status),
-        "primary_best_bound": float(primary.BestObjectiveBound()),
-        "primary_elapsed_seconds": elapsed,
-        "minimum_changed_row_count": None,
-        "alternate_optimum_support_status": None,
-        "alternate_synthetic_destination_status": None,
-        "selected_changed_destinations": [],
-    }
-    if primary_status != cp_model.OPTIMAL:
-        return record
-    minimum = int(round(primary.ObjectiveValue()))
-    record["minimum_changed_row_count"] = minimum
-
-    support_model, _support_zero, support_changed, support_sum, _support_synthetic = (
-        build_zero_model(
-            e074=e074,
-            e061=e061,
-            context=context,
-            actual=actual,
-            baseline_assignment=baseline_assignment,
-            prefix=f"e078_support_{seed}",
-        )
-    )
-    support_model.Add(support_sum == minimum)
-    support_model.Add(
-        cp_model.LinearExpr.Sum([support_changed[row] for row in CORE_ROWS]) <= 1
-    )
-    support_solver = configure_solver(seed=seed + 1000)
-    support_status = support_solver.Solve(support_model)
-    record["alternate_optimum_support_status"] = support_solver.StatusName(
-        support_status
-    )
-
-    synthetic_model, _synthetic_zero, _synthetic_changed, synthetic_sum, synthetic_vars = (
-        build_zero_model(
-            e074=e074,
-            e061=e061,
-            context=context,
-            actual=actual,
-            baseline_assignment=baseline_assignment,
-            prefix=f"e078_synthetic_{seed}",
-        )
-    )
-    synthetic_model.Add(synthetic_sum == minimum)
-    synthetic_model.Add(synthetic_vars[CORE_ROWS[1]] == 0)
-    synthetic_solver = configure_solver(seed=seed + 2000)
-    synthetic_status = synthetic_solver.Solve(synthetic_model)
-    record["alternate_synthetic_destination_status"] = (
-        synthetic_solver.StatusName(synthetic_status)
-    )
-
-    witness_model, witness_zero, witness_changed, witness_sum, witness_synthetic = (
-        build_zero_model(
-            e074=e074,
-            e061=e061,
-            context=context,
-            actual=actual,
-            baseline_assignment=baseline_assignment,
-            prefix=f"e078_witness_{seed}",
-        )
-    )
-    witness_model.Add(witness_sum == minimum)
-    witness_model.Add(witness_changed[CORE_ROWS[0]] == 1)
-    witness_model.Add(witness_changed[CORE_ROWS[1]] == 1)
-    witness_model.Add(witness_synthetic[CORE_ROWS[1]] == 1)
-    witness_solver = configure_solver(seed=seed + 3000)
-    witness_status = witness_solver.Solve(witness_model)
-    record["witness_status"] = witness_solver.StatusName(witness_status)
-    if witness_status != cp_model.OPTIMAL:
-        return record
-    assignment = selected_assignment(
-        e074=e074,
-        solver=witness_solver,
-        rows=e074.tagged_zero_options(actual, target_component=TARGET_COMPONENT),
-        built=witness_zero,
-        bodies=bodies,
-    )
-    record["selected_changed_destinations"] = [
-        destination
-        for destination, variable in sorted(witness_changed.items())
-        if witness_solver.Value(variable) == 1
-    ]
-    record["selected_synthetic_destination"] = next(
-        destination
-        for destination, variable in sorted(witness_synthetic.items())
-        if witness_solver.Value(variable) == 1
-    )
-    record["selected_assignment_digest"] = stable_digest(assignment)
-    return record
-
-
-def paired_global_minimum(
-    *,
-    e074: Any,
-    e061: Any,
-    context: Mapping[str, Any],
-    actual: Mapping[int, Sequence[Mapping[str, Any]]],
-) -> dict[str, Any]:
-    zero_rows = e074.tagged_zero_options(actual, target_component=TARGET_COMPONENT)
-    model = cp_model.CpModel()
-    baseline = e074.add_assignment_copy(
-        model=model,
-        prefix="e078_global_baseline",
-        rows_by_destination=actual,
-        operation_counts=e061.OPERATION_COUNTS,
-        sink_components=context["sink_space"]["components"],
-    )
-    zero = e074.add_assignment_copy(
-        model=model,
-        prefix="e078_global_zero",
-        rows_by_destination=zero_rows,
-        operation_counts=e061.OPERATION_COUNTS,
-        sink_components=context["sink_space"]["components"],
-    )
-    add_parent_face_constraints(model=model, built=baseline)
-    for component in zero["components"]:
-        model.Add(zero["fine_sources"][component] == zero["fine_sinks"][component])
-    synthetic_vars = [
-        zero["x_vars"][(destination, option_index)]
-        for destination, rows in zero_rows.items()
-        for option_index, option in enumerate(rows)
-        if bool(option["synthetic"])
-    ]
-    model.Add(cp_model.LinearExpr.Sum(synthetic_vars) == 1)
-    changed: dict[int, Any] = {}
-    for destination in range(38):
-        variable = model.NewBoolVar(f"e078_global_changed_{destination}")
-        changed[destination] = variable
-        same_terms: list[Any] = []
-        for baseline_index, baseline_option in enumerate(actual[destination]):
-            baseline_var = baseline["x_vars"][(destination, baseline_index)]
-            for zero_index, zero_option in enumerate(zero_rows[destination]):
-                if bool(zero_option["synthetic"]):
-                    continue
-                if (
-                    str(baseline_option["operation"])
-                    == str(zero_option["operation"])
-                    and int(baseline_option["pose_idx"])
-                    == int(zero_option["pose_idx"])
-                    and tuple(baseline_option["signature"])
-                    == tuple(zero_option["signature"])
-                ):
-                    pair = model.NewBoolVar(
-                        f"e078_global_same_{destination}_{baseline_index}_{zero_index}"
-                    )
-                    model.Add(pair <= baseline_var)
-                    model.Add(pair <= zero["x_vars"][(destination, zero_index)])
-                    model.Add(
-                        pair
-                        >= baseline_var
-                        + zero["x_vars"][(destination, zero_index)]
-                        - 1
-                    )
-                    same_terms.append(pair)
-        model.Add(variable + cp_model.LinearExpr.Sum(same_terms) == 1)
-    changed_sum = cp_model.LinearExpr.Sum(list(changed.values()))
-    model.Minimize(changed_sum)
-    solver = configure_solver(seed=86001)
-    started = time.monotonic()
-    status = solver.Solve(model)
-    return {
-        "status": solver.StatusName(status),
-        "best_bound": float(solver.BestObjectiveBound()),
-        "objective": (
-            int(round(solver.ObjectiveValue()))
-            if status == cp_model.OPTIMAL
-            else None
-        ),
-        "elapsed_seconds": time.monotonic() - started,
-    }
-
-
-def core_row_invariance(
-    *,
-    e074: Any,
-    e061: Any,
-    context: Mapping[str, Any],
-    actual: Mapping[int, Sequence[Mapping[str, Any]]],
-    reference_index: Mapping[int, int],
-) -> dict[str, Any]:
-    records: list[dict[str, Any]] = []
-    for offset, row in enumerate(CORE_ROWS):
-        model, built = build_parent_model(
-            e074=e074,
-            e061=e061,
-            context=context,
-            actual=actual,
-            prefix=f"e078_invariance_{row}",
-        )
-        model.Add(built["x_vars"][(row, int(reference_index[row]))] == 0)
-        solver = configure_solver(seed=87001 + offset)
-        status = solver.Solve(model)
-        records.append(
-            {
-                "destination_local": row,
-                "status": solver.StatusName(status),
-                "branches": int(solver.NumBranches()),
-                "conflicts": int(solver.NumConflicts()),
-                "wall_time": float(solver.WallTime()),
-            }
+    payload = parse_last_json(completed.stdout, label=name)
+    if completed.returncode != 0:
+        raise RuntimeError(
+            f"{name} failed rc={completed.returncode}: "
+            f"stdout_tail={completed.stdout[-2000:]!r} stderr_tail={completed.stderr[-2000:]!r}"
         )
     return {
-        "records": records,
-        "all_core_rows_invariant": all(
-            record["status"] == "INFEASIBLE" for record in records
-        ),
+        "name": name,
+        "source": str(path.relative_to(ROOT)),
+        "source_sha256": sha256_file(path),
+        "returncode": completed.returncode,
+        "elapsed_seconds": elapsed,
+        "stdout_sha256": hashlib.sha256(completed.stdout.encode("utf-8")).hexdigest(),
+        "stderr_sha256": hashlib.sha256(completed.stderr.encode("utf-8")).hexdigest(),
+        "terminal": dict(payload),
     }
 
 
-def exact_or(
-    *,
-    model: cp_model.CpModel,
-    name: str,
-    contributors: Sequence[Any],
-) -> Any:
-    variable = model.NewBoolVar(name)
-    if not contributors:
-        model.Add(variable == 0)
-        return variable
-    for contributor in contributors:
-        model.Add(variable >= contributor)
-    model.Add(variable <= cp_model.LinearExpr.Sum(list(contributors)))
-    return variable
+def walk_mappings(value: Any) -> Iterable[Mapping[str, Any]]:
+    if isinstance(value, Mapping):
+        yield value
+        for child in value.values():
+            yield from walk_mappings(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from walk_mappings(child)
 
 
-def xor(
-    *,
-    model: cp_model.CpModel,
-    name: str,
-    left: Any,
-    right: Any,
-) -> Any:
-    variable = model.NewBoolVar(name)
-    model.Add(variable >= left - right)
-    model.Add(variable >= right - left)
-    model.Add(variable <= left + right)
-    model.Add(variable <= 2 - left - right)
-    return variable
-
-
-def universal_rewrite_counterexample(
-    *,
-    e074: Any,
-    e061: Any,
-    context: Mapping[str, Any],
-    actual: Mapping[int, Sequence[Mapping[str, Any]]],
-    reference_index: Mapping[int, int],
-    zero_reference: Mapping[int, Mapping[str, Any]],
-) -> dict[str, Any]:
-    model, parent = build_parent_model(
-        e074=e074,
-        e061=e061,
-        context=context,
-        actual=actual,
-        prefix="e078_universal_parent",
-    )
-    for row in CORE_ROWS:
-        model.Add(parent["x_vars"][(row, int(reference_index[row]))] == 1)
-    components = sorted(
-        {
-            int(component)
-            for rows in actual.values()
-            for option in rows
-            for part in option["signature"]
-            for component in part
+def extract_stable_body_witnesses(target26: Any) -> list[dict[str, Any]]:
+    output: dict[str, dict[str, Any]] = {}
+    for row in walk_mappings(target26):
+        instance_id = row.get("source_instance_id")
+        if instance_id not in EXPECTED_CORE_BODY_IDS:
+            continue
+        compact = {
+            key: row[key]
+            for key in (
+                "source_instance_id",
+                "body_digest",
+                "occupied_cells_digest",
+                "operation",
+                "current_operation",
+                "destination",
+                "pose_idx",
+            )
+            if key in row
         }
-        | {
-            int(component)
-            for option in zero_reference.values()
-            for part in option["signature"]
-            for component in part
+        current = output.get(str(instance_id))
+        if current is None or len(compact) > len(current):
+            output[str(instance_id)] = compact
+    missing = sorted(set(EXPECTED_CORE_BODY_IDS) - set(output))
+    if missing:
+        raise RuntimeError(f"E078 stable body witnesses missing from E074 target26: {missing}")
+    return [output[instance_id] for instance_id in EXPECTED_CORE_BODY_IDS]
+
+
+def require_int(payload: Mapping[str, Any], key: str) -> int:
+    value = payload.get(key)
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise RuntimeError(f"E078 expected integer {key}, got {value!r}")
+    return int(value)
+
+
+def classify(probe_results: Mapping[str, Mapping[str, Any]]) -> dict[str, Any]:
+    support = probe_results["support_neighbors"]["terminal"]
+    one_option = probe_results["one_option_neighbors"]["terminal"]
+    core_touch = probe_results["core_touch"]["terminal"]
+    universal = probe_results["universal_rewrite"]["terminal"]
+
+    raw_alternatives = require_int(one_option, "raw_one_option_alternative_count")
+    valid_neighbors = require_int(one_option, "valid_one_option_neighbor_count")
+    valid_destinations = require_int(one_option, "valid_destination_support_count")
+    anomaly_count = require_int(one_option, "anomaly_count")
+
+    primary_status_counts = {
+        str(key): int(value)
+        for key, value in dict(
+            one_option.get("transport_primary_status_counts", {})
+        ).items()
+    }
+    core_size_distribution = {
+        str(key): int(value)
+        for key, value in dict(
+            one_option.get("transport_core_size_distribution", {})
+        ).items()
+    }
+    reference_support_status_counts = {
+        str(key): int(value)
+        for key, value in dict(
+            one_option.get("reference_support_status_counts", {})
+        ).items()
+    }
+    alternate_support_status_counts = {
+        str(key): int(value)
+        for key, value in dict(
+            one_option.get("alternate_support_status_counts", {})
+        ).items()
+    }
+    alternate_synthetic_status_counts = {
+        str(key): int(value)
+        for key, value in dict(
+            one_option.get("alternate_synthetic_status_counts", {})
+        ).items()
+    }
+    selected_support_counts = {
+        str(key): int(value)
+        for key, value in dict(one_option.get("selected_support_counts", {})).items()
+    }
+    selected_synthetic_counts = {
+        str(key): int(value)
+        for key, value in dict(
+            one_option.get("selected_synthetic_destination_counts", {})
+        ).items()
+    }
+
+    neighbor_exact = (
+        str(one_option.get("status")) == "OPTIMAL"
+        and raw_alternatives == 168
+        and valid_neighbors == 25
+        and valid_destinations == 25
+        and anomaly_count == 0
+        and primary_status_counts == {"OPTIMAL": 25}
+        and core_size_distribution == {"2": 25}
+        and reference_support_status_counts == {"OPTIMAL": 25}
+        and selected_support_counts == {"8,9": 25}
+        and selected_synthetic_counts == {"9": 25}
+    )
+    minimum_core_nonunique = (
+        alternate_support_status_counts == {"OPTIMAL": 25}
+        and alternate_synthetic_status_counts == {"OPTIMAL": 25}
+    )
+
+    core_touch_closed = (
+        str(core_touch.get("status")) == "INFEASIBLE"
+        and core_touch.get("core_touch_parent_exists") is False
+        and str(core_touch.get("verdict"))
+        == "NO_PARENT_FACE_ASSIGNMENT_CHANGES_REFERENCE_CORE_ROWS"
+    )
+
+    universal_status = str(universal.get("status"))
+    universal_no_counterexample = (
+        universal_status == "INFEASIBLE"
+        and universal.get("counterexample_found") is False
+        and str(universal.get("verdict"))
+        == "NO_PARENT_FACE_COUNTEREXAMPLE_TO_REFERENCE_REWRITE"
+    )
+
+    support_consistent = (
+        str(support.get("status")) == "OPTIMAL"
+        and support.get("enumeration_terminal") == "EXHAUSTED"
+        and int(support.get("neighbor_support_count", -1)) == 25
+        and dict(support.get("transport_primary_status_counts", {}))
+        == {"OPTIMAL": 25}
+        and {
+            str(key): int(value)
+            for key, value in dict(
+                support.get("transport_core_size_distribution", {})
+            ).items()
         }
+        == {"2": 25}
+        and dict(support.get("reference_support_status_counts", {}))
+        == {"OPTIMAL": 25}
     )
-    mismatches: list[Any] = []
-    qiaoyu_failures: list[Any] = []
-    for component in components:
-        source_terms: list[Any] = []
-        sink_terms: list[Any] = []
-        qiaoyu_terms: list[Any] = []
-        for destination, rows in actual.items():
-            if destination in CORE_ROWS:
-                continue
-            for option_index, option in enumerate(rows):
-                variable = parent["x_vars"][(destination, option_index)]
-                if component in set(option["signature"][1]):
-                    source_terms.append(variable)
-                if component in set(option["signature"][0]):
-                    sink_terms.append(variable)
-                if component in set(option["signature"][2]):
-                    qiaoyu_terms.append(variable)
-        for option in zero_reference.values():
-            if component in set(int(value) for value in option["signature"][1]):
-                source_terms.append(1)
-            if component in set(int(value) for value in option["signature"][0]):
-                sink_terms.append(1)
-            if component in set(int(value) for value in option["signature"][2]):
-                qiaoyu_terms.append(1)
-        source = exact_or(
-            model=model,
-            name=f"e078_universal_source_{component}",
-            contributors=source_terms,
-        )
-        sink = exact_or(
-            model=model,
-            name=f"e078_universal_sink_{component}",
-            contributors=sink_terms,
-        )
-        qiaoyu = exact_or(
-            model=model,
-            name=f"e078_universal_qiaoyu_{component}",
-            contributors=qiaoyu_terms,
-        )
-        mismatches.append(
-            xor(
-                model=model,
-                name=f"e078_universal_mismatch_{component}",
-                left=source,
-                right=sink,
-            )
-        )
-        failure = model.NewBoolVar(f"e078_universal_qiaoyu_failure_{component}")
-        if component == TARGET_QIAOYU_COMPONENT:
-            model.Add(failure + qiaoyu == 1)
-        else:
-            model.Add(failure == qiaoyu)
-        qiaoyu_failures.append(failure)
-    model.Add(cp_model.LinearExpr.Sum(mismatches + qiaoyu_failures) >= 1)
-    solver = configure_solver(seed=88001)
-    status = solver.Solve(model)
+
+    reference_rewrite_stable = (
+        neighbor_exact
+        and core_touch_closed
+        and universal_no_counterexample
+        and support_consistent
+    )
     return {
-        "status": solver.StatusName(status),
-        "counterexample_found": status in (cp_model.OPTIMAL, cp_model.FEASIBLE),
-        "branches": int(solver.NumBranches()),
-        "conflicts": int(solver.NumConflicts()),
-        "wall_time": float(solver.WallTime()),
+        "raw_one_option_alternative_count": raw_alternatives,
+        "valid_one_option_neighbor_count": valid_neighbors,
+        "valid_destination_support_count": valid_destinations,
+        "one_option_anomaly_count": anomaly_count,
+        "one_option_primary_status_counts": primary_status_counts,
+        "one_option_core_size_distribution": core_size_distribution,
+        "one_option_reference_support_status_counts": reference_support_status_counts,
+        "one_option_alternate_support_status_counts": alternate_support_status_counts,
+        "one_option_alternate_synthetic_status_counts": alternate_synthetic_status_counts,
+        "one_option_selected_support_counts": selected_support_counts,
+        "one_option_selected_synthetic_destination_counts": selected_synthetic_counts,
+        "minimum_core_is_nonunique": minimum_core_nonunique,
+        "core_touch_status": core_touch.get("status"),
+        "core_touch_parent_exists": core_touch.get("core_touch_parent_exists"),
+        "universal_rewrite_status": universal_status,
+        "universal_counterexample_found": universal.get("counterexample_found"),
+        "neighbor_layer_exact": neighbor_exact,
+        "core_rows_frozen_on_parent_face": core_touch_closed,
+        "reference_rewrite_has_no_parent_face_counterexample": universal_no_counterexample,
+        "support_neighbor_layer_exact": support_consistent,
+        "reference_rewrite_stable_on_full_parent_face": reference_rewrite_stable,
     }
-
-
-def one_option_atlas(
-    *,
-    e074: Any,
-    e061: Any,
-    context: Mapping[str, Any],
-    actual: Mapping[int, Sequence[Mapping[str, Any]]],
-    bodies: Sequence[Mapping[str, Any]],
-    reference_assignment: Sequence[Mapping[str, Any]],
-    reference_index: Mapping[int, int],
-) -> dict[str, Any]:
-    records: list[dict[str, Any]] = []
-    raw_count = 0
-    for destination in range(38):
-        for option_index, _option in enumerate(actual[destination]):
-            if option_index == int(reference_index[destination]):
-                continue
-            raw_count += 1
-            model, built = build_parent_model(
-                e074=e074,
-                e061=e061,
-                context=context,
-                actual=actual,
-                prefix=f"e078_neighbor_{destination}_{option_index}",
-            )
-            for row in range(38):
-                chosen = option_index if row == destination else int(reference_index[row])
-                model.Add(built["x_vars"][(row, chosen)] == 1)
-            solver = configure_solver(
-                seed=89000 + destination * 16 + option_index,
-                seconds=15.0,
-            )
-            status = solver.Solve(model)
-            if status == cp_model.INFEASIBLE:
-                continue
-            if status != cp_model.OPTIMAL:
-                raise RuntimeError(
-                    "E078 one-option neighbor nonterminal: "
-                    f"destination={destination} option={option_index} "
-                    f"status={solver.StatusName(status)}"
-                )
-            baseline = selected_assignment(
-                e074=e074,
-                solver=solver,
-                rows=actual,
-                built=built,
-                bodies=bodies,
-            )
-            transport = minimum_zero_transport(
-                e074=e074,
-                e061=e061,
-                context=context,
-                actual=actual,
-                bodies=bodies,
-                baseline_assignment=baseline,
-                seed=90000 + destination * 16 + option_index,
-            )
-            body = baseline[destination]["body"]
-            records.append(
-                {
-                    "changed_destination_local": destination,
-                    "changed_stable_body": {
-                        "source_instance_id": str(body["source_instance_id"]),
-                        "body_digest": str(body["body_digest"]),
-                    },
-                    "reference_native_option_index": int(reference_index[destination]),
-                    "neighbor_native_option_index": option_index,
-                    "neighbor_option": baseline[destination]["selected_option"],
-                    "baseline_assignment_digest": stable_digest(baseline),
-                    "transport": transport,
-                }
-            )
-    return {
-        "raw_one_option_alternative_count": raw_count,
-        "valid_one_option_neighbor_count": len(records),
-        "valid_destination_support_count": len(
-            {int(record["changed_destination_local"]) for record in records}
-        ),
-        "transport_primary_status_counts": dict(
-            sorted(Counter(record["transport"]["primary_status"] for record in records).items())
-        ),
-        "transport_core_size_distribution": dict(
-            sorted(
-                Counter(
-                    int(record["transport"]["minimum_changed_row_count"])
-                    for record in records
-                    if record["transport"]["minimum_changed_row_count"] is not None
-                ).items()
-            )
-        ),
-        "transport_support_counts": {
-            ",".join(str(value) for value in support): count
-            for support, count in sorted(
-                Counter(
-                    tuple(record["transport"]["selected_changed_destinations"])
-                    for record in records
-                ).items()
-            )
-        },
-        "alternate_support_status_counts": dict(
-            sorted(
-                Counter(
-                    record["transport"]["alternate_optimum_support_status"]
-                    for record in records
-                ).items()
-            )
-        ),
-        "alternate_synthetic_status_counts": dict(
-            sorted(
-                Counter(
-                    record["transport"]["alternate_synthetic_destination_status"]
-                    for record in records
-                ).items()
-            )
-        ),
-        "records": records,
-    }
-
-
-def run() -> dict[str, Any]:
-    identity = verify_identity()
-    e074 = import_module("e078_e074", E074_RUNNER)
-    for path, expected in e074.EXPECTED_HASHES.items():
-        actual_hash = sha256_file(path)
-        if actual_hash != expected:
-            raise RuntimeError(
-                f"E078 inherited E074 identity drift: {path}: {actual_hash} != {expected}"
-            )
-    e061 = e074.import_module("e078_e061", e074.E061_RUNNER)
-    e062 = e074.import_module("e078_e062", e074.E062_RUNNER)
-    e063 = e074.import_module("e078_e063", e074.E063_RUNNER)
-    e069 = e074.import_module("e078_e069", e074.E069_RUNNER)
-    direct_audit = [
-        audit_module(e074, E074_RUNNER),
-        audit_module(e061, e074.E061_RUNNER),
-        audit_module(e062, e074.E062_RUNNER),
-        audit_module(e063, e074.E063_RUNNER),
-        audit_module(e069, e074.E069_RUNNER),
-    ]
-    context = e069.reconstruct_parent(e061, e062, e063)
-    actual = e074.normalize_actual_options(context["options"])
-    bodies = e061.body_rows(
-        context["solution"],
-        context["base"]["inputs"]["pools"],
-        context["base"]["e014"],
-    )
-    witness = load_json(E074_TARGET)
-    reference_assignment = list(witness["baseline_assignment"])
-    zero_assignment = list(witness["zero_assignment"])
-    reference_by_destination = {
-        int(row["destination"]): dict(row) for row in reference_assignment
-    }
-    zero_by_destination = {
-        int(row["destination"]): dict(row) for row in zero_assignment
-    }
-    if sorted(reference_by_destination) != list(range(38)):
-        raise RuntimeError("E078 reference destination drift")
-    reference_index = {
-        destination: int(row["selected_option"]["native_option_index"])
-        for destination, row in reference_by_destination.items()
-    }
-    zero_reference = {
-        row: dict(zero_by_destination[row]["selected_option"])
-        for row in CORE_ROWS
-    }
-    body_by_destination = {
-        int(destination): {
-            "source_instance_id": str(body["source_instance_id"]),
-            "body_digest": str(body["body_digest"]),
-            "occupied_cells": [list(cell) for cell in body["occupied_cells"]],
-        }
-        for destination, body in enumerate(bodies)
-    }
-    for row in CORE_ROWS:
-        if (
-            body_by_destination[row]["source_instance_id"]
-            != reference_by_destination[row]["body"]["source_instance_id"]
-            or body_by_destination[row]["body_digest"]
-            != reference_by_destination[row]["body"]["body_digest"]
-        ):
-            raise RuntimeError(f"E078 stable core-body remap drift at row {row}")
-
-    calibration_model, calibration_built = build_parent_model(
-        e074=e074,
-        e061=e061,
-        context=context,
-        actual=actual,
-        prefix="e078_calibration",
-    )
-    for row in range(38):
-        calibration_model.Add(
-            calibration_built["x_vars"][(row, int(reference_index[row]))] == 1
-        )
-    calibration_solver = configure_solver(seed=91001)
-    calibration_status = calibration_solver.Solve(calibration_model)
-    calibration = {
-        "status": calibration_solver.StatusName(calibration_status),
-        "branches": int(calibration_solver.NumBranches()),
-        "conflicts": int(calibration_solver.NumConflicts()),
-        "wall_time": float(calibration_solver.WallTime()),
-    }
-    if calibration_status != cp_model.OPTIMAL:
-        raise RuntimeError(f"E078 calibration failed: {calibration}")
-
-    global_minimum = paired_global_minimum(
-        e074=e074,
-        e061=e061,
-        context=context,
-        actual=actual,
-    )
-    invariance = core_row_invariance(
-        e074=e074,
-        e061=e061,
-        context=context,
-        actual=actual,
-        reference_index=reference_index,
-    )
-    rewrite = universal_rewrite_counterexample(
-        e074=e074,
-        e061=e061,
-        context=context,
-        actual=actual,
-        reference_index=reference_index,
-        zero_reference=zero_reference,
-    )
-    atlas = one_option_atlas(
-        e074=e074,
-        e061=e061,
-        context=context,
-        actual=actual,
-        bodies=bodies,
-        reference_assignment=reference_assignment,
-        reference_index=reference_index,
-    )
-
-    if global_minimum["status"] != "OPTIMAL" or global_minimum["objective"] != 2:
-        raise RuntimeError(f"E078 global minimum drift: {global_minimum}")
-    if not invariance["all_core_rows_invariant"]:
-        raise RuntimeError(f"E078 core-row invariance failed: {invariance}")
-    if rewrite["status"] != "INFEASIBLE" or rewrite["counterexample_found"]:
-        raise RuntimeError(f"E078 universal rewrite counterexample: {rewrite}")
-    if (
-        atlas["raw_one_option_alternative_count"]
-        != EXPECTED_RAW_ONE_OPTION_ALTERNATIVES
-        or atlas["valid_one_option_neighbor_count"]
-        != EXPECTED_VALID_ONE_OPTION_NEIGHBORS
-        or atlas["valid_destination_support_count"]
-        != EXPECTED_VALID_ONE_OPTION_NEIGHBORS
-        or atlas["transport_primary_status_counts"] != {"OPTIMAL": 25}
-        or atlas["transport_core_size_distribution"] != {2: 25}
-        or atlas["transport_support_counts"] != {"8,9": 25}
-        or atlas["alternate_support_status_counts"] != {"INFEASIBLE": 25}
-        or atlas["alternate_synthetic_status_counts"] != {"INFEASIBLE": 25}
-    ):
-        raise RuntimeError(f"E078 one-option atlas drift: {atlas}")
-
-    target_cells = sorted(
-        [list(cell) for cell in context["routing_context"].cells_by_component[TARGET_COMPONENT]]
-    )
-    qiaoyu_slots = sorted(
-        [
-            {
-                "slot_id": str(row["slot_id"]),
-                "component_local": int(row["component"]),
-                "x": int(row["x"]),
-                "y": int(row["y"]),
-            }
-            for row in context["sink_space"]["slots"]
-            if int(row["component"]) == TARGET_QIAOYU_COMPONENT
-        ],
-        key=lambda row: row["slot_id"],
-    )
-    if not qiaoyu_slots:
-        raise RuntimeError("E078 stable qiaoyu sink witness is empty")
-
-    atlas_payload = {
-        "schema": "zmd_e078_one_option_neighbor_atlas_v1",
-        "target_component_local": TARGET_COMPONENT,
-        "target_free_cell_set_digest": stable_digest(target_cells),
-        "target_free_cell_count": len(target_cells),
-        "core_rows_local": list(CORE_ROWS),
-        "core_stable_bodies": [body_by_destination[row] for row in CORE_ROWS],
-        **atlas,
-    }
-    atlas_sha = stable_digest(atlas_payload)
-    result = {
-        "schema": "zmd_e078_target26_transport_core_stability_result_v1",
-        "created_at_utc": utc_now(),
-        "authority": "research_only_noncertified",
-        "ledger_effect": "none",
-        "identity": {
-            **identity,
-            "runner_sha256": sha256_file(Path(__file__)),
-            "inherited_e074_hashes": {
-                str(path.relative_to(ROOT)): sha256_file(path)
-                for path in sorted(e074.EXPECTED_HASHES, key=str)
-            },
-        },
-        "module_origin_audit": {
-            "direct": direct_audit,
-            "nested": audit_nested_modules(
-                (
-                    "e078_",
-                    "zmd_e061_",
-                    "zmd_e062_",
-                    "zmd_e063_",
-                    "zmd_e069_",
-                )
-            ),
-        },
-        "context": {
-            "geometry_scope": "fixed_E069_occupied_geometry",
-            "target_component_local": TARGET_COMPONENT,
-            "target_free_cells": target_cells,
-            "target_free_cell_set_digest": stable_digest(target_cells),
-            "qiaoyu_component_local": TARGET_QIAOYU_COMPONENT,
-            "qiaoyu_sink_slot_witnesses": qiaoyu_slots,
-            "core_rows_local": list(CORE_ROWS),
-            "core_stable_bodies": [body_by_destination[row] for row in CORE_ROWS],
-            "baseline_core_options": [
-                reference_by_destination[row]["selected_option"] for row in CORE_ROWS
-            ],
-            "zero_core_options": [zero_reference[row] for row in CORE_ROWS],
-        },
-        "calibration": calibration,
-        "paired_global_minimum": global_minimum,
-        "core_row_invariance": invariance,
-        "universal_rewrite_counterexample": rewrite,
-        "one_option_atlas_path": str(ATLAS_PATH.relative_to(ROOT)),
-        "one_option_atlas_digest": atlas_sha,
-        "one_option_summary": {
-            key: value for key, value in atlas.items() if key != "records"
-        },
-        "verdict": "TARGET26_SEMANTIC_CORE_STABLE_ON_FIXED_FACE",
-        "decision": "TEST_STABLE_BODY_CORE_ACROSS_GEOMETRY_REMAP",
-        "truth_boundary": (
-            "The result is exact only on E069's fixed occupied geometry and target-26 "
-            "terminal-signature abstraction. It proves a globally optimal, fixed-face "
-            "two-row semantic rewrite on two stable bodies; it does not realize the "
-            "synthetic filling option physically or prove binding, routing, throughput, "
-            "a whole layout, certification, U/L, or cross-geometry stability."
-        ),
-    }
-    dump_exclusive(ATLAS_PATH, atlas_payload)
-    dump_exclusive(RESULT_PATH, result)
-    return result
 
 
 def main() -> int:
-    try:
-        result = run()
-    except Exception as exc:
-        failure = {
-            "schema": "zmd_e078_target26_transport_core_stability_failure_v1",
-            "created_at_utc": utc_now(),
-            "error": type(exc).__name__,
-            "detail": str(exc),
-            "traceback": traceback.format_exc(),
-            "runner_sha256": sha256_file(Path(__file__)),
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--run-dir", type=Path, default=DEFAULT_RUN_DIR)
+    args = parser.parse_args()
+    run_dir = args.run_dir.resolve()
+    run_dir.mkdir(parents=True, exist_ok=True)
+
+    input_identity: dict[str, dict[str, Any]] = {}
+    for name, path in PINNED_INPUTS.items():
+        if not path.is_file():
+            raise FileNotFoundError(path)
+        actual = sha256_file(path)
+        expected = EXPECTED_INPUT_SHA256[name]
+        if actual != expected:
+            raise RuntimeError(
+                f"E078 input identity drift for {name}: expected={expected} actual={actual}"
+            )
+        input_identity[name] = {
+            "path": str(path.relative_to(ROOT)),
+            "sha256": actual,
+            "bytes": path.stat().st_size,
         }
-        if not RESULT_PATH.exists() and not FAILURE_PATH.exists():
-            dump_exclusive(FAILURE_PATH, failure)
-        print(json.dumps(failure, ensure_ascii=False, sort_keys=True))
-        return 1
-    print(
-        json.dumps(
-            {
-                "verdict": result["verdict"],
-                "decision": result["decision"],
-                "paired_global_minimum": result["paired_global_minimum"],
-                "core_row_invariance": result["core_row_invariance"],
-                "universal_rewrite_counterexample": result[
-                    "universal_rewrite_counterexample"
-                ],
-                "one_option_summary": result["one_option_summary"],
-            },
-            ensure_ascii=False,
-            sort_keys=True,
-        )
+
+    probe_results: dict[str, dict[str, Any]] = {}
+    for name, path in PROBES:
+        probe_results[name] = run_probe(name=name, path=path, run_dir=run_dir)
+
+    classification = classify(probe_results)
+    target26 = load_json(PINNED_INPUTS["e074_target26"])
+    stable_body_witnesses = extract_stable_body_witnesses(target26)
+
+    atlas = {
+        "schema": "zmd_e078_transport_core_stability_atlas_v1",
+        "created_at_utc": utc_now(),
+        "scope": "frozen_E069_target26_terminal_signature_parent_face",
+        "input_identity": input_identity,
+        "probe_results": probe_results,
+        "classification": classification,
+        "stable_body_witnesses": stable_body_witnesses,
+        "local_handle_notice": (
+            "Destination rows 8 and 9 are frozen-context handles only. Cross-context "
+            "consumers must remap the stable body witnesses and verify uniqueness."
+        ),
+    }
+    atlas_path = run_dir / "STABILITY_ATLAS.json"
+    atomic_json(atlas_path, atlas)
+    atlas_sha256 = sha256_file(atlas_path)
+
+    stable = classification["reference_rewrite_stable_on_full_parent_face"]
+    nonunique = classification["minimum_core_is_nonunique"]
+    verdict = (
+        "TARGET26_REFERENCE_TWO_ROW_REWRITE_STABLE_ON_FULL_FROZEN_PARENT_FACE_BUT_MINIMUM_CORES_NONUNIQUE"
+        if stable and nonunique
+        else "TARGET26_REFERENCE_TWO_ROW_REWRITE_STABLE_ON_FULL_FROZEN_PARENT_FACE"
+        if stable
+        else "TARGET26_TRANSPORT_REWRITE_STABILITY_REFUTED_OR_NONTERMINAL"
     )
+    decision = (
+        "KEEP_REFERENCE_REWRITE_AS_CONSTRUCTIVE_SPEC_DO_NOT_PROMOTE_UNIQUE_CORE_TEST_CROSS_GEOMETRY_AND_PHYSICAL_REALIZATION"
+        if stable and nonunique
+        else "FOLD_TARGET26_INTO_CUT_DEFICIENCY_AND_TEST_PHYSICAL_REALIZATION"
+        if stable
+        else "INSPECT_COUNTEREXAMPLE_AND_NARROW_TRANSPORT_CORE_CLAIM"
+    )
+    result = {
+        "schema": "zmd_e078_transport_core_stability_result_v1",
+        "created_at_utc": utc_now(),
+        "authority": "research_only_noncertified",
+        "ledger_effect": "none",
+        "verdict": verdict,
+        "decision": decision,
+        "scope": {
+            "geometry": "E069 frozen occupied geometry",
+            "target": 26,
+            "model": "terminal-signature abstraction with one synthetic dual filling option",
+            "nonclaims": [
+                "no physical pose realization",
+                "no full binding",
+                "no routing or throughput",
+                "no cross-geometry stability theorem",
+                "no certified master cut",
+            ],
+        },
+        "classification": classification,
+        "reference_rewrite": {
+            "local_destination_handles": [8, 9],
+            "stable_body_witnesses": stable_body_witnesses,
+            "minimum_changed_row_count": 2,
+            "minimum_core_unique": not nonunique,
+            "interpretation": (
+                "The rows 8/9 rewrite is a stable full-face constructive specification, "
+                "but other minimum two-row supports and synthetic destinations also exist."
+            ),
+        },
+        "input_identity": input_identity,
+        "runner": {
+            "path": str(Path(__file__).resolve().relative_to(ROOT)),
+            "sha256": sha256_file(Path(__file__).resolve()),
+        },
+        "probe_sources": {
+            name: {
+                "path": str(path.relative_to(ROOT)),
+                "sha256": sha256_file(path),
+            }
+            for name, path in PROBES
+        },
+        "stability_atlas_path": str(atlas_path.relative_to(ROOT)),
+        "stability_atlas_sha256": atlas_sha256,
+        "truth_boundary": (
+            "This result is confined to the complete target-26 parent face under the "
+            "frozen E069 geometry and terminal-signature abstraction. It establishes one "
+            "stable reference two-row rewrite, not a unique minimum transport core. It "
+            "proves neither physical realizability nor stability after geometry, component, "
+            "body, mode, binding, or routing context changes. Stable witnesses, not local "
+            "row or component numbers, are the transportable objects."
+        ),
+    }
+    result["result_digest"] = stable_digest(result)
+    result_path = run_dir / "RESULT.json"
+    atomic_json(result_path, result)
+    receipt = {
+        "schema": "zmd_e078_transport_core_stability_receipt_v1",
+        "result_path": str(result_path.relative_to(ROOT)),
+        "result_sha256": sha256_file(result_path),
+        "stability_atlas_sha256": atlas_sha256,
+        "verdict": verdict,
+        "decision": decision,
+    }
+    atomic_json(run_dir / "RESULT_RECEIPT.json", receipt)
+    print(json.dumps(receipt, ensure_ascii=False, sort_keys=True))
     return 0
 
 

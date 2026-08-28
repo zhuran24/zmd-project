@@ -1,0 +1,113 @@
+E078 RESULT: REFERENCE TWO-ROW REWRITE IS FULL-FACE STABLE, BUT MINIMUM CORES ARE NONUNIQUE
+================================================================================================
+
+Status
+------
+Completed as research-only semantic transport evidence. No physical pose, full
+binding, routing, throughput, whole-layout witness, certification, U/L, owner,
+production, pruning, or publication effect.
+
+Frozen machine evidence
+-----------------------
+Main result:
+
+  research_lab/local/zero_condition/
+  E078_target26_transport_core_stability/run-003/RESULT.json
+
+SHA-256:
+
+  b1309e4684513743a5613bbffd51f4d3d8f4147df9d5f353cc61f6e8f6612886
+
+Stability atlas:
+
+  research_lab/local/zero_condition/
+  E078_target26_transport_core_stability/run-003/STABILITY_ATLAS.json
+
+SHA-256:
+
+  ed665ee4add7f848e2ce825d21432ae4622feb16d185f6decb5619a32eeb0028
+
+Receipt SHA-256:
+
+  d863cddef2b05ea2c5e593db915f63cd34df86c9d52e57ec3c067a13954195e4
+
+Verdict
+-------
+
+TARGET26_REFERENCE_TWO_ROW_REWRITE_STABLE_ON_FULL_FROZEN_PARENT_FACE_BUT_MINIMUM_CORES_NONUNIQUE
+
+Decision
+--------
+
+KEEP_REFERENCE_REWRITE_AS_CONSTRUCTIVE_SPEC_DO_NOT_PROMOTE_UNIQUE_CORE_TEST_CROSS_GEOMETRY_AND_PHYSICAL_REALIZATION
+
+What is stable
+--------------
+E074's deterministic target-26 rewrite changes two stable bodies:
+
+  grinder_dense_source_001
+  grinder_fine_buckwheat_002
+
+On the frozen E069 geometry, their local row handles are 8 and 9. The reference
+rewrite changes the first body to the native fine-output signature incident to
+target component 26 and gives the second body the synthetic filling signature
+whose fine input is incident to 26 and whose qiaoyu output is incident to 29.
+
+The complete one-option layer contains:
+
+  raw substitutions                         168
+  valid target-26 parent-face neighbors      25
+  valid destination supports                 25
+  reference two-row witness OPTIMAL           25
+  minimum changed-row count                    2 in every case
+  anomalies                                    0
+
+A separate whole-face model asks whether any target-26 parent assignment changes
+either reference native row. It returns INFEASIBLE. A second whole-face model
+applies the fixed reference rewrite and asks whether any fine or qiaoyu defect
+remains. It also returns INFEASIBLE.
+
+Therefore the reference two-row rewrite is a valid full-parent-face constructive
+specification in this frozen abstraction. It is not an accident of one arbitrary
+baseline endpoint.
+
+What is not unique
+------------------
+For every one of the 25 valid neighboring parents, an equal-size optimum exists
+that does not use both reference rows, and an equal-size optimum exists whose
+synthetic option is not on local row 9:
+
+  alternate minimum support status          OPTIMAL x25
+  alternate synthetic destination status    OPTIMAL x25
+
+Thus the minimum changed-row value 2 is stable, and the reference rewrite is
+stable, but the phrase "the unique minimum transport core" is false. The old
+run-002 failure is useful negative evidence here: its rejected expectation that
+these alternate models should be INFEASIBLE exposed the nonuniqueness.
+
+Stable identity boundary
+------------------------
+Rows 8/9 and component integers 26/29 are local handles for the frozen E069
+context. The transportable evidence is the two stable body identities plus their
+body digests and option provenance in STABILITY_ATLAS.json. Any neighboring
+geometry must uniquely remap those witnesses and recompute component incidence;
+old row or component numbers cannot be reused.
+
+Effect on the next problem
+--------------------------
+Fold target 26 into the cut-deficiency / semantic-rewrite frame, but carry it as
+one stable constructive specification among multiple minimum cores. Next test:
+
+1. whether the reference bodies and two-row scale survive stable-identity
+   remapping into genuinely neighboring occupied geometries;
+2. whether any legal native pose/mode physically realizes the missing dual
+   filling signature;
+3. whether a realized candidate passes full component-aware binding and then
+   exact routing.
+
+Truth boundary
+--------------
+This result is confined to E069's frozen occupied geometry and terminal-signature
+abstraction with one hypothetical dual filling option. It proves no physical
+realization, full binding, routing, throughput, cross-geometry theorem, unique
+minimum core, or certified cut.
