@@ -70,4 +70,9 @@ parent and exact operation-count abstraction.
 
 Result
 ------
-Not run yet.
+Attempted in run-001 and failed at entry. verify_identity raised frozen identity
+drift on the E069 parent: the runner pins the superseded hash while the artifact
+had already been replaced by the source-stable re-run. Nothing was computed and
+the only persisted artifact is FAILURE.json. The question above is also posed in
+the superseded component labelling, so a hash rebind alone would not restore it;
+see RESULT.txt.

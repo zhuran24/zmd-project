@@ -75,4 +75,8 @@ full binding, not a full binding, routing, throughput, or whole-layout witness.
 
 Result
 ------
-Not run yet.
+Attempted in run-001 and failed at entry with the same frozen identity drift on
+the E069 parent that stopped E071 and E072. Nothing was computed and the only
+persisted artifact is FAILURE.json. The bridge this experiment consumes was never
+produced, so the E071 -> E072 -> E073 chain has no machine evidence at any link;
+see RESULT.txt.

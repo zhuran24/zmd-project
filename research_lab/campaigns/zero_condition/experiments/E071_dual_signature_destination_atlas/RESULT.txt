@@ -1,0 +1,75 @@
+E071 RESULT: NO MACHINE RESULT - ENTRY FAILURE ON FROZEN IDENTITY
+================================================================================
+
+Status
+------
+Attempted and failed before any scientific evaluation. No destination atlas, no
+verdict, no decision. Research-only; no ledger, certification, U/L, owner, or
+publication effect.
+
+Frozen evidence
+---------------
+The only persisted artifact is the failure record:
+
+  research_lab/local/zero_condition/
+    E071_dual_signature_destination_atlas/run-001/FAILURE.json
+
+SHA-256:
+  e1819a5c945f172a2c606098495d795031d68043983e3969cfde77b2ac386b05
+
+It carries schema
+zmd_zero_condition_e071_dual_signature_destination_atlas_failure_v1,
+status EXECUTION_FAILURE, ledger_effect none, created 2026-08-28T01:48:45Z.
+
+Verdict:
+  none reached
+
+Decision:
+  none reached
+
+What happened
+-------------
+The run aborted inside verify_identity at run_e071.py:245, raising
+
+  RuntimeError: frozen identity drift:
+  .../E069_six4_near_miss_complete_face/run-001/RESULT.json:
+  cc16d6f3... != 38cd4ec5...
+
+run_e071.py:73 pins the E069 parent at
+38cd4ec548bd18ad70b3549e04d225a4e4a226489bd8ed111c9f72554640769f, which is the
+superseded E069 artifact. By the time E071 ran, that file had been replaced by
+the source-stable re-run, whose content hashes to
+cc16d6f308856201cfe06d85617290481ecde85815e5c83f1d9a4acbeb4efcaa. The guard did
+exactly what it exists to do and refused to proceed on drifted evidence.
+
+E070 was rebound to the current E069 artifact and ran; E071, E072 and E073 were
+not rebound and all three died at the same check.
+
+Premise stated in retired labels
+--------------------------------
+Beyond the mechanical failure, E071's question is posed in the superseded
+component labelling. Its EXPERIMENT.txt targets the "target-36 dual filling
+signature" with fine input in component 36. Component 36 does not appear in the
+current E069 face, whose source-only components are
+{1,4,8,12,14,22,26,32,37,38,40,41}. Under the current enumeration the six
+synthetically feasible targets are {1,4,8,12,22,26}, as E070 run-004 reports and
+E074 reproduces. The named destination 24 and pose 8064 are likewise unresolved
+against current evidence.
+
+Rebinding this experiment is therefore not a hash edit. Its target must be
+re-identified by physical witness before the question means anything.
+
+Unverifiable
+------------
+Everything E071 set out to measure is unverifiable from persisted artifacts:
+which of the 38 destinations can carry the dual signature, and why the one real
+exact dual mode does not close the parent model. Nothing was computed. No
+partial output exists; the failure record contains only the traceback.
+
+Truth boundary
+--------------
+This record documents an execution failure and its cause. It is not a negative
+result about destination compatibility and must not be cited as one.
+
+Runner SHA-256:
+  195138b7b612e43524c0cdd0a18fe8397457b2f11f16ec0a1ddf59276fb84d88

@@ -1,0 +1,68 @@
+EXPERIMENT E076: THIRD-BODY FOLLOW-UP PROBES ON THE E075 FRONTIER
+================================================================
+
+Record status
+-------------
+This directory is a retrospective record, written after the fact. E076 was run as
+six disposable probe scripts under research_lab/local/zero_condition/, not as a
+tracked runner in this tree, and no question, decision rule, or stop boundary was
+declared in advance. Unlike every other numbered experiment in this campaign,
+E076 persisted nothing at all: none of the six scripts contains a file write of
+any kind. This record therefore documents what was asked, not what was found.
+
+Question
+--------
+E075 closed the target-26 two-body native context, with ten of twelve pairs dying
+because moving owners A and B emptied some other destination row's native option
+domain. E076 asks the obvious follow-up: which body causes that collapse, and can
+a third body be moved to repair it?
+
+Probe scripts
+-------------
+All six live in research_lab/local/zero_condition/ and are untracked. Pinned by
+content so this record identifies exact versions:
+
+  E076_probe.py
+    3648b7421d956ffe685c705824ef87ae2fe956de9333b5fc00888ccfe531f970
+  E076_eval_probe.py
+    a9d5bdf0a75f9e666b5a028e36ca73bfae5f96c7df651a048884dcea5cea01b4
+  E076_blocker_probe.py
+    867b60d91e5e913142c111af9f6cc67482d357a4542a05254ba378e8bf14ac61
+  E076_pair_domain_probe.py
+    0bef349baa49d333ab84d76260ad40b3294775b8def19d2b3ec4dff03ed41bcf
+  E076_min_pair_eval.py
+    af43bcd7dec8feb65582b3a9579cd405f63bcccd00f095c7814d537c0c76b7e1
+  E076_three_body_probe.py
+    e36ed301576abdeaaf9cbcd77a6d8de5ed0a76c532cb57bc5c6dcaea8ce2ff54
+
+What each script sets out to do, transcribed from its own docstring and, for the
+undocumented first one, from its code:
+
+  E076_probe.py
+    Reconstructs the E069 parent, takes E075 pair 4, and builds its candidate
+    two-body solution and base occupancy. No docstring; the entry point for the
+    others.
+  E076_eval_probe.py
+    Causal third-owner alternatives through E075 run-002.
+  E076_blocker_probe.py
+    Explain all filling_capsule_001 empty domains in E075 pair 4.
+  E076_pair_domain_probe.py
+    Count joint filling/blocker geometry domains in E075 pair 4.
+  E076_min_pair_eval.py
+    Evaluate the six filling/planter009 joint geometries.
+  E076_three_body_probe.py
+    Exhaust E075 core pairs plus filling_capsule_001 moves.
+
+The named objects, E075 pair 4, filling_capsule_001 and planter009, are the ones
+the scripts reference; whether any of them is in fact the blocking body is not
+recorded anywhere.
+
+Truth boundary
+--------------
+E076 sits on E075's fixed-outside geometry and native terminal-signature
+relaxation and inherits every one of its limits. Nothing here reaches full
+binding, routing, throughput, a whole-layout witness, or certification.
+
+Result
+------
+No persisted artifacts. Everything E076 computed is unverifiable; see RESULT.txt.

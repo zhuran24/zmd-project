@@ -1,0 +1,48 @@
+E076 RESULT: NO PERSISTED ARTIFACTS - ENTIRELY UNVERIFIABLE
+================================================================================
+
+Status
+------
+Ran, produced no durable evidence. Research-only; no ledger, certification, U/L,
+owner, or publication effect. This record exists so that E076 is not mistaken for
+an experiment that was never attempted, and so that nothing is cited from it.
+
+Frozen evidence
+---------------
+None. There is no RESULT.json, no FAILURE.json, no atlas, and no run directory.
+research_lab/local/zero_condition/ contains the six probe scripts and no E076
+output of any kind.
+
+This was verified rather than assumed: none of the six scripts contains
+write_text, a .write( call, or an open(..., 'w'). They print to stdout only, and
+that stdout was not captured. research_lab/local/ is git-ignored, so nothing
+would have been recoverable from version control either.
+
+Verdict:
+  none recorded
+
+Decision:
+  none recorded
+
+Unverifiable
+------------
+Every question E076 posed is unverifiable from persisted artifacts. Specifically,
+none of the following may be cited from E076 in any form:
+
+  * which body causes the native option-domain collapse on E075's pairs, and
+    whether filling_capsule_001 is that body;
+  * how many joint filling/blocker geometry domains exist in E075 pair 4;
+  * the six filling/planter009 joint geometries and any evaluation of them;
+  * whether any causal third owner repairs an E075 pair;
+  * the outcome of exhausting E075 core pairs together with filling_capsule_001
+    moves.
+
+If any of these is needed, it must be recomputed with persisted output. Numbers
+recalled from the session that ran these probes are not evidence and must not be
+written into any record.
+
+Truth boundary
+--------------
+This record documents the absence of evidence, not a negative result. E076
+establishes nothing about third bodies, blocking bodies, or the repairability of
+the E075 frontier.

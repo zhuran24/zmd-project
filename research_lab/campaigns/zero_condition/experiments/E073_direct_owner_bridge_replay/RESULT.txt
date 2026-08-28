@@ -1,0 +1,68 @@
+E073 RESULT: NO MACHINE RESULT - ENTRY FAILURE ON FROZEN IDENTITY
+================================================================================
+
+Status
+------
+Attempted and failed before any scientific evaluation. No bridge was selected, no
+pose alternative was replayed, no verdict, no decision. Research-only; no ledger,
+certification, U/L, owner, or publication effect.
+
+Frozen evidence
+---------------
+The only persisted artifact is the failure record:
+
+  research_lab/local/zero_condition/
+    E073_direct_owner_bridge_replay/run-001/FAILURE.json
+
+SHA-256:
+  400e10a300fb7fdfb3f53ab0aaa67ac5786a267efd9ffff8d337195c93b89448
+
+It carries schema
+zmd_zero_condition_e073_direct_owner_bridge_replay_failure_v1,
+status EXECUTION_FAILURE, ledger_effect none, created 2026-08-28T02:07:41Z.
+
+Verdict:
+  none reached
+
+Decision:
+  none reached
+
+What happened
+-------------
+The run aborted inside verify_identity at run_e073.py:247 with the same
+frozen-identity drift that stopped E071 and E072:
+
+  RuntimeError: frozen identity drift:
+  .../E069_six4_near_miss_complete_face/run-001/RESULT.json:
+  cc16d6f3... != 38cd4ec5...
+
+run_e073.py:81 pins the superseded E069 hash
+38cd4ec548bd18ad70b3549e04d225a4e4a226489bd8ed111c9f72554640769f.
+
+Premise depends on two experiments that never ran
+-------------------------------------------------
+E073 consumes "E072's best one-owner, destination-preserving component bridge",
+selecting the first E072 proposal with owner_count = 1 and
+moves_destination_body false. E072 produced no proposals, and E071 produced no
+destinations for E072 to work from. The chain E071 -> E072 -> E073 has no machine
+evidence at any link.
+
+The premise is also stated in the superseded component labelling, so even a hash
+rebind would not make the question well posed. The intended target must first be
+re-identified by physical witness against the current E069 face.
+
+Unverifiable
+------------
+Everything E073 set out to measure is unverifiable from persisted artifacts:
+whether moving the bridge owner merges the intended components, preserves power,
+keeps the original terminal cells usable, or leaves the 38-body operation
+assignment feasible. Nothing was computed, and the failure record contains only
+the traceback.
+
+Truth boundary
+--------------
+This record documents an execution failure and its cause. It is not a negative
+result about owner bridges and must not be cited as one.
+
+Runner SHA-256:
+  24814f89f6229ff73e47acdb0895de0f82042194c53fc53d877785a0940fccca

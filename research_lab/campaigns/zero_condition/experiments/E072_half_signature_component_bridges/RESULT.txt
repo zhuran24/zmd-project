@@ -1,0 +1,70 @@
+E072 RESULT: NO MACHINE RESULT - ENTRY FAILURE ON FROZEN IDENTITY
+================================================================================
+
+Status
+------
+Attempted and failed before any scientific evaluation. No component-bridge graph,
+no shortest owner chain, no verdict, no decision. Research-only; no ledger,
+certification, U/L, owner, or publication effect.
+
+Frozen evidence
+---------------
+The only persisted artifact is the failure record:
+
+  research_lab/local/zero_condition/
+    E072_half_signature_component_bridges/run-001/FAILURE.json
+
+SHA-256:
+  1ed07b478f50ed226a524994498117094ae25786746e92a3091ccfad985f6613
+
+It carries schema
+zmd_zero_condition_e072_half_signature_component_bridges_failure_v1,
+status EXECUTION_FAILURE, ledger_effect none, created 2026-08-28T01:56:30Z.
+
+Verdict:
+  none reached
+
+Decision:
+  none reached
+
+What happened
+-------------
+The run aborted inside verify_identity at run_e072.py:242 with the same
+frozen-identity drift that stopped E071:
+
+  RuntimeError: frozen identity drift:
+  .../E069_six4_near_miss_complete_face/run-001/RESULT.json:
+  cc16d6f3... != 38cd4ec5...
+
+run_e072.py:71 pins the superseded E069 hash
+38cd4ec548bd18ad70b3549e04d225a4e4a226489bd8ed111c9f72554640769f against an
+artifact that had already been replaced by the source-stable re-run.
+
+Premise depends on an experiment that never ran
+-----------------------------------------------
+E072's question is defined on top of E071's output: it asks for the shortest
+occupied-owner relation between a half-signature's current terminal component
+and its missing target, for every E071 synthetic-feasible destination. E071
+produced no such destinations. The question therefore has no admitted input, on
+top of being posed in the superseded component labelling that names component 36
+and component 29 as the half-signature endpoints.
+
+Unverifiable
+------------
+Everything E072 set out to measure is unverifiable from persisted artifacts: the
+bipartite free-component/occupied-owner graph, any shortest owner chain, and any
+claim about one-owner bridges. Nothing was computed, and the failure record
+contains only the traceback.
+
+In particular, no E072 artifact supports any statement that a one-owner
+destination-preserving bridge exists. E073's EXPERIMENT.txt asserts that E072
+"finds at least one shortest path with one occupied owner"; that assertion has no
+machine evidence behind it and must not be carried forward.
+
+Truth boundary
+--------------
+This record documents an execution failure and its cause. It is not a negative
+result about component bridges and must not be cited as one.
+
+Runner SHA-256:
+  e3d8531ebcd2c74680991bce2d295ecb16a8fffa949740f9cd448ae5b0f17e52

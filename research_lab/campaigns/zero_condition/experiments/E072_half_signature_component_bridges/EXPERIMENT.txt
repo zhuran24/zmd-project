@@ -69,4 +69,8 @@ routing. Every proposed relation must be tested in the actual consumer.
 
 Result
 ------
-Not run yet.
+Attempted in run-001 and failed at entry with the same frozen identity drift on
+the E069 parent that stopped E071. Nothing was computed and the only persisted
+artifact is FAILURE.json. E071 produced no feasible destinations, so this
+question also has no admitted input; no artifact supports the existence of any
+one-owner bridge. See RESULT.txt.

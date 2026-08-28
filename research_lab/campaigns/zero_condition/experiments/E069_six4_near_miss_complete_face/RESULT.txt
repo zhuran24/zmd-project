@@ -7,6 +7,37 @@ Completed as research-only complete-face evidence for E062's physically distinct
 manufacturing-6x4 near miss. No second-object change, full binding, routing,
 certification, U/L, owner, or publication effect.
 
+Record maintenance
+------------------
+This record was retrospectively updated on 2026-08-28 to match the current
+persisted artifacts, which are the product of the source-stable re-run. The
+previously recorded hashes were:
+
+  RESULT.json          38cd4ec548bd18ad70b3549e04d225a4e4a226489bd8ed111c9f72554640769f
+  PARENT_SOLUTION.json 6eb5b4708fb616ab5d03c126eb8603626fd50180d78fa10be64a2688538b4137
+  FACE_CONTEXT.json    9265a64a4caaddbf67ff0925e5b984bb789ab39ff7a455acfb1ae7ee3fcdf584
+  runner               e71e8bd00d5238fc86dfbfb5eab36e9acf9561e87e626b57ba5ab2e0982a2367
+
+Those artifacts were overwritten in place and are not recoverable, so nothing in
+the previous record can be re-verified. Two facts about that provenance are
+recorded rather than resolved:
+
+  * The previously recorded runner hash matches no version of run_e069.py that
+    has ever existed in this repository. The file was added in commit bbe8026
+    with content 2061d59f... and has never changed since. The superseded run was
+    therefore produced by an uncommitted runner version that was not preserved.
+  * The previous record's causal inventory read 190 boundary owners and 65
+    multi-component separators. The current artifact reads 225 and 92. The 103
+    object count is unchanged, and the current count of non-6x4 separators is
+    exactly 65, so the separator figure is consistent with a narrower counting
+    convention in the superseded run; the 190 figure reconciles with no current
+    number and is left unexplained.
+
+The verdict, the decision, the parent action, the face shape, the backbone, the
+qiaoyu sink, the absence of a stable unmatched component, and the 103-object
+inventory size are all identical across the two runs. What changed is the
+component labelling, the two owner counts above, and the hashes.
+
 Frozen evidence
 ---------------
 Main result:
@@ -14,21 +45,21 @@ Main result:
     E069_six4_near_miss_complete_face/run-001/RESULT.json
 
 SHA-256:
-  38cd4ec548bd18ad70b3549e04d225a4e4a226489bd8ed111c9f72554640769f
+  cc16d6f308856201cfe06d85617290481ecde85815e5c83f1d9a4acbeb4efcaa
 
 Materialized parent solution:
   research_lab/local/zero_condition/
     E069_six4_near_miss_complete_face/run-001/PARENT_SOLUTION.json
 
 SHA-256:
-  6eb5b4708fb616ab5d03c126eb8603626fd50180d78fa10be64a2688538b4137
+  b8e4d61d2a5e2befcedcb815b558d07ae84b3620b0bcab82644610154301b49a
 
 Typed face context:
   research_lab/local/zero_condition/
     E069_six4_near_miss_complete_face/run-001/FACE_CONTEXT.json
 
 SHA-256:
-  9265a64a4caaddbf67ff0925e5b984bb789ab39ff7a455acfb1ae7ee3fcdf584
+  c05a4e94ea370e8b674e44cd7206a9189ddd2102b824d36acd65975395c46c3e
 
 Verdict:
   SIX4_PARENT_COMPLETE_FACE_BROAD
@@ -38,11 +69,12 @@ Decision:
 
 Parent action
 -------------
-The frozen source-stable E062 action is reproduced exactly:
+The frozen source-stable E062 action is reproduced exactly, and is stated in
+stable physical terms that survive any re-enumeration:
 
   grinder_dense_source_002
   pose 7006 -> 6878
-  p_x52_y64_o0_m_BT -> p_x52_y60_o0_m_TB
+  replacement pose id p_x52_y60_o0_m_TB
 
 The qiaoyu-hard minimum fine mismatch is OPTIMAL at one.
 
@@ -51,26 +83,42 @@ Complete face
 The full objective-one presence face contains exactly twelve patterns. Every
 pattern has:
 
-  common fine source components  {6,7,15}
-  common fine sink components    {6,7,15}
-  qiaoyu sink component          29
+  common fine source components  backbone plus one extra
+  common fine sink components    the backbone
   sink-only components           none
   exactly one source-only component
 
-The source-only component ranges over:
+Free-component integers are enumeration-local indices, not identities. They
+renumber whenever the geometry is re-enumerated, and this record has already been
+bitten by that once. The stable parts of the face are therefore stated first:
 
-  {1,4,8,12,17,21,25,29,35,36,39,60}
+  the qiaoyu sink region is the one holding protocol_core_001 input slots 0-3,
+  at cells (58,60), (58,61), (58,62), (58,63);
+  the fine backbone is three components of sizes 520, 81 and one further region;
+  every pattern adds exactly one extra source-only region.
 
-All twelve alternatives occur once. Their intersection is empty, so component 40
-from E062's former selected representative is not a stable property of the
-complete face.
+Under the current enumeration those read as backbone {6,7,15}, qiaoyu sink
+component 29, and source-only component ranging over:
+
+  {1,4,8,12,14,22,26,32,37,38,40,41}
+
+with region sizes 520, 81, 14, 14, 6, 14, 20, 6, 6, 6, 6 and 6 respectively. All
+twelve alternatives occur once and their intersection is empty, so no unmatched
+component is stable across the complete face.
+
+Any consumer of this face must resolve these regions by physical witness, never
+by copying the integers. E071, E072 and E073 were written against the superseded
+labelling and did not run.
 
 Causal inventory
 ----------------
-The union of twelve unmatched components touches 190 boundary owners. Sixty-five
-owners touch more than one free component. Adding every current manufacturing-6x4
-body and the selected generic-input provider, while excluding the fixed parent
-body, yields 103 candidate objects.
+The union of the twelve unmatched components touches 225 boundary owners, of
+which 92 touch more than one free component. Adding every current
+manufacturing-6x4 body and the selected generic-input provider, while excluding
+the fixed parent body, yields 103 candidate objects. The 92 separators comprise
+27 manufacturing_6x4, 42 manufacturing_3x3, 18 manufacturing_5x5 and 5 power
+poles; the 6x4 bodies among them are added by the inventory rule regardless,
+which is why 103 is unchanged from the superseded record.
 
 This inventory is recorded for reuse, but it is not admitted as the next search
 space. The face is broader than the retired pole parent, so mechanically running
@@ -80,12 +128,12 @@ pattern at larger width.
 Constructive meaning
 --------------------
 The obstruction is highly regular rather than arbitrary. Fine sinks are already
-fixed at {6,7,15}; every optimum introduces one additional fine source component.
-A natural short discriminator is therefore a single filling-capsule terminal
-signature that simultaneously provides:
+fixed at the backbone; every optimum introduces one additional fine source
+component. A natural short discriminator is therefore a single filling-capsule
+terminal signature that simultaneously provides:
 
   fine input in the selected extra source component
-  qiaoyu output compatible with generic sink component 29
+  qiaoyu output compatible with the generic sink region
 
 The next experiment should test that signature family synthetically before any
 physical second-object scan.
@@ -93,7 +141,9 @@ physical second-object scan.
 Runtime provenance
 ------------------
 All direct and nested campaign-local modules report zero foreign module-level
-functions under the explicit source cache.
+functions under the explicit source cache. Recorded research head
+bbe802631af5978e8f3f028acc52c97e1742b61e on research/main; result created
+2026-08-28T01:22:09Z.
 
 Truth boundary
 --------------
@@ -103,4 +153,4 @@ face. It does not establish that the proposed filling signature is sufficient or
 physically realizable.
 
 Runner SHA-256:
-  e71e8bd00d5238fc86dfbfb5eab36e9acf9561e87e626b57ba5ab2e0982a2367
+  2061d59f2f1e0bf28ad27bca1730a90323f6efca38a266675115717e8969b598
