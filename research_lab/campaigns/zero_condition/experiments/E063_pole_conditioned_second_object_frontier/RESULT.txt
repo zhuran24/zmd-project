@@ -1,0 +1,82 @@
+E063 RESULT: COMPLETE-FACE SECOND-OBJECT FRONTIER SATURATES AT DISTANCE ONE
+================================================================================
+
+Status
+------
+Completed as research-only exhaustive evidence inside the pole-conditioned causal
+second-object language. No full binding, routing, whole-layout witness,
+certification, U/L, owner, or publication effect.
+
+Frozen evidence
+---------------
+Main result:
+  research_lab/local/zero_condition/
+    E063_pole_conditioned_second_object_frontier/run-008/RESULT.json
+
+SHA-256:
+  1dff594f92d2475ae7202735e3f65b442fda884eaa479496808c9cfb4b6b5d1b
+
+Candidate manifest:
+  research_lab/local/zero_condition/
+    E063_pole_conditioned_second_object_frontier/run-008/CANDIDATE_MANIFEST.json
+
+SHA-256:
+  76da60b106d30382381adefa7617f249ed4b6def5cb8118b9fd0d31a9c98db3c
+
+Verdict:
+  POLE_CONDITIONED_SECOND_OBJECT_SATURATES_AT_ONE
+
+Decision:
+  DERIVE_THIRD_RELATION_OR_SWITCH_NEAR_MISS_PARENT
+
+Parent face
+-----------
+The source-stable pole move 3725 -> 3794 has a complete qiaoyu-hard optimum face
+of six patterns. Every pattern has common fine source/sink components {6,15,54},
+qiaoyu sink component 15, and exactly one source-only component from:
+
+  {1,4,8,12,22,26}
+
+The causal proposer therefore uses the union of the complete face, not one
+arbitrary optimum representative.
+
+Exhausted language
+------------------
+E063 selects multi-component boundary owners of those six components, every
+current manufacturing-6x4 body, and the protocol-core generic-input provider. It
+quotients occupancy-equivalent alternatives and evaluates 858 distinct
+second-object states with candidate-specific components, generic sink slots, and
+6x4 target signatures.
+
+Terminal distribution:
+
+  OPTIMAL           789
+  INFEASIBLE          4
+  STRUCTURAL_EMPTY   65
+  UNKNOWN             0
+
+Directional objective distribution:
+
+  objective 1       780
+  objective 2         9
+  objective 0         0
+
+Thus no admitted second-object state completes the two-zero terminal-signature
+condition, and no nonterminal state remains.
+
+Meaning
+-------
+The pole parent admits a large family of alternative near misses, but a single
+additional causal object cannot remove the final fine-powder mismatch. The next
+useful object is not another arbitrary representative; it is the complete face of
+all 780 objective-one pair states, which must be compared for actual narrowing.
+
+Truth boundary
+--------------
+E063 fixes E055's first-zero state, fixes the pole move 3725 -> 3794, and changes
+one additional selected object's pose inside its complete-face-derived causal
+set. It is a terminal-signature relaxation and does not establish full binding or
+routing feasibility.
+
+Runner SHA-256:
+  e925b4470ecb002701b262c5d8bcfbe88177eb8da373502354174f178f39caf9

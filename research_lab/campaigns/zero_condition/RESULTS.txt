@@ -2418,6 +2418,92 @@ evidence:
   active E062 source-stable RESULT.json sha256
   8ddff564f9359da582bbb212d77a736c2651294c8d335d35c4104b73c0b7d361.
 
+R-ZC-076  Complete-face second-object search saturates at distance one
+------------------------------------------------------------------------
+status: exhaustive source-stable pole-conditioned second-object frontier
+scope: E055 first-zero state, pole pose 3725 -> 3794, complete six-pattern parent face
+
+statement:
+  E063 derives its causal object set from the union {1,4,8,12,22,26} of the
+  complete parent optimum face, then exhausts 858 quotient-distinct second-object
+  states. The terminal distribution is 789 OPTIMAL, 4 INFEASIBLE, and 65
+  STRUCTURAL_EMPTY, with no UNKNOWN. Directional objectives are 780 at one and 9
+  at two; none reaches zero.
+
+non-implications:
+  This closes only the selected causal second-object language in the corrected
+  terminal-signature relaxation. It does not close all simultaneous pairs, full
+  binding, routing, or another first-zero parent.
+
+effect on next problem:
+  Replace individual optimum representatives with a complete-face atlas over all
+  780 objective-one states. Search for actions that delete alternatives from the
+  face rather than merely reproducing distance one.
+
+evidence:
+  E063 RESULT.txt; local RESULT.json sha256
+  1dff594f92d2475ae7202735e3f65b442fda884eaa479496808c9cfb4b6b5d1b;
+  candidate manifest sha256
+  76da60b106d30382381adefa7617f249ed4b6def5cb8118b9fd0d31a9c98db3c.
+
+R-ZC-077  Twelve pair actions narrow the complete face from six components to five
+----------------------------------------------------------------------------------
+status: complete-face atlas for all 780 E063 objective-one states
+scope: E063 source-stable pair states and their complete qiaoyu-hard optimum faces
+
+statement:
+  E066 enumerates every complete face rather than retaining one selected presence
+  witness. Exactly twelve actions, from two dense-blue-iron grinder bodies and two
+  remote power-pole bodies, reduce the parent six-component face to five. They
+  form six face classes. No state reaches zero and no face has one stable
+  unmatched component.
+
+non-implications:
+  Face narrowing does not prove action composition, full binding feasibility, or
+  that two physical actions with the same face digest are one geometry state.
+
+effect on next problem:
+  Compose only these twelve proven face-narrowing actions. This bounds the next
+  search at 66 unordered pairs before physical-admission rejection and avoids a
+  new all-object Cartesian product.
+
+evidence:
+  E066 RESULT.txt; local RESULT.json sha256
+  e0051e92c4b40515c759cb52779dee7287b24bd8c1c4e2a32017ae69d55425d8;
+  PAIR_FACE_ATLAS.json sha256
+  5be751c9a02bfd117cb9fb98e63d6d95ec17cc75c895333a4a8549c02294383e.
+
+R-ZC-078  Bounded third relations narrow the complete face from five to four
+----------------------------------------------------------------------------
+status: all 66 unordered compositions of E066's twelve narrowing actions
+scope: fixed E063 pole parent plus two distinct E066-selected actions
+
+statement:
+  E067 classifies the 66 pairs as 50 ADMITTED, 13 SAME_SOURCE, and 3
+  CARDINALITY_INVALID. Every admitted state is OPTIMAL at directional objective
+  one; none reaches zero and none is nonterminal. Forty-six complete faces shrink
+  to four patterns/components and four remain at five. The four-component states
+  form six classes; every pattern is source-only and components 1 and 4 occur in
+  every class, but no individual face has a stable unmatched component.
+
+non-implications:
+  Class-level recurrence of components 1 and 4 is not a singleton obstruction and
+  does not authorize a component-specific cut. E067 remains a target-signature
+  relaxation and does not enter full binding or routing.
+
+effect on next problem:
+  Select one representative of the highest-frequency strict-narrowest class
+  {1,4,8,12} with qiaoyu sink 15. Compose it with the cached E066 objective-one
+  action set under one explicit final stop boundary. A zero enters the full
+  conditional binding consumer; no zero retires the pole-conditioned lineage and
+  switches to the distinct E062 6x4 near-miss parent.
+
+evidence:
+  E067 RESULT.txt; local RESULT.json sha256
+  91ee4a043ca4000db37bbbd03792ac8fcb16ff4d31201e63b600597b423c9254;
+  PAIR_RECORDS.json sha256
+  fa8b8850ea5ed63f17cac12d07e1e732a2fcb09c2cf03051aebfe20c4d2f2de6.
+
 Current synthesis
 -----------------
 The campaign has crossed the threshold from "collect more deaths" to "change the

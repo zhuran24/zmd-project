@@ -162,16 +162,13 @@ and the current layer count and cut families are not presumed correct.
 
 Live question
 -------------
-E064 successor: the four pole near misses retain their exact objective-one status,
-but their source-isolated representative is source-only component 4 rather than
-component 1. Under the smallest pole move 3725 -> 3794, which complete-face-
-derived second object can remove the final fine-powder mismatch while preserving
-qiaoyu compatibility, and does that signature candidate survive the full
-conditional-binding consumer?
-
-Under the representative E062 pole near miss, which smallest second-object move
-removes the sole source-only fine component 1 and reaches the corrected two-zero
-signature condition, without expanding into an unconstrained all-pairs portfolio?
+E067 has reduced the pole-conditioned complete directional face from six
+alternatives to four, but no bounded triple reaches objective zero and no face has
+a stable unmatched component. Under one explicit final stop boundary, can the
+highest-frequency class {1,4,8,12} with qiaoyu sink 15 compose with any remaining
+cached E066 objective-one action to create the second zero? A zero enters the full
+conditional binding consumer immediately; no zero retires this pole lineage and
+switches to E062's distinct manufacturing-6x4 near-miss parent.
 
 Current campaign posture
 ------------------------

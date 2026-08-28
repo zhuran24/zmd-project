@@ -1,0 +1,67 @@
+E066 RESULT: TWELVE PAIR STATES NARROW THE COMPLETE FACE, NONE TO A SINGLE COMPONENT
+================================================================================================
+
+Status
+------
+Completed as research-only complete-face evidence over all objective-one E063
+states. No third-relation sufficiency, full binding, routing, certification, U/L,
+owner, or publication effect.
+
+Frozen evidence
+---------------
+Main result:
+  research_lab/local/zero_condition/E066_pair_face_atlas/run-001/RESULT.json
+
+SHA-256:
+  e0051e92c4b40515c759cb52779dee7287b24bd8c1c4e2a32017ae69d55425d8
+
+Complete atlas:
+  research_lab/local/zero_condition/E066_pair_face_atlas/run-001/
+    PAIR_FACE_ATLAS.json
+
+SHA-256:
+  5be751c9a02bfd117cb9fb98e63d6d95ec17cc75c895333a4a8549c02294383e
+
+Verdict:
+  PAIR_FACES_NARROW_BUT_NOT_SINGLETON
+
+Decision:
+  BUILD_THIRD_RELATION_FROM_NARROWEST_FACE_CLASS
+
+Complete-face census
+--------------------
+E066 replays all 780 E063 objective-one states and enumerates each complete
+qiaoyu-hard optimum face. It does not rank states by one solver-selected presence
+witness.
+
+Exactly twelve actions reduce the parent face from six unmatched components to
+five. They come from four source objects:
+
+  grinder_dense_blue_iron_001
+  grinder_dense_blue_iron_013
+  power pole at p_x67_y44_o0_m_omni
+  power pole at p_x68_y46_o0_m_omni
+
+The twelve actions form six distinct five-component face classes. No complete face
+has one stable unmatched component, and no state reaches objective zero.
+
+Interpretation
+--------------
+A face-narrowing action removes alternatives from the obstruction rather than
+solving it. Different physical actions can produce the same face digest, so the
+outer loop may share a face-class response while retaining distinct geometry
+identities.
+
+The correct third-relation language is therefore the bounded composition of these
+twelve proven face-narrowing actions. It is not the full E063 action set and not a
+new all-object Cartesian product.
+
+Truth boundary
+--------------
+E066 evaluates the exact complete directional faces of E063's 780 objective-one
+states inside the corrected terminal-signature relaxation. Face narrowing is
+proposal evidence only; it does not imply that two actions compose or that any
+result survives the full conditional binding consumer.
+
+Runner SHA-256:
+  a1780e08b09968ee0f25d6ac865a22d9b467637cc9831bb88290242eefd19371

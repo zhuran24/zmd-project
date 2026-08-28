@@ -1,0 +1,82 @@
+E067 RESULT: COMPOSING NARROW PAIR FACES REDUCES THE COMPLETE FACE FROM FIVE TO FOUR
+================================================================================================
+
+Status
+------
+Completed as research-only bounded third-relation evidence. No two-zero state,
+full binding, routing, certification, U/L, owner, or publication effect.
+
+Frozen evidence
+---------------
+Main result:
+  research_lab/local/zero_condition/
+    E067_complementary_narrow_face_pairs/run-001/RESULT.json
+
+SHA-256:
+  91ee4a043ca4000db37bbbd03792ac8fcb16ff4d31201e63b600597b423c9254
+
+Complete pair records:
+  research_lab/local/zero_condition/
+    E067_complementary_narrow_face_pairs/run-001/PAIR_RECORDS.json
+
+SHA-256:
+  fa8b8850ea5ed63f17cac12d07e1e732a2fcb09c2cf03051aebfe20c4d2f2de6
+
+Verdict:
+  TRIPLE_FACE_NARROWS_BELOW_FIVE
+
+Decision:
+  CONTINUE_ONLY_STRICT_NARROWEST_TRIPLE_FACE
+
+Bounded composition
+-------------------
+E067 composes only E066's twelve complete-face-narrowing actions on the fixed E063
+pole parent. The 66 unordered pairs classify as:
+
+  ADMITTED             50
+  SAME_SOURCE          13
+  CARDINALITY_INVALID   3
+
+All fifty admitted states solve to directional objective one. There are no
+objective-zero or nonterminal states.
+
+Complete-face effect
+--------------------
+Of the fifty admitted compositions:
+
+  46 have four patterns and four unmatched components
+   4 remain at five patterns and five unmatched components
+
+No face has a stable single unmatched component. The forty-six four-component
+states fall into six face classes:
+
+  {1,4,8,12}   with qiaoyu sink 15
+  {1,4,12,22}  with qiaoyu sink 15
+  {1,4,12,26}  with qiaoyu sink 15
+  {1,4,8,21}   with qiaoyu sink 14
+  {1,4,8,25}   with qiaoyu sink 14
+  {1,4,21,25}  with qiaoyu sink 14
+
+Every complete pattern is source-only: the fine sink set is fixed within its face,
+and exactly one component from the class appears as the extra fine source.
+Components 1 and 4 occur in every four-component class, but neither is present in
+every pattern of any one face; they are class-level alternatives, not stable
+single-component certificates.
+
+Meaning
+-------
+The bounded third relation has real leverage but does not finish the bridge. It
+removes two alternatives from the original six-pattern face without producing a
+single deterministic missing component. One final bounded relation may be tested
+from the strict narrowest class; after that, continued external action composition
+would become search inertia rather than a new interface language.
+
+Truth boundary
+--------------
+E067 fixes the E055 first-zero state, the E063 pole action, and two distinct
+E066-selected actions. It validates placement, power, candidate-specific terminal
+signatures, and complete directional faces. It does not establish full binding,
+routing, throughput, or whole-layout feasibility.
+
+Runner SHA-256:
+  10116d0c2d38b877654f027c179039d59926abb980e6b4e88d31b37bbbac4ee3
