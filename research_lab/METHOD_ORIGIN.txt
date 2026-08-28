@@ -19,6 +19,28 @@ Source cutoff: 2026-08-28. Quotations below preserve the source wording.
 Explanatory text states the durable reading, not a claim that the explanation
 itself was spoken verbatim by the owner.
 
+Summary
+-------
+This is a compressed orientation. If it conflicts with the source quotations
+below, the quotations and their source-layer labels control.
+* Inner loop: thin relations separate, thick relations live together, and a
+  choice needs a problem-derived ending point. Rule splitting, co-residence,
+  order, layer count, cuts, and cut packages are outputs, not inherited lists.
+* Outer loop: derive multilevel rules from mechanisms, feed new rules back into
+  a recursive closure, then use that closure outside the residual solver. The
+  changing rule-and-space loop -- not failure compilation -- is the core.
+* Knowledge: forward composition, arithmetic, equality structure, construction
+  templates, and generalized failures all feed the loop; it must grow the
+  constructive side and complete witnesses as well as exclusions.
+* Gaps: the reasoning system carries validation; modeling is paid on demand;
+  reliability is not production completeness; truth does not grant consumption rights.
+* Anti-drift: test whether reasons precede routes, rules are generated and fed
+  forward, failure samples or exclusions have taken over, method work delays
+  the frontier, or later repairs are impersonating the original intuition.
+* Witness rule: zero-condition and conditioned layouts use the same epistemic
+  method. Heuristics may scout, but final structures need an unbroken derivation;
+  theorem chains transfer to the conditioned campaign, accidental layouts do not.
+
 1. Inner-loop methodology: the birth of a problem-derived architecture
 -----------------------------------------------------------------------
 Here "inner-loop methodology" means the July solving-side method for deciding
@@ -42,33 +64,82 @@ explicit:
 Source:
 /home/zhuran24/zmd-pj/.artifacts/inner_loop_archaeology_20260823/scratch/owner_origin_quotes.txt:4-5
 
-The next two blocks are contiguous carrying excerpts from longer owner
-messages; no internal wording has been changed. First, the owner rejected
-"move up or move down" as an adequate one-dimensional description of rule
-placement:
+At 2026-07-16T23:21:54.186Z, the owner rejected "move up or move down" as
+an adequate one-dimensional description. The complete message made splitting,
+clustering, co-residence, and order part of the same question:
 
-  就是说，我们目前的某条规则应该放哪里，不应该只是说下放上收，而是更新它的位置，说，它应该跟哪些一起，不跟哪些一起，又要在哪些前面，在哪些后面。你能理解我的意思吧
+  等下，咱们一直说上收上收，那下放呢？我们好像一直没说过，但是根据之前我说的那个方法论，下放也是应该做的吧，或者说它应该是跟上收一样重要的吧，那下放我们又应该怎么去做呢，就是怎么识别某个规则应该下放，又应该下放到哪里呢，不对，这个总结构应该是切分的思路，就是一个完整的规则切成几块，还是聚类的思路，就是一堆零散的规则逐个相互吸引，或者两个一起？但是两个一起口头上说的简单，实际上又要怎么做呢。就是说，我们目前的某条规则应该放哪里，不应该只是说下放上收，而是更新它的位置，说，它应该跟哪些一起，不跟哪些一起，又要在哪些前面，在哪些后面。你能理解我的意思吧
 
 Source:
 /home/zhuran24/zmd-pj/.artifacts/inner_loop_archaeology_20260823/scratch/owner_origin_quotes.txt:13-14
+Raw coordinate:
+/home/zhuran24/zmd-pj/.artifacts/outer_loop_archaeology_20260822/recheck_scratch/retirement_sessions/.claude/projects/-home-zhuran24-zmd-pj/5c4e70f0-8e60-497e-b217-46e01be6da76.jsonl:4040
 
-The owner then made layer count and cut position outputs rather than inherited
-constants:
+At 2026-07-16T23:34:08.088Z, the owner made rule order, layer count, and cut
+position outputs rather than inherited constants:
 
-  你会发现就像我这里举的例子一样，前面是4层后面是5层，那这个层数也是需要确定的东西之一不是吗，或者说，我觉得我们是不是没有好好想过这个层数或者说切分点
+  你还是有点没理解我的顺序的意思，我给你整个模型，174,268,3，59.假设规则就这九条，那比如说7,在最前面，跟14一起，跟其他不在一起，哦不对，那这样的话，不需要跟谁不在一起这条了，然后就是8,跟26一起，在174后面，3前面，然后后来改了一下，改成了，15,74,3，829,6.那7跟3在一起，在15后面在3前面，其实我说顺序反而真正想强调的是，你会发现就像我这里举的例子一样，前面是4层后面是5层，那这个层数也是需要确定的东西之一不是吗，或者说，我觉得我们是不是没有好好想过这个层数或者说切分点，就是说，【某个东西是否不应该与其他某些东西在一起，以及在这种情况下它或者它们与这些不应该在一起的东西的顺序应该是怎样的或者说他应该“在”这些“不在一起的东西”的哪里呢】，说的好像有点乱，希望你能理解我的意思
 
 Source:
 /home/zhuran24/zmd-pj/.artifacts/inner_loop_archaeology_20260823/scratch/owner_origin_quotes.txt:16-17
+Raw coordinate:
+/home/zhuran24/zmd-pj/.artifacts/outer_loop_archaeology_20260822/recheck_scratch/retirement_sessions/.claude/projects/-home-zhuran24-zmd-pj/5c4e70f0-8e60-497e-b217-46e01be6da76.jsonl:4077
+
+The following day, the owner opened the missing cut methodology itself. At
+2026-07-17T17:25:18.447Z:
+
+  我突然想到，cut 的数量和类型是怎么想的？当时的那九类 cut 是怎么想出来的？（Cut 到底是什么呢？）或者说为什么偏偏是九类？为什么偏偏又是那些？在想它们的时候有遵循某种原则吗？或者说当我们想要做某种 cut 的时候 cut那个的切入点是什么？站在全局的视角来看，这 9 种 cut 有覆盖全局吗？就是说，我们在cut上好像还没有一个有效的方法论，或者说，甚至还没有在方法论这个角度上讨论过
+
+Source:
+/home/zhuran24/zmd-pj/.artifacts/inner_loop_archaeology_20260823/scratch/owner_origin_quotes.txt:19-20
+Raw coordinate:
+/home/zhuran24/zmd-pj/.artifacts/outer_loop_archaeology_20260822/recheck_scratch/retirement_sessions/.claude/projects/-home-zhuran24-zmd-pj/5c4e70f0-8e60-497e-b217-46e01be6da76.jsonl:5111
+
+At 2026-07-17T17:35:47.854Z, the owner described the cut as the package
+carried by the bridge between the two separated layers, and asked how the
+layers' concrete relation determines that package:
+
+  简单来说，好吧，其实你说了这么多，我只大概理解到，cut就是被分割的两层之间的桥梁中的包裹，那这个包裹的形式要怎么选，或者说这个包裹要怎么打我还是有点不理解，就是，它如何根据这两层之间的具体情况和关系来判定或者说推出这个包过的打发不太能理解
+
+Source:
+/home/zhuran24/zmd-pj/.artifacts/inner_loop_archaeology_20260823/scratch/owner_origin_quotes.txt:22-23
+Raw coordinate:
+/home/zhuran24/zmd-pj/.artifacts/outer_loop_archaeology_20260822/recheck_scratch/retirement_sessions/.claude/projects/-home-zhuran24-zmd-pj/5c4e70f0-8e60-497e-b217-46e01be6da76.jsonl:5132
+
+At 2026-07-17T17:39:08.944Z, the owner connected the same cut question back
+to the down-placement criterion:
+
+  那这样回过头来，我突然发现这是不是反向说明了哪种情况下规则才应该下放呢
+
+Source:
+/home/zhuran24/zmd-pj/.artifacts/inner_loop_archaeology_20260823/scratch/owner_origin_quotes.txt:25-26
+Raw coordinate:
+/home/zhuran24/zmd-pj/.artifacts/outer_loop_archaeology_20260822/recheck_scratch/retirement_sessions/.claude/projects/-home-zhuran24-zmd-pj/5c4e70f0-8e60-497e-b217-46e01be6da76.jsonl:5145
 
 Durable reading: an architecture choice is not justified because several
 reasons can be listed after choosing it. The problem must expose the real
 information dependencies, shared variables, mutual pruning, proof obligations,
-and cost gradients; those relations must then force which pieces live together,
-which remain separated, how many layers exist, in what order they run, and what
-crosses each cut. "A choice has an ending point" means the derivation terminates
-at the choice so that the choice emerges from the problem. Reasoning, arithmetic,
-and cheap discriminating probes should do what they can before end-to-end
+and cost gradients; those relations must then force how rules are split, which
+pieces live together, which remain separated, how many layers exist, in what
+order they run, where cuts lie, and what knowledge each cut carries. A cut
+family is not first inherited as "nine types" and justified afterward; its
+package and coverage obligation must be derived from the two layers' concrete
+relation. "A choice has an ending point" means the derivation terminates at the
+choice so that the choice emerges from the problem. Reasoning, arithmetic, and
+cheap discriminating probes should do what they can before end-to-end
 measurement is asked to decide the survivors.
+
+Source-layer note: the owner messages directly name splitting, clustering,
+co-residence, order, layer count, cut position, cut quantity and type, coverage,
+package form, and down-placement. They do not directly name a "downstream
+validator" or terminal-validation owner. Claude Fable 5's immediate
+operationalization added "downstream verifier" as a fourth coordinate and later
+expanded cut packaging into responsibility scope, quantity law, upper-layer
+vocabulary, and dependence on lower-layer decisions. Those are later repairs,
+not owner quotations.
+
+Later-repair source:
+/home/zhuran24/zmd-pj/.artifacts/inner_loop_archaeology_20260823/METHODOLOGY_ORIGIN.md:187-203,231-255
 
 2. Reasoning outer loop: its three-step birth
 ---------------------------------------------
