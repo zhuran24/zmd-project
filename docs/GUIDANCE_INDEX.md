@@ -1,7 +1,7 @@
 # 当前文档职责索引
 
 > 本页由有效 `DOC_POLICY.json` 契约、前门注册表与 section registry 自动生成；禁止手工修改。
-> 文档系统版本：`2.6.0`；职责摘要：`sha256:e892c047be7e4732b5818f25e6c464f0a160634d9b80c6c6d0eaf903dd5453d4`。
+> 文档系统版本：`2.6.0`；职责摘要：`sha256:62dc36c6eaf53e00c906c3b69833814111a511f1f0191e3989651a81f6bde9bd`。
 
 本页回答“哪些文档仍承担当前职责、各自唯一负责什么”。它不授予新的 authority，也不列历史证据；历史 dossier 与快照分别从 CATALOG、BACKFILL_LEDGER 和 `docs/history/` 下钻。
 
@@ -84,7 +84,7 @@
 | `locked_authority` | 1 |
 | `generated_projection` | 25 |
 | `normative` | 33 |
-| `living` | 47 |
+| `living` | 48 |
 | `governance_control` | 1 |
 | `framework_core` | 26 |
 
@@ -168,6 +168,7 @@
 |---|---|---|---|---|
 | [`.artifacts/README.md`](<../.artifacts/README.md>) | `research-archive` | `current_guidance` | `direct` | Current boundary, portability and retention guidance for local evidence roots. |
 | [`BORROWED_COMPONENTS.md`](<../BORROWED_COMPONENTS.md>) | `repository-navigation`, `compatibility-adapters` | `current_guidance` | `direct` | External component borrowing ledger and compatibility boundary; it records provenance without granting certification authority. |
+| [`HISTORY_START.md`](<../HISTORY_START.md>) | `repository-navigation` | `current_guidance` | `direct` | Thin routing membrane for the history/material tree; it points active work to the owning tree and grants no current research or certification authority. |
 | [`NAV_MAP.md`](<../NAV_MAP.md>) | `repository-navigation`, `implementation-navigation` | `current_guidance` | `direct` | Stable map of active code, data, script and adapter entrypoints; it never carries current project state. |
 | [`README.md`](<../README.md>) | `repository-navigation` | `current_guidance` | `direct` | 稳定仓库前门，只链接当前状态、知识目录、权威边界和开发入口。 |
 | [`data/knowledge/README.md`](<../data/knowledge/README.md>) | `knowledge` | `current_guidance` | `governed` | Operating guide for the structured knowledge layer. |

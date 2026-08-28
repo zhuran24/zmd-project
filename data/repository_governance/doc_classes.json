@@ -37,6 +37,10 @@
         "rationale": "Read-only or local historical evidence roots; never a prune subject."
       },
       {
+        "pattern": ".claude/skills/**",
+        "rationale": "Claude skills are executable instruction packages, not repository documentation or legacy prune subjects."
+      },
+      {
         "pattern": "P1_2_TECHNICAL_CLOSE_PACKET/**",
         "rationale": "Sealed P1.2 close packet; not a legacy prune-scan subject."
       },
@@ -205,6 +209,14 @@
       },
       "document_class": "locked",
       "rationale": "Document-system architecture, maintenance protocol and ADRs; governed framework core, never a prune subject."
+    },
+    {
+      "id": "history_material_frontdoor",
+      "match": {
+        "path": "HISTORY_START.md"
+      },
+      "document_class": "living",
+      "rationale": "Thin history/material routing membrane; not a legacy prune subject."
     },
     {
       "id": "project_lock",

@@ -1,7 +1,7 @@
 # 文档职责收束验收报告
 
 > 本页由当前 `DOC_POLICY.json`、前门注册表、section registry 与 Markdown 链接图自动生成；禁止手工修改。
-> 文档系统版本：`2.6.0`；验收状态：`PASS`；审计摘要：`sha256:32f9a03066d063f40f2aa2461ae3080e3960981304f53db815f6a7275549e6a2`。
+> 文档系统版本：`2.6.0`；验收状态：`PASS`；审计摘要：`sha256:9ec35560894d780c8e6c0e04e703f0e529c5d723aa757a8059b2cbad96de60b0`。
 
 本页回答第三阶段是否已经消除局部孤岛、重复职责、手写易变状态和经退役入口下钻。它不授予项目 authority，也不把历史证据提升为 current。
 
@@ -9,7 +9,7 @@
 
 | 项目 | 结果 |
 |---|---:|
-| current Markdown | 134 |
+| current Markdown | 135 |
 | 显式 section | 14 |
 | 生成式兼容入口 | 14 |
 | 重复 current 职责组 | 0 |
@@ -23,7 +23,7 @@
 
 | Section | 入口 | 成员 | 可达 | 不可达 |
 |---|---|---:|---:|---:|
-| `repository-navigation` | `README.md` | 7 | 7 | 0 |
+| `repository-navigation` | `README.md` | 8 | 8 | 0 |
 | `knowledge` | `data/knowledge/README.md` | 9 | 9 | 0 |
 | `documentation-framework` | `docs/governance/document-system/ARCHITECTURE.md` | 30 | 30 | 0 |
 | `project-manual` | `docs/项目说明/README.md` | 20 | 20 | 0 |

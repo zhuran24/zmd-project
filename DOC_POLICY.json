@@ -118,6 +118,36 @@
       "rationale": "根 README 只能做稳定前门，不能重新复制 CURRENT 中的易变状态。"
     },
     {
+      "id": "history_material_frontdoor",
+      "match": {
+        "path": "HISTORY_START.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "context_level": "L0",
+        "purpose": "Thin routing membrane for the history/material tree; it points active work to the owning tree and grants no current research or certification authority.",
+        "volatile_facts": "forbidden",
+        "invariant_refs": [
+          "DOC-INV-007",
+          "DOC-INV-009",
+          "DOC-INV-013",
+          "DOC-INV-014"
+        ],
+        "required_reads": [
+          "docs/START_HERE.md"
+        ],
+        "review_policy": {
+          "at_phase_boundary": true,
+          "max_interval_days": 90
+        },
+        "section_refs": [
+          "repository-navigation"
+        ]
+      },
+      "rationale": "The history-tree membrane is a current routing surface, not a governance authority or a copy of repository current state."
+    },
+    {
       "id": "workspace_agent_overlays",
       "match": {
         "paths": [
@@ -452,6 +482,14 @@
         "rationale": "Stable repository front door; volatile state is linked rather than copied."
       },
       {
+        "id": "history_material_frontdoor",
+        "match": {
+          "path": "HISTORY_START.md"
+        },
+        "document_class": "living",
+        "rationale": "Thin history/material routing membrane; not a legacy prune subject."
+      },
+      {
         "id": "root_living_guides",
         "match": {
           "paths": [
@@ -484,6 +522,10 @@
       {
         "pattern": ".artifacts/**",
         "rationale": "Read-only or local historical evidence roots; never a prune subject."
+      },
+      {
+        "pattern": ".claude/skills/**",
+        "rationale": "Claude skills are executable instruction packages, not repository documentation or legacy prune subjects."
       },
       {
         "pattern": "rules/derived/**",
