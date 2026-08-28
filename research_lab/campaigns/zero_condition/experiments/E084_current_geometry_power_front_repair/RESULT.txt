@@ -1,0 +1,204 @@
+E084 RESULT: THE 16-BODY RETENTION TARGET DOES NOT RE-EMBED, AND POWER OPTIMA DIE AT NATIVE FRONTS
+===================================================================================================
+
+Status
+------
+Closed retrospectively from landed machine artifacts. The no-solver artifact
+checker passes. No terminal-unique binding, generic I/O binding, component-aware
+binding, exact routing, throughput, whole-layout, certification, U/L, owner,
+production, publication or pruning effect follows.
+
+Machine evidence
+----------------
+Independent artifact checker:
+
+  research_lab/local/zero_condition/
+  E084_current_geometry_power_front_repair/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  66205396d1669a0fba3a72bfdb520686f627812d27b2d4c8a0e3af852ca1fc0d
+
+Checker runner SHA-256:
+
+  05174d420996ae0101f81d4663be8b89b4a0e980ab4cfb88f0eff80902d5d298
+
+Durable compact snapshot:
+
+  research_lab/campaigns/zero_condition/experiments/
+  E084_current_geometry_power_front_repair/MACHINE_SNAPSHOT.json
+
+Verdict
+-------
+
+E081_SIXTEEN_BODY_TARGET_CLOSED_IN_BOUNDED_PACKING_POWER_OPTIMA_HAVE_EMPTY_NATIVE_FRONT_DOMAINS_FRONT_AWARE_R33_REMAINS_OPEN
+
+Decision
+--------
+
+RETIRE_16_BODY_REEMBED_TARGET_AND_BUILD_NATIVE_FRONT_FEASIBILITY_INTO_THE_NEXT_PROPOSER
+
+Context
+-------
+E084 consumes E081's geometry-aware winner:
+
+  partition                 partition_90abd29523f2a0dc
+  seam                      horizontal y=41, width 1
+  module A                  below seam
+  module B                  above seam
+  manufacturing bodies      219
+  current poles              53
+  stable E078 bodies          2, forced on module B
+  boundary language          complete 47-state disjunction
+
+The disposable probes used the current overwritten E079 macro bytes
+`bb92c5fd...`. The E079/E080 identity incident audit independently confirms that
+this rerun's ordered 47-state projection is exactly equal to the blind/R1 object;
+it does not replace the admitted original E079 identity.
+
+The inherited E069 context also contains one old pole occupying one optional
+protocol-core front cell, `(68,66)`. That core slot need not be active. The
+fixed-52-pole probes inherit the old overlap while forbidding every new body or
+pole from core-front cells. This asymmetry is replayed explicitly and is not
+silently interpreted as an active-terminal success.
+
+1. The E081 16-body retention quotient does not extend to set packing
+---------------------------------------------------------------------
+E081 had proved that a side/template recoloring could retain 203 of the current
+219 manufacturing footprints, leaving 16 displaced bodies. It had not placed
+those bodies.
+
+E084's exact body-footprint set-packing producer retains at most:
+
+  current manufacturing footprints retained    189
+  manufacturing footprints moved                 30
+  selected boundary state             boundary_macro_25
+  fixed inherited poles                            52
+
+The model retains the full 47-state boundary disjunction, reserves the y=41
+seam, fixes protocol-core geometry and the 52 non-seam poles, enforces exact
+module/template counts and body non-overlap, and forces the two stable E078
+footprints. CP-SAT reports OPTIMAL with best bound 189. The artifact checker
+independently recounts and geometrically replays the materialized optimum.
+
+Therefore the E081 number 16 was a retention-only quotient value, not a feasible
+repair size. In this bounded body language, at least 30 manufacturing footprints
+must change. This is not a global lower bound for every zero-condition geometry.
+
+2. Power changes the repair currency
+------------------------------------
+Checking only the selected 30-move body optimum against the inherited 52 poles
+leaves two manufacturing bodies uncovered and admits no one-pole replacement.
+That statement is contextual to that one body optimum.
+
+A joint exact model that chooses the bodies and exactly one replacement pole
+finds:
+
+  current manufacturing retained       188
+  manufacturing moved                   31
+  fixed inherited poles                 52
+  replacement poles                      1
+  selected boundary state   boundary_macro_03
+  producer status                  OPTIMAL
+
+When all 53 pole positions may move, three declared lexicographic objectives
+produce three different exact power-feasible geometries:
+
+  objective              retained M   moved M   retained P   moved P   retained area
+  manufacturing                 196        23           36        17            2971
+  total body count              190        29           50         3            2942
+  retained body area            194        25           39        14            2995
+
+Their boundary states are respectively `boundary_macro_46`,
+`boundary_macro_09`, and `boundary_macro_27`. The checker independently replays
+all body/pole non-overlap, exact counts, power coverage and stable-body presence.
+
+Thus “fewest moved manufacturing bodies”, “fewest moved physical bodies”, and
+“most retained occupied area” are genuinely different construction currencies.
+Pole mobility can recover manufacturing footprints, but no one currency is
+licensed as the project objective.
+
+3. Every checked power optimum is already dead at native front domains
+------------------------------------------------------------------------
+For each all-pole power optimum, E084 enumerates every same-footprint native pose
+mode and every production pose-level binding pattern allowed by the module's
+operations. It then removes patterns whose active front lies out of grid or on an
+occupied body cell.
+
+The three fixed geometries contain bodies with no usable native operation/mode
+pattern at all:
+
+  manufacturing-retention optimum       18 empty bodies
+  total-body-retention optimum           35 empty bodies
+  retained-area optimum                  26 empty bodies
+
+The artifact checker independently re-enumerates every named empty body and
+confirms all 18 / 35 / 26 empty domains. Therefore none of these three exact
+power geometries can reach a complete manufacturing operation assignment, even
+before duplicate terminal keys, generic I/O, component support or routing are
+considered.
+
+This is the decisive methodological result of E084: optimizing body packing and
+power first, then asking front viability to accept the endpoint, is not a viable
+constructor interface on this face. Native-front capacity must participate in
+the proposer.
+
+4. Front-aware search boundary
+------------------------------
+Two larger joint front models terminated without an incumbent:
+
+  all-pole integrated front model       UNKNOWN, best bound total-retained 240
+  earlier one-replacement joint model   UNKNOWN
+
+They are censored, not negative results.
+
+A bounded one-replacement Benders-style model then accumulated 34 necessary
+body-local front rules. Its producer records are:
+
+  retained M   moved M   status
+       188          31   MASTER_INFEASIBLE
+       187          32   MASTER_INFEASIBLE
+       186          33   UNKNOWN
+       185          34   UNKNOWN
+       179          40   UNKNOWN
+
+The r31 and r32 statuses are conclusive inside the producer's one-replacement
+model if that model is trusted: unregistered body-local rules only relax it, and
+no operation-level nogood was used in those terminal runs. The artifact checker
+pins and records those statuses but does not independently re-solve them.
+Accordingly they are not upgraded to heterogeneous replay evidence here.
+
+The first unresolved rung in that bounded language is r33: retain 186 current
+manufacturing footprints, move 33, keep 52 inherited poles and choose one
+replacement pole while satisfying the registered native-front capacity rules.
+
+What did not happen
+-------------------
+Two draft consumers exist as scripts but produced no result artifact:
+
+  E084_terminal_binding_probe.py
+  E084_global_binding_probe.py
+
+Nothing may be inferred from them. E084 supplies no terminal-unique assignment,
+no generic source/sink binding, no component-compatible binding and no exact
+route.
+
+Truth boundary
+--------------
+The exact objective values belong to one E081 partition, one y=41 straight seam,
+same-template footprint quotients and the stated pole languages. The front-domain
+refutations apply to the three materialized all-pole power optima, not to every
+power-feasible geometry. The r31/r32 negatives apply only to the one-replacement
+front model and retain their producer-evidence status. UNKNOWN is not
+INFEASIBLE.
+
+Effect on the next problem
+--------------------------
+Retire “re-embed E081's 16 displaced bodies” as the live question. Continue with
+a proposer that contains native-front feasibility before endpoint selection.
+The cheapest bounded discriminator is a fresh, no-overwrite E085 replay of the
+first unresolved one-replacement rung r33, using the 34 registered necessary
+front rules and explicit memory/status telemetry. A positive must materialize
+its operation/mode assignment and then pass terminal uniqueness and
+component-aware binding. A terminal r33 negative advances to a deliberately
+chosen wider pole or repair language; it does not refute the partition or seam.

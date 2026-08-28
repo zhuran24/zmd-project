@@ -100,3 +100,44 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   E082 的 count optimum 与 partition 会师仍有效，但 v3 历史几何不是可直接施工的载体。
   不应为了延续漂亮叙事去重跑一个已坏前提；主线切回 E081 的当前 E069 16-body repair，
   或另建只消费正例 bay 行的新计划。
+
+2026-08-28 18:42
+----------------
+数据：
+  E079/E080 artifact identity incident AUDIT.json
+  research_lab/local/zero_condition/E079_E080_identity_incident_20260828/AUDIT.json
+  sha256 354d58c3206e3e757bbec2bf236256bef7bb4ab2e9811d3534dd521437ba86ad
+
+注意／发现：
+  已承认的 E079/E080 run-001 字节被后续原地重跑覆盖；79d0dd7 又把 RESULT 文书改绑到
+  另一组已消失的中间 SHA，并把 E080 的核心计数写成错误的 16/32767/16901/135。现盘
+  E079 的 47 个 pose set、两侧 anchor 与 omitted cell 按顺序逐包等于 blind/R1 对象；现盘
+  E080 也复现 17/65535/53/6、partition_29914 和两种 seam commodity。
+
+推理：
+  数学对象重现不等于字节身份恢复。旧 R1 SHA 继续作为历史证据身份，现盘 run-001 只作
+  semantic corroboration，任何消费者不得把旧 pin 静默解析到新文件。撞号 E081 草稿从未运行，
+  且绑定已消失的中间 SHA，故保留为 ABANDONED_BEFORE_EXECUTION 墓碑而不补造连续性。
+
+2026-08-28 18:53
+----------------
+数据：
+  E084 ARTIFACT_CHECK.json
+  research_lab/local/zero_condition/E084_current_geometry_power_front_repair/run-001/ARTIFACT_CHECK.json
+  sha256 66205396d1669a0fba3a72bfdb520686f627812d27b2d4c8a0e3af852ca1fc0d
+
+注意／发现：
+  E081 的 203 retained / 16 moved 只是 recoloring quotient。固定 52 根旧电杆、保留全 47
+  boundary state 的 exact body set-packing 最多只留 189 个现 footprint，即必须搬 30 个；
+  联立一根替代电杆后最优为 188/31。允许 53 根电杆一起移动时，三种货币分别给出
+  M/P moves=23/17、29/3、25/14，但三份 power optimum 都有 native front 空域，空 body 数
+  分别为 18、35、26，独立逐体重算一致。
+
+  all-pole integrated front 是 UNKNOWN；one-replacement front master 在 retained 188、187
+  两档由生产者记为 MASTER_INFEASIBLE，在 186、185、179 档为 UNKNOWN。终端唯一性、generic
+  I/O、component binding 两个后续脚本没有结果文件。
+
+推理：
+  不能再先优化 body/power、再让 front 当验收员。front 必须进入 proposer。16-body live
+  question 已被本模型内精确关闭；下一最便宜的未决点是 one-replacement r33（retain 186 / move 33），
+  需新目录、显式状态和内存遥测，正例再进入 terminal uniqueness 与 component-aware binding。

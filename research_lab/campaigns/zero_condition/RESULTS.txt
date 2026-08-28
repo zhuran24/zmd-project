@@ -3062,26 +3062,117 @@ evidence:
   PREMISE_AUDIT.json sha256
   d3c3bed66f34cd38bf495e3650629fcdf9fea434d79866af84769b2aac0ed67d.
 
+R-ZC-093  E079/E080 byte identities were overwritten, but the semantic objects survive explicit audit
+-----------------------------------------------------------------------------------------------------
+status: identity incident closed; original evidence slots retained; no silent rebinding
+scope: admitted E079/E080 packets, later run-001 reruns, and duplicate unexecuted E081 draft
+
+statement:
+  The admitted E079 and E080 run-001 byte identities recorded by R-ZC-088 and
+  R-ZC-089 were overwritten in place after their original runs. Commit 79d0dd7
+  then rewrote the two durable RESULT files around a third, intermediate hash set
+  that is no longer present. The E080 rewrite also substituted false 16 / 32,767 /
+  16,901 / 135 counts for the producing runner's 17 / 65,535 / 53 / 6 counts.
+
+  A new machine audit pins all three mutually exclusive identity sets. It proves
+  that the current E079 rerun's ordered 47 rows agree exactly with the blind/R1
+  packing object on pose indices, side anchors and omitted cells, and that the
+  current E080 rerun reproduces every load-bearing count, partition_29914 and its
+  two seam commodities. The original admitted SHA records remain authoritative;
+  current bytes are semantic corroboration only and never replace an old pin.
+
+  The untracked `E081_historical_geometry_partition_alignment` directory never
+  ran, produced no terminal artifact, and pinned the vanished intermediate
+  hashes. It is retained only as an ABANDONED_BEFORE_EXECUTION collision tombstone
+  and is not counted as an experiment.
+
+non-implications:
+  Semantic reproduction does not recover the original bytes or make the current
+  run-001 paths stable aliases. The committed E081/E082 runners remain pinned to
+  original E080 identities and may not be rerun against the current paths without
+  a separately named rebinding experiment. No mathematical E079/E080 conclusion
+  is withdrawn.
+
+effect on next problem:
+  Consume E079 through the full 47-state semantic object and its five-condition
+  license, while preserving the identity-incident audit beside every old hash
+  citation. Every future rerun uses a new run directory.
+
+evidence:
+  E079_E080_ARTIFACT_IDENTITY_AUDIT_20260828.txt; local AUDIT.json sha256
+  354d58c3206e3e757bbec2bf236256bef7bb4ab2e9811d3534dd521437ba86ad;
+  current semantic projection sha256
+  ce96047e6f908250c95da7f1c607cc7534d32ce95ccdf96c7326733badc29ea8.
+
+R-ZC-094  E081's 16-body quotient fails physical re-embedding; front feasibility must enter the proposer
+-------------------------------------------------------------------------------------------------------
+status: retrospective artifact closure; positive witnesses independently replayed; UNKNOWN preserved
+scope: partition_90abd29523f2a0dc, horizontal y=41 seam, stated fixed/all-pole languages
+
+statement:
+  E084 reconstructs the landed current-geometry probes. In the fixed-52-pole
+  body-only model, the exact optimum retains 189 of 219 current manufacturing
+  footprints, so 30 move rather than E081's quotient value 16. Jointly choosing
+  one replacement pole gives an OPTIMAL 188 retained / 31 moved witness. Allowing
+  all 53 pole poses to move yields three exact power-feasible endpoints: the
+  manufacturing objective moves 23 manufacturing bodies and 17 poles; the total-
+  body objective moves 29 and 3; the retained-area objective moves 25 and 14.
+
+  A no-solver checker independently replays every materialized geometry, exact
+  module/template counts, complete 47-state boundary choice, stable E078 bodies,
+  body/pole non-overlap and manufacturing power coverage. It then re-enumerates
+  production pose-level binding patterns and confirms that the three all-pole
+  power optima contain respectively 18, 35 and 26 bodies with empty native-front
+  domains. None can reach a complete operation assignment.
+
+  The all-pole integrated front model is UNKNOWN with no incumbent. In the
+  bounded one-replacement front language, producer records close retained rungs
+  188 and 187 as MASTER_INFEASIBLE after 34 necessary body-local front rules;
+  retained 186, 185 and 179 are UNKNOWN. The artifact checker pins but does not
+  independently solver-replay the two negative rungs.
+
+non-implications:
+  The 30/31/23/29/25 move counts are model-specific, not global lower bounds.
+  Empty front domains refute only the three fixed all-pole power optima, not every
+  power-feasible geometry. The r31/r32 negatives retain producer-evidence status.
+  No terminal uniqueness, generic I/O, component-aware binding, routing or
+  throughput result exists; two draft downstream scripts produced no result.
+
+effect on next problem:
+  Retire the live wording “re-embed E081's 16 displaced bodies.” Do not optimize
+  body packing and power and then post-filter fronts. Make native-front feasibility
+  part of the proposer. The cheapest next discriminator is a fresh no-overwrite
+  E085 at the first unresolved one-replacement rung r33, with explicit status and
+  memory telemetry; a positive must materialize operation/mode assignment before
+  terminal uniqueness and component-aware binding.
+
+evidence:
+  E084 RESULT.txt; local ARTIFACT_CHECK.json sha256
+  66205396d1669a0fba3a72bfdb520686f627812d27b2d4c8a0e3af852ca1fc0d;
+  MACHINE_SNAPSHOT.json.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:
 
-  47-state boundary macro
+  audited 47-state boundary semantic object
     -> connected typed operation partition
     -> geometry-conditioned partition beam
-    -> bounded moved-body set-packing repair
-    -> power/front/terminal-uniqueness reclosure
+    -> joint body/pole/power proposer
+    -> native-front-feasible operation/mode assignment
+    -> terminal uniqueness and generic I/O binding
     -> component-aware binding
     -> exact simultaneous routing
 
-Two independent continuation metrics, E081's current-footprint straight-seam
-projection and E082's historical bay-count alignment, select the same operation
-partition. That convergence is evidence for the partition, not for either
-carrier. E083 rejects the historical v3 carrier on its own premises, so the live
-consumer is E081's 16-body current-geometry repair context. A future bay plan may
-re-enter only with admitted positive rows.
+E081 and E082 independently selected the same geometry-aware partition, while
+E083 killed the historical v3 carrier. E084 then killed the assumption that
+E081's 16 displaced bodies could simply be reinserted: the fixed-pole body-only
+optimum moves 30. Pole mobility improves the body currency, but every checked
+power optimum is front-dead. The current wall is therefore not “find another
+power optimum”; it is “construct power and native-front feasibility together.”
 
-The outer loop should continue transporting compact constructive objects rather
-than complete layouts: boundary macro state, typed seam contract, stable E078
-body rewrite, displaced-body set and the first failed reclosure premise. The
-final physical layer count and exact repair family remain open.
+The first bounded unresolved state is the one-replacement r33 rung. The outer
+loop should carry the 47-state boundary object, typed seam, stable E078 bodies,
+y=41 partition context, registered front rules and exact producer status. The
+final repair size, pole language, terminal assignment, component-compatible
+binding and physical layer count remain open.

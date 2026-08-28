@@ -1,0 +1,117 @@
+EXPERIMENT E084: CURRENT-GEOMETRY POWER / FRONT REPAIR RECONCILIATION
+====================================================================
+
+Status
+------
+Retrospective durable reconstruction from already-landed local artifacts. E084
+was not a single clean launch: several disposable probes ran during an API
+coordination failure and left scripts and JSON results without a tracked
+experiment record. This experiment freezes what those bytes actually establish;
+it does not promote statements from the displaced chat replies.
+
+Question
+--------
+Starting from E081's geometry-aware partition and horizontal y=41 seam, what is
+the first physically checked repair surface after the 16-body retention quotient
+is required to re-embed all 219 manufacturing bodies, preserve the two stable
+E078 footprints, retain a complete 47-state E079 boundary disjunction, and
+reclose power and native front availability?
+
+Identity precondition
+---------------------
+The local E079 `run-001` macro consumed by the disposable probes is the later
+rerun with SHA-256:
+
+  bb92c5fde00971fecade62e67a9af3e01e1892aad7a67c2c67d370004d877f36
+
+It is not silently substituted for the admitted E079 packet. The separate
+E079/E080 incident audit proves that its ordered 47-state semantic projection is
+exactly equal to the blind/R1 packing object and records the byte-identity break:
+
+  research_lab/campaigns/zero_condition/
+  E079_E080_ARTIFACT_IDENTITY_AUDIT_20260828.txt
+
+Method
+------
+1. Pin every landed E084 producer script, result JSON and inherited input by
+   SHA-256. Missing terminal/global binding result files are treated as absence,
+   not inferred outcomes.
+
+2. Reconstruct E081's selected context from its frontier:
+
+     partition_90abd29523f2a0dc
+     horizontal seam y=41
+     module A below, module B above
+     two stable E078 footprints forced onto module B
+
+3. Without invoking an optimizer, replay each materialized positive geometry:
+
+   * exact module/template body counts;
+   * 219 manufacturing bodies and, where applicable, 53 power poles;
+   * body non-overlap against protocol core, boundary bodies and poles;
+   * the selected E079 boundary-state identity;
+   * all body restrictions against the y=41 corridor, boundary fronts and core
+     front reservation used by the producer;
+   * power coverage for every manufacturing body;
+   * current-footprint and current-pole retention counts;
+   * stable E078 footprint remapping.
+
+   The inherited E069 context contains one old pole on one optional protocol-core
+   front cell. The disposable fixed-52-pole models inherit that overlap; they do
+   not require the slot to be active. New manufacturing bodies, replacement
+   poles and all-pole witnesses remain forbidden from all core-front cells.
+
+4. For the three fixed power-optimal geometries, independently re-enumerate
+   production pose-level binding patterns for every body and verify every named
+   empty native-front domain.
+
+5. Preserve producer status exactly. `OPTIMAL` is not extended past the model it
+   solved; `UNKNOWN` remains censored. The two one-replacement Benders
+   `MASTER_INFEASIBLE` rungs are recorded as producer conclusions with no fresh
+   solver replay by the artifact checker.
+
+Evidence hierarchy
+------------------
+Load-bearing and independently replayed:
+
+  materialized geometry
+  body and pole counts
+  non-overlap under the producer's reservation semantics
+  manufacturing power coverage
+  current-footprint / current-pole retention recount
+  stable E078 body presence
+  named empty native-front domains on fixed witnesses
+
+Producer status retained but not independently re-solved:
+
+  CP-SAT optimality and objective bounds
+  one-replacement Benders r31/r32 MASTER_INFEASIBLE
+  all UNKNOWN runs
+
+Not produced:
+
+  one terminal-unique manufacturing assignment
+  generic source/sink binding
+  component-aware binding
+  exact routing
+  throughput or whole-layout validation
+
+Decision rule
+-------------
+If a power-feasible fixed witness has no empty native-front body, continue to
+terminal uniqueness and component-aware binding.
+
+If every checked power optimum contains empty bodies, stop post-filtering power
+optima. Make native-front feasibility part of the proposer. In the one-replacement
+language, r31 and r32 may close only at their producer evidence strength; r33 is
+the first unresolved rung. In the all-pole language, the integrated front model
+is UNKNOWN and supplies no incumbent.
+
+Truth boundary
+--------------
+E084 studies one E081 partition, one straight seam and same-template footprint
+quotients. It does not establish a minimum number of moved bodies for the full
+zero-condition problem. The all-pole objective values are exact only for their
+respective body/pole/power models; the fixed witnesses are then independently
+refuted by empty front domains. No certification, U/L, owner, production,
+publication or pruning effect follows.

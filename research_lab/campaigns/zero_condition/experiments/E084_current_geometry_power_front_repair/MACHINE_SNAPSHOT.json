@@ -1,0 +1,131 @@
+{
+  "artifact_check": {
+    "path": "research_lab/local/zero_condition/E084_current_geometry_power_front_repair/run-001/ARTIFACT_CHECK.json",
+    "sha256": "66205396d1669a0fba3a72bfdb520686f627812d27b2d4c8a0e3af852ca1fc0d",
+    "status": "PASS"
+  },
+  "authority": "research_only_noncertified",
+  "context": {
+    "boundary_macro_current_rerun_sha256": "bb92c5fde00971fecade62e67a9af3e01e1892aad7a67c2c67d370004d877f36",
+    "boundary_state_count": 47,
+    "corridor_axis": "y",
+    "corridor_coordinate": 41,
+    "identity_incident_audit_sha256": "354d58c3206e3e757bbec2bf236256bef7bb4ab2e9811d3534dd521437ba86ad",
+    "module_high": "B",
+    "module_low": "A",
+    "partition_id": "partition_90abd29523f2a0dc",
+    "stable_reference_ids": [
+      "grinder_dense_source_001",
+      "grinder_fine_buckwheat_002"
+    ]
+  },
+  "fixed_witness_front_domains": {
+    "all_poles_area": {
+      "empty_body_count": 26,
+      "status": "EMPTY_BODY_DOMAIN"
+    },
+    "all_poles_manufacturing": {
+      "empty_body_count": 18,
+      "status": "EMPTY_BODY_DOMAIN"
+    },
+    "all_poles_total": {
+      "empty_body_count": 35,
+      "status": "EMPTY_BODY_DOMAIN"
+    }
+  },
+  "ledger_effect": "none",
+  "positive_geometry_power_records": {
+    "all_poles_area": {
+      "moved_manufacturing": 25,
+      "objective_mode": "area",
+      "producer_primary_status": "OPTIMAL",
+      "producer_secondary_status": "OPTIMAL",
+      "relocated_poles": 14,
+      "retained_current_manufacturing": 194,
+      "retained_current_poles": 39,
+      "retained_total_body_area": 2995,
+      "selected_boundary_state_id": "boundary_macro_27"
+    },
+    "all_poles_manufacturing": {
+      "moved_manufacturing": 23,
+      "objective_mode": "manufacturing",
+      "producer_primary_status": "OPTIMAL",
+      "producer_secondary_status": "OPTIMAL",
+      "relocated_poles": 17,
+      "retained_current_manufacturing": 196,
+      "retained_current_poles": 36,
+      "retained_total_body_area": 2971,
+      "selected_boundary_state_id": "boundary_macro_46"
+    },
+    "all_poles_total": {
+      "moved_manufacturing": 29,
+      "objective_mode": "total",
+      "producer_primary_status": "OPTIMAL",
+      "producer_secondary_status": "OPTIMAL",
+      "relocated_poles": 3,
+      "retained_current_manufacturing": 190,
+      "retained_current_poles": 50,
+      "retained_total_body_area": 2942,
+      "selected_boundary_state_id": "boundary_macro_09"
+    },
+    "body_only_fixed_52_poles": {
+      "moved_manufacturing": 30,
+      "producer_status": "OPTIMAL",
+      "retained_current_manufacturing": 189,
+      "selected_boundary_state_id": "boundary_macro_25"
+    },
+    "one_replacement_fixed_52_poles": {
+      "moved_manufacturing": 31,
+      "producer_status": "OPTIMAL",
+      "replacement_pole_pose_index": 4077,
+      "retained_current_manufacturing": 188,
+      "selected_boundary_state_id": "boundary_macro_03"
+    }
+  },
+  "producer_censored_or_negative_records": {
+    "all_poles_integrated_front": {
+      "best_bound_total_retained": 240.0,
+      "incumbent_present": false,
+      "status": "UNKNOWN"
+    },
+    "one_replacement_front_r31": {
+      "fresh_independent_solver_replay": false,
+      "registered_front_candidate_count": 34,
+      "status": "MASTER_INFEASIBLE",
+      "target_moved_manufacturing_count": 31,
+      "target_retained_current_footprints": 188
+    },
+    "one_replacement_front_r32": {
+      "fresh_independent_solver_replay": false,
+      "registered_front_candidate_count": 34,
+      "status": "MASTER_INFEASIBLE",
+      "target_moved_manufacturing_count": 32,
+      "target_retained_current_footprints": 187
+    },
+    "one_replacement_front_r33": {
+      "registered_front_candidate_count": 34,
+      "status": "UNKNOWN",
+      "target_moved_manufacturing_count": 33,
+      "target_retained_current_footprints": 186
+    },
+    "one_replacement_front_r34": {
+      "registered_front_candidate_count": 34,
+      "status": "UNKNOWN",
+      "target_moved_manufacturing_count": 34,
+      "target_retained_current_footprints": 185
+    },
+    "one_replacement_front_r40": {
+      "registered_front_candidate_count": 34,
+      "status": "UNKNOWN",
+      "target_moved_manufacturing_count": 40,
+      "target_retained_current_footprints": 179
+    }
+  },
+  "schema": "zmd_e084_current_geometry_power_front_machine_snapshot_v1",
+  "unfinished_consumers": {
+    "component_aware_binding": false,
+    "exact_routing": false,
+    "generic_io_binding": false,
+    "terminal_uniqueness": false
+  }
+}

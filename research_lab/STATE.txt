@@ -9,19 +9,16 @@ Campaign ref: research_lab/campaigns/zero_condition/CAMPAIGN.txt
 
 Current endpoint
 ----------------
-Statement: Six structure-level links now survive explicit discriminators.
-E078 proves one target-26 reference two-row semantic rewrite works across the
-complete frozen E069 parent face while equal-size alternatives show the minimum
-core is nonunique. E079 compiles K=47 boundary-only packing into an exact
-47-state macro. E080 turns partition/seam from prose into a complete 65,535-case
-type-partition frontier. E081 prices the balanced partition language on E069's
-actual 219-body geometry: the original E080 seed falls to rank 3 but remains in a
-seven-member Pareto beam, while the best E078-preserving straight-seam quotient
-moves 16 bodies. E082 independently selects the same operation partition because
-it needs only one mixed bay in a historical count plan. E083 then blocks that
-historical v3 carrier: its G row is already exact INFEASIBLE in the recorded
-final35 context and H has no admitted positive result. The shared partition
-survives; E081's current-geometry repair becomes the live construction path.
+Statement: The partition/seam line has reached its first joint physical
+body/pole/power/front discriminator. E078 supplies one stable two-body semantic
+rewrite; E079 supplies an audited 47-state boundary object; E080 supplies the
+typed partition language; E081 and E082 independently select the same geometry-
+aware operation set, while E083 rejects the historical v3 carrier. E084 then
+closes E081's apparent 16-body repair target: the fixed-pole body-only optimum
+retains only 189 of 219 current manufacturing footprints, so 30 move. Pole
+mobility improves that currency, but every checked power optimum contains empty
+native-front domains. Native-front feasibility must now enter the proposer rather
+than post-filter its endpoints.
 Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
@@ -29,19 +26,24 @@ Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E081_axis_seam_recolor_frontier/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E082_bay_alignment_partition_frontier/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E083_historical_bay_carrier_premise_audit/RESULT.txt
+  research_lab/campaigns/zero_condition/experiments/E084_current_geometry_power_front_repair/RESULT.txt
+Identity audit:
+  research_lab/campaigns/zero_condition/E079_E080_ARTIFACT_IDENTITY_AUDIT_20260828.txt
 Direction ref:
   research_lab/campaigns/zero_condition/DIRECTION_CUT_TRANSPORT_20260828.txt
 
 Live question
 -------------
-Q: Can an exact moved-body set-packing repair re-embed E081's 16 displaced
-manufacturing bodies around the horizontal y=41 seam while keeping the other 203
-footprints, the two stable E078 bodies, the protocol core and a complete E079
-boundary state? The first positive must then reclose power, native front and
-terminal uniqueness, and component-aware binding before exact routing. Use E080's
-26-body seam-first state and the other E081 Pareto members as bounded controls.
-E082 remains a corroborating count lens only; E083 forbids using the unchanged
-historical v3 F/G/H carrier.
+Q: In a fresh no-overwrite E085 run, can the first unresolved one-replacement
+front-aware rung retain 186 current manufacturing footprints (move 33) around the
+horizontal y=41 seam while keeping the complete 47-state boundary disjunction,
+the two stable E078 bodies, 52 inherited poles plus one replacement pole, power,
+and the 34 already registered necessary native-front rules? Record exact status
+and memory telemetry. A positive must materialize its operation/mode assignment
+and then pass terminal uniqueness and component-aware binding. A terminal r33
+negative advances to an explicitly wider pole/repair language; it does not refute
+the partition or seam. The all-pole integrated front model remains UNKNOWN and
+has no incumbent.
 
 Inflight / recovery
 -------------------
@@ -61,6 +63,8 @@ Recent consequential results
 - E081 exhausts 12,864 balanced straight-seam states on E069's real body geometry: the E080 seed ranks 3 with 26 moves, while a seven-member Pareto beam contains an E078-preserving 16-move winner. | evidence=research_lab/campaigns/zero_condition/experiments/E081_axis_seam_recolor_frontier/RESULT.txt | effect=replace the single semantic seed with a bounded geometry-aware moved-body repair beam
 - E082 independently selects the same operation partition by minimizing mixed bays in a historical 17-bay count scaffold: one mixed bay versus E080's four. | evidence=research_lab/campaigns/zero_condition/experiments/E082_bay_alignment_partition_frontier/RESULT.txt | effect=corroborates the partition at count level but does not supply geometry
 - E083 audits the historical carrier and finds G=(10,5,5) already exact INFEASIBLE in the recorded final35 context while H=(11,6,4) has no admitted positive row. | evidence=research_lab/campaigns/zero_condition/experiments/E083_historical_bay_carrier_premise_audit/RESULT.txt | effect=retire unchanged v3 carrier and make E081 current-geometry set packing the live path
+- The E079/E080 run-001 paths were overwritten after admission. A machine audit proves the current E079 47-state projection and current E080 load-bearing semantics reproduce the admitted objects, but retains the original SHA records and forbids silent rebinding; a duplicate unexecuted E081 draft is tombstoned. | evidence=research_lab/campaigns/zero_condition/E079_E080_ARTIFACT_IDENTITY_AUDIT_20260828.txt | effect=separate semantic reproduction from byte identity and require new run directories
+- E084 closes the 16-body re-embedding premise: fixed-pole body packing moves 30, one-replacement power moves 31, all-pole objectives trade manufacturing versus pole movement, and their three materialized power optima have 18/35/26 empty native-front bodies. One-replacement front r31/r32 are producer MASTER_INFEASIBLE; r33 is UNKNOWN. | evidence=research_lab/campaigns/zero_condition/experiments/E084_current_geometry_power_front_repair/RESULT.txt | effect=put native-front feasibility inside the proposer and make fresh r33 the live discriminator
 
 Current unknowns and guards
 ---------------------------
@@ -70,15 +74,17 @@ Current unknowns and guards
 - E068's negative conclusion applies only to the retired pole-conditioned lineage; component 40 and every other single representative are not stable complete-face properties; all cross-context transport is bound by research_lab/methods/STABLE_IDENTITY_TRANSPORT.txt (component/destination integers are enumeration-local).
 - Direction consumption guards: keep the witness-conditional phrasing; no numerical cut-capacity inequality is an admitted solver cut; separator INFEASIBLE remains telemetry/core-shrinking only (specs/10 10.10 binds Stage 1, not only Stage 4); the REVIEW note's standing qualifications apply.
 - Master memory-wall preflight: direct coordinate-master solves can hit a 28 GiB solve-side wall (blind tree evidence); E077's only persisted run is a 207-core checkpoint with unrecorded terminal status; absorb the blind encoding fix and run with memory telemetry before any further full-master attempt (BLIND_COLLISION_20260828.txt).
-- Evidence qualifications: K=47 holds only in its boundary-local object space under the five-condition up-to-K license (rank 1 is never WLOG; keep the 47-packing disjunction; research_lab/local/reviews/20260828_k47_boundary_packing_recheck.md); blind D2-D4 numeric claims are unrechecked; post-hygiene residual opens are the superseded E069 run's uncommitted runner, the unreconciled 190-vs-225 boundary-owner count, and E073's premise (an E072 one-owner bridge) with no machine evidence anywhere.
+- Evidence qualifications: K=47 holds only in its boundary-local object space under the five-condition up-to-K license (rank 1 is never WLOG; keep the 47-packing disjunction; research_lab/local/reviews/20260828_k47_boundary_packing_recheck.md). The original admitted E079/E080 byte packets were overwritten; current run-001 bytes are audited semantic reruns, not replacements for old hash pins. Blind D2-D4 numeric claims are unrechecked; post-hygiene residual opens are the superseded E069 run's uncommitted runner, the unreconciled 190-vs-225 boundary-owner count, and E073's premise with no machine evidence anywhere.
 - All results here are research-only and have no certification, U/L, owner, production, or publication effect.
 
 - E078 is confined to one frozen occupied geometry and a terminal-signature abstraction with one synthetic dual option. The reference rewrite is stable but minimum cores are nonunique. Local destination/component integers remain non-transportable; cross-geometry use requires unique stable-witness remapping and a fresh exact check.
 - E079 is exact only for boundary body packing. Rank 1 is never WLOG, all 47 states remain live unless a separate proof removes states, and every omitted full-layout constraint must be reintroduced.
 - E080 is a type-level sufficient-construction seed. All copies of one operation type are kept together; no facility has been placed, no generic commodity has been bound, no duty/rate is frozen, and seam slot incidence is not throughput.
-- E081's 16- and 26-body figures are exact only for retaining current footprints outside one straight corridor while same-template operation assignment is quotiented. Moved bodies are not placed, an intersected pole is not repaired, and no power/front/binding/routing consequence follows.
+- E081's 16- and 26-body figures are exact only for retaining current footprints outside one straight corridor while same-template operation assignment is quotiented. E084 has now refuted physical extension of the 16-body figure inside the fixed-pole bounded packing language: its exact body optimum moves 30. The 26-body control remains only a retention quotient until separately consumed.
 - E082 is exact only in the historical `SEARCH_PLAN_ONLY` template-count scaffold. Its one-mixed-bay number is an optimistic lower bound and independent partition corroboration, not an admitted physical carrier.
 - E083 blocks only the unchanged historical v3 carrier. The G-row negative is contextual to its pole phase and connectivity models; H is unadmitted rather than globally infeasible.
+- E084's exact positive geometries are body/pole/power witnesses only. The three checked all-pole optima are independently front-dead; the integrated front models are UNKNOWN. The r31/r32 MASTER_INFEASIBLE records are producer evidence and have not received a fresh heterogeneous solver replay. One inherited pole occupies optional protocol-core front (68,66); the slot may remain unused and no active-terminal claim follows.
+- E084 terminal-binding and global-binding scripts produced no result files. No terminal uniqueness, generic I/O, component-aware binding or routing conclusion may be cited.
 - Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
 
 History pointers
