@@ -10,7 +10,12 @@ Run:
 
 `/home/zhuran24/zmd-pj/.venv/bin/python research_lab/tools/research_tree.py enter`
 
-Then read the active campaign named by `.zmd-worktree-mode`. Read `PROGRAM.txt` on first entry or when the goal hierarchy changes; read `STATE.txt` every session. Load old governance and history only when the current question needs them.
+First active read: `/home/zhuran24/zmd-research/research_lab/STATE.txt`.
+It must contain one current endpoint, one live question, and any inflight recovery handle.
+For cross-tree handoff, owner matters, or cross-session external work only, read `/home/zhuran24/.claude/ops/zmd-pj/membrane/NOW.md`.
+Ordinary R0 work remains local and does not enter O.
+
+Read `PROGRAM.txt` on first entry or when the goal hierarchy changes. Read the active campaign named by `.zmd-worktree-mode` after STATE or when the current question needs it. Load old governance and history only on demand.
 
 Claude Code auto-memory is bound to the research-only directory recorded in `research_lab/CC_MEMORY.txt`. It carries stable research habits, not current campaign state; `STATE.txt` and the active campaign remain authoritative for what is happening now.
 
