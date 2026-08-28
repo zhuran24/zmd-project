@@ -1,118 +1,91 @@
-E079 RESULT: K=47 BOUNDARY PACKINGS COMPILE TO AN EXACT 47-STATE MACRO
+E079 RESULT: K=47 BOUNDARY PACKING COMPILED TO AN EXACT 47-STATE MACRO
 ============================================================================
 
 Status
 ------
-Completed as research-only boundary-body packing evidence. No full-layout,
-binding, routing, throughput, certification, U/L, production, owner, pruning,
-or publication effect.
+Completed as research-only boundary-packing evidence. No full-layout, binding,
+routing, throughput, certification, U/L, owner, production, pruning, or
+publication effect.
 
-Frozen machine evidence
------------------------
+Frozen evidence
+---------------
 Main result:
-
-  research_lab/local/zero_condition/
-  E079_k47_boundary_macro/run-001/RESULT.json
+  research_lab/local/zero_condition/E079_k47_boundary_macro/run-001/RESULT.json
 
 SHA-256:
-
-  9442e6568238edfe6aa7c37f1bddaf8a9f10c7017320c6af0cea092c80583662
+  06576856727f16eb1a52ced690a865f50453c39cf7a5a478c26e481777d5f718
 
 Macro artifact:
-
-  research_lab/local/zero_condition/
-  E079_k47_boundary_macro/run-001/BOUNDARY_MACRO_V1.json
+  research_lab/local/zero_condition/E079_k47_boundary_macro/run-001/BOUNDARY_MACRO_V1.json
 
 SHA-256:
+  4300cc3fbd4423e6f7ea21cf49e32c9264dc4177b97e1fb891bc4d6883087ef1
 
-  f7f4cf3c70046e02bd434929570e6d177994198d7a588cbc02d24751b35c1810
+Encoding benchmark:
+  research_lab/local/zero_condition/E079_k47_boundary_macro/run-001/ENCODING_BENCHMARK.json
 
-Encoding benchmark SHA-256:
+SHA-256:
+  5ad9f09b8c73b23bb3f9ce377be2cf990721c54194f5b36b998f90154bcb96eb
 
-  43be1146c9e85904466e8349c4c686fcba1f77d639d6949b4e669366e2e83cb6
+Verdict:
+  K47_BOUNDARY_PACKING_EXACTLY_COMPILED_TO_47_STATE_MACRO
 
-Receipt SHA-256:
+Decision:
+  USE_MACRO_IN_PARTITION_SEAM_PROTOTYPE_BEFORE_FULL_MASTER_INTEGRATION
 
-  c1288f276eec2525d529a3dea177beaec761261a5c960a0c0953f2ddbbf0cd87
+Machine result
+--------------
+The frozen boundary-only body-packing model has:
 
-Verdict
--------
+  legal boundary poses       136
+  mandatory boundary bodies   46
+  complete packings            47
+  left bodies per packing      23
+  bottom bodies per packing    23
+  occupied allowed-L cells    138
+  omitted allowed-L cells       1
 
-K47_BOUNDARY_PACKING_EXACTLY_COMPILED_TO_47_STATE_MACRO
+The baseline 136-pose CP-SAT model exhaustively enumerates exactly 47 packings.
+Their omitted cells are all distinct and exhaust the 47 legal omitted-L cells.
+Every state carries the complete selected pose set, body/front cells and
+digests, side anchors, omitted cell, and canonical sorted-instance to
+sorted-pose label recovery.
 
-Decision
---------
+The compiled one-hot macro uses 47 state variables with ExactlyOne. A separate
+state-to-pose channel model, built with linear incidence equalities and no
+AddElement long table, also enumerates exactly 47 states and roundtrips every
+state to the identical 46-pose set.
 
-USE_MACRO_IN_PARTITION_SEAM_PROTOTYPE_BEFORE_FULL_MASTER_INTEGRATION
+Independent comparison
+----------------------
+The main-tree heterogeneous recheck agrees on K=47 and on the canonical rank-1
+packing. The blind-tree artifact exposes the complete packing list; all 47
+packings agree exactly after comparison in the same boundary-pose index space.
 
-Exact local quotient
---------------------
-The baseline model uses the frozen candidate-pool identity and creates one
-Boolean variable for each of 136 legal `boundary_storage_port` poses. It selects
-exactly 46 poses and enforces body-cell exclusivity. Complete solution
-enumeration returns exactly 47 distinct pose sets.
+Encoding note
+-------------
+The direct pose model has 136 decision variables. The minimal one-hot macro has
+47, a raw decision-variable ratio of approximately 2.894 to 1. Materializing all
+136 pose-channel variables remains optional and can erase much of that size gain;
+consumers should read state fields directly when possible.
 
-Every state has:
-
-  left bodies                    23
-  bottom bodies                  23
-  occupied allowed-L cells      138
-  distinct inward fronts         46
-  omitted allowed-L cells         1
-
-The 47 omitted cells are distinct and exhaust the legal omitted-cell set. Every
-macro state carries the complete pose set, body/front digests, side anchors, the
-omitted cell, and canonical sorted-instance-to-sorted-pose label recovery.
-
-The main-tree recheck result independently reports K=47 and embeds the same
-canonical rank-1 packing. The blind-tree artifact embeds all 47 packings; its
-pose-index set is exactly equal to E079's complete set under the same frozen
-boundary-pool ordering.
-
-Encoding comparison
+Consumption license
 -------------------
-Baseline pose model:
+The macro is usable only while all five conditions travel with it:
 
-  variables              136
-  constraints            138
-  text proto bytes     23,991
-
-One-hot macro:
-
-  variables               47
-  constraints              1
-  text proto bytes      3,728
-
-Macro with all 136 pose channels materialized:
-
-  variables              183
-  constraints            138
-  text proto bytes     89,185
-
-The raw decision-variable ratio from baseline poses to one-hot macro states is
-approximately 2.894. The channelled model deliberately demonstrates reversible
-pose recovery, not a recommended always-on encoding: materializing every pose
-channel can erase the representation gain. Consumers should use macro fields
-directly unless a pose-level constraint actually needs channeling.
-
-Consumer license
-----------------
-K=47 authorizes only the frozen boundary-body packing quotient. Every consumer
-must preserve all five conditions:
-
-1. canonical rules, 46-instance count, and candidate-pool identity remain fixed;
-2. the 46 instances remain homogeneous except for stable ID;
+1. canonical rules, the 46-instance count, and frozen candidate-pool identity
+   remain unchanged;
+2. all 46 boundary instances remain homogeneous except for stable instance ID;
 3. the consumer is instance-permutation equivariant or uses the canonical label
    recovery;
-4. all 47 states remain in the disjunction unless a separate proof removes some;
-5. every omitted full-layout constraint is reapplied downstream.
+4. all 47 states remain in the disjunction unless another proof removes states;
+5. every omitted full-layout body, front, binding, routing, throughput, export,
+   and game constraint is reintroduced by the consumer.
 
-`boundary_macro_01`, the deterministic rank-1 state, is a construction choice
-and never WLOG.
+Rank 1 is a deterministic construction choice, never WLOG.
 
 Truth boundary
 --------------
-E079 proves an exact quotient only for legal boundary poses plus mutual boundary
-body exclusion. It does not include other facilities, front clearance against
-other bodies, power, binding, routing, throughput, export, or game review. A
-macro state need not extend to a complete layout.
+E079 is exact only for legal boundary_storage_port pose selection plus mutual
+boundary-body exclusivity. A macro state need not extend to a full layout. The
+result neither fixes one boundary state nor authorizes rejecting the other 46.

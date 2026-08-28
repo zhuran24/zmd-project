@@ -1,168 +1,100 @@
-E080 RESULT: A CONNECTED BALANCED TYPE PARTITION HAS AN EXPLICIT TWO-COMMODITY SEAM
-====================================================================================
+E080 RESULT: CONNECTED BALANCED OPERATION PARTITION WITH AN EXPLICIT TYPED SEAM
+================================================================================
 
 Status
 ------
-Completed as research-only type-level construction evidence. No facility pose,
-physical bay, binding, routing, throughput, whole-layout witness, certification,
-U/L, production, owner, pruning, or publication effect.
+Completed as research-only type-level construction evidence. No facility has
+been placed, no generic slot has been bound to a named commodity, no duty or
+rate has been fixed, and no binding, routing, throughput, certification, U/L,
+owner, production, pruning, or publication effect follows.
 
-Frozen machine evidence
------------------------
+Frozen evidence
+---------------
 Main result:
-
-  research_lab/local/zero_condition/
-  E080_dependency_partition_seam_frontier/run-001/RESULT.json
+  research_lab/local/zero_condition/E080_dependency_partition_seam_frontier/run-001/RESULT.json
 
 SHA-256:
+  f79d27dfef7b7cfe073cb48abbd94018f42a32fdb2aa2217195e1fc8a6631321
 
-  47f497a3f8ee26351bdc1616c8061f80d03646089c266be66f979f7393080077
-
-Complete partition frontier:
-
-  research_lab/local/zero_condition/
-  E080_dependency_partition_seam_frontier/run-001/PARTITION_FRONTIER.json
+Partition frontier:
+  research_lab/local/zero_condition/E080_dependency_partition_seam_frontier/run-001/PARTITION_FRONTIER.json
 
 SHA-256:
+  564ae324238c945de0cfe31c66065acf2992c5fd013e9f9d3c0175a31785089b
 
-  96e4e84fb88c666aee38c7be2c421a59ca4fbe7e59d570eacee5f4391fe867b7
+Seam contract:
+  research_lab/local/zero_condition/E080_dependency_partition_seam_frontier/run-001/SEAM_CONTRACT.json
 
-Seam contract SHA-256:
+SHA-256:
+  2b9e466e8d11c25d7e7a9da1ee12d000cff9ac8a8930c12e93b791b2a7d8c67
 
-  c44ee40995fcdd44a2ec9a8443245d1be75b51258ca9b347cd0fe1ae3563e6fc
+Verdict:
+  CONNECTED_BALANCED_TYPE_PARTITION_WITH_EXPLICIT_SEAM_FOUND
 
-Receipt SHA-256:
+Decision:
+  BUILD_GEOMETRIC_BAY_AND_SEAM_CONSTRUCTOR_AROUND_SELECTED_CONTRACT
 
-  92452d2d51e185f6f3958b0b35a541617a0ffd2126c3e14f6229f22c895d3a09
+Machine result
+--------------
+The current recipe dependency graph contains 16 operation types. Fixing one
+operation type in module A to quotient the A/B label symmetry leaves exactly:
 
-Verdict
--------
+  canonical nontrivial bipartitions   32,767
+  both-side-connected partitions      16,901
+  Pareto-frontier partitions             135
 
-CONNECTED_BALANCED_TYPE_PARTITION_WITH_EXPLICIT_SEAM_FOUND
+This corrects the pre-run draft, which had said 17 operation types and 65,535
+partitions.
 
-Decision
---------
-
-BUILD_GEOMETRIC_BAY_AND_SEAM_CONSTRUCTOR_AROUND_SELECTED_CONTRACT
-
-Complete type-level enumeration
--------------------------------
-The frozen recipe graph contains 17 operation types. E080 fixes one type in
-module A to quotient A/B label symmetry, then exhausts all nontrivial assignments
-of the remaining types:
-
-  canonical partitions enumerated       65,535
-  both induced modules connected             53
-  Pareto-frontier connected partitions        6
-
-Every copy of one operation type remains in the same module. This is a deliberate
-first sufficient-construction language, not a claim that instance-level splitting
-is invalid.
-
-Selected deterministic partition
---------------------------------
-Partition ID:
-
-  partition_29914
-
-Module A:
-
-  operation types       10
-  mandatory instances  140
-  body area            1922
-
-  crusher_blue_iron
-  crusher_buckwheat
-  filling_capsule
-  grinder_dense_blue_iron
-  grinder_fine_buckwheat
-  molding_bottle
-  planter_buckwheat
-  refinery_blue_iron
-  refinery_steel
-  seed_collector_buckwheat
-
-Module B:
-
-  operation types        7
-  mandatory instances   79
-  body area            1403
-
-  crusher_sandleaf
-  crusher_source
-  grinder_dense_source
-  packaging_battery
-  parts_maker
-  planter_sandleaf
-  seed_collector_sandleaf
-
-The area imbalance is 519 cells and the instance-count imbalance is 61. Both
-induced dependency graphs are connected. The selected partition satisfies the
-declared one-third/two-thirds area band, but it is one deterministic research
-choice and never WLOG.
+The declared deterministic ordering selects one partition inside the 1/3--2/3
+body-area balance band. Both induced operation-dependency graphs are connected.
+All copies of one operation type stay in the same module; the result is not an
+instance-level partition.
 
 Typed seam
 ----------
-Only two intermediate commodities cross the operation-type partition:
+The selected partition has seven named crossing commodities and twelve directed
+producer-to-consumer dependency edges. The seam commodities are:
 
-1. steel_block, A -> B
+  blue_iron_block
+  buckwheat
+  buckwheat_powder
+  dense_blue_iron_powder
+  sandleaf_powder
+  steel_block
+  steel_part
 
-   producer: refinery_steel
-   consumer: parts_maker
-   producer output-slot incidence: 17
-   consumer input-slot incidence:   6
+The contract records, for each direction and commodity:
 
-2. sandleaf_powder, B -> A
+  producer and consumer operation types;
+  mandatory operation-copy counts;
+  concrete producer-output and consumer-input slot incidence;
+  module-side named external-source input obligations;
+  final-sink output obligations.
 
-   producer: crusher_sandleaf
-   consumers: grinder_dense_blue_iron, grinder_fine_buckwheat
-   producer output-slot incidence: 33
-   consumer input-slot incidence:  23
+The frozen problem also carries 52 generic source providers and two generic sink
+slots. E080 keeps their commodity binding existential; it does not manufacture
+named sources or sinks before binding.
 
-The seam contains three producer-to-consumer dependency edges and total discrete
-incidences:
-
-  A -> B producer / consumer slots   17 / 6
-  B -> A producer / consumer slots   33 / 23
-
-`mixed_consumer_sides=true` means the same commodity also has consumers on the
-producer's side; therefore the listed incidence is an interface inventory, not a
-claim that every listed slot must physically cross the seam. No duty, rate, lane
-count, or throughput lower bound is frozen here.
-
-External interfaces
--------------------
-The constructor must also retain these named obligations while leaving generic
-provider/sink assignment existential until binding:
-
-  module A external input   blue_iron_ore, 34 input-slot incidences
-  module B external input   source_ore,     18 input-slot incidences
-  module A final output     qiaoyu_capsule,  3 output-slot incidences
-  module B final output     valley_battery,  3 output-slot incidences
-
-Boundary contract
------------------
-The seam contract imports E079's complete 47-state boundary macro and its full
-five-condition consumption license. It does not select rank 1 and does not bind
-one boundary macro state before the geometric constructor proves that restriction
-safe.
-
-Effect on the next problem
+Boundary macro consumption
 --------------------------
-Build a bounded geometric bay-and-seam constructor that:
+SEAM_CONTRACT.json pins the E079 result and macro by content identity and imports
+the complete 47-state boundary disjunction plus its five-condition consumption
+license. The selected partition and any selected boundary state are research
+choices, never WLOG.
 
-1. preserves the complete 47-way boundary-state disjunction;
-2. assigns real facility bodies to two geometric bays;
-3. materializes stable docks for the two seam commodities and four external
-   interfaces;
-4. checks non-overlap, power, front availability, terminal uniqueness, and
-   component-aware binding before exact routing;
-5. returns a typed failed interface premise rather than an undifferentiated
-   coordinate-master failure.
+Interpretation
+--------------
+E080 clears the cheapest type-level refuter for a two-module sufficient
+construction language. It supplies a finite boundary module and a finite typed
+inter-module interface before any coordinate search. The next faithful consumer
+is a bounded geometric bay-and-seam constructor that must place stable docks and
+replay real non-overlap, power, front, terminal-uniqueness, component-aware
+binding, and eventually exact routing.
 
 Truth boundary
 --------------
-E080 exhausts canonical operation-type bipartitions only. The selected partition
-places no facility, binds no generic commodity, freezes no duty/rate, proves no
-physical seam, and supplies no routing or complete-layout witness. Slot incidence
-is a discrete construction-interface statistic, not throughput.
+The seam counts are discrete incidence counts, not lane capacities or throughput
+proofs. E080 neither proves that a compatible geometry exists nor that two
+modules are necessary. Failure of the next constructor would refute that
+constructor or this selected contract, not partition-plus-seam in general.
