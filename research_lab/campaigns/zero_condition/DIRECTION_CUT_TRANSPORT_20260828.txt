@@ -1,13 +1,22 @@
 ZMD ZERO-CONDITION CANDIDATE DIRECTION
-CUT NECESSITY, MEMBRANES, AND TRANSPORT CORES
-================================================
+CUT NECESSITY, OWNER SEPARATORS, AND TRANSPORT CORES
+=====================================================
 
 Identity and effect
 -------------------
 Date: 2026-08-28
+Revision: owner-adjudicated absorption of the heterogeneous adversarial review
 Status: R0 CANDIDATE DIRECTION
 Mode: research-only, non-certified
 Campaign: zero_condition
+
+Original landing:
+  b32da59f1f828a7b162ab535a931a6380288162c
+
+Review records:
+  research_lab/campaigns/zero_condition/
+    DIRECTION_CUT_TRANSPORT_20260828_REVIEW.txt
+  research_lab/local/reviews/20260828_cut_transport_refutation.md
 
 This file freezes a candidate mathematical and architectural direction. It does
 not certify a theorem implementation, admit a production consumer, update U or
@@ -15,39 +24,81 @@ L, establish a whole-layout witness, or authorize pruning in the certified
 solver. Every result below must still be instantiated, checked, and transported
 to a concrete consumer before it can affect a search space.
 
-An independent heterogeneous review of the originating discussion may produce
-objections or corrections. Such review does not block this R0 landing; material
-changes require a later owner-adjudicated revision.
+The heterogeneous review independently re-derived and CONFIRMED the
+witness-conditional cut theorem. This revision adopts its two load-bearing
+corrections:
+
+  * terminal rates are not frozen numbers; they range over a legal duty and
+    terminal-allocation polytope;
+  * geometric relocation is a set-packing reconfiguration problem, not a
+    matching problem. A matching relaxation supplies at most a lower bound.
+
+The review also established that the Boolean and cut objects already have
+production predecessors in F4, F2 plus Lean, and SAC-Hull. The proposed novelty
+is therefore a rate-valued strengthening and a structure-level consumer chain,
+not the invention of cut necessity itself.
 
 Candidate direction in one sentence
 -----------------------------------
-A feasible layout need not contain one visually prescribed corridor, but its
-free space, selected terminals, and physical route channels must support a typed
-material-circulation network satisfying component balance and every applicable
-cut-capacity inequality. A violated cut yields a separator or membrane; repairing
-that obstruction can then be reduced to a minimum semantic or geometric
-transport core. A restricted typed skeleton with a verified constructor supplies
-the sufficient direction.
+A quantitatively feasible layout must admit at least one binding and at least
+one legal duty allocation whose typed material-circulation witness satisfies
+component balance and every applicable cut-capacity inequality. At current
+six-predicate scope, production-side Boolean component failures may expose
+stable zero-capacity owner separators. Semantic operation-to-body repair may
+admit a small b-matching transport core; physical body relocation remains an
+exact set-packing repair problem. A restricted typed skeleton with a verified
+constructor supplies the sufficient direction.
 
 The proposed unbroken chain is:
 
-  frozen rules and terminal obligations
-    -> component/cut necessity
-    -> minimum deficient cut or zero-capacity membrane
-    -> minimum semantic assignment transport core
-    -> minimum geometric vacancy/relocation transport core
-    -> bounded joint placement/mode/binding consumer
+  frozen canonical rules and terminal obligations
+    -> current production-side Boolean component/cut gate
+    -> stable zero-capacity owner-separator family
+    -> minimum semantic assignment transport core, when matching premises hold
+    -> bounded geometric set-packing repair context
+    -> E077-style joint placement/mode/binding consumer
     -> typed skeleton constructor
-    -> exact routing and later selected-route throughput verification
+    -> exact routing and connectivity guard
+    -> future duty-polytope selected-route LP oracle
 
 This direction is intended to produce structure-level chain links. It is not a
-license to replace the current whole-layout campaign with an isolated theorem
-program.
+license to replace the whole-layout campaign with an isolated theorem program.
 
-1. Scope and semantic split
----------------------------
-The frozen grid is Omega = {0,...,69} x {0,...,69}. For a candidate layout L,
-let:
+1. Authority, scope, and semantic split
+---------------------------------------
+1.1 Source hierarchy
+
+Anything rate- or capacity-valued in this direction derives from:
+
+  rules/canonical_rules.json
+    semantics.axiom_kernel.A7_rates
+    semantics.mixed_commodity_flow
+    semantics.rate_lemma_scope
+    semantics.routing_cross_junction
+
+and from the frozen preprocess artifacts whose relation to those rules is
+explicitly checked.
+
+Do not derive rate or channel-capacity semantics from specs/09. That file is
+stale on exactly these points: it retains a literal three-dimensional elevated
+bridge reading and a per-commodity single-belt rule that are superseded by the
+canonical single-cell cross-junction and mixed-commodity-flow rulings.
+
+Proof transport and master-cut permission are additionally governed by:
+
+  specs/10_benders_decomposition_and_cut_design.md
+    section 10.7, binding-local evidence ladder
+    section 10.8, necessarily-active port premise
+    section 10.9, constant-support obligation CUT-R8-H1
+    section 10.10, separator-relaxation obligation CUT-R9-H1
+
+1.2 Frozen layout objects
+
+The grid is:
+
+  Omega = {0,...,69} x {0,...,69}.
+
+For a candidate layout L, let:
 
   B(L)       facility-body occupied cells;
   P(L)       selected power-pole occupied cells;
@@ -56,593 +107,948 @@ let:
   F(L)       Omega minus O(L).
 
 For the zero-condition campaign, H(L) is empty. In a conditioned campaign, H(L)
-is the selected strict-empty rectangle and therefore removes cells from the same
-routing substrate as bodies and poles.
+is a selected strict-empty rectangle with minimum side six and is itself a
+maximized decision variable. Any certificate involving H must carry the exact
+rectangle as a premise.
 
 The current preprocessed instance contains 266 mandatory instances. Under the
-current discrete port-slot semantics, the binding ledger contains 310 exact
-input slots, 264 exact output slots, 52 required generic source slots, and 2
-required generic sink slots, for 628 selected terminal obligations in total.
-This count is context evidence, not the theorem itself.
+current discrete port-slot semantics, the binding ledger contains:
 
-Two semantic levels must remain separate.
+  310 exact input slots;
+  264 exact output slots;
+   52 required generic source slots;
+    2 required generic sink slots;
+  628 selected terminal obligations in total.
 
-A. Current routing/connectivity semantics
+The 17 recipe operation groups and 19 commodities form one weakly connected
+recipe bipartite graph. These counts are context evidence, not theorem premises.
 
-The existing exact routing layer proves selected terminal-front availability,
+1.3 Current connectivity semantics
+
+The current exact routing layer proves selected terminal-front availability,
 component compatibility, physical component legality, directed edge balance,
-and source-to-sink connectivity. It does not prove quantitative production
-throughput. Different commodities may share one physical belt component when
-the union of their selected sides is a legal physical pattern. Therefore a
-numeric "one commodity per belt" capacity assumption is not currently licensed.
+and source-to-sink connectivity. It does not prove production throughput.
+Different commodities may share one physical belt or cross-junction component
+when their selected side union is a legal physical pattern.
 
-B. Future selected-route throughput semantics
+The labels L0 and L1 are not physical elevation. They encode the two mutually
+perpendicular straight channels of one single-cell cross-junction. There is no
+ramp, no layer transition, and no route that flies over a facility body or pole.
+Every physical routing component still occupies a free grid cell.
 
-A quantitative cut-capacity theorem requires a selected physical route graph,
-exact terminal rates, exact per-channel capacities, shared-capacity equations,
-and an independent exact verifier. That model is not yet the current certified
-routing theorem. The numerical theorem below is mathematically precise, but its
-use as a solver cut remains pending the selected-route throughput model.
+1.4 Future quantitative semantics
 
-2. Typed circulation model
---------------------------
-Let N_L = (V,E) be a directed physical material network induced by a candidate
-layout and a selected route realization. Vertices may represent legal physical
-channel states, terminal-front incidences, or a verifier-equivalent expansion.
-Every selected terminal t is attached to a stable network vertex v(t), has a
-commodity c(t), a sign sigma(t) in {+1,-1}, and a nonnegative exact rate r(t):
+A quantitative theorem needs a selected physical route or a separately proved
+capacity relaxation, actual binding and generic-slot assignments, a legal duty
+allocation, shared-capacity equations, and an independent rational verifier.
+That is not the current certified routing theorem. Numerical results in this
+file remain research diagnostics until a new admitted throughput paradigm and
+consumer exist.
 
-  sigma(t) = +1 for a material source/output terminal;
-  sigma(t) = -1 for a material sink/input terminal.
+2. Duty-allocation and typed-circulation model
+----------------------------------------------
+2.1 Duty polytope
 
-Generic boundary/protocol sources and final generic sinks are represented as
-explicit external terminal vertices rather than omitted from the balance.
+For every recipe operation o, let:
 
-For each commodity c and directed edge e, let f[c,e] >= 0 be exact flow. Let
-u[e] >= 0 be the shared physical capacity of e. The selected-route model must
-satisfy:
+  M_o       mandatory machines carrying operation o;
+  R_o       frozen aggregate equivalent-full-speed machine-run demand;
+  n_o       |M_o| = ceil(R_o), as recorded by the fact half of
+            canonical semantics.rate_lemma_scope;
+  u_m       utilization of machine m in M_o.
 
-  conservation at every vertex v:
+The legal duty variables belong to the polytope:
 
-    sum_{e leaves v} f[c,e] - sum_{e enters v} f[c,e] = b[c,v]
+  U_o = {
+          u in [0,1]^(M_o) : sum_{m in M_o} u_m = R_o
+        }.
 
-  where
+The global duty polytope is the product:
 
-    b[c,v] = sum_{t: v(t)=v, c(t)=c} sigma(t) * r(t),
+  U = product_o U_o,
 
-  and shared edge capacity:
+with any additional selected-route throughput premises stated explicitly.
 
-    sum_c f[c,e] <= u[e].
+Equal inter-machine duty allocation,
 
-If the physical model uses undirected channels, replace each channel by the
-verifier's directed expansion and use its actual shared-capacity contract.
+  u_m = R_o / n_o,
+
+is one conditional profile in canonical rate_lemma_scope, not a frozen layout
+fact. The canonical weaker-precondition note records legal unequal examples:
+
+  [1, 9/10 x5]      for demand 11/2 over 6 machines;
+  [1, 19/20 x10]    for demand 21/2 over 11 machines;
+  [1, 7/8, 7/8]     for demand 11/4 over 3 machines.
+
+Therefore no direction file, summary, or solver cut may freeze one per-machine
+rate allocation without carrying it as an explicit premise.
+
+2.2 Binding and terminal-rate polytope
+
+Let BIND(L) be the set of binding selections admitted by the exact binding
+semantics for layout L. A binding beta determines which physical terminal slot
+carries each concrete commodity obligation and which commodity is assigned to
+each generic slot.
+
+For a fixed beta and duty vector u in U, let R(L,beta,u) be the set of terminal
+rate vectors r consistent with:
+
+  * canonical recipe input and output coefficients;
+  * the selected machine duties u;
+  * the selected concrete port slots;
+  * the actual commodity-to-generic-slot assignment;
+  * any admitted terminal split or aggregation semantics;
+  * canonical A7 aggregate lane capacity.
+
+Thus r is a variable in a polytope or affine image of a polytope, not a number
+waiting to be read from the layout.
+
+An unbound generic slot is not a source or sink of a named commodity. Commodity
+pressure may be attributed to a generic provider only after a concrete
+commodity-to-slot binding is selected. This is the standing generic-slot
+obligation inherited from separator_capacity_hull.py.
+
+2.3 Selected-route network
+
+For fixed L, beta, u, r, and a selected physical route realization, let:
+
+  N = (V,E)
+
+be a verifier-equivalent directed expansion of the physical material network.
+Every selected terminal t attaches to a stable vertex v(t), has commodity c(t),
+sign sigma(t) in {+1,-1}, and rate r(t) >= 0:
+
+  sigma(t) = +1 for a source/output terminal;
+  sigma(t) = -1 for a sink/input terminal.
+
+Generic boundary/protocol sources and final generic sinks are explicit terminal
+vertices after their binding is fixed.
+
+For every commodity c and directed edge e, let:
+
+  f[c,e] >= 0    commodity flow;
+  q[e]   >= 0    shared physical channel capacity.
+
+The witness satisfies:
+
+  sum_{e leaves v} f[c,e] - sum_{e enters v} f[c,e] = b[c,v],
+
+where:
+
+  b[c,v] = sum_{t: v(t)=v and c(t)=c} sigma(t) * r(t),
+
+and:
+
+  sum_c f[c,e] <= q[e].
+
+Capacity is aggregated across commodities, following canonical A7 and
+mixed_commodity_flow. If the physical representation is undirected, use the
+verifier's directed expansion and its actual shared-capacity contract.
 
 For S subseteq V, define:
 
-  b[c,S] = sum_{v in S} b[c,v]
+  b[c,S] = sum_{v in S} b[c,v];
 
-  delta+(S) = directed edges leaving S
-  delta-(S) = directed edges entering S
+  delta+(S) = directed edges leaving S;
+  delta-(S) = directed edges entering S;
 
-  cap+(S) = sum_{e in delta+(S)} u[e]
-  cap-(S) = sum_{e in delta-(S)} u[e]
+  cap+(S) = sum_{e in delta+(S)} q[e];
+  cap-(S) = sum_{e in delta-(S)} q[e];
 
-and [x]+ = max(x,0).
+  [x]+ = max(x,0).
+
+Any patch or reduced graph used for a cut must satisfy the inherited enclosure
+obligation: every escape edge from S to legal free space outside the modeled
+patch must be represented in delta(S), or the derived capacity is fictitious.
 
 3. Component-cut circulation necessity
 ---------------------------------------
-Theorem candidate T-CUT-NECESSITY
+3.1 Witness-conditional theorem
 
-Assume a selected-route witness satisfies the conservation and shared-capacity
-semantics in Section 2. Then for every S subseteq V:
+Theorem candidate T-CUT-NECESSITY-WITNESS
+
+Assume one selected-route witness satisfies Section 2. Then for every
+S subseteq V:
 
   sum_c [ b[c,S] ]+ <= cap+(S)                         (1)
 
   sum_c [ -b[c,S] ]+ <= cap-(S).                      (2)
 
-Equivalently, every region's forced net material export and import must fit
-through the corresponding physical cuts.
-
 Proof skeleton
 
-1. Fix one commodity c and sum its vertex-conservation equations over all
-   v in S.
+1. Fix commodity c and sum its vertex-conservation equations over all v in S.
 
 2. Every edge internal to S appears once as outgoing and once as incoming, so
-   all internal terms cancel. The remaining equality is:
+   internal terms cancel:
 
      b[c,S]
        = sum_{e in delta+(S)} f[c,e]
          - sum_{e in delta-(S)} f[c,e].
 
-3. Therefore:
+3. Since all flows are nonnegative:
 
      [b[c,S]]+ <= sum_{e in delta+(S)} f[c,e].
 
-4. Sum over commodities and apply the shared-capacity rows:
+4. Sum over commodities and apply shared capacity:
 
      sum_c [b[c,S]]+
        <= sum_{e in delta+(S)} sum_c f[c,e]
-       <= sum_{e in delta+(S)} u[e]
+       <= sum_{e in delta+(S)} q[e]
        = cap+(S).
 
-5. Apply the same argument to -b[c,S] for the incoming inequality.
+5. Apply the same argument to -b[c,S] for incoming capacity.
 
-No geometric intuition is used in this proof. The theorem is obtained by adding
-local forced-balance equations and then applying physical cut capacities.
+This proof is independently confirmed by the heterogeneous review. It derives a
+necessary inequality for a witness. It does not, by itself, prove that a chosen
+separator model is a relaxation of production routing.
 
-3.1 Currently provable Boolean/component corollary
+3.2 Layout-level quantifier form
 
-Before the quantitative selected-route model exists, the current routing
-semantics already supports the zero-capacity Boolean specialization.
+A layout-level necessary condition must retain the existential decisions that a
+real feasible witness is allowed to choose.
 
-Let G_free(L) be the undirected graph on free routing cells, with grid-adjacent
-free cells joined. Let C be one connected component. For commodity c, let
-T+[c,C] and T-[c,C] be the selected source and sink terminal fronts in C,
-including explicit generic source/sink terminals.
+If a capacity substrate K(L,beta) has been independently proved to relax every
+legal selected physical route under binding beta, then quantitative feasibility
+of L implies:
 
-A necessary condition for current exact connectivity is:
+  exists beta in BIND(L),
+  exists u in U,
+  exists r in R(L,beta,u),
+  for every S subseteq V(K(L,beta)):
 
-  T+[c,C] is nonempty if and only if T-[c,C] is nonempty,
+    sum_c [ b[c,S;beta,r] ]+ <= cap_K+(S),
+    sum_c [ -b[c,S;beta,r] ]+ <= cap_K-(S).
 
-for every component that contains any selected terminal of c, subject to the
-exact external-terminal representation of that commodity. More generally, all
-selected c terminals in C must belong to a source-to-sink-connected selected
-route subgraph accepted by the connectivity guard.
+The quantifier order is therefore:
 
-This is the cap(C)=0 degeneration of the circulation theorem. It is fully within
-the current component/precheck semantics and does not require a throughput
-claim.
+  exists binding, exists duty/rate allocation, for all cuts.
 
-3.2 Power poles and the empty rectangle
+It is not:
 
-Power coverage and circulation are conjunctive obligations:
+  for every binding;
+  for one frozen equal-duty allocation;
+  or for one arbitrary optimum endpoint returned by a solver.
+
+Once beta is fixed, the allocation and flow feasibility question is an LP over
+the duty polytope. At layout level, a finite binding search may call that LP at
+its leaves, or a separately verified mixed discrete/continuous model may combine
+them. A fixed-beta LP result cannot silently become a layout-level cut.
+
+If K has not been proved a relaxation of production routing, its INFEASIBLE
+result is telemetry or core-shrinking evidence only under CUT-R9-H1.
+
+3.3 Allocation-independent Boolean strengthening
+
+The current Boolean corollary does not need equal-duty or exact terminal rates.
+
+For operation o, n_o = ceil(R_o). For any machine m in M_o:
+
+  u_m
+    = R_o - sum_{m' != m} u_m'
+    >= R_o - (n_o - 1).
+
+If R_o is non-integral, this lower bound is frac(R_o) > 0. If R_o is integral,
+then n_o = R_o, the same equation and u_m <= 1 force every u_m = 1.
+
+Therefore every mandatory machine carrying o has strictly positive utilization
+under every legal allocation in U_o. Every selected terminal corresponding to a
+positive recipe coefficient is consequently a positive-rate obligation,
+independent of how duty is split among the machines.
+
+Boolean corollary T-POSITIVE-COMPONENT
+
+Let C be an isolated connected component of the free-cell graph. If C contains
+a selected positive-rate source terminal of commodity c, then C must contain a
+selected sink terminal of c. The converse holds for a positive-rate sink.
+Otherwise the zero-capacity cut around C violates conservation for every legal
+duty allocation.
+
+Generic source and sink obligations require their own selected slot identity;
+the corollary does not manufacture a named terminal from an unbound generic
+slot.
+
+This Boolean result is already present in production semantics:
+
+  * routing precheck relaxed_disconnected;
+  * F4 component_reach, the zero-capacity case;
+  * the current binding-selection proof ladder.
+
+It is not a novel cut family. Its value here is as the rate-independent first
+consumer and as the base case of the later quantitative strengthening.
+
+3.4 Existing cut machinery and novelty boundary
+
+The cut object already exists in several forms:
+
+  SAC-Hull
+    src/models/separator_capacity_hull.py
+    aggregated commodity crossing pressure against separator capacity;
+
+  F2 cutset
+    src/cuts/families/cutset.py
+    arbitrary cutsets, a Dinic min-cut oracle, and enclosure obligations;
+
+  F4 component reach
+    src/cuts/families/component_reach.py
+    zero-capacity connectivity case;
+
+  formal core
+    formal/ZmdFormal/CutFamilies.lean
+    F2 pigeonhole and F4 reachability theorems;
+
+  multicommodity LP
+    src/models/flow_subproblem.py
+    conservation and cross-commodity shared capacity, currently diagnostic.
+
+The genuine candidate contribution is narrower:
+
+  strengthen the existing per-commodity crossing coefficient from a Boolean or
+  registry demand to the positive part of net rate injection b[c,S], while
+  quantifying over the legal duty and binding polytope.
+
+Every rate-valued successor inherits, unchanged:
+
+  * the F2 enclosure obligation;
+  * the SAC-Hull unbound-generic-slot obligation;
+  * the specs/10 constant-support and relaxation obligations;
+  * the current non-certified status of throughput arithmetic.
+
+3.5 Capacity accounting note
+
+Canonical A7 gives one item per tick per physical belt channel, aggregated across
+commodities. In current routing semantics, every directed grid edge can carry at
+most one selected channel across that direction. A single-cell cross-junction
+may carry two perpendicular straight channels in one free cell, but it cannot
+carry two same-axis channels, and a turn/splitter/merger excludes the second
+channel.
+
+Consequently:
+
+  * per directed grid edge, the upper bound is one channel;
+  * for a one-cell-thick axis-aligned separator wall, each free wall cell
+    contributes at most one crossing channel;
+  * for a jagged boundary, one cell may contribute two perpendicular crossings,
+    so general capacity must be counted by directed cut edges, not by a universal
+    one-per-cell rule.
+
+The shipped two-per-free-wall-cell constant is therefore a candidate factor-two
+loose bound on axis-aligned SAC-Hull walls. Tightening a shipped constraint is a
+soundness-direction change and requires its own PCR-R5-style relaxation proof,
+tests, and consumer review. This R0 file makes no production change.
+
+3.6 Conditional lane-separation result
+
+Canonical rate_lemma_scope already proves a lane-separation result inside one
+explicit allocation profile: equal inter-machine duty, minimum lane count, and
+no lane dilution. Under those premises, no two intermediate residual streams
+may share a lane.
+
+The weaker-precondition note records unequal duty profiles that retain the same
+conclusion under an additional utilization lower bound. Neither profile is
+recorded by the six certified predicates. These are conditional construction or
+lower-bound tools, not unconditional layout theorems.
+
+3.7 Power poles and the empty rectangle
+
+Power and circulation are conjunctive obligations:
 
   PowerCover(P(L))
   AND
-  CutFeasible(B(L),P(L),H(L),selected terminals).
+  CutFeasible(B(L),P(L),H(L),selected binding and duties).
 
-A pole may improve PowerCover while deleting four free cells and reducing one or
-more cut capacities. The pole's obstacle effect is therefore not a downstream
-accident; it belongs in the same context as the cut calculation.
+A pole may improve power coverage while deleting four free cells and reducing
+cut capacity. Its obstacle role belongs in the same context as the cut, not in a
+late routing afterthought.
 
-When the strict empty rectangle is reintroduced, H(L) simply removes additional
-cells and channel edges. Its competition with the material structure becomes a
-measurable change in cut capacity and separator structure, rather than the vague
-claim that the rectangle "uses corridor space."
+For a fixed empty rectangle H, adding H only removes legal cells and cut edges.
+Thus a zero-condition infeasibility certificate whose premises do not depend on
+H remains valid after adding any H. The converse fails. Because H is optimized,
+every conditioned cut certificate must carry the exact rectangle as a premise;
+zero-condition cuts alone do not tell the solver where the rectangle should go.
 
-4. Membrane as the zero-capacity cut special case
--------------------------------------------------
-Definition: body membrane
+4. Zero-capacity owner separators
+---------------------------------
+The term membrane is deliberately not used here. It already names
+CLAIM-ORDINARY-MEMBRANE-TERMINAL-BOUND-S48, a different geometric contact-length
+object.
 
-Fix a candidate layout L and stable terminal regions A and Z. Let M be a set of
-selected body or pole owners. Let G_free(L) be the current free-cell graph, and
-let G_free(L | release M) be the graph obtained by restoring the occupied cells
-of M as potentially free while keeping every other owner fixed.
+4.1 Definition
 
-M is an A-Z membrane when:
+Fix layout L and two stable terminal regions A and Z, represented by physical
+cell sets or stable terminal witnesses rather than transient component numbers.
+Let O be the selected body and pole owners.
+
+For M subseteq O, let G_free(L | release M) restore the occupied cells of owners
+in M while keeping every other owner fixed.
+
+M is an A-Z owner separator release set when:
 
   A and Z are disconnected in G_free(L),
   A and Z are connected in G_free(L | release M).
 
-It is minimal when no proper subset of M has this property.
+M is inclusion-minimal when no proper subset has that property. Let:
 
-Membrane corollary
+  SEP_L(A,Z)
 
-If a fixed terminal assignment requires nonzero material transfer from the A
-side to the Z side, and the current A-side cut has zero capacity, then the
-candidate is infeasible. Under fixed outside geometry, any repair must do at
-least one of the following:
+be the family of all inclusion-minimal owner separator release sets.
 
-  1. alter operation, mode, or binding assignments so the cross-membrane demand
-     disappears or is balanced on each side;
-  2. move or otherwise deactivate at least one member of M;
-  3. create a different legal channel path outside the membrane by changing
-     other geometry.
+4.2 Zero-capacity corollary
 
-A bridge crossing does not tunnel through an occupied facility body. It may
-cross another legal route only at a free cell and under the exact ground/bridge
-compatibility rules.
+If a fixed selected terminal relation requires positive transfer from the A side
+to the Z side, and the current free graph has no legal channel edge across the
+separation, then the candidate terminal relation is infeasible. This is the
+zero-capacity specialization of T-CUT-NECESSITY-WITNESS and the existing F4 /
+relaxed_disconnected object.
 
-Thus a membrane is not merely a visual wall. It is a zero-capacity cut whose
-forced terminal balance is nonzero. The E075-style delete/recompute observation
-is a local instance of this general form.
+A cross-junction cannot bypass the separator. There is no physical elevated
+route: both perpendicular channels occupy one free cell and neither can occupy a
+body or pole cell.
 
-5. Transport-core theorem
--------------------------
-The same obstruction may be repaired in two assignment spaces:
+4.3 Sound repair form
 
-  semantic transport:
-    operation/mode/terminal responsibilities -> stable body rows;
+For a repair that keeps the same positive transfer obligation, let F be the set
+of owners whose occupied cells are released or changed enough to alter the free
+graph. If the repaired free graph connects A to Z, finiteness implies that F
+contains at least one member M of SEP_L(A,Z).
 
-  geometric transport:
-    stable bodies -> legal footprints.
+A complete repair may instead:
 
-Both can be represented by a bipartite compatibility graph.
+  1. change operation, mode, binding, or duty choices so the positive cross-side
+     obligation disappears or becomes balanced;
+  2. open a represented alternative portal/path whose support is included in the
+     repair context;
+  3. release a set F containing some M in SEP_L(A,Z).
 
-5.1 Exact matching decomposition
+One arbitrarily selected M is not an exhaustive cut. Minimal release sets need
+not be unique or intersect. Compiling:
 
-Let A=(U,W,E_A) be a bipartite graph. U is a set of stable items and W is a set
-of stable slots. A feasible assignment M is a matching or b-matching satisfying
-the declared degree/capacity vector. Examples are:
+  move at least one owner of this M
 
-  operation copies assigned to body rows;
-  bodies assigned to footprints;
-  terminal responsibilities assigned to compatible modes.
+as a master cut is unsound unless all alternative paths and the full separator
+family have been covered, or an independent exact proof establishes the chosen
+disjunction. This is another form of the CUT-R8-H1 support-context obligation.
 
-Theorem candidate T-TRANSPORT-CORE
+4.4 Evidence boundary
 
-For two ordinary matchings M0 and M1 on the same stable vertex universe, every
-connected component of the symmetric difference
+E075 exhausted twelve ordered two-body placements and observed two INFEASIBLE
+and ten empty-option-domain outcomes. It did not prove an owner separator theorem
+and must not be cited as proof of Section 4. Owner-separator extraction remains a
+candidate analysis to be independently implemented and checked.
 
-  M0 triangle M1
+5. Transport cores and geometric packing repair
+-----------------------------------------------
+5.1 Semantic b-matching candidate
 
-is an alternating even cycle or an alternating path. Components are
-vertex-disjoint. If both matchings cover the same vertices with the same degree
-requirements, only alternating cycles remain. If their matched/unmatched
-boundary differs, alternating paths end at the discrepancy vertices.
+The semantic transport space assigns operation, mode, or terminal
+responsibilities to stable body rows. When the following premises hold, it has a
+b-matching form:
 
-For a b-matching with the same degree vector, split each capacity-d vertex into
-d unit copies, or use the equivalent edge-colored multigraph. The symmetric
-difference then decomposes into edge-disjoint alternating cycles; paths occur
-only at vertices whose endpoint degree requirements differ.
+  * stable left items and stable right body rows;
+  * compatibility edges encode every local admissibility condition claimed;
+  * declared degree and multiplicity requirements are fixed;
+  * all compared assignments live in the same context;
+  * global side constraints are either absent or carried separately.
+
+Theorem candidate T-SEMANTIC-TRANSPORT-DECOMPOSITION
+
+For two ordinary matchings M0 and M1 on one stable bipartite universe, every
+connected component of M0 triangle M1 is an alternating even cycle or an
+alternating path. If both matchings cover the same vertices with the same degree
+requirements, only cycles remain. For a b-matching with one fixed degree vector,
+split capacity-d vertices into d unit copies, or use an equivalent edge-colored
+multigraph; the same edge decomposition follows.
 
 Proof skeleton
 
-Color M0-only edges old and M1-only edges new. At every interior vertex with the
-same assignment degree in both states, the number of incident old edges equals
-the number of incident new edges. Following unused edges while alternating
-colors therefore either returns to the starting vertex, producing an even
-cycle, or terminates at a vertex with degree discrepancy, producing an
-alternating path. Repeating this partitions the symmetric-difference edges.
+Color M0-only edges old and M1-only edges new. At every equal-degree interior
+vertex, the number of incident old and new edges is equal. Following unused
+edges while alternating colors either closes a cycle or terminates at a degree
+discrepancy. Repeating partitions the symmetric-difference edges.
 
-5.2 Minimum transport core
+This is a theorem candidate explaining the shape of E074's semantic assignment
+model. E074 itself established a CP-SAT optimum over one context; it did not use
+or prove matching decomposition. The b-matching framing is retroactive and must
+retain candidate status until separately checked.
 
-Let T be a target class of feasible assignments. Introduce change indicator
-z[u] for every stable item u, with z[u]=1 exactly when u's assignment differs
-from the parent state M0. Solve:
+5.2 Minimum semantic transport core
+
+For a fixed semantic target class T, introduce one change indicator z[u] per
+stable semantic item u:
 
   minimize sum_u weight[u] * z[u]
-  subject to M1 in T.
+  subject to assignment M1 in T.
 
-The support of an optimum symmetric difference is a minimum weighted transport
-core. Its nontrivial changes are organized by the alternating paths/cycles
-above. This is the formal version of an assignment transport core or a vacancy
-chain.
+If the b-matching premises hold, the changed support is a minimum weighted
+semantic transport core, and its matching difference decomposes as above.
 
-5.3 Applicability premises and limits
+A small semantic core is a constructive assignment specification. It is not a
+physical layout, route, throughput witness, or whole-layout proof.
 
-The decomposition is licensed only when all of the following are explicit:
+5.3 Geometric repair is set packing
 
-  * U and W have stable identities. Geometry-dependent destination indices and
-    freshly numbered free-space components are not stable identities.
+Physical body-to-footprint assignment has a different mathematical shape.
+Candidate variables x[b,p] must satisfy at least:
 
-  * M0 and M1 live in the same context and use the same object universe. A
-    context change must be transported before the comparison.
+  one footprint per required body;
+  per-cell Sum_{b,p containing cell} x[b,p] <= 1;
+  template, orientation, and footprint compatibility;
+  power coverage;
+  port-front and mode viability;
+  any preserved outside geometry and empty-rectangle premises.
 
-  * Compatibility edges encode the actual local admissibility being claimed.
-    If non-overlap, power, terminal uniqueness, or port-domain conditions are
-    global, they must remain as side constraints in the optimization model.
+This is a colored set-packing or conflict-graph independent-set problem. Two
+bodies choosing distinct but overlapping footprints are incompatible even
+though an ordinary matching would allow them.
 
-  * Capacity greater than one is represented as b-matching capacity or by unit
-    copies. Interchangeable copies may be quotiented only after proving the
-    relevant metadata and obligations are identical.
+Consequences:
 
-  * The theorem compares feasible endpoint assignments. It does not claim that
-    flipping one alternating edge at a time preserves feasibility.
+  * symmetric differences of feasible geometric assignments do not generally
+    decompose into alternating paths or cycles;
+  * applying one putative path in isolation need not preserve non-overlap or
+    power feasibility;
+  * a body-footprint matching relaxation can give only a lower bound on the
+    minimum moved-body count;
+  * the exact geometric repair must remain a set-packing optimization with its
+    real side constraints.
 
-  * A small transport core is a constructive modification specification, not a
-    routing, throughput, or whole-layout witness.
+E077's experimental geometry probe is direct evidence of this distinction: it
+uses one selected-footprint count row and per-cell Sum <= 1 disjointness rows.
 
-Under these premises, E074-style semantic row cores and E075/E077-style vacancy
-chains are two instances of one transport theorem, not unrelated tricks.
+5.4 No adopted shortest-vacancy number
+
+This direction adopts no claim that the shortest vacancy or relocation repair
+moves six bodies. That number was not persisted as a machine result. The only
+persisted E077 output currently corresponds to retaining 30 of 38 bodies, hence
+eight moved bodies, and even that model omits port domains, modes, binding, and
+connectivity. It is not a minimum for the real zero-condition problem.
+
+A future numeric claim must persist the result, state the exact model scope, and
+separate:
+
+  matching-relaxation lower bound;
+  exact geometric set-packing optimum;
+  full placement/mode/binding/routing optimum.
+
+5.5 Shared applicability premises
+
+Every semantic or geometric change comparison must use:
+
+  * stable physical or semantic identities;
+  * the same object universe and explicit context transport;
+  * direct-parent geometry when measuring physical movement;
+  * full support for every compiled constant;
+  * explicit treatment of generic slots and interchangeable copies;
+  * no claim that a sequence of local changes has feasible intermediate states.
+
+Transient destination indices, reconstructed component numbers, and display
+strings are local indices only. They cannot transport a structural conclusion
+across geometry or context.
 
 6. Sufficient direction: typed orthogonal skeletons
 ---------------------------------------------------
-The necessary property P is cut feasibility, not one visually fixed corridor.
-For constructive search, define a stronger condition P'. As a constraint set,
-P' contains P; as a set of admitted layouts, solutions(P') is a subset of
-solutions(P). A first P' class may intentionally exclude unusual valid routes
-if it carries a complete constructive proof.
+The necessary property P is current Boolean component feasibility and, in a
+future throughput model, duty-polytope cut feasibility. It is not one visually
+fixed corridor.
+
+For constructive search, define a stronger sufficient class P'. As a constraint
+set, P' includes the required P obligations; as a solution set, P' may be a
+strict subset of all valid layouts.
 
 Candidate sufficient class: admissible typed orthogonal skeleton
 
 A skeleton certificate K contains:
 
-  * an embedded directed graph whose arcs map to reserved legal grid/layer
-    channel paths;
+  * an embedded directed graph whose arcs map to reserved legal channel paths;
   * node types from the exact physical dictionary: dock, straight, turn,
-    splitter, merger, and legal orthogonal ground/bridge crossing;
+    splitter, merger, and single-cell orthogonal cross-junction;
   * a stable dock assignment for every selected terminal front, including
-    direction, commodity, slot/rate, and operation/mode provenance;
-  * exact commodity flow on skeleton arcs satisfying terminal balance;
-  * physical shared-capacity rows for every arc/channel;
-  * edge/cell occupancy compatibility, including power poles and the empty
-    rectangle;
-  * local degree/pattern compatibility at every skeleton node.
+    direction, commodity, slot identity, operation, and mode provenance;
+  * for the quantitative extension, one legal duty allocation u in U and one
+    terminal-rate vector r in R(L,beta,u), not a frozen equal-duty convention;
+  * exact commodity flow on skeleton arcs when throughput is claimed;
+  * shared capacity rows derived from canonical A7;
+  * edge/cell occupancy compatibility, including poles and fixed H;
+  * local degree and physical-pattern compatibility at every node.
 
-A tree or cactus skeleton with typed docks is a plausible first restricted
-constructor class because its realization and flow decomposition are easier to
-prove. It is not claimed necessary.
+A tree or cactus skeleton with typed docks is a plausible first restricted class
+because its realization and flow decomposition are easier to prove. It is not
+claimed necessary.
 
 Constructor obligations
 
-A skeleton class is not sufficient merely because a graph optimizer returns a
-solution. A deterministic constructor and independent checker must establish:
+A skeleton class is sufficient only when a deterministic constructor and an
+independent checker establish:
 
-  1. every skeleton dock maps to one real selected port front;
-  2. every required terminal is used exactly as prescribed;
-  3. every abstract arc maps to legal physical belt/bridge states;
+  1. every skeleton dock maps to one real selected port front or bound generic
+     slot;
+  2. every required terminal obligation is represented exactly once;
+  3. every abstract arc maps to legal physical belt or cross-junction states;
   4. every turn, split, merge, and crossing maps to a legal local component;
-  5. physical cell/layer capacity and exact side-union rules hold;
+  5. physical cell/channel capacity and exact side-union rules hold;
   6. directed edge balance and terminal adherence hold;
-  7. the constructed binding and route witness survives the existing exact
-     precheck, routing solver/guard, serializer, and independent verifier;
-  8. when quantitative throughput is claimed, the selected-route Fraction-level
-     verifier independently replays rates and shared capacities.
+  7. operation, mode, binding, power, and empty-rectangle premises match the
+     candidate layout;
+  8. the constructed witness survives production precheck, exact routing,
+     connectivity guard, serializer, and independent verifier;
+  9. when quantitative throughput is claimed, an independent rational oracle
+     replays the duty polytope, terminal allocation, and shared capacities.
 
-Only after these obligations are discharged does P' imply binding/routing
-existence. Until then, the skeleton is a research proposal language.
+Until these obligations are discharged, the skeleton is a research proposal
+language, not a proof of binding or routing existence.
 
 7. Candidate base: typed material-interface quotient graph
 ----------------------------------------------------------
 The useful base is not the raw 70x70 cell graph and not a purely unlabeled free-
-component graph. It must be spatially coarser while preserving the semantic
-features that have changed continuation value in prior experiments.
+component graph. It must be spatially coarser while preserving the typed
+features that affect continuation value.
 
-Definition: typed material-interface quotient graph Q(L)
+7.1 Q0, operational now
 
-Q(L) is a canonically labeled attributed graph or hypergraph with these node
-classes:
+Q0(L) contains:
 
-  R: free-space regions, trunks, bays, or cut regions;
-  B: stable occupied-body owners;
-  X: explicit external material sources and final sinks.
+  Free-component nodes
+    * stable canonical cell-set digest, never transient component number;
+    * free-cell count and boundary-cell digest;
+    * typed incident terminal multiset;
 
-Required attributes and incidences include:
-
-  Region nodes R
-    * canonical identity under region renaming, never transient component ID;
-    * free-cell size and optional geometric digest;
-    * adjacency/portal relations to other regions;
-    * cut or portal capacity when a quantitative model exists;
-    * incident terminal-signature multiset.
-
-  Body nodes B
+  Stable body-owner nodes
     * stable owner/body identity and occupied-cell digest;
     * facility type;
-    * admissible operation domain;
-    * admissible same-body mode domain;
+    * admitted operation and same-body mode domain;
     * power requirement and coverage relation;
-    * candidate footprint compatibility when geometry is mobile.
+    * mobile-footprint compatibility when applicable;
+
+  External nodes
+    * explicit boundary sources and final sinks after generic binding;
 
   Terminal incidences
-    * stable body owner and terminal-cell coordinate;
-    * commodity;
-    * source/sink sign;
-    * direction;
-    * slot count or exact rate;
-    * operation and mode provenance;
-    * incident region/portal.
+    * stable owner or slot identity;
+    * terminal-cell coordinate;
+    * commodity, source/sink sign, direction, operation, and mode;
+    * incident free-component cell-set identity.
 
-  Transport relations
-    * operation-to-body compatibility;
-    * body-to-footprint compatibility;
-    * membrane/separator membership;
-    * skeleton docking compatibility.
+Q0 may quotient permutations of region labels and genuinely interchangeable
+instances only after metadata and obligation equality are proved. It must not
+quotient operation assignment, port mode, terminal incidence, or owner identity
+without an invariance proof.
 
-Canonicalization may quotient permutations of unlabeled region nodes and truly
-interchangeable instance copies, but it must not quotient away operation
-assignment, port mode, terminal incidence, or cut capacity unless an invariance
-proof exists.
+Existing empirical evidence already refutes a quotient containing only occupied
+or free geometry. E028_static_coupling_pair keeps the free-cell set and digest
+unchanged while an operation-to-footprint swap changes the exact shared
+component objective from 168 to 166. The missing type information is therefore
+load-bearing.
 
-A minimal implementation may start with Q0, one node per connected free
-component plus typed terminal incidences. A later Q1 may partition a large
-component by cut-relevant portals or separators and carry nonzero capacities.
+7.2 Q1, not operational until defined
 
-8. Cheapest falsification tests for the base
---------------------------------------------
+A richer Q1 may split a large component into region, trunk, bay, or portal nodes
+and attach cut capacities. Before Q1 is tested, it must provide a deterministic,
+versioned decomposition algorithm and stable output schema. The words region,
+trunk, and bay are not yet an operational signature and cannot be used as if
+they were one.
+
+8. Cheapest falsification tests
+-------------------------------
 8.1 Quotient-space collision test
 
 Purpose
-  Falsify a candidate Q by finding two states that Q declares identical but that
-  have materially different exact continuation behavior.
+  Refute a candidate quotient Q by finding two states that Q declares identical
+  but whose exact continuation behavior differs.
 
 Procedure
 
-  1. Collect diverse frozen, fully materialized campaign states, not only one
-     ancestry basin. Preserve direct-parent identity and exact context hashes.
+  1. Freeze a versioned Q implementation. For Q1, first freeze the deterministic
+     decomposition algorithm; otherwise the test is not runnable.
 
-  2. Compute and canonicalize the proposed Q signature for each state. Do not
-     use transient component IDs or destination indices as semantic labels.
+  2. Collect diverse, fully materialized states from multiple constructors or
+     geometry basins. Preserve direct-parent identity and context hashes.
 
-  3. Group states by identical Q signature.
+  3. Compute canonical Q signatures using stable physical witnesses, not
+     component or destination numbers.
 
-  4. Within each group compare exact observables, including:
+  4. Group states by identical signature.
+
+  5. Within each group compare the same exact observables:
 
        static port-domain status;
        component-compatible binding existence;
        positive-commodity count;
-       shared component objective/optimum face;
+       shared component optimum and optimum face;
        exact routing status when reached;
-       continuation value under the same admitted action/context.
+       continuation value under one identical admitted action/context.
 
-  5. A group containing materially different outcomes is a quotient collision.
-     Identify the smallest missing distinguishing feature, add it to Q, and
-     rerun the test.
+  6. A materially different outcome is a quotient collision. Add the smallest
+     missing typed coordinate and rerun.
 
-  6. Absence of observed collisions is evidence, not proof. Hold out states from
-     a different constructor or geometry basin for the next test round.
+  7. Use held-out states from a different lineage for every revision.
 
-Existing evidence already falsifies a quotient containing only free-cell
-geometry: identical occupied/free geometry with different operation assignment
-or port mode can have different binding continuation values.
+Absence of sampled collisions cannot confirm a quotient. A valid abstraction
+would eventually need a homomorphism, simulation, or equivalent all-state
+argument. This test is only a cheap refuter.
 
 8.2 Skeleton-decoding test
 
 Purpose
-  Falsify a proposed skeleton language or constructor by showing that coarse
-  certificates require repeated unrecorded repairs before exact realization.
+  Refute a skeleton language or constructor without confusing constructor bugs
+  with missing skeleton coordinates.
 
 Procedure
 
-  1. Generate a bounded set of skeleton certificates from frozen rules and a
-     coarse optimizer. Include both known-friendly and held-out geometries.
+  Calibration arm
 
-  2. Run one deterministic constructor with no manual patching. Materialize
-     stable body/mode assignments, binding, physical route states, and all
-     certificate-to-grid mappings.
+  1. Take production routing fixtures or an independently accepted exact route
+     witness whose physical realization is already known.
 
-  3. Run the exact static precheck, component-aware binding, exact routing,
+  2. Encode it into the proposed skeleton language and decode it again.
+
+  3. If the constructor cannot round-trip these known-realizable cases, record a
+     constructor failure. Draw no conclusion about the skeleton base.
+
+  Language arm
+
+  4. After calibration passes, generate held-out skeleton certificates from the
+     coarse optimizer.
+
+  5. Decode with no manual patching and materialize every certificate-to-grid
+     mapping.
+
+  6. Run production static precheck, component-aware binding, exact routing,
      connectivity guard, serializer, and independent verifier.
 
-  4. Classify the first failure by missing coordinate: docking, direction,
-     operation assignment, mode, separator capacity, crossing legality,
-     terminal uniqueness, or another explicit category.
+  7. Classify the first failed certificate premise: docking, direction,
+     assignment, mode, separator support, crossing legality, terminal
+     uniqueness, or another explicit coordinate.
 
-  5. If many skeletons fail for the same omitted coordinate, the base is too
-     coarse. Add that coordinate to the skeleton language rather than patching
-     individual outputs.
+  8. Repeated failure of one explicit skeleton premise refutes the current
+     language. A generic decoder exception or failed calibration refutes only
+     the constructor implementation.
 
-  6. Measure the number of discretionary repairs/backtracks after skeleton
-     selection. A correct high-level base should leave mostly deterministic
-     construction. If hundreds of local choices remain, the claimed short
-     derivation basis is falsified.
+  9. Count discretionary repairs after skeleton selection. If the calibrated
+     decoder still requires many unrecorded local choices, the claimed short
+     derivation basis is refuted.
+
+Passing sampled decoding is evidence, not a proof that P' is sufficient. The
+constructor and checker obligations in Section 6 remain.
 
 9. Natural integration with E077: staged lazy separation
 --------------------------------------------------------
-The cut/transport direction is not a parallel theory project. Its intended first
-consumer is the bounded E077-style integrated placement/port master.
+This direction is not a parallel theory project. Its intended first consumer is
+the bounded E077-style placement/port master.
 
 Stage 0: calibration and identity
 
-  * Reproduce known E077 parent states and bounds under frozen inputs.
-  * Use stable body/footprint/terminal identities.
+  * Reproduce the intended E077 restricted model under frozen inputs.
+  * Persist its exact scope, objective, and machine result.
+  * Use stable body, footprint, terminal-cell, and generic-slot identities.
   * Reject transient component and destination indices as transported facts.
-  * Keep all current in-flight experiment files outside this direction landing.
+  * Keep current in-flight experiment files outside revisions of this direction
+    file.
 
-Stage 1: currently fully provable Boolean separation
+Stage 1: current production-proved Boolean separation
 
 For each E077 candidate:
 
   1. build the exact routing placement core;
-  2. compile static front availability and duplicate-terminal facts;
-  3. compute free components and selected terminal incidence;
-  4. detect source-only/sink-only component violations;
-  5. extract a stable minimum or inclusion-minimal body/pole membrane when
-     available;
-  6. return one of these bounded research cuts/disjunctions:
+  2. run production static front and duplicate-terminal analysis on the same
+     occupied grid and port specs;
+  3. compute production free components and selected terminal incidence;
+  4. accept proof-producing failure only from the current production-side
+     statuses front_blocked or relaxed_disconnected;
+  5. obey specs/10 section 10.7: while binding alternatives remain, emit only a
+     binding-level nogood and re-solve binding;
+  6. project to placement level only after alternatives are exhausted or an
+     independent exact all-bindings proof exists;
+  7. augment every placement conflict with all occupancy, port-owner, binding,
+     and other constant contributors required by CUT-R8-H1;
+  8. use any separately built separator model only for telemetry, proposal, or
+     core shrinking unless PCR-R5/CUT-R9-H1 proves it is a relaxation and an
+     independent production-side infeasibility proof licenses the master cut.
 
-       remove the offending operation/mode/terminal assignment;
-       move or deactivate at least one membrane owner;
-       activate an explicitly represented alternative portal/context.
+A zero-capacity owner-separator family may explain and compress a production
+failure. One selected separator set may not independently license:
 
-These rows are within current connectivity semantics. They make no quantitative
-throughput claim.
+  move one owner in M.
 
-Stage 2: transport-core repair
+The full support context, alternative portals, and binding proof ladder remain
+part of the consumer contract.
 
-When a violated component or membrane is found:
+Stage 2: semantic transport and geometric packing repair
 
-  * formulate the relevant semantic assignment graph;
-  * solve the minimum changed-row transport core;
-  * formulate the body-to-footprint graph for any required vacancy chain;
-  * solve the minimum geometric transport core with non-overlap, power, and
-    port-domain side constraints;
-  * expose only the resulting bounded core to the next joint E077 solve.
+When a production-proved Boolean failure is found:
 
-The outer loop proposes and proves the deficient cut and transport context. The
-inner model chooses the complete assignment inside that context.
+  * formulate the stable semantic assignment graph;
+  * compute a minimum changed-row semantic transport core when the b-matching
+    premises hold;
+  * use a body-to-footprint matching only as a moved-body lower bound;
+  * solve the exact geometric repair as set packing with per-cell non-overlap,
+    power, port-mode, and preserved-context rows;
+  * expose only the bounded semantic core and exact packing neighborhood to the
+    next E077 solve.
+
+The outer loop proposes and proves the deficient context. The inner model chooses
+one complete assignment within it.
 
 Stage 3: skeleton construction and exact routing
 
 Once E077 produces a component-compatible candidate:
 
   * derive or solve a typed skeleton certificate;
-  * run the deterministic constructor;
+  * run the calibrated deterministic constructor;
   * invoke exact routing and its connectivity guard;
-  * convert any exact failure into a new typed cut or skeleton-language defect,
-    not an unstructured complete-assignment nogood when a shorter explanation
-    exists.
+  * convert exact failure into a typed cut or skeleton-language defect when a
+    shorter proof exists, rather than defaulting to a full-assignment nogood.
 
-Stage 4: quantitative throughput separation, explicitly pending
+Stage 4: duty-polytope LP oracle, explicitly pending
 
-Do not use numerical cut capacities to prune production or certified search
-until all of the following exist:
+Replace the former exact-terminal-rate-verifier idea with an oracle over legal
+duty allocation.
 
-  * a selected physical route graph bound to the actual binding/routing witness;
-  * exact terminal rates;
-  * exact shared channel capacities;
-  * an independently replayable Fraction-level verifier;
-  * a proved lowering from a violated inequality to the intended consumer.
+For one fixed selected binding and one fixed selected physical route graph, the
+oracle contains:
 
-After those prerequisites, separate inequalities (1) and (2) on candidate
-selected-route graphs, beginning with connected-region cuts and minimum cuts.
-Until then, numerical circulation results remain research-only diagnostics.
+  * u in the canonical duty polytope U;
+  * terminal rates r in R(L,beta,u);
+  * rational commodity flows f;
+  * canonical shared capacities q;
+  * conservation and generic-slot binding rows.
+
+It checks LP feasibility and, on infeasibility, may produce a rational Farkas or
+cut witness for independent replay.
+
+A layout-level consumer must preserve the existential binding quantifier. It may
+enumerate admitted beta values and call the LP at each leaf, or use a separately
+verified mixed discrete/continuous model. One fixed-beta LP failure is not a
+layout-level failure.
+
+Before any numerical result may prune production or certified search, all of the
+following are required:
+
+  * canonical_rules as the sole rate/capacity semantic source;
+  * a selected physical route graph, or a separately proved production-routing
+    relaxation satisfying CUT-R9-H1;
+  * actual commodity-to-generic-slot binding;
+  * the legal duty polytope and terminal-allocation relation;
+  * enclosure of every separated cut region;
+  * independent exact-rational LP/Farkas replay;
+  * a proved lowering to the intended consumer;
+  * the new-paradigm scope, certificate, and publication obligations required by
+    PROJECT_LOCK for throughput.
+
+Until then, numerical circulation and rate-valued separator results are
+research-only diagnostics. Stage 1 is already constrained by CUT-R9-H1; this is
+not merely a Stage-4 restriction.
 
 10. Initial go/no-go criteria
 -----------------------------
-Continue this candidate main direction if at least one of the following occurs:
+Continue this candidate direction if at least one occurs:
 
-  * Boolean component/membrane cuts remove many E077 candidates per proved
-    explanation rather than one full assignment at a time;
-  * transport-core optimization reduces a broad geometry search to a small,
-    stable set of body/assignment variables;
-  * quotient signatures predict exact continuation behavior without collisions
-    on held-out states;
-  * a skeleton certificate decodes with little or no discretionary repair;
-  * the line reaches exact routing sooner than the current local-action lineage.
+  * one production-proved Boolean explanation removes many candidate contexts
+    without nearing a full-assignment nogood;
+  * E074-like semantic cores remain small and stable across neighboring
+    contexts;
+  * exact set-packing repair reduces broad geometry search to a bounded joint
+    context;
+  * a held-out quotient collision test eliminates coordinates rather than
+    restoring the full cell state;
+  * a calibrated skeleton decoder leaves little discretionary repair;
+  * the line reaches exact routing sooner than the local-action lineage.
 
-Narrow or retire the direction if:
+Narrow or retire it if:
 
-  * useful violated cuts cannot be compressed below near-complete assignments;
-  * transport cores remain large or unstable across neighboring contexts;
+  * useful production-proved failures cannot be compressed below near-complete
+    assignments;
+  * semantic cores are unstable or geometric repair remains global;
   * quotient collisions require restoring nearly the full cell state;
-  * skeleton decoding repeatedly requires unmodeled local repairs;
-  * theorem/checker work delays the whole-layout campaign without changing its
-    next candidate or consumer.
+  * skeleton decoding repeatedly fails after constructor calibration;
+  * theorem/checker work delays the whole-layout campaign without changing the
+    next candidate or consumer;
+  * the quantitative LP cannot preserve binding, generic-slot, enclosure, and
+    relaxation quantifiers without becoming the original whole problem.
 
 11. Evidence and implementation pointers
 ----------------------------------------
-Method origin and owner anti-drift/witness rule:
+Method origin and owner witness rule:
   research_lab/METHOD_ORIGIN.txt
 
 Current zero-condition campaign:
   research_lab/campaigns/zero_condition/CAMPAIGN.txt
 
-Assignment transport-core experiment:
+Heterogeneous review:
+  research_lab/campaigns/zero_condition/
+    DIRECTION_CUT_TRANSPORT_20260828_REVIEW.txt
+  research_lab/local/reviews/20260828_cut_transport_refutation.md
+
+Semantic assignment evidence:
   research_lab/campaigns/zero_condition/experiments/
     E074_minimum_assignment_transport_core/
 
-Two-body membrane/native frontier:
+Two-body native frontier, not owner-separator proof:
   research_lab/campaigns/zero_condition/experiments/
     E075_target26_two_body_native_frontier/
 
-Current experimental integrated consumer and vacancy-chain probes:
+Geometry-only quotient counterexample:
+  research_lab/campaigns/zero_condition/experiments/
+    E028_static_coupling_pair/RESULT.txt
+
+Current experimental integrated and packing probes:
   research_lab/local/zero_condition/E077_integrated_port_master.py
   research_lab/local/zero_condition/E077_vacancy_chain_probe.py
   research_lab/local/zero_condition/E077_port_cut_ladder.py
 
-Production routing semantics:
+Current production Boolean semantics:
   src/models/routing_subproblem.py
   src/models/binding_subproblem.py
-  src/models/port_binding.py
-  src/preprocess/operation_profiles.py
+  specs/10_benders_decomposition_and_cut_design.md
+
+Existing cut and formal predecessors:
+  src/models/separator_capacity_hull.py
+  src/cuts/families/cutset.py
+  src/cuts/families/component_reach.py
+  formal/ZmdFormal/CutFamilies.lean
+  src/models/flow_subproblem.py
+
+Canonical rate and capacity authority:
+  rules/canonical_rules.json
+    semantics.axiom_kernel.A7_rates
+    semantics.mixed_commodity_flow
+    semantics.rate_lemma_scope
+    semantics.routing_cross_junction
 
 12. Explicit nonclaims
 ----------------------
 This R0 candidate direction does not establish that:
 
   * every feasible layout has one unique or visually fixed main corridor;
-  * a tree/cactus skeleton contains every feasible routing;
+  * a tree or cactus skeleton contains every feasible routing;
   * current six-predicate routing proves throughput;
-  * any numerical cut-capacity inequality is presently an admitted solver cut;
-  * E074 or E075 is a complete whole-layout construction;
-  * E077 has already implemented this lazy separation loop;
-  * the current zero-condition lower-side campaign is complete;
+  * one determinate per-machine or per-terminal rate exists before allocation;
+  * any numerical cut-capacity inequality is an admitted solver cut;
+  * any new separator model is a production-routing relaxation;
+  * one selected owner separator licenses a move-one-owner master cut;
+  * E075 proved an owner separator theorem;
+  * semantic matching decomposition applies to geometric body placement;
+  * the shortest real vacancy chain moves six, eight, or any other adopted
+    number of bodies;
+  * E074 or E075 is a whole-layout construction;
+  * E077 has implemented the full staged loop;
+  * the zero-condition campaign is complete;
   * U, L, certification, production authority, or publication status changes.
 
-The intended claim is narrower and constructive: component/cut necessity,
-membranes, and assignment transport share one mathematical backbone, and that
-backbone is a plausible structure-level consumer/proposer interface for the
-next zero-condition solver iteration.
+The intended claim is narrower:
+
+  * witness-conditional cut necessity is valid;
+  * its layout-level use must quantify existentially over binding and legal duty
+    allocation;
+  * its Boolean zero-capacity case already has a production proof path;
+  * semantic b-matching cores and exact geometric packing repairs are distinct
+    but composable structure-level objects;
+  * a typed skeleton with a proved constructor is a plausible sufficient search
+    language;
+  * E077 can become their bounded consumer without granting them unearned proof
+    or pruning authority.
+
+13. Disputes
+------------
+No dispute is raised against the owner-adjudicated review corrections. This
+revision adopts them. Any later disagreement must be added here as a named,
+scoped proposition with its evidence and requested owner ruling; silent
+reversion is not permitted.
