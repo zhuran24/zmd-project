@@ -1,0 +1,156 @@
+E079 / E080 ARTIFACT IDENTITY INCIDENT AUDIT — 2026-08-28
+========================================================
+
+Status
+------
+Closed as an explicit research-tree evidence-identity incident. The admitted
+original byte identities remain the authority for R-ZC-088 and R-ZC-089. The
+current files at both `run-001` paths are later reruns and are not silently
+rebound into those evidence slots.
+
+Machine audit
+-------------
+Checker:
+
+  research_lab/campaigns/zero_condition/experiments/
+  E079_k47_boundary_macro/audit_artifact_identity_20260828.py
+
+Output:
+
+  research_lab/local/zero_condition/
+  E079_E080_identity_incident_20260828/AUDIT.json
+
+SHA-256:
+
+  354d58c3206e3e757bbec2bf236256bef7bb4ab2e9811d3534dd521437ba86ad
+
+Verdict:
+
+  PASS
+
+Incident chronology
+-------------------
+1. The admitted E079 and E080 runs were recorded at 14:51 and 14:52 EDT in
+   `RESEARCH_JOURNAL_20260828.txt` and consumed by the committed E081/E082 line.
+
+2. At 15:30–15:31 EDT the same `run-001` directories were overwritten in place
+   by reruns. Both producing runners are byte-identical to their original
+   committed versions; the reruns nevertheless changed timestamps, self-digests,
+   embedded artifact identities and therefore the complete file hashes.
+
+3. Commit `79d0dd7ab748026d9a493759c4491d45fdc6dee7` at 15:46:59 EDT rewrote only
+   the two durable `RESULT.txt` files around an intermediate set of hashes. Those
+   intermediate bytes are no longer present on disk. The E080 rewrite also
+   changed load-bearing counts to 16 / 32,767 / 16,901 / 135, which contradict
+   the producing runner and every admitted downstream result. That rewrite is
+   reverted by the present repair.
+
+E079: three mutually exclusive byte-identity sets
+--------------------------------------------------
+Admitted R1 identity, retained as the authority of R-ZC-088:
+
+  RESULT.json               9442e6568238edfe6aa7c37f1bddaf8a9f10c7017320c6af0cea092c80583662
+  BOUNDARY_MACRO_V1.json    f7f4cf3c70046e02bd434929570e6d177994198d7a588cbc02d24751b35c1810
+  ENCODING_BENCHMARK.json   43be1146c9e85904466e8349c4c686fcba1f77d639d6949b4e669366e2e83cb6
+  RESULT_RECEIPT.json       c1288f276eec2525d529a3dea177beaec761261a5c960a0c0953f2ddbbf0cd87
+
+Intermediate hashes written into the 15:46 durable rewrite, with no surviving
+matching files:
+
+  RESULT.json               06576856727f16eb1a52ced690a865f50453c39cf7a5a478c26e481777d5f718
+  BOUNDARY_MACRO_V1.json    4300cc3fbd4423e6f7ea21cf49e32c9264dc4177b97e1fb891bc4d6883087ef1
+  ENCODING_BENCHMARK.json   5ad9f09b8c73b23bb3f9ce377be2cf990721c54194f5b36b998f90154bcb96eb
+
+Current overwritten `run-001` bytes, registered only as an unadmitted rerun:
+
+  RESULT.json               3bf4ed2587e5efa51d83d0a82c12499f887a56cb100ebc5ddcbc2cc9db41d7af
+  BOUNDARY_MACRO_V1.json    bb92c5fde00971fecade62e67a9af3e01e1892aad7a67c2c67d370004d877f36
+  ENCODING_BENCHMARK.json   18dae7f06a56262e12db4276d45191d2cbd1604eb323915f119a16c1b21a9e1c
+  RESULT_RECEIPT.json       ec146b243040ba9bf45c52a4108a0dc090fbabca98af75a6074e22edef2bccb2
+
+The producing runner SHA-256 remains:
+
+  549bb2ae5858ad75e60d7dcf44a0064066c252c0d999182ed7080c4b0181da73
+
+Semantic comparison of the current 47 states
+--------------------------------------------
+The machine audit compares, in order, for all 47 current macro states:
+
+  pose_indices
+  left_anchors
+  bottom_anchors
+  omitted_allowed_l_cell
+
+against `/home/zhuran24/zmd-blind/blind_lab/local/u9/boundary_packings.json`.
+All 47 rows are exactly equal. The same blind artifact is the object to which the
+independent R1 recheck recorded `blind_packings_exact_equal=true`.
+
+Current semantic projection SHA-256:
+
+  ce96047e6f908250c95da7f1c607cc7534d32ce95ccdf96c7326733badc29ea8
+
+Therefore the K=47 mathematical/local-quotient object is reproduced. This does
+not recover the admitted original bytes and does not authorize replacing their
+hashes. Consumers pinned to the original hashes must remain pinned to the
+original historical identity, even though the current path now contains a
+semantically equal rerun.
+
+E080: three mutually exclusive byte-identity sets
+--------------------------------------------------
+Admitted identity, retained as the authority of R-ZC-089:
+
+  RESULT.json               47f497a3f8ee26351bdc1616c8061f80d03646089c266be66f979f7393080077
+  PARTITION_FRONTIER.json   96e4e84fb88c666aee38c7be2c421a59ca4fbe7e59d570eacee5f4391fe867b7
+  SEAM_CONTRACT.json        c44ee40995fcdd44a2ec9a8443245d1be75b51258ca9b347cd0fe1ae3563e6fc
+  RESULT_RECEIPT.json       92452d2d51e185f6f3958b0b35a541617a0ffd2126c3e14f6229f22c895d3a09
+
+Intermediate hashes written into the 15:46 durable rewrite, with no surviving
+matching files:
+
+  RESULT.json               f79d27dfef7b7cfe073cb48abbd94018f42a32fdb2aa2217195e1fc8a6631321
+  PARTITION_FRONTIER.json   564ae324238c945de0cfe31c66065acf2992c5fd013e9f9d3c0175a31785089b
+  SEAM_CONTRACT.json        2b9e466e8d11c25d7e7a9da1ee12d000cff9ac8a8930c12e93b791b2a7d8c67
+
+Current overwritten `run-001` bytes, registered only as an unadmitted rerun:
+
+  RESULT.json               c24ce2cdfb09e0bb72d10db8bd826adcf35b0b20d69ad0cb255f44efe038b21b
+  PARTITION_FRONTIER.json   6971f3ddc7e4a276703f65197477e9852733167d2cb4ace605acea3be2df8769
+  SEAM_CONTRACT.json        68dacce51deab725fd1e71a5e363ff1d7b9fed065cf5088b9d27acbc0bb5e5e6
+  RESULT_RECEIPT.json       65841dd05569a46a36b62c83a747eaa573dbdb5d796571fcfb3a5e49924a0042
+
+The producing runner SHA-256 remains:
+
+  c3eab72325aefd39ca3719bc836ef137f0f3901415079095d5e120bd435df265
+
+The current rerun reproduces every load-bearing R-ZC-089 field:
+
+  operation types             17
+  canonical bipartitions      65,535
+  connected bipartitions      53
+  Pareto frontier              6
+  selected partition          partition_29914
+  selected seam commodities   sandleaf_powder, steel_block
+
+Its seam contract binds the current overwritten E079 macro SHA `bb92c5fd...`, so
+it is a coherent rerun of the same semantic pipeline but not the original E080
+byte object. The committed E081 and E082 runners remain explicitly pinned to the
+admitted E080 hashes and must not be rerun against the current path without a new,
+explicit rebinding experiment.
+
+Identity judgment
+-----------------
+* Original admitted bytes: not recovered.
+* Intermediate bytes named by `79d0dd7`: not present and not recoverable from the
+  repository.
+* Current rerun bytes: internally coherent and semantically corroborating.
+* Silent old-to-current rebinding: forbidden.
+* R-ZC-088 / R-ZC-089 mathematical conclusions: unchanged.
+* Reproducibility of the exact admitted byte packets from their old paths: lost;
+  the loss is now explicit rather than hidden.
+
+Effect on the next problem
+--------------------------
+Restore the original durable E079/E080 narratives and hashes, retain this audit
+beside them, and consume E079 only through the full 47-state semantic object plus
+its five-condition license. Any future rerun must use a new run directory and a
+new evidence identity; `run-001` must never again be treated as a stable alias.

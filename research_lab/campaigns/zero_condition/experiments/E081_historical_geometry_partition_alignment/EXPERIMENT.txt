@@ -1,0 +1,51 @@
+ABANDONED COLLISION TOMBSTONE — NOT AN E081 EXPERIMENT
+======================================================
+
+Status
+------
+ABANDONED_BEFORE_EXECUTION
+
+Why this directory exists
+-------------------------
+A parallel, stale-context generation created this directory after the committed
+experiment number E081 had already been assigned to:
+
+  E081_axis_seam_recolor_frontier
+
+The stale branch saw only an intermediate E079/E080 artifact identity and drafted
+a historical-geometry alignment question. It never produced RESULT.json,
+FAILURE.json, a receipt, a durable conclusion, or a STATE update.
+
+Original untracked bytes
+------------------------
+Before this tombstone replaced them, the two drafted files had identities:
+
+  EXPERIMENT.txt
+  4b69d007ce8fd73c47290483e80efbe487df90cea111857749a8141f2928efa6
+
+  run_e081.py
+  4782a039acf7c161f7893c2ccfbfff58cdd154f448df0a16dcb7e3edc7208da8
+
+The draft runner pinned intermediate E079/E080 hashes that are no longer present
+on disk. It therefore could not be executed faithfully even if the number
+collision were ignored.
+
+Disposition
+-----------
+This line is not renumbered. It is explicitly abandoned because:
+
+1. it never ran and has no evidence object to preserve as an experiment;
+2. its historical count/carrier question was subsequently addressed more
+   faithfully by committed E082 and E083;
+3. renumbering and executing it now would manufacture continuity across an
+   artifact-identity break.
+
+The replacement `run_e081.py` is a fail-closed tombstone. This directory carries
+no campaign, certification, U/L, owner, production, publication, or pruning
+effect and must not appear in experiment counts.
+
+Related audit
+-------------
+
+  research_lab/campaigns/zero_condition/
+  E079_E080_ARTIFACT_IDENTITY_AUDIT_20260828.txt
