@@ -1,0 +1,89 @@
+E083 RESULT: E082'S HISTORICAL V3 CARRIER IS BLOCKED BY A NEGATIVE G ROW AND AN UNADMITTED H ROW
+===================================================================================================
+
+Status
+------
+Completed in run-001. Research-only. No certification, U/L, production,
+pruning, owner, or publication effect.
+
+Frozen evidence
+---------------
+Main result:
+  research_lab/local/zero_condition/
+    E083_historical_bay_carrier_premise_audit/run-001/RESULT.json
+
+SHA-256:
+  de8e13088cb08971463b4aa63cc8c5fbe3cf7ce8792adb59197b8be17acc8139
+
+Premise audit:
+  research_lab/local/zero_condition/
+    E083_historical_bay_carrier_premise_audit/run-001/PREMISE_AUDIT.json
+
+SHA-256:
+  d3c3bed66f34cd38bf495e3650629fcdf9fea434d79866af84769b2aac0ed67d
+
+Verdict:
+  E082_HISTORICAL_V3_CARRIER_BLOCKED_BY_NEGATIVE_OR_UNADMITTED_ROWS
+
+Decision:
+  KEEP_E082_AS_COUNT_LOWER_BOUND_USE_E081_CURRENT_GEOMETRY_OR_NEW_ADMITTED_BAY_PLAN
+
+Consumed historical rows
+------------------------
+E082's one-mixed-bay allocation consumes all three big-bay rows from the
+historical v3 count plan:
+
+  F = (10,5,4)
+  G = (10,5,5)
+  H = (11,6,4)
+
+The premise audit classifies them as follows.
+
+F
+  ADMITTED_POSITIVE_LOCAL_AND_INDEPENDENT_REPLAY
+
+  The persistent big-bay status records an OPTIMAL local `(10,5,4)` result and a
+  pure-stdlib independent periodic replay PASS.
+
+G
+  EXACT_INFEASIBLE_IN_RECORDED_FINAL35_CONTEXT
+
+  `STATUS.final35-targets.md` states that `(10,5,5)` was queried under both the
+  all-residual-connected and selected-active-terminals-connected models and
+  returned exact INFEASIBLE, never UNKNOWN, under the recorded simultaneous pole
+  phase.
+
+H
+  REQUIRED_BY_PLAN_BUT_NO_ADMITTED_POSITIVE
+
+  The v3 plan itself lists `(11,6,4)` as a required new local result. The
+  historical target campaign did not reach it after G failed. No admitted
+  positive H row is present in the consumed evidence.
+
+Effect on E082
+--------------
+E082's integer alignment remains valid as an optimistic count lower bound and as
+an independent corroboration of the same operation partition selected by E081's
+real-geometry continuation. Its `minimum mixed bays = 1` statement is not
+promoted to a physical historical-bay seed.
+
+The unchanged v3 carrier is ineligible:
+
+- one consumed row is already negative in its recorded geometry;
+- another consumed row has no admitted positive result;
+- the plan is explicitly SEARCH_PLAN_ONLY.
+
+Therefore the next constructor may not begin by composing the E082 v3 allocation.
+It must either:
+
+1. use E081's E069 current-geometry moved-body repair context; or
+2. derive a new bay-count plan whose every consumed row has positive local,
+   independent and composed evidence.
+
+Truth boundary
+--------------
+The G-row negative is contextual. It applies to the recorded final35 pole phase
+and the two historical connectivity models. It does not prove that `(10,5,5)` is
+impossible in every future geometry. H is unadmitted, not proved infeasible by
+E083. E083 rejects one proposed carrier, not the partition, the one-mixed-bay
+count lower bound, or all bay-based constructors.

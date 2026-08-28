@@ -1,0 +1,56 @@
+E083 HISTORICAL BAY-CARRIER PREMISE AUDIT
+========================================
+
+Status
+------
+Completed in run-001 as a fail-closed premise audit of E082's proposed
+historical 17-bay materialization carrier. Research-only. No certification,
+U/L, production, pruning, owner, or publication effect.
+
+Question
+--------
+E082's count-alignment optimum uses the three historical big-bay capacity rows
+F=(10,5,4), G=(10,5,5), and H=(11,6,4). Are those rows all admitted positive
+local geometry results, so that the E082 one-mixed-bay seed can honestly proceed
+to composition?
+
+Method
+------
+1. Pin E082's result and geometry-aware seed.
+2. Pin the historical v3 count plan and both big-bay status records.
+3. Read the exact capacity rows consumed by the E082 allocation.
+4. Classify each row against the historical records:
+   - admitted positive local/replay result;
+   - exact negative in a stated historical context;
+   - untested or otherwise not admitted.
+5. Fail closed if any consumed row is not an admitted positive.
+
+Decision rule
+-------------
+All consumed rows positive
+  The historical carrier remains eligible for a physical E082 replay.
+
+Any consumed row negative or unadmitted
+  Preserve E082 only as a template-count lower bound and partition corroboration;
+  do not build the v3 carrier. Continue through E081's current-geometry repair or
+  derive a new bay plan from admitted rows.
+
+Truth boundary
+--------------
+A historical negative applies only to its recorded pole phase and connectivity
+models. It does not prove that the same template target is impossible in every
+geometry. Conversely, a SEARCH_PLAN_ONLY row is not a positive construction
+premise merely because it appears in an integer closure plan.
+
+Durable result
+--------------
+
+research_lab/campaigns/zero_condition/experiments/
+E083_historical_bay_carrier_premise_audit/RESULT.txt
+
+Default run
+-----------
+
+/home/zhuran24/zmd-pj/.venv/bin/python \
+  research_lab/campaigns/zero_condition/experiments/\
+E083_historical_bay_carrier_premise_audit/run_e083.py
