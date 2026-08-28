@@ -1,0 +1,72 @@
+EXPERIMENT E066: COMPLETE-FACE ATLAS OF THE POLE-CONDITIONED PAIR FRONTIER
+===========================================================================
+
+Question
+--------
+Do any of E063's 780 objective-one two-object states have a genuinely narrower
+complete optimum face, so that a third causal relation can target one stable
+unmatched component, or does the pole-conditioned lineage remain face-wide and
+need to be retired in favor of the distinct 6x4 near-miss parent?
+
+Why this experiment
+-------------------
+E063 proves that one fixed lower-right pole move plus any one of 858 causally
+selected second-object geometries never reaches the corrected fine/qiaoyu two-zero
+signature condition. Seven hundred eighty states remain at directional distance
+one. Their returned presence witnesses are not unique theorem objects: E065 already
+showed that equal objective values can select different optimum representatives.
+
+A third-object search driven by one returned component would therefore repeat the
+same state-identity error. Before admitting a third relation, E066 enumerates the
+complete objective-one presence face of every E063 objective-one state and asks
+whether those faces compress.
+
+Method
+------
+1. Pin the source-stable E063 runner, run-008 result, candidate manifest, all chunk
+   records, E061/E062 sources, and E065's E062 replay.
+2. Start under a fresh Python bytecode cache and verify that every module-defined
+   function loaded from E061, E062, and E063 originates in its requested source.
+3. Consume E063's manifest and chunk records directly; do not regenerate the 858
+   candidate portfolio or use one selected presence witness as the candidate ID.
+4. For each of the 780 objective-one candidate geometries, reconstruct the exact
+   pair state, rebuild components and generic sink space, and enumerate the full
+   qiaoyu-hard fine-mismatch-one face to completion.
+5. Normalize each face as a set of terminal-presence patterns, quotient equal
+   faces by digest, and record pattern count, unmatched-component union, qiaoyu
+   sink set, action type, and physical candidate identity.
+6. Compare every face with the parent six-pattern/six-component face. A candidate
+   is a stable third-relation parent only when its complete face has one unmatched
+   component in one orientation, not merely when one solver witness does.
+
+The run is checkpointed in deterministic candidate chunks. This remains a
+terminal-signature relaxation; no face class is a full binding witness.
+
+Decision rule
+-------------
+At least one complete face has one stable unmatched component
+  Retain a small deterministic set of those pair geometries and derive a third
+  relation from the stable component's boundary or missing filling signature.
+
+No stable singleton, but at least one face strictly reduces pattern count or the
+unmatched-component union below the parent's six
+  Retain only the narrowest face classes and derive the next relation from their
+  common residual structure.
+
+No complete face narrows
+  Retire the pole-conditioned lineage at two-object depth and switch to E062's
+  distinct 6x4 near-miss parent. Do not enlarge the pole lineage into an arbitrary
+  third-object product.
+
+Any nonterminal face enumeration
+  Preserve completed chunks and continue only the nonterminal candidates.
+
+Truth boundary
+--------------
+E066 analyzes E063's source-stable signature-relaxation states. It does not prove
+full binding feasibility or infeasibility, close a different first-zero state,
+enter routing, update U/L, or grant certification.
+
+Result
+------
+Not run yet.
