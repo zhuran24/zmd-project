@@ -17,7 +17,7 @@ Ordinary R0 work remains local and does not enter O.
 
 Read `research_lab/PROGRAM.txt` on first entry or when the goal hierarchy changes. Read the active campaign named by `.zmd-worktree-mode` after STATE or when the current question needs it. Load old governance and history only on demand.
 
-Must-read on every new session and again after every context compaction: load the `/zmd-method` skill and read the research charter `/home/zhuran24/zmd-pj/docs/项目说明/30_research_charter.md`. On conflicts the owner-quotation anchors win (`research_lab/METHOD_ORIGIN.txt` for method, `research_lab/STANCE_ORIGIN.txt` for stance).
+Must-read on every new session and again after every context compaction: load the `/zmd-method` and `/research-charter` skills (the latter is the charter's authoritative text; current bets stay in `/home/zhuran24/zmd-pj/docs/项目说明/30_research_charter.md`). On conflicts the owner-quotation anchors win (`research_lab/METHOD_ORIGIN.txt` for method, `research_lab/STANCE_ORIGIN.txt` for stance).
 
 Claude Code auto-memory is bound to the research-only directory recorded in `research_lab/CC_MEMORY.txt`. It carries stable research habits, not current campaign state; `STATE.txt` and the active campaign remain authoritative for what is happening now.
 
