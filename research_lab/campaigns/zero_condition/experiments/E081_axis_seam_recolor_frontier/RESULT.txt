@@ -1,0 +1,151 @@
+E081 RESULT: E080'S SINGLE TYPE-LEVEL WINNER IS REORDERED BY GEOMETRY BUT REMAINS PARETO
+================================================================================================
+
+Status
+------
+Completed in run-001. Research-only. No certification, U/L, production,
+pruning, owner, or publication effect.
+
+Frozen evidence
+---------------
+Main result:
+  research_lab/local/zero_condition/
+    E081_axis_seam_recolor_frontier/run-001/RESULT.json
+
+SHA-256:
+  e9a53e0a14b34bfac96817f44e29142127007909f934ffabc9d1809572ab0547
+
+Complete axis-seam frontier:
+  research_lab/local/zero_condition/
+    E081_axis_seam_recolor_frontier/run-001/AXIS_SEAM_FRONTIER.json
+
+SHA-256:
+  e8dbf00d61bcf01f9a0cb11ab9b16a918597d8a2552f932d1977a9c57b4d75b1
+
+Independent CP-SAT replay:
+  research_lab/local/zero_condition/
+    E081_axis_seam_recolor_frontier/run-001/INDEPENDENT_CHECK.json
+
+SHA-256:
+  a7135e5b5cc07995a6bb46568973036451fcf519701c44968505513d2cb223ca
+
+Verdict:
+  E080_SELECTED_PARTITION_REORDERED_BUT_REMAINS_GEOMETRY_PARETO
+
+Decision:
+  KEEP_GEOMETRY_PARETO_BEAM_AND_BUILD_REFERENCE_PRESERVING_REPAIR_CONTEXTS
+
+Machine sweep
+-------------
+E081 reconstructs E080's complete 17-operation dependency graph and confirms:
+
+  canonical type bipartitions        65,535
+  connected bipartitions                 53
+  connected 1/3--2/3 area band            16
+
+For each of the sixteen balanced connected partitions it exhausts every straight
+vertical or horizontal interior corridor of width 1, 2 or 3 and both module-side
+orientations. In total it evaluates 12,864 partition/corridor/orientation states.
+
+The retained-footprint objective permits operation responsibilities to move among
+bodies of the same manufacturing template. It is therefore an exact maximum in
+the stated straight-seam/template quotient, not a full geometric repair.
+
+Geometry-conditioned winner
+---------------------------
+The lowest reference-rewrite-preserving moved-body count is obtained by:
+
+  module A operations
+    crusher_blue_iron
+    crusher_sandleaf
+    grinder_dense_blue_iron
+    planter_sandleaf
+    refinery_blue_iron
+    seed_collector_sandleaf
+
+  module B operations
+    crusher_buckwheat
+    crusher_source
+    filling_capsule
+    grinder_dense_source
+    grinder_fine_buckwheat
+    molding_bottle
+    packaging_battery
+    parts_maker
+    planter_buckwheat
+    refinery_steel
+    seed_collector_buckwheat
+
+  module body area       1,919 / 1,406
+  module instances         128 / 91
+  seam commodities
+    dense_blue_iron_powder
+    sandleaf_powder
+  seam consumer-slot incidence  32
+
+Its best unconstrained straight seam moves 14 of 219 manufacturing bodies. When
+E078's two stable body witnesses are required to remain on the side carrying
+grinder_fine_buckwheat and filling_capsule, the optimum becomes:
+
+  horizontal corridor y = 41, width 1
+  module A below / module B above
+  manufacturing bodies moved    16
+  manufacturing body area moved 359
+  current pole bodies intersected 1
+  moved template counts
+    manufacturing_3x3   2
+    manufacturing_5x5   5
+    manufacturing_6x4   9
+
+The E078 constraint therefore costs two additional body moves on this partition.
+The independent CP-SAT replay proves the maximum retained count is exactly 203,
+hence 16 moves in this quotient.
+
+E080 selected partition
+-----------------------
+E080's originally selected type-level partition ranks third after geometry is
+introduced. It remains Pareto-nondominated and has no dominating competitor under
+moved bodies, seam commodity count, seam consumer-slot incidence, pole moves and
+area imbalance.
+
+Its best reference-preserving state is:
+
+  horizontal corridor y = 21, width 1
+  module B below / module A above
+  manufacturing bodies moved    26
+  manufacturing body area moved 566
+  current pole bodies intersected 1
+  seam commodities
+    sandleaf_powder
+    steel_block
+  seam consumer-slot incidence  29
+
+Both E078 stable bodies already lie on module A's high side, so preserving the
+reference rewrite adds no body moves. The independent CP-SAT replay proves the
+maximum retained count is exactly 193, hence 26 moves in this quotient.
+
+Interpretation
+--------------
+E080's semantic proposer score was useful but cannot choose a unique constructor
+seed. Real geometry changes the ranking. Conversely, the geometry winner does not
+strictly dominate E080's selected partition: it saves ten body moves but carries a
+slightly heavier seam and pays a two-body E078 preservation penalty.
+
+The correct next object is therefore a seven-member geometry Pareto beam, not one
+partition and not all 53 connected partitions. Each beam member supplies a
+bounded moved-body set-packing repair context around a stable straight seam.
+
+Truth boundary
+--------------
+The moved-body numbers are exact only while:
+
+- all unmoved E069 manufacturing footprints remain fixed;
+- one straight axis-aligned corridor is reserved;
+- operation assignment is quotiented within each facility template;
+- moved bodies are allowed to disappear rather than being re-embedded.
+
+E081 does not prove that the moved bodies can be placed elsewhere, that an
+intersected pole can be relocated while preserving power, or that any front,
+binding, routing, throughput or whole-layout condition passes. It is a
+continuation-value discriminator and repair-context generator, not a layout
+witness or cut.

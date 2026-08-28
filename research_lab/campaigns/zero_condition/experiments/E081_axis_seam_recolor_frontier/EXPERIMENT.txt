@@ -1,0 +1,94 @@
+E081 AXIS-SEAM RECOLOR FRONTIER
+================================
+
+Status
+------
+Completed in run-001 as the first geometry-conditioned continuation test for
+E080's operation-type partition language. Research-only. No certification, U/L,
+production, pruning, owner, or publication effect.
+
+Question
+--------
+E080 selected one connected one-third/two-thirds type partition by a purely
+semantic score. Does that selected partition remain competitive when projected
+onto E069's actual 219 manufacturing-body geometry, or does a different
+connected balanced partition require fewer physical body moves?
+
+The experiment also asks whether E078's stable target-26 reference rewrite can
+remain on its two physical body witnesses while a straight module seam is opened.
+
+Object space
+------------
+The experiment fixes:
+
+- E069's complete manufacturing-body footprints, protocol-core body, boundary
+  bodies and selected power-pole bodies;
+- E080's 17 operation profiles and dependency graph;
+- E074/E078's two stable body witnesses and their target operations.
+
+It enumerates every connected operation-type bipartition in E080's one-third to
+two-thirds body-area band, then every straight vertical or horizontal interior
+corridor of width 1, 2, or 3 and both module-side orientations.
+
+For each state it computes the exact maximum number of current manufacturing
+footprints that can remain when operation responsibilities may be reassigned
+among bodies of the same facility template. Bodies intersecting the corridor or
+surplus/wrong-side template capacity are counted as moved. Moved bodies are not
+re-embedded by this experiment.
+
+Arms
+----
+1. Unconstrained template recolor
+
+   Maximize retained current footprints using only module template counts and
+   side capacity. This is an exact optimum inside the straight-seam/template
+   quotient.
+
+2. E078-reference-preserving recolor
+
+   Require the stable bodies grinder_dense_source_001 and
+   grinder_fine_buckwheat_002 to remain on the module side carrying,
+   respectively, grinder_fine_buckwheat and filling_capsule in E074's reference
+   zero rewrite. Then maximize retained current footprints.
+
+3. Geometry-conditioned partition ranking
+
+   Rank all balanced connected partitions by reference-preserving moved-body
+   count, seam commodity count, seam consumer-slot incidence, pole moves, area
+   imbalance and corridor width. Compute a Pareto frontier instead of silently
+   replacing E080's proposer score with one new scalar.
+
+Success / refutation
+--------------------
+- If E080's selected partition remains first or Pareto-nondominated, keep it in
+  the geometric constructor beam.
+- If another partition strictly dominates it, replace the single selected seed
+  with the dominating beam.
+- If every balanced partition needs broad movement, retire E069 as a bay/seam
+  warm start and construct fresh geometry.
+
+Truth boundary
+--------------
+The moved-body count is exact only for preserving current footprints outside one
+straight axis-aligned corridor while quotienting operation assignment by
+facility template. It is not a geometric repair witness: moved bodies may have no
+legal destination, pole relocation may break power, and no front, binding,
+routing or throughput condition is checked. Component and destination numbers
+are not used.
+
+Default run
+-----------
+
+/home/zhuran24/zmd-pj/.venv/bin/python \
+  research_lab/campaigns/zero_condition/experiments/\
+E081_axis_seam_recolor_frontier/run_e081.py
+
+Durable output
+--------------
+
+research_lab/local/zero_condition/E081_axis_seam_recolor_frontier/run-001/
+
+Durable summary:
+
+research_lab/campaigns/zero_condition/experiments/
+E081_axis_seam_recolor_frontier/RESULT.txt
