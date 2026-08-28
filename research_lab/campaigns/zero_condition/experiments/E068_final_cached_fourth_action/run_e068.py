@@ -24,7 +24,7 @@ if str(ROOT) not in sys.path:
 OUT = (
     ROOT
     / "research_lab/local/zero_condition/"
-    "E068_final_cached_fourth_action/run-001"
+    "E068_final_cached_fourth_action/run-002"
 )
 RESULT_PATH = OUT / "RESULT.json"
 FAILURE_PATH = OUT / "FAILURE.json"
@@ -64,7 +64,7 @@ E067_PAIR_RECORDS = E067_RUN / "PAIR_RECORDS.json"
 
 EXPECTED_ENV = {
     "PYTHONHASHSEED": "0",
-    "PYTHONPYCACHEPREFIX": "/tmp/zmd_e068_source_cache_v1",
+    "PYTHONPYCACHEPREFIX": "/tmp/zmd_e068_source_cache_v2",
     "EXACT_USE_POSE_BOOL_MASTER": "1",
     "EXACT_USE_PORT_ACTIVE": "1",
     "EXACT_MASTER_HINT_PERSISTENCE": "0",
@@ -385,7 +385,6 @@ def action_delta(
 
 def merge_many(
     *,
-    e067: Any,
     context: Mapping[str, Any],
     deltas: Sequence[Mapping[str, Any]],
 ) -> dict[str, Any]:
@@ -418,12 +417,61 @@ def merge_many(
             solution.pop(key, None)
         else:
             solution[key] = dict(after)
-    admission = e067.validate_merged_solution(context=context, solution=solution)
+    mandatory_count = sum(
+        bool(row.get("is_mandatory")) for row in solution.values()
+    )
+    pole_count = sum(
+        str(row.get("facility_type")) == "power_pole"
+        for row in solution.values()
+    )
+    if mandatory_count != 266 or pole_count != 53:
+        return {
+            "status": "CARDINALITY_INVALID",
+            "mandatory_count": mandatory_count,
+            "pole_count": pole_count,
+            "solution": None,
+            "change_keys": sorted(combined),
+            "delta_digest": stable_digest(combined),
+        }
+    base = context["base"]
+    try:
+        occupied, _owners = base["e014"].base_occupancy(
+            solution,
+            base["inputs"]["pools"],
+        )
+    except RuntimeError as exc:
+        return {
+            "status": "OVERLAP_INVALID",
+            "detail": str(exc),
+            "solution": None,
+            "change_keys": sorted(combined),
+            "delta_digest": stable_digest(combined),
+        }
+    selected_poles = {
+        int(row["pose_idx"])
+        for row in solution.values()
+        if str(row.get("facility_type")) == "power_pole"
+    }
+    if not base["e014"].all_powered_facilities_covered(
+        solution=solution,
+        selected_poles=selected_poles,
+        powered_templates=base["power"]["powered_templates"],
+        coverers=base["power"]["coverers"],
+    ):
+        return {
+            "status": "POWER_INVALID",
+            "solution": None,
+            "change_keys": sorted(combined),
+            "delta_digest": stable_digest(combined),
+        }
     return {
-        **admission,
-        "solution": solution if admission["status"] == "ADMITTED" else None,
+        "status": "ADMITTED",
+        "solution": solution,
+        "occupied_cell_count": len(occupied),
+        "selected_poles": sorted(selected_poles),
         "change_keys": sorted(combined),
         "delta_digest": stable_digest(combined),
+        "solution_digest": stable_digest(solution),
     }
 
 
@@ -456,7 +504,6 @@ def reconstruct_representative(
         spec=right_spec,
     )
     merged = merge_many(
-        e067=e067,
         context=context,
         deltas=(left_delta, right_delta),
     )
@@ -584,7 +631,6 @@ def scan_actions(
                     spec=spec,
                 )
                 merged = merge_many(
-                    e067=e067,
                     context=context,
                     deltas=(left_delta, right_delta, delta),
                 )
@@ -684,7 +730,6 @@ def materialize_zero_states(
             spec=spec,
         )
         merged = merge_many(
-            e067=e067,
             context=context,
             deltas=(
                 representative_state["left_delta"],
