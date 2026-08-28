@@ -86,6 +86,16 @@ G3. 割流通必要式的一般 ∀S 形式及其与 SAC-Hull/F2/F4 既有实现
    内存遥测与分档预算。
 2. 复核并运输 B1（K=47）：先补对抗性负例（漏包/错包/up-to-K 消费越权），复核通过
    则作为方向文件「骨架有限化」的第一个已证实例挂入。
+   【2026-08-28 复核完成】异源（GPT 源）独立第三路径（Algorithm-X 精确覆盖）复算
+   K=47 CONFIRMED，与盲树 47 包逐包逐字段相等；23+23 引理与 rank-1 具体化亦
+   CONFIRMED；四个 fail-closed 对抗负例全部被拒。两条限定（NEEDS_QUALIFICATION）
+   随定理流通：①对象空间仅为「boundary pose 合法 + 46 机身互斥」的局部子问题，
+   不含其它设施/front/binding/routing；②up-to-K 消费须满足五条许可（冻结身份不
+   变、实例同质、消费者置换等变或用规范恢复映射、保留 47 包全析取、全布局阶段
+   重加其余约束），rank 1 是构造选择不是 WLOG。完整报告与可重跑脚本：
+   research_lab/local/reviews/20260828_k47_boundary_packing_recheck.md 及
+   k47_recheck/recheck_k47.py（R1 机器复算，research-only）。挂入方向文件一事
+   待分支线程的修订落盘后再办，避免并发编辑。
 3. C3 三角会师应提高分区/骨架构造在方向内的优先级——两条独立线与审查三方现在
    同向。
 4. 盲侧 D1–D4 全部数值结论在采用前须本树独立复算（盲树自查的 R2 缺口清单在
