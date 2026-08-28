@@ -392,3 +392,6 @@ Mathematical translation digest:
 
 Corrected 2026-08 project handoff:
 /home/zhuran24/Documents/Codex/2026-08-27/new-chat-8/outputs/分支-接手项目推进工作-完整对话-28轮.txt
+
+Later-derived standing methods (not owner-origin material):
+research_lab/methods/STABLE_IDENTITY_TRANSPORT.txt

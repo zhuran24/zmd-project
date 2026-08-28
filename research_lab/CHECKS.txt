@@ -20,6 +20,12 @@ is reported as memory evolution rather than silently overwritten.
 Also verify that raw output stays under research_lab/local/ and that any durable
 conclusion states its scope and effect on the next question.
 
+For any conclusion transported across context, geometry, model rebuild, or
+representation layer: it must carry stable witnesses, its source context
+identity, and a verified unique remap on the target side. A result carrying
+only component/destination/index/string handles must not be consumed.
+See research_lab/methods/STABLE_IDENTITY_TRANSPORT.txt.
+
 Not required by default:
   full preflight
   document governance gate

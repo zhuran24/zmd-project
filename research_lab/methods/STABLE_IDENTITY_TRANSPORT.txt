@@ -1,0 +1,64 @@
+STABLE IDENTITY TRANSPORT RULE
+==============================
+
+Identity and effect
+-------------------
+Date: 2026-08-28
+Status: standing research method entry (R0 method discipline; research-only,
+no certification, U/L, production, or owner effect).
+Origin: five recurrences of the same defect family — named-instance vs
+group-pose confusion, stringified owners treated as computable identity, the
+E064 evidence gap, generic-slot reification, and component/destination
+renumbering across geometry changes — established that unstable identifiers
+used as semantic identity is a systemic cross-representation transport risk,
+not a local experiment bug.
+Adoption path: proposed by the main coordination session; owner delegated the
+decision to the GPT-source colleague thread ("这个还是看 gpt pro 怎么说",
+2026-08-28); that thread recommended adoption, this placement (a standing
+methods file plus a CHECKS entry, deliberately NOT inside METHOD_ORIGIN.txt,
+which preserves owner-origin material only), and drafted the rule text below,
+transcribed verbatim.
+Check entry: research_lab/CHECKS.txt (R0 "Also verify" clause).
+
+Rule text (canonical, verbatim from the drafting thread)
+--------------------------------------------------------
+稳定身份运输规则
+
+凡结论需要跨几何、跨上下文、跨模型重建、跨进程或跨表示层消费，承重对象必须使用
+与命题对象空间一致、且能在目标上下文中重新定位和验证的稳定见证。
+
+物理几何结论使用坐标、格集、occupied-cell digest、terminal-cell witness 等物理
+见证；语义赋值结论使用 canonical slot ID、稳定 body/owner identity、group-pose
+key、operation/mode provenance 等语义见证。一个看似稳定的名字，只有在命题所处
+对象层中保持不变时才可承担身份。
+
+component 编号、destination 排序号、数组下标、solver variable ID、枚举顺序、
+显示字符串及其他重建编号，只允许作为同一冻结上下文内的局部句柄。它们不得直接
+进入跨上下文定理、cut、缓存键、实验续接或 consumer 输入。
+
+跨边界时，producer 必须保存稳定见证与源 context identity；consumer 必须在目标
+context 中重新映射，并验证映射存在、唯一、对象类型一致、承重属性一致。零匹配、
+多匹配或属性漂移一律 fail closed，不得按旧编号继续运行。
+
+例外：若 producer 与 consumer 明确运行于同一份冻结字节上下文，且结果不离开该
+上下文，局部编号可以使用；但必须携带该 context 的身份，且不得被推广为跨几何或
+跨上下文结论。
+
+Scope note
+----------
+The rule does not claim coordinates always beat names. The principle is that
+identity must live at the same object layer as the proposition, and must be
+re-proved to point at the same object after crossing any boundary. Local array
+indices and within-solve component numbering remain legal inside their own
+frozen context.
+
+Worked positive/negative anchors
+--------------------------------
+- Positive: the E074-line correction that replaced component numbers with
+  stable physical witnesses (concrete slot coordinates, concrete free-cell
+  sets) before re-running, and the exact masters' canonical sorted-ID-to-
+  sorted-pose recovery mapping validated during the K=47 recheck
+  (research_lab/local/reviews/20260828_k47_boundary_packing_recheck.md §4.4).
+- Negative: every one of the five recurrences named above; and the stale E069
+  record whose committed component list stopped matching its re-run artifacts
+  (see the E069 record-hygiene repair).
