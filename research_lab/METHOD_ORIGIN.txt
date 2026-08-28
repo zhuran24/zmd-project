@@ -363,9 +363,12 @@ The owner-approved landing instruction fixes the operational clauses as follows:
    witness 在约束回填时整体作废，不断链只断局部、可见可修。
 
 "同法" requires the same epistemic standard and transportable knowledge, not
-necessarily the same sequence of machines. The rule is constructive, not a ban
-on discovery: conjectures may serve as scaffolding, but every load-bearing
-structure in the final object must be replaced by a problem-derived chain.
+necessarily the same sequence of machines. The rule constrains the final state,
+not the discovery order (owner clarification, 2026-08-28): a structure may first
+be erected by guesswork and its derivation backfilled afterwards. What the
+final object requires is that every load-bearing structure then carries a
+problem-derived chain; a structure whose backing cannot be completed is removed
+rather than kept on the strength of having worked.
 
 Landing-instruction coordinate:
 /home/zhuran24/.claude/projects/-home-zhuran24-zmd-research/03952551-eece-4926-a44b-27a65dd1e9b8.jsonl:796
