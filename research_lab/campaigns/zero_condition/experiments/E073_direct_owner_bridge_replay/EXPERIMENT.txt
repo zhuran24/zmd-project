@@ -1,0 +1,78 @@
+EXPERIMENT E073: DIRECT OWNER-BRIDGE REPLAY
+===========================================
+
+Question
+--------
+Does E072's best one-owner, destination-preserving component bridge actually
+realize the missing half of its real filling-capsule signature when that owner is
+moved through every legal fixed-outside pose alternative?
+
+Why this experiment
+-------------------
+E072 builds a causal component-owner graph and finds at least one shortest path
+with one occupied owner while preserving the body that supplies the real half-
+signature. A graph edge is not a geometric theorem: moving the owner may fail to
+merge the intended components, destroy power, block the original terminal cells,
+or make the rest of the 38-body operation assignment infeasible.
+
+E073 therefore consumes exactly one deterministic direct bridge and tests it in
+the actual corrected terminal-signature consumer. It does not scan unrelated
+owners.
+
+Method
+------
+1. Freeze E069, E071, and E072 result objects and their producing runners. Select
+   the first E072 proposal satisfying:
+
+     owner_count = 1
+     moves_destination_body = false
+     exactly one path owner
+
+   using E072's already frozen ranking.
+2. Reconstruct the E069 parent and verify the selected destination's real filling
+   option and exact terminal-cell variant.
+3. Enumerate every placement- and power-valid alternative of the single path
+   owner with the rest of the factory fixed. Quotient byte-identical candidate
+   solutions.
+4. For every candidate:
+   * rebuild free components and generic qiaoyu sink slots;
+   * regenerate all manufacturing-6x4 native signatures;
+   * map the original half-signature's terminal cells into the new component
+     partition;
+   * require those exact active cells to remain free;
+   * locate and force the same real filling operation/mode/signature at the same
+     destination;
+   * solve exact fine-component equality and qiaoyu source/sink equality;
+   * also solve the unforced corrected two-zero model to detect a different
+     mechanism.
+5. Materialize deterministic forced-zero or unforced-zero candidate layouts for
+   the next full conditional binding consumer.
+
+Decision rule
+-------------
+Any forced-real-option zero
+  The direct owner move realizes the proposed bridge while preserving the real
+  half-signature. Send the smallest candidates to the full conditional binding
+  consumer immediately.
+
+No forced zero, but an unforced zero
+  The geometry is useful through a different terminal relation. Materialize it
+  and inspect the selected signature before choosing the next rule.
+
+All alternatives terminal and no zero
+  Retire this direct bridge relation and test the next E072 direct proposal, or
+  the shortest multi-owner relation if no direct proposal remains.
+
+Any UNKNOWN
+  Preserve only nonterminal alternatives. Do not interpret budget exhaustion as
+  bridge failure.
+
+Truth boundary
+--------------
+E073 moves one selected owner in E069's fixed first-zero geometry and evaluates a
+corrected terminal-signature relaxation. A terminal zero is proposal evidence for
+full binding, not a full binding, routing, throughput, or whole-layout witness.
+
+Result
+------
+Not run yet.
