@@ -33,7 +33,7 @@ survive as a sub-question or fold into the cut-deficiency frame?
 
 Inflight / recovery
 -------------------
-- E070_dual_filling_signature_targets | status=recoverable | ref=research_lab/campaigns/zero_condition/experiments/E070_dual_filling_signature_targets/EXPERIMENT.txt | resume=/home/zhuran24/zmd-pj/.venv/bin/python research_lab/campaigns/zero_condition/experiments/E070_dual_filling_signature_targets/run_e070.py
+- E070_dual_filling_signature_targets | status=machine-complete (run-004); durable record closure pending | ref=research_lab/campaigns/zero_condition/experiments/E070_dual_filling_signature_targets/EXPERIMENT.txt
 
 Recent consequential results
 ----------------------------
@@ -47,7 +47,7 @@ Current unknowns and guards
 ---------------------------
 - There is no complete zero-condition whole-layout witness; exact routing has not been reached on the current line.
 - E069 is a terminal-signature relaxation and does not test any second-object change, full binding, or routing.
-- Whether any of E069's twelve synthetic dual filling signatures is sufficient remains unknown until E070 terminates.
+- E070 run-004 terminated with machine results: verdict DUAL_FILLING_SIGNATURE_TARGETS_SUFFICIENT, twelve synthetic targets scored 6 OPTIMAL / 6 INFEASIBLE / 0 UNKNOWN, decision SEARCH_PHYSICAL_DUAL_SIGNATURE_RELATIONS (research_lab/local/zero_condition/E070_dual_filling_signature_targets/run-004/RESULT.json). Durable record closure (EXPERIMENT.txt/RESULT.txt) stays with its in-flight owner. Synthetic feasibility still does not prove that a legal body, mode, or component relation physically realizes the signature.
 - Synthetic feasibility would not prove that a legal body, mode, or component relation physically realizes the signature.
 - E069's 103-object causal inventory is recorded but is not an admitted second-object search space.
 - E068's negative conclusion applies only to the retired pole-conditioned lineage, not the distinct 6x4 parent or another first-zero state.
@@ -55,7 +55,7 @@ Current unknowns and guards
 - No numerical cut-capacity inequality is an admitted solver cut; separator INFEASIBLE remains telemetry/core-shrinking only (specs/10 10.10 binds Stage 1 of the direction, not only Stage 4).
 - Every consumer of the direction must keep its witness-conditional phrasing; the review note's standing qualifications apply.
 - Record hygiene repaired through R-ZC-086: E069 rebuilt against current artifacts with an audit trail (conclusions unchanged across the re-run), E071-E073 recorded as entry failures on the same identity drift, E074/E075/E076/E077 given honest retrospective records. Residual opens, recorded inside the E069 record: the superseded E069 run used an uncommitted runner (its recorded hash matches no git version), and the 190-vs-225 boundary-owner count is unreconciled. E073's stated premise (an E072 one-owner bridge) has no machine evidence anywhere. E070's EXPERIMENT.txt closure stays with its in-flight owner.
-- Material revision of the direction file itself awaits owner adjudication of the review corrections.
+- The direction file's owner-adjudicated revision has landed (commit b9efab7): all review corrections adopted, the membrane renamed owner separator, and a Disputes section now governs any later disagreement.
 - The blind-lab collision report corroborates the direction's skeleton/partition line from an independent blind seat and warns that direct coordinate-master solves can hit a solve-side memory wall (28 GiB, no CpSolverResponse in the blind tree). The E077 integrated port master has at least one partially persisted run (checkpoint with 207 cores; terminal status unrecorded — see experiments/E077_port_domain_benders_cores/); absorb the blind tree's encoding fix and add memory telemetry before any further direct full-master run. See research_lab/campaigns/zero_condition/BLIND_COLLISION_20260828.txt. The K=47 boundary-packing theorem passed this tree's independent heterogeneous recheck (third-path Algorithm-X enumeration, packing-by-packing equality, adversarial negatives rejected; R1, research-only) with two standing qualifications — boundary-only object space, and a five-condition up-to-K consumption license (rank 1 is a choice, never WLOG; consumers must keep the 47-packing disjunction and be instance-permutation equivariant) — recorded in research_lab/local/reviews/20260828_k47_boundary_packing_recheck.md. Other blind-tree numeric claims (D2-D4) remain unrechecked candidates.
 - All results here are research-only and have no certification, U/L, owner, production, or publication effect.
 
