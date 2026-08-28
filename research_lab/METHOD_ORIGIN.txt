@@ -19,28 +19,6 @@ Source cutoff: 2026-08-28. Quotations below preserve the source wording.
 Explanatory text states the durable reading, not a claim that the explanation
 itself was spoken verbatim by the owner.
 
-Summary
--------
-This is a compressed orientation. If it conflicts with the source quotations
-below, the quotations and their source-layer labels control.
-* Inner loop: thin relations separate, thick relations live together, and a
-  choice needs a problem-derived ending point. Rule splitting, co-residence,
-  order, layer count, cuts, and cut packages are outputs, not inherited lists.
-* Outer loop: derive multilevel rules from mechanisms, feed new rules back into
-  a recursive closure, then use that closure outside the residual solver. The
-  changing rule-and-space loop -- not failure compilation -- is the core.
-* Knowledge: forward composition, arithmetic, equality structure, construction
-  templates, and generalized failures all feed the loop; it must grow the
-  constructive side and complete witnesses as well as exclusions.
-* Gaps: the reasoning system carries validation; modeling is paid on demand;
-  reliability is not production completeness; truth does not grant consumption rights.
-* Anti-drift: test whether reasons precede routes, rules are generated and fed
-  forward, failure samples or exclusions have taken over, method work delays
-  the frontier, or later repairs are impersonating the original intuition.
-* Witness rule: zero-condition and conditioned layouts use the same epistemic
-  method. Heuristics may scout, but final structures need an unbroken derivation;
-  theorem chains transfer to the conditioned campaign, accidental layouts do not.
-
 1. Inner-loop methodology: the birth of a problem-derived architecture
 -----------------------------------------------------------------------
 Here "inner-loop methodology" means the July solving-side method for deciding
