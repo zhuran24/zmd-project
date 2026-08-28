@@ -25,7 +25,7 @@ if str(ROOT) not in sys.path:
 OUT = (
     ROOT
     / "research_lab/local/zero_condition/"
-    "E070_dual_filling_signature_targets/run-002"
+    "E070_dual_filling_signature_targets/run-003"
 )
 RESULT_PATH = OUT / "RESULT.json"
 FAILURE_PATH = OUT / "FAILURE.json"
@@ -50,7 +50,7 @@ E069_FACE = E069_RESULT.parent / "FACE_CONTEXT.json"
 
 EXPECTED_ENV = {
     "PYTHONHASHSEED": "0",
-    "PYTHONPYCACHEPREFIX": "/tmp/zmd_e070_source_cache_v2",
+    "PYTHONPYCACHEPREFIX": "/tmp/zmd_e070_source_cache_v3",
     "EXACT_USE_POSE_BOOL_MASTER": "1",
     "EXACT_USE_PORT_ACTIVE": "1",
     "EXACT_MASTER_HINT_PERSISTENCE": "0",
@@ -63,7 +63,7 @@ EXPECTED_HASHES = {
     E061_RUNNER: "45a9a95eedb22062a7052dc40b81cb32fe39a1e0f6a5d71457b518fd95cda3d5",
     E062_RUNNER: "91770f3ba9a96a3c79bd95c42a4e40b9a540ab537e97079b02f7c57c6fedb67e",
     E063_RUNNER: "e925b4470ecb002701b262c5d8bcfbe88177eb8da373502354174f178f39caf9",
-    E069_RUNNER: "e71e8bd00d5238fc86dfbfb5eab36e9acf9561e87e626b57ba5ab2e0982a2367",
+    E069_RUNNER: "d1138fab3c89f60bc838a0323a776ae57c874ab949e03d62ddbb697fe4dfd2e8",
     E069_RESULT: "38cd4ec548bd18ad70b3549e04d225a4e4a226489bd8ed111c9f72554640769f",
     E069_PARENT: "6eb5b4708fb616ab5d03c126eb8603626fd50180d78fa10be64a2688538b4137",
     E069_FACE: "9265a64a4caaddbf67ff0925e5b984bb789ab39ff7a455acfb1ae7ee3fcdf584",
