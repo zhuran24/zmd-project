@@ -123,6 +123,8 @@ Accepted ADR 还必须加入 `.docsystem/manifest.json` 的 `adrs` 映射。文�
 
 新 Markdown 必须在同一变更中获得非 `unmanaged` 的有效 policy；若它承担 current 职责，还必须已有显式 `section_refs`。不要先创建未知文档，再把分类留给后续整理。
 
+扩展名为 Markdown、但语义上不是仓库文档的机器包，只能通过 manifest 的 `governed_markdown_exclude_globs` 以窄通配显式排除；排除项不获得 document class、section 或 authority。新增或扩大排除范围必须同步 schema、coverage 回归与 framework gate，不能用它隐藏尚未分类的普通文档。
+
 ## 4. 新增研究 dossier
 
 ```bash
