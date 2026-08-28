@@ -1,7 +1,7 @@
 ZMD RESEARCH CURRENT
 ====================
 
-Updated: 2026-08-27
+Updated: 2026-08-28
 Mode: RESEARCH
 Branch: research/main
 Active campaign: zero_condition
@@ -9,18 +9,27 @@ Campaign ref: research_lab/campaigns/zero_condition/CAMPAIGN.txt
 
 Current endpoint
 ----------------
-Statement: The source-stable E069 replay of E062's distinct
-`grinder_dense_source_002` pose 7006 -> 6878 near miss is OPTIMAL at
-qiaoyu-hard fine mismatch one. Its complete face has twelve source-only
-patterns with fine source/sink backbone {6,7,15}, qiaoyu sink component 29,
-and one extra source component from {1,4,8,12,17,21,25,29,35,36,39,60}; no
-unmatched component is stable across the face.
-Evidence ref: research_lab/campaigns/zero_condition/experiments/E069_six4_near_miss_complete_face/RESULT.txt
-Evidence identity: git:c26095268926f73f638621effa7d4adf7f018092; sha256:38cd4ec548bd18ad70b3549e04d225a4e4a226489bd8ed111c9f72554640769f
+Statement: The cut/transport candidate direction is frozen (commit b32da59)
+and has passed heterogeneous adversarial review with corrections. The
+cut-necessity theorem in its witness-conditional form was independently
+re-derived and CONFIRMED; the direction survives. Refuted alongside it:
+the forced-rate premise (r ranges over a duty polytope, so the layout-level
+condition is existential — EXISTS r, EXISTS binding, FORALL S — an LP),
+the geometric transport-core matching equality (set-packing, matching gives
+only a lower bound), the "6-body shortest vacancy chain" number, E075 as the
+membrane's proof, and the theorem's novelty (already shipped as SAC-Hull /
+F2+Lean / F4; the genuine contribution is b_c(S) as a rate).
+Evidence ref: research_lab/campaigns/zero_condition/DIRECTION_CUT_TRANSPORT_20260828.txt
+Review ref: research_lab/campaigns/zero_condition/DIRECTION_CUT_TRANSPORT_20260828_REVIEW.txt
+Full review (local, git-ignored): research_lab/local/reviews/20260828_cut_transport_refutation.md
 
 Live question
 -------------
-Q: For each of E069's twelve source-only components, is one hypothetical filling-capsule signature with fine-powder input in that component and qiaoyu output in component 29 sufficient to close both terminal-signature zeros?
+Q: Under the corrected direction (duty-polytope existential cut condition;
+geometric core demoted to a lower bound), do E074's 2-3 row semantic
+transport cores remain stable across neighboring contexts — the direction's
+own go/no-go — and does the previous E069/E070 twelve-signature line
+survive as a sub-question or fold into the cut-deficiency frame?
 
 Inflight / recovery
 -------------------
@@ -28,9 +37,9 @@ Inflight / recovery
 
 Recent consequential results
 ----------------------------
-- E065 materialized source-stable E057-E062 replays and proved that one optimum representative is not a complete face. | evidence=research_lab/campaigns/zero_condition/experiments/E065_source_stable_replay_materialization/RESULT.txt | effect=complete-face evidence became mandatory
+- The cut/transport candidate direction was frozen and heterogeneously reviewed: theorem CONFIRMED witness-conditionally, forced-rate premise and geometric-core equality refuted, novelty reframed as a rate-strengthening of shipped SAC-Hull/F2/F4. | evidence=research_lab/campaigns/zero_condition/DIRECTION_CUT_TRANSPORT_20260828_REVIEW.txt | effect=campaign main line moves to the corrected cut-deficiency/transport-core frame
 - E063 exhausted 858 pole-conditioned second-object states with no zero and no UNKNOWN. | evidence=research_lab/campaigns/zero_condition/experiments/E063_pole_conditioned_second_object_frontier/RESULT.txt | effect=individual representatives were replaced by a complete-face atlas
-- E066/E067 narrowed the pole face from six alternatives to five and then four without producing a stable component or zero. | evidence=research_lab/campaigns/zero_condition/experiments/E067_complementary_narrow_face_pairs/RESULT.txt | effect=admitted one final bounded discriminator only
+- E065 materialized source-stable E057-E062 replays and proved that one optimum representative is not a complete face. | evidence=research_lab/campaigns/zero_condition/experiments/E065_source_stable_replay_materialization/RESULT.txt | effect=complete-face evidence became mandatory
 - E068 exhausted 678 admitted final cached actions with no zero or UNKNOWN. | evidence=research_lab/campaigns/zero_condition/experiments/E068_final_cached_fourth_action/RESULT.txt | effect=retired the pole-conditioned external-action lineage
 - E069 exposed the distinct 6x4 parent's regular twelve-way source-only face. | evidence=research_lab/campaigns/zero_condition/experiments/E069_six4_near_miss_complete_face/RESULT.txt | effect=selected a synthetic dual filling-signature discriminator before any physical scan
 
@@ -43,6 +52,10 @@ Current unknowns and guards
 - E069's 103-object causal inventory is recorded but is not an admitted second-object search space.
 - E068's negative conclusion applies only to the retired pole-conditioned lineage, not the distinct 6x4 parent or another first-zero state.
 - Component 40 and every other single returned representative are not stable complete-face properties.
+- No numerical cut-capacity inequality is an admitted solver cut; separator INFEASIBLE remains telemetry/core-shrinking only (specs/10 10.10 binds Stage 1 of the direction, not only Stage 4).
+- Every consumer of the direction must keep its witness-conditional phrasing; the review note's standing qualifications apply.
+- Record hygiene gap: E074/E075 results sit under local/ with EXPERIMENT.txt unupdated and no RESULT.txt; RESULTS.txt ends at E069; E077 has no experiment directory. Promotion blocker until repaired.
+- Material revision of the direction file itself awaits owner adjudication of the review corrections.
 - All results here are research-only and have no certification, U/L, owner, production, or publication effect.
 
 History pointers

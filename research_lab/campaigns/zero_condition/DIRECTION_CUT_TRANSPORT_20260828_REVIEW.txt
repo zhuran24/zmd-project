@@ -1,0 +1,140 @@
+ZMD ZERO-CONDITION DIRECTION REVIEW NOTE
+HETEROGENEOUS ADVERSARIAL REVIEW OF THE CUT/TRANSPORT DIRECTION
+===============================================================
+
+Date: 2026-08-28
+Status: R0 REVIEW OUTCOME. Research-only, non-certified.
+Subject: research_lab/campaigns/zero_condition/DIRECTION_CUT_TRANSPORT_20260828.txt
+         (commit b32da59f1f828a7b162ab535a931a6380288162c)
+Reviewer: independent Claude-source session, adversarial stance, heterogeneous
+          to the GPT-source author of the direction.
+Full review: research_lab/local/reviews/20260828_cut_transport_refutation.md
+             (551 lines, 35 verdicts; local, git-ignored, this tree only)
+Effect: records the review outcome beside the direction. Per the direction's own
+        identity clause, this note does not modify the direction file; material
+        revision of the direction requires owner adjudication.
+
+Overall verdict
+---------------
+The direction is NOT refuted and remains worth pursuing. The cut-necessity
+theorem as written in the direction file (witness-conditional form) was
+independently re-derived before reading its proof skeleton and CONFIRMED step
+for step, including the aggregated-across-commodities capacity form, which is
+the correct form under canonical_rules A7/mixed_commodity_flow. Three
+supporting claims are refuted; several others need qualification. Two
+corrections are load-bearing.
+
+Load-bearing corrections
+------------------------
+A. r(t) is a polytope, not a number. canonical_rules
+   semantics.rate_lemma_scope marks the per-machine duty split an explicit
+   ASSUMPTION half and enumerates legal alternative allocations meeting the
+   same demand. The Stage-4 prerequisite "exact terminal rates" is therefore
+   not well-posed as phrased. Repair: r ranges over the duty polytope
+   { sum_{m carries o} u_m = R_o, 0 <= u_m <= 1 }, and the layout-level
+   necessary condition is existential — EXISTS r, EXISTS binding, FORALL S:
+   sum_c [b_c(S; r)]+ <= cap+(S) — an LP oracle over the allocation polytope,
+   not an exact-rate verifier.
+B. The geometric transport core is not a matching. Layout reconfiguration is
+   set-packing in a conflict graph (the implemented E077 probe is literally
+   per-cell Sum <= 1 disjointness); symmetric differences of independent sets
+   do not decompose into alternating paths, and intermediates need not be
+   feasible. The matching form gives at best a LOWER BOUND on moved bodies.
+   Only the E074 semantic (assignment) side is a legitimate b-matching shape,
+   and there it is a retroactive framing, correctly labelled candidate.
+
+Refuted supporting claims
+-------------------------
+1. Forced/exact terminal rates (see Correction A).
+2. Geometric transport-core equality (see Correction B).
+3. "Shortest vacancy chain = 6 bodies": unverifiable. The number 6 survives
+   only as a hard-coded START_MOVED constant in a follow-up script; the only
+   persisted E077 output implies 8 moved bodies; and the probe's model scope
+   excludes port domains, modes, binding, and connectivity, so even a computed
+   optimum would not be a minimum of the real problem. Drop the number or
+   re-run with persisted output and an explicit scope statement.
+4. Membrane as an E075 result: E075 exhausted 12 ordered placements and its 10
+   STRUCTURAL_EMPTY verdicts come from empty option domains, not a separator
+   argument. The membrane is a definition written afterwards — valid as the
+   zero-capacity special case of the cut form, but E075 must not be cited as
+   its proof in any promotion packet.
+5. Novelty of the theorem: the same cut object is already implemented three
+   times in src/ (separator_capacity_hull SAC-Hull, aggregated capacity;
+   F2 cutset with a Dinic oracle and a Lean proof of the pigeonhole core;
+   F4 component_reach as the zero-capacity case) and the multicommodity LP
+   with shared edge capacity exists in flow_subproblem. The genuine
+   contribution is narrower: b_c(S) as a net RATE injection — a proposed
+   strengthening of the per-commodity coefficient from 1 to a rate-derived
+   quantity in an existing, already-formalized constraint. It inherits the
+   documented enclosure obligation (cutset.py) and the unbound-generic-slot
+   obligation (separator_capacity_hull.py) unchanged.
+
+Standing qualifications for every downstream consumer
+-----------------------------------------------------
+- Keep the witness-conditional phrasing in every summary. The layout-level
+  "FORALL S" rendering inverts quantifiers over rate allocation, binding, and
+  routing; the specs/10 10.9 over-cut trap applies, and frozen rate
+  allocation is a new fourth constant class to add to the constant-support
+  obligation list. On the zero-condition line an over-cut in the candidate
+  generator would silently corrupt exhaustive-negative claims (E063, E068).
+- specs/10 10.10 (CUT-R9-H1) binds Stage 1, not only Stage 4: a separator
+  model is not automatically a relaxation of production routing; separator
+  INFEASIBLE is telemetry / core shrinking only, never a master-cut proof
+  source on its own.
+- Anything rate- or capacity-valued derives from canonical_rules
+  (rate_lemma_scope, A7_rates, mixed_commodity_flow), never from specs/09,
+  which is stale on exactly these points (3D bridge wording voided by
+  routing_cross_junction; per-commodity single-belt rule contradicting
+  mixed_commodity_flow).
+- Rename "membrane": the term is already taken by
+  CLAIM-ORDINARY-MEMBRANE-TERMINAL-BOUND-S48 (geometric contact-length bound),
+  a different object.
+- The membrane repair disjunction is exhaustive only if it quantifies over ALL
+  minimal blocking sets (they are not unique and need not intersect);
+  compiling a single membrane into "must move a body of M" is an over-cut.
+- Empty-rectangle migration is monotone in one direction only: zero-condition
+  infeasibility certificates remain valid for every H (this supports the
+  direction), but H is an optimized min-side-6 rectangle, so cut certificates
+  must carry their H as a premise, and rectangle placement gets no guidance
+  from zero-condition cuts.
+- The quotient collision test is not yet runnable: the one genuinely new
+  signature ingredient (region/trunk/bay decomposition with trunk capacities)
+  is exactly the part left undefined. The test can only refute a basis, never
+  confirm one; keep the held-out wording. The skeleton decoder test is
+  confounded with constructor weakness as specified.
+
+Gains produced by the review (candidates, not adopted changes)
+--------------------------------------------------------------
+- Stronger Boolean corollary without any rate premise: n_o = ceil(R_o) forces
+  u_min >= frac(R_o) > 0 for fractional R_o (u = 1 throughout for integral),
+  so "an isolated free component containing a source of c must contain a sink
+  of c" holds for EVERY legal allocation. Strictly stronger than the
+  direction's own Boolean corollary; should replace it.
+- A conditional lane-separation bound already exists in rate_lemma_scope: under
+  the stated allocation profile no two intermediate commodities can share one
+  lane. The direction's pessimism about corridor lower bounds is overstated.
+- Candidate capacity tightening: the shipped constant 2 per free wall cell is a
+  factor-2 overestimate for axis-aligned walls (the perpendicularity constraint
+  in routing forbids two same-axis channels on one cell; any non-straight
+  component blocks the second layer). Per directed grid edge: at most one
+  channel, always. This incidentally resolves the open reconciliation recorded
+  in docs/research/p1_3_m4_recon_20260708/f4f2.md in the safe direction.
+  Tightening a shipped constraint is a soundness-direction edit and owes its
+  own PCR-R5-style proof before application.
+
+Record hygiene (promotion blocker, independent of the mathematics)
+------------------------------------------------------------------
+E074 and E075 hold machine results under research_lab/local/ while their
+EXPERIMENT.txt files still read "Not run yet" and no RESULT.txt exists;
+RESULTS.txt terminated at E069; E077 has no experiment directory at all.
+E075's EXPERIMENT.txt claims 48 raw mode pairs while runner and result record
+18. These must be repaired before any promotion packet cites them.
+
+Open items not settled by the review
+------------------------------------
+- E074 transport-core stability across neighboring contexts (the direction's
+  own go/no-go) is untested.
+- The claimed phenomenon "identical occupied geometry and free-cell graph but
+  operation assignment changes the shared-component objective" is the sole
+  empirical support for rejecting the unlabelled quotient and is not yet cited
+  to a specific E-series result.
