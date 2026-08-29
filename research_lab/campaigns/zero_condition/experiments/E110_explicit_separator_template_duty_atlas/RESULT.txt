@@ -1,0 +1,136 @@
+E110 RESULT: THE EXPLICIT SEPARATOR HAS AN EXACT 27-STATE TEMPLATE-DUTY ATLAS
+================================================================================
+
+Status
+------
+Closed as a complete body/power projection of E103's explicit `y_after_59`
+separator. The restored 1,205-candidate language is not solved for native fronts;
+instead its separator template counts are compiled into an exact finite basis.
+Independent one-worker enumeration reports PASS.
+
+Verdict
+-------
+
+  EXPLICIT_SEPARATOR_TEMPLATE_DUTY_ATLAS_COMPLETE
+
+Decision
+--------
+
+  ATTACH_CLASS_COORDINATES_TO_SEPARATOR_VECTORS
+
+Machine evidence
+----------------
+Canonical result:
+
+  research_lab/local/zero_condition/
+  E110_explicit_separator_template_duty_atlas/run-001/RESULT.json
+
+SHA-256:
+
+  6b454d85725ac91ffdb7478231fb6b0900d077c701d1a2c81c6d75acff889664
+
+Separator projection:
+
+  research_lab/local/zero_condition/
+  E110_explicit_separator_template_duty_atlas/run-001/
+  SEPARATOR_TEMPLATE_PROJECTION.json
+
+SHA-256:
+
+  73570c931c8e8c053ec5a17feaa821e4e69511443882eac01110b470a6537413
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E110_explicit_separator_template_duty_atlas/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  4b25595170b280f34951f563e61c5a17de46e1cc6b6afbfa97ee7e9421b17bf6
+
+Restored three-module language
+------------------------------
+E110 maps E103's unary-live candidate records back to E100's source-stable x42
+rows through stable global row, body digest and template identity. The exact
+`y_after_59` groups are restored:
+
+  low candidates          812
+  separator candidates    154
+  high candidates         239
+
+E101's body witness contributes 25 surviving hints: low 19, separator 1 and high
+5. Its one unary-dead anchor remains excluded. Both stable E078 bodies are required.
+
+The body/power model selects exactly 26 bodies with global template totals
+10/6/10, fixed E092 power and body non-overlap. It exposes only the separator
+count vector
+
+  (manufacturing_3x3, manufacturing_5x5, manufacturing_6x4)
+
+and blocks one three-count vector after each witnessed solve.
+
+Exact finite atlas
+------------------
+The formal separator box contains 11 x 7 x 11 = 847 vectors. E110 completes the
+projection in 2.221 seconds. Exactly 27 vectors have a body/power completion; the
+post-blocking solve is exact INFEASIBLE.
+
+Separator body count ranges from 0 through 5. The exact count distribution is:
+
+  separator bodies   number of vectors
+  0                   1
+  1                   3
+  2                   6
+  3                  10
+  4                   6
+  5                   1
+
+Per-template separator ranges are:
+
+  manufacturing_3x3   0 .. 5
+  manufacturing_5x5   0 .. 3
+  manufacturing_6x4   0 .. 3
+
+The zero vector is present. This does not revive E104: E103's high group includes
+bodies touching y60 without straddling the `y_after_59` cut, whereas E104 forbids
+all manufacturing occupation of y60. The two languages are deliberately distinct.
+
+One complete 26-body low/separator/high witness is retained for every separator
+vector. Its side template counts are an existence witness only, not a uniqueness
+claim for that separator duty.
+
+Independent replay
+------------------
+A source-isolated checker replays all 27 witnesses for exact global template
+totals, body non-overlap, fixed power, stable-body presence and separator count.
+It then independently enumerates the separator projection with one worker,
+`PSEUDO_COST_SEARCH`, symmetry level 0 and probing level 0. The same 27 vectors
+appear, and solve 28 is exact INFEASIBLE in 0.145 seconds.
+
+What changed
+------------
+E109 proves that deleting the separator is too strong. E110 replaces that failed
+restriction with a finite bridge object:
+
+  154 coordinate candidates
+    -> 27 exact separator template-duty states.
+
+The separator is now a third module with a small, explicit template interface.
+The next model need not reopen the full 1,205-candidate high monolith merely to
+decide how many separator bodies of each template exist.
+
+Next problem
+------------
+For each of the 27 separator template vectors, attach the eight B class coordinates
+and determine which vectors admit a complete separator native-front witness.
+Side template duties must remain explicit rather than inherited from one
+representative body witness. The next constructor should condition low and high
+side template/class balances on the selected separator vector and use exact side
+consumers; it must not infer class feasibility from body/power admission.
+
+Truth boundary
+--------------
+E110 is exact only at the body/power separator-template projection. It does not
+prove any separator vector native-front feasible, make representative low/high
+counts unique, or establish terminal uniqueness, binding, routing, throughput,
+certification or U/L change.

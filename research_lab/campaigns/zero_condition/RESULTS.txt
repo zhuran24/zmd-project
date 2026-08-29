@@ -4133,6 +4133,47 @@ evidence:
   ARTIFACT_CHECK.json sha256
   a065ff1730e445bea7ae6825413b27a7bee641b63c4f20c084050229a9a511a0.
 
+R-ZC-120  Explicit separator compiles to 27 exact body/power template duties
+--------------------------------------------------------------------------------
+status: complete separator projection; one-worker independent enumeration PASS
+scope: source-stable x42 high side, E103 unary-live low/separator/high language, fixed E092 power
+
+statement:
+  After E109 closes manufacturing-free y60, E110 restores E103's exact
+  `y_after_59` groups: 812 low, 154 separator and 239 high candidates. The model
+  selects 26 bodies with global template totals 10/6/10, fixed power,
+  non-overlap and both stable E078 bodies. E101 contributes 25 surviving hints;
+  its unary-dead anchor is not restored.
+
+  The only projected interface is the separator template vector. Of 847 formal
+  vectors, exactly 27 have a body/power completion. Enumeration finishes in
+  2.221 seconds and the post-blocking solve is exact INFEASIBLE. Separator body
+  count ranges 0..5 with vector-count distribution 1,3,6,10,6,1. Per-template
+  maxima are 5 for 3x3 and 3 each for 5x5 and 6x4.
+
+  A source-isolated one-worker PSEUDO_COST replay checks every 26-body witness,
+  enumerates the identical 27-vector set, and closes solve 28 as INFEASIBLE in
+  0.145 seconds.
+
+non-implications:
+  The zero separator vector does not contradict E109 because E103's high group
+  may use bodies touching y60 without straddling the y59 cut. E110 is body/power
+  only; no vector is yet native-front or class-allocation feasible, and witness
+  side counts are not unique duties.
+
+effect on next problem:
+  Replace the 154-coordinate separator domain with the 27-state template atlas.
+  Attach eight class coordinates to each state and condition low/high side
+  template and class balances explicitly before any full high solve.
+
+evidence:
+  E110 RESULT.txt; local RESULT.json sha256
+  6b454d85725ac91ffdb7478231fb6b0900d077c701d1a2c81c6d75acff889664;
+  SEPARATOR_TEMPLATE_PROJECTION.json sha256
+  73570c931c8e8c053ec5a17feaa821e4e69511443882eac01110b470a6537413;
+  ARTIFACT_CHECK.json sha256
+  4b25595170b280f34951f563e61c5a17de46e1cc6b6afbfa97ee7e9421b17bf6.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

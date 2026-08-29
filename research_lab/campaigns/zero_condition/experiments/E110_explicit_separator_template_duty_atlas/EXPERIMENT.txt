@@ -1,0 +1,62 @@
+EXPERIMENT E110: EXPLICIT-SEPARATOR TEMPLATE-DUTY ATLAS
+=======================================================
+
+Question
+--------
+After restoring E103's explicit `y_after_59` separator, which separator template
+vectors can coexist with a complete 26-body body/power witness?
+
+Why this experiment
+-------------------
+E109 proves that deleting all manufacturing bodies on y60 destroys every
+body-feasible native-front split. The separator must therefore become a visible
+third module rather than a set of candidates silently removed from the model.
+Before assigning front classes, E110 asks for the separator's exact finite body
+obligations.
+
+Method
+------
+1. Reconstruct E100's source-stable x42 domain and map E103's 1,205 unary-live
+   high candidates back by stable global-row, body-digest and template identity.
+   Restore the exact E103 groups:
+
+     low         812 candidates
+     separator   154 candidates
+     high        239 candidates
+
+2. Build one exact body/power-only model selecting 26 bodies with global template
+   totals 10/6/10, fixed E092 power, body non-overlap and both stable E078 bodies.
+   The 25 surviving rows from E101's body witness are hints only; the unary-dead
+   twenty-sixth anchor is not restored.
+
+3. Expose only the separator template vector
+
+     (manufacturing_3x3, manufacturing_5x5, manufacturing_6x4)
+
+   as three bounded IntVars. Repeatedly store one complete low/separator/high body
+   witness and block only the separator vector. Enumeration is complete only when
+   the post-blocking model returns exact INFEASIBLE.
+
+4. Report the exact separator-vector set, separator-body count range, per-template
+   ranges, and one stable body/power completion for every vector. Do not infer
+   side-template uniqueness from the representative witnesses.
+
+Predeclared decisions
+---------------------
+Complete small atlas
+  Carry only these separator template vectors into a three-module native-front
+  handshake. Attach class coordinates after template duties are fixed.
+
+Complete empty atlas
+  Contradicts the admitted E092 body/power skeleton and is an apparatus failure,
+  because E103's live anchor itself supplies a separator body.
+
+Censored atlas
+  Preserve positive separator vectors and continue the same enumeration. Absent
+  vectors have no meaning.
+
+Truth boundary
+--------------
+This is a body/power projection only. A separator vector does not prove native-
+front, class-allocation, binding or routing feasibility. No certification or U/L
+effect follows.

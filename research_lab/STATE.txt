@@ -11,15 +11,15 @@ Current endpoint
 ----------------
 Statement: E095 remains the stable constructive base: module A is a checked
 128-body native-front half and module B is the sole 91-body wall. E100/E101 reduce
-that wall to a 26-body high side; E103 selects a y59/template hybrid. E104's
-cheapest realization deletes every manufacturing body on y60. E108 proves that
-this restricted body/power language has exactly seven template splits. E105-E107
-close five. E109 closes the last two, upper 3/0/4 and 6/0/3, on complete upper
-native-front projections; one-worker solver-diverse replay confirms both. Thus
-the seven-state basis is fully covered by seven exact split negatives and the
-manufacturing-free-y60 sufficient language is empty. The live object returns to
-E103's explicit 154-candidate separator; y60 itself, x42 and the fixed skeleton
-remain open.
+that wall to a 26-body high side; E103 selects a y59/template hybrid. E109 proves
+that deleting all manufacturing occupation of y60 closes every one of E108's
+seven body-feasible splits, so that sufficient restriction is retired. E110
+restores E103's exact 812-low / 154-separator / 239-high language and compiles the
+separator at body/power level: only 27 of 847 formal template vectors have any
+26-body completion. Independent one-worker replay reproduces all 27 and closes
+vector 28. Separator body count is 0..5, with per-template maxima 5/3/3. The live
+object is this 27-state third-module atlas, not the 154-coordinate domain or the
+former y60-deletion branch.
 Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
@@ -45,6 +45,7 @@ Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E107_reverse_nested_allocation_handshake/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E108_nested_template_projection_atlas/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E109_last_two_template_split_discriminator/RESULT.txt
+  research_lab/campaigns/zero_condition/experiments/E110_explicit_separator_template_duty_atlas/RESULT.txt
 Identity audit:
   research_lab/campaigns/zero_condition/E079_E080_ARTIFACT_IDENTITY_AUDIT_20260828.txt
 Direction ref:
@@ -52,16 +53,16 @@ Direction ref:
 
 Live question
 -------------
-Q: What finite duties must E103's explicit y_after_59 separator carry? Restore
-all 154 unary-live separator candidates together with the 812 low and 239 high
-candidate groups. Do not rebuild the former joint 1,205-candidate high solver.
-First derive a finite separator body/template atlas conditioned on exact total
-10/6/10 and fixed E092 power: enumerate which separator template-count vectors
-can coexist with side body/power projections, then attach the eight class
-coordinates only to surviving vectors. Treat separator bodies as a visible third
-module, with explicit low/separator/high template and class balances. A positive
-must still compose through x42-low and full 219-body replay. UNKNOWN creates no
-rule; the closed manufacturing-free-y60 language must not be reopened.
+Q: Which of E110's 27 separator template duties admit a complete separator
+native-front class assignment, and what low/high complements do they force? Keep
+the separator as an explicit third module. For each template vector, solve the
+complete 154-candidate separator side with same-footprint modes, fixed E092 power,
+body non-overlap, native-front capacity and eight class coordinates free under
+global caps. Exact separator INFEASIBLE removes only that vector. For each
+positive, preserve the separator class vector and expose exact remaining
+low/high template and class balances rather than inheriting them from E110's
+representative witness. Use finite-state batching; UNKNOWN creates no rule. Do
+not rebuild the 1,205-candidate monolith or reopen manufacturing-free y60.
 
 Inflight / recovery
 -------------------
@@ -108,6 +109,7 @@ Recent consequential results
 - E107 reverses the handshake and proves the complete lower 5/4/9 projection empty; solver-diverse replay promotes upper 5/2/1 as the fifth exact split nogood. | evidence=research_lab/campaigns/zero_condition/experiments/E107_reverse_nested_allocation_handshake/RESULT.txt | effect=return to the body/template frontier with five structural rules
 - E108 exactly enumerates the body/power template projection: seven of 847 formal upper vectors are realizable, five are prior split nogoods, leaving only 3/0/4 and 6/0/3 for direct testing. | evidence=research_lab/campaigns/zero_condition/experiments/E108_nested_template_projection_atlas/RESULT.txt | effect=replace serial body proposals with a two-state exact discriminator
 - E109 closes both remaining vectors on complete upper-side native-front models; seven exact split negatives now cover E108's complete seven-state body basis. | evidence=research_lab/campaigns/zero_condition/experiments/E109_last_two_template_split_discriminator/RESULT.txt | effect=retire manufacturing-free y60 and restore E103's explicit separator as a third finite module
+- E110 restores E103's 812/154/239 groups and exactly enumerates 27 body/power-feasible separator template vectors from an 847-vector formal box. | evidence=research_lab/campaigns/zero_condition/experiments/E110_explicit_separator_template_duty_atlas/RESULT.txt | effect=replace 154 separator coordinates with a 27-state template-duty interface
 
 Current unknowns and guards
 ---------------------------
@@ -147,7 +149,7 @@ Current unknowns and guards
 - E103's unary removal is exact for fixed power and fixed-obstacle native-front viability. Its interface and Hall counts are representation facts, not feasibility or runtime bounds. The selected y59 hybrid still retains an explicit separator until a new sufficient restriction removes it.
 - E104 is a censored result under the additional manufacturing-free y60 restriction. It does not reject y60, the explicit E103 separator, high, x42 or module B. Its run-001 import failure has no scientific effect; run-002 plus its independent checker are canonical.
 - E105 rejects only nested template totals lower 7/4/8 and upper 3/2/2 under reserved y60. It does not reject the particular body witness as a unique cause, any other template split, y60, high, x42 or module B. Runs 001/002 are apparatus aborts. The runner's dormant positive path contains run-001 pointer literals and must not be copied by successors.
-- E106's three allocation nogoods remain valid historical explanations, but E107's direct lower-projection negative subsumes them for continuation. E108's broad side atlases remain censored positive-only data. E109 closes the complete manufacturing-free-y60 language only because E108's exact body basis has seven states and all seven now have exact split negatives. This does not reject the explicit 154-candidate separator or y60 without the body reservation.
+- E106's three allocation nogoods remain valid historical explanations, but E107's direct lower-projection negative subsumes them for continuation. E108's broad side atlases remain censored positive-only data. E109 closes only manufacturing-free y60. E110's 27 separator vectors are body/power admissions, not native-front or class-feasible states; representative low/high template counts are witnesses, not unique duties.
 - Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
 
 History pointers

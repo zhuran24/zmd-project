@@ -681,3 +681,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   manufacturing-free y60 sufficient language 整体为空。正确退回点不是 E104 joint high，也不是
   1,205-candidate monolith，而是 E103 本来保留的 154-candidate explicit separator：删除 separator
   已被证伪，下一表示必须让 separator 自己承担可见的 body/template/class duty。
+
+2026-08-29 05:55
+----------------
+数据：
+  E110 run-001 RESULT.json
+  research_lab/local/zero_condition/E110_explicit_separator_template_duty_atlas/run-001/RESULT.json
+  sha256 6b454d85725ac91ffdb7478231fb6b0900d077c701d1a2c81c6d75acff889664
+  ARTIFACT_CHECK.json sha256
+  4b25595170b280f34951f563e61c5a17de46e1cc6b6afbfa97ee7e9421b17bf6
+
+注意／发现：
+  恢复 E103 的 812 low / 154 separator / 239 high 后，只把 separator 三种 template count 当
+  接口完整枚举。847 个形式向量中只有 27 个 body/power 可实现；producer 2.221 秒闭合，异源
+  one-worker PSEUDO_COST 再次得到同一 27 态，第 28 次 exact INFEASIBLE。separator body 数量
+  0..5 的向量个数呈 1,3,6,10,6,1，对应 3x3/5x5/6x4 上限 5/3/3。
+
+推理：
+  E109 证明“把桥删掉”太强，E110 则把桥从 154 个坐标候选压成 27 个结构 duty states。零
+  separator vector 仍存在并不矛盾，因为 E103 high 组允许 body 接触 y60 而不跨 y59，E104
+  禁的是整行。下一层不该从某个代表 witness 偷走 low/high counts，而要在 27 态上显式接入
+  separator class coordinates 与两侧 complement。这样桥终于成为一个有限、可消费的第三模块，
+  不再是“删掉或放回全部 154 个”的二值开关。
