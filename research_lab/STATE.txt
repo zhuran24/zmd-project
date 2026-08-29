@@ -12,15 +12,15 @@ Current endpoint
 Statement: E095 remains the stable constructive base: module A is a checked
 128-body native-front half and module B is the sole 91-body wall. E099 establishes
 the source-stable x_after_41/template hybrid; E100 reserves x=42 and proves an
-exact low/high product whose monolithic native-front solve is censored. E101 now
-separates body allocation from the eight-class bridge. The x42 body/power-only
-model finds an exact witness in 0.326 seconds: 65 bodies low, 26 high, with
-low template counts 43/11/11 and high counts 10/6/10. The independent checker
-replays that geometry. The smaller high-side native-front proposer still returns
-UNKNOWN after 286,091 branches and 17,016 conflicts in 25.061 seconds, before
-producing any class-allocation vector. Thus the remaining wall is now localized
-to high-side geometry versus its own class coordinates; low has not yet been
-asked a complement and no allocation nogood exists.
+exact low/high product. E101 separates body allocation from the eight-class
+bridge and finds an exact body/power witness in 0.326 seconds: 65 bodies low and
+26 high, with high template counts 10/6/10. Its eight-worker high-side model is
+UNKNOWN after 286,091 branches. E102 preserves the identical 1,324-candidate,
+12,286-variable high feasible set but changes to one-worker pseudo-cost search;
+it is also UNKNOWN after 90.013 seconds, now with zero branches and conflicts.
+Neither run emits a class-allocation vector, so low has never received a
+complement and no allocation nogood exists. The wall is now the high-side
+representation itself, not body packing, fixed power or one solver family.
 Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
@@ -38,6 +38,7 @@ Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E099_source_isolated_e096_revalidation/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E100_source_stable_reserved_x42_hybrid/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E101_x42_allocation_handshake/RESULT.txt
+  research_lab/campaigns/zero_condition/experiments/E102_high_side_solver_diverse_replay/RESULT.txt
 Identity audit:
   research_lab/campaigns/zero_condition/E079_E080_ARTIFACT_IDENTITY_AUDIT_20260828.txt
 Direction ref:
@@ -45,15 +46,16 @@ Direction ref:
 
 Live question
 -------------
-Q: Can the identical high-side 10/6/10 template problem produce its first
-concrete eight-class allocation under a solver-diverse search? Replay E101's
-1,324-candidate high model without changing its feasible set, using a single-
-worker pseudo-cost search with symmetry/probing/randomization disabled and a
-larger but bounded budget. If high is feasible, immediately solve the exact low
-complement and combine/replay any pair. If high is exact INFEASIBLE, reject only
-this body-only 10/6/10 template allocation. If high remains UNKNOWN, stop solver
-repetition and build a no-solver high template/spatial capacity audit. Do not
-rerun E100, infer an allocation from UNKNOWN, or broaden x42/poles/boundary.
+Q: What is the thinnest exact representation inside E101's 1,324-candidate high
+side? Build a complete no-solver audit under the fixed 10/6/10 template demand.
+Compare template groups, deterministic vertical/horizontal spatial cuts balanced
+against the exact 26-body witness, and fixed-obstacle native-front capability
+signatures. Measure body/body and directed front/body interface cells and
+participants, separator size, class-allocation dimensions, and Hall-style
+candidate-support bounds while keeping dynamic body occupancy outside those
+bounds. Select the representation under predeclared finite metrics, then solve
+through that interface. Do not run a third solver on the unchanged high model or
+turn the two censored runs into a negative.
 
 Inflight / recovery
 -------------------
@@ -92,6 +94,7 @@ Recent consequential results
 - E099 source-isolates operation_profiles/E095/E096 and independently reproduces E098, not the committed E096 snapshot: x_after_41 and template/spatial incomparability replace x_after_34 dominance across 19 changed fields. | evidence=research_lab/campaigns/zero_condition/experiments/E099_source_isolated_e096_revalidation/RESULT.txt | effect=retract E096/E097 and build a source-stable x41/template hybrid
 - E100 reserves x=42 in that source-stable hybrid, producing an exact 2,805/1,324 low/high product with an eight-coordinate class bridge. Its 240-second pure-feasibility solve is UNKNOWN after 8.42M branches and no incumbent. | evidence=research_lab/campaigns/zero_condition/experiments/E100_source_stable_reserved_x42_hybrid/RESULT.txt | effect=externalize the allocation bridge and solve conditioned sides instead of rerunning the monolith
 - E101 finds an exact x42 body/power allocation in 0.326 seconds, but the smaller 1,324-candidate high native-front model remains UNKNOWN in 25.061 seconds before producing a class vector. | evidence=research_lab/campaigns/zero_condition/experiments/E101_x42_allocation_handshake/RESULT.txt | effect=solver-diverse-replay the unchanged high side before building a high-interface atlas
+- E102 preserves the high feasible set and changes only to one-worker pseudo-cost search. It remains UNKNOWN for 90.013 seconds with zero branches/conflicts and no allocation. | evidence=research_lab/campaigns/zero_condition/experiments/E102_high_side_solver_diverse_replay/RESULT.txt | effect=stop solver repetition and measure high-side template/spatial/capacity interfaces
 
 Current unknowns and guards
 ---------------------------
@@ -126,7 +129,8 @@ Current unknowns and guards
 - E097 has no recoverable terminal identity and consumes the withdrawn x_after_34 premise. Its x35 restriction, branch and decision have no current research effect.
 - E098 is an apparatus stop before E097. E099 corrects representation identity only; it makes no module-B feasibility claim. The exact cause of the old E096 snapshot remains unknown.
 - E100 is a censored UNKNOWN under an additional manufacturing-free x=42 restriction. It is not a negative for that restriction or module B. Its 19 cross-side front/front coincidences remain outside native-front semantics and can recouple at terminal uniqueness.
-- E101's body witness is exact only for one low/high template allocation. High-side UNKNOWN provides no allocation tuple and no nogood; low was not run. The next solver-diverse replay must preserve the identical high feasible set.
+- E101's body witness is exact only for one low/high template allocation. High-side UNKNOWN provides no allocation tuple and no nogood; low was not run.
+- E102 is a second censored measurement of the same high feasible set, not corroborating infeasibility. Its zero-branch pseudo-cost behavior and E101's branching portfolio behavior are instrument telemetry only.
 - E097's machine RESULT and branch-aware checker are the sole terminal identity. The durable prose deliberately does not duplicate its status string. Any downstream session must load `RESULT.json.decision` before acting.
 - Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
 

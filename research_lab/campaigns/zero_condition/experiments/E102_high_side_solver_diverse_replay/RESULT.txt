@@ -1,0 +1,115 @@
+E102 RESULT: A SECOND SOLVER FAMILY ALSO LEAVES THE HIGH-SIDE ALLOCATION CENSORED
+================================================================================
+
+Status
+------
+Closed as a solver-diversity measurement with artifact check PASS. E102
+reconstructs exactly the same 1,324-candidate high-side feasible set used by E101
+and changes only the search instrument. The single-worker pseudo-cost run returns
+UNKNOWN without a branch, conflict, allocation vector or selected body. The low
+complement stage therefore does not run.
+
+Machine evidence
+----------------
+Terminal result:
+
+  research_lab/local/zero_condition/
+  E102_high_side_solver_diverse_replay/run-001/RESULT.json
+
+SHA-256:
+
+  853dfba41a1cd017cb010a1255b07f077d24fb2e6221c1fdc9130d2ac6f30d90
+
+High-side result SHA-256:
+
+  eae72ad0237d0b7d6d68490a1580d7f13e84e859c10d15803bb34def6a72a67e
+
+Artifact check SHA-256:
+
+  6ab9a259389c6e6cbeea77b936af8e43f5c9c0850cb1cb8aaa7c8901c2a56710
+
+Verdict
+-------
+
+SOLVER_DIVERSE_HIGH_SIDE_STILL_CENSORED
+
+Decision
+--------
+
+BUILD_HIGH_SIDE_TEMPLATE_SPATIAL_CAPACITY_AUDIT
+
+Identical feasible-set projection
+---------------------------------
+The E102 checker joins E101 and E102 on every structural field that defines the
+high-side problem:
+
+  candidates                       1,324
+  required bodies                     26
+  template counts               10 / 6 / 10
+  mode/class variables            10,954
+  total variables                 12,286
+  constraints                     23,904
+  disabled unpowered candidates      116
+  matched body hints                  26
+
+E102 preserves body packing, fixed E092 power, same-footprint native modes, all
+eight class coordinates and both stable E078 bodies. No retained objective or
+new restriction is introduced.
+
+Search contrast
+---------------
+E101 used:
+
+  8 workers
+  quick-restart portfolio
+  symmetry/probing level 3
+  randomized search
+  25-second cap
+
+and reached:
+
+  286,091 branches
+  17,016 conflicts
+  UNKNOWN
+
+E102 uses:
+
+  1 worker
+  PSEUDO_COST_SEARCH
+  symmetry/probing level 0
+  randomize_search false
+  seed 102001
+  90-second cap
+
+and reaches:
+
+  branches                            0
+  conflicts                           0
+  status                        UNKNOWN
+  allocation                       none
+  selected bodies                  none
+
+These are representation/instrument failures with opposite search behavior. They
+do not vote twice against the object.
+
+Meaning
+-------
+The high-side censor is not specific to E101's portfolio. A third solver replay
+would repeat an instrument contest without producing a new problem-derived
+object. The next step must inspect the high-side interaction and capacity
+structure itself:
+
+  template groups
+  spatial separators
+  fixed-obstacle front capability signatures
+  class-support capacity relations
+
+The useful next output is a smaller interface or a class-capacity specification,
+not another UNKNOWN from the unchanged 12k-variable model.
+
+Truth boundary
+--------------
+UNKNOWN is not infeasibility. E102 supplies no high allocation, low complement,
+nogood, module-B witness or combined witness. It produces no terminal uniqueness,
+generic I/O, commodity binding, component compatibility, routing, throughput,
+U/L, certification, owner, production or publication effect.

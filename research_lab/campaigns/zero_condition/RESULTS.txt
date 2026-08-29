@@ -3802,6 +3802,36 @@ evidence:
   ARTIFACT_CHECK.json sha256
   35eb5580acf84a9b25e7569403ac5aa5814285fa29dd225c9bd5e9bd28eb0055.
 
+R-ZC-112  Solver diversity does not produce the first high-side allocation
+----------------------------------------------------------------------------
+status: identical feasible-set replay; UNKNOWN preserved; checker PASS
+scope: E101 high side, exact 10/6/10 template allocation under reserved x42
+
+statement:
+  E102 reconstructs the same 1,324-candidate, 26-body, 10/6/10 high-side model
+  and changes only the search instrument to one-worker PSEUDO_COST_SEARCH with
+  symmetry/probing disabled and no randomization. The 90-second run returns
+  UNKNOWN with zero branches and conflicts, no allocation and no selected body.
+  Its structural projection exactly matches E101's 12,286-variable / 23,904-
+  constraint model. Low does not run and no nogood is learned.
+
+non-implications:
+  Two solver families returning UNKNOWN do not make a negative vote. E102 does
+  not reject the high template allocation, x42 or module B.
+
+effect on next problem:
+  Stop solver-family repetition. Build a complete no-solver high-side audit of
+  template, spatial and class-capacity interfaces, then choose a smaller exact
+  representation before the next solve.
+
+evidence:
+  E102 RESULT.txt; local RESULT.json sha256
+  853dfba41a1cd017cb010a1255b07f077d24fb2e6221c1fdc9130d2ac6f30d90;
+  HIGH_RESULT.json sha256
+  eae72ad0237d0b7d6d68490a1580d7f13e84e859c10d15803bb34def6a72a67e;
+  ARTIFACT_CHECK.json sha256
+  6ab9a259389c6e6cbeea77b936af8e43f5c9c0850cb1cb8aaa7c8901c2a56710.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

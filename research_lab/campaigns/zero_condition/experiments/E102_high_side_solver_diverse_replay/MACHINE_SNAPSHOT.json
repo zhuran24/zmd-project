@@ -1,0 +1,46 @@
+{
+  "schema": "zmd_e102_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "terminal_result": {
+    "path": "research_lab/local/zero_condition/E102_high_side_solver_diverse_replay/run-001/RESULT.json",
+    "sha256": "853dfba41a1cd017cb010a1255b07f077d24fb2e6221c1fdc9130d2ac6f30d90",
+    "verdict": "SOLVER_DIVERSE_HIGH_SIDE_STILL_CENSORED",
+    "decision": "BUILD_HIGH_SIDE_TEMPLATE_SPATIAL_CAPACITY_AUDIT"
+  },
+  "high": {
+    "path": "research_lab/local/zero_condition/E102_high_side_solver_diverse_replay/run-001/HIGH_RESULT.json",
+    "sha256": "eae72ad0237d0b7d6d68490a1580d7f13e84e859c10d15803bb34def6a72a67e",
+    "status": "UNKNOWN",
+    "elapsed_seconds": 90.0128726069961,
+    "branches": 0,
+    "conflicts": 0,
+    "candidate_count": 1324,
+    "required_body_count": 26,
+    "template_counts": {
+      "manufacturing_3x3": 10,
+      "manufacturing_5x5": 6,
+      "manufacturing_6x4": 10
+    },
+    "mode_class_variable_count": 10954,
+    "model_variable_count": 12286,
+    "model_constraint_count": 23904,
+    "allocation": null,
+    "selected_body_count": 0
+  },
+  "solver_controls": {
+    "workers": 1,
+    "search_branching": "PSEUDO_COST_SEARCH",
+    "symmetry_level": 0,
+    "probing_level": 0,
+    "randomize_search": false,
+    "seed": 102001,
+    "seconds": 90.0
+  },
+  "artifact_check": {
+    "path": "research_lab/local/zero_condition/E102_high_side_solver_diverse_replay/run-001/ARTIFACT_CHECK.json",
+    "sha256": "6ab9a259389c6e6cbeea77b936af8e43f5c9c0850cb1cb8aaa7c8901c2a56710",
+    "status": "PASS",
+    "classification": "IDENTICAL_HIGH_FEASIBLE_SET_SECOND_SOLVER_CENSORED"
+  }
+}

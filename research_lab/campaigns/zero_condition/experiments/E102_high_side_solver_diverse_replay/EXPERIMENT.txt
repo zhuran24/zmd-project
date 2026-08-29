@@ -1,0 +1,56 @@
+EXPERIMENT E102: SOLVER-DIVERSE REPLAY OF THE X42 HIGH-SIDE ALLOCATION PROPOSER
+================================================================================
+
+Question
+--------
+Does E101's unchanged 1,324-candidate high-side native-front problem yield its
+first concrete eight-class allocation under a solver family that searches very
+differently from the censored eight-worker quick-restart portfolio?
+
+Method
+------
+1. Pin E101's body-only 65/26 witness and exact 10/6/10 high template allocation.
+   Reconstruct the same source-stable x42 rows and the same high-side model.
+
+2. Change no feasible-set constraint. Solve high with:
+
+     one worker
+     PSEUDO_COST_SEARCH
+     symmetry level 0
+     probing level 0
+     randomize_search false
+     seed 102001
+     90-second cap
+     stop after first solution
+
+3. If high is feasible, pass its exact allocation complement to the unchanged low
+   model and solve low for 120 seconds with E101's eight-worker quick-restart
+   portfolio. A paired positive is materialized, combined with E095's frozen A
+   witness and replayed over all 219 bodies.
+
+Predeclared decisions
+---------------------
+Paired positive
+  Advance to terminal uniqueness, generic I/O and component-aware binding.
+
+High exact INFEASIBLE
+  Reject only E101's high 10/6/10 template allocation and request another
+  body-only allocation.
+
+High UNKNOWN again
+  Stop solver-family repetition and build a no-solver high-side template/spatial
+  capacity audit.
+
+Low exact INFEASIBLE
+  Record this high allocation tuple as one exact nogood and continue the handshake.
+
+Low UNKNOWN
+  Preserve the exact high allocation and replay only that low complement with a
+  solver-diverse instrument.
+
+Truth boundary
+--------------
+The experiment preserves E101's high feasible set. Any low negative is scoped to
+one exact complement; any high negative is scoped to one body-only template
+allocation. Only a replayed paired positive transfers to unrestricted module B.
+All terminal, binding, routing, throughput and certification layers remain outside.

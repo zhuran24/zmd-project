@@ -504,3 +504,23 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   下一轮最便宜的判别是保留完全相同的 high feasible set，换 solver family；若仍 censored，
   再量 high 内部 template/spatial interface 或先投影 class capacity。第一份 concrete high
   allocation 才是能回灌给 low 的知识，UNKNOWN 不能伪装成该 10/6/10 allocation 不存在。
+
+2026-08-29 02:34
+----------------
+数据：
+  E102 run-001 RESULT.json
+  research_lab/local/zero_condition/E102_high_side_solver_diverse_replay/run-001/RESULT.json
+  sha256 853dfba41a1cd017cb010a1255b07f077d24fb2e6221c1fdc9130d2ac6f30d90
+  ARTIFACT_CHECK.json sha256
+  6ab9a259389c6e6cbeea77b936af8e43f5c9c0850cb1cb8aaa7c8901c2a56710
+
+注意／发现：
+  保持 high 的 1,324 candidates、10/6/10 templates、10,954 mode/class vars 与全部约束
+  不变，只把求解器改成单线程 PSEUDO_COST、symmetry/probing=0、无 randomization、90 秒，
+  结果仍 UNKNOWN，且 branches/conflicts 都是 0。E101 的 8-worker quick-restart 则有
+  286,091 branches、17,016 conflicts。两个仪器行为相反，却都没有 allocation 或 body witness。
+
+推理：
+  这不能累加成两票 negative；它说明高侧表示本身让不同搜索器在不同地方失明。第三次换
+  solver 的信息价值很低。下一步应对 1,324 候选做完整 no-solver interaction/capacity audit，
+  比较 template、spatial separator 与 capability signature 的桥厚度，先把问题再压一层。
