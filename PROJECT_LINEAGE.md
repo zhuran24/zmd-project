@@ -8,7 +8,7 @@ ZMD 是一个连续项目。历史上两次完成完整备份并重建 `.git`，
 
 ```text
 第一代 Git
-270bb2d ... 2101450
+270bb2d ... 2101450（本地原始 ID；公开末端为 a7a8271）
                     ║ 第一次备份并重建 .git
                     ║ 项目文件和研究工作继续
 第二代 Git          ║
@@ -31,6 +31,8 @@ a72003b ... ede4fa4
 ```text
 2101450636b17e98504fb73d0680a95f601c9565
 ```
+
+脱敏后的公开末端是 `a7a827164880426319b78f1ca60a9d7cab50b49d`；根提交早于凭据进入历史，因此公开根仍为 `270bb2d243157c74c36cd4de82a029db7859e9fc`。
 
 公开主入口为 `history/first-generation`，原始分支保存在 `history/epoch-1/heads/*`，旧远端引用保存在 `history/epoch-1/remotes/*`。
 
@@ -124,13 +126,13 @@ ede4fa4b883d0aa965141700d2475af1b96817c8
 
 ## 旧 GitHub 支线
 
-旧仓库 `zhuran24/zmd_pj` 的主线停在第二代中途；其两个 `legacy-20260701-prerebuild-*` 分支不在本地第一、二代完整备份中。公开总仓库将它们保存在 `history/old-github-zmd_pj/*`。
+旧仓库 `zhuran24/zmd_pj` 的主线停在第二代中途；其两个 `legacy-20260701-prerebuild-*` 分支不在本地第一、二代完整备份中。本公开仓库把它们保存在 `history/old-github-zmd_pj/*`。
 
-另一个旧仓库 `zhuran24/zmd-legacy` 的独立 `gemini-line` 同样不在第一代 bundle 中，公开总仓库将它保存在 `history/old-github-zmd-legacy/*`。
+另一个旧仓库 `zhuran24/zmd-legacy` 的独立 `gemini-line` 同样不在第一代 bundle 中，本公开仓库把它保存在 `history/old-github-zmd-legacy/*`。
 
 ## 公开历史与本地法证档案
 
-第一代历史曾包含一项 Google API 凭据。公开版本会在所有普通文本和 ZIP 内部文件中机械替换符合该凭据格式的值，因此受影响的第一代公开提交使用新的 commit ID。提交顺序、作者、时间、消息、文件路径和非敏感内容继续保留。
+第一代历史曾包含一项 Google API 凭据。公开历史已在所有普通文本和 ZIP 内部文件中机械替换符合该凭据格式的值，因此受影响的第一代公开提交使用新的 commit ID。提交顺序、作者、时间、消息、文件路径和非敏感内容继续保留。
 
 本地统一法证镜像和两份原始备份保留原始 Git 对象与原始 commit ID。机器索引中的 `original_*` 字段均指本地法证身份。
 
