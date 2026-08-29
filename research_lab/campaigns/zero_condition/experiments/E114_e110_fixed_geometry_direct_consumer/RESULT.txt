@@ -1,0 +1,157 @@
+E114 RESULT: ALL 27 E110 REPRESENTATIVE GEOMETRIES DIE IN THE REAL HIGH-SIDE CONSUMER
+================================================================================================
+
+Status
+------
+Closed as a direct constructive-control negative over E110's 27 stored complete
+26-body body/power witnesses. Every geometry is sent to the unchanged full
+x42-high native-front class consumer with all same-footprint modes and all eight
+B class coordinates free. All 27 are exact INFEASIBLE, with no UNKNOWN. The
+result is geometry-specific and does not reject any E110 template duty.
+
+Verdict
+-------
+
+  ALL_E110_REPRESENTATIVE_GEOMETRIES_FAIL_FULL_HIGH_NATIVE_FRONT
+
+Decision
+--------
+
+  USE_FULL_CONSUMER_DEATHS_TO_REDESIGN_GEOMETRY_OR_JOINT_COLLAR
+
+Machine evidence
+----------------
+Canonical result:
+
+  research_lab/local/zero_condition/
+  E114_e110_fixed_geometry_direct_consumer/run-001/RESULT.json
+
+SHA-256:
+
+  58348a482fb4936aca55d06d161e49804ee7e3c032544a64d97a5b5ceee46d22
+
+Fixed-geometry results:
+
+  research_lab/local/zero_condition/
+  E114_e110_fixed_geometry_direct_consumer/run-001/
+  HIGH_FIXED_GEOMETRY_RESULTS.json
+
+SHA-256:
+
+  a6c6e74ec5361891adae9904cbc675996b725b539e807817e2403344b36e6318
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E114_e110_fixed_geometry_direct_consumer/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  36b224f752e05e92e58a0d161e8d59e3dd59595c290abb55f896a2a29d471aef
+
+What was tested
+---------------
+E110 retained one complete 26-body low/separator/high body/power witness for each
+of its 27 exact separator template vectors. Later experiments consumed the three
+counts but not these full geometries. E114 pays that construction-side consumer
+debt.
+
+For each witness E114:
+
+  * transports all 26 bodies by source-stable global row plus body digest;
+  * verifies exact 10/6/10 high-side template totals;
+  * verifies non-overlap, fixed E092 power and both stable E078 bodies;
+  * fixes every one of the 1,324 high-side body variables to that geometry;
+  * leaves every same-footprint native mode free;
+  * leaves all eight B class allocations free under the unchanged E101 caps;
+  * solves the complete high-side native-front model.
+
+Thus this is not another geometry search. Only mode and class assignment remain.
+A positive would have gone immediately to E101's 65-body x42-low complement and
+then to E095's frozen 128-body module-A witness.
+
+Exact terminal results
+----------------------
+All 27 fixed geometries return:
+
+  INFEASIBLE
+
+There are:
+
+  positive geometries          0
+  exact negative geometries   27
+  UNKNOWN geometries           0
+  untested geometries          0
+
+Every producer solve ends in presolve with zero branches and zero conflicts. The
+terminal solve time per geometry lies between 0.135 and 0.148 seconds. The total
+wrapper time is 65.268 seconds, dominated by rebuilding the unchanged 12,286-
+variable / 25,228-constraint model 27 times rather than by search.
+
+A source-isolated checker reconstructs all 27 models with one worker,
+`AUTOMATIC_SEARCH`, symmetry level 3 and probing level 3. It independently
+returns INFEASIBLE for all 27 in 3.809 seconds total.
+
+The common death shape
+----------------------
+The negatives are not caused by a subtle global Hall deficit among the eight
+class counts. Each geometry already contains selected bodies whose complete
+same-footprint mode/class domain is empty under that fixed occupancy.
+
+Across the 27 geometries:
+
+  empty-domain body occurrences      440
+  distinct empty-domain body digests 155
+  empty bodies per geometry           11 .. 22
+
+By template:
+
+  3x3   194 occurrences
+  5x5    65 occurrences
+  6x4   181 occurrences
+
+By E103 spatial group:
+
+  nested-low   281 occurrences
+  separator     47 occurrences
+  high          112 occurrences
+
+The two stable E078 6x4 bodies themselves recur as empty-domain bodies in 15 and
+13 of the 27 witnesses. This is a direct measurement of why body/power witnesses
+cannot be treated as near-constructive seeds: the arbitrary packing has already
+buried a large fraction of its bodies' native fronts before class allocation is
+even globally negotiated.
+
+Scientific interpretation
+-------------------------
+The recent inertia review identified an asymmetry: one representative failure
+cannot reject a template state, but one representative success would be enough
+to advance construction. E114 performs that overdue test. It finds no success,
+but replaces an abstract concern with full-consumer death data.
+
+The result also changes the next problem. E110's representative geometries are
+not merely unlucky at the final allocation step. Their failure is much earlier
+and more local: every geometry has at least eleven bodies with no admissible
+mode/class option at all. Continuing to classify separator template or class
+states without changing geometry would therefore not repair these witnesses.
+
+Next problem
+------------
+Keep E110's complete 27-state separator template basis and E112's exact 350/3
+separator class atlas, but send the full real consumer to each template state,
+not to one arbitrary representative geometry. For each of the 27 states, allow
+all E103-live low/separator/high bodies and modes, fix only the separator template
+vector, and retain exact body non-overlap, power, front and class semantics. E112's
+350 positive separator class states may be used as an exact necessary filter.
+
+A state-conditioned positive advances immediately through E101 x42-low and E095
+module A. Exact INFEASIBLE rejects that entire separator template state. UNKNOWN
+remains local. This is a real-consumer finite cover, not another interface atlas.
+
+Truth boundary
+--------------
+The 27 E110 geometries are one body/power representative per separator template
+state, not a complete geometry basis. Their exact failures reject only those
+geometries. E114 proves no separator template state impossible, produces no
+module-B or 219-body native-front witness, and has no terminal-uniqueness,
+binding, routing, throughput, certification or U/L effect.

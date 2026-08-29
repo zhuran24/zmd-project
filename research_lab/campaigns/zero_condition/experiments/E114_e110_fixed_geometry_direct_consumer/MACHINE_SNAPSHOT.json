@@ -1,0 +1,69 @@
+{
+  "schema": "zmd_e114_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "canonical_run": "research_lab/local/zero_condition/E114_e110_fixed_geometry_direct_consumer/run-001",
+  "verdict": "ALL_E110_REPRESENTATIVE_GEOMETRIES_FAIL_FULL_HIGH_NATIVE_FRONT",
+  "decision": "USE_FULL_CONSUMER_DEATHS_TO_REDESIGN_GEOMETRY_OR_JOINT_COLLAR",
+  "fixed_geometry_consumer": {
+    "formal_geometry_count": 27,
+    "tested_geometry_count": 27,
+    "positive_geometry_count": 0,
+    "negative_geometry_count": 27,
+    "unknown_geometry_count": 0,
+    "distinct_positive_allocation_count": 0,
+    "producer_total_elapsed_seconds": 65.26848114799941,
+    "per_geometry_terminal_profile": "one_worker_pseudo_cost",
+    "per_geometry_elapsed_range_seconds": [0.13458155500120483, 0.14830613699450623],
+    "all_producer_branches_zero": true,
+    "all_producer_conflicts_zero": true,
+    "path": "research_lab/local/zero_condition/E114_e110_fixed_geometry_direct_consumer/run-001/HIGH_FIXED_GEOMETRY_RESULTS.json",
+    "sha256": "a6c6e74ec5361891adae9904cbc675996b725b539e807817e2403344b36e6318"
+  },
+  "solver_diverse_replay": {
+    "status": "PASS",
+    "classification": "TWENTY_SEVEN_FIXED_GEOMETRIES_DIVERSELY_REPLAYED_AND_EXPLAINED",
+    "geometry_count": 27,
+    "all_infeasible": true,
+    "total_elapsed_seconds": 3.8085544250061503,
+    "workers": 1,
+    "search_branching": "AUTOMATIC_SEARCH",
+    "symmetry_level": 3,
+    "probing_level": 3
+  },
+  "death_diagnostics": {
+    "death_kind_counts": {
+      "EMPTY_BODY_MODE_CLASS_DOMAIN": 27
+    },
+    "zero_domain_body_occurrence_count": 440,
+    "zero_domain_unique_body_digest_count": 155,
+    "zero_domain_template_frequency": {
+      "manufacturing_3x3": 194,
+      "manufacturing_5x5": 65,
+      "manufacturing_6x4": 181
+    },
+    "zero_domain_group_frequency": {
+      "low": 281,
+      "separator": 47,
+      "high": 112
+    },
+    "per_geometry_zero_domain_range": [11, 22],
+    "path": "research_lab/local/zero_condition/E114_e110_fixed_geometry_direct_consumer/run-001/FIXED_GEOMETRY_DEATH_DIAGNOSTICS.json",
+    "sha256": "a8e0f73fd99efb63e5220a2b4137700255d95e30a27c3a2060d71e06df99ed12"
+  },
+  "downstream": {
+    "low_complement_test_count": 0,
+    "module_b_witness": null,
+    "combined_219_body_witness": null
+  },
+  "artifacts": {
+    "runner_sha256": "e893bdc7df70ce93f66c3976a06e3fd15e2d81b492fd2463b9d17cec4cd16e5d",
+    "checker_sha256": "7a90491feec7ec44b7afb78d9ec470cd757e018ebaa8be9902b9fda4fb5768aa",
+    "result_sha256": "58348a482fb4936aca55d06d161e49804ee7e3c032544a64d97a5b5ceee46d22",
+    "high_results_sha256": "a6c6e74ec5361891adae9904cbc675996b725b539e807817e2403344b36e6318",
+    "low_results_sha256": "c3203e10a2500706d9ef8107a71080ab9388d81a10b9059954360a6c0c193499",
+    "death_diagnostics_sha256": "a8e0f73fd99efb63e5220a2b4137700255d95e30a27c3a2060d71e06df99ed12",
+    "artifact_check_sha256": "36b224f752e05e92e58a0d161e8d59e3dd59595c290abb55f896a2a29d471aef"
+  },
+  "truth_boundary": "All 27 stored E110 representative geometries fail the complete x42-high native-front consumer because at least one selected body has no legal mode/class option under the fixed occupancy. The 27 representatives are not a complete geometry basis, so no E110 template duty is rejected."
+}

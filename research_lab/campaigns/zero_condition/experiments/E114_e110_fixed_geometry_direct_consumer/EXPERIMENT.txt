@@ -1,0 +1,62 @@
+EXPERIMENT E114: DIRECT CONSUMER FOR E110 FIXED HIGH-SIDE GEOMETRIES
+===================================================================
+
+Question
+--------
+Does any one of E110's 27 complete 26-body body/power witnesses admit the full
+x42-high native-front class semantics when its body geometry is fixed but every
+same-footprint mode and all eight B class coordinates remain free?
+
+Why this experiment
+-------------------
+E110 preserved one full 26-body geometry for every exact separator template
+duty, but E111-E113 consumed only the three template counts. The recent inertia
+audit identified this as construction-side consumer debt. A representative
+geometry cannot prove a whole template state impossible, but any representative
+that succeeds is already a valid constructive witness and should be sent
+straight to the next consumer.
+
+Method
+------
+1. Pin E095/E100/E101, E110's complete 27-state body/power atlas, and E113's
+   interaction result. Reconstruct the source-stable x42 language.
+
+2. For every E110 witness, map all 26 stable global-row identities back to E100's
+   high-side rows and verify exact 10/6/10 template totals, non-overlap, fixed-pole
+   power and both stable E078 bodies.
+
+3. Build E101's unchanged complete high-side native-front model, then fix every
+   high-side body variable to the E110 geometry. Leave all same-footprint modes
+   and all eight B class allocations free. Solve each geometry with a
+   deterministic one-worker profile; retry only UNKNOWN with a fresh multiworker
+   model having the identical feasible set.
+
+4. Collect positive high allocations. For each distinct allocation, solve E101's
+   unchanged 65-body x42-low complement. Stop at the first paired witness, combine
+   it with E095's frozen 128-body module-A witness, and replay all 219 manufacturing
+   bodies for power and native-front class capacity.
+
+Decision rules
+--------------
+Paired 219-body replay PASS
+  Advance immediately to terminal uniqueness, generic I/O and component-aware
+  binding.
+
+At least one fixed high geometry positive, but no paired low witness
+  Preserve the exact high allocations and low-consumer terminal states. Continue
+  only their allocation handshake; do not return to abstract interface growth.
+
+All 27 fixed high geometries exact INFEASIBLE
+  Reject only these 27 representative geometries. Use their full-consumer death
+  data to redesign geometry or a joint collar; do not reject any E110 template
+  state.
+
+Any UNKNOWN
+  Keep it local to the named geometry or allocation. UNKNOWN creates no rule.
+
+Truth boundary
+--------------
+The 27 E110 witnesses are one body/power representative per separator template
+state, not a complete geometry basis. Negative results are geometry-specific.
+Positive results are valid constructive witnesses. No routing, throughput,
+certification or U/L effect follows from native-front success alone.

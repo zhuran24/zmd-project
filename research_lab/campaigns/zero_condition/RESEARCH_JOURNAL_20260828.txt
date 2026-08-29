@@ -770,3 +770,27 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   独立；原 1,205-row monolith 被替换成两个真实模块加一张 7,325-edge / 2,040-nonempty-bucket
   的显式膜。下一步 cap 必须同时提出 class allocation 和 interface signature，consumer 才能
   对精确 complement 做存在量消去。
+
+2026-08-29 08:25
+----------------
+数据：
+  E114 run-001 RESULT.json
+  research_lab/local/zero_condition/E114_e110_fixed_geometry_direct_consumer/run-001/RESULT.json
+  sha256 58348a482fb4936aca55d06d161e49804ee7e3c032544a64d97a5b5ceee46d22
+  ARTIFACT_CHECK.json sha256
+  36b224f752e05e92e58a0d161e8d59e3dd59595c290abb55f896a2a29d471aef
+
+注意／发现：
+  按复盘要求，不再继续造 E113 的接口层，先把 E110 保存的 27 份完整 26-body 几何逐份送进
+  真实 x42-high native-front consumer。27/27 全部 exact INFEASIBLE，0 UNKNOWN；异源
+  one-worker AUTOMATIC_SEARCH 全部重放。死因不是八维 class 的 Hall 配额，而是每份几何已有
+  11..22 台 body 连一个可用 mode/class 都没有。共 440 次空域，涉及 155 个稳定 body digest，
+  其中 nested-low 占 281 次，separator 47 次，high 112 次。
+
+推理：
+  “代表失败不能否定整个 template state”仍然成立，但这次构造债终于由真实 consumer 定价：
+  E110 的任意 body/power witness 根本不是接近 native-front 的 seed，很多机身在全局 class 谈判
+  前就已经被彼此埋死。下一步不应退回 class/signature 枚举，也不能把 27 个几何 nogood 升成
+  27 个 template cuts。正确有限 cover 是保留 E110 的 27 个完整 template states，却让每一态
+  在全部 E103-live geometry 上接受完整 high consumer；E112 的 350 separator class positives
+  只作 exact necessary filter。这样继续偿还 consumer 债，而不是再在上游造一层漂亮基底。

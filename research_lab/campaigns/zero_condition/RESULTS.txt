@@ -4321,6 +4321,48 @@ evidence:
   ARTIFACT_CHECK.json sha256
   07f220365a6a825b73cbf69423d847315b73fef66c5e7d36ecfe3b98c01e874f.
 
+R-ZC-124  Direct consumer rejects all 27 stored E110 geometries at native-front entry
+-------------------------------------------------------------------------------------
+status: 27/27 exact fixed-geometry negatives; solver-diverse replay PASS; common death shape extracted
+scope: E110 representative 26-body witnesses, source-stable x42-high full native-front consumer
+
+statement:
+  E114 transports every complete 26-body body/power witness stored by E110 into
+  E101's unchanged high-side native-front model. All 1,324 high-side body variables
+  are fixed to the witness; all same-footprint modes and eight B class coordinates
+  remain free. All 27 geometries are exact INFEASIBLE with zero UNKNOWN. Producer
+  solves finish in presolve; an independent one-worker AUTOMATIC_SEARCH replay
+  reproduces all 27 negatives in 3.809 seconds total.
+
+  Every negative has a local exact explanation before global class matching:
+  at least one selected body has no legal mode/class option under the fixed
+  occupancy. Across the 27 geometries there are 440 empty-domain occurrences
+  over 155 distinct body digests, with 11..22 empty bodies per geometry. The
+  occurrences are 194/65/181 by 3x3/5x5/6x4 and 281/47/112 by
+  nested-low/separator/high group.
+
+non-implications:
+  E110 stores one representative geometry per separator template vector, not a
+  complete geometry basis. E114 rejects only those 27 geometries and does not
+  reject any template vector. No low complement or combined witness runs.
+
+effect on next problem:
+  Pause further interface abstraction. Use E110's exact 27-state template basis
+  to condition the full real high-side consumer while allowing all E103-live
+  geometries. E112's 350 separator class positives may act as an exact necessary
+  filter. A state-conditioned positive advances immediately; only exact state-
+  level INFEASIBLE may remove a template vector.
+
+evidence:
+  E114 RESULT.txt; local RESULT.json sha256
+  58348a482fb4936aca55d06d161e49804ee7e3c032544a64d97a5b5ceee46d22;
+  HIGH_FIXED_GEOMETRY_RESULTS.json sha256
+  a6c6e74ec5361891adae9904cbc675996b725b539e807817e2403344b36e6318;
+  FIXED_GEOMETRY_DEATH_DIAGNOSTICS.json sha256
+  a8e0f73fd99efb63e5220a2b4137700255d95e30a27c3a2060d71e06df99ed12;
+  ARTIFACT_CHECK.json sha256
+  36b224f752e05e92e58a0d161e8d59e3dd59595c290abb55f896a2a29d471aef.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:
