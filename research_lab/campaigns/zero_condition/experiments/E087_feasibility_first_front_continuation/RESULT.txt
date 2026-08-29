@@ -1,0 +1,134 @@
+E087 RESULT: TWO MORE LAZY ITERATIONS ADD 83 MODULE-B FRONT RULES WITHOUT A WITNESS
+====================================================================================
+
+Status
+------
+Completed as research-only continuation of E086's corrected full bounded one-
+replacement y=41 language. The run starts from 98 front rules, reaches two more
+body/pole/power candidates, and finishes with 181 rules. Both candidates contain
+empty native-front bodies; no exact operation/mode witness is materialized.
+
+Frozen machine evidence
+-----------------------
+Wrapper result:
+
+  research_lab/local/zero_condition/
+  E087_feasibility_first_front_continuation/run-001/RESULT.json
+
+SHA-256:
+
+  ff53ddd8311dd6c23d1785cee095d9611fd270f307d33d5b1323245d74b88460
+
+Producer result SHA-256:
+
+  5f692ce043bbf716f7825aab727edb2bcd1754626b83a49edec78a14774852c1
+
+Final checkpoint SHA-256:
+
+  09c0c31d5874fe9689ecea7295be48edb3a765f0a605a475e44e5ef1a107d4e9
+
+Independent artifact/rule-growth check:
+
+  research_lab/local/zero_condition/
+  E087_feasibility_first_front_continuation/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  10463e14fc0fe736ba2350803f21cb27314f8eb3a28f3fc6164f35d2a62ae899
+
+Checker status:
+
+  PASS
+
+Scope and search change
+-----------------------
+E087 preserves E086's full retained-count one-replacement language and complete
+98-rule checkpoint. It changes only the stochastic seed family by +4000 while
+preserving the portfolio-search parameters, objective, hint, all 47 boundary
+states, y=41 module split, 52 inherited poles plus one replacement pole, power,
+stable E078 bodies and exact named-operation checker.
+
+Iteration 0
+-----------
+
+  master status                       FEASIBLE
+  retained current footprints              174
+  moved manufacturing bodies                45
+  retained best bound                       185
+  boundary state               boundary_macro_39
+  replacement pole             p_x59_y39_o0_m_omni
+  exact checker status                EMPTY_DOMAIN
+  empty native-front bodies                 39
+  newly registered rules                    39
+  cumulative rules                         137
+  master elapsed seconds                100.040
+
+Iteration 1
+-----------
+
+  master status                       FEASIBLE
+  retained current footprints              165
+  moved manufacturing bodies                54
+  retained best bound                       185
+  boundary state               boundary_macro_22
+  replacement pole             p_x68_y56_o0_m_omni
+  exact checker status                EMPTY_DOMAIN
+  empty native-front bodies                 44
+  newly registered rules                    44
+  cumulative rules                         181
+  master elapsed seconds                100.047
+
+Neither retained value is optimal, because the best bound remains 185.
+
+Rule-growth morphology
+----------------------
+Every one of E087's 83 new rules belongs to module B. Module-A rule count stays
+exactly three. The final 181-rule store is:
+
+  B manufacturing_3x3, demand 1-in/1-out       85
+  B manufacturing_6x4, demand 3-in/1-out       67
+  B manufacturing_5x5, demand 1-in/1-out       25
+  B manufacturing_6x4, stable 4-in/1-out        1
+  A manufacturing_5x5, demand 1-in/1-out        2
+  A manufacturing_6x4, demand 3-in/1-out        1
+
+The new evidence therefore localizes the continuing front wall to module B. It
+also shows that another blind pair of lazy iterations is still discovering dozens
+of previously unseen candidate rows rather than approaching a zero-empty-domain
+state:
+
+  E086 empty counts     35, 29
+  E087 empty counts     39, 44
+  checkpoint growth     34 -> 98 -> 181
+
+This is not a proof that lazy closure can never converge. It is enough to reject
+unexamined repetition as the next experiment.
+
+Decision
+--------
+
+STOP_BLIND_LAZY_CONTINUATION_AND_BUILD_MODULE_B_RULE_SIGNATURE_ATLAS
+
+The next discriminator should reconstruct the complete module-B candidate
+universe, quotient body-local front rules by a canonical translation/fixed-
+obstacle signature, and measure where the 178 registered B rules sit inside that
+finite signature atlas. If the failures concentrate in a small signature family,
+bulk-compile that family rather than discover one coordinate at a time. If they
+are diffuse, the y=41/module-B geometry or the one-replacement pole language needs
+a coarser structural change.
+
+Telemetry
+---------
+
+  total elapsed              202.767 s
+  process ru_maxrss        3,075,360 KiB
+  cgroup OOM delta                  0
+  cgroup OOM-kill delta             0
+
+Truth boundary
+--------------
+E087 has no front-operation witness, no exact retained optimum, no terminal-
+uniqueness or generic-I/O result, no component-compatible binding, no routing,
+throughput, certification or U/L effect. The module-B localization applies to the
+181 registered necessary candidate rules in this bounded language; it does not
+prove module A is globally harmless or that the partition is infeasible.

@@ -1,0 +1,66 @@
+EXPERIMENT E087: CONTINUE FEASIBILITY-FIRST FRONT CLOSURE FROM 98 RULES
+============================================================================
+
+Question
+--------
+Starting from E086's corrected-scope 98-rule checkpoint, does another fresh lazy
+closure run reach a geometry whose every selected manufacturing body has a native
+front domain and whose exact named-operation checker is feasible?
+
+Frozen language
+---------------
+E087 retains E086's full bounded one-replacement y=41 language:
+
+  * partition_90abd29523f2a0dc and horizontal y=41 module separation;
+  * 219 module/template body counts;
+  * all 47 E079 boundary states;
+  * 52 inherited non-seam poles plus exactly one replacement pole;
+  * manufacturing power coverage;
+  * the two stable E078 body/operation identities;
+  * maximize retained current footprints as a ranking objective;
+  * exact named operation counts in the fixed-geometry checker.
+
+The run begins with all 98 E086 front rules. Restarting from the earlier 34-rule
+checkpoint is forbidden.
+
+Method
+------
+1. Pin E086's derived producer, corrected artifact check, durable result, wrapper
+   result and 98-rule checkpoint by SHA-256.
+2. Copy the 98-rule checkpoint into a new no-overwrite E087 run directory.
+3. Import the frozen derived producer and redirect its mutable CHECKPOINT and
+   OUTPUT paths into E087.
+4. Preserve the model and all hints. Change only the stochastic search instrument
+   by shifting every requested CP-SAT seed by +4000.
+5. Run at most two lazy-closure iterations, each with a 100-second master cap.
+6. Preserve every terminal status exactly and record process/cgroup memory
+   telemetry.
+
+Decision rule
+-------------
+FRONT_OPERATION_FEASIBLE
+  Materialize the 219 bodies, boundary state, replacement pole and exact named
+  operation/mode assignment. Immediately run terminal uniqueness, production
+  pose-level binding patterns, generic I/O and component-aware binding.
+
+ITERATION_LIMIT with checkpoint growth
+  Register the newly learned rules. Continue only if empty-domain count or
+  candidate structure still changes materially; otherwise decompose by boundary
+  or replacement-pole choice instead of indefinitely accumulating point rules.
+
+MASTER_INFEASIBLE
+  Close only the full bounded one-replacement y=41 feasibility-first language.
+  Widen pole mobility or geometry; do not refute the partition or seam.
+
+UNKNOWN
+  Preserve censorship. Use the observed bound/incumbent and telemetry to select a
+  boundary/pole decomposition or different solver family.
+
+Truth boundary
+--------------
+E087's proposer rules are necessary body-local front-capacity conditions. The
+fixed-geometry checker enforces named operation counts and same-footprint native
+modes. No commodity-to-port pattern, terminal uniqueness, generic I/O, component
+compatibility, exact routing or throughput status exists unless a successor runs
+those consumers. Research-only; no certification, U/L, production, owner,
+pruning, publication or release effect.

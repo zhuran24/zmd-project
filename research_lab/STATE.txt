@@ -9,14 +9,14 @@ Campaign ref: research_lab/campaigns/zero_condition/CAMPAIGN.txt
 
 Current endpoint
 ----------------
-Statement: The partition/seam line has reached a live knowledge-producing
-body/pole/power/front loop. E084 proves that post-filtering power optima leaves
-empty native-front domains. E085 shows the fixed retained=186 instrument is
-censored after 250 seconds. E086 broadens to the full bounded one-replacement
-retained-count language and restores candidate production: two exact fixed-
-geometry checks reject 184- and 181-retained candidates and grow the native-front
-rule store from 34 to 98. No front-operation witness exists yet, but the failed
-geometries now change the next master instead of disappearing.
+Statement: The partition/seam line has a live knowledge-producing front loop,
+but its current rule language is too fine. E086/E087 turn four rejected
+body/pole/power candidates into 147 new necessary front rules, growing the store
+34->98->181. The last two candidates retain 174 and 165 current footprints yet
+still contain 39 and 44 empty-front bodies. Every new E087 rule is in module B;
+module-A rule count stays three. The next experiment must test whether these
+coordinate rules collapse into a small finite signature family before another
+master solve spends budget rediscovering translations.
 Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
@@ -32,16 +32,15 @@ Direction ref:
 
 Live question
 -------------
-Q: Starting from E086's 98-rule checkpoint and corrected full one-replacement
-scope, does further feasibility-first lazy closure reach a candidate with no
-empty native-front body and an exact named-operation/mode assignment? Use a fresh
-run directory and preserve the complete 47-state boundary language, y=41
-partition, 52 inherited poles plus one replacement pole, power and stable E078
-bodies. Do not restart from 34 rules. A positive advances immediately to terminal
-uniqueness, generic I/O and component-aware binding. A terminal contextual
-negative permits a wider pole/geometry language; UNKNOWN remains censorship and
-must motivate boundary/pole decomposition or solver diversity rather than another
-identical vote.
+Q: Across the complete module-B candidate universe of the bounded y=41 one-
+replacement language, how many canonical body-local front-rule signatures exist,
+and where do the 178 registered B rules sit inside that atlas? Normalize by body
+translation while preserving template, demand class, same-footprint modes, fixed
+obstacle clipping and boundary/core semantics. If failures concentrate in a small
+signature family, bulk-compile that family in the next proposer. If they are
+diffuse or cover only a tiny fraction of each family, stop point-rule closure and
+change the module-B bay or pole language. This is a no-solver representation
+discriminator; it must not claim feasibility or infeasibility.
 
 Inflight / recovery
 -------------------
@@ -65,6 +64,7 @@ Recent consequential results
 - E084 closes the 16-body re-embedding premise: fixed-pole body packing moves 30, one-replacement power moves 31, all-pole objectives trade manufacturing versus pole movement, and their three materialized power optima have 18/35/26 empty native-front bodies. One-replacement front r31/r32 are producer MASTER_INFEASIBLE; r33 is UNKNOWN. | evidence=research_lab/campaigns/zero_condition/experiments/E084_current_geometry_power_front_repair/RESULT.txt | effect=put native-front feasibility inside the proposer and make fresh r33 the live discriminator
 - E085 fresh-replays r33 for 250 seconds with pinned source/checkpoint identities and memory telemetry. The result is UNKNOWN with no incumbent, unchanged 34-rule checkpoint, process ru_maxrss 1,941,080 KiB and no OOM counter increase. | evidence=research_lab/campaigns/zero_condition/experiments/E085_front_aware_r33_replay/RESULT.txt | effect=do not advance the rung; replace fixed-rung repetition with a representation-diverse feasibility-first proposer
 - E086 removes the fixed retained rung and searches the complete bounded one-replacement retained-count language. It finds 184- and 181-retained candidates, both exact-checker EMPTY_DOMAIN, and grows the front-rule checkpoint 34->98 with no operation nogood. The checker corrects the raw derivation's false unchanged-feasible-set wording. | evidence=research_lab/campaigns/zero_condition/experiments/E086_feasibility_first_front_proposer/RESULT.txt | effect=continue from the 98-rule checkpoint; do not restart or cite 184/181 as final-language lower bounds
+- E087 continues from 98 rules with a new seed family. Two more front-dead candidates add 83 rules, all in module B, for a final 181-rule store; empty counts are 39 and 44 and no operation nogood or witness appears. | evidence=research_lab/campaigns/zero_condition/experiments/E087_feasibility_first_front_continuation/RESULT.txt | effect=stop blind lazy repetition and build a complete module-B front-rule signature atlas
 
 Current unknowns and guards
 ---------------------------
@@ -87,6 +87,7 @@ Current unknowns and guards
 - E084 terminal-binding and global-binding scripts produced no result files. No terminal uniqueness, generic I/O, component-aware binding or routing conclusion may be cited.
 - E085 is a censored UNKNOWN, not an r33 negative. Its no-OOM telemetry does not diagnose the cause of search failure. A later duplicate invocation was rejected by no-overwrite and does not supersede the valid result.
 - E086 is not r33-equivalent: removing retained=186 broadens the model to all retained counts. Its 184 optimum is exact only for the intermediate 69-rule relaxation; the 181 candidate has bound 187. The durable effect is the 64 new necessary front rules and 98-rule checkpoint, not a moved-body bound.
+- E087 does not prove lazy closure cannot converge. Its durable signal is localization: all 83 new rules are module B, module-A count is unchanged, and empty-domain counts do not improve. This authorizes a rule-language compression discriminator, not a negative theorem about the one-replacement language.
 - Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
 
 History pointers

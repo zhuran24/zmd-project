@@ -1,0 +1,85 @@
+{
+  "schema": "zmd_e087_feasibility_first_front_continuation_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "scope": "full bounded one-replacement y=41 feasibility-first language across all retained-current-footprint counts",
+  "result": {
+    "path": "research_lab/local/zero_condition/E087_feasibility_first_front_continuation/run-001/RESULT.json",
+    "sha256": "ff53ddd8311dd6c23d1785cee095d9611fd270f307d33d5b1323245d74b88460",
+    "raw_verdict": "FRONT_CLOSURE_CONTINUES_TO_LEARN",
+    "raw_decision": "REASSESS_RULE_GROWTH_AND_CONTINUE_OR_DECOMPOSE"
+  },
+  "producer": {
+    "path": "research_lab/local/zero_condition/E087_feasibility_first_front_continuation/run-001/PRODUCER_RESULT.json",
+    "sha256": "5f692ce043bbf716f7825aab727edb2bcd1754626b83a49edec78a14774852c1",
+    "status": "ITERATION_LIMIT",
+    "iteration_count": 2,
+    "search_objective": "MAXIMIZE_RETAINED_CURRENT_FOOTPRINTS",
+    "operation_nogood_count": 0,
+    "selected_manufacturing_count": 0
+  },
+  "iterations": [
+    {
+      "iteration": 0,
+      "master_status": "FEASIBLE",
+      "retained_current_footprints": 174,
+      "retained_best_bound": 185.0,
+      "empty_native_front_bodies": 39,
+      "new_front_rules": 39,
+      "cumulative_front_rules": 137,
+      "selected_boundary_state_id": "boundary_macro_39",
+      "selected_replacement_pole": "p_x59_y39_o0_m_omni",
+      "elapsed_seconds": 100.04006526000012
+    },
+    {
+      "iteration": 1,
+      "master_status": "FEASIBLE",
+      "retained_current_footprints": 165,
+      "retained_best_bound": 185.0,
+      "empty_native_front_bodies": 44,
+      "new_front_rules": 44,
+      "cumulative_front_rules": 181,
+      "selected_boundary_state_id": "boundary_macro_22",
+      "selected_replacement_pole": "p_x68_y56_o0_m_omni",
+      "elapsed_seconds": 100.04652862199873
+    }
+  ],
+  "checkpoint": {
+    "path": "research_lab/local/zero_condition/E087_feasibility_first_front_continuation/run-001/CHECKPOINT.json",
+    "sha256": "09c0c31d5874fe9689ecea7295be48edb3a765f0a605a475e44e5ef1a107d4e9",
+    "initial_front_rule_count": 98,
+    "final_front_rule_count": 181,
+    "new_front_rule_count": 83,
+    "new_rules_all_module_b": true,
+    "module_a_rule_count_before": 3,
+    "module_a_rule_count_after": 3,
+    "operation_nogood_count": 0,
+    "terminal": "ITERATION_LIMIT"
+  },
+  "final_rule_class_counts": {
+    "A:manufacturing_5x5:1i1o": 2,
+    "A:manufacturing_6x4:3i1o": 1,
+    "B:manufacturing_3x3:1i1o": 85,
+    "B:manufacturing_5x5:1i1o": 25,
+    "B:manufacturing_6x4:3i1o": 67,
+    "B:manufacturing_6x4:4i1o": 1
+  },
+  "artifact_check": {
+    "path": "research_lab/local/zero_condition/E087_feasibility_first_front_continuation/run-001/ARTIFACT_CHECK.json",
+    "sha256": "10463e14fc0fe736ba2350803f21cb27314f8eb3a28f3fc6164f35d2a62ae899",
+    "status": "PASS",
+    "decision": "STOP_BLIND_LAZY_CONTINUATION_AND_BUILD_MODULE_B_RULE_SIGNATURE_ATLAS"
+  },
+  "telemetry": {
+    "elapsed_seconds": 202.76732380799513,
+    "process_ru_maxrss_kib": 3075360,
+    "oom_event_delta": 0,
+    "oom_kill_event_delta": 0
+  },
+  "sources": {
+    "experiment_sha256": "79af9ff08986d703dab41eccf09e6668dfeabc9ebee74ce588c211814bd53db3",
+    "runner_sha256": "8ecc162b2e893a8db290544ed2632576dc7688a5c835bb611d3d631d386c0510",
+    "checker_sha256": "1cadf11cc8fc403167573b291bbca57e14ce958ab719950159f66e8f8649202e"
+  },
+  "truth_boundary": "E087 does not prove lazy closure cannot converge. It shows that two additional iterations add 83 entirely module-B candidate rules while empty-domain counts remain 39 and 44. This supports a rule-language compression discriminator rather than another unexamined repetition."
+}

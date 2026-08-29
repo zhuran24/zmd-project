@@ -3232,6 +3232,44 @@ evidence:
   ARTIFACT_CHECK.json sha256
   cfc7d91c728319cc3b30446761b39792c49b0c980be66b60dc0f30680e38b4b3.
 
+R-ZC-097  Continued lazy closure localizes all new front failures to module B
+----------------------------------------------------------------------------------
+status: two more candidate rejections; checkpoint 98 -> 181; no witness
+scope: full bounded y=41 one-replacement feasibility-first language
+
+statement:
+  E087 consumes E086's complete 98-rule checkpoint and changes only the seed
+  family. Two 100-second master solves produce 174- and 165-retained candidates,
+  both with bound 185. Their exact fixed-geometry operation checks find 39 and 44
+  empty native-front bodies and register all 83 as new necessary rules. The final
+  checkpoint contains 181 rules and zero operation nogoods.
+
+  Every new E087 rule belongs to module B; module-A rule count remains exactly
+  three. The final store contains 85 B 3x3 1-in/1-out rules, 67 B 6x4 3-in/1-out,
+  25 B 5x5 1-in/1-out and one stable B 6x4 4-in/1-out rule, plus the three A
+  rules. Empty-domain counts do not trend toward zero across E086/E087:
+  35,29,39,44.
+
+non-implications:
+  The retained values are not optimal. E087 does not prove lazy closure cannot
+  converge, module A globally harmless, or the partition infeasible. Candidate
+  rules remain body-local necessities in this bounded language, not external
+  placement cuts or routing facts.
+
+effect on next problem:
+  Stop blind lazy repetition. Build a complete module-B front-rule signature
+  atlas, quotienting translated/fixed-obstacle-equivalent candidate rules, and
+  measure whether the 178 registered B rules concentrate in a small family. Bulk
+  compile a concentrated family; if diffuse, change the B-bay or pole language.
+
+evidence:
+  E087 RESULT.txt; local RESULT.json sha256
+  ff53ddd8311dd6c23d1785cee095d9611fd270f307d33d5b1323245d74b88460;
+  CHECKPOINT.json sha256
+  09c0c31d5874fe9689ecea7295be48edb3a765f0a605a475e44e5ef1a107d4e9;
+  ARTIFACT_CHECK.json sha256
+  10463e14fc0fe736ba2350803f21cb27314f8eb3a28f3fc6164f35d2a62ae899.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:
@@ -3252,10 +3290,10 @@ optimum moves 30. Pole mobility improves the body currency, but every checked
 power optimum is front-dead. The current wall is therefore not “find another
 power optimum”; it is “construct power and native-front feasibility together.”
 
-The fixed-rung r33 replay is explicitly censored, but E086's feasibility-first
-instrument restores candidate production and turns two rejected geometries into
-64 reusable rules. The live object is now the 98-rule checkpoint in the complete
-one-replacement retained-count language, not a guessed rung. The outer loop must
-continue that knowledge rather than restart. The final repair size, pole
-language, terminal assignment, component-compatible binding and physical layer
-count remain open.
+The fixed-rung r33 replay is explicitly censored. E086/E087 restore candidate
+production and turn four rejected geometries into 147 reusable rules, but the
+store grows 34->98->181 while every new E087 failure lies in module B and empty
+counts stay large. The next object is no longer another candidate solve: it is a
+finite module-B rule-signature atlas that can tell whether the point language is
+compressible. The final repair size, pole language, terminal assignment,
+component-compatible binding and physical layer count remain open.
