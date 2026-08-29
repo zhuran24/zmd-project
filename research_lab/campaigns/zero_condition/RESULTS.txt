@@ -4563,6 +4563,51 @@ evidence:
   ARTIFACT_CHECK.json sha256
   07c106647606ebc8faf5fee06bb826d3db6f4420d257d51bca6ee4a64680af7e.
 
+R-ZC-130  Exact local-option integration exposes a 4.55-million-term representation wall
+------------------------------------------------------------------------------------------
+status: two solver arms censored; encoding and 47 known dead geometries independently replayed
+scope: source-stable x42-high, 1,205 live bodies, 9,808 local options, 25 open separator vectors
+
+statement:
+  E120 replaces E117/E118's lazy containment approximation with the exact local-
+  option existential relation. Every selected body chooses one same-footprint
+  local witness, and every input/output row counts all simultaneously selected
+  bodies covering its front cells with full multiplicity. No global class totals
+  are imposed.
+
+  The exact model has 11,016 variables and 21,369 constraints, but its true size
+  is the incidence matrix: 19,616 front rows contain 4,548,696 dynamic coefficient
+  occurrences, with support up to 482 body variables in one row.
+
+  One-worker PSEUDO_COST without imported cuts returns UNKNOWN after 90.012 seconds
+  with zero branches. A fresh eight-worker AUTOMATIC model with all 587 replayed
+  cuts as redundant aids returns UNKNOWN after 90.124 seconds with 8,846 branches
+  and zero conflicts. Neither arm emits a geometry or option witness.
+
+  The independent checker reconstructs the exact coefficient census, validates
+  both model variants, and replays all 47 E117/E118 geometries as locally dead.
+  run-001 is an input-SHA apparatus failure before model construction; run-002 is
+  canonical.
+
+non-implications:
+  The two UNKNOWN arms prove neither feasibility nor infeasibility. E120 does not
+  close x42 or any separator vector, and it produces no high-side or 219-body
+  witness.
+
+effect on next problem:
+  Do not resume containment-cut growth or rerun the same integrated monolith.
+  Derive a spatial interaction collar that keeps dense body/front variables
+  together while eliminating deep interiors through small residual interfaces;
+  retain a different skeleton as a basin control.
+
+evidence:
+  E120 RESULT.txt; local RESULT.json sha256
+  f9218f63300dd6f24bdb10668c6944a3fbd1edf7d9ba30d421660f12c2e0eb60;
+  ENCODING_AUDIT.json sha256
+  102e0e9b5f80548d3f013ec6a67bce774b8753bf9f4ee78f29ae4c3fb3a060ed;
+  ARTIFACT_CHECK.json sha256
+  1569314f562f769771a92a91e370e937a5d14507fc0bedc3903605d92b858e55.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

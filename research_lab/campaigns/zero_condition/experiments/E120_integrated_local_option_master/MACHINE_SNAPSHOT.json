@@ -1,0 +1,63 @@
+{
+  "schema": "zmd_e120_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "canonical_run": "research_lab/local/zero_condition/E120_integrated_local_option_master/run-002",
+  "apparatus_run": {
+    "path": "research_lab/local/zero_condition/E120_integrated_local_option_master/run-001/FAILURE.json",
+    "sha256": "e71f567475e637f22c6b183a8d37d26c5fa1f628bb162ab3b614522916b91436",
+    "classification": "INPUT_IDENTITY_FAILURE_NO_SCIENTIFIC_EFFECT"
+  },
+  "verdict": "INTEGRATED_LOCAL_OPTION_MASTER_CENSORED",
+  "decision": "CHANGE_GEOMETRY_REPRESENTATION_OR_SKELETON",
+  "language": {
+    "candidate_count": 1205,
+    "body_variable_count": 1205,
+    "local_option_variable_count": 9808,
+    "open_separator_template_vector_count": 25,
+    "model_variable_count": 11016,
+    "model_constraint_count": 21369,
+    "body_option_link_constraint_count": 1205,
+    "front_constraint_count": 19616,
+    "dynamic_term_count": 4548696,
+    "maximum_dynamic_terms_per_front_constraint": 482,
+    "fixed_blocked_term_total": 1600
+  },
+  "solver_arms": {
+    "primary": {
+      "profile": "one_worker_pseudo_cost",
+      "redundant_cut_count": 0,
+      "status": "UNKNOWN",
+      "elapsed_seconds": 90.01201409100031,
+      "branches": 0,
+      "conflicts": 0,
+      "path": "research_lab/local/zero_condition/E120_integrated_local_option_master/run-002/PRIMARY_RESULT.json",
+      "sha256": "ae2de80e3aa51971972d60ee5047c16adc2753e2282bab80c47ee91ff89df0ca"
+    },
+    "fallback": {
+      "profile": "multiworker_automatic",
+      "redundant_cut_count": 587,
+      "status": "UNKNOWN",
+      "elapsed_seconds": 90.1239595579973,
+      "branches": 8846,
+      "conflicts": 0,
+      "path": "research_lab/local/zero_condition/E120_integrated_local_option_master/run-002/FALLBACK_RESULT.json",
+      "sha256": "5118b771306ae6a473b579f78214fd2d08cf1fefc5e798f5ec6f043cf435e0e1"
+    }
+  },
+  "independent_check": {
+    "status": "PASS",
+    "classification": "EXACT_LOCAL_OPTION_ENCODING_REPLAYED_BOTH_SOLVER_ARMS_CENSORED",
+    "known_dead_geometry_count": 47,
+    "known_empty_body_count_range": [6, 18],
+    "path": "research_lab/local/zero_condition/E120_integrated_local_option_master/run-002/ARTIFACT_CHECK.json",
+    "sha256": "1569314f562f769771a92a91e370e937a5d14507fc0bedc3903605d92b858e55"
+  },
+  "artifacts": {
+    "runner_sha256": "92b9c0a01b1076e47965e6f4d32a3e1d323b64fdf4c75666db1f3730bb7901b0",
+    "checker_sha256": "00cf5dbe9ca7ca129fa52ed41f95c8efbcce22e63be614b78f4aa56d2c254dd9",
+    "result_sha256": "f9218f63300dd6f24bdb10668c6944a3fbd1edf7d9ba30d421660f12c2e0eb60",
+    "encoding_audit_sha256": "102e0e9b5f80548d3f013ec6a67bce774b8753bf9f4ee78f29ae4c3fb3a060ed"
+  },
+  "truth_boundary": "E120 exactly embeds local option existence but both search instruments are censored. The 4.55 million dynamic coefficient occurrences diagnose representation density; they prove neither feasibility nor infeasibility."
+}

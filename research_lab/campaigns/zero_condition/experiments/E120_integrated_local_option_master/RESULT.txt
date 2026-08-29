@@ -1,0 +1,167 @@
+E120 RESULT: EXACT LOCAL-OPTION INTEGRATION EXPOSES A 4.55-MILLION-TERM REPRESENTATION WALL
+================================================================================================
+
+Status
+------
+Closed as a censored representation discriminator. E120 replaces E117/E118's
+lazy containment-cut approximation with the exact local-option existential
+condition inside the body master. Both preregistered solver arms return UNKNOWN
+with no incumbent. The result does not close x42, but it identifies the next wall
+more precisely: the faithful integrated encoding carries 4,548,696 dynamic body-
+front coefficient occurrences.
+
+Verdict
+-------
+
+  INTEGRATED_LOCAL_OPTION_MASTER_CENSORED
+
+Decision
+--------
+
+  CHANGE_GEOMETRY_REPRESENTATION_OR_SKELETON
+
+Machine evidence
+----------------
+Canonical result:
+
+  research_lab/local/zero_condition/
+  E120_integrated_local_option_master/run-002/RESULT.json
+
+SHA-256:
+
+  f9218f63300dd6f24bdb10668c6944a3fbd1edf7d9ba30d421660f12c2e0eb60
+
+Encoding audit:
+
+  research_lab/local/zero_condition/
+  E120_integrated_local_option_master/run-002/ENCODING_AUDIT.json
+
+SHA-256:
+
+  102e0e9b5f80548d3f013ec6a67bce774b8753bf9f4ee78f29ae4c3fb3a060ed
+
+Independent checker:
+
+  research_lab/local/zero_condition/
+  E120_integrated_local_option_master/run-002/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  1569314f562f769771a92a91e370e937a5d14507fc0bedc3903605d92b858e55
+
+Apparatus run
+-------------
+run-001 fails before model construction because the runner initially carried an
+incorrect SHA-256 literal for the frozen E095 module-A witness. It is preserved
+as:
+
+  INPUT_IDENTITY_FAILURE_NO_SCIENTIFIC_EFFECT
+
+No solver model or scientific terminal was produced in that directory. The hash
+was corrected from the actual file, and the canonical execution moved to the
+fresh run-002 directory.
+
+Exact integrated language
+-------------------------
+E120 reuses exactly the E117 language:
+
+  live body candidates                 1,205
+  exact high template totals          10 / 6 / 10
+  open separator template vectors       25
+  stable E078 bodies                      2
+  same-footprint local options         9,808
+
+For every body b and quotient local option o, E120 creates one Boolean option
+witness and posts:
+
+  sum_o option[b,o] = selected[b].
+
+Each selected body therefore chooses exactly one locally viable witness. Every
+input and output constraint counts fixed blocked front cells and all selected
+body variables covering every front cell. If one selected body covers several
+front cells, its coefficient is repeated exactly as many times. No global eight-
+class count is imposed at this layer.
+
+The resulting exact model contains:
+
+  body variables                        1,205
+  option variables                      9,808
+  total variables                      11,016
+  total constraints                    21,369
+  body-option link constraints          1,205
+  input/output front constraints       19,616
+  dynamic coefficient occurrences  4,548,696
+  largest one-row dynamic support         482
+
+The variable count is moderate. The real density lives in the body/front
+incidence matrix.
+
+Solver arms
+-----------
+Arm A uses the direct integrated model, one worker, PSEUDO_COST_SEARCH, symmetry
+and probing disabled:
+
+  status          UNKNOWN
+  elapsed         90.012 seconds
+  branches        0
+  conflicts       0
+
+Arm B rebuilds the exact same feasible set, imports all 587 independently
+replayed E117/E118 cuts only as redundant search aids, and uses eight-worker
+AUTOMATIC_SEARCH:
+
+  status          UNKNOWN
+  elapsed         90.124 seconds
+  branches        8,846
+  conflicts       0
+
+Neither arm returns a selected body, local-option witness, high-side consumer
+result, or 219-body witness. The two UNKNOWNs are not votes for infeasibility.
+
+Independent semantic replay
+---------------------------
+The checker reconstructs the 1,205 candidates and all 9,808 local options from
+source bytes. It independently recomputes:
+
+  19,616 front constraints
+  4,548,696 dynamic coefficient occurrences
+  maximum support 482
+  fixed blocked total 1,600
+
+and obtains the exact machine census. It rebuilds both the direct model and the
+587-cut redundant model and validates both CP-SAT protos.
+
+It also replays every one of the 47 E117/E118 proposed geometries through the
+original E117 local-front oracle. All remain locally dead, with empty-body counts
+from 6 through 18. UNKNOWN branches contain no leaked witness.
+
+Scientific interpretation
+-------------------------
+E119 showed that lazy containment cuts are sound but almost nontransportable.
+E120 shows that simply moving the exact existential condition into one monolith
+does not solve the problem either. The faithful relation is too dense:
+
+  1,205 geometry candidates
+    x local front-cover incidence
+    -> 4.55 million coefficient occurrences.
+
+This is a representation result. The wall is no longer “missing another cut” or
+“missing class fixation.” It is the dense joint body/front relation itself.
+
+Next problem
+------------
+Do not resume blind Benders and do not give this integrated model another seed
+vote. Measure a spatial interaction collar that keeps the truly coupled body and
+front variables together while eliminating deep low/high interiors through
+small template/class residual interfaces. E113's persisted low | separator+high
+hypergraph is the natural starting point, but proposer direction must be derived
+from projection selectivity rather than assumed from candidate count.
+
+In parallel, retain the option of a genuinely different pole/boundary skeleton
+as the control against continued overinvestment in the y=41/E092 basin.
+
+Truth boundary
+--------------
+E120 proves neither feasibility nor infeasibility for the x42-high local-option
+language. It produces no full high, 219-body, terminal-uniqueness, binding,
+routing or throughput witness, and changes no certified U/L value.

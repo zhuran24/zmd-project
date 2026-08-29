@@ -10,17 +10,16 @@ Campaign ref: research_lab/campaigns/zero_condition/CAMPAIGN.txt
 Current endpoint
 ----------------
 Statement: E095 remains the stable constructive base: module A is a checked
-128-body native-front half and module B is the sole 91-body wall. E114-E116 pay
-the direct-consumer debt and localize the wall before global class assignment.
-E117/E118 change the geometry proposer and learn 587 replayed local-front
-containment cuts from 47 dead geometries; the best empty-body count remains six.
-E119 audits the resulting language. E118 still contributes 61 structurally new
-translation-normalized cuts out of 83, but exact subject novelty is only 28%, no
-new E118 cut rejects another E118 geometry, and the largest family is only 3.61%.
-The process is neither narrowly unfinished nor broadly repetitive: the same
-subjects recur under new blocker arrangements with zero cross-geometry reuse.
-Blind Benders is therefore stopped. The live object is an integrated geometry +
-local-option-existence proposer, not another containment-cut batch.
+128-body native-front half and module B is the sole 91-body wall. E114-E119 pay
+the direct-consumer debt, learn 587 replayed local-front cuts, and stop blind cut
+growth when the rules prove structurally novel but nontransportable. E120 then
+puts the exact local-option existential relation into the 1,205-body proposer.
+The model has only 11,016 variables and 21,369 constraints, but those constraints
+contain 4,548,696 dynamic body/front coefficient occurrences, up to 482 in one
+front row. One-worker direct search and a fresh multiworker model with all 587
+cuts both return UNKNOWN with no incumbent. The wall is now localized to dense
+body/front incidence itself. The live object is a spatial interaction-collar
+representation, with a different pole/boundary skeleton retained as basin control.
 Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
@@ -56,6 +55,7 @@ Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E117_high_geometry_local_front_benders/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E118_solver_diverse_local_front_benders/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E119_local_front_cut_family_saturation_audit/RESULT.txt
+  research_lab/campaigns/zero_condition/experiments/E120_integrated_local_option_master/RESULT.txt
 Identity audit:
   research_lab/campaigns/zero_condition/E079_E080_ARTIFACT_IDENTITY_AUDIT_20260828.txt
 Direction ref:
@@ -63,17 +63,18 @@ Direction ref:
 
 Live question
 -------------
-Q: Can the x42-high body master satisfy local option existence directly, without
-approximating it by more containment cuts? Reuse E117's exact 1,205-row language
-and 9,808 syntactic same-footprint local options. Add an option witness layer so
-every selected body chooses at least one option whose required input/output
-front capacity survives the simultaneously selected occupancy; preserve exact
-10/6/10 templates, fixed E092 power, both stable E078 bodies and the 25 open
-separator-template vectors. Do not impose global eight-class totals yet. A
-positive geometry goes immediately to the unchanged full high consumer and then
-x42-low/219-body replay. INFEASIBLE closes only the local-option necessary
-language. UNKNOWN remains an instrument result. Do not import the 587 cuts as
-necessary for correctness; use them only as optional redundant hints/control.
+Q: Is there an exact spatial collar that removes most of E120's 4,548,696 dynamic
+body/front coefficient occurrences without discarding any local-option witness?
+Start from E113's persisted low | separator+high hypergraph and E120's exact
+option rows. Define the collar as every candidate participating in a cross-side
+body conflict or front-blocking coefficient; keep all collar variables and their
+local-option constraints together. Eliminate deep low and cap interiors into
+explicit template and class residual coordinates, then measure exact candidate,
+option, coefficient and interface sizes before solving. Compare both proposer
+orientations by projection selectivity, not candidate count. If the collar is
+still nearly the whole language, stop refining y=41/E092 and open the preregistered
+different-skeleton control. This first step is a no-solver representation audit
+and may make no feasibility claim.
 
 Inflight / recovery
 -------------------
@@ -130,6 +131,7 @@ Recent consequential results
 - E117 rejects 39 exact body/power geometries through complete local option checks and learns 504 independently replayed 1-4 body containment cuts; the next five-second master solve remains UNKNOWN. | evidence=research_lab/campaigns/zero_condition/experiments/E117_high_geometry_local_front_benders/RESULT.txt | effect=continue only from the persisted cut store with a solver-diverse master, not from class tuple enumeration
 - E118 uses a solver-diverse master to obtain eight more dead geometries and 83 new replayed cuts, but the best empty-body count remains six and both terminal profiles are UNKNOWN. | evidence=research_lab/campaigns/zero_condition/experiments/E118_solver_diverse_local_front_benders/RESULT.txt | effect=trigger the no-improvement stop and audit cut-family coverage/saturation before any further Benders batch
 - E119 finds mixed saturation: 73.49% of E118 cuts are structurally new, exact subject novelty is only 28%, and no E118 cut transfers to another E118 geometry. | evidence=research_lab/campaigns/zero_condition/experiments/E119_local_front_cut_family_saturation_audit/RESULT.txt | effect=stop blind containment-cut growth and encode local option existence directly with geometry
+- E120 encodes exact local-option existence in the geometry master; both solver arms remain UNKNOWN, while the faithful model exposes 4,548,696 dynamic body/front coefficient occurrences. | evidence=research_lab/campaigns/zero_condition/experiments/E120_integrated_local_option_master/RESULT.txt | effect=replace full cohabitation with an exact spatial collar audit or switch skeleton if the collar is not materially thinner
 
 Current unknowns and guards
 ---------------------------
@@ -169,7 +171,7 @@ Current unknowns and guards
 - E103's unary removal is exact for fixed power and fixed-obstacle native-front viability. Its interface and Hall counts are representation facts, not feasibility or runtime bounds. The selected y59 hybrid still retains an explicit separator until a new sufficient restriction removes it.
 - E104 is a censored result under the additional manufacturing-free y60 restriction. It does not reject y60, the explicit E103 separator, high, x42 or module B. Its run-001 import failure has no scientific effect; run-002 plus its independent checker are canonical.
 - E105 rejects only nested template totals lower 7/4/8 and upper 3/2/2 under reserved y60. It does not reject the particular body witness as a unique cause, any other template split, y60, high, x42 or module B. Runs 001/002 are apparatus aborts. The runner's dormant positive path contains run-001 pointer literals and must not be copied by successors.
-- E106's three allocation nogoods remain valid historical explanations, but E107's direct lower-projection negative subsumes them for continuation. E108's broad side atlases remain censored positive-only data. E109 closes only manufacturing-free y60. E111/E112 exactly partition the separator-only class basis, but all 350 positives omit low/high bodies. E113 is an exact static compiler, not feasibility. E114 rejects only its representative geometries. E115 rejects only separator states 0/3/0 and 5/0/0. E116 leaves all twelve tested class tuples UNKNOWN. E117/E118's 587 cuts are valid local-front necessary rules, but both terminal masters are UNKNOWN. E119 diagnoses their transport economics only; novelty, coverage and zero cross-geometry reuse prove neither saturation nor feasibility.
+- E106's three allocation nogoods remain valid historical explanations, but E107's direct lower-projection negative subsumes them for continuation. E108's broad side atlases remain censored positive-only data. E109 closes only manufacturing-free y60. E111/E112 exactly partition the separator-only class basis, but all 350 positives omit low/high bodies. E113 is an exact static compiler, not feasibility. E114 rejects only its representative geometries. E115 rejects only separator states 0/3/0 and 5/0/0. E116 leaves all twelve tested class tuples UNKNOWN. E117/E118's 587 cuts are valid local-front necessary rules; E119 diagnoses their economics only. E120 faithfully integrates local-option existence but both arms are UNKNOWN, so its 4.55-million-term density is an instrument result, not an x42 negative.
 - Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
 
 History pointers

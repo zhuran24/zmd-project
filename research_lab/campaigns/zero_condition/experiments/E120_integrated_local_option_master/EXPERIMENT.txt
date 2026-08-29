@@ -1,0 +1,79 @@
+EXPERIMENT E120: INTEGRATED LOCAL-OPTION EXISTENCE MASTER
+========================================================
+
+Question
+--------
+Can the source-stable x42-high language select 26 bodies while simultaneously
+witnessing at least one locally viable same-footprint mode/class option for every
+selected body?
+
+Why this experiment
+-------------------
+E117/E118 learn 587 sound containment cuts from 47 locally-dead geometries. E119
+shows why another lazy batch is a poor bargain: E118's cuts remain structurally
+novel, but exact subject novelty is only 28 percent and no new-cohort cut rejects
+another E118 geometry. The cuts are repeatedly approximating one simpler
+existential condition. E120 puts that condition in the proposer itself.
+
+Exact language
+--------------
+Reuse E117's frozen language:
+
+  * 1,205 E103 unary-live body candidates;
+  * exact high template totals 10 / 6 / 10;
+  * fixed E092 power and body non-overlap;
+  * both stable E078 bodies;
+  * the 25 still-open separator template vectors;
+  * 9,808 syntactic local options from all same-footprint modes and compatible B
+    demand classes.
+
+No global eight-class totals are imposed at this layer.
+
+Encoding
+--------
+For each body candidate b and each quotient local option o, create a Boolean
+witness q[b,o]. Post:
+
+  sum_o q[b,o] = selected[b]
+
+so every selected body chooses exactly one local witness and unselected bodies
+choose none. For each input/output side of each option, count fixed blocked cells
+plus every selected body variable covering each front cell, preserving
+multiplicity when one body covers several front cells. Enforce:
+
+  blocked_count <= front_count - required_count + front_count * (1 - q[b,o]).
+
+The option quotient may carry several class keys only when pose, fronts and
+required counts are identical. This is exactly E117's local-front existential
+semantics, not a class assignment.
+
+Solver arms
+-----------
+Arm A uses the direct integrated model with one worker and PSEUDO_COST_SEARCH.
+If censored, Arm B rebuilds the same integrated model, adds the 587 independently
+replayed E117/E118 cuts only as redundant search aids, and uses multiworker
+AUTOMATIC_SEARCH. The cuts are not needed for correctness and cannot change the
+feasible set.
+
+Decision rules
+--------------
+Integrated positive
+  Independently replay local survival, then send the fixed 26-body geometry to
+  E114's unchanged full high class consumer. A high positive goes to E101's
+  x42-low complement and E095's 219-body replay.
+
+Integrated exact INFEASIBLE
+  Close only the source-stable x42-high local-option necessary language. Since
+  full high feasibility implies local-option feasibility, retire x42 as a
+  sufficient constructor.
+
+Both arms UNKNOWN
+  Preserve censorship. Do not return to containment-cut growth. The next
+  discriminator must change the geometry representation or skeleton.
+
+Truth boundary
+--------------
+Local-option existence is necessary but not sufficient for global class totals.
+A positive is only a constructive geometry seed until the unchanged full high
+consumer accepts it. No terminal uniqueness, binding, routing, throughput,
+certification or U/L effect follows.

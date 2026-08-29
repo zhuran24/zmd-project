@@ -906,3 +906,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   body 是否至少有一个本地 mode/class option 保住足够 front。继续挖 cut 会持续产真知识，却
   不会形成短语言。下一判别应让 geometry 与 local option existence 同住：9808 个 syntactic
   option 直接进入 master，但暂不加 global class totals，使模型精确等价于 E117 local checker。
+
+2026-08-29 10:31
+----------------
+数据：
+  E120 run-002 RESULT.json
+  research_lab/local/zero_condition/E120_integrated_local_option_master/run-002/RESULT.json
+  sha256 f9218f63300dd6f24bdb10668c6944a3fbd1edf7d9ba30d421660f12c2e0eb60
+  ARTIFACT_CHECK.json sha256
+  1569314f562f769771a92a91e370e937a5d14507fc0bedc3903605d92b858e55
+
+注意／发现：
+  把 1,205 个 body 与 9,808 个 local option 精确同住后，变量只到 11,016，约束 21,369；真正
+  的厚度却是 19,616 条 front row 里 4,548,696 个动态 body coefficient，单行最多 482 个。
+  无 cut 的 one-worker PSEUDO_COST 90 秒 UNKNOWN、0 branches；加入 587 条冗余 cut 的 fresh
+  multiworker AUTOMATIC 90 秒 UNKNOWN、8,846 branches、0 conflicts。两臂都没有 incumbent。
+
+推理：
+  E119 的判断被机器坐实：不是还缺一批 containment cut，也不是 local existence 没进模型，而是
+  body/front incidence 本身太厚。把关系完全拆开会得到不运输的 point cuts，把它完全同住又得到
+  455 万项的稠密矩阵。下一表示必须在两者之间找到空间 collar：真正跨侧耦合的 body/front 留在
+  joint model，深部 interior 用 template/class residual interface 消去。若 collar 仍接近全域，
+  就应把预算切给不同 pole/boundary skeleton，防止继续把 y=41/E092 盆地研究得越来越精细。
