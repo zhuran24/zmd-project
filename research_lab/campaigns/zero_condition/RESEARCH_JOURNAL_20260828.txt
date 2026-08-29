@@ -816,3 +816,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   很大。五个 UNKNOWN 态总共只含 12 个 tuple；逐 tuple 固定会消掉 E115 剩余的 class projection
   选择，同时保留全部几何。下一轮先吃这 12 个，若一态所有 tuple 都 exact negative 才升级为
   template rule；任一 positive 立即下沉到 x42-low，不再先造另一层接口。
+
+2026-08-29 09:04
+----------------
+数据：
+  E116 run-001 RESULT.json
+  research_lab/local/zero_condition/E116_low_cardinality_separator_tuple_discriminator/run-001/RESULT.json
+  sha256 2b7b93d9a4d1235a7284d9f11eb6512fbc13a3ceb4eda42928cdf7e7c15e378d
+  ARTIFACT_CHECK.json sha256
+  f186dda5a79c50a094953a98147bf5668dd8c1e75ec11226e86064184d946d37
+
+注意／发现：
+  五个 low-cardinality parent states 的 12 个 separator class tuples 被逐个固定后，11 个在
+  one-worker PSEUDO_COST + fresh multiworker AUTOMATIC 两臂下 UNKNOWN；总预算漏掉的最后一个
+  tuple 另用 fresh one-worker 跑 30 秒仍 UNKNOWN。最终 12 positive=0、negative=0、UNKNOWN=12。
+
+推理：
+  E115 的 class disjunction 不是当前主要墙。tuple 固定已经消掉 separator class 投影，却没有
+  让完整 geometry/front consumer 获得终态；若把同法扩到 350 个 positive tuples，只会把有限
+  基底惯性扩大三十倍。当前最强数据仍是 E114：任意 body/power witness 里有 11..22 台 body
+  本地 mode/class 空域为零。下一表示应让 geometry master 直接学习这些空域的最小 blocker
+  containment cores，先造出“每台 body 至少有一个本地 option”的几何，再让全局 class consumer
+  接手。这里必须换 proposer 语言，而不是继续 class 枚举或同模型加时。

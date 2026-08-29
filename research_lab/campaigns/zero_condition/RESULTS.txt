@@ -4409,6 +4409,44 @@ evidence:
   UNKNOWN_TEMPLATE_STATES.json sha256
   0cc243e76134ed53958d22c68a04a6067685b17620b6c1a7676e5ad7b12f0731.
 
+R-ZC-126  Exact separator-class fixation leaves all twelve low-cardinality tuples censored
+------------------------------------------------------------------------------------------------
+status: 12/12 named UNKNOWN; no positive or exact negative; class fixation retired as primary discriminator
+scope: five E115 UNKNOWN template states, full E103-live x42-high native-front consumer
+
+statement:
+  E116 removes the separator-class disjunction from E115's five lowest-
+  cardinality UNKNOWN states. It fixes each of their twelve exact E112-positive
+  class tuples in a fresh full high-side model while leaving all 1,205 live body
+  geometries, same-footprint modes and remaining high allocation freedom intact.
+
+  Eleven tuples receive ten-second one-worker PSEUDO_COST and ten-second fresh
+  multiworker AUTOMATIC_SEARCH attempts; all remain UNKNOWN. The one tuple omitted
+  by the producer's total budget is then run for thirty seconds in a fresh
+  one-worker model and also remains UNKNOWN. Across all twelve tuples there are
+  zero positives, zero exact negatives, twelve UNKNOWN and no low-complement run.
+
+non-implications:
+  No tuple or parent template state is negative. E116 measures the instrument:
+  fixing separator class coordinates does not resolve the joint geometry/front
+  search. UNKNOWN creates no rule.
+
+effect on next problem:
+  Retire broad separator-class fixation. Build a geometry-first high-side master
+  that learns minimized selected-body blocker cores whenever a proposed body has
+  no local mode/class option. Send the first all-body-locally-live geometry to the
+  unchanged full class consumer.
+
+evidence:
+  E116 RESULT.txt; local RESULT.json sha256
+  2b7b93d9a4d1235a7284d9f11eb6512fbc13a3ceb4eda42928cdf7e7c15e378d;
+  FIXED_TUPLE_RESULTS.json sha256
+  fbcd83d392427d3598ef60e51e057c86721560dd5eea76eaa43c7dbb2127e5d0;
+  UNTESTED_TUPLE_RESULT.json sha256
+  99497214afb609ee86eb41b2ccb6927f79452314604fa1298a83f14fb9aca5d8;
+  ARTIFACT_CHECK.json sha256
+  f186dda5a79c50a094953a98147bf5668dd8c1e75ec11226e86064184d946d37.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

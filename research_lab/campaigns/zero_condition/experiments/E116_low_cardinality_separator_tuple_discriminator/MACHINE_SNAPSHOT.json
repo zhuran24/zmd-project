@@ -1,0 +1,54 @@
+{
+  "schema": "zmd_e116_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "canonical_run": "research_lab/local/zero_condition/E116_low_cardinality_separator_tuple_discriminator/run-001",
+  "machine_verdict": "LOW_CARDINALITY_SEPARATOR_TUPLE_DISCRIMINATOR_CENSORED",
+  "machine_decision": "REPLAY_ONLY_NAMED_UNKNOWN_TUPLES",
+  "checked_continuation_decision": "RETIRE_SEPARATOR_CLASS_FIXATION_AS_PRIMARY_DISCRIMINATOR",
+  "producer": {
+    "formal_tuple_count": 12,
+    "tested_tuple_count": 11,
+    "positive_tuple_count": 0,
+    "negative_tuple_count": 0,
+    "unknown_tuple_count": 11,
+    "untested_tuple_count": 1,
+    "total_elapsed_seconds": 264.42239546900964,
+    "path": "research_lab/local/zero_condition/E116_low_cardinality_separator_tuple_discriminator/run-001/FIXED_TUPLE_RESULTS.json",
+    "sha256": "fbcd83d392427d3598ef60e51e057c86721560dd5eea76eaa43c7dbb2127e5d0"
+  },
+  "supplement": {
+    "parent_template_vector": [0, 0, 1],
+    "separator_class_tuple": [0, 0, 0, 0, 0, 1, 0, 0],
+    "status": "UNKNOWN",
+    "elapsed_seconds": 30.00370023600408,
+    "branches": 43514,
+    "conflicts": 57,
+    "profile": "one_worker_pseudo_cost",
+    "path": "research_lab/local/zero_condition/E116_low_cardinality_separator_tuple_discriminator/run-001/UNTESTED_TUPLE_RESULT.json",
+    "sha256": "99497214afb609ee86eb41b2ccb6927f79452314604fa1298a83f14fb9aca5d8"
+  },
+  "combined_classification": {
+    "formal_tuple_count": 12,
+    "positive_tuple_count": 0,
+    "negative_tuple_count": 0,
+    "unknown_tuple_count": 12,
+    "closed_parent_template_state_count": 0,
+    "high_side_witness_count": 0,
+    "low_complement_test_count": 0
+  },
+  "independent_check": {
+    "status": "PASS",
+    "classification": "ALL_TWELVE_LOW_CARDINALITY_TUPLES_CENSORED"
+  },
+  "artifacts": {
+    "runner_sha256": "e9f76eea9ebb61b4ed2d7ed6b832e1794e5d6410aae967058b33086ec18f701e",
+    "checker_sha256": "4f309cea8eecdbedb9d19576a216c56f804dab3198692cc50f192f308fb220ff",
+    "result_sha256": "2b7b93d9a4d1235a7284d9f11eb6512fbc13a3ceb4eda42928cdf7e7c15e378d",
+    "fixed_tuple_results_sha256": "fbcd83d392427d3598ef60e51e057c86721560dd5eea76eaa43c7dbb2127e5d0",
+    "low_results_sha256": "7dbf83c8bf70f4a07157577d3f99ca06ed5d74600cccf29e10ec50837785defe",
+    "supplement_sha256": "99497214afb609ee86eb41b2ccb6927f79452314604fa1298a83f14fb9aca5d8",
+    "artifact_check_sha256": "f186dda5a79c50a094953a98147bf5668dd8c1e75ec11226e86064184d946d37"
+  },
+  "truth_boundary": "All twelve low-cardinality separator class tuples remain UNKNOWN in the complete x42-high native-front consumer. Fixing the separator class tuple did not create a positive or exact negative and is retired as the primary discriminator."
+}

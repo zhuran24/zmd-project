@@ -1,0 +1,134 @@
+E116 RESULT: FIXING SEPARATOR CLASS TUPLES DOES NOT RESOLVE THE GEOMETRY WALL
+================================================================================
+
+Status
+------
+Closed as a censored finite discriminator. All twelve low-cardinality separator
+class tuples are now explicitly tested in the complete x42-high native-front
+consumer. None produces a witness or exact negative; all twelve remain UNKNOWN.
+Separator class fixation is therefore retired as the primary next discriminator.
+
+Machine verdict
+---------------
+
+  LOW_CARDINALITY_SEPARATOR_TUPLE_DISCRIMINATOR_CENSORED
+
+Checked continuation decision
+-----------------------------
+
+  RETIRE_SEPARATOR_CLASS_FIXATION_AS_PRIMARY_DISCRIMINATOR
+
+Machine evidence
+----------------
+Canonical wrapper result:
+
+  research_lab/local/zero_condition/
+  E116_low_cardinality_separator_tuple_discriminator/run-001/RESULT.json
+
+SHA-256:
+
+  2b7b93d9a4d1235a7284d9f11eb6512fbc13a3ceb4eda42928cdf7e7c15e378d
+
+Producer tuple results:
+
+  research_lab/local/zero_condition/
+  E116_low_cardinality_separator_tuple_discriminator/run-001/
+  FIXED_TUPLE_RESULTS.json
+
+SHA-256:
+
+  fbcd83d392427d3598ef60e51e057c86721560dd5eea76eaa43c7dbb2127e5d0
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E116_low_cardinality_separator_tuple_discriminator/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  f186dda5a79c50a094953a98147bf5668dd8c1e75ec11226e86064184d946d37
+
+What was tested
+---------------
+E115 leaves five UNKNOWN separator template states whose exact E112-positive
+separator class spaces contain only twelve tuples total:
+
+  template 0/0/0   one tuple
+  template 0/0/1   three tuples
+  template 0/1/0   two tuples
+  template 0/2/0   three tuples
+  template 1/0/0   three tuples
+
+For each tuple E116 preserves all 1,205 E103-live high-side body candidates,
+fixed E092 power, body non-overlap, both stable E078 bodies, all same-footprint
+modes and all remaining high class allocation freedom. It fixes only the parent
+separator template vector and the exact eight-coordinate separator class tuple.
+
+Each producer attempt uses a fresh one-worker PSEUDO_COST model for ten seconds;
+UNKNOWN is retried in a fresh eight-worker AUTOMATIC_SEARCH model for ten more
+seconds. Eleven tuples receive both profiles before the total wrapper budget is
+exhausted.
+
+The one unattempted tuple is then run separately in a fresh one-worker
+PSEUDO_COST model for thirty seconds:
+
+  parent template   0/0/1
+  separator tuple   [0,0,0,0,0,1,0,0]
+  status            UNKNOWN
+  branches          43,514
+  conflicts         57
+
+Combined terminal classification
+--------------------------------
+Across all twelve exact tuples:
+
+  high-side positives     0
+  exact tuple negatives   0
+  UNKNOWN tuples         12
+  closed parent states    0
+  low-complement tests    0
+
+No tuple leaks a selected geometry, mode assignment or allocation from an
+UNKNOWN branch.
+
+Scientific interpretation
+-------------------------
+E115's remaining disjunction over separator class tuples was not the dominant
+search wall. Even after that choice is removed, the complete model still spends
+its budget jointly selecting body geometry and satisfying dynamic native-front
+occupancy.
+
+This is an instrument result, not evidence that the tuples are infeasible. It
+also prevents a new finite-basis inertia: extending the same method from twelve
+tuples to all 350 separator-positive tuples would multiply censored solves
+without changing the representation that currently fails.
+
+The stronger signal remains E114's full-consumer death shape. Arbitrary
+body/power representatives contain 11..22 bodies with empty local mode/class
+domains. The next proposer should therefore make local native-front survival a
+first-class geometry condition and learn small blocker cores when a proposed
+body becomes front-dead.
+
+Next problem
+------------
+Build a high-side body/power geometry master over E103's 1,205 live candidates,
+with exact global template totals 10/6/10, both stable E078 bodies and E110's
+remaining separator-template state set. For each proposed 26-body geometry:
+
+  * compute every selected body's complete local mode/class domain under the
+    actual selected occupancy;
+  * when a body has empty domain, minimize the selected blocker set whose joint
+    occupancy keeps every option dead;
+  * return the resulting geometry-independent containment cut to the master;
+  * when every body has at least one local option, send that fixed geometry to
+    the unchanged full class consumer immediately.
+
+This changes the proposer language using E114's real deaths rather than adding
+more time or class-state enumeration.
+
+Truth boundary
+--------------
+All twelve tuples remain UNKNOWN. E116 proves neither feasibility nor
+infeasibility for any tuple or parent template state, produces no high-side or
+219-body witness, and has no terminal-uniqueness, binding, routing, throughput,
+certification or U/L effect.
