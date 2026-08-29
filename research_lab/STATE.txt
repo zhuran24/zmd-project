@@ -12,14 +12,14 @@ Current endpoint
 Statement: E095 remains the stable constructive base: module A is a checked
 128-body native-front half and module B is the sole 91-body wall. E100/E101 reduce
 that wall to a 26-body high side; E103 selects a y59/template hybrid. E109 closes
-the over-strong manufacturing-free-y60 branch. E110 restores the exact 812-low /
-154-separator / 239-high language and compiles 154 separator coordinates into 27
-body/power template duties. E111 lifts those duties to the eight B class
-coordinates: the formal separator-only native-front basis has 353 states. Two
-one-worker runs produce a nested 168 then 301 positive-state atlas; all 301
-witnesses independently replay. Fifty-two named states remain unresolved. All 27
-template vectors already have positives, and strong separator/side body-front
-coupling prevents positive transfer without conditioned consumers.
+the over-strong manufacturing-free-y60 branch. E110 compiles the restored
+154-candidate separator into 27 body/power template duties. E111/E112 now close
+the full separator-only class refinement: 353 formal eight-coordinate states
+partition exactly into 350 positives and three negatives, with zero UNKNOWN. The
+three negatives compile to one class rule: separator template 1/0/3 with all
+three 6x4 bodies at 5-in/1-out is impossible regardless of the single 3x3 class.
+All positives remain optimistic because separator/side body-front coupling is
+nonzero; the live object is the cross-module interaction surface, not class search.
 Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
@@ -47,6 +47,7 @@ Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E109_last_two_template_split_discriminator/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E110_explicit_separator_template_duty_atlas/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E111_separator_native_front_class_atlas/RESULT.txt
+  research_lab/campaigns/zero_condition/experiments/E112_fixed_separator_class_state_closure/RESULT.txt
 Identity audit:
   research_lab/campaigns/zero_condition/E079_E080_ARTIFACT_IDENTITY_AUDIT_20260828.txt
 Direction ref:
@@ -54,15 +55,15 @@ Direction ref:
 
 Live question
 -------------
-Q: Which of E111's 52 residual separator class states are feasible in the same
-separator-only native-front relaxation? Fix each eight-coordinate tuple in a
-fresh 154-candidate model without the 301 accumulated blocking rows. Exact
-positive states join the atlas; exact INFEASIBLE states become only class-state
-nogoods; UNKNOWN remains local to that tuple. If all 353 states become terminal,
-freeze the complete separator relaxation atlas and build a side-conditioned
-interface from concrete separator body/mode witnesses plus explicit low/high
-occupancy effects. Do not infer a template cut, transfer optimistic positives,
-rebuild the 1,205-candidate monolith, or reopen manufacturing-free y60.
+Q: What is the smallest exact separator-to-side interaction interface carried by
+the 350 positive class states? Compile, before solving, the cross-module surface:
+separator body occupancy on low/high body and front interaction cells; separator
+front-demand sets exposed to side bodies; side front-demand exposure to separator
+bodies; and remaining low/high template/class complements. Quotient body/mode
+witnesses only by signatures that preserve every such predicate, and measure
+whether the signature basis is genuinely finite and thinner than the 1,205-row
+monolith. Do not select one witness per class state as unique, transfer optimistic
+positives, reopen the three exact negative states, or rebuild the monolith.
 
 Inflight / recovery
 -------------------
@@ -111,6 +112,7 @@ Recent consequential results
 - E109 closes both remaining vectors on complete upper-side native-front models; seven exact split negatives now cover E108's complete seven-state body basis. | evidence=research_lab/campaigns/zero_condition/experiments/E109_last_two_template_split_discriminator/RESULT.txt | effect=retire manufacturing-free y60 and restore E103's explicit separator as a third finite module
 - E110 restores E103's 812/154/239 groups and exactly enumerates 27 body/power-feasible separator template vectors from an 847-vector formal box. | evidence=research_lab/campaigns/zero_condition/experiments/E110_explicit_separator_template_duty_atlas/RESULT.txt | effect=replace 154 separator coordinates with a 27-state template-duty interface
 - E111 expands the 27 duties into a 353-state class basis, independently replays 301 separator-only positives, and externalizes the remaining 52 states. | evidence=research_lab/campaigns/zero_condition/experiments/E111_separator_native_front_class_atlas/RESULT.txt | effect=replace censored unseen-state search with 52 fixed exact discriminators
+- E112 fixes all 52 residual states: 49 are feasible and three exact negatives form one compact 1/0/3 class rule; the separator-only atlas is complete at 350/3/0. | evidence=research_lab/campaigns/zero_condition/experiments/E112_fixed_separator_class_state_closure/RESULT.txt | effect=end separator class search and compile the exact cross-module interaction interface
 
 Current unknowns and guards
 ---------------------------
@@ -150,7 +152,7 @@ Current unknowns and guards
 - E103's unary removal is exact for fixed power and fixed-obstacle native-front viability. Its interface and Hall counts are representation facts, not feasibility or runtime bounds. The selected y59 hybrid still retains an explicit separator until a new sufficient restriction removes it.
 - E104 is a censored result under the additional manufacturing-free y60 restriction. It does not reject y60, the explicit E103 separator, high, x42 or module B. Its run-001 import failure has no scientific effect; run-002 plus its independent checker are canonical.
 - E105 rejects only nested template totals lower 7/4/8 and upper 3/2/2 under reserved y60. It does not reject the particular body witness as a unique cause, any other template split, y60, high, x42 or module B. Runs 001/002 are apparatus aborts. The runner's dormant positive path contains run-001 pointer literals and must not be copied by successors.
-- E106's three allocation nogoods remain valid historical explanations, but E107's direct lower-projection negative subsumes them for continuation. E108's broad side atlases remain censored positive-only data. E109 closes only manufacturing-free y60. E110's 27 separator vectors are body/power admissions. E111's 301 positives are separator-only optimistic states; the 52 absent states are unresolved, and nonzero separator/side body-front intersections forbid direct transfer.
+- E106's three allocation nogoods remain valid historical explanations, but E107's direct lower-projection negative subsumes them for continuation. E108's broad side atlases remain censored positive-only data. E109 closes only manufacturing-free y60. E110's 27 separator vectors are body/power admissions. E111/E112 exactly partition the separator-only class basis, but all 350 positives omit low/high bodies; nonzero separator/side body-front intersections forbid direct transfer or representative-witness uniqueness.
 - Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
 
 History pointers

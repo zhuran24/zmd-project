@@ -725,3 +725,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   一个 yes/no 问题。另一个重要校正是 separator-only positive 不能直接传递：separator 与两侧
   body/front 交叉分别达到 71/75、76/75、86/90 个格。negative 可以安全回灌，positive 只是
   optimistic interface state，之后必须携带具体 body/mode 占用进入 side-conditioned consumer。
+
+2026-08-29 07:14
+----------------
+数据：
+  E112 run-001 RESULT.json
+  research_lab/local/zero_condition/E112_fixed_separator_class_state_closure/run-001/RESULT.json
+  sha256 da64e4a66ff0826c1b9aa56b69fda4fe7855739acc60e853522241dc5bd9fa0e
+  ARTIFACT_CHECK.json sha256
+  cdbae6428ba1514646e12836de069b26104e1872f7356b63fb1bdeb4c34e5e03
+
+注意／发现：
+  把 E111 的 52 个 residual tuples 分别固定到 fresh model 后，49 个 OPTIMAL、3 个 exact
+  INFEASIBLE、0 UNKNOWN；总求解时间只有 14.026 秒，最慢 0.525 秒，备用 solver 一次没用。
+  三条负例都属于 separator template 1/0/3，并且三具 6x4 全是 5-in/1-out；那一具 3x3 无论
+  落入三种 B class 的哪一种都死。异源 AUTOMATIC_SEARCH 再次逐条 INFEASIBLE。
+
+推理：
+  E111 的晚期 UNKNOWN 主要是“在 301 条排除后寻找任一未见点”的投影表示成本，不是残余状态
+  本身难。353 态现在完整分成 350 positive + 3 negative，且三条 negative 能聚成一条 class
+  rule，而不是误伤整个 1/0/3 template vector。下一步不应再做 class 枚举，也不能拿每态第一份
+  separator geometry 当唯一代表；要把 350 个 positive witness 的 cross-module body/front 作用面
+  编译成稳定 signature，再让 low/high consumers 对这些 signature 做存在量消去。

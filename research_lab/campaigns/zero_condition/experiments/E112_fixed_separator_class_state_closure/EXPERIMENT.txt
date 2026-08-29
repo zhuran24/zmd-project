@@ -1,0 +1,49 @@
+EXPERIMENT E112: FIXED SEPARATOR CLASS-STATE CLOSURE
+===================================================
+
+Question
+--------
+Which of E111's 52 named residual separator class states are feasible when each
+state is fixed in a fresh copy of the same 154-candidate separator-only model?
+
+Why this experiment
+-------------------
+E111's UNKNOWN occurs after 301 positive states have been excluded and the solver
+must find any unseen point. That is a poor representation of the remaining
+question. The residual basis is already finite and explicit. E112 removes the
+301 accumulated blocking rows and asks 52 independent yes/no questions.
+
+Method
+------
+1. Pin E111's committed model source, 301-state checked projection and exact
+   52-state residual packet. Reconstruct the identical source-stable separator
+   relaxation and the same class ordering.
+
+2. For each residual eight-coordinate tuple, build a fresh E111 model and fix all
+   allocation variables to that tuple. Solve first with one-worker PSEUDO_COST.
+   If it returns UNKNOWN, rebuild the model and retry with one-worker
+   AUTOMATIC_SEARCH. Search profiles may change; the feasible set may not.
+
+3. A positive stores one exact separator body/mode witness. INFEASIBLE rejects
+   only that fixed class tuple. UNKNOWN remains local to that tuple and creates no
+   rule.
+
+4. If all 52 states are terminal, combine them with E111's 301 checked positives
+   into a complete 353-state separator-only relaxation atlas. Keep prior and new
+   witness packets separately referenced rather than silently rewriting E111.
+
+Predeclared decisions
+---------------------
+All 52 terminal
+  Freeze the complete positive/negative class partition and build the next
+  side-conditioned separator interface only from positive body/mode witnesses.
+
+Any UNKNOWN
+  Preserve the fixed-state identity and replay only those tuples. Do not return
+  to unseen-state enumeration.
+
+Truth boundary
+--------------
+E112 remains inside the optimistic separator-only relaxation. Exact negatives are
+safe necessary rejections. Positives still omit low/high body and front coupling
+and cannot transfer directly to the three-module constructor.

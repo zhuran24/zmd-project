@@ -1,0 +1,181 @@
+E112 RESULT: THE 353-STATE SEPARATOR RELAXATION ATLAS IS COMPLETE
+================================================================
+
+Status
+------
+Closed as a complete exact partition of E111's separator-only native-front
+relaxation. All 52 previously unresolved class states are terminal in fresh
+fixed-state models: 49 are feasible and three are exact INFEASIBLE. Together
+with E111's 301 checked positives, the formal 353-state basis is now completely
+classified as 350 positive and three negative states, with zero UNKNOWN.
+
+Verdict
+-------
+
+  SEPARATOR_NATIVE_FRONT_RELAXATION_ATLAS_COMPLETE
+
+Decision
+--------
+
+  BUILD_SIDE_CONDITIONED_SEPARATOR_INTERFACE
+
+Machine evidence
+----------------
+Canonical result:
+
+  research_lab/local/zero_condition/
+  E112_fixed_separator_class_state_closure/run-001/RESULT.json
+
+SHA-256:
+
+  da64e4a66ff0826c1b9aa56b69fda4fe7855739acc60e853522241dc5bd9fa0e
+
+Fixed-state results:
+
+  research_lab/local/zero_condition/
+  E112_fixed_separator_class_state_closure/run-001/FIXED_STATE_RESULTS.json
+
+SHA-256:
+
+  49d7a98000ca7ea53c622b76415f485b98e745e0b19ce090ba1f92af3e1accb4
+
+Complete atlas manifest:
+
+  research_lab/local/zero_condition/
+  E112_fixed_separator_class_state_closure/run-001/
+  SEPARATOR_CLASS_ATLAS_MANIFEST.json
+
+SHA-256:
+
+  45767f5f1a00d051701e1bd6787a77a813e23d1958652c632dbfea336113db2a
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E112_fixed_separator_class_state_closure/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  cdbae6428ba1514646e12836de069b26104e1872f7356b63fb1bdeb4c34e5e03
+
+Why fixed states solve the censorship
+-------------------------------------
+E111's UNKNOWN did not concern an unbounded or unnamed search space. It occurred
+after 301 positive allocation tuples had been excluded and one model had to find
+any unseen point among the remaining 52. E112 rebuilds the unchanged
+154-candidate separator model for each residual tuple and fixes all eight class
+coordinates exactly. The accumulated 301 forbidden-assignment rows disappear;
+each solve answers one yes/no question.
+
+Every fixed model retains:
+
+  all 154 E103 unary-live separator candidates
+  every same-footprint native mode
+  fixed E092 power and fixed obstacles
+  separator body non-overlap
+  separator-internal native-front capacity
+  the exact E111 class order and formal-state table
+
+Only the search question changes from “find any unseen state” to “does this exact
+state have a witness?”
+
+Terminal results
+----------------
+All 52 primary one-worker PSEUDO_COST solves terminate without fallback:
+
+  fixed-state feasible       49
+  fixed-state INFEASIBLE      3
+  fixed-state UNKNOWN         0
+
+Their total solve time is 14.026 seconds; the slowest takes 0.525 seconds. This
+sharp difference confirms that E111's late UNKNOWN was largely a projection-
+enumeration representation cost rather than intrinsic hardness of the individual
+states.
+
+The complete atlas is:
+
+  formal separator class states    353
+  separator-only positives         350
+  separator-only negatives           3
+  UNKNOWN                             0
+
+The 49 new positive body/mode witnesses independently replay. The three negatives
+are rebuilt with one-worker AUTOMATIC_SEARCH, symmetry level 3 and probing level
+3; all again return exact INFEASIBLE.
+
+Compact negative rule
+---------------------
+The three negative tuples differ only in which of the three B classes is assigned
+to the single 3x3 separator body. In the fixed class order they are:
+
+  [0,0,1,0,0,0,0,3]
+  [0,1,0,0,0,0,0,3]
+  [1,0,0,0,0,0,0,3]
+
+They compile exactly to one contextual rule:
+
+  separator template vector = 1 / 0 / 3
+  all three separator 6x4 bodies require class 5-in / 1-out
+  one separator 3x3 body is present, in any of its three B classes
+  -> separator-only native-front INFEASIBLE
+
+All other 350 formal states have a separator-only witness. In particular, the
+`1/0/3` template vector itself remains live: 27 of its 30 class allocations are
+feasible. The reusable knowledge is therefore the compact class rule, not a
+blanket template-vector nogood.
+
+What is now exact
+-----------------
+E110 provides the exact 27-state separator template basis. E111 and E112 now
+provide the exact class refinement:
+
+  27 template duties
+    -> 353 formal class states
+    -> 350 positive states + 3 exact negatives.
+
+There is no remaining UNKNOWN inside the separator-only native-front relaxation.
+This is the first complete finite class atlas for the explicit third module.
+
+Why positives still cannot transfer
+------------------------------------
+The separator-only model removes low and high bodies. E111's coupling audit shows
+that the omitted interactions are substantial:
+
+  low/separator body-union intersection cells          71
+  separator/high body-union intersection cells         75
+  separator-front / low-body intersection cells        76
+  separator-front / high-body intersection cells       75
+  low-front / separator-body intersection cells        86
+  high-front / separator-body intersection cells       90
+
+Therefore the logical directions are asymmetric:
+
+  separator-only INFEASIBLE  -> safe necessary class-state nogood
+  separator-only FEASIBLE    -> optimistic candidate requiring side consumers
+
+A positive state cannot be passed directly to x42-low, binding or routing.
+
+Next problem
+------------
+Compile the exact separator-to-side interaction interface before another solve.
+Do not select one representative separator witness per class state as though its
+geometry were unique. Instead derive the finite cross-module surface carried by:
+
+  separator body occupancy on low/high body and front interaction cells
+  separator native-front demand sets exposed to low/high body occupancy
+  low/high front demand exposed to separator body occupancy
+  the remaining low/high template and class complements
+
+The immediate discriminator should measure and quotient these interface
+signatures across the 350 positive separator states and their available
+body/mode witnesses. Only then should side-conditioned consumers be built. This
+keeps the separator as a finite third module without recreating the full
+1,205-candidate monolith.
+
+Truth boundary
+--------------
+E112 exactly classifies the separator-only native-front relaxation, not the full
+low/separator/high constructor. The compact negative rule is contextual to E103's
+source-stable fixed-skeleton language. The 350 positives prove no side
+compatibility, terminal uniqueness, generic I/O, binding, routing, throughput,
+certification or U/L change.

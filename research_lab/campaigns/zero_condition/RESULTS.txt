@@ -4223,6 +4223,55 @@ evidence:
   ARTIFACT_CHECK.json sha256
   cc52d98fb0a5e0cdc715855174315e627dfd2de8d271dda317ee802779ade786.
 
+R-ZC-122  Fixed-state closure partitions the separator relaxation into 350 positives and 3 negatives
+-------------------------------------------------------------------------------------------------------
+status: complete 353-state class atlas; 49 new positives replayed; three negatives solver-diverse replayed
+scope: E103 explicit separator, separator-only optimistic native-front relaxation
+
+statement:
+  E112 rebuilds E111's unchanged 154-candidate separator model once for each of
+  the 52 residual eight-coordinate tuples and fixes that tuple exactly. Removing
+  the 301 accumulated blocking rows turns every residual question terminal:
+  49 fixed states are feasible, three are exact INFEASIBLE and none is UNKNOWN.
+  All primary one-worker PSEUDO_COST solves finish in 14.026 seconds total; the
+  slowest takes 0.525 seconds and no fallback solver is needed.
+
+  Together with E111's 301 checked positives, the exact formal basis is now:
+
+    353 formal separator class states
+    350 separator-only positives
+      3 separator-only negatives
+      0 UNKNOWN.
+
+  The 49 new positive body/mode witnesses independently replay. One-worker
+  AUTOMATIC_SEARCH independently reproduces all three negatives. They are exactly
+  the three assignments under separator template vector 1/0/3 where all three
+  6x4 bodies use class 5-in/1-out and the single 3x3 body may use any of its three
+  B classes. This compiles to one contextual class rule; the 1/0/3 template vector
+  itself remains live through its other 27 allocations.
+
+non-implications:
+  The 350 positives remain optimistic because low/high bodies and fronts are
+  absent. E112 does not prove a three-module witness or authorize direct transfer
+  to x42-low, binding or routing.
+
+effect on next problem:
+  Compile and quotient the separator-to-side interaction surface across positive
+  body/mode witnesses before building consumers. Preserve separator body
+  occupancy, exposed front-demand sets and remaining low/high template/class
+  complements; do not treat one representative geometry as unique or rebuild the
+  1,205-candidate monolith.
+
+evidence:
+  E112 RESULT.txt; local RESULT.json sha256
+  da64e4a66ff0826c1b9aa56b69fda4fe7855739acc60e853522241dc5bd9fa0e;
+  FIXED_STATE_RESULTS.json sha256
+  49d7a98000ca7ea53c622b76415f485b98e745e0b19ce090ba1f92af3e1accb4;
+  SEPARATOR_CLASS_ATLAS_MANIFEST.json sha256
+  45767f5f1a00d051701e1bd6787a77a813e23d1958652c632dbfea336113db2a;
+  ARTIFACT_CHECK.json sha256
+  cdbae6428ba1514646e12836de069b26104e1872f7356b63fb1bdeb4c34e5e03.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:
