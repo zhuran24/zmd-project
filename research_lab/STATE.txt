@@ -9,18 +9,17 @@ Campaign ref: research_lab/campaigns/zero_condition/CAMPAIGN.txt
 
 Current endpoint
 ----------------
-Statement: E095 remains the last stable constructive endpoint: module A is a
-checked 128-body native-front half and module B is the sole 91-body wall. E098
-finds the E096/E097 local machine packets missing and stops before reconstructing
-an E097 branch. E099 then executes operation_profiles, E095 and E096 from pinned
-source bytes and independently replays the interface census. The source-stable
-result matches E098 and differs from the committed E096 snapshot on 19
-load-bearing fields. The valid spatial minimum is x_after_41 with
-2,805 / 174 / 1,399 candidates, 66 / 2 / 23 anchor bodies, 224 interface cells,
-1,116 participating candidates and eight class-allocation dimensions. Template
-groups are 1,335 / 1,018 / 2,025 with 1,619 interface cells. Neither interface
-dominates under the frozen rules. E096 x_after_34 and every E097 x35 continuation
-are retracted; their missing old bytes are not rebound.
+Statement: E095 remains the stable constructive base: module A is a checked
+128-body native-front half and module B is the sole 91-body wall. E099 retracts
+the stale E096/E097 x34/x35 continuation and establishes the source-stable hybrid
+interface. E100 consumes that interface by reserving manufacturing column x=42.
+It removes 249 of 4,378 B candidates, leaving an exact low/high product of
+2,805 / 1,324 candidates. Four E092 anchor bodies are removed and 87 survive as
+hints; fixed-solid and both cross-side front/body intersections are zero. The
+only explicit bridge is eight low/high class-allocation pairs. The complete
+38,235-variable pure-feasibility model explores 8,419,494 branches and 139,025
+conflicts in 240.151 seconds but returns UNKNOWN without an incumbent. The next
+object is therefore the allocation bridge itself, not another monolithic solve.
 Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
@@ -36,6 +35,7 @@ Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E097_reserved_x35_module_b_constructor/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E098_e097_machine_packet_recovery/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E099_source_isolated_e096_revalidation/RESULT.txt
+  research_lab/campaigns/zero_condition/experiments/E100_source_stable_reserved_x42_hybrid/RESULT.txt
 Identity audit:
   research_lab/campaigns/zero_condition/E079_E080_ARTIFACT_IDENTITY_AUDIT_20260828.txt
 Direction ref:
@@ -43,16 +43,16 @@ Direction ref:
 
 Live question
 -------------
-Q: Can the source-stable x_after_41/template hybrid produce a module-B
-native-front witness under E092's exact poles and boundary_macro_09? First test
-the cheapest sufficient form: reserve manufacturing column x=42, keep low bodies
-at x<=41 and high bodies at x>=43, and retain exact template and eight front-class
-allocation equations. Mechanically verify the resulting fixed-solid and
-cross-side body/front semantics before solving. A positive must combine with
-E095's frozen A witness and pass an independent 219-body replay. INFEASIBLE
-rejects only reserved x=42 and restores the 174-candidate separator. UNKNOWN
-conditions independent low/high solves on allocation vectors. Do not revive
-E096 x_after_34, E097 x35, the E094 monolith or point-rule growth.
+Q: Which low-side class-allocation vectors can coexist with a complementary
+high-side exact native-front solution under reserved x=42? Build side-local
+models from E100's exact product language. First derive exact or independently
+bounded per-class and per-template allocation ranges for low and high, preserving
+body packing, fixed-pole power, same-footprint modes and stable E078 bodies. Use
+those ranges to form a compact complement intersection; then solve only surviving
+allocation vectors, low and high independently. A paired positive must combine
+with E095's frozen A witness and pass the 219-body replay. Side UNKNOWN remains
+censored; side INFEASIBLE rejects only the conditioned allocation. Do not rerun
+E100 monolith, add a retained rung, or restore the retracted x34/x35 branch.
 
 Inflight / recovery
 -------------------
@@ -89,6 +89,7 @@ Recent consequential results
 - E097 attempted a reserved-x35 constructor from E096's x_after_34 premise, but its local packet is absent and its durable text omits the branch identity. E099 later invalidates the premise itself. | evidence=research_lab/campaigns/zero_condition/experiments/E097_reserved_x35_module_b_constructor/RESULT.txt | effect=retracted; no E097 branch or decision is consumable
 - E098 attempts fail-closed packet recovery but fresh E096 semantics disagree with the committed snapshot, so it stops before executing E097. | evidence=research_lab/campaigns/zero_condition/experiments/E098_e097_machine_packet_recovery/RESULT.txt | effect=escalate from missing artifacts to source-identity revalidation
 - E099 source-isolates operation_profiles/E095/E096 and independently reproduces E098, not the committed E096 snapshot: x_after_41 and template/spatial incomparability replace x_after_34 dominance across 19 changed fields. | evidence=research_lab/campaigns/zero_condition/experiments/E099_source_isolated_e096_revalidation/RESULT.txt | effect=retract E096/E097 and build a source-stable x41/template hybrid
+- E100 reserves x=42 in that source-stable hybrid, producing an exact 2,805/1,324 low/high product with an eight-coordinate class bridge. Its 240-second pure-feasibility solve is UNKNOWN after 8.42M branches and no incumbent. | evidence=research_lab/campaigns/zero_condition/experiments/E100_source_stable_reserved_x42_hybrid/RESULT.txt | effect=externalize the allocation bridge and solve conditioned sides instead of rerunning the monolith
 
 Current unknowns and guards
 ---------------------------
@@ -122,6 +123,7 @@ Current unknowns and guards
 - E096's committed x_after_34 packet is superseded and its local bytes are absent. E099's source-stable E096 census is current: x_after_41, template/spatial incomparable. Interface counts remain finite coupling censuses, not runtime or feasibility bounds.
 - E097 has no recoverable terminal identity and consumes the withdrawn x_after_34 premise. Its x35 restriction, branch and decision have no current research effect.
 - E098 is an apparatus stop before E097. E099 corrects representation identity only; it makes no module-B feasibility claim. The exact cause of the old E096 snapshot remains unknown.
+- E100 is a censored UNKNOWN under an additional manufacturing-free x=42 restriction. It is not a negative for that restriction or module B. Its 19 cross-side front/front coincidences remain outside native-front semantics and can recouple at terminal uniqueness.
 - E097's machine RESULT and branch-aware checker are the sole terminal identity. The durable prose deliberately does not duplicate its status string. Any downstream session must load `RESULT.json.decision` before acting.
 - Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
 

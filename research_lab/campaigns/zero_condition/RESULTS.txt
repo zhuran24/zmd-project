@@ -3729,6 +3729,44 @@ evidence:
   ARTIFACT_CHECK.json sha256
   ee7c22fac2795c20afbd568fdaf08062762556d5f9eba75c4ae09b20e825e9f8.
 
+R-ZC-110  Source-stable reserved-x42 hybrid is censored, not negative
+---------------------------------------------------------------------------
+status: exact sufficient constructor attempted; UNKNOWN preserved; checker PASS
+scope: E092 fixed poles/boundary, E095 module B, manufacturing-free x=42
+
+statement:
+  E100 consumes E099's source-stable x_after_41 interface and removes all 249 B
+  candidates whose bodies occupy x=42. The surviving 4,129 candidates split into
+  2,805 low and 1,324 high rows. Four E092 anchor bodies are removed and 87 remain
+  as hints. A source replay proves the fixed column has no solid and that low/high
+  body/body and front/body coupling is zero; 19 front/front coincidences remain
+  outside this layer. Eight class-allocation pairs are the only explicit bridge.
+
+  The pure-feasibility model contains 38,235 variables and 74,234 constraints. It
+  explores 8,419,494 branches and 139,025 conflicts in 240.151 seconds but returns
+  UNKNOWN without an incumbent. The branch-aware checker reports PASS /
+  CENSORED_NO_INCUMBENT.
+
+non-implications:
+  E100 does not prove reserved x=42 or unrestricted module B infeasible. The 19
+  front/front coincidences can matter at terminal uniqueness. No downstream
+  binding or routing claim follows.
+
+effect on next problem:
+  Stop rerunning the same monolith. Build low/high side models whose only bridge
+  is the eight class-allocation coordinates. Derive compact feasible allocation
+  bounds/frontiers, intersect complements, then solve only surviving vectors.
+
+evidence:
+  E100 RESULT.txt; local RESULT.json sha256
+  d4de0239604cf4713164069fda553965275566c1840238ec4fa98446ba71b12c;
+  MODULE_B_RESULT.json sha256
+  da25935b9d9340117f1c2d7567de9d4e0fe397f2ce80eb944c148757906f2897;
+  RESERVED_COLUMN_AUDIT.json sha256
+  9bdfea97b315971bfe4c913c9c4dc75d18c1078c885e61bacc877d2604e2668f;
+  ARTIFACT_CHECK.json sha256
+  b2cc7e2aef54f5e0209a96b124319fa68b834bd0556db1d162732ac123fc5fc4.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

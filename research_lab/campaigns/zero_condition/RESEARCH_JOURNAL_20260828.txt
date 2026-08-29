@@ -460,3 +460,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   和 91-body B 墙不受影响。下一条正确构造语言应同时消费 x_after_41 的空间薄桥和 template-
   local class 结构：先试其最便宜充分版，即 manufacturing-free x=42，再决定是否需要保留
   174-candidate separator 或枚举 allocation-conditioned side solves。
+
+2026-08-29 02:13
+----------------
+数据：
+  E100 run-001 RESULT.json
+  research_lab/local/zero_condition/E100_source_stable_reserved_x42_hybrid/run-001/RESULT.json
+  sha256 d4de0239604cf4713164069fda553965275566c1840238ec4fa98446ba71b12c
+  ARTIFACT_CHECK.json sha256
+  b2cc7e2aef54f5e0209a96b124319fa68b834bd0556db1d162732ac123fc5fc4
+
+注意／发现：
+  按 source-stable x_after_41 把 x=42 设为 manufacturing-free column 后，B 候选由 4,378
+  降到 4,129：low 2,805、high 1,324，删除 249；E092 anchor 有 4 体被删、87 体仍可 hint。
+  固定实体在该列为 0，low/high body overlap 与双向 front/body 交叉均为 0，只剩 19 个
+  front/front 交点。完整 91-body、8 class、same-footprint modes、power 模型有 38,235 vars /
+  74,234 constraints；240.151 秒走 8,419,494 branches、139,025 conflicts，仍 UNKNOWN 无解。
+
+推理：
+  x42 确实把几何耦合切成了乘积，但八维 allocation 仍被塞在一个 CP-SAT 里同时摸索，导致
+  结构发现没有真正变成求解结构。继续加时或加 retained rung 只是在同一台仪器上付费。
+  下一轮要把 bridge 外显：分别求 low/high 对八类配额能接受的边界或紧凑 frontier，再取
+  complement 交集；只有交集中的 allocation vector 才送 exact side solve。

@@ -1,0 +1,140 @@
+E100 RESULT: SOURCE-STABLE RESERVED-X42 CONSTRUCTOR REMAINS CENSORED
+========================================================================
+
+Status
+------
+Closed as a censored sufficient-constructor experiment with branch-aware source
+replay PASS. E100 consumes E099's source-stable x_after_41 interface, not the
+retracted E096/E097 x34/x35 packet. It reserves manufacturing column x=42 while
+keeping the exact E092 poles, boundary_macro_09, module-B template counts, eight
+native-front classes, same-footprint modes and both stable E078 bodies.
+
+The pure-feasibility model returns UNKNOWN without an incumbent. No positive or
+negative conclusion follows for reserved x=42 or unrestricted module B.
+
+Machine evidence
+----------------
+Terminal result:
+
+  research_lab/local/zero_condition/
+  E100_source_stable_reserved_x42_hybrid/run-001/RESULT.json
+
+SHA-256:
+
+  d4de0239604cf4713164069fda553965275566c1840238ec4fa98446ba71b12c
+
+Module-B result SHA-256:
+
+  da25935b9d9340117f1c2d7567de9d4e0fe397f2ce80eb944c148757906f2897
+
+Reserved-column audit SHA-256:
+
+  9bdfea97b315971bfe4c913c9c4dc75d18c1078c885e61bacc877d2604e2668f
+
+Artifact check SHA-256:
+
+  b2cc7e2aef54f5e0209a96b124319fa68b834bd0556db1d162732ac123fc5fc4
+
+Verdict
+-------
+
+SOURCE_STABLE_RESERVED_X42_CONSTRUCTOR_CENSORED
+
+Decision
+--------
+
+SOLVE_X42_LOW_HIGH_SIDES_CONDITIONED_ON_ALLOCATIONS
+
+Source-stable restriction
+-------------------------
+The full E095 module-B domain contains 4,378 candidate footprints. Reserving x=42
+removes every candidate whose body occupies that column:
+
+  removed candidates                 249
+    3x3                                54
+    5x5                                64
+    6x4                               131
+
+  surviving candidates             4,129
+    low, max x <= 41                2,805
+    high, min x >= 43               1,324
+
+The exact side/template domains are:
+
+  low  3x3 / 5x5 / 6x4          859 / 650 / 1,296
+  high 3x3 / 5x5 / 6x4          422 / 304 /   598
+
+Four of E092's 91 module-B anchor bodies occupy x=42 and are not hinted. The
+remaining 87 anchor bodies are partial hints only.
+
+Mechanical product audit
+------------------------
+Above y=41, column x=42 contains no fixed pole, core or boundary body. After body
+candidates on x=42 are removed:
+
+  low/high shared body cells                         0
+  low native fronts occupiable by high bodies        0
+  high native fronts occupiable by low bodies        0
+  low/high front/front coincidence cells             19
+
+Front/front coincidence remains outside this native-front layer, as in E095. The
+only explicit low/high bridge is therefore the eight pairs of class-allocation
+integers whose sums equal the complete module-B class demands.
+
+Exact model and terminal observation
+------------------------------------
+E100 has no retained-count objective. It asks only for the first exact witness:
+
+  candidate body variables          4,129
+  mode/class variables             34,090
+  low/high allocation variables        16
+  total variables                  38,235
+  constraints                      74,234
+  unpowered candidates disabled       306
+
+Search controls:
+
+  workers                               8
+  search                  quick-restart portfolio
+  seed                             100001
+  solve cap                         240 s
+  first-solution stop                 yes
+
+Terminal observation:
+
+  status                         UNKNOWN
+  elapsed                       240.151 s
+  branches                    8,419,494
+  conflicts                     139,025
+  selected bodies                     0
+  combined witness                  none
+
+The solver is not merely stalled at presolve, but eight million branches without
+an incumbent still provide no direction about which allocation coordinates are
+compatible.
+
+Independent check
+-----------------
+The checker compiles E095 and operation_profiles from source bytes, reconstructs
+the 4,378-candidate universe, repeats the x=42 removal and all body/front
+intersection counts, joins every artifact hash and checks the terminal branch.
+It reports:
+
+  PASS / CENSORED_NO_INCUMBENT
+
+Next problem
+------------
+Do not rerun the same 38k-variable monolith or add a retained rung. The x=42 gap
+has proved exact low/high product structure; use it. Construct low-side and
+high-side models whose only external coordinates are the eight class counts.
+First derive feasible allocation bounds or a compact allocation frontier for each
+side, then intersect complements. A surviving allocation vector receives two
+conditioned exact side solves and, if both pass, combines with E095's frozen A
+witness.
+
+Truth boundary
+--------------
+UNKNOWN is not infeasibility. E100 is stricter than unrestricted module B. It
+produces no terminal uniqueness, generic I/O, commodity binding, component
+compatibility, routing, throughput, U/L, certification, owner, production,
+publication or pruning effect.

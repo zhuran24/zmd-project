@@ -1,0 +1,74 @@
+EXPERIMENT E100: SOURCE-STABLE RESERVED-X42 HYBRID CONSTRUCTOR
+==============================================================
+
+Question
+--------
+Can the source-stable E099 module-B interface produce a native-front witness in
+its cheapest sufficient hybrid form: exact template/front classes inside a
+manufacturing-free column x=42 that separates low and high body domains?
+
+Why this experiment
+-------------------
+E099 retracts E096's x_after_34 and E097's x35 continuation. The committed source
+instead selects x_after_41 as the minimum guarded spatial interface, but spatial
+and template interfaces are incomparable under the frozen dominance rules. The
+first faithful hybrid should therefore use the x41 spatial geometry while keeping
+all template-local operation/front classes explicit.
+
+Reserving x=42 is a sufficient restriction derived from x_after_41. It is not a
+claim that the unrestricted 174-candidate separator is unnecessary.
+
+Method
+------
+1. Pin E095's source and machine packet, E099's source-isolated result/check, and
+   E092's exact pole/boundary anchor. Compile operation_profiles and E095 from
+   source bytes in a fresh process.
+
+2. Reconstruct the complete 4,378-candidate module-B universe. Remove every body
+   occupying x=42. Classify all survivors uniquely:
+
+     low    max body x <= 41
+     high   min body x >= 43
+
+   Mechanically audit the fixed skeleton on x=42 and all low/high body/body and
+   front/body interactions. The column remains free for native fronts.
+
+3. Solve one pure-feasibility CP-SAT model retaining:
+
+     91 module-B bodies
+     exact 3x3 / 5x5 / 6x4 template counts
+     all eight exact native-front demand classes
+     all same-footprint native modes
+     body non-overlap
+     E092 fixed-pole power
+     both stable E078 bodies and required operations
+     eight explicit low/high allocation pairs
+
+   No retained-count objective is present. The 87 surviving E092 anchor bodies
+   are hints only; the four anchor bodies on x=42 are not silently relocated or
+   treated as selected.
+
+4. A positive is deterministically assigned named operations, combined with
+   E095's frozen 128-body A witness, and replayed as a complete 219-body
+   power/native-front-class witness.
+
+Predeclared decisions
+---------------------
+Positive and replay PASS
+  Advance the combined witness to terminal uniqueness, generic I/O and
+  component-aware binding.
+
+INFEASIBLE
+  Reject only manufacturing-free x=42. Restore the source-stable x_after_41
+  separator and solve through explicit separator plus allocation variables.
+
+UNKNOWN
+  Preserve censorship. Keep x=42 reserved and solve low/high sides conditioned
+  on compatible allocation vectors; do not rerun the same monolith.
+
+Truth boundary
+--------------
+A positive transfers to the unrestricted fixed-skeleton module-B problem. A
+negative does not. Terminal uniqueness, generic I/O, commodity binding,
+component compatibility, routing, throughput, U/L, certification, owner,
+production and publication remain outside.
