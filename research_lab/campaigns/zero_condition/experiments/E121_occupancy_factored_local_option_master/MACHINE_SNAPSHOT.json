@@ -1,0 +1,64 @@
+{
+  "schema": "zmd_e121_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "canonical_run": "research_lab/local/zero_condition/E121_occupancy_factored_local_option_master/run-001",
+  "verdict": "OCCUPANCY_FACTORED_LOCAL_OPTION_MASTER_CENSORED",
+  "decision": "RUN_SPATIAL_COLLAR_AUDIT_OR_SWITCH_SKELETON",
+  "encoding": {
+    "candidate_count": 1205,
+    "body_variable_count": 1205,
+    "occupancy_variable_count": 1714,
+    "option_variable_count": 9808,
+    "model_variable_count": 12730,
+    "model_constraint_count": 23083,
+    "occupancy_channel_constraint_count": 1714,
+    "occupancy_channel_term_count": 40274,
+    "maximum_occupancy_channel_support": 142,
+    "front_constraint_count": 19616,
+    "front_occupancy_term_count": 80821,
+    "maximum_front_occupancy_terms": 6,
+    "expanded_dynamic_term_count": 4548696,
+    "factored_dynamic_term_count": 121095,
+    "dynamic_term_reduction_ratio": 37.562214789215076,
+    "duplicate_front_cell_occurrence_count": 0
+  },
+  "solver_arms": {
+    "primary": {
+      "profile": "one_worker_pseudo_cost",
+      "redundant_cut_count": 0,
+      "status": "UNKNOWN",
+      "elapsed_seconds": 90.01121641098824,
+      "branches": 0,
+      "conflicts": 0,
+      "path": "research_lab/local/zero_condition/E121_occupancy_factored_local_option_master/run-001/PRIMARY_RESULT.json",
+      "sha256": "93b7014ea346ba5c78e843a44038ab10fe8f0a5de2da8c1afe4dcc43775268c4"
+    },
+    "fallback": {
+      "profile": "multiworker_automatic",
+      "redundant_cut_count": 587,
+      "status": "UNKNOWN",
+      "elapsed_seconds": 90.1371420250067,
+      "branches": 11572,
+      "conflicts": 0,
+      "path": "research_lab/local/zero_condition/E121_occupancy_factored_local_option_master/run-001/FALLBACK_RESULT.json",
+      "sha256": "69a3e3840aa54d0d4a9c01a324c0d7c512bba67943776c7d569e1b412ec15e2e"
+    }
+  },
+  "independent_check": {
+    "status": "PASS",
+    "classification": "OCCUPANCY_FACTORING_EXACT_THIRTY_SEVEN_FOLD_TERM_REDUCTION_BOTH_ARMS_CENSORED",
+    "known_geometry_count": 47,
+    "checked_selected_option_count": 384160,
+    "expanded_factored_option_results_equal": true,
+    "path": "research_lab/local/zero_condition/E121_occupancy_factored_local_option_master/run-001/ARTIFACT_CHECK.json",
+    "sha256": "d2ce20ac65085469f532601fa8832f657d81bd101ca1b82df9680ae3b3fc5b28"
+  },
+  "artifacts": {
+    "runner_sha256": "e32017a2ff968509d9c16a86e8df526433097142a7c1f2438c77f3ee56cf1fd7",
+    "checker_sha256": "8feb877bb6ef8d4e31cb0ed36111236bf33e504349cdb14332cec255b6f0b70b",
+    "result_sha256": "8ee3f5097ae3e8980c49ce517be5af9af8d45ff69604aaed655c0d5e22f9a529",
+    "encoding_audit_sha256": "591f90027517606f6f1c79d808ac1a58555749177172dfd1ce4da4dd18a82209"
+  },
+  "truth_boundary": "Cell occupancy factoring is algebraically exact and reduces repeated dynamic coefficients by 37.56x. Both full solver arms remain UNKNOWN, so the result is an encoding and instrument diagnosis, not an x42 feasibility verdict."
+}

@@ -4608,6 +4608,48 @@ evidence:
   ARTIFACT_CHECK.json sha256
   1569314f562f769771a92a91e370e937a5d14507fc0bedc3903605d92b858e55.
 
+R-ZC-131  Cell-occupancy factoring removes 97.34% of repeated dynamic coefficients
+-------------------------------------------------------------------------------------
+status: exact encoding equivalence PASS; two factored solver arms censored
+scope: source-stable x42-high local-option necessary language
+
+statement:
+  E121 factors E120's repeated body-cover sums through 1,714 shared Boolean cell-
+  occupancy variables. Existing body non-overlap makes each channel equality
+  exact. Every option row now uses at most six occupancy terms instead of
+  expanding up to 482 body variables.
+
+  Dynamic coefficient occurrences fall from 4,548,696 to 121,095: 40,274 body-
+  to-cell channel terms plus 80,821 front-to-occupancy terms, a 37.5622x
+  reduction. The factored model has 12,730 variables and 23,083 constraints.
+
+  Despite the compression, one-worker PSEUDO_COST without imported cuts returns
+  UNKNOWN after 90.011 seconds with zero branches. A fresh eight-worker AUTOMATIC
+  model with all 587 checked cuts as redundant aids returns UNKNOWN after 90.137
+  seconds with 11,572 branches and zero conflicts. No incumbent is produced.
+
+  The checker independently reconstructs all occupancy channels and compares
+  expanded versus factored option viability for 384,160 selected options across
+  all 47 known dead geometries. There are zero mismatches.
+
+non-implications:
+  E121 changes only encoding. Both complete searches are UNKNOWN, so it does not
+  close x42 or produce a geometry. The 37.56x reduction does not imply the
+  remaining model is small enough for the current solvers.
+
+effect on next problem:
+  Measure exact spatial-collar closure and residual interface size on the factored
+  language. If the collar still absorbs nearly all candidates or terms, stop the
+  y=41/E092 basin and open a different skeleton control.
+
+evidence:
+  E121 RESULT.txt; local RESULT.json sha256
+  8ee3f5097ae3e8980c49ce517be5af9af8d45ff69604aaed655c0d5e22f9a529;
+  ENCODING_AUDIT.json sha256
+  591f90027517606f6f1c79d808ac1a58555749177172dfd1ce4da4dd18a82209;
+  ARTIFACT_CHECK.json sha256
+  d2ce20ac65085469f532601fa8832f657d81bd101ca1b82df9680ae3b3fc5b28.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

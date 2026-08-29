@@ -1,0 +1,66 @@
+EXPERIMENT E121: OCCUPANCY-FACTORED LOCAL-OPTION MASTER
+======================================================
+
+Question
+--------
+Does E120's exact local-option language become computationally visible when every
+repeated body-cover sum is factored through one shared cell-occupancy variable?
+
+Why this experiment
+-------------------
+E120 faithfully encodes local option existence but expands the same question,
+"is cell c occupied?", into every option row. The resulting 19,616 front
+constraints contain 4,548,696 dynamic body coefficients even though there are
+only 1,205 body variables and 9,808 local options. This density may be an
+encoding artifact rather than an inherent interaction width.
+
+Exact factorization
+-------------------
+For every in-grid, non-fixed front cell c that can be covered by at least one
+candidate body, introduce one Boolean occupancy variable occ[c] and post:
+
+  occ[c] = sum(selected[b] for b covering c).
+
+The body master already enforces at most one selected body per cell, so the right
+side is exactly Boolean. Replace every expanded body-variable list in each option
+input/output constraint by the corresponding occ[c] terms. Repeated front cells,
+if any, repeat the same occupancy variable and therefore preserve multiplicity.
+Cells outside the grid or in fixed solids remain constants; cells with no body
+coverer remain always free.
+
+Everything else is unchanged from E120:
+
+  * 1,205 E103-live high candidates;
+  * 9,808 quotient local options;
+  * exact templates 10 / 6 / 10;
+  * fixed E092 power and both stable E078 bodies;
+  * 25 open separator template vectors;
+  * no global eight-class totals.
+
+Solver arms
+-----------
+Arm A uses one-worker PSEUDO_COST_SEARCH without containment cuts. If censored,
+Arm B rebuilds the same factored model, adds E117/E118's 587 checked cuts only as
+redundant search aids, and uses multiworker AUTOMATIC_SEARCH. This matches E120's
+instrument pair so any change is attributable to the occupancy factorization.
+
+Decision rules
+--------------
+Factored positive
+  Replay exact equivalence and local survival, then immediately run E114's fixed-
+  geometry full high consumer, E101's low complement and E095's 219-body replay.
+
+Factored exact INFEASIBLE
+  Close only the x42-high local-option necessary language and retire x42 as a
+  sufficient constructor.
+
+Both arms UNKNOWN
+  The common-subexpression factorization did not restore discrimination. Resume
+  the spatial-collar or alternate-skeleton branch; do not return to expanded
+  coefficients or blind containment cuts.
+
+Truth boundary
+--------------
+The factorization is intended to be algebraically exact. It changes only the
+encoding, not the feasible set. Local-option existence still omits global class
+totals, terminal uniqueness, binding, routing and throughput.

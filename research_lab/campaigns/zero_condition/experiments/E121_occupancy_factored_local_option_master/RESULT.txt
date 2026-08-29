@@ -1,0 +1,170 @@
+E121 RESULT: CELL-OCCUPANCY FACTORING CUTS THE MATRIX 37.56x, BUT SEARCH REMAINS CENSORED
+================================================================================================
+
+Status
+------
+Closed as an exact encoding improvement and a negative instrument discriminator.
+E121 factors E120's repeated body-cover sums through shared cell-occupancy
+variables. The feasible set is unchanged, the dynamic coefficient count falls by
+37.56x, and both preregistered solver arms still return UNKNOWN with no incumbent.
+The expanded coefficient matrix was a major tax, but not the whole wall.
+
+Verdict
+-------
+
+  OCCUPANCY_FACTORED_LOCAL_OPTION_MASTER_CENSORED
+
+Decision
+--------
+
+  RUN_SPATIAL_COLLAR_AUDIT_OR_SWITCH_SKELETON
+
+Machine evidence
+----------------
+Canonical result:
+
+  research_lab/local/zero_condition/
+  E121_occupancy_factored_local_option_master/run-001/RESULT.json
+
+SHA-256:
+
+  8ee3f5097ae3e8980c49ce517be5af9af8d45ff69604aaed655c0d5e22f9a529
+
+Encoding audit:
+
+  research_lab/local/zero_condition/
+  E121_occupancy_factored_local_option_master/run-001/ENCODING_AUDIT.json
+
+SHA-256:
+
+  591f90027517606f6f1c79d808ac1a58555749177172dfd1ce4da4dd18a82209
+
+Independent checker:
+
+  research_lab/local/zero_condition/
+  E121_occupancy_factored_local_option_master/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  d2ce20ac65085469f532601fa8832f657d81bd101ca1b82df9680ae3b3fc5b28
+
+Exact algebraic factorization
+-----------------------------
+E120 expanded every option's body blockers directly. E121 creates one Boolean
+`occupied[c]` for each relevant in-grid, non-fixed front cell and links it to the
+selected body variables covering that cell:
+
+  occupied[c] = sum(selected[b] for b covering c).
+
+E117's body non-overlap constraints already make the right side at most one, so
+this equality is exact. Every option input/output row then uses at most one
+occupancy term per front-cell occurrence. A repeated front cell would repeat the
+same occupancy term and preserve multiplicity; the current language has no such
+duplicates.
+
+Everything else remains unchanged:
+
+  live body candidates                  1,205
+  quotient local options                9,808
+  exact high template totals           10 / 6 / 10
+  open separator template vectors         25
+  stable E078 bodies                        2
+  global eight-class totals             absent
+
+Encoding comparison
+-------------------
+E120 expanded form:
+
+  dynamic coefficient occurrences   4,548,696
+  maximum front-row body support           482
+
+E121 factored form:
+
+  occupancy variables                    1,714
+  occupancy channel constraints          1,714
+  body-to-cell channel terms             40,274
+  front-to-occupancy terms               80,821
+  total factored dynamic terms          121,095
+  maximum occupancy channel support         142
+  maximum front-row occupancy terms           6
+
+Reduction:
+
+  4,548,696 / 121,095 = 37.5622x
+
+The factored model has:
+
+  variables       12,730
+  constraints     23,083
+
+The extra 1,714 variables are cheaper than repeating the same coverer sum through
+nearly twenty thousand front rows.
+
+Solver arms
+-----------
+Arm A uses one worker, PSEUDO_COST_SEARCH, no imported containment cuts:
+
+  status          UNKNOWN
+  elapsed         90.011 seconds
+  branches        0
+  conflicts       0
+
+Arm B rebuilds the same factored feasible set, adds all 587 replayed cuts only as
+redundant search aids, and uses eight-worker AUTOMATIC_SEARCH:
+
+  status          UNKNOWN
+  elapsed         90.137 seconds
+  branches        11,572
+  conflicts       0
+
+Neither arm returns a body geometry, local-option witness, high-side consumer
+result, or combined 219-body witness.
+
+Independent equivalence replay
+------------------------------
+The checker reconstructs all 1,714 occupancy channels and obtains the exact
+machine census. It validates both CP-SAT variants and compares expanded and
+factored option viability across every selected option in all 47 E117/E118 dead
+geometries:
+
+  checked geometries              47
+  checked selected options   384,160
+  mismatches                       0
+
+Thus the 37.56x reduction is a pure common-subexpression factorization, not a
+relaxation or strengthening.
+
+Scientific interpretation
+-------------------------
+E120's 4.55-million-term expansion was not intrinsic. A cell-occupancy channel
+removes almost all repetition. Yet the model still fails to produce an incumbent
+under two contrasting search instruments. The remaining difficulty therefore
+cannot honestly be attributed only to coefficient duplication.
+
+The live alternatives are now sharply separated:
+
+  1. keep the y=41/E092 skeleton but factor the problem spatially through an exact
+     interaction collar and side residual interfaces; or
+  2. stop investing in this basin and open a different pole/boundary skeleton
+     control.
+
+Another seed, another containment-cut batch, or a return to expanded coefficients
+has no preregistered information value.
+
+Next problem
+------------
+Measure the exact closure of the E113 cross-side interaction collar under E121's
+factored local-option dependencies. Report how many candidates, occupancy cells,
+options and residual template/class coordinates remain in the joint collar, and
+how much of the 121,095-term model can be eliminated into deep-side consumers.
+Compare proposer direction by projection selectivity, not candidate count.
+
+If exact closure expands to nearly all 1,205 candidates or retains most of the
+factored terms, stop the y=41/E092 line and open the different-skeleton control.
+
+Truth boundary
+--------------
+E121 proves exact encoding equivalence and a 37.56x term reduction. Both solver
+arms are UNKNOWN. It does not prove x42 feasible or infeasible and produces no
+full-high, 219-body, terminal-uniqueness, binding, routing, throughput,
+certification or U/L result.

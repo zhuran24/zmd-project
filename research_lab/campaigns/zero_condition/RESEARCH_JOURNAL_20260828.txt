@@ -928,3 +928,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   455 万项的稠密矩阵。下一表示必须在两者之间找到空间 collar：真正跨侧耦合的 body/front 留在
   joint model，深部 interior 用 template/class residual interface 消去。若 collar 仍接近全域，
   就应把预算切给不同 pole/boundary skeleton，防止继续把 y=41/E092 盆地研究得越来越精细。
+
+2026-08-29 10:48
+----------------
+数据：
+  E121 run-001 RESULT.json
+  research_lab/local/zero_condition/E121_occupancy_factored_local_option_master/run-001/RESULT.json
+  sha256 8ee3f5097ae3e8980c49ce517be5af9af8d45ff69604aaed655c0d5e22f9a529
+  ARTIFACT_CHECK.json sha256
+  d2ce20ac65085469f532601fa8832f657d81bd101ca1b82df9680ae3b3fc5b28
+
+注意／发现：
+  E120 的 455 万项并非 455 万种关系，而是同一 cell occupancy sum 被不同 option row 反复展开。
+  加 1,714 个共享 occupancy Bool 后，body-to-cell channel 40,274 项、front-to-occ 80,821 项，
+  总动态项降到 121,095，精确缩 37.5622 倍；每条 front row 最多只剩 6 个 occ terms。checker
+  在 47 个旧 geometry 的 384,160 个 selected options 上逐个对拍，expanded/factored 零差异。
+
+推理：
+  这次真正拔掉了一层编码病理，但搜索仍不见 witness：one-worker 0 branches，587-cut
+  multiworker 11,572 branches，均 90 秒 UNKNOWN。说明“共同子表达式没提取”是税，不是全部墙。
+  下一问必须量 collar 是否能把 1,205 candidates 的 joint relation 真正纵切；若 exact closure
+  仍把大半语言卷回 joint side，就不再继续把同一 y=41/E092 skeleton 研究得更精细，直接开异源
+  skeleton control。这里不能再靠第三个 solver profile 把仪器不足伪装成路线证据。
