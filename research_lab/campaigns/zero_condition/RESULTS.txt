@@ -3581,7 +3581,7 @@ evidence:
 
 R-ZC-106  A vertical spatial separator is the thinner exact interface inside module B
 ------------------------------------------------------------------------------------------------
-status: complete no-solver interface census; independent replay PASS
+status: RETRACTED BY E099; retained as historical claim only
 scope: E095 fixed-pole/fixed-boundary 4,378-candidate module-B native-front language
 
 statement:
@@ -3623,7 +3623,7 @@ evidence:
 
 R-ZC-107  Reserved-x35 spatial constructor reaches a checked terminal branch
 --------------------------------------------------------------------------------
-status: fresh no-overwrite run complete; branch-aware artifact replay PASS
+status: RETRACTED BY E099; local packet absent and source premise invalidated
 scope: E092 fixed poles/boundary, E095 module B, manufacturing-free x=35 restriction
 
 statement:
@@ -3660,6 +3660,75 @@ evidence:
   RESERVED_COLUMN_AUDIT.json and ARTIFACT_CHECK.json under
   research_lab/local/zero_condition/E097_reserved_x35_module_b_constructor/run-001/.
 
+R-ZC-108  Attempted E097 packet recovery exposes semantic E096 disagreement
+----------------------------------------------------------------------------
+status: apparatus stopped before E097; provenance alarm preserved
+scope: missing E096/E097 local packets and stale E095 durable-prose hash pin
+
+statement:
+  E098 changes only E096's stale E095 RESULT.txt hash expectation to the current
+  committed prose hash and reruns the committed E096 runner. The old E096 checker
+  rejects the fresh result at its verdict join. The fresh run has 4,378 B
+  candidates but reports template groups 1,335 / 1,018 / 2,025, selects
+  x_after_41 with groups 2,805 / 174 / 1,399, and returns
+  TEMPLATE_AND_SPATIAL_INTERFACES_ARE_INCOMPARABLE. The committed E096 snapshot
+  instead records 1,335 / 868 / 2,175, x_after_34 and spatial dominance.
+
+non-implications:
+  E098 is an apparatus failure, not a proof that either census is correct. It
+  does not execute E097 or recover any terminal branch.
+
+effect on next problem:
+  Block E096/E097 consumption and perform a source-byte-isolated E095/E096 replay
+  with an independent interface reconstruction.
+
+evidence:
+  E098 RESULT.txt; FAILURE.json sha256
+  377b05f578f0e339284c7e6ee3d1e1ff0146242b08dbb7f3e0275d464e53882f;
+  fresh E096-like RESULT.json sha256
+  bc53596f46c893e9587777636b1a95e28755f226d61cd3c396591650feb1c4dd.
+
+R-ZC-109  Source-isolated replay retracts E096 x_after_34 and the E097 branch
+--------------------------------------------------------------------------------
+status: exact source-byte execution; independent replay PASS; 19-field semantic mismatch
+scope: E095 fixed-pole/fixed-boundary 4,378-candidate module-B interface census
+
+statement:
+  E099 compiles pinned operation_profiles, E095 and E096 source bytes into fresh
+  modules and overrides E096's E095 loader with the source-isolated module. Only
+  the stale durable-prose hash expectation changes; E095 runner and machine
+  packet identities remain fixed. A separate replay reconstructs template and
+  selected-spatial body/body and front/body interfaces, the balance guard, eight
+  class-allocation dimensions and E096's dominance decision.
+
+  The source-stable result exactly matches E098 and differs from the committed
+  E096 snapshot on 19 load-bearing fields. Template groups are
+  1,335 / 1,018 / 2,025 with 1,619 interface cells. The selected spatial cut is
+  x_after_41, grouping 2,805 / 174 / 1,399 candidates and 66 / 2 / 23 anchor
+  bodies, with 224 interface cells, 1,116 participating candidates and eight
+  allocation dimensions. Its largest side is 2,805, so neither spatial nor
+  template interface dominates under the frozen rules.
+
+non-implications:
+  E099 does not prove module-B feasibility or infeasibility. The exact mechanism
+  behind the old E096 packet is unknown; transient code, mixed packets and
+  bytecode reuse remain possibilities. The old bytes cannot be recreated.
+
+effect on next problem:
+  Retract E096's x_after_34 selection and all E097 reserved-x35 claims. Preserve
+  E095's solved A half and 91-body B wall. Build a source-stable hybrid interface
+  from x_after_41 plus template-local class structure.
+
+evidence:
+  E099 RESULT.txt; local RESULT.json sha256
+  cb602a987cd47382b8dd64ed224f931029d7a41abf2a9d367e2e6df21b767f55;
+  INDEPENDENT_REPLAY.json sha256
+  5963a1e1d1b7859a0820ef285a2cc46d0f57818ddcb155b67d0c3378344501f0;
+  PROJECTION_COMPARISON.json sha256
+  a0996ccff175974c3d52c537f4135295badcdd6836a7465aecb641d818ad4e7c;
+  ARTIFACT_CHECK.json sha256
+  ee7c22fac2795c20afbd568fdaf08062762556d5f9eba75c4ae09b20e825e9f8.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:
@@ -3691,9 +3760,13 @@ consumer remains UNKNOWN without an incumbent and grows to about 8.3 GiB process
 RSS. E091 applies the same budget to the next Pareto partition and closes it one
 layer earlier as exact body/power INFEASIBLE. E092 sweeps all seven Pareto states,
 then E093 closes its sole UNKNOWN with a solver-diverse exact negative. At the
-three-pole skeleton layer, y=41 is now the sole admitted carrier. E094 fixes its
-exact pole set and boundary state, but the complete body/front class slice remains
-censored after more than ten million branches. The next live object is therefore
-an exact A/B module decomposition induced by the y=41 seam, not a wider pole or
-boundary language and not another point-rule loop. The final repair size, terminal
-assignment, component-compatible binding and physical layer count remain open.
+three-pole skeleton layer, y=41 is the sole admitted carrier. E094 fixes its exact
+pole set and boundary state, and E095 then proves an exact A/B product at the
+native-front layer: A is solved, B remains the 91-body wall. E096/E097 appeared to
+continue through x_after_34 and a reserved x35 column, but their local packets
+vanished. E098 exposes a semantic mismatch during recovery; E099 source-isolates
+the committed code and proves the current interface is instead x_after_41 with
+spatial/template incomparability. The x34/x35 continuation is retracted. The live
+construction object is now a source-stable hybrid of the x41 spatial bridge and
+template-local class structure. The final repair size, terminal assignment,
+component-compatible binding and physical layer count remain open.

@@ -1,0 +1,148 @@
+E099 RESULT: SOURCE-ISOLATED REPLAY INVALIDATES THE COMMITTED E096 SELECTION
+================================================================================
+
+Status
+------
+Closed as a source-identity correction with independent replay PASS. E099 executes
+`operation_profiles.py`, E095 and E096 by compiling their pinned source bytes into
+fresh modules; those three code objects consume no ambient Python bytecode cache.
+It changes only E096's stale expectation for the committed E095 durable prose
+file. All E095 machine artifacts and source hashes remain unchanged.
+
+Machine evidence
+----------------
+Terminal result:
+
+  research_lab/local/zero_condition/
+  E099_source_isolated_e096_revalidation/run-002/RESULT.json
+
+SHA-256:
+
+  cb602a987cd47382b8dd64ed224f931029d7a41abf2a9d367e2e6df21b767f55
+
+Independent replay:
+
+  research_lab/local/zero_condition/
+  E099_source_isolated_e096_revalidation/run-002/INDEPENDENT_REPLAY.json
+
+SHA-256:
+
+  5963a1e1d1b7859a0820ef285a2cc46d0f57818ddcb155b67d0c3378344501f0
+
+Projection comparison SHA-256:
+
+  a0996ccff175974c3d52c537f4135295badcdd6836a7465aecb641d818ad4e7c
+
+Artifact check SHA-256:
+
+  ee7c22fac2795c20afbd568fdaf08062762556d5f9eba75c4ae09b20e825e9f8
+
+Verdict
+-------
+
+SOURCE_ISOLATED_REPLAY_INVALIDATES_COMMITTED_E096_SELECTION
+
+Decision
+--------
+
+RETRACT_E096_E097_AND_BUILD_HYBRID_INTERFACE_FROM_E095
+
+Source-stable interface census
+------------------------------
+The complete current module-B candidate universe remains:
+
+  candidate count                  4,378
+  required bodies                     91
+
+The source-stable template groups are:
+
+  manufacturing_3x3                1,335
+  manufacturing_5x5                1,018
+  manufacturing_6x4                2,025
+
+Their cross-template occupancy interface is:
+
+  interface cells                  1,619
+  participating candidates         4,378
+  largest template group           2,025
+
+Among all 93 deterministic spatial cuts, 43 pass the frozen balance guard. The
+source-stable selected cut is:
+
+  cut                              x_after_41
+  low / separator / high           2,805 / 174 / 1,399 candidates
+  anchor bodies                    66 / 2 / 23
+  interface cells                  224
+  participating candidates         1,116
+  class-allocation dimensions      8
+  log2 allocation box              25.39934468967273
+
+This spatial cut has a much smaller cell and candidate bridge, but its low side
+contains 2,805 candidates, larger than the largest 2,025-candidate template group.
+Under E096's frozen dominance rules, neither interface dominates the other:
+
+  TEMPLATE_AND_SPATIAL_INTERFACES_ARE_INCOMPARABLE
+  KEEP_BOTH_AND_BUILD_HYBRID_INTERFACE
+
+Independent replay
+------------------
+A separate replay reconstructs template and selected-spatial body/body and
+front/body interactions directly from the 4,378 candidate records. It verifies:
+
+  candidate count and 91 anchor bodies
+  template group and interface counts
+  x_after_41 low/separator/high classification
+  selected interface cells and participating candidates
+  eight class-allocation dimensions
+  balance guard and full-frontier minimum
+  dominance clauses, verdict and decision
+
+The independent replay reports PASS.
+
+Conflict with the committed E096 snapshot
+-----------------------------------------
+The source-stable result matches E098's first fresh rerun exactly on the complete
+load-bearing projection and differs from the committed E096 snapshot on 19
+fields. The important differences are:
+
+  committed template groups        1,335 / 868 / 2,175
+  source-stable template groups    1,335 / 1,018 / 2,025
+
+  committed selected cut           x_after_34
+  source-stable selected cut       x_after_41
+
+  committed spatial groups         1,915 / 436 / 2,027
+  source-stable spatial groups     2,805 / 174 / 1,399
+
+  committed verdict                spatial dominates template
+  source-stable verdict            template/spatial incomparable
+
+The discrepancy is semantic, not timestamp or JSON formatting drift. The exact
+mechanism that produced the old snapshot is not proved: possible causes include
+transient pre-commit code, mixed packets or bytecode-cache reuse. E099 proves only
+that the old selection does not follow from the committed source-and-machine
+identity now pinned.
+
+Retraction effect
+-----------------
+The following continuation is withdrawn:
+
+  E096 x_after_34 selection
+    -> E097 reserved manufacturing column x=35
+    -> any E097 terminal branch or next decision
+
+E097's local packet is absent, its durable record omitted the branch identity,
+and its x=35 premise is now refuted by source replay. No attempt is made to
+recreate the missing bytes or call a new replay equivalent to the old claim.
+
+E095 remains intact: module A is still a checked 128-body constructive half and
+module B remains the only 91-body native-front wall. The correct next object is a
+hybrid module-B representation that consumes both the source-stable x_after_41
+spatial interface and template-local operation classes.
+
+Truth boundary
+--------------
+E099 is an exact no-solver interface revalidation and provenance correction. It
+does not prove module-B feasibility or infeasibility. It produces no terminal
+uniqueness, generic I/O, commodity binding, component compatibility, routing,
+throughput, U/L, certification, owner, production, publication or pruning effect.

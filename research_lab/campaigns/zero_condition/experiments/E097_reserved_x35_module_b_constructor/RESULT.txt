@@ -1,6 +1,16 @@
 E097 RESULT: RESERVED-X35 CONSTRUCTOR TERMINAL BRANCH RECORDED AND CHECKED
 ============================================================================
 
+RETRACTED BY E099
+-----------------
+This record is not current. Its x=35 restriction consumes E096's withdrawn
+x_after_34 selection. The E097 local machine packet is absent, and this durable
+record deliberately omitted status/verdict/decision, so no terminal branch can be
+recovered from the tracked tree. E098 stopped before replaying E097; E099 then
+source-isolated E095/E096 and invalidated the premise itself. Do not consume any
+E097 branch or decision. Successor:
+`../E099_source_isolated_e096_revalidation/RESULT.txt`.
+
 Status
 ------
 Closed from the fresh no-overwrite run. A branch-aware independent checker

@@ -1,0 +1,83 @@
+EXPERIMENT E098: RECOVER THE LOST E096/E097 MACHINE PACKET WITHOUT SILENT REBINDING
+==================================================================================
+
+Question
+--------
+What was the actual terminal branch of the reserved-x35 constructor, after the
+untracked E096 and E097 machine packets disappeared and the tracked summaries
+intentionally omitted that branch identity?
+
+Incident boundary
+-----------------
+At E098 start:
+
+* E095's tracked runner and local machine packet are present and hash-stable.
+* E096's tracked runner, durable result and machine snapshot are present, but its
+  local run packet is absent. The runner pins a transient E095 RESULT.txt hash
+  that has no matching Git blob; the current committed E095 RESULT.txt differs
+  only at this prose-document identity surface.
+* E097's tracked runner and durable result are present, but its local machine
+  result, module-B result, reserved-column audit and branch checker packet are
+  absent. Its durable record deliberately does not repeat status/verdict/decision,
+  so the branch cannot be reconstructed honestly from prose.
+
+The old byte identities are not recreated or silently rebound.
+
+Method
+------
+1. Import the committed E096 runner. Change only its stale E095 durable-prose hash
+   expectation to the hash of the committed E095 RESULT.txt. All pinned E095
+   machine artifacts and runner bytes remain unchanged. Run E096 into a fresh
+   nested directory.
+
+2. Run the committed E096 independent checker against the fresh packet after
+   rebinding its artifact paths and hashes in memory. Compare the rerun's complete
+   load-bearing projection against the committed E096 MACHINE_SNAPSHOT:
+
+     candidate and body counts
+     template interface group/cell/candidate counts
+     selected x_after_34 cut
+     low/separator/high candidate and anchor counts
+     interface cells/candidates
+     eight allocation dimensions
+     verdict and decision
+
+   Any mismatch fails closed.
+
+3. Import the committed E097 runner. Rebind only two missing inputs to the fresh
+   checked E096 packet and update the same stale E095 durable-prose hash. Execute
+   the unchanged reserved-x35 model into a fresh nested directory with the
+   original 240-second budget and seed.
+
+4. Run the committed branch-aware E097 checker against the fresh packet by
+   rebinding paths and hashes in memory. The checker independently replays a
+   positive 219-body native-front witness, or proves that negative/censored
+   branches carry no witness and preserve the restricted scope.
+
+5. Publish a new E098 result that records the exact recovered E097 status,
+   verdict, decision and checker classification. The prior E097 claim remains an
+   identity-incomplete historical record; E098 is the first durable branch
+   identity allowed to drive continuation.
+
+Predeclared decisions
+---------------------
+Recovered positive
+  Continue to terminal uniqueness, generic I/O and component-aware binding on
+  the checked combined witness.
+
+Recovered INFEASIBLE
+  Reject only reserved x=35. Restore E096's explicit separator and condition on
+  the eight class-allocation coordinates.
+
+Recovered UNKNOWN/censored
+  Keep x=35 reserved and solve low/high sides independently under compatible
+  allocation vectors. Do not rerun the same monolith.
+
+Truth boundary
+--------------
+E098 is a provenance recovery and exact replay of one research-only sufficient
+constructor. It does not resurrect lost bytes, certify the old E097 run, or
+transport a negative beyond reserved x=35. Terminal uniqueness, generic I/O,
+component binding, routing, throughput, U/L, certification, owner, production
+and publication remain outside unless a recovered positive is separately
+consumed.

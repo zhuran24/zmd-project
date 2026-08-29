@@ -1,0 +1,73 @@
+E098 RESULT: RECOVERY ATTEMPT STOPS BEFORE E097 BECAUSE E096 SOURCE REPLAY DISAGREES
+====================================================================================
+
+Status
+------
+Apparatus failure with a consequential identity finding. E098 did not recover or
+execute an E097 branch. It first reran the committed E096 code after changing only
+the stale E095 durable-prose hash pin to the current committed E095 RESULT.txt
+hash. The committed E096 independent checker rejected that rerun at its verdict
+join, so E098 failed closed before E097 execution.
+
+Machine evidence
+----------------
+Failure:
+
+  research_lab/local/zero_condition/
+  E098_e097_machine_packet_recovery/run-001/FAILURE.json
+
+SHA-256:
+
+  377b05f578f0e339284c7e6ee3d1e1ff0146242b08dbb7f3e0275d464e53882f
+
+Fresh E096-like result:
+
+  research_lab/local/zero_condition/
+  E098_e097_machine_packet_recovery/run-001/
+  e096-semantic-rerun/RESULT.json
+
+SHA-256:
+
+  bc53596f46c893e9587777636b1a95e28755f226d61cd3c396591650feb1c4dd
+
+Observed disagreement
+---------------------
+The committed E096 machine snapshot records:
+
+  template domains        1,335 / 868 / 2,175
+  selected spatial cut    x_after_34
+  selected group counts   1,915 / 436 / 2,027
+  verdict                 SPATIAL_SEPARATOR_INTERFACE_DOMINATES_TEMPLATE_INTERFACE
+  decision                SELECT_SPATIAL_SEPARATOR_DECOMPOSITION
+
+The fresh execution of the committed E096 runner against the currently committed,
+hash-pinned E095 runner and machine packet instead records:
+
+  template domains        1,335 / 1,018 / 2,025
+  selected spatial cut    x_after_41
+  selected group counts   2,805 / 174 / 1,399
+  verdict                 TEMPLATE_AND_SPATIAL_INTERFACES_ARE_INCOMPARABLE
+  decision                KEEP_BOTH_AND_BUILD_HYBRID_INTERFACE
+
+This is semantic disagreement, not timestamp or JSON-byte drift. The old E096
+checker is intentionally hard-coded to the committed x_after_34 branch and rejects
+the fresh result with `E096 verdict drift`.
+
+Effect
+------
+E098 grants no recovered E097 branch identity. It blocks consumption of E096's
+x_after_34 selection and all downstream E097 reserved-x35 claims until a
+source-isolated revalidation determines which E096 semantics actually follow from
+the committed E095 source and machine packet.
+
+The next experiment must execute E095/E096 from source bytes without Python
+bytecode-cache reuse, independently replay the current interface counts, and then
+explicitly retract or restore the E096/E097 continuation. It must not fabricate
+the missing old packets or silently rebind new bytes to their old hashes.
+
+Truth boundary
+--------------
+E098 is an apparatus stop and provenance alarm, not a proof that either interface
+census is mathematically correct. E097 was not executed. No feasibility,
+infeasibility, terminal, binding, routing, throughput, U/L, certification,
+production or publication conclusion follows.

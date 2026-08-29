@@ -1,6 +1,16 @@
 E096 RESULT: THE SPATIAL SEPARATOR IS A MUCH THINNER BRIDGE THAN THE TEMPLATE CUT
 =================================================================================
 
+SUPERSEDED / RETRACTED BY E099
+------------------------------
+The x_after_34 selection and dominance verdict below are retained only as the
+historical claim recorded at E096. E099 executes the committed E095/E096 sources
+from exact source bytes, independently replays the census, and obtains 19
+load-bearing differences: the source-stable cut is x_after_41 and template/spatial
+interfaces are incomparable. The E096 local packet is absent, so the old bytes
+cannot be re-examined or silently rebound. Do not consume this result as current.
+Successor: `../E099_source_isolated_e096_revalidation/RESULT.txt`.
+
 Status
 ------
 Closed by an exact no-solver interaction census and independent replay. The

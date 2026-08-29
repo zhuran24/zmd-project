@@ -1,0 +1,63 @@
+EXPERIMENT E099: SOURCE-ISOLATED REVALIDATION OF THE E096 INTERFACE CHOICE
+================================================================================
+
+Question
+--------
+Which module-B interface census actually follows from the committed E095/E096
+sources and machine packet, after E098 exposed a semantic conflict with the
+committed E096 snapshot?
+
+Why this experiment
+-------------------
+E096's committed snapshot selects `x_after_34` and feeds E097's reserved-x35
+constructor. The E096 and E097 local machine packets later disappeared. E098 then
+executed the committed E096 runner after correcting only a stale prose-file hash
+pin; the old checker rejected the result because it instead selected
+`x_after_41` and declared template/spatial interfaces incomparable.
+
+The project has already observed Python bytecode-cache contamination. E099 must
+therefore execute the relevant code objects from current source bytes, not from
+ambient `__pycache__`, before changing the research direction.
+
+Method
+------
+1. Pin the committed E095 runner and machine packet, E096 runner/checker/snapshot,
+   operation-profile source and E098 apparatus-failure record.
+
+2. Load `src.preprocess.operation_profiles`, E095 and E096 by compiling their
+   exact source bytes into fresh modules. Override E096's E095 loader with the
+   source-isolated E095 module. Change only E096's stale E095 durable-prose hash
+   expectation to the current committed prose hash; all machine and source pins
+   remain unchanged.
+
+3. Run E096 into a fresh no-overwrite directory. Independently replay from its
+   candidate-record artifact:
+
+     * template group counts and occupancy interface;
+     * the selected spatial cut's low/separator/high classification;
+     * body/body and directed front/body interface cells and participants;
+     * anchor counts, balance guard and eight class-allocation dimensions;
+     * the predeclared dominance clauses and resulting verdict/decision.
+
+4. Compare the source-isolated result field by field with both the committed E096
+   machine snapshot and E098's first fresh rerun. Differences from the committed
+   snapshot are recorded as an explicit retraction surface, not normalized away.
+
+Predeclared decisions
+---------------------
+Source-isolated replay matches committed E096 snapshot
+  Restore E096's x_after_34 premise, then recover E097 in a fresh packet.
+
+Source-isolated replay matches E098 and disagrees with committed snapshot
+  Retract E096's x_after_34 selection and all E097 continuation claims. Continue
+  from the source-stable verdict, without calling the lost old bytes equivalent.
+
+Source-isolated replay matches neither
+  Stop the branch and isolate a still-lower dependency/runtime identity fault.
+
+Truth boundary
+--------------
+E099 validates a no-solver interface census only. It can retract or restore a
+representation choice, but it proves no module-B feasibility, infeasibility,
+terminal uniqueness, binding, routing, throughput, U/L, certification,
+production or publication claim.

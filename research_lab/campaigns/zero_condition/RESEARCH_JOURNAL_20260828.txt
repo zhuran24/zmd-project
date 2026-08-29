@@ -417,3 +417,46 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   decision：正例才进入 terminal uniqueness/binding；INFEASIBLE 回到显式 separator；censored
   则把八维 allocation 固定后分别解 low/high。无论哪个分支，都不再回 E094 单体，也不再
   用点状 front-rule 增长代替结构切分。
+
+2026-08-29 01:50
+----------------
+数据：
+  E098 run-001 FAILURE.json
+  research_lab/local/zero_condition/E098_e097_machine_packet_recovery/run-001/FAILURE.json
+  sha256 377b05f578f0e339284c7e6ee3d1e1ff0146242b08dbb7f3e0275d464e53882f
+
+注意／发现：
+  E097 的 tracked runner/RESULT.txt 尚在，但 RESULT、MODULE_B_RESULT、reserved-column audit、
+  checker packet 全部不在盘；E096 local packet 也消失。E097 的耐久文本又刻意不转写 branch
+  status/verdict/decision，因此聊天记忆和 prose 都无法恢复真实分支。尝试只修 E096 runner
+  中一个从未进入 Git 的 E095 prose hash 后，fresh E096 不再得到 x_after_34，而是 x_after_41，
+  旧 checker 在 verdict join 直接拒绝。E097 因而没有执行。
+
+推理：
+  这不是普通文件丢失，而是上游语义身份冲突。若直接重跑 E097 或照 STATE 猜 branch，就会
+  把新字节偷偷绑回旧 claim。下一步必须先把 E095/E096 从 source bytes 冷执行，并用独立
+  interface replay 对撞旧 snapshot；只有上游 premise 恢复后，E097 才有资格恢复。
+
+2026-08-29 01:56
+----------------
+数据：
+  E099 run-002 RESULT.json
+  research_lab/local/zero_condition/E099_source_isolated_e096_revalidation/run-002/RESULT.json
+  sha256 cb602a987cd47382b8dd64ed224f931029d7a41abf2a9d367e2e6df21b767f55
+  ARTIFACT_CHECK.json sha256
+  ee7c22fac2795c20afbd568fdaf08062762556d5f9eba75c4ae09b20e825e9f8
+
+注意／发现：
+  exact source-byte 执行的 operation_profiles/E095/E096 与 E098 fresh rerun 完整一致，并由
+  独立接口重算 PASS；它与 committed E096 snapshot 有 19 个承重字段不同。当前源码真实 B
+  template 域是 1,335/1,018/2,025，不是 1,335/868/2,175；最薄 guarded spatial cut 是
+  x_after_41，候选 2,805/174/1,399、anchor 66/2/23、interface 224 cells/1,116 candidates，
+  不是 x_after_34 的 1,915/436/2,027 与 133 cells。由于最大空间侧 2,805 大于最大模板组
+  2,025，冻结的 dominance 规则判 template/spatial incomparable。
+
+推理：
+  E096 x_after_34 与 E097 x35 整条 continuation 必须撤回；旧 packet 的具体成因仍未知，可能
+  是 transient code、mixed packet 或 pycache，但当前提交源码不能推出旧结论。E095 的 A 半件
+  和 91-body B 墙不受影响。下一条正确构造语言应同时消费 x_after_41 的空间薄桥和 template-
+  local class 结构：先试其最便宜充分版，即 manufacturing-free x=42，再决定是否需要保留
+  174-candidate separator 或枚举 allocation-conditioned side solves。

@@ -1,0 +1,48 @@
+{
+  "schema": "zmd_e099_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "terminal_result": {
+    "path": "research_lab/local/zero_condition/E099_source_isolated_e096_revalidation/run-002/RESULT.json",
+    "sha256": "cb602a987cd47382b8dd64ed224f931029d7a41abf2a9d367e2e6df21b767f55",
+    "verdict": "SOURCE_ISOLATED_REPLAY_INVALIDATES_COMMITTED_E096_SELECTION",
+    "decision": "RETRACT_E096_E097_AND_BUILD_HYBRID_INTERFACE_FROM_E095"
+  },
+  "artifact_check": {
+    "path": "research_lab/local/zero_condition/E099_source_isolated_e096_revalidation/run-002/ARTIFACT_CHECK.json",
+    "sha256": "ee7c22fac2795c20afbd568fdaf08062762556d5f9eba75c4ae09b20e825e9f8",
+    "status": "PASS"
+  },
+  "source_stable_e096": {
+    "candidate_count": 4378,
+    "required_body_count": 91,
+    "template_group_candidate_counts": {
+      "manufacturing_3x3": 1335,
+      "manufacturing_5x5": 1018,
+      "manufacturing_6x4": 2025
+    },
+    "template_interface_occupancy_cell_count": 1619,
+    "template_interface_candidate_count": 4378,
+    "selected_spatial_cut": "x_after_41",
+    "selected_group_candidate_counts": {
+      "low": 2805,
+      "separator": 174,
+      "high": 1399
+    },
+    "selected_group_anchor_counts": {
+      "low": 66,
+      "separator": 2,
+      "high": 23
+    },
+    "selected_interface_occupancy_cell_count": 224,
+    "selected_interface_candidate_count": 1116,
+    "class_allocation_dimension_count": 8,
+    "verdict": "TEMPLATE_AND_SPATIAL_INTERFACES_ARE_INCOMPARABLE",
+    "decision": "KEEP_BOTH_AND_BUILD_HYBRID_INTERFACE"
+  },
+  "comparison": {
+    "source_matches_e098_fresh_replay": true,
+    "source_matches_committed_e096_snapshot": false,
+    "committed_difference_count": 19
+  }
+}
