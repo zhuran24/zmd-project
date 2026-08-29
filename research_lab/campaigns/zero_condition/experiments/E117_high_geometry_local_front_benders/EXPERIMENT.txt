@@ -1,0 +1,81 @@
+EXPERIMENT E117: HIGH-SIDE GEOMETRY-FIRST LOCAL-FRONT BENDERS
+==============================================================
+
+Question
+--------
+Can the source-stable x42-high language produce a 26-body geometry in which every
+selected body has at least one locally viable same-footprint mode/class option
+under the actual selected occupancy?
+
+Why this experiment
+-------------------
+E114 shows that arbitrary body/power representatives contain 11..22 bodies with
+empty local mode/class domains. E115/E116 show that fixing separator template or
+class coordinates does not resolve the joint geometry/front search. The proposer
+must therefore learn native-front death before global class assignment.
+
+Master
+------
+Select exactly 26 bodies from E103's 1,205 unary-live x42-high candidates with:
+
+  * exact global template totals 10/6/10;
+  * body non-overlap;
+  * fixed E092 power;
+  * both stable E078 bodies;
+  * separator template vector in E110's exact body/power basis, excluding the two
+    exact E115 negatives 0/3/0 and 5/0/0.
+
+The master contains no mode or class variables. E110's least-front-dead stored
+geometry is a hint only.
+
+Checker and cuts
+----------------
+For every selected body, enumerate every legal same-footprint pose mode and every
+compatible B class. Under fixed solids plus the selected 26-body occupancy, a
+body is locally live if any option has enough free input and output front cells.
+
+For each empty body:
+
+1. collect only selected bodies covering at least one front cell of one option;
+2. delete blockers one at a time while the body remains empty;
+3. retain the resulting inclusion-minimal blocker core;
+4. add the sound monotone containment cut
+
+     subject_body + sum(core_blockers) <= |core_blockers|.
+
+The cut forbids every future geometry containing the subject and all blockers;
+additional bodies cannot restore a blocked option. Front-cell multiplicity is
+recomputed from occupied cells, not collapsed to Boolean adjacency.
+
+Consumer
+--------
+The first geometry with all 26 bodies locally live is fixed in E101's unchanged
+complete high-side native-front class model. A high positive goes immediately to
+the x42-low complement and E095's 219-body replay. A high exact negative or
+UNKNOWN is preserved on that promising geometry; the Benders master does not
+silently discard it.
+
+Decision rules
+--------------
+Paired 219-body replay PASS
+  Advance to terminal uniqueness, generic I/O and component-aware binding.
+
+Locally-live geometry, high consumer positive but low not paired
+  Continue only its allocation handshake.
+
+Locally-live geometry, high consumer exact negative or UNKNOWN
+  Preserve the geometry and its class-domain/Hall diagnosis. Change the class
+  consumer on that fixed constructive seed; do not resume abstract tuple scans.
+
+Master exact INFEASIBLE after replayable blocker cuts
+  Close the remaining 25-state x42-high language at the local-front necessary
+  layer and retire x42 as a sufficient constructor.
+
+Master UNKNOWN or iteration cap
+  Preserve all cuts and remain censored.
+
+Truth boundary
+--------------
+Local-front survival is necessary, not sufficient, for global class allocation.
+Only independently replayed containment cuts may support a master negative. No
+routing, throughput, certification or U/L effect follows.

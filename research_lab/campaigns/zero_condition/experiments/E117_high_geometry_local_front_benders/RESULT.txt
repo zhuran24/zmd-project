@@ -1,0 +1,151 @@
+E117 RESULT: 504 LOCAL-FRONT CONTAINMENT CUTS, MASTER STILL CENSORED
+===============================================================================
+
+Status
+------
+Closed as a censored but reusable Benders round. Thirty-nine exact body/power
+geometries are rejected by complete local mode/class-domain checks. Their deaths
+compile to 504 independently replayed inclusion-minimal containment cuts. No
+locally-live geometry is found. The next master solve returns UNKNOWN after five
+seconds, so the open x42 language is not closed.
+
+Machine verdict
+---------------
+
+  HIGH_GEOMETRY_LOCAL_FRONT_BENDERS_CENSORED
+
+Checked continuation decision
+-----------------------------
+
+  CONTINUE_FROM_PERSISTED_BLOCKER_CUTS_WITH_SOLVER_DIVERSITY
+
+Machine evidence
+----------------
+Canonical result:
+
+  research_lab/local/zero_condition/
+  E117_high_geometry_local_front_benders/run-001/RESULT.json
+
+SHA-256:
+
+  1efe295bd816c0844cc550850c6c8d12c09b77a08b942bec9ca25aad8153054d
+
+Benders iterations:
+
+  research_lab/local/zero_condition/
+  E117_high_geometry_local_front_benders/run-001/BENDERS_ITERATIONS.json
+
+SHA-256:
+
+  ce2cd833601707fdda6bf16ef42bff891eae2076db600da0eb4e3f34a0cfaa29
+
+Persisted cuts:
+
+  research_lab/local/zero_condition/
+  E117_high_geometry_local_front_benders/run-001/LOCAL_FRONT_BLOCKER_CUTS.json
+
+SHA-256:
+
+  6b671d1b97cb308fd109c75ced4d6521ffa2003deb386c0ad484406d1101e5fd
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E117_high_geometry_local_front_benders/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  c4529c108fe73ac6c871c3c5133d9592ad8d6091ceb543b58160cd553cd88d9d
+
+What changed
+------------
+E116 shows that fixing separator class tuples leaves the complete high-side model
+UNKNOWN. E117 changes the proposer itself. The master sees only E103's 1,205
+unary-live body candidates, exact template totals 10/6/10, fixed E092 power, both
+stable E078 bodies and the 25 separator template vectors not already closed by
+E115. It contains no mode or class variables.
+
+For each selected 26-body geometry, the checker enumerates every same-footprint
+mode and every compatible B class. A body is locally dead only when no option has
+enough free input and output front cells under fixed solids plus the actual
+selected occupancy.
+
+When a body is dead, E117 keeps only selected bodies that cover at least one of
+its possible front cells, then deletes blockers one by one until the remaining
+set is inclusion-minimal. It adds:
+
+  subject + sum(core blockers) <= |core blockers|
+
+This cut is monotone: selecting additional bodies cannot restore a front option
+already killed by the subject plus its blocker core.
+
+Observed round
+--------------
+The first 39 master solves are OPTIMAL body/power geometries. Every one is
+locally front-dead:
+
+  minimum empty selected bodies    6
+  maximum empty selected bodies   18
+  locally-live geometries          0
+
+The 504 unique cuts have core sizes:
+
+  singleton    76
+  pair        309
+  triple      115
+  quadruple     4
+
+Cut subjects by template:
+
+  manufacturing_3x3   233
+  manufacturing_5x5    80
+  manufacturing_6x4   191
+
+The first geometry has 11 dead bodies and contributes 11 cuts. Across the round,
+the best geometry still has six dead bodies. The final master, after all 504
+cuts are present, runs for 5.007 seconds and returns:
+
+  UNKNOWN
+  branches   106,749
+  conflicts    1,946
+
+No geometry, high-side class assignment, x42-low complement or combined witness
+is emitted from this UNKNOWN branch.
+
+Independent replay
+------------------
+A source-isolated checker reconstructs the same 1,205-row language and all local
+options. For each of the 39 witnessed geometries it recomputes the complete local
+front death set, repeats blocker minimization, verifies removal of any remaining
+blocker revives at least one option, and reattaches the cut to a fresh master.
+
+The replay reproduces all 504 cuts byte-semantically, including source iteration,
+subject identity, stable body digest, blocker identities and core sizes. It also
+confirms the final UNKNOWN is the only nonterminal master record.
+
+Scientific interpretation
+-------------------------
+The direct-consumer debt has now altered the proposer language: E114's arbitrary
+body/power representatives are no longer merely diagnosed after the fact. Their
+local front deaths become reusable geometry-independent necessary rules.
+
+The round does not yet show convergence. Empty-body counts are not monotone and
+the 504-cut master is only censored under a five-second search profile. Therefore
+neither the open x42 language nor any separator template state is rejected.
+
+Next problem
+------------
+Rebuild the identical master, import all 504 checked containment cuts, and change
+only the master search instrument. Use a substantially longer one-worker
+PSEUDO_COST arm before returning to multiworker search. Every newly proposed
+geometry must pass the same local checker and contribute only independently
+replayable cuts. A locally-live geometry goes immediately to E114's fixed-body
+full class consumer; exact master INFEASIBLE is admissible only after the entire
+imported and newly learned cut store is replayed.
+
+Truth boundary
+--------------
+E117 proves only that 39 named geometries are locally front-dead and that 504
+specific selected-body containments are impossible in any locally-live geometry.
+It does not prove the master infeasible, find a high-side or 219-body witness, or
+change terminal uniqueness, binding, routing, throughput, certification or U/L.

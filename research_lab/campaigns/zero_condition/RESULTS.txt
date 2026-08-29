@@ -4447,6 +4447,48 @@ evidence:
   ARTIFACT_CHECK.json sha256
   f186dda5a79c50a094953a98147bf5668dd8c1e75ec11226e86064184d946d37.
 
+R-ZC-127  Geometry-first Benders learns 504 replayed local-front containment cuts
+---------------------------------------------------------------------------------
+status: censored continuation packet; 39 exact geometries rejected; 504 cuts independently replayed
+scope: source-stable x42-high, 1,205 E103-live rows, 25 open separator template states
+
+statement:
+  E117 changes the body/power proposer instead of fixing more separator class
+  tuples. Thirty-nine OPTIMAL 26-body geometries are checked against every
+  same-footprint mode and compatible B class under their actual selected
+  occupancy. All 39 are locally front-dead; the best still has six empty bodies.
+
+  Each death is minimized to an inclusion-minimal selected blocker core and
+  compiled as a monotone containment cut. The persistent store contains 504
+  unique rules: 76 singleton, 309 pair, 115 triple and 4 quadruple cores. Cut
+  subjects are 233 3x3, 80 5x5 and 191 6x4 candidates.
+
+  A source-isolated checker reconstructs every witnessed geometry, repeats every
+  local option calculation and blocker minimization, and reattaches the identical
+  504-cut packet to a fresh master. After import, the next five-second master
+  solve returns UNKNOWN with 106,749 branches and 1,946 conflicts. No locally-live
+  geometry or downstream class witness is emitted.
+
+non-implications:
+  E117 does not close the remaining x42 language. The terminal master is UNKNOWN,
+  empty-body counts are not monotone, and no separator template state is rejected.
+
+effect on next problem:
+  Preserve and import all 504 checked cuts, then change only the master search
+  instrument. Continue local-front Benders with a longer solver-diverse master;
+  any locally-live geometry goes directly to the fixed-body full class consumer.
+  Exact master INFEASIBLE is admissible only after the complete cut store replays.
+
+evidence:
+  E117 RESULT.txt; local RESULT.json sha256
+  1efe295bd816c0844cc550850c6c8d12c09b77a08b942bec9ca25aad8153054d;
+  BENDERS_ITERATIONS.json sha256
+  ce2cd833601707fdda6bf16ef42bff891eae2076db600da0eb4e3f34a0cfaa29;
+  LOCAL_FRONT_BLOCKER_CUTS.json sha256
+  6b671d1b97cb308fd109c75ced4d6521ffa2003deb386c0ad484406d1101e5fd;
+  ARTIFACT_CHECK.json sha256
+  c4529c108fe73ac6c871c3c5133d9592ad8d6091ceb543b58160cd553cd88d9d.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

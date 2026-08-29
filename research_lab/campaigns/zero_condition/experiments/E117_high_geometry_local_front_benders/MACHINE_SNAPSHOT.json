@@ -1,0 +1,55 @@
+{
+  "schema": "zmd_e117_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "canonical_run": "research_lab/local/zero_condition/E117_high_geometry_local_front_benders/run-001",
+  "verdict": "HIGH_GEOMETRY_LOCAL_FRONT_BENDERS_CENSORED",
+  "machine_decision": "CONTINUE_FROM_PERSISTED_BLOCKER_CUTS",
+  "checked_decision": "CONTINUE_FROM_PERSISTED_BLOCKER_CUTS_WITH_SOLVER_DIVERSITY",
+  "language": {
+    "live_candidate_count": 1205,
+    "required_body_count": 26,
+    "template_totals": [10, 6, 10],
+    "open_separator_template_vector_count": 25,
+    "syntactic_option_count": 9808,
+    "unary_dead_candidate_count": 0
+  },
+  "benders": {
+    "optimal_geometry_count": 39,
+    "locally_live_geometry_found": false,
+    "empty_body_count_min": 6,
+    "empty_body_count_max": 18,
+    "cut_count": 504,
+    "cut_core_size_distribution": {
+      "1": 76,
+      "2": 309,
+      "3": 115,
+      "4": 4
+    },
+    "cut_subject_template_distribution": {
+      "manufacturing_3x3": 233,
+      "manufacturing_5x5": 80,
+      "manufacturing_6x4": 191
+    },
+    "final_master_status": "UNKNOWN",
+    "final_master_elapsed_seconds": 5.007405387994368,
+    "final_master_branches": 106749,
+    "final_master_conflicts": 1946,
+    "total_elapsed_seconds": 37.171814803994494
+  },
+  "independent_replay": {
+    "status": "PASS",
+    "classification": "FIVE_HUNDRED_FOUR_LOCAL_FRONT_CONTAINMENT_CUTS_REPLAYED",
+    "replayed_optimal_geometry_count": 39,
+    "replayed_cut_count": 504,
+    "truth": "Each cut was rebuilt from the selected geometry, re-minimized to an inclusion-minimal blocker core, and reattached to a fresh master."
+  },
+  "artifacts": {
+    "runner_sha256": "ff51200bdec11733a27f3a82ffd63dc49a193e36fb1573f7c33d8a8b57d2f3f2",
+    "result_sha256": "1efe295bd816c0844cc550850c6c8d12c09b77a08b942bec9ca25aad8153054d",
+    "iterations_sha256": "ce2cd833601707fdda6bf16ef42bff891eae2076db600da0eb4e3f34a0cfaa29",
+    "cuts_sha256": "6b671d1b97cb308fd109c75ced4d6521ffa2003deb386c0ad484406d1101e5fd",
+    "artifact_check_sha256": "c4529c108fe73ac6c871c3c5133d9592ad8d6091ceb543b58160cd553cd88d9d"
+  },
+  "truth_boundary": "The 504 cuts are sound local-front necessary conditions. The final five-second master UNKNOWN proves neither a locally-live geometry nor exhaustion of the open x42 language."
+}
