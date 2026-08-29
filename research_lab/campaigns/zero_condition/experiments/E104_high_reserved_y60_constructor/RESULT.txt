@@ -1,0 +1,116 @@
+E104 RESULT: RESERVED-Y60 SHRINKS THE HIGH WALL BUT STILL YIELDS NO ALLOCATION
+=============================================================================
+
+Status
+------
+Closed as a censored sufficient-constructor experiment. The canonical run is
+`run-002`; independent branch-aware replay reports PASS. `run-001` stopped before
+model construction because the source-isolated loader had not inserted the
+research root into `sys.path`. That apparatus failure is retained separately and
+has no scientific effect.
+
+Canonical evidence
+------------------
+
+  RESULT.json
+  research_lab/local/zero_condition/
+  E104_high_reserved_y60_constructor/run-002/RESULT.json
+  sha256 381c6547ed2b94773de4f1fadfe747459aaed307d6c3461f2875a2bdf4817b04
+
+  HIGH_RESULT.json
+  sha256 f76ce51a60aeaba6ef11e1ca117d0c9e5c9dec716767a2dec93758bc51fb5043
+
+  RESERVED_ROW_AUDIT.json
+  sha256 9277248c332d1f132ae21e9121f08fe7009f69f7a432bd19a6e0a9797d62277c
+
+  ARTIFACT_CHECK.json
+  sha256 7d2167688af5e8b49233d26df49bfaf764dd372e9c103d9437157db483457d86
+
+Verdict
+-------
+
+RESERVED_Y60_HIGH_CONSTRUCTOR_CENSORED
+
+Decision
+--------
+
+EXTERNALIZE_LOWER_UPPER_CLASS_ALLOCATIONS
+
+Reserved-row transformation
+----------------------------
+E104 consumes E103's complete 1,205-row live high universe. Every manufacturing
+body occupying y=60 is removed. The remaining rows divide uniquely into:
+
+  lower, max body y <= 59      812
+  upper, min body y >= 61      198
+  removed on y=60              195
+  surviving total            1,010
+
+Of E101's live body hints, 22 survive and three are removed. Both stable E078
+bodies survive on the lower side.
+
+The independent finite replay confirms:
+
+  lower/upper shared body cells                 0
+  lower fronts occupiable by upper bodies       0
+  upper fronts occupiable by lower bodies       0
+  lower/upper front-front coincidences          15
+
+Fixed bodies on y=60 remain constant blockers. The row is manufacturing-free,
+not artificially free. Front/front coincidences remain outside the native-front
+body-occupancy predicate, as in E095.
+
+Exact high model
+----------------
+The model retains:
+
+  26 high bodies
+  template totals 10 / 6 / 10
+  all eight B class coordinates
+  explicit lower[class] + upper[class] = high[class]
+  every same-footprint native mode
+  body non-overlap
+  fixed E092 poles and boundary power
+  both stable E078 bodies
+  exact front-capacity inequalities
+
+It contains:
+
+  candidates                 1,010
+  mode/class variables       8,328
+  total variables            9,362
+  total constraints         18,219
+
+A pure-feasibility quick-restart portfolio with seed 104100 runs for 120.067
+seconds, explores 2,833,391 branches and 201,008 conflicts, and returns UNKNOWN
+without a body witness or class-allocation vector.
+
+Meaning
+-------
+The y60 restriction removes 314 candidates relative to E103's three-group
+interface language and cuts the model below ten thousand variables, but it does
+not yet make geometry and class allocation jointly decidable. This is an
+instrument boundary, not evidence that the reserved row or high side is
+infeasible.
+
+The exact product audit means the next representation is available: lower and
+upper can be solved independently once their class and template allocations are
+made explicit. Repeating the same joint model would ignore the experiment's
+output.
+
+Next problem
+------------
+First solve a body/power-only 26-body model on the 1,010 survivors to obtain an
+exact lower/upper template split. Then use the smaller nested side as the first
+class-allocation proposer, pass its remaining capacity to the other high side,
+and finally test the resulting total high allocation against E101's unchanged
+x42-low complement. Any side UNKNOWN remains censored; any negative is scoped to
+the exact allocation or the reserved-y60 restriction that produced it.
+
+Truth boundary
+--------------
+E104 is one sufficient restriction of the fixed E092 skeleton and source-stable
+x42 module-B language. A positive would transfer to its parent; UNKNOWN does not.
+No terminal uniqueness, generic I/O, commodity binding, component compatibility,
+routing, throughput, certification, U/L, owner, production, publication or
+pruning effect follows.

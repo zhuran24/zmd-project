@@ -1,0 +1,79 @@
+EXPERIMENT E104: HIGH-SIDE RESERVED-Y60 HYBRID CONSTRUCTOR
+==========================================================
+
+Question
+--------
+Can E103's selected `y_after_59` spatial/template hybrid produce the first exact
+high-side native-front allocation when manufacturing bodies are forbidden from
+row y=60?
+
+Why this experiment
+-------------------
+E103 proves that template and spatial interfaces are incomparable, capability
+signatures are degenerate, and the y59/template hybrid is the only representation
+that passes the frozen hybrid gates. Reserving y=60 is its cheapest sufficient
+realization. It removes the explicit spatial separator while retaining all
+template-local operation/front classes.
+
+Method
+------
+1. Reconstruct E100's source-stable x42 domain and E103's exact live high subset.
+   Remove every live high candidate whose body occupies y=60. Classify survivors:
+
+     lower   max body y <= 59
+     upper   min body y >= 61
+
+   Fixed poles/core/boundary remain unchanged and may occupy y=60; they are
+   constant front blockers, not manufacturing variables. Mechanically verify that
+   lower/upper body/body and front/body coupling is zero.
+
+2. Solve one pure-feasibility high model with:
+
+     exact high template totals 10 / 6 / 10
+     all eight high class-allocation coordinates
+     same-footprint native modes
+     fixed-pole power
+     both stable E078 bodies
+     exact body non-overlap and native-front capacity
+     surviving E101 body witness rows as hints only
+
+   Row y=60 remains available to native fronts where fixed solids do not block it.
+
+3. If high is feasible, pass its exact eight-class complement to E101's unchanged
+   x42 low-side model. A paired positive is materialized into named operations,
+   combined with E095's frozen module-A witness and replayed over all 219 bodies.
+
+Budgets
+-------
+
+  high reserved-y60 solve          120 seconds
+  low exact complement             120 seconds
+
+Predeclared decisions
+---------------------
+Paired positive and replay PASS
+  Advance to terminal uniqueness, generic I/O and component-aware binding.
+
+High INFEASIBLE
+  Reject only manufacturing-free y=60. Restore E103's explicit 154-candidate
+  separator under y_after_59.
+
+High UNKNOWN
+  Keep y=60 reserved and externalize lower/upper class allocations; do not rerun
+  the same high monolith.
+
+Low INFEASIBLE
+  Record the high allocation as one exact x42-low nogood and continue the
+  allocation handshake.
+
+Low UNKNOWN
+  Preserve the exact high allocation and replay only that low complement with a
+  solver-diverse instrument.
+
+Truth boundary
+--------------
+A positive transfers to the unrestricted fixed-skeleton module-B problem. Any
+negative is scoped to reserved y=60 and, if low-side, one exact class vector.
+Terminal uniqueness, generic I/O, commodity binding, component compatibility,
+routing, throughput, U/L, certification, owner, production and publication remain
+outside.

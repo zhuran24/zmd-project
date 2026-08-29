@@ -546,3 +546,26 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   最大组 567。capability basis 基本退化。预设 hybrid 门槛却全部通过，因此选择已结束：保留
   template-local class 语义，用 y_after_59 做几何桥。下一步最便宜充分化是 manufacturing-free
   y=60；若它失败，只否定这条 corridor，不否定 154-candidate separator 或 high 本身。
+
+2026-08-29 03:14
+----------------
+数据：
+  E104 run-002 RESULT.json
+  research_lab/local/zero_condition/E104_high_reserved_y60_constructor/run-002/RESULT.json
+  sha256 381c6547ed2b94773de4f1fadfe747459aaed307d6c3461f2875a2bdf4817b04
+  ARTIFACT_CHECK.json sha256
+  7d2167688af5e8b49233d26df49bfaf764dd372e9c103d9437157db483457d86
+
+注意／发现：
+  E103 的 1,205 个 live high rows 中，制造机身占 y=60 的有 195 个；删去后精确分成 lower
+  812、upper 198。E101 的 live body hints 只剩 22 个，两具 stable E078 body 都仍在 lower。
+  lower/upper body overlap 和双向 front/body 交叉均为 0，只剩 15 个 front/front 重合。完整
+  26-body、10/6/10 templates、8 class 与 lower+upper allocation 联合模型降到 9,362 vars /
+  18,219 constraints，但 120.067 秒仍 UNKNOWN：2,833,391 branches、201,008 conflicts，
+  没有 body 或 allocation witness。run-001 只是在模型前缺 `src` import path 的装置失败。
+
+推理：
+  y60 不是无效切口：它把 high 的几何耦合真正切成了两个乘积侧，并继续缩掉 314 个 live
+  candidates；失明点已明确是 allocation 仍和两侧 geometry 同住在一个 solver 里。继续给同一
+  joint high 加时违背实验产出。下一步先用 body/power-only 模型确定 lower/upper template split，
+  再让较小一侧提出 class vector，另一侧吃剩余容量，最后才把总 high allocation 交给原 x42-low。

@@ -1,0 +1,55 @@
+{
+  "schema": "zmd_e104_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "apparatus_failure": {
+    "run": "run-001",
+    "path": "research_lab/local/zero_condition/E104_high_reserved_y60_constructor/run-001/FAILURE.json",
+    "sha256": "6be000abb310c078c6422a5fad53f81caf75063247a207bd0a7c4fb1bced7878",
+    "error": "ModuleNotFoundError",
+    "scientific_effect": "none"
+  },
+  "canonical_run": "run-002",
+  "terminal_result": {
+    "path": "research_lab/local/zero_condition/E104_high_reserved_y60_constructor/run-002/RESULT.json",
+    "sha256": "381c6547ed2b94773de4f1fadfe747459aaed307d6c3461f2875a2bdf4817b04",
+    "verdict": "RESERVED_Y60_HIGH_CONSTRUCTOR_CENSORED",
+    "decision": "EXTERNALIZE_LOWER_UPPER_CLASS_ALLOCATIONS"
+  },
+  "reserved_row_audit": {
+    "path": "research_lab/local/zero_condition/E104_high_reserved_y60_constructor/run-002/RESERVED_ROW_AUDIT.json",
+    "sha256": "9277248c332d1f132ae21e9121f08fe7009f69f7a432bd19a6e0a9797d62277c",
+    "live_high_candidate_count": 1205,
+    "removed_candidate_count": 195,
+    "survivor_candidate_count": 1010,
+    "nested_side_candidate_counts": {"lower": 812, "upper": 198},
+    "surviving_hint_count": 22,
+    "removed_hint_count": 3,
+    "cross_body_cell_count": 0,
+    "lower_front_upper_body_intersection_count": 0,
+    "upper_front_lower_body_intersection_count": 0,
+    "cross_front_front_intersection_count": 15
+  },
+  "high_result": {
+    "path": "research_lab/local/zero_condition/E104_high_reserved_y60_constructor/run-002/HIGH_RESULT.json",
+    "sha256": "f76ce51a60aeaba6ef11e1ca117d0c9e5c9dec716767a2dec93758bc51fb5043",
+    "status": "UNKNOWN",
+    "elapsed_seconds": 120.0672826480004,
+    "candidate_count": 1010,
+    "mode_class_variable_count": 8328,
+    "model_variable_count": 9362,
+    "model_constraint_count": 18219,
+    "matched_hint_count": 22,
+    "branches": 2833391,
+    "conflicts": 201008,
+    "selected_body_count": 0,
+    "allocation_tuple": null,
+    "nested_allocations": null
+  },
+  "artifact_check": {
+    "path": "research_lab/local/zero_condition/E104_high_reserved_y60_constructor/run-002/ARTIFACT_CHECK.json",
+    "sha256": "7d2167688af5e8b49233d26df49bfaf764dd372e9c103d9437157db483457d86",
+    "status": "PASS",
+    "classification": "CENSORED_HIGH_NO_ALLOCATION"
+  }
+}

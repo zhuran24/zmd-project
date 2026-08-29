@@ -3870,6 +3870,48 @@ evidence:
   ARTIFACT_CHECK.json sha256
   63ba0d4085263d12c153db0f639bfd984f9bfd373de0b9828eeaf6e94f98850d.
 
+R-ZC-114  Reserved y60 exposes an exact lower/upper bridge but the joint high model remains censored
+-----------------------------------------------------------------------------------------------------
+status: sufficient constructor attempted; UNKNOWN preserved; independent replay PASS
+scope: E103 live high domain, fixed E092 skeleton, source-stable x42, manufacturing-free y=60
+
+statement:
+  E104 consumes all 1,205 E103-live high candidates and removes every body that
+  occupies y=60. The remaining exact domain has 812 lower and 198 upper rows;
+  195 rows are removed. Twenty-two E101 body hints survive, three are removed,
+  and both stable E078 bodies remain on the lower side. Independent replay finds
+  zero cross-side body overlap and zero bidirectional front/body interaction;
+  only 15 front/front coincidences remain outside the current predicate.
+
+  The exact 26-body model retains template totals 10/6/10, all eight high class
+  coordinates, explicit lower[class]+upper[class]=high[class] variables, every
+  same-footprint native mode, fixed-pole power and front capacity. Its 1,010-
+  candidate, 9,362-variable, 18,219-constraint model explores 2,833,391 branches
+  and 201,008 conflicts in 120.067 seconds but returns UNKNOWN without a body or
+  allocation witness. The first run is a retained source-import apparatus failure
+  and has no scientific effect.
+
+non-implications:
+  UNKNOWN is not infeasibility for reserved y60, high, x42 or module B. The
+  missing allocation cannot be replaced by a body-only hint. No low complement
+  ran and no allocation nogood was learned.
+
+effect on next problem:
+  Do not rerun the joint high model. First obtain an exact lower/upper template
+  split from a body/power-only solve, then let one nested side propose class
+  allocations, pass the remaining capacity to the other side, and test the total
+  high allocation against E101's unchanged x42-low complement.
+
+evidence:
+  E104 RESULT.txt; local RESULT.json sha256
+  381c6547ed2b94773de4f1fadfe747459aaed307d6c3461f2875a2bdf4817b04;
+  HIGH_RESULT.json sha256
+  f76ce51a60aeaba6ef11e1ca117d0c9e5c9dec716767a2dec93758bc51fb5043;
+  RESERVED_ROW_AUDIT.json sha256
+  9277248c332d1f132ae21e9121f08fe7009f69f7a432bd19a6e0a9797d62277c;
+  ARTIFACT_CHECK.json sha256
+  7d2167688af5e8b49233d26df49bfaf764dd372e9c103d9437157db483457d86.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:
@@ -3907,7 +3949,11 @@ native-front layer: A is solved, B remains the 91-body wall. E096/E097 appeared 
 continue through x_after_34 and a reserved x35 column, but their local packets
 vanished. E098 exposes a semantic mismatch during recovery; E099 source-isolates
 the committed code and proves the current interface is instead x_after_41 with
-spatial/template incomparability. The x34/x35 continuation is retracted. The live
-construction object is now a source-stable hybrid of the x41 spatial bridge and
-template-local class structure. The final repair size, terminal assignment,
+spatial/template incomparability. The x34/x35 continuation is retracted. The source-stable line then reserves x42, externalizes the x42 low/high bridge,
+and localizes the wall to a 26-body high side. E103 removes unary dead rows and
+selects a y59/template hybrid. E104 realizes its cheapest sufficient form by
+reserving y60: the live high domain becomes an exact 812-by-198 lower/upper
+product, but the joint class-allocation model remains censored after 2.83 million
+branches. The next object is therefore the explicit nested allocation handshake,
+not another monolithic high solve. The final repair size, terminal assignment,
 component-compatible binding and physical layer count remain open.
