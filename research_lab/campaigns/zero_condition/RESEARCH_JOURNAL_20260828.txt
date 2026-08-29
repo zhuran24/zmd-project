@@ -333,3 +333,24 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   续投。下一问题是 y=41 自身的 front instrument：扩大 pole budget 会把已 censored 的 116k
   变量模型继续放宽，判别力反而更差；先固定独立重放过的三杆 pole set 与 boundary_macro_09，
   搜 body+完整 front class，随后再只放 boundary，是更便宜的嵌套分解。
+
+2026-08-29 00:00
+----------------
+数据：
+  E094 run-001 RESULT.json
+  research_lab/local/zero_condition/E094_y41_fixed_pole_front_decomposition/run-001/RESULT.json
+  sha256 2f8903fd49b2cda2767c2fbb8b3c272d68b1483fc1ce5d4b02c06a22c48e5877
+  ARTIFACT_CHECK.json sha256
+  9e70b8ec451bfb52f9376cabc075adbd2d76056b91d01613e4d94753b344d6f8
+
+注意／发现：
+  固定 E092 y=41 的完整 53-pole set 与 boundary_macro_09，只把 219 body 与 complete native-
+  front class 留自由，120.167 秒仍 UNKNOWN。它不再卡在 root：10,332,007 branches、89,116
+  conflicts，峰值约 5,242,028 KiB。因为 Arm A 非 terminal，预登记的 all-boundary arm 没有运行。
+
+推理：
+  pole/boundary 选择不是当前剩余模型宽度的主要来源；真正厚的是 body footprint 与 mode/front
+  class 的耦合。继续在整盘模型里加时只会付同一笔税。y=41 seam 恰好给出问题内生的切口：A/B
+  body 位于相反开半平面，front 最远只到 seam，不能触及对侧 body；operation class count 也按
+  module 分开。下一轮先机械证明这种 independence，再各自解 A、B 模块，负例或 UNKNOWN 只留在
+  对应模块继续分解。

@@ -3499,6 +3499,40 @@ evidence:
   ARTIFACT_CHECK.json sha256
   f50685119545eedbb35018b03995417aed4c5d1b9dd3b4e301ea25c11efba8a2.
 
+R-ZC-104  Fixed poles and boundary still leave the y=41 complete-front slice censored
+-------------------------------------------------------------------------------------
+status: nested exact slice attempted; UNKNOWN preserved; artifact check PASS
+scope: y=41, E092 exact 53-pole set, boundary_macro_09, complete body/front class model
+
+statement:
+  E094 fixes the independently replayed y=41 pole set and boundary_macro_09 while
+  leaving all 219 body footprints, exact module/template/front-demand class totals
+  and every native mode free. The 219 anchor bodies are hints only. An eight-worker
+  quick-restart portfolio explores 10,332,007 branches and 89,116 conflicts in
+  120.167 seconds but returns UNKNOWN without an incumbent. Process peak RSS is
+  5,242,028 KiB. The broader all-boundary arm does not run because Arm A is not a
+  terminal negative.
+
+non-implications:
+  Neither the fixed pole set nor boundary_macro_09 is proved feasible or
+  infeasible for native fronts. The result does not transport to other pole or
+  boundary choices.
+
+effect on next problem:
+  The remaining thick relation is body placement versus native mode/front class
+  assignment. Use the y=41 physical separation to prove cross-module occupancy
+  independence, then solve exact module-A and module-B front models separately
+  under the same fixed pole/boundary anchor. Localize any negative or censorship
+  before further pole or boundary relaxation.
+
+evidence:
+  E094 RESULT.txt; local RESULT.json sha256
+  2f8903fd49b2cda2767c2fbb8b3c272d68b1483fc1ce5d4b02c06a22c48e5877;
+  Arm-A RESULT.json sha256
+  474fd3db61ff7b02e4f58381ede70de37115a21152560a05d9506eb027482965;
+  ARTIFACT_CHECK.json sha256
+  9e70b8ec451bfb52f9376cabc075adbd2d76056b91d01613e4d94753b344d6f8.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:
@@ -3530,9 +3564,9 @@ consumer remains UNKNOWN without an incumbent and grows to about 8.3 GiB process
 RSS. E091 applies the same budget to the next Pareto partition and closes it one
 layer earlier as exact body/power INFEASIBLE. E092 sweeps all seven Pareto states,
 then E093 closes its sole UNKNOWN with a solver-diverse exact negative. At the
-three-pole skeleton layer, y=41 is now the sole admitted carrier. That settles the
-partition vote but not native-front feasibility: E090's monolithic y=41 front
-model remains censored. The next live object is a nested decomposition of that
-consumer around the independently replayed pole set and boundary state, not a
-wider beam or another point-rule loop. The final repair size, terminal assignment,
-component-compatible binding and physical layer count remain open.
+three-pole skeleton layer, y=41 is now the sole admitted carrier. E094 fixes its
+exact pole set and boundary state, but the complete body/front class slice remains
+censored after more than ten million branches. The next live object is therefore
+an exact A/B module decomposition induced by the y=41 seam, not a wider pole or
+boundary language and not another point-rule loop. The final repair size, terminal
+assignment, component-compatible binding and physical layer count remain open.

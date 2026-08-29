@@ -10,13 +10,13 @@ Campaign ref: research_lab/campaigns/zero_condition/CAMPAIGN.txt
 Current endpoint
 ----------------
 Statement: The E081 partition vote is complete at the three-pole body/power
-layer. E092 admitted y=41, closed five Pareto states and left the original E080
-y=21 seed UNKNOWN. E093 replays that sole unknown with a search-diverse exact
-instrument and returns INFEASIBLE in 21.064 seconds. Therefore
-partition_90abd29523f2a0dc/y=41 is the only admitted skeleton among all seven
-frozen Pareto states when exactly 53 poles are selected and at most three current
-pole positions are replaced. Native-front feasibility remains open because
-E090's complete y=41 front model is censored without an incumbent.
+layer, with y=41 the sole admitted skeleton. Native-front feasibility remains
+open. E094 fixes that skeleton's exact 53-pole set and boundary_macro_09 while
+leaving all 219 body footprints and complete native-front class choices free. The
+slice explores 10,332,007 branches and 89,116 conflicts in 120.167 seconds but
+returns UNKNOWN without an incumbent. Pole and boundary choice are no longer the
+main visible width; the thick remaining relation is body placement versus native
+mode/front class assignment.
 Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
@@ -34,17 +34,17 @@ Direction ref:
 
 Live question
 -------------
-Q: Can the sole admitted y=41 three-pole skeleton language support complete
-native-front class feasibility when the censored E090 monolith is decomposed?
-Use the independently replayed E092 y=41 witness as the nested anchor. First fix
-its exact 53-pole set and `boundary_macro_09`, then solve all 219 bodies, exact
-module/template/front-demand class totals, every same-footprint native mode,
-power, non-overlap and the stable E078 bodies. If that slice is feasible,
-materialize exact named operations and proceed to terminal uniqueness and
-component-aware binding. If exact INFEASIBLE, release only the boundary state
-while retaining the same pole set and rerun. If either slice is UNKNOWN, preserve
-censorship and decompose the body/front assignment further; do not widen the pole
-budget or restart point-rule growth before this nested test resolves.
+Q: Does the y=41 seam induce an exact product decomposition of the fixed-pole,
+fixed-boundary native-front class problem into independent module-A and module-B
+submodels, and which module carries the remaining wall? Mechanically verify that
+no A body can overlap a B body, no native front of one module can be occupied by
+an opposite-module body, and all exact operation-class counts are module-local.
+Then solve each module separately under E092's exact 53-pole set and
+boundary_macro_09, preserving its own template counts, every native mode, power
+and relevant stable E078 bodies. If both are feasible, combine and independently
+replay the full assignment. If one is INFEASIBLE or UNKNOWN, localize all next
+work to that module and decompose it by template or bay. Do not release boundary
+or poles before this seam-derived cut is tested.
 
 Inflight / recovery
 -------------------
@@ -75,6 +75,7 @@ Recent consequential results
 - E091 tests partition_97f9ba7e7ad710dc/y=17 under the same three-pole skeleton budget. Its exact body/pole/power model is INFEASIBLE in 10.777 seconds, so the complete-front stage does not run. | evidence=research_lab/campaigns/zero_condition/experiments/E091_next_pareto_three_pole_control/RESULT.txt | effect=sweep the entire seven-state Pareto beam through the cheap body/power admission model before another front build
 - E092 completes that seven-state admission sweep: y=41 is BODY_POWER_FEASIBLE, five states are exact MASTER_INFEASIBLE, and only partition_5a72220e0268a3c1/y=21 remains UNKNOWN. The y=41 witness is independently replayed. | evidence=research_lab/campaigns/zero_condition/experiments/E092_pareto_three_pole_admission_atlas/RESULT.txt | effect=resolve only the y=21 admission state before selecting a skeleton carrier
 - E093 solver-diverse-replays the sole y=21 UNKNOWN and returns exact MASTER_INFEASIBLE in 21.064 seconds. All seven Pareto states now have terminal three-pole skeleton status, with y=41 the sole admitted state. | evidence=research_lab/campaigns/zero_condition/experiments/E093_e080_seed_admission_replay/RESULT.txt | effect=end the partition vote and decompose y=41's censored complete-front consumer around the admitted pole/boundary skeleton
+- E094 fixes the admitted y=41 pole set and boundary_macro_09 but leaves all bodies and complete front classes free. It remains UNKNOWN after 10.3M branches and 89k conflicts. | evidence=research_lab/campaigns/zero_condition/experiments/E094_y41_fixed_pole_front_decomposition/RESULT.txt | effect=use the y=41 seam to prove and execute an exact A/B module decomposition before any pole or boundary release
 
 Current unknowns and guards
 ---------------------------
@@ -102,7 +103,8 @@ Current unknowns and guards
 - E089 is a temporal predictive failure of one fixed spatial-role language. It authorizes retiring the 52+1 continuation budget, not declaring y=41, module B or any candidate infeasible. The next comparison must preserve the same front semantics while widening one structural axis at a time.
 - E090 is a censored UNKNOWN, not a negative for y=41 or the three-pole language. Its 8.3 GiB peak and zero conflicts are instrument telemetry, not a cause diagnosis.
 - E091 is exact only at body/pole/power admission for partition_97f9ba7e7ad710dc, y=17 and at most three relocated poles. It makes no native-front claim and does not refute that partition with more pole mobility or another geometry.
-- E092's five negatives and E093's y=21 negative are contextual body/pole/power results at the three-pole budget. Together they make y=41 the sole admitted skeleton only inside the frozen seven-state Pareto beam and pole language. The y=41 skeleton is not native-front feasible merely because it exists; E090 remains censored.
+- E092's five negatives and E093's y=21 negative are contextual body/pole/power results at the three-pole budget. Together they make y=41 the sole admitted skeleton only inside the frozen seven-state Pareto beam and pole language. The y=41 skeleton is not native-front feasible merely because it exists.
+- E094 is a censored nested subset, not a negative for boundary_macro_09 or the fixed pole set. Its all-boundary arm did not run. The proposed A/B split must first prove that opposite-module body occupancy cannot affect a module's native-front constraints; otherwise the split is not exact.
 - Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
 
 History pointers

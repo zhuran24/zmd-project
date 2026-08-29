@@ -1,0 +1,59 @@
+{
+  "schema": "zmd_e094_y41_fixed_pole_front_machine_snapshot_v1",
+  "created_at_local": "2026-08-29T00:00:21-04:00",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "verdict": "FIXED_POLE_BOUNDARY_FRONT_SLICE_CENSORED",
+  "decision": "DECOMPOSE_BODY_FRONT_ASSIGNMENT_BEFORE_RELEASING_BOUNDARY_OR_POLES",
+  "anchor": {
+    "partition_id": "partition_90abd29523f2a0dc",
+    "corridor": "y=41",
+    "boundary_state_index": 8,
+    "boundary_state_id": "boundary_macro_09",
+    "fixed_pole_count": 53,
+    "relocated_pole_count": 3,
+    "pole_set_digest": "f8fe2c6652db032f017fb2f380c31c0eed87db76fa2ff7a5c55be062079cc4cf",
+    "path": "research_lab/local/zero_condition/E092_pareto_three_pole_admission_atlas/run-001/state-00-partition_90abd29523f2a0dc/RESULT.json",
+    "sha256": "7bc3cc6ccd48f919e08561c7b32262da56f9f3853d5fbca313413add4bd87a78"
+  },
+  "arm": {
+    "arm_id": "fixed_poles_fixed_boundary",
+    "fixed_poles": true,
+    "fixed_boundary": true,
+    "solve_cap_seconds": 120.0,
+    "seed": 94001,
+    "search_branching": "PORTFOLIO_WITH_QUICK_RESTART_SEARCH",
+    "status": "UNKNOWN",
+    "solver_status": "UNKNOWN",
+    "elapsed_seconds": 120.16671376200975,
+    "branches": 10332007,
+    "conflicts": 89116,
+    "body_candidate_count": 14867,
+    "pole_candidate_count": 4316,
+    "mode_class_variable_count": 92188,
+    "model_variable_count": 116318,
+    "model_constraint_count": 228082,
+    "selected_manufacturing_count": 0,
+    "selected_pole_count": 0,
+    "process_ru_maxrss_kib": 5242028,
+    "oom_delta": 0,
+    "oom_kill_delta": 0
+  },
+  "second_arm": {
+    "arm_id": "fixed_poles_all_boundaries",
+    "ran": false,
+    "reason": "Arm A returned UNKNOWN; releasing boundary would broaden an undecided slice"
+  },
+  "artifacts": {
+    "result": {"path": "research_lab/local/zero_condition/E094_y41_fixed_pole_front_decomposition/run-001/RESULT.json", "sha256": "2f8903fd49b2cda2767c2fbb8b3c272d68b1483fc1ce5d4b02c06a22c48e5877"},
+    "arm_result": {"path": "research_lab/local/zero_condition/E094_y41_fixed_pole_front_decomposition/run-001/arm-01-fixed_poles_fixed_boundary/RESULT.json", "sha256": "474fd3db61ff7b02e4f58381ede70de37115a21152560a05d9506eb027482965"},
+    "derivation": {"path": "research_lab/local/zero_condition/E094_y41_fixed_pole_front_decomposition/run-001/DERIVATION.json", "sha256": "9318856706332e979348b26c95e0cbd67469e6442c8831c9dc5d908060ab47cc"},
+    "derived_producer": {"path": "research_lab/local/zero_condition/E094_y41_fixed_pole_front_decomposition/run-001/DERIVED_PRODUCER.py", "sha256": "65c6cadc4d0f37266ca181761bec625bcfdf7d8be2b344136a6a14b5669ac4ce"},
+    "artifact_check": {"path": "research_lab/local/zero_condition/E094_y41_fixed_pole_front_decomposition/run-001/ARTIFACT_CHECK.json", "sha256": "9e70b8ec451bfb52f9376cabc075adbd2d76056b91d01613e4d94753b344d6f8"}
+  },
+  "runners": {
+    "experiment_sha256": "aa98723b507d1ac9699fba64e089dac205fd677df429e19b2cf6c8947e8ac29c",
+    "artifact_check_sha256": "a1f8f10985813c66368ebbb85b36c6f8df6ae56d830024d00ab36c14076c3837"
+  },
+  "truth_boundary": "Censored nested subset of E090. The arm fixes one exact 53-pole set and boundary_macro_09 while leaving all 219 body and complete native-front class decisions free. UNKNOWN proves neither feasibility nor infeasibility."
+}

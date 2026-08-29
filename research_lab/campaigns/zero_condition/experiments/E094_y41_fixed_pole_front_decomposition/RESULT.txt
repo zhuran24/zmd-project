@@ -1,0 +1,148 @@
+E094 RESULT: FIXING THE KNOWN POLE SET AND BOUNDARY STILL LEAVES THE COMPLETE FRONT SLICE CENSORED
+================================================================================================================
+
+Status
+------
+Closed as a censored nested-slice measurement. Arm A fixes the exact 53-pole set
+and `boundary_macro_09` from E092's independently replayed y=41 skeleton while
+leaving all 219 body and complete native-front class decisions free. It returns
+UNKNOWN without an incumbent. Arm B does not run because releasing boundary would
+broaden an undecided slice. The artifact and derivation checker passes.
+
+No infeasibility, native-front witness, terminal uniqueness, generic I/O,
+component binding, routing, throughput, whole-layout, certification, U/L, owner,
+production, publication or pruning effect follows.
+
+Machine evidence
+----------------
+Wrapper result:
+
+  research_lab/local/zero_condition/
+  E094_y41_fixed_pole_front_decomposition/run-001/RESULT.json
+
+SHA-256:
+
+  2f8903fd49b2cda2767c2fbb8b3c272d68b1483fc1ce5d4b02c06a22c48e5877
+
+Arm-A result SHA-256:
+
+  474fd3db61ff7b02e4f58381ede70de37115a21152560a05d9506eb027482965
+
+Artifact check SHA-256:
+
+  9e70b8ec451bfb52f9376cabc075adbd2d76056b91d01613e4d94753b344d6f8
+
+Verdict
+-------
+
+FIXED_POLE_BOUNDARY_FRONT_SLICE_CENSORED
+
+Decision
+--------
+
+DECOMPOSE_BODY_FRONT_ASSIGNMENT_BEFORE_RELEASING_BOUNDARY_OR_POLES
+
+Nested restriction
+------------------
+E094 is a strict subset of E090's y=41 complete-front language. It consumes:
+
+  partition                  partition_90abd29523f2a0dc
+  seam                       horizontal y=41, width 1
+  exact pole set             53 poses from E092 y=41 witness
+  relocated poles            3
+  boundary state             boundary_macro_09
+  manufacturing hint         E092's 219 body footprints
+
+Only the pole set and boundary state are fixed. The 219 body footprints are hints,
+not constraints. The model still chooses:
+
+  every manufacturing footprint
+  exact module/template multiplicities
+  exact front-demand class multiplicities
+  every same-footprint native mode
+  exact named operations after a class witness
+
+Power, body/pole/boundary non-overlap, protocol-core reservations and the two
+stable E078 bodies remain unchanged.
+
+Arm-A terminal observation
+--------------------------
+Search controls:
+
+  workers                    8
+  branching                  PORTFOLIO_WITH_QUICK_RESTART_SEARCH
+  seed                       94001
+  solve cap                  120 s
+  first-incumbent stop       enabled
+
+Model and result:
+
+  body candidates             14,867
+  pole candidates               4,316
+  mode-class variables         92,188
+  total variables             116,318
+  total constraints           228,082
+  elapsed                    120.167 s
+  branches                10,332,007
+  conflicts                   89,116
+  status                     UNKNOWN
+  incumbent                     none
+
+Process peak RSS is 5,242,028 KiB. Cgroup OOM and OOM-kill counters do not
+increase.
+
+Compared with E090, fixing poles and boundary changes the search behavior
+substantially: the slice now explores millions of branches and accumulates real
+conflicts instead of stopping near the root. It still does not produce a terminal
+answer within the cap.
+
+Why Arm B did not run
+---------------------
+The preregistered second arm would keep the same 53-pole set but release the
+boundary to all 47 states. It runs only after exact Arm-A INFEASIBLE, because then
+it distinguishes a bad boundary state from a bad pole set. Arm A is UNKNOWN, so
+running the broader slice would not resolve that implication and would spend
+budget on a weaker instrument.
+
+Meaning
+-------
+The monolithic wall is no longer mainly the pole-choice or boundary-choice
+surface. Even after those choices are frozen, the coupled body-footprint plus
+native-front-class assignment remains difficult.
+
+This does not prove that `boundary_macro_09` or the known pole set supports or
+forbids fronts. It identifies the next thick relation more precisely:
+
+  body placement
+  <-> mode/front exposure
+  <-> exact operation-class counts
+
+Those decisions should not be separated by post-filtering, but the full two-module
+model is still too wide to act as a useful discriminator.
+
+Next problem
+------------
+Exploit the y=41 physical separation. With poles and boundary fixed, module A and
+module B occupy opposite open half-planes. Their body cells cannot overlap; a
+native front can reach the seam but cannot reach an opposite-module body cell.
+All operation-class counts are already module-indexed.
+
+First mechanically prove this cross-module occupancy independence for the current
+candidate universe. Then build two exact module-local body/front models under the
+same fixed pole set and boundary:
+
+  module A only
+  module B only
+
+If both are feasible, combine their witnesses and independently replay the full
+front class assignment. If one is exact INFEASIBLE, the obstruction is localized
+to that module. If one remains UNKNOWN, decompose only that module by template or
+spatial bay. This is a true problem-derived cut at the y=41 seam, not an arbitrary
+solver partition.
+
+Truth boundary
+--------------
+UNKNOWN is not infeasibility. E094 fixes one exact pole set and one boundary state;
+no conclusion transports to alternative pole or boundary choices. No commodity-
+to-port, terminal uniqueness, generic I/O, component or routing semantics are
+proved.

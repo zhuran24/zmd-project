@@ -1,0 +1,74 @@
+EXPERIMENT E094: NESTED FIXED-POLE DECOMPOSITION OF THE Y=41 COMPLETE-FRONT MODEL
+================================================================================================
+
+Question
+--------
+Can the sole admitted y=41 three-pole skeleton support complete native-front
+class feasibility when E090's censored monolith is restricted around its exact
+body/power witness?
+
+Frozen anchor
+-------------
+E094 consumes E092's independently replayed y=41 skeleton:
+
+  partition                  partition_90abd29523f2a0dc
+  seam                       horizontal y=41, width 1
+  selected poles             exact 53-pose set
+  relocated poles            3
+  boundary state             boundary_macro_09
+  manufacturing hint         219 body footprints
+
+The body footprints remain hints only. The pole set is an explicit restriction in
+both arms. Arm A also fixes the boundary state; Arm B releases only that boundary
+choice.
+
+Nested arms
+-----------
+Arm A, fixed poles plus fixed boundary
+
+  fix all 53 pole variables to the anchor set
+  fix boundary_macro_09
+  keep all 219 body decisions free
+  keep exact module/template/front-demand class totals
+  keep every same-footprint native mode
+  keep power, non-overlap and both stable E078 bodies
+  pure feasibility, first incumbent, 120-second cap
+
+Arm B, fixed poles plus all boundaries
+
+  run only if Arm A is exact INFEASIBLE
+  retain the same exact 53-pole set
+  release the boundary state to the full 47-state disjunction
+  keep every other semantic and search control unchanged
+
+Decision rule
+-------------
+Either arm FRONT_OPERATION_FEASIBLE
+  Materialize exact named operations. Proceed to terminal uniqueness, generic I/O
+  and component-aware binding without widening pole mobility.
+
+Arm A UNKNOWN
+  Preserve censorship and stop. Releasing boundary would only broaden a slice the
+  current instrument could not decide. Decompose body/front assignment further.
+
+Arm A INFEASIBLE, Arm B FRONT_OPERATION_FEASIBLE
+  The known pole set can support native fronts, but boundary_macro_09 cannot.
+  Consume the positive boundary state downstream.
+
+Both arms INFEASIBLE
+  The exact known three-pole set cannot carry complete native-front classes under
+  any of the 47 boundary states. This does not close the full at-most-three-pole
+  language; it localizes the next search to alternative pole sets.
+
+Arm A INFEASIBLE, Arm B UNKNOWN
+  Preserve censorship. The fixed-pole all-boundary slice requires a further
+  boundary/body decomposition before changing pole budget.
+
+Truth boundary
+--------------
+E094 is a nested subset test inside E090's y=41 language. Negative arms are valid
+only for the fixed 53-pole set, and Arm A additionally for boundary_macro_09. A
+positive includes native-front capacity and exact named operation counts but not
+terminal uniqueness, generic I/O, component compatibility, routing, throughput,
+whole-layout feasibility, U/L, certification, production, publication or pruning
+authority.
