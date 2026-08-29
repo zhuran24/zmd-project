@@ -1,54 +1,47 @@
-# ZMD RESEARCH WORKTREE
+# ZMD 研究树
 
-Mode: `RESEARCH`. Branch: `research/main`.
+Mode: `RESEARCH`。Branch: `research/main`。
 
-This worktree owns the full ZMD research program. The zero-condition whole-layout campaign is the current point of attack, not the final mission.
+这棵树拥有整个 ZMD 研究计划;零条件整层 campaign 是当前的进攻点,不是最终使命。
 
-## Cold start
+## 冷启动
 
-Run:
+先跑:`/home/zhuran24/zmd-pj/.venv/bin/python research_lab/tools/research_tree.py enter`
 
-`/home/zhuran24/zmd-pj/.venv/bin/python research_lab/tools/research_tree.py enter`
+第一份活读物是 `/home/zhuran24/zmd-research/research_lab/STATE.txt`:一个当前端点、一个活问题、加上在途恢复句柄。跨树交接、owner 事项、跨会话外部作业才读 `/home/zhuran24/.claude/ops/zmd-pj/membrane/NOW.md`;普通 R0 工作留在本地,不进 O。
 
-First active read: `/home/zhuran24/zmd-research/research_lab/STATE.txt`.
-It must contain one current endpoint, one live question, and any inflight recovery handle.
-For cross-tree handoff, owner matters, or cross-session external work only, read `/home/zhuran24/.claude/ops/zmd-pj/membrane/NOW.md`.
-Ordinary R0 work remains local and does not enter O.
+首次进树或目标层级变了,读 `research_lab/PROGRAM.txt`;STATE 之后按当前问题读 `.zmd-worktree-mode` 指的活跃 campaign;旧治理与历史只按需加载。
 
-Read `research_lab/PROGRAM.txt` on first entry or when the goal hierarchy changes. Read the active campaign named by `.zmd-worktree-mode` after STATE or when the current question needs it. Load old governance and history only on demand.
+每个新会话、每次上下文压缩后,装载 `/zmd-method` 与 `/research-charter`——方法论与纲领,是我们对这个问题的理解;当前押注只看 `/home/zhuran24/zmd-pj/docs/项目说明/30_research_charter.md` 末节。owner 原话档案在 `research_lab/METHOD_ORIGIN.txt`(方法)与 `research_lab/STANCE_ORIGIN.txt`(姿态),想回出发点的感觉时去翻。
 
-Must-read on every new session and again after every context compaction: load the `/zmd-method` and `/research-charter` skills (the latter is the charter's authoritative text; current bets stay in `/home/zhuran24/zmd-pj/docs/项目说明/30_research_charter.md`). On conflicts the owner-quotation anchors win (`research_lab/METHOD_ORIGIN.txt` for method, `research_lab/STANCE_ORIGIN.txt` for stance).
+CC 自动记忆绑在 `research_lab/CC_MEMORY.txt` 记录的研究专用目录,装稳定研究习惯,不装 campaign 状态;现在发生着什么,以 `STATE.txt` 与活跃 campaign 为准。
 
-Claude Code auto-memory is bound to the research-only directory recorded in `research_lab/CC_MEMORY.txt`. It carries stable research habits, not current campaign state; `STATE.txt` and the active campaign remain authoritative for what is happening now.
+## 默认注意力
 
-## Default attention
+从问题出发:规则、资源账、死亡形状、构造结构、表示、层边界、最便宜的判别实验。现有模块、F1-F9 名字、当前层数与当前 cut 形式都是历史候选,不是公理。
 
-Start from the problem: rules, resource accounts, death shapes, constructive structure, representations, layer boundaries, and the cheapest discriminating experiment. Existing modules, F1-F9 names, current layer count, and current cut forms are historical candidates, not axioms.
+普通发现不预载 `PROJECT_LOCK.md`、`docs/CURRENT.md`、台账或完整操作手册;要精确的当前权威、认证语义、晋级、发布、共享 Git 修复或某条具体操作契约时,再按需去读。
 
-Do not preload `PROJECT_LOCK.md`, `docs/CURRENT.md`, the ledgers, or the full operations manual for ordinary discovery. Read them on demand for exact current authority, certified semantics, promotion, publication, shared-Git repair, or a specific operational contract.
+## CodeGraph 优先
 
-## CodeGraph first
+索引内的代码,CodeGraph MCP 是默认的第一件、也是反复用的工具,不是仪式性的一次查询。读代码路径或改代码前,`codegraph_explore` 传 `projectPath=/home/zhuran24/zmd-research`,点名具体文件与符号,看返回的调用路径和影响面;问题挪到别的代码面就再叫一次;返回的源码当已读。只有未索引材料、图没返回的细节、标了 stale 的文件才直接读。改完尊重 staleness 横幅或等自动同步。CodeGraph 给结构上下文;编译、测试、checker 和运行时证据仍然决定对错。派出去的席位同样适用:涉及本树代码的任务书明写 CodeGraph-first 并传 projectPath。
 
-For indexed code, use the CodeGraph MCP as the default first and recurring instrument, not as a ceremonial one-time lookup. Whenever CodeGraph can serve the question, use it. Before understanding a code path or editing code, call `tools.codegraph.org.default.codegraph_explore` with `projectPath=/home/zhuran24/zmd-research`; name concrete files and symbols, inspect the returned call paths and blast radius, and call it again when the question moves to another code surface. Treat returned source as already read. Fall back to direct file reads only for unindexed material, a detail the graph did not return, or a file explicitly marked stale. After edits, respect the MCP staleness banner or wait for its auto-sync. CodeGraph supplies structural context; compilation, tests, checkers, and runtime evidence still decide correctness.
+## 研究自由与真理纪律
 
-This applies to dispatched seats as well as the main session: every Agent / Workflow / peer-session task brief that touches code in this tree must state CodeGraph-first explicitly and pass `projectPath=/home/zhuran24/zmd-research`.
+猜想、启发式搜索、临时充分限制、替代模型、一次性原型、小反例,全都可以;标明身份和代价就行,别静默把它们变成必要条件。
 
-## Research freedom and truth discipline
+UNKNOWN 不是不可行;失败的构造器不证明不存在;局部定理没有运输证明不禁止外部对象。保住前提与范围,但不要给日常出想法套审批仪式。
 
-Conjectures, heuristic search, temporary sufficient restrictions, alternative models, throwaway prototypes, and small counterexamples are allowed. Label their status and cost. Do not silently convert them into necessary conditions.
+本树可以造候选定理、算法、表示、cut 形式、witness 和晋级 packet;它不发生产、认证、U/L 更新、耐久强状态、发布权或 owner 权——那些只走认证的证明链与闸门。
 
-`UNKNOWN` is not infeasibility. A failed constructor does not prove nonexistence. A local theorem does not ban an outer object without a transport proof. Preserve premises and scope without wrapping routine idea generation in approval rituals.
+## 仓库角色
 
-This tree may create candidate theorems, algorithms, representations, cut forms, witnesses, and promotion packets. It never grants production, certification, U/L updates, durable strong status, release authority, or owner authority.
+`/home/zhuran24/zmd-pj` 是历史材料树,保持只读;独立认证树在 `/home/zhuran24/zmd-certification`(`certification/main`)。
 
-## Repository roles
+不把本分支整体合并进认证树;成熟工作靠紧凑 promotion packet 过去:精确 claim、前提、选中的 commits 或 diff、复现命令、对照、已知未知、请求效果。认证是新会话冷审。
 
-`/home/zhuran24/zmd-pj` is the history/material tree and remains read-only. The independent certification tree is `/home/zhuran24/zmd-certification` on `certification/main`.
+## 工作节奏
 
-Do not merge this branch wholesale into the certification tree. Mature work crosses by a compact promotion packet containing the exact claim, premises, selected commits or diff, reproduction commands, controls, known unknowns, and requested effect. Certification is a fresh-session cold review.
+让每个结果改变下一个问题。按所声称的效力(不是按文件路径)从 `research_lab/CHECKS.txt` 选最轻的诚实检查级(R0/R1/R2)。耐久研究改动用小而连贯的精确 pathspec 提交;日志、缓存、求解器 dump、临时模型、可再生工件放 `research_lab/local/`。
 
-## Work rhythm
-
-Let each result change the next question. Choose the lightest honest R0/R1/R2 check level from `research_lab/CHECKS.txt` according to the effect being claimed, not according to the file path. Keep durable research changes in small coherent commits with exact pathspecs. Put logs, caches, solver dumps, temporary models, and regenerable artifacts under `research_lab/local/`.
-
-Use `/home/zhuran24/zmd-pj/.venv/bin/python` for project Python commands; this lightweight worktree intentionally has no copied virtual environment.
+项目 Python 用 `/home/zhuran24/zmd-pj/.venv/bin/python`;这个轻量 worktree 有意不带虚拟环境副本。
