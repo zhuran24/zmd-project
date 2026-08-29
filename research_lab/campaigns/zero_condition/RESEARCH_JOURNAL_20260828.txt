@@ -376,3 +376,24 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   现在是可复用的构造半件。下一问不直接挑模板拆分或空间拆分，而先测两种切口的接口厚度：
   模板切口有 53/17/21 的数量账，但不同模板可能共享大量 footprint/front occupancy；空间切口
   有 pole/core/seam 形成的天然边界，但会携带跨区模板配额。哪个桥更薄，才把 B 交给哪个表示。
+
+2026-08-29 01:19
+----------------
+数据：
+  E096 run-001 RESULT.json
+  research_lab/local/zero_condition/E096_module_b_interface_thickness/run-001/RESULT.json
+  sha256 b16062ce71a9bf40943bd9adcb788249b68099906ab4bb360d48800230dc10f2
+  ARTIFACT_CHECK.json sha256
+  695eae5cac25ac72c5f3f0fa4b76cd79c0c03042c8290bd746dcd960edcf8192
+
+注意／发现：
+  template split 虽然 class count 本地化，却让 1,926 个 occupancy cells 与全部 4,378 个候选
+  留在桥上；名字分开了，几何没有分开。93 条空间 cut 中，x=34 后的 cut 把候选分成
+  1,915 / 436 / 2,027，anchor 91 体分成 33 / 5 / 53，只用 133 个 occupancy cells 与 8 个
+  class-allocation 整数通信。separator 只占候选域 9.96%，三条预置 dominance 条件全过。
+
+推理：
+  B 的薄处是空间，不是模板。下一步不应造三个 template solver，而应把 x=34 cut 编译为
+  low/separator/high。最便宜的充分构造是把 x=35 设为 manufacturing-free column：它删除
+  separator body 变量并切断 low/high 的 body/front 耦合，只剩 8 维配额桥。若能出 witness，
+  就与 E095 的 A 半件拼合；若失败，只否定这条新增充分限制，不倒灌成原 fixed skeleton 无解。

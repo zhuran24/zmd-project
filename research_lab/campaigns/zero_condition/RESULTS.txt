@@ -3579,6 +3579,48 @@ evidence:
   ARTIFACT_CHECK.json sha256
   6d75894d7a79cb9611fc20d1121a832777f9cf4eeb8e67bb4fef85066d0ee43f.
 
+R-ZC-106  A vertical spatial separator is the thinner exact interface inside module B
+------------------------------------------------------------------------------------------------
+status: complete no-solver interface census; independent replay PASS
+scope: E095 fixed-pole/fixed-boundary 4,378-candidate module-B native-front language
+
+statement:
+  E096 compares two exact decomposition interfaces. The template split touches
+  all 4,378 B candidates and requires 1,926 occupancy-interface cells across its
+  1,335 / 868 / 2,175 candidate groups, although class counts remain local.
+
+  Among 93 vertical/horizontal spatial cuts, 78 satisfy the predeclared balance
+  guard. The deterministic winner is after x=34: 1,915 low candidates, 436
+  separator candidates and 2,027 high candidates, with E092's 91 selected B
+  bodies split 33 / 5 / 53. Its bridge has 133 occupancy cells, 1,267
+  participating candidates and eight explicit class-allocation dimensions. The
+  separator is 9.96 percent of the candidate universe and the largest side is
+  smaller than the largest template group. It satisfies every frozen spatial-
+  dominance clause.
+
+non-implications:
+  Interface counts are not runtime or feasibility bounds. E096 removes no
+  candidate and does not prove the selected cut easy. The eight allocation
+  coordinates are retained rather than assumed independent. No native-front
+  witness or downstream binding/routing result is produced.
+
+effect on next problem:
+  Select the spatial representation. First test the cheapest sufficient
+  constructor induced by the cut: reserve manufacturing column x=35, keep the
+  exact E092 poles/boundary, and expose eight low/high class-allocation variables.
+  A positive combines with E095's frozen A witness. A negative applies only to
+  the reserved-column restriction; UNKNOWN leads to conditioned side solves.
+
+evidence:
+  E096 RESULT.txt; local RESULT.json sha256
+  b16062ce71a9bf40943bd9adcb788249b68099906ab4bb360d48800230dc10f2;
+  TEMPLATE_INTERFACE.json sha256
+  1f566e2cce5682e51da52cc9f0b69792781e54b42033564d8b548c10dd972c11;
+  SPATIAL_INTERFACE_FRONTIER.json sha256
+  949a39da7261804d383b99b4f61b78813032b9816d129178e5995add2f41448e;
+  ARTIFACT_CHECK.json sha256
+  695eae5cac25ac72c5f3f0fa4b76cd79c0c03042c8290bd746dcd960edcf8192.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

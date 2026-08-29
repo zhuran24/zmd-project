@@ -1,0 +1,43 @@
+{
+  "schema": "zmd_e096_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "candidate_count": 4378,
+  "required_body_count": 91,
+  "template_interface": {
+    "group_candidate_counts": {
+      "manufacturing_3x3": 1335,
+      "manufacturing_5x5": 868,
+      "manufacturing_6x4": 2175
+    },
+    "interface_occupancy_cell_count": 1926,
+    "interface_candidate_count": 4378,
+    "largest_group_candidate_count": 2175,
+    "class_allocation_dimension_count": 0
+  },
+  "selected_spatial_cut": {
+    "cut_id": "x_after_34",
+    "axis": "x",
+    "coordinate": 34,
+    "balance_guard_pass": true,
+    "group_candidate_counts": {"low": 1915, "separator": 436, "high": 2027},
+    "group_anchor_counts": {"low": 33, "separator": 5, "high": 53},
+    "interface_occupancy_cell_count": 133,
+    "interface_candidate_count": 1267,
+    "separator_candidate_fraction": 0.09958885335769758,
+    "largest_side_candidate_count": 2027,
+    "class_allocation_dimension_count": 8,
+    "class_allocation_log2_box_upper_bound": 27.726013328714158
+  },
+  "terminal_result": {
+    "path": "research_lab/local/zero_condition/E096_module_b_interface_thickness/run-001/RESULT.json",
+    "sha256": "b16062ce71a9bf40943bd9adcb788249b68099906ab4bb360d48800230dc10f2",
+    "verdict": "SPATIAL_SEPARATOR_INTERFACE_DOMINATES_TEMPLATE_INTERFACE",
+    "decision": "SELECT_SPATIAL_SEPARATOR_DECOMPOSITION"
+  },
+  "artifact_check": {
+    "path": "research_lab/local/zero_condition/E096_module_b_interface_thickness/run-001/ARTIFACT_CHECK.json",
+    "sha256": "695eae5cac25ac72c5f3f0fa4b76cd79c0c03042c8290bd746dcd960edcf8192",
+    "status": "PASS"
+  }
+}

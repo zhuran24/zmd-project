@@ -1,0 +1,81 @@
+EXPERIMENT E096: MODULE-B INTERFACE-THICKNESS CENSUS
+===================================================
+
+Question
+--------
+Which exact decomposition language has the thinner bridge for E095's 91-body
+module-B native-front problem: splitting by manufacturing template, or splitting
+spatially with an explicit separator module and class-count allocations?
+
+Why this experiment
+-------------------
+E095 proves the y=41 A/B split is exact and localizes the remaining wall to B.
+It would be premature to choose “template decomposition” merely because the
+counts are 53/17/21, or “bay decomposition” merely because the geometry is
+visual. The next cut must be derived from how much state it has to transport.
+
+Object and interface semantics
+------------------------------
+E096 imports the hash-pinned E095 reconstruction and uses the exact active B
+candidate universe under E092's fixed 53 poles and `boundary_macro_09`.
+
+For any grouping, a cross-group occupancy cell belongs to the interface if:
+
+  * bodies from more than one group can occupy that cell; or
+  * a native front of a candidate in one group can be occupied by a body
+    candidate in another group.
+
+The count is an exact finite census of the current model's coupling surface. It
+is not a solver-runtime prediction and the binary states of interface cells are
+not assumed independent.
+
+Template cut
+------------
+Groups are `manufacturing_3x3`, `manufacturing_5x5` and
+`manufacturing_6x4`. Operation/front-demand counts are local to a template, so
+no class-allocation state crosses this bridge. E096 records shared body cells,
+cross-template front/body cells, participating candidates and the three-template
+interaction graph.
+
+Spatial cut
+-----------
+For every vertical and horizontal cut between grid coordinates, candidates are
+classified as low-side, high-side or separator according to their body bounding
+box. Separator candidates form an explicit third subproblem; they are not
+silently deleted. The interface records:
+
+  * cross-group occupancy cells;
+  * candidates participating in those cells;
+  * separator candidate count;
+  * module-B class totals that require allocation among low/high/separator;
+  * a log2 upper bound for the independent count-allocation box;
+  * how E092's 91 selected B bodies split across the three groups.
+
+Cuts used for the decision must be nontrivial: each side contains at least 20 of
+the 91 E092 B bodies and at least 15 percent of nonseparator candidate rows; no
+more than 15 E092 bodies may lie in the separator. All cuts remain in the output,
+including those failing this guard.
+
+Predeclared decision rule
+-------------------------
+SELECT_SPATIAL_SEPARATOR_DECOMPOSITION
+  A guarded spatial cut has at most half as many occupancy-interface cells as
+  the template cut, its separator contains at most 20 percent of B candidates,
+  and its largest side is smaller than the largest template group. The class
+  allocation vector is retained explicitly.
+
+SELECT_TEMPLATE_DECOMPOSITION
+  The template interface has no more occupancy cells and no more participating
+  candidates than every guarded spatial cut. Its lack of count-allocation state
+  then makes it the thinner bridge.
+
+KEEP_BOTH_AND_BUILD_HYBRID_INTERFACE
+  Neither cut dominates under the frozen rules. Preserve both and derive a
+  hybrid template-within-bay representation rather than choosing by narrative.
+
+Truth boundary
+--------------
+E096 is a no-solver interaction census. It establishes neither feasibility nor
+infeasibility and does not estimate runtime from interface counts. A selected
+cut authorizes only the next representation experiment. No certification, U/L,
+production, owner, publication, routing or throughput effect follows.

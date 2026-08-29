@@ -1,0 +1,162 @@
+E096 RESULT: THE SPATIAL SEPARATOR IS A MUCH THINNER BRIDGE THAN THE TEMPLATE CUT
+=================================================================================
+
+Status
+------
+Closed by an exact no-solver interaction census and independent replay. The
+selected representation is a vertical spatial separator after x=34. No
+feasibility or runtime claim follows from the interface counts alone.
+
+Verdict
+-------
+
+SPATIAL_SEPARATOR_INTERFACE_DOMINATES_TEMPLATE_INTERFACE
+
+Decision
+--------
+
+SELECT_SPATIAL_SEPARATOR_DECOMPOSITION
+
+Machine evidence
+----------------
+Terminal result:
+
+  research_lab/local/zero_condition/
+  E096_module_b_interface_thickness/run-001/RESULT.json
+
+SHA-256:
+
+  b16062ce71a9bf40943bd9adcb788249b68099906ab4bb360d48800230dc10f2
+
+Independent artifact check:
+
+  research_lab/local/zero_condition/
+  E096_module_b_interface_thickness/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  695eae5cac25ac72c5f3f0fa4b76cd79c0c03042c8290bd746dcd960edcf8192
+
+Object space and interface meaning
+----------------------------------
+E096 consumes E095's exact active module-B universe:
+
+  candidate rows    4,378
+  selected bodies      91
+
+A cell belongs to a decomposition interface when body candidates from more than
+one group can occupy it, or when a native front in one group can be occupied by
+a body candidate from another group. This is the exact coupling surface of the
+current body/native-front model. Cell states are not assumed independent and the
+counts are not runtime estimates.
+
+1. Template cut: almost every candidate remains on the bridge
+--------------------------------------------------------------
+Grouping by manufacturing template gives:
+
+  3x3 candidates       1,335
+  5x5 candidates         868
+  6x4 candidates       2,175
+
+Operation-class counts are template-local, so this split needs no count-allocation
+vector. Its geometric bridge is nevertheless thick:
+
+  interface occupancy cells    1,926
+  participating candidates     4,378 / 4,378
+
+All three templates interact through body overlap and front/body occupancy. The
+absence of count coupling does not compensate for an interface that touches the
+entire candidate universe.
+
+Template artifact:
+
+  research_lab/local/zero_condition/
+  E096_module_b_interface_thickness/run-001/TEMPLATE_INTERFACE.json
+
+SHA-256:
+
+  1f566e2cce5682e51da52cc9f0b69792781e54b42033564d8b548c10dd972c11
+
+2. Spatial sweep: x=34 produces a bounded exact separator
+---------------------------------------------------------
+E096 evaluates 93 vertical/horizontal cuts without deleting any candidate.
+Bodies crossing a cut become an explicit separator group; low and high groups
+remain intact. Cuts used for the decision must contain at least 20 of E092's 91
+selected B bodies on each side, no more than 15 anchor bodies in the separator,
+and at least 15 percent of nonseparator candidates on each side. Seventy-eight
+cuts pass.
+
+The deterministic winner is:
+
+  cut                 after x=34
+  low candidates            1,915
+  separator candidates        436
+  high candidates           2,027
+  low anchor bodies            33
+  separator anchor bodies       5
+  high anchor bodies            53
+
+Its exact bridge has:
+
+  interface occupancy cells     133
+  participating candidates    1,267
+  class-allocation dimensions      8
+  allocation-box log2 upper bound 27.726
+
+The separator is 9.96 percent of the B candidate universe. The occupancy bridge
+shrinks from 1,926 template-interface cells to 133, and the largest spatial side
+(2,027 candidates) is smaller than the largest template group (2,175). The
+frozen decision rule is therefore satisfied on all three clauses. The independent
+checker directly confirms all group, anchor and interface counts and that the
+separator is below the 20-percent cap.
+
+Spatial frontier:
+
+  research_lab/local/zero_condition/
+  E096_module_b_interface_thickness/run-001/SPATIAL_INTERFACE_FRONTIER.json
+
+SHA-256:
+
+  949a39da7261804d383b99b4f61b78813032b9816d129178e5995add2f41448e
+
+Candidate interface records:
+
+  research_lab/local/zero_condition/
+  E096_module_b_interface_thickness/run-001/B_CANDIDATE_INTERFACE_RECORDS.json
+
+SHA-256:
+
+  c94b4d2fca806984904146706ff0dddc8e79bc675cedade4a700b7b59f029843
+
+Interpretation
+--------------
+The template cut is a name-level split with a geometry-sized bridge. The spatial
+cut is a geometry-level split with a small explicit middle and eight integer
+count obligations. The latter is the more faithful continuation language.
+
+The selected cut also suggests a sufficient constructor that is cheaper than a
+full separator master: reserve one manufacturing-free column at x=35. Low bodies
+then end at x<=34, high bodies begin at x>=36, and both sides may use x=35 for
+native fronts. This removes separator candidates and all cross-side body/front
+coupling while preserving the eight class-allocation equations. It strengthens
+the fixed-skeleton problem and therefore can produce a witness but cannot prove
+the unrestricted skeleton infeasible.
+
+What did not happen
+-------------------
+E096 does not solve module B. Interface-cell counts are not complexity bounds,
+and the allocation-box product is only a coordinate description. No template,
+spatial region or candidate is ruled out. No terminal uniqueness, generic I/O,
+component binding, routing, throughput, whole-layout, certification or U/L result
+exists.
+
+Effect on the next problem
+--------------------------
+Do not build three template solvers. Compile the selected spatial language. The
+cheapest constructive discriminator is an E097 restricted B model that reserves
+x=35 from manufacturing bodies, keeps the exact fixed poles/boundary and complete
+native-front semantics, and expresses the eight low/high class allocations
+explicitly. A positive combines with E095's frozen A witness and advances to
+terminal uniqueness. A negative applies only to this new sufficient restriction;
+an UNKNOWN should be followed by separate low/high solves conditioned on count
+allocations, not by reopening the E094 monolith.
