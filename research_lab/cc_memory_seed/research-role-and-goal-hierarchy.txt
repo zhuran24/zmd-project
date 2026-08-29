@@ -16,6 +16,6 @@ metadata:
 
 当前 campaign 决定眼前资源，项目终点防止局部胜利冒充完成，未来目标防止临时编码被误写成通用架构。便宜的实例特化可以用，但必须携带前提。
 
-本树可以提出 theorem、cut、模型、witness 和 promotion packet，但不能更新 U/L、授予 production/certified、替 owner 作 authority 动作或发布结果。动态现状只读 `research_lab/STATE.txt` 和 active `CAMPAIGN.txt`，不要把旧战况抄进长期记忆。
+本树可以提出 theorem、cut、模型、witness 和 promotion packet，但不能更新 U/L、授予 production/certified、替 owner 作 authority 动作或发布结果。动态现状只读 `research_lab/STATE.txt`；active `CAMPAIGN.txt` 只定义稳定成功对象、范围与 close 条件。不要把旧战况抄进长期记忆。
 
 历史材料树 `/home/zhuran24/zmd-pj` 和认证树 `/home/zhuran24/zmd-certification` 对研究会话均只读。成熟对象按 packet 过境，不能整体合并研究分支。

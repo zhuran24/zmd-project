@@ -1,6 +1,21 @@
 CAMPAIGN: ZERO-CONDITION WHOLE LAYOUT
 =====================================
 
+Reading contract
+----------------
+This is the stable campaign contract. Read it when entering this campaign for the
+first time, when its success object or scope is disputed, when a result may have
+changed that scope, or before claiming campaign close.
+
+It is not current state. The current endpoint, deepest positive witness,
+reflection checkpoint, and one live question exist only in:
+
+  research_lab/STATE.txt
+
+Durable consequential evidence is queried in RESULTS.txt by result/experiment ID;
+external evidence identity is queried in INPUTS.txt. Journals are reasoning
+archaeology, not current authority.
+
 Identity
 --------
 id: zero_condition
@@ -17,6 +32,7 @@ It is not satisfied by:
   * a placement-only incumbent;
   * a placement-plus-power master solution;
   * one FEASIBLE binding selection;
+  * a native-front or component-support relaxation witness;
   * a routing precheck that merely avoids front-blocked;
   * an unverified external blueprint.
 
@@ -30,8 +46,9 @@ The intended campaign chain is:
     -> strict independent validation
     -> game-side review when required
 
-A stage may use research-only instrumentation or a narrower diagnostic model, but
-only the complete chain closes the campaign.
+A stage may use research-only instrumentation, sufficient restrictions, partial
+witnesses, or narrower diagnostic models. Those objects can move the campaign,
+but only the complete chain closes it.
 
 Why this campaign is first
 --------------------------
@@ -39,95 +56,83 @@ The lower side is empty. Before asking for a 6x6 or larger strict-empty rectangl
 the project needs to prove it can construct and validate any complete layout under
 the remaining rules. The zero-condition object is therefore both the cheapest
 constructive milestone and the clearest microscope for the real interface among
-placement, power, binding, and routing.
+placement, power, binding, routing, and later throughput semantics.
 
-Current evidence
-----------------
-1. The no-ghost placement-plus-power master has an OPTIMAL solution containing
-   all 266 mandatory instances. This is an intermediate, not a whole layout.
-
-2. Its first binding is FEASIBLE, but exact routing precheck reports front_blocked
-   with 70 blocked ports. The strict validator is not reached. This only rejects
-   that binding selection under the fixed layout.
-
-3. The fixed geometry contains 1100 free cells split into 98 components; the
-   largest component has 405 cells. A binding model that compiles front clearance
-   and component support is INFEASIBLE before exact routing.
-
-4. Commodity assumption minimization reduces that component-support failure to
-   the single commodity blue_iron_block.
-
-5. An independently checked four-pose pattern forms a closed three-cell pocket
-   containing the mandatory blue_iron_block source front and no possible sink.
-   The resulting pose-conjunction nogood is sound in the frozen context and has
-   no production or ledger effect.
-
-6. Older fixed-layout campaigns independently show that full-selection point
-   nogoods repeatedly change the binding assignment without changing the local
-   family of front-blocked death. They justify re-deriving the interface, not
-   assuming the existing seam is adequate.
-
-The precise evidence identities are recorded in INPUTS.txt and RESULTS.txt. The
-chronological reasoning log and research-inertia audit for 2026-08-25 through
-2026-08-26 are in RESEARCH_JOURNAL_20260825_20260826.txt; the daily continuation
-from 2026-08-27 is in RESEARCH_JOURNAL_20260827.txt.
-
-Research conclusion already earned
-----------------------------------
-The old seam
+Standing research tension
+-------------------------
+The inherited seam
 
   placement + power -> complete binding -> routing precheck
 
-is not treated as a neutral default. At least three classes of information should
-be reconsidered before exact routing:
+is not treated as a neutral default. Cheap information may belong before exact
+routing, including:
 
   static port-pattern viability
   free-space component support for selected commodity terminals
   placement-level obstacle causes when all compatible selections are impossible
 
-This does not yet determine the final number of layers or the final cut families.
-It determines that those are open research outputs.
+But the campaign does not predeclare the final number of layers, a permanent
+factory topology, or a fixed cut catalogue. Layer boundaries, representations,
+constructive modules, and transport objects are research outputs.
 
-Live question
--------------
-What is the smallest faithful repartition that prevents the master/binding side
-from producing geometries and selections already dead by cheap interface
-reasoning, while leaving true simultaneous path conflicts to exact routing?
+The standing question is therefore not a single current experiment. It is:
 
-Candidate explanations to distinguish
--------------------------------------
-local pocket regime
-  A small obstacle set forces a required terminal into a sink-free component.
-  Appropriate output may be a compact placement-level nogood or a parametric
-  pocket rule.
+> What is the smallest faithful architecture that prevents upstream construction
+> from repeatedly producing objects already dead by cheap interface reasoning,
+> while leaving genuinely simultaneous path conflicts to exact routing and still
+> producing a complete witness?
 
-global fragmentation regime
-  No small core dominates; the placement creates many disconnected free-space
-  islands. Appropriate output may be a positive permeable-space or variable
-  backbone representation rather than many local cuts.
+Current experiments answer bounded pieces of that question. Their active order is
+owned by STATE, not by this file.
 
-component-support regime
-  Terminals exist but no assignment can place each required commodity source and
-  sink in a compatible component. Appropriate output belongs with binding, not
-  exact path routing.
-
-simultaneous-routing regime
-  Component support passes, but paths cannot coexist because of shared cells,
-  directions, crossings, or corridor capacity. Only then does exact-routing cut
-  design become the current wall.
+Truth boundary
+--------------
+* A result in a frozen layout, binding, skeleton, partition, or sufficient
+  language keeps exactly that scope.
+* UNKNOWN is not infeasibility. A failed constructor does not prove no layout
+  exists.
+* A necessary condition is not a sufficient construction; a positive relaxation
+  witness is not a whole-layout witness.
+* Local component/destination/index handles do not transport across rebuilt
+  contexts without stable-witness remapping.
+* Research results do not update production, certification, U/L, publication, or
+  owner authority.
 
 Working constraints
 -------------------
-* Do not assume a fixed shelf, frame, corridor, or factory topology merely because
-  it is easy to describe.
+* Do not assume a fixed shelf, frame, corridor, bay, seam, or factory topology
+  merely because it is easy to describe or has survived several experiments.
 * Do not encode the entire routing model into the placement master without a new
   problem-derived reason.
-* Do not let another interface-compressibility study postpone the whole-layout
-  target; measurements should ride on the witness campaign.
-* Do not infer zero-condition infeasibility from the death of A1 or any finite
-  portfolio unless the quantified space is exactly exhausted.
-* Do not treat the current four-pose cut as a general family until its premises
-  and transport rule are generalized or independently regenerated per layout.
+* Do not let another interface-compressibility or research-machine study postpone
+  the whole-layout target. Positive objects should be sent to their next real
+  consumer before another abstraction is built above them.
+* Do not infer zero-condition infeasibility from the death of one layout, one
+  skeleton, one sufficient language, or any finite portfolio unless that exact
+  quantified space is exhausted.
+* When the runtime pause triggers fire, use
+  research_lab/ATTENTION_AND_REFLECTION.txt rather than rereading this campaign
+  contract as a substitute for reflection.
+
+Evidence routing
+----------------
+READ NOW:
+  research_lab/STATE.txt
+
+READ WHEN checking campaign scope or close:
+  this file
+
+LOOKUP consequential conclusions:
+  research_lab/campaigns/zero_condition/RESULTS.txt
+
+LOOKUP frozen input identities:
+  research_lab/campaigns/zero_condition/INPUTS.txt
+
+LOOKUP reasoning history or inertia:
+  research_lab/campaigns/zero_condition/RESEARCH_JOURNAL_*.txt
+
+LOOKUP individual experiment evidence:
+  research_lab/campaigns/zero_condition/experiments/<id>/
 
 Relation to later goals
 -----------------------

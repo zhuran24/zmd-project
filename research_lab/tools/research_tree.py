@@ -397,6 +397,22 @@ def collect_report() -> tuple[CheckReport, dict[str, str]]:
         campaign_text = campaign_path.read_text(encoding="utf-8")
         if f"id: {mode['active_campaign']}" not in campaign_text:
             report.errors.append("active CAMPAIGN.txt id does not match mode file")
+        if "Reading contract\n----------------" not in campaign_text:
+            report.warnings.append("active CAMPAIGN.txt lacks a reading contract")
+        if extract_section(campaign_path, "Live question") is not None:
+            report.warnings.append("CAMPAIGN.txt contains a live question; current questions belong in STATE.txt")
+        if extract_section(campaign_path, "Current evidence") is not None:
+            report.warnings.append("CAMPAIGN.txt contains current evidence; current evidence belongs in STATE/RESULTS")
+
+        results_path = campaign_path.parent / "RESULTS.txt"
+        if results_path.is_file():
+            results_head = "\n".join(
+                results_path.read_text(encoding="utf-8").splitlines()[:24]
+            )
+            if "Navigation\n----------" not in results_head:
+                report.warnings.append("campaign RESULTS.txt lacks a query/navigation contract near its front")
+            if extract_section(results_path, "Current synthesis") is not None:
+                report.warnings.append("RESULTS.txt contains a current synthesis; current orientation belongs in STATE.txt")
 
     start_path = path_from_mode(mode, "entry")
     if start_path.is_file() and line_count(start_path) > 110:
@@ -454,17 +470,21 @@ def print_human(report: CheckReport, mode: dict[str, str], *, enter: bool) -> No
         live_question = extract_section(state_path, "Live question")
         print("\nREAD NOW")
         print(f"  1. {mode['state']}")
-        print(f"  2. {mode['active_campaign_file']}")
+        print("\nREAD WHEN")
+        print(
+            f"  campaign entry/scope/close: {mode['active_campaign_file']}"
+        )
+        print(f"  runtime pause trigger: {mode['attention']} sections 3-4")
+        print(f"  changed mission/goal level: {mode['program']}")
         print("\nSESSION MODE")
         print(
             "  RESEARCH mode: produce candidate knowledge for "
             f"{mode['active_campaign']}; this session cannot grant certification or update U/L."
         )
         if reflection_checkpoint:
-            print("\nREFLECTION CHECKPOINT")
-            for line in reflection_checkpoint.splitlines():
-                print(f"  {line}")
-            print(f"  pause guide: {mode['attention']}")
+            print("\nATTENTION ROUTE")
+            print("  the current checkpoint is in STATE; it does not require a pause by itself")
+            print(f"  pause only on a runtime trigger: {mode['attention']} sections 3-4")
         if live_question:
             print("\nLIVE QUESTION")
             for line in live_question.splitlines():

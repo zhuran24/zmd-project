@@ -5,6 +5,14 @@ This file records only conclusions that changed the next problem or decision.
 Raw runs, failed apparatus, and exploratory notes remain in local output or the
 source evidence. Records are not certification claims.
 
+Navigation
+----------
+This is an append-only queried ledger, not a default front-to-back read and not
+current state. Begin with research_lab/STATE.txt, then search the exact R-ZC ID,
+experiment ID, topic, or evidence pointer needed by the live question. A record's
+"effect on next problem" is the historical effect it had when written; later
+records may supersede it, and only STATE owns the current next problem.
+
 R-ZC-000  Repeated point nogoods do not transmit the observed death family
 --------------------------------------------------------------------------
 status: measured
@@ -4650,9 +4658,13 @@ evidence:
   ARTIFACT_CHECK.json sha256
   d2ce20ac65085469f532601fa8832f657d81bd101ca1b82df9680ae3b3fc5b28.
 
-Current synthesis
------------------
-The sufficient-side search language now has an explicit chain:
+Historical synthesis snapshot (through E104; not current)
+---------------------------------------------------------
+This snapshot is retained as reasoning history. It predates E105-E121 and must
+not be used as current orientation; use research_lab/STATE.txt and query the
+later R-ZC records above.
+
+The sufficient-side search language then had an explicit chain:
 
   audited 47-state boundary semantic object
     -> connected typed operation partition

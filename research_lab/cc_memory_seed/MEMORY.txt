@@ -12,8 +12,8 @@
 
 ## 即时触发
 - [REFLEX:RESEARCH-PAUSE](research-pause-reflex.md) — 同一语言连续不推进、两次只涨知识/机器账、UNKNOWN 后只想加预算/表示、正见证未消费、接口膨胀、单骨架垄断、stop/owner/身份变化或高注意力文件修改时，先做一屏反思再开下一实验；不是逐步仪式。
-- 每次进入先读 `research_lab/STATE.txt` 与 active campaign；auto-memory 不复制动态战况。
-- 挂起事项必须进入未来会话必经的 STATE／CAMPAIGN／RESULTS 或具名触发器，不能只留在对话和日志里。
+- 每次进入只把 `research_lab/STATE.txt` 当 current；active CAMPAIGN 仅在首次进入、范围/成功对象不清或 close 前读取；auto-memory 不复制动态战况。
+- 挂起事项按身份落位：动态恢复句柄进 STATE，稳定 campaign 范围进 CAMPAIGN，已改变后继问题的结论进 RESULTS；否则使用具名触发器，不能只留在对话和日志里。
 - 研究结论准备跨树时，只冻结 promotion packet；不得整体合并 `research/main`，不得由本树自授认证效力。
 - 时序敏感的席位改令先停止再重发；稳定操作细节回读 `docs/AGENT_OPERATIONS.md` 与 ops runbook，不在记忆里复制活阈值。
 

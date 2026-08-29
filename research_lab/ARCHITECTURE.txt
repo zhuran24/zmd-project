@@ -80,16 +80,20 @@ Validation level:
     R0 ordinary exploration, R1 real-solver integration, and R2 promotion
     candidate checks. The level follows the effect being claimed, not file type.
 
-Campaign context:
+Campaign contract:
   research_lab/campaigns/<id>/CAMPAIGN.txt
-    Success object, scope, known facts, non-implications, current research
-    tension, and links to source evidence.
+    Stable success object, scope, standing tension, non-implications, evidence
+    routes, and close condition. It does not own current evidence or the live
+    question; those belong to STATE and RESULTS.
 
 Information placement follows attention frequency: high-frequency entry files are
 short and pointer-rich; live facts stay in STATE; consequential conclusions stay
 in RESULTS/experiment records; raw bytes stay in local. Before adding a durable
-file, consider its audience, load frequency, half-life, induced behavior, and one
-truth source. The complete placement rule is in ATTENTION_AND_REFLECTION.txt.
+file or link, consider its audience, load frequency, half-life, induced behavior,
+link intent/depth, and one truth source. A link is a load instruction, not neutral
+bibliography: high-frequency routes must say READ NOW, READ WHEN, LOOKUP/EVIDENCE,
+SOURCE, RECOVERY, or WRITE TARGET in ordinary prose. The complete placement rule
+is in ATTENTION_AND_REFLECTION.txt.
 
 The inherited repository is a library, not the front door. Agents load old
 CURRENT/PROJECT_LOCK/ledgers/history only when the current question needs exact
@@ -131,11 +135,16 @@ attention/reflex layer
   ordinary step.
 
 campaign layer
-  campaigns/<id>/. Self-contained active research surface.
+  campaigns/<id>/CAMPAIGN.txt is the stable campaign contract; INPUTS.txt is the
+  frozen input-identity lookup; RESULTS.txt is an append-only queried ledger;
+  journals are reasoning archaeology. None except STATE is a default current
+  narrative.
 
 experiment-source layer
   campaigns/<id>/experiments/. Tracked scripts, small fixtures, hypotheses, and
-  compact summaries needed to reproduce or understand a discriminating test.
+  compact summaries needed to reproduce or understand a discriminating test. A
+  result-local "next problem" is historical after later experiments supersede it;
+  it never overrides STATE.
 
 local runtime layer
   local/. Ignored logs, caches, raw runs, temporary models, large receipts,

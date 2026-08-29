@@ -33,16 +33,16 @@ Trigger: the owner identified that three major direction corrections occurred
 only after an external stop, even though the relevant methodology was already
 written.
 
-Diagnosis: the missing layer was event timing, not doctrine. Method and charter
-were loaded at cold start but had no concrete runtime interrupt. The current line
-also shows the exact risk: several recent results moved the knowledge and machine
-accounts while the deepest positive witness stayed at E095.
+Diagnosis: the missing layer was event timing and attention routing, not doctrine.
+Method and charter lacked a runtime interrupt; CAMPAIGN and RESULTS also carried
+stale-looking current narratives that could pull a later agent away from STATE.
+Every durable file and link therefore has an attention effect.
 
-Decision: install event-triggered reflection in the attention architecture. Keep
-the current collar-versus-skeleton discriminator as the live question, but do
-not open a third same-language continuation after two non-deepening results
-without the one-screen pulse in ATTENTION_AND_REFLECTION.txt. A direct consumer
-or orthogonal control has priority over another abstraction layer.
+Decision: install event-triggered reflection and retype the file/link graph.
+STATE alone owns current orientation; CAMPAIGN is the stable contract; RESULTS is
+a queried historical ledger; high-frequency links state when and why to follow
+them. Keep the collar-versus-skeleton discriminator as the live question, but a
+direct consumer or orthogonal control has priority over another abstraction layer.
 
 Next mandatory pause: before a third consecutive experiment that preserves the
 same skeleton, consumer depth, and success signal without advancing the deepest
@@ -84,12 +84,17 @@ Immediate truth guards
   integers are local handles. All results remain research-only with no
   certification, U/L, owner, production, or publication effect.
 
-Pointers
---------
-- Attention and pause contract: research_lab/ATTENTION_AND_REFLECTION.txt
-- Program: research_lab/PROGRAM.txt
-- Campaign: research_lab/campaigns/zero_condition/CAMPAIGN.txt
-- Results: research_lab/campaigns/zero_condition/RESULTS.txt
-- Current journals: research_lab/campaigns/zero_condition/RESEARCH_JOURNAL_20260828.txt
-- Direction: research_lab/campaigns/zero_condition/DIRECTION_CUT_TRANSPORT_20260828.txt
-- Stable identity: research_lab/methods/STABLE_IDENTITY_TRANSPORT.txt
+Link routes
+-----------
+- READ WHEN a pause trigger fires: research_lab/ATTENTION_AND_REFLECTION.txt §3-4
+- READ WHEN campaign scope/success/close is in question:
+  research_lab/campaigns/zero_condition/CAMPAIGN.txt
+- READ WHEN mission or goal level is in question: research_lab/PROGRAM.txt
+- LOOKUP result/experiment IDs named above; do not read front-to-back:
+  research_lab/campaigns/zero_condition/RESULTS.txt
+- LOOKUP reasoning archaeology only:
+  research_lab/campaigns/zero_condition/RESEARCH_JOURNAL_20260828.txt
+- LOOKUP the current direction argument when that representation is disputed:
+  research_lab/campaigns/zero_condition/DIRECTION_CUT_TRANSPORT_20260828.txt
+- SOURCE for cross-context identity transport:
+  research_lab/methods/STABLE_IDENTITY_TRANSPORT.txt

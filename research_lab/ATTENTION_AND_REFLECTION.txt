@@ -44,32 +44,150 @@ of copying it in full.
 2. Attention map for the rest of the tree
 -----------------------------------------
 
+The three entry surfaces are only the top of the graph. Every durable file and
+link below them also changes what a later agent notices, in what order, and with
+what apparent authority. File placement is therefore part of the research
+method, but not a reason to turn every edit into governance paperwork.
+
+README.md
+  Human landmark and repository-role summary. For agents it points to the entry
+  command; its directory inventory is not a read order.
+
+.zmd-worktree-mode
+  Machine routing contract. It names canonical surfaces and paths; it must not
+  carry changing narrative or research conclusions.
+
+research_lab/START.txt
+  Cold-start procedure and write destinations. Read on first entry or when the
+  route is unclear, not as current state.
+
 research_lab/STATE.txt
-  First live read. Current endpoint, deepest positive witness, one live question,
-  current reflection checkpoint, inflight recovery, and a small set of immediate
-  truth guards. It is not a historical ledger.
+  The only current-orientation surface. It carries the endpoint, deepest positive
+  witness, one live question, current reflection checkpoint, inflight recovery,
+  and a few immediate guards. It is reread every session and is not a ledger.
 
 campaigns/<id>/CAMPAIGN.txt
-  Stable success object, scope, non-implications, and current campaign tension.
+  Stable campaign contract: success object, scope, standing tension, close
+  condition, and truth boundary. Read when entering or changing campaign, when
+  completion is disputed, or when the current experiment may have changed the
+  campaign's scope. It does not own the live question or current evidence list.
 
-campaigns/<id>/RESULTS.txt
-  Durable consequential conclusions with evidence identity and effect on the
-  next problem. It may be long because it is queried, not read front-to-back at
-  every entry.
+research_lab/PROGRAM.txt
+  Stable three-level mission and research principles. Read on first entry,
+  changed mission, or dispute about what the tree ultimately serves.
 
-campaigns/<id>/experiments/
-  Tracked hypotheses, runners, checkers, and compact durable result records.
+research_lab/ARCHITECTURE.txt
+  Stable repository, file-flow, attention, and promotion design. Read for
+  architecture work, not to decide an ordinary experiment.
 
-research_lab/local/
-  Raw runs, caches, dumps, temporary models, and large receipts. Presence here
-  does not make a result durable.
-
-research_lab/PROGRAM.txt and ARCHITECTURE.txt
-  Stable mission and file-flow design. Read on first entry, changed mission, or
-  architecture work, not during every ordinary experiment.
+research_lab/ATTENTION_AND_REFLECTION.txt
+  Canonical low-frequency attention contract. Read in full for architecture
+  work; at runtime read only the pause-trigger and pulse sections when the memory
+  reflex fires.
 
 research_lab/CHECKS.txt
-  Validation weight selected by claimed effect. It is not the research rhythm.
+  Claim-proportional validation menu. Follow when choosing how strongly to check
+  an effect; it is not the research rhythm and does not decide what to study.
+
+research_lab/BASELINE.txt
+  Baseline identity and refresh decisions. Read only when importing or comparing
+  inherited code/data, not for ordinary campaign orientation.
+
+campaigns/<id>/INPUTS.txt
+  Frozen external evidence identities and roles. Read when a claim consumes an
+  input or its identity must be checked; a listed input is not automatically an
+  active premise.
+
+campaigns/<id>/RESULTS.txt
+  Append-only consequential-result ledger. It is queried by result ID, experiment
+  ID, topic, or a pointer from STATE; it is never a default front-to-back read.
+  Each record's "effect on next problem" is historical after a later result
+  supersedes it. Only STATE owns the current next problem.
+
+campaigns/<id>/experiments/<id>/
+  One experiment's tracked question, source, checker, compact result, and local
+  effect. Its "next problem" records what that experiment caused at the time; it
+  does not remain current merely because the file is opened later.
+
+campaign journals
+  Reasoning archaeology and chronology. Read when reconstructing how a choice was
+  made, auditing inertia, or recovering lost rationale; do not use them as current
+  status or as stronger evidence than machine artifacts.
+
+campaign-level direction, collision, review, and identity-audit files
+  Frozen arguments or audits for a named dispute. Read when that representation,
+  premise, or evidence identity is challenged. They may explain why a route was
+  chosen, but they do not become current merely by sitting near CAMPAIGN.txt.
+
+research_lab/methods/
+  Reusable methods that survived materially different contexts. Load only when a
+  current question matches the method's trigger; a method file is not an
+  instruction to apply the method everywhere.
+
+METHOD_ORIGIN.txt and STANCE_ORIGIN.txt
+  Owner-origin and stance archaeology. Read when returning to the original feel,
+  resolving interpretation drift, or revising doctrine; not on every session.
+
+HISTORICAL_REFERENCE_REGISTER.txt
+  Question-routed pointer index into the read-only material tree. It is a lookup
+  surface, not a default reading list and not a truth source.
+
+promotion/
+  Frozen interface objects for certification. Read or write only when a selected
+  result is crossing the research/certification boundary.
+
+src/, rules/, specs/, docs/, and tracked historical artifacts
+  Code and library material reached from a concrete question, CodeGraph, an
+  evidence pointer, or an authority lookup. Their inherited prominence in the
+  repository does not make them default attention.
+
+research_lab/local/
+  Raw runs, caches, dumps, temporary models, large receipts, and one-off reviews.
+  Presence here does not make a conclusion durable and no default-read file may
+  cite a local path as its sole truth source.
+
+2A. Links are load instructions
+-------------------------------
+
+A link is not neutral bibliography. On a high-frequency surface it is an
+instruction to spend attention, and its wording determines whether a later agent
+reads now, reads only on a trigger, treats the target as evidence, or merely knows
+where output belongs.
+
+Use these link intents in prose rather than inventing a metadata bureaucracy:
+
+  READ NOW
+    Required to orient the present session. Keep this set tiny; normally STATE is
+    the only research file in it.
+
+  READ WHEN
+    Follow only on a named event: campaign entry, method dispute, pause trigger,
+    baseline refresh, recovery, promotion, or a specific evidence question.
+
+  LOOKUP / EVIDENCE
+    The target supports a claim or identity. Read the smallest relevant section;
+    do not absorb its old narrative as current state.
+
+  SOURCE OF TRUTH
+    Names where a fact is authoritative. Authority does not imply default-load.
+
+  RECOVERY
+    Follow only when an inflight handle, failed run, or handoff requires it.
+
+  WRITE TARGET
+    Says where a new artifact belongs. It is not a reading recommendation.
+
+High-frequency files must not contain naked links to long cumulative documents.
+They name the trigger, purpose, and preferably the section, result ID, experiment
+ID, or query. Critical runtime information should be reachable in at most two
+hops from an entry surface. Evidence files may link widely because they are
+queried after the question is already known.
+
+Links also have direction. Current surfaces may point downward to stable scope or
+frozen evidence. Old experiment records and journals may describe the next
+problem they caused at the time, but they never point upward with authority to
+replace STATE. A generated index must not become a second truth source merely
+because more agents see it.
 
 3. Mandatory pause triggers
 ---------------------------
@@ -155,26 +273,32 @@ Recording rule:
 5. Attention effect of every durable file change
 ------------------------------------------------
 
-Before creating or modifying a durable file, consider five things. This is a
-mental placement check, not a form to fill out:
+Before creating or modifying any durable file or durable link, consider six
+things. This is a mental placement check, not a form to fill out:
 
   audience
-    Which agent/role is expected to read it?
+    Which agent/role is expected to encounter it?
 
   load frequency
     Every prompt/session, every campaign entry, only on a matching trigger, or
     only as evidence lookup?
 
   half-life
-    Stable doctrine, stable reflex, live state, consequential result, or raw run?
+    Stable doctrine, stable reflex, live state, consequential result, historical
+    reasoning, or raw run?
 
   induced behavior
     What will a future agent do earlier, later, more often, or stop doing because
-    this file is visible?
+    this file or link is visible?
+
+  link intent and depth
+    Is the pointer READ NOW, READ WHEN, LOOKUP, SOURCE, RECOVERY, or WRITE TARGET?
+    Does it send the reader through unnecessary intermediate indexes or into a
+    long file without a section/query?
 
   identity and duplication
     Where is the one truth source, and which higher-frequency files should only
-    point to it?
+    point to it? Could this new summary silently become a competing current state?
 
 Placement defaults:
   role/mode/read order                 -> AGENTS/CLAUDE

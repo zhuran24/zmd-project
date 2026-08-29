@@ -25,7 +25,8 @@ Architecture
 ------------
 MEMORY.md remains a short default-injection index. Detailed cards are loaded only
 when their trigger matches. Dynamic campaign state is not copied into auto-memory;
-it stays in research_lab/STATE.txt and the active CAMPAIGN.txt.
+it stays only in research_lab/STATE.txt. The active CAMPAIGN.txt carries the stable
+success object, scope, and close condition rather than current battle state.
 
 Runtime research pauses belong here as a stable reflex because the missing
 failure mode was not ignorance of the methodology, but failure to surface it at

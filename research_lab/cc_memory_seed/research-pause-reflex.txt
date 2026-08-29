@@ -20,4 +20,4 @@ metadata:
 
 脉冲不是报告，也不是每一步自审。只回答：最深正见证有没有前进，三本账哪本在涨，什么选择变成了未经复核的家具，最便宜的直接 consumer／正交 control 是什么，决定 CONTINUE、BRANCH/CONTROL 还是 STOP/SWITCH。方向不变就立刻继续，不写新文件；方向或活问题改变才更新 STATE 的 Reflection checkpoint。
 
-skill 负责为什么，memory 负责什么时候打断，AGENTS／CLAUDE 负责把这条反射路由进工作流。不要因为这张卡存在，就让正常研究始终盯着方法论本身。
+skill 负责为什么，memory 负责什么时候打断，AGENTS／CLAUDE 负责把这条反射路由进工作流。每个耐久文件与链接都要做一次轻量注意力放置判断，但只有高注意力入口修改或上列运行时事件才触发本卡；不要因为这张卡存在，就让正常研究始终盯着方法论本身。

@@ -10,11 +10,11 @@ Mode: `RESEARCH`。Branch: `research/main`。
 
 第一份活读物是 `/home/zhuran24/zmd-research/research_lab/STATE.txt`:一个当前端点、一个活问题、加上在途恢复句柄。跨树交接、owner 事项、跨会话外部作业才读 `/home/zhuran24/.claude/ops/zmd-pj/membrane/NOW.md`;普通 R0 工作留在本地,不进 O。
 
-首次进树或目标层级变了,读 `research_lab/PROGRAM.txt`;STATE 之后按当前问题读 `.zmd-worktree-mode` 指的活跃 campaign;旧治理与历史只按需加载。
+每次只把 `STATE.txt` 当当前入口。首次进入某 campaign、成功对象/范围不清或准备宣称 close 时,才读 `.zmd-worktree-mode` 指的活跃 `CAMPAIGN.txt`;首次进树或目标层级变了再读 `research_lab/PROGRAM.txt`;旧治理与历史只按问题触发加载。
 
-每个新会话、每次上下文压缩后,装载 `/zmd-method` 与 `/research-charter`——它们提供为什么与边界,装载后退到背景,不是逐实验自审清单。运行中何时必须停,由 memory 的 `REFLEX:RESEARCH-PAUSE` 与 `research_lab/ATTENTION_AND_REFLECTION.txt` 负责。当前押注只看 `/home/zhuran24/zmd-pj/docs/项目说明/30_research_charter.md` 末节。owner 原话档案在 `research_lab/METHOD_ORIGIN.txt`(方法)与 `research_lab/STANCE_ORIGIN.txt`(姿态),想回出发点的感觉时去翻。
+每个新会话、每次上下文压缩后,装载 `/zmd-method` 与 `/research-charter`——它们提供为什么与边界,装载后退到背景,不是逐实验自审清单。运行中何时必须停,由 memory 的 `REFLEX:RESEARCH-PAUSE` 与 `research_lab/ATTENTION_AND_REFLECTION.txt` 负责。日常 current 仍只看 `STATE.txt`;只有 owner 层方向/预算押注发生争议时,才 READ WHEN `/home/zhuran24/zmd-pj/docs/项目说明/30_research_charter.md` 末节。owner 原话档案在 `research_lab/METHOD_ORIGIN.txt`(方法)与 `research_lab/STANCE_ORIGIN.txt`(姿态),想回出发点的感觉时去翻。
 
-CC 自动记忆绑在 `research_lab/CC_MEMORY.txt` 记录的研究专用目录,装稳定研究习惯,不装 campaign 状态;现在发生着什么,以 `STATE.txt` 与活跃 campaign 为准。
+CC 自动记忆绑在 `research_lab/CC_MEMORY.txt` 记录的研究专用目录,装稳定研究习惯,不装 campaign 状态;现在发生着什么只看 `STATE.txt`,活跃 `CAMPAIGN.txt` 只定义稳定成功对象、范围与 close 条件。
 
 ## 默认注意力
 
@@ -27,6 +27,8 @@ CC 自动记忆绑在 `research_lab/CC_MEMORY.txt` 记录的研究专用目录,�
 方法论不是只在开场读。命中任一事件,先按 `research_lab/ATTENTION_AND_REFLECTION.txt` §3-4 做一屏反思脉冲,再开下一个实验:同一 skeleton/consumer/成功信号连续两次未推进最深正见证而准备开第三次;连续两次只涨知识账或机器账;UNKNOWN 后只想加时间、seed、profile、cut、atlas 或再套一层表示;已有正几何/见证/有限基底尚未送进更深 consumer 却准备再建抽象;预设停止条件、owner 回看或证据身份变化出现。
 
 这不是写报告或反复盯着纲领。正常工作不自审;触发时一分钟内决定 CONTINUE、BRANCH/CONTROL 或 STOP/SWITCH。只有方向或活问题改变,才更新 `STATE.txt` 的 `Reflection checkpoint`。
+
+每个耐久文件和链接都会塑造未来 agent 的注意力。新建或修改前至少想清读者、加载频率、半衰期、会诱发什么行为、链接是立即读/按需读/证据/恢复/写入中的哪一种,以及唯一真源在哪里;完整规则见 `research_lab/ATTENTION_AND_REFLECTION.txt` §2/§5。只有高注意力入口的修改才触发完整反思脉冲,普通文件不走审批仪式。
 
 ## CodeGraph 优先
 

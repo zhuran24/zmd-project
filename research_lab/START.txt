@@ -16,23 +16,25 @@ A healthy entry must report:
 
 Read order
 ----------
-Every session:
+READ NOW every session:
 
   1. research_lab/STATE.txt
-  2. the active campaign file printed by the entry tool
 
-First entry, changed mission, or architecture work:
+READ WHEN the named condition applies:
 
-  3. research_lab/PROGRAM.txt
-  4. research_lab/ARCHITECTURE.txt
-  5. research_lab/ATTENTION_AND_REFLECTION.txt
-  6. research_lab/CHECKS.txt when choosing a validation level
+  2. active CAMPAIGN.txt — first session in that campaign, changed campaign,
+     disputed success object/scope, or before claiming campaign close
+  3. research_lab/PROGRAM.txt — first tree entry or changed mission/goal level
+  4. research_lab/ARCHITECTURE.txt — file-flow, role, or architecture work
+  5. research_lab/ATTENTION_AND_REFLECTION.txt — full read for architecture work;
+     §3-4 only when the runtime pause reflex fires
+  6. research_lab/CHECKS.txt — when choosing the validation weight for a claim
 
 Role memory:
 
   Claude Code loads the research-only auto-memory bound in
   research_lab/CC_MEMORY.txt. It supplies stable research habits and source
-  pointers only. It does not replace STATE.txt or the active campaign.
+  pointers only. It does not replace current STATE or the stable CAMPAIGN contract.
 
 Only after the current question is clear:
 
@@ -40,10 +42,11 @@ Only after the current question is clear:
      question moves: `tools.codegraph.org.default.codegraph_explore` with
      `projectPath=/home/zhuran24/zmd-research`; inspect call paths and blast radius,
      and treat returned source as already read
-  8. research_lab/HISTORICAL_REFERENCE_REGISTER.txt when asking whether an older
-     theorem, game measurement, dead route, compressed artifact, or precedent
-     already exists
-  9. the smallest relevant subset of rules, source code, evidence, and history
+  8. READ WHEN a historical question exists: use
+     research_lab/HISTORICAL_REFERENCE_REGISTER.txt
+  9. LOOKUP only the smallest relevant result ID, experiment, rule, source,
+     evidence range, or history section. Do not read RESULTS or journals
+     front-to-back merely because a link exists.
 
 Do not begin ordinary research by loading the complete certification/governance
 corpus. PROJECT_LOCK, CURRENT, ledgers, and AGENT_OPERATIONS are on-demand
@@ -65,8 +68,9 @@ Runtime pause
 The methodology is loaded at entry, then ordinary work should focus on the
 object. Do not reread doctrine after every step. When the memory reflex
 `REFLEX:RESEARCH-PAUSE` fires, read ATTENTION_AND_REFLECTION.txt §3-4 and perform
-the one-screen pulse before opening the next experiment. Only a changed direction or
-live question needs a durable STATE update.
+the one-screen pulse before opening the next experiment. Only a changed direction
+or live question needs a durable STATE update. Every durable file/link still gets
+the lightweight placement check in §5; that does not trigger a pause by itself.
 
 Where work goes
 ---------------
@@ -87,7 +91,10 @@ Where work goes
 
 Before committing
 -----------------
-  * Re-read the active campaign success object and truth boundary.
+  * Re-read the active campaign success object and truth boundary when the claim
+    could affect campaign scope or completion.
+  * For every durable file/link, apply the lightweight attention placement check:
+    audience, frequency, half-life, induced behavior, link intent/depth, one truth source.
   * Keep the commit to one coherent research change.
   * Use exact pathspecs; do not stage local output.
   * Update STATE only when the current question or campaign position changed.

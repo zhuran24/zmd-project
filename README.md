@@ -10,13 +10,15 @@
 
 ## 进入研究树
 
+本 README 是人类地标与树角色摘要，不是 agent 的阅读顺序。agent 先运行入口工具，由入口工具按当前模式给出 `READ NOW` 与 `READ WHEN` 路由。
+
 先运行：
 
 ```bash
 /home/zhuran24/zmd-pj/.venv/bin/python research_lab/tools/research_tree.py enter
 ```
 
-随后按输出读取 `research_lab/STATE.txt` 与当前 campaign。第一次进入或目标发生变化时，再读 `research_lab/PROGRAM.txt`。
+随后立即读取 `research_lab/STATE.txt`。当前 campaign 文件只在首次进入该 campaign、成功对象或范围不清、或准备宣称 close 时读取；第一次进入整棵树或目标发生变化时，再读 `research_lab/PROGRAM.txt`。
 
 ## 三层目标
 
@@ -28,9 +30,10 @@
 
 ## 研究区
 
-- `research_lab/START.txt`：冷启动入口。
-- `research_lab/PROGRAM.txt`：稳定总纲与目标层级。
-- `research_lab/STATE.txt`：全树当前状态与 campaign 指针。
+- `research_lab/START.txt`：冷启动程序与读写路由，不是当前状态。
+- `research_lab/PROGRAM.txt`：稳定总纲与目标层级，按目标变化加载。
+- `research_lab/STATE.txt`：唯一当前状态、反思 checkpoint 与 live question。
+- `research_lab/ATTENTION_AND_REFLECTION.txt`：文件/链接注意力拓扑与事件触发停顿，按架构工作或运行时触发加载。
 - `research_lab/CC_MEMORY.txt`：研究角色专属 Claude Code 记忆的绑定、种子与漂移边界。
 - `research_lab/campaigns/`：每条当前研究战役的自包含工作面。
 - `research_lab/local/`：日志、缓存、临时模型与可再生运行产物，全部不进 Git。

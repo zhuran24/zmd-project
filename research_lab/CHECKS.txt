@@ -18,7 +18,10 @@ is correct, and every tracked seed card has an installed counterpart. Seed drift
 is reported as memory evolution rather than silently overwritten.
 
 Also verify that raw output stays under research_lab/local/ and that any durable
-conclusion states its scope and effect on the next question.
+conclusion states its scope and effect on the next question. For every durable
+file or link added/changed, confirm it lives at the right attention frequency and
+that the pointer's intent is clear; this is a placement judgment, not a required
+form or dossier.
 
 For any conclusion transported across context, geometry, model rebuild, or
 representation layer: it must carry stable witnesses, its source context
