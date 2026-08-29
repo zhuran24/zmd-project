@@ -3767,6 +3767,41 @@ evidence:
   ARTIFACT_CHECK.json sha256
   b2cc7e2aef54f5e0209a96b124319fa68b834bd0556db1d162732ac123fc5fc4.
 
+R-ZC-111  X42 body/power allocation is easy; high-side front allocation is censored
+-------------------------------------------------------------------------------------
+status: exact body witness; high-side UNKNOWN preserved; checker PASS
+scope: one reserved-x42 low/high template allocation, fixed E092 skeleton
+
+statement:
+  E101 solves an exact x42 body/power-only model in 0.326 seconds. Its 91-body
+  witness allocates 65 bodies low and 26 high, with low template counts 43/11/11
+  and high counts 10/6/10; 57 E092 anchor bodies survive. The independent checker
+  replays non-overlap, fixed power, template totals and both stable E078 bodies.
+
+  The smaller 1,324-candidate high side is then asked to choose 26 bodies, native
+  modes and eight class counts. Its 12,286-variable / 23,904-constraint model
+  returns UNKNOWN after 286,091 branches and 17,016 conflicts in 25.061 seconds,
+  without an allocation vector. The low side never runs and no nogood is learned.
+
+non-implications:
+  High-side UNKNOWN does not reject the high 10/6/10 template allocation, x42 or
+  module B. The body-only witness is not a native-front witness.
+
+effect on next problem:
+  Change the high-side search instrument or derive a high-side class-capacity
+  decomposition. The next useful object is one concrete high allocation vector;
+  only then may its low complement be tested.
+
+evidence:
+  E101 RESULT.txt; local RESULT.json sha256
+  b6b088f214fcbb3be01b26180ce9d211b647ede4038e7542531077548bfd9e9d;
+  BODY_ONLY_RESULT.json sha256
+  3e5a801f2bc41d709eb5dea4bebd4e1d29a9ad121525294b351170a44400f060;
+  HIGH_RESULT_00.json sha256
+  19354cf83b3e0463c2d5fd24aa8880dda4b55ab5dbf5a69d4f496ec6b1b40d02;
+  ARTIFACT_CHECK.json sha256
+  35eb5580acf84a9b25e7569403ac5aa5814285fa29dd225c9bd5e9bd28eb0055.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

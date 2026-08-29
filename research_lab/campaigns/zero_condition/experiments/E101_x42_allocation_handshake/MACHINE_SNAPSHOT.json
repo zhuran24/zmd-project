@@ -1,0 +1,48 @@
+{
+  "schema": "zmd_e101_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "terminal_result": {
+    "path": "research_lab/local/zero_condition/E101_x42_allocation_handshake/run-001/RESULT.json",
+    "sha256": "b6b088f214fcbb3be01b26180ce9d211b647ede4038e7542531077548bfd9e9d",
+    "verdict": "X42_HIGH_SIDE_ALLOCATION_PROPOSER_CENSORED",
+    "decision": "CHANGE_HIGH_SIDE_SOLVER_OR_DERIVE_ALLOCATION_BOUNDS"
+  },
+  "body_only": {
+    "path": "research_lab/local/zero_condition/E101_x42_allocation_handshake/run-001/BODY_ONLY_RESULT.json",
+    "sha256": "3e5a801f2bc41d709eb5dea4bebd4e1d29a9ad121525294b351170a44400f060",
+    "status": "OPTIMAL",
+    "elapsed_seconds": 0.32589731700136326,
+    "branches": 4648,
+    "conflicts": 0,
+    "side_body_counts": {"low": 65, "high": 26},
+    "side_template_counts": {
+      "low:manufacturing_3x3": 43,
+      "low:manufacturing_5x5": 11,
+      "low:manufacturing_6x4": 11,
+      "high:manufacturing_3x3": 10,
+      "high:manufacturing_5x5": 6,
+      "high:manufacturing_6x4": 10
+    },
+    "retained_anchor_count": 57
+  },
+  "high_side": {
+    "path": "research_lab/local/zero_condition/E101_x42_allocation_handshake/run-001/HIGH_RESULT_00.json",
+    "sha256": "19354cf83b3e0463c2d5fd24aa8880dda4b55ab5dbf5a69d4f496ec6b1b40d02",
+    "status": "UNKNOWN",
+    "elapsed_seconds": 25.061007729993435,
+    "branches": 286091,
+    "conflicts": 17016,
+    "candidate_count": 1324,
+    "mode_class_variable_count": 10954,
+    "model_variable_count": 12286,
+    "model_constraint_count": 23904,
+    "tested_allocation_count": 0
+  },
+  "artifact_check": {
+    "path": "research_lab/local/zero_condition/E101_x42_allocation_handshake/run-001/ARTIFACT_CHECK.json",
+    "sha256": "35eb5580acf84a9b25e7569403ac5aa5814285fa29dd225c9bd5e9bd28eb0055",
+    "status": "PASS",
+    "classification": "BODY_WITNESS_VALID_HIGH_SIDE_CENSORED"
+  }
+}

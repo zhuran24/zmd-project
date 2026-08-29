@@ -1,0 +1,137 @@
+E101 RESULT: BODY/POWER ALLOCATION IS EASY; HIGH-SIDE FRONT ALLOCATION IS CENSORED
+==================================================================================
+
+Status
+------
+Closed as a staged allocation-handshake measurement. E101 consumes E100's exact
+reserved-x42 product and moves its eight class coordinates outside the combined
+low/high model.
+
+The body/power-only stage finds an exact 91-body witness immediately. The first
+high-side native-front allocation proposal remains UNKNOWN after 25 seconds and
+produces no allocation vector, so the low complement stage does not run. The
+artifact checker independently replays the body witness and preserves the
+high-side censorship.
+
+Machine evidence
+----------------
+Terminal result:
+
+  research_lab/local/zero_condition/
+  E101_x42_allocation_handshake/run-001/RESULT.json
+
+SHA-256:
+
+  b6b088f214fcbb3be01b26180ce9d211b647ede4038e7542531077548bfd9e9d
+
+Body-only result SHA-256:
+
+  3e5a801f2bc41d709eb5dea4bebd4e1d29a9ad121525294b351170a44400f060
+
+High-side result SHA-256:
+
+  19354cf83b3e0463c2d5fd24aa8880dda4b55ab5dbf5a69d4f496ec6b1b40d02
+
+Artifact check SHA-256:
+
+  35eb5580acf84a9b25e7569403ac5aa5814285fa29dd225c9bd5e9bd28eb0055
+
+Verdict
+-------
+
+X42_HIGH_SIDE_ALLOCATION_PROPOSER_CENSORED
+
+Decision
+--------
+
+CHANGE_HIGH_SIDE_SOLVER_OR_DERIVE_ALLOCATION_BOUNDS
+
+Stage 1: body/power allocation witness
+--------------------------------------
+The exact reserved-x42 body/power model has 4,129 candidate footprints, fixed
+E092 power coverage, exact template counts and both stable E078 bodies. It has no
+front variables or retention objective.
+
+It returns an exact witness in:
+
+  elapsed                         0.326 s
+  branches                         4,648
+  conflicts                            0
+
+The witness allocates the 91 bodies as:
+
+  low / high                         65 / 26
+
+  low template counts:
+    3x3 / 5x5 / 6x4              43 / 11 / 11
+
+  high template counts:
+    3x3 / 5x5 / 6x4              10 /  6 / 10
+
+It retains 57 of the 87 surviving E092 anchor bodies. An independent checker
+reconstructs the source-stable x42 universe and replays non-overlap, exact
+template counts, fixed-pole power and both stable bodies.
+
+This proves only that the x42 body/power restriction is easy and feasible. It
+does not prove that this particular template allocation supports native fronts.
+
+Stage 2: high-side allocation proposer
+--------------------------------------
+The high side is the smaller half, so it is asked first to choose geometry, native
+modes and its eight class counts under the exact 10/6/10 template allocation.
+The complement would then be passed to the low side.
+
+Model:
+
+  candidates                       1,324
+  required bodies                     26
+  mode/class variables            10,954
+  total variables                 12,286
+  constraints                     23,904
+  surviving body hints                26
+
+Search:
+
+  workers                              8
+  quick-restart portfolio
+  solve cap                         25 s
+
+Terminal observation:
+
+  status                         UNKNOWN
+  elapsed                        25.061 s
+  branches                       286,091
+  conflicts                       17,016
+  allocation vector                 none
+  selected bodies                   none
+
+Because no high allocation vector exists in the machine output, E101 tests zero
+low complements and learns zero allocation nogoods. UNKNOWN is not a high-side
+negative and not a negative for the 10/6/10 template allocation.
+
+Meaning
+-------
+E101 localizes E100's difficulty more sharply:
+
+  x42 body packing + fixed power       easy, 0.326 s
+  high-side body/mode/class choice     censored at 12k variables
+
+The allocation bridge has been moved outside the low/high product, but the first
+speaker is still doing geometry and class allocation simultaneously. The next
+step must change that high-side instrument, not rerun E100 or declare the bridge
+empty.
+
+Next problem
+------------
+Use a solver-diverse replay of the identical high-side model or derive an exact
+high-side class-capacity/interface decomposition before another low check. The
+first useful output is a concrete eight-class high allocation vector. Only then
+may the low complement be solved. Any exact low rejection becomes an allocation
+nogood; any UNKNOWN remains tied to that exact vector.
+
+Truth boundary
+--------------
+The body-only witness is exact for one x42 template allocation. The high-side
+result is censored. No class allocation, module-B native-front witness, terminal
+uniqueness, generic I/O, commodity binding, component compatibility, routing,
+throughput, U/L, certification, owner, production or publication claim follows.

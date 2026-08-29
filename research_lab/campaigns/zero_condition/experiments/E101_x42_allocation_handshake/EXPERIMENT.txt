@@ -1,0 +1,73 @@
+EXPERIMENT E101: X42 LOW/HIGH ALLOCATION HANDSHAKE
+==================================================
+
+Question
+--------
+Can E100's exact low/high product be solved by moving its eight class-allocation
+coordinates outside the geometric side models, instead of asking one monolith to
+discover geometry and allocation simultaneously?
+
+Why this experiment
+-------------------
+E100 proves that, after reserving x=42, low and high module-B bodies have no
+body/body or front/body coupling. Its 38k-variable monolith nevertheless returns
+UNKNOWN after 8.4 million branches. The remaining bridge is explicit and only
+eight-dimensional. E101 must make that bridge operational.
+
+Method
+------
+1. Reconstruct the source-stable E100 candidate language from pinned source.
+
+2. Solve a cheap body/power-only x42 model to obtain one exact low/high template
+   allocation and body hint. This stage does not claim front feasibility and does
+   not optimize retention.
+
+3. Build a high-side native-front model with the body witness's exact high-side
+   3x3/5x5/6x4 counts. Its eight class counts remain explicit integer variables,
+   bounded by the global module-B demands. Solve for one high-side geometry,
+   native modes and allocation vector.
+
+4. Build a low-side model with the exact complementary class vector. If it is
+   feasible, combine both sides, deterministically materialize named operations,
+   combine with E095's frozen A witness and replay all 219 manufacturing bodies.
+
+5. If low is exact INFEASIBLE, add the high allocation tuple as a nogood to the
+   high model and continue. At most three allocation vectors are tested. UNKNOWN
+   on either side stops the experiment censored; it is never converted to a
+   nogood.
+
+Budgets
+-------
+
+  body/power allocation witness       20 seconds
+  each high-side proposal             25 seconds
+  each low-side complement check      40 seconds
+  maximum high allocation vectors      3
+
+Predeclared decisions
+---------------------
+Paired positive and combined replay PASS
+  Advance to terminal uniqueness, generic I/O and component-aware binding.
+
+Body/power INFEASIBLE
+  Reject reserved x=42 itself and restore the explicit x_after_41 separator.
+
+High-side INFEASIBLE for the chosen template allocation
+  Reject only that low/high template allocation and request another body-only
+  allocation.
+
+Low-side INFEASIBLE for one or more high allocations
+  Preserve the allocation nogoods and continue from them in a fresh successor;
+  do not reject x42 or the template allocation unless the high allocation space
+  is exhaustively closed.
+
+Any UNKNOWN
+  Preserve censorship and the exact allocation/vector at which it occurred.
+
+Truth boundary
+--------------
+Only a combined positive transfers to unrestricted module B. Every negative is
+scoped to x42 and, where applicable, one body-only template allocation or one
+class-allocation tuple. Terminal uniqueness, generic I/O, commodity binding,
+component compatibility, routing, throughput, U/L, certification, owner,
+production and publication remain outside.

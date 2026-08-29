@@ -482,3 +482,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   结构发现没有真正变成求解结构。继续加时或加 retained rung 只是在同一台仪器上付费。
   下一轮要把 bridge 外显：分别求 low/high 对八类配额能接受的边界或紧凑 frontier，再取
   complement 交集；只有交集中的 allocation vector 才送 exact side solve。
+
+2026-08-29 02:25
+----------------
+数据：
+  E101 run-001 RESULT.json
+  research_lab/local/zero_condition/E101_x42_allocation_handshake/run-001/RESULT.json
+  sha256 b6b088f214fcbb3be01b26180ce9d211b647ede4038e7542531077548bfd9e9d
+  ARTIFACT_CHECK.json sha256
+  35eb5580acf84a9b25e7569403ac5aa5814285fa29dd225c9bd5e9bd28eb0055
+
+注意／发现：
+  x42 body/power-only model 仅 0.326 秒就出 exact witness：low/high 65/26，模板分别
+  43/11/11 与 10/6/10，保留 57 个 E092 anchor。说明 E100 的 240 秒墙完全不在装箱/供电。
+  但较小的 high 侧把 1,324 candidates、26 bodies、10,954 mode/class vars 与八个 allocation
+  坐标放在一起后，25.061 秒仍 UNKNOWN；286,091 branches、17,016 conflicts，无 allocation，
+  因而 low complement 没有启动、nogood 仍为 0。
+
+推理：
+  外显 bridge 只完成了一半：low/high 分开了，但 high 仍同时猜 geometry 和 class vector。
+  下一轮最便宜的判别是保留完全相同的 high feasible set，换 solver family；若仍 censored，
+  再量 high 内部 template/spatial interface 或先投影 class capacity。第一份 concrete high
+  allocation 才是能回灌给 low 的知识，UNKNOWN 不能伪装成该 10/6/10 allocation 不存在。
