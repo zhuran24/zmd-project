@@ -4039,6 +4039,54 @@ evidence:
   ARTIFACT_CHECK.json sha256
   9fc472de466d09e4d41d97ae221786fe19a72032294be82a576584c65b927235.
 
+R-ZC-118  Exact body/power projection collapses 847 formal split vectors to seven
+----------------------------------------------------------------------------------
+status: complete seven-vector body atlas; independent enumeration PASS; side atlases censored
+scope: source-stable x42 high side, E103 unary-live rows, manufacturing-free y60
+
+statement:
+  E108 promotes the three upper template counts to an explicit finite interface.
+  The formal box has 11 x 7 x 11 = 847 vectors. A body/power-only model over
+  E104's 1,010 candidates repeatedly stores one 26-body witness and blocks only
+  its count vector. It completes in 2.568 seconds with exactly seven vectors:
+
+    3/0/4  3/1/3  3/2/2  5/2/1  6/0/3  6/1/2  7/0/3
+
+  The eighth solve is exact INFEASIBLE. A one-worker PSEUDO_COST replay
+  independently enumerates the same seven vectors and closes its eighth solve
+  as INFEASIBLE in 0.822 seconds. Every body witness replays exact global totals,
+  non-overlap, fixed power and both stable E078 bodies.
+
+  Generalized complete upper and lower native-front projection models also run.
+  They store 44 and 25 valid positive vectors respectively, but their post-
+  blocking solves return UNKNOWN. These are partial positive atlases only; absent
+  vectors have no effect and the provisional empty intersection is not consumed.
+
+  Five of the seven body-feasible vectors are already exact split nogoods from
+  E105-E107. Therefore only two body-feasible splits remain scientifically open:
+
+    upper 3/0/4, lower 7/6/6
+    upper 6/0/3, lower 4/6/7
+
+non-implications:
+  E108 does not complete the side projections, prove class-allocation
+  compatibility, or close either remaining vector. The empty provisional
+  intersection is censored and is not a negative.
+
+effect on next problem:
+  Test only the two remaining split vectors through complete side native-front
+  models. If both become exact split nogoods, the complete seven-state body atlas
+  closes manufacturing-free y60 and the line returns to E103's explicit y59
+  separator. UNKNOWN creates no rule.
+
+evidence:
+  E108 RESULT.txt; local RESULT.json sha256
+  c53855a54af9ad79bb278d80a084b9c0d7b66f6242bbf75cdff408ca9991c8f9;
+  BODY_TEMPLATE_PROJECTION.json sha256
+  24fdc3943a341321a44ddf99197dc4daea82d71ff4bfd16d1f5469269ebdae80;
+  ARTIFACT_CHECK.json sha256
+  17095258691adafc54c29bf48dbc901a65cfa2d694293c044782262c306bb9c1.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

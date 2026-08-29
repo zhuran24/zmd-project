@@ -1,0 +1,71 @@
+EXPERIMENT E108: NESTED TEMPLATE-PROJECTION ATLAS
+=================================================
+
+Question
+--------
+Which lower/upper template splits remain possible after projecting the reserved-
+y60 constructor onto three exact finite languages: body/power, complete lower
+native-front feasibility, and complete upper native-front feasibility?
+
+Why this experiment
+-------------------
+E105-E107 learn five template-split nogoods one proposal at a time. The interface
+itself has only three integers. Continuing serially would ignore the finite basis
+already exposed. E108 enumerates the three relevant projection sets and intersects
+them before any further class-allocation solve.
+
+Finite coordinates
+------------------
+A split is represented by the upper count vector
+
+  (manufacturing_3x3, manufacturing_5x5, manufacturing_6x4)
+
+with bounds 0..10, 0..6 and 0..10. The lower vector is its complement to global
+high totals 10/6/10. There are at most 847 raw vectors.
+
+Method
+------
+1. Reconstruct E104's source-stable 1,010-candidate lower/upper product. Build a
+   body/power-only model selecting exactly 26 bodies, global template totals
+   10/6/10, both stable E078 bodies, fixed E092 power and body non-overlap. Expose
+   the three upper template counts as IntVars.
+
+2. Build one generalized complete native-front model for each nested side. Each
+   keeps all side candidates, same-footprint native modes, free eight-coordinate
+   class allocation, fixed power, body non-overlap and front capacity. Replace
+   fixed template totals with three bounded template-count IntVars, equating each
+   to both selected bodies and the sum of class allocations of that template.
+   Stable E078 bodies remain required wherever they physically live.
+
+3. Enumerate distinct count vectors by solving for one witness, storing a compact
+   exact witness, and adding `AddForbiddenAssignments` only on the three count
+   IntVars. Enumeration is complete only when the next solve is exact
+   INFEASIBLE. UNKNOWN, wall budget or vector cap leaves that projection censored.
+
+4. If all three projections complete, compute
+
+  body_feasible
+    intersection upper_front_feasible
+    intersection complement(lower_front_feasible).
+
+   This is an exact template-level survivor atlas. It is necessary but not
+   sufficient for compatible eight-class allocation across the two sides.
+
+Predeclared decisions
+---------------------
+Exact empty intersection
+  Close manufacturing-free y60 at the native-front template-projection layer and
+  restore E103's explicit y59 separator.
+
+Exact nonempty intersection
+  Continue only the surviving split vectors through class-allocation handshake.
+
+Any censored projection
+  Preserve all enumerated witnesses and the unresolved projection status. Do not
+  treat a partial intersection as complete or learn absent vectors as nogoods.
+
+Truth boundary
+--------------
+Projection feasibility is exact only for its named layer. Even a vector present
+in all three sets may fail class-allocation compatibility. No terminal uniqueness,
+binding, routing, throughput, certification or U/L effect follows.

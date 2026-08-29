@@ -638,3 +638,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   allocation INFEASIBLE 一步量化掉全部向量，因此可以把 upper 5/2/1 + lower 5/4/9 升为第五
   条 split rule。下一轮回 body frontier 时必须带五条 split nogood，而不是携带三条已被更强
   结论吸收的 vector 负例继续磨这一 split。
+
+2026-08-29 05:30
+----------------
+数据：
+  E108 run-001 RESULT.json
+  research_lab/local/zero_condition/E108_nested_template_projection_atlas/run-001/RESULT.json
+  sha256 c53855a54af9ad79bb278d80a084b9c0d7b66f6242bbf75cdff408ca9991c8f9
+  ARTIFACT_CHECK.json sha256
+  17095258691adafc54c29bf48dbc901a65cfa2d694293c044782262c306bb9c1
+
+注意／发现：
+  不再逐次向 body proposer 要一份 split，而把 upper 三个 template counts 当作有限接口完整枚举。
+  847 个形式向量中，body/power-only 只允许 7 个；producer 2.568 秒闭合，单线程 PSEUDO_COST
+  异源重放再次得到同一 7 态并在第八次 exact INFEASIBLE。upper/lower generalized front atlas
+  分别找到 44/25 个正例后 UNKNOWN，因此它们只能提供正例，不能用缺席做否定。
+
+推理：
+  五条已证 split rule 恰好落在七态 body atlas 中，扣除后只剩 upper 3/0/4 和 6/0/3。于是下一
+  问不再是“下一份 body proposal 是什么”，而是两条有限 split 的 direct exact side test。
+  这是取等账到有限结构基底的又一次兑现：847 个故事空间被 body/power 真实可实现性压成 7，
+  再被递归规则压成 2。即便宽侧 atlas 仍 UNKNOWN，complete body basis + exact old rules 已足以
+  安全地把预算只投给这两条。

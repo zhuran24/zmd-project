@@ -1,0 +1,126 @@
+E108 RESULT: BODY/POWER TEMPLATE SPACE COLLAPSES FROM 847 RAW VECTORS TO SEVEN
+================================================================================
+
+Status
+------
+Closed as an exact body/power projection plus censored positive side atlases. The
+body projection is complete and independently replayed. The upper and lower
+native-front projections enumerate valid positive vectors but terminate UNKNOWN;
+their absences carry no meaning. Combining the exact body atlas with the five
+previously proved split nogoods leaves exactly two direct test targets.
+
+Machine verdict
+---------------
+
+  TEMPLATE_PROJECTION_ATLAS_CENSORED
+
+Checked continuation decision
+-----------------------------
+
+  TEST_ONLY_TWO_REMAINING_BODY_FEASIBLE_SPLITS
+
+Machine evidence
+----------------
+Wrapper result:
+
+  research_lab/local/zero_condition/
+  E108_nested_template_projection_atlas/run-001/RESULT.json
+
+SHA-256:
+
+  c53855a54af9ad79bb278d80a084b9c0d7b66f6242bbf75cdff408ca9991c8f9
+
+Body projection:
+
+  research_lab/local/zero_condition/
+  E108_nested_template_projection_atlas/run-001/BODY_TEMPLATE_PROJECTION.json
+
+SHA-256:
+
+  24fdc3943a341321a44ddf99197dc4daea82d71ff4bfd16d1f5469269ebdae80
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E108_nested_template_projection_atlas/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  17095258691adafc54c29bf48dbc901a65cfa2d694293c044782262c306bb9c1
+
+Finite body/power atlas
+-----------------------
+The raw split coordinate is the upper-side vector
+
+  (manufacturing_3x3, manufacturing_5x5, manufacturing_6x4)
+
+with 11 x 7 x 11 = 847 formal values. E108 keeps E104's exact 1,010-candidate
+lower/upper product, global totals 10/6/10, fixed E092 power, body non-overlap
+and both stable E078 bodies. It repeatedly stores one body witness and blocks
+only its three-count vector.
+
+The projection completes in 2.568 seconds. After seven witnesses the post-
+blocking body model is exact INFEASIBLE. The complete body-feasible set is:
+
+  3 / 0 / 4
+  3 / 1 / 3
+  3 / 2 / 2
+  5 / 2 / 1
+  6 / 0 / 3
+  6 / 1 / 2
+  7 / 0 / 3
+
+A one-worker PSEUDO_COST replay independently enumerates the same seven vectors
+and proves the eighth solve INFEASIBLE in 0.822 seconds. Every stored body witness
+is replayed for exact totals, non-overlap, fixed power and stable-body presence.
+
+Side projection status
+----------------------
+The generalized complete upper and lower native-front models replace fixed
+template totals with three count variables while preserving every body, mode,
+front, power and eight-coordinate allocation constraint.
+
+Within their frozen stage budgets they enumerate:
+
+  upper positive vectors   44
+  lower positive vectors   25
+
+All stored positive witnesses independently replay. Both post-blocking models
+end UNKNOWN, so neither set is complete. The provisional empty intersection in
+the machine file is not a negative and is not consumed.
+
+Rule intersection
+-----------------
+Five of the seven exact body vectors are already exact split nogoods from
+E105-E107:
+
+  3 / 1 / 3
+  3 / 2 / 2
+  5 / 2 / 1
+  6 / 1 / 2
+  7 / 0 / 3
+
+Therefore only two body-feasible vectors remain scientifically open:
+
+  3 / 0 / 4   with lower complement 7 / 6 / 6
+  6 / 0 / 3   with lower complement 4 / 6 / 7
+
+This reduction is exact even though the broad side projections are censored. It
+uses a complete body atlas plus prior exact rules, not absence from partial
+atlases.
+
+Next problem
+------------
+Test only the two remaining split vectors. For each, solve the smaller upper side
+with free class allocation. If upper is feasible, solve the exact lower complement.
+An exact side negative closes that split. If both sides are feasible, begin the
+allocation handshake on that split. If both remaining splits close, the complete
+seven-state body atlas plus seven exact split negatives closes the entire
+manufacturing-free-y60 language and returns to E103's explicit separator.
+
+Truth boundary
+--------------
+E108 proves only the seven-state body/power projection and validates partial
+positive side witnesses. It does not complete the upper/lower projections, prove
+class-allocation compatibility, or close either remaining split. No terminal
+uniqueness, binding, routing, throughput, certification or U/L effect follows.

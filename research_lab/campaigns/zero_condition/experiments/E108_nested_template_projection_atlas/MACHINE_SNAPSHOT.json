@@ -1,0 +1,62 @@
+{
+  "schema": "zmd_e108_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "canonical_run": "research_lab/local/zero_condition/E108_nested_template_projection_atlas/run-001",
+  "machine_verdict": "TEMPLATE_PROJECTION_ATLAS_CENSORED",
+  "machine_decision": "CONTINUE_ONLY_INCOMPLETE_PROJECTION_ENUMERATIONS",
+  "checked_continuation_decision": "TEST_ONLY_TWO_REMAINING_BODY_FEASIBLE_SPLITS",
+  "body_projection": {
+    "status": "COMPLETE",
+    "vector_count": 7,
+    "vectors": [
+      [3, 0, 4],
+      [3, 1, 3],
+      [3, 2, 2],
+      [5, 2, 1],
+      [6, 0, 3],
+      [6, 1, 2],
+      [7, 0, 3]
+    ],
+    "producer_elapsed_seconds": 2.567939023996587,
+    "producer_terminal_status": "INFEASIBLE",
+    "independent_replay_status": "COMPLETE",
+    "independent_final_infeasible_seconds": 0.8222130929934792,
+    "path": "research_lab/local/zero_condition/E108_nested_template_projection_atlas/run-001/BODY_TEMPLATE_PROJECTION.json",
+    "sha256": "24fdc3943a341321a44ddf99197dc4daea82d71ff4bfd16d1f5469269ebdae80"
+  },
+  "side_projections": {
+    "upper": {
+      "status": "CENSORED",
+      "terminal_status": "UNKNOWN",
+      "enumerated_positive_vector_count": 44,
+      "path": "research_lab/local/zero_condition/E108_nested_template_projection_atlas/run-001/UPPER_FRONT_TEMPLATE_PROJECTION.json",
+      "sha256": "0e937b030787010b165ebe5502b9f8b1aefb981b1ab6ccd46d874e83f1270bca"
+    },
+    "lower": {
+      "status": "CENSORED",
+      "terminal_status": "UNKNOWN",
+      "enumerated_positive_vector_count": 25,
+      "path": "research_lab/local/zero_condition/E108_nested_template_projection_atlas/run-001/LOWER_FRONT_TEMPLATE_PROJECTION.json",
+      "sha256": "1ddd05196f841e606453b2d72659032b8d48c1d5b973c4dc7c7fccad2a5524af"
+    }
+  },
+  "known_exact_split_nogoods": [
+    [3, 1, 3],
+    [3, 2, 2],
+    [5, 2, 1],
+    [6, 1, 2],
+    [7, 0, 3]
+  ],
+  "remaining_body_feasible_vectors": [
+    [3, 0, 4],
+    [6, 0, 3]
+  ],
+  "artifacts": {
+    "runner_sha256": "b85cc525f001735fe818d9692387a9aceaa61cee4d82dbf1867ad0c920504e48",
+    "checker_sha256": "2bd553d066549c21cc1fada217b5305095301f550351747595452f73c47678bd",
+    "result_sha256": "c53855a54af9ad79bb278d80a084b9c0d7b66f6242bbf75cdff408ca9991c8f9",
+    "artifact_check_sha256": "17095258691adafc54c29bf48dbc901a65cfa2d694293c044782262c306bb9c1"
+  },
+  "truth_boundary": "The seven-state body/power projection is exact and complete. Upper/lower native-front projections are partial positive atlases only; their absent vectors have no meaning. Prior exact split rules reduce the seven body-feasible vectors to two direct test targets."
+}
