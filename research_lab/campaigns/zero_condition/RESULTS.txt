@@ -4363,6 +4363,52 @@ evidence:
   ARTIFACT_CHECK.json sha256
   36b224f752e05e92e58a0d161e8d59e3dd59595c290abb55f896a2a29d471aef.
 
+R-ZC-125  Full high consumer closes two separator-template states and names 25 unknowns
+-----------------------------------------------------------------------------------------
+status: 27-state sweep complete; 2 exact negatives replayed; 25 named UNKNOWN; no positive
+scope: source-stable x42-high, E103 live rows, E112 exact separator-class necessary filter
+
+statement:
+  E115 advances from E114's fixed representatives to all E103-live geometry. For
+  each of E110's 27 exact separator template vectors, it builds the unchanged
+  complete x42-high native-front consumer, fixes only the separator template
+  counts, and restricts the separator class tuple to the exact E112 positive set.
+  All 27 states are tested under the same seven-second budget.
+
+  Two states are exact INFEASIBLE:
+
+    separator 0/3/0   four allowed separator class tuples
+    separator 5/0/0   twenty-one allowed separator class tuples
+
+  One-worker PSEUDO_COST replay independently confirms both negatives in 13.686
+  and 2.923 seconds. The other 25 states remain UNKNOWN; no high allocation or
+  low complement exists.
+
+  The 25 UNKNOWN states are externalized with their exact allowed separator class
+  tuples. Five states have at most three tuples, only twelve fixed tuples total:
+  0/0/0, 0/0/1, 0/1/0, 0/2/0 and 1/0/0.
+
+non-implications:
+  Only 0/3/0 and 5/0/0 are template-state negatives. The other 25 are not absent,
+  and E115 does not close x42 or produce a high-side witness. E112's positive set
+  is a necessary filter, not a full-high sufficiency claim.
+
+effect on next problem:
+  Fix the twelve low-cardinality separator class tuples individually while all
+  1,205 live geometries remain free. Close a parent template state only when all
+  its tuples are exact negative; any positive goes directly to the x42-low
+  complement. Do not uniformly add time to all 25 disjunctive state models.
+
+evidence:
+  E115 RESULT.txt; local RESULT.json sha256
+  f6b1e3e4ef29aadd7d865a97424c4379b828608a857a3893172c03c3b9497ef2;
+  STATE_CONSUMER_RESULTS.json sha256
+  41f0560f5170d127fc7cbaeea379d47f70dd712f9eeb123e9b42a83148ae7a06;
+  ARTIFACT_CHECK.json sha256
+  7e76312570612dc299f73e7dec192fdaa19fc13dee28b958055146571955d76a;
+  UNKNOWN_TEMPLATE_STATES.json sha256
+  0cc243e76134ed53958d22c68a04a6067685b17620b6c1a7676e5ad7b12f0731.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

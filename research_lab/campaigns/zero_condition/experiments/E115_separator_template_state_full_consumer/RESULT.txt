@@ -1,0 +1,158 @@
+E115 RESULT: THE REAL HIGH-SIDE CONSUMER CLOSES TWO TEMPLATE STATES AND NAMES 25 UNKNOWNS
+=================================================================================================
+
+Status
+------
+Closed as a complete 27-state budgeted consumer sweep with two independently
+replayed contextual negatives, zero positives and 25 named UNKNOWN states. The
+result advances beyond E114's fixed representatives by quantifying over all
+E103-live body geometries inside each separator template state.
+
+Verdict
+-------
+
+  SEPARATOR_TEMPLATE_STATE_FULL_CONSUMER_CENSORED
+
+Checked continuation decision
+-----------------------------
+
+  FIX_LOW_CARDINALITY_SEPARATOR_CLASS_TUPLES_FIRST
+
+Machine evidence
+----------------
+Canonical result:
+
+  research_lab/local/zero_condition/
+  E115_separator_template_state_full_consumer/run-001/RESULT.json
+
+SHA-256:
+
+  f6b1e3e4ef29aadd7d865a97424c4379b828608a857a3893172c03c3b9497ef2
+
+State consumer results:
+
+  research_lab/local/zero_condition/
+  E115_separator_template_state_full_consumer/run-001/
+  STATE_CONSUMER_RESULTS.json
+
+SHA-256:
+
+  41f0560f5170d127fc7cbaeea379d47f70dd712f9eeb123e9b42a83148ae7a06
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E115_separator_template_state_full_consumer/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  7e76312570612dc299f73e7dec192fdaa19fc13dee28b958055146571955d76a
+
+What changed from E114
+----------------------
+E114 fixed one arbitrary body/power geometry for each E110 template state and
+found all 27 representatives front-dead. E115 fixes no geometry. For each of the
+27 exact separator template vectors it restores all 1,205 E103-live high-side
+body candidates:
+
+  nested-low   812
+  separator    154
+  high         239
+
+It preserves exact global 10/6/10 template totals, fixed E092 power, body
+non-overlap, both stable E078 bodies, every same-footprint mode and all eight B
+class coordinates. Only the separator template count vector is fixed.
+
+The separator class tuple is constrained to the exact E112 positive atlas. This
+is a necessary filter, not an optimistic guess: deleting low/high bodies can only
+relax a complete high-side witness, so the separator restriction of any full
+witness must be one of E112's 350 separator-only positives.
+
+Machine sweep
+-------------
+All 27 states receive a seven-second multiworker consumer solve. Every state is
+tested; none is omitted.
+
+  high-side positive states     0
+  exact negative states         2
+  UNKNOWN states               25
+  untested states               0
+  low-complement tests           0
+
+The two exact negatives are:
+
+  separator template 0 / 3 / 0
+    allowed separator class tuples   4
+    producer INFEASIBLE               6.706 s
+    one-worker PSEUDO_COST replay    13.686 s
+
+  separator template 5 / 0 / 0
+    allowed separator class tuples  21
+    producer INFEASIBLE               3.750 s
+    one-worker PSEUDO_COST replay     2.923 s
+
+The replay changes worker count, branching, symmetry and probing while preserving
+the exact feasible set. Both states remain INFEASIBLE.
+
+The 25 remaining states each end UNKNOWN, not negative. They are externalized in:
+
+  research_lab/local/zero_condition/
+  E115_separator_template_state_full_consumer/run-001/
+  UNKNOWN_TEMPLATE_STATES.json
+
+SHA-256:
+
+  0cc243e76134ed53958d22c68a04a6067685b17620b6c1a7676e5ad7b12f0731
+
+Why not simply add time to all 25
+---------------------------------
+The unknown states are no longer an undifferentiated monolith. Their separator
+class disjunction sizes vary from one to 36. Five UNKNOWN template states have at
+most three exact separator class tuples, for only twelve fixed tuples total:
+
+  separator template 0/0/0   1 tuple
+  separator template 0/0/1   3 tuples
+  separator template 0/1/0   2 tuples
+  separator template 0/2/0   3 tuples
+  separator template 1/0/0   3 tuples
+
+Fixing these tuples removes the remaining separator-class projection choice while
+leaving all body geometry and side allocations free. This is a representation
+change, not another vote by the same seven-second model.
+
+Scientific interpretation
+-------------------------
+E115 proves that E114's failures were not enough to close any state, but it also
+shows the real consumer can already close some entire template states. The 27
+state basis is therefore a useful full-consumer cover, not merely an abstract
+atlas.
+
+The current wall is still a mixture of geometry and class projection. The next
+cheapest discriminator is to fix the twelve low-cardinality separator class
+tuples individually. Exact tuple negatives can cover their parent template state;
+a positive immediately becomes a full high-side witness and goes to E101's
+x42-low complement.
+
+Next problem
+------------
+Test the twelve separator class tuples belonging to the five lowest-cardinality
+UNKNOWN template states. Each model keeps all 1,205 live geometries and the
+complete high-side consumer, fixes one separator template vector and one exact
+eight-coordinate separator class tuple, and leaves the remaining high allocation
+free.
+
+For a given template state:
+
+  * all fixed tuples exact INFEASIBLE closes that template state;
+  * any tuple positive advances to x42-low immediately;
+  * UNKNOWN remains local to that tuple.
+
+Do not infer absence from E115's 25 UNKNOWN states and do not return to interface
+signature growth before this finite discriminator is consumed.
+
+Truth boundary
+--------------
+Only separator template vectors 0/3/0 and 5/0/0 are exact contextual negatives.
+The other 25 remain UNKNOWN. E115 produces no high-side or 219-body witness and
+establishes no terminal uniqueness, binding, routing, throughput, certification
+or U/L change.

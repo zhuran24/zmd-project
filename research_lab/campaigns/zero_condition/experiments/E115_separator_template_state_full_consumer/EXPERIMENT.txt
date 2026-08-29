@@ -1,0 +1,66 @@
+EXPERIMENT E115: FULL HIGH-SIDE CONSUMER OVER THE 27 SEPARATOR TEMPLATE STATES
+================================================================================
+
+Question
+--------
+Does any of E110's 27 exact separator template states admit the complete
+source-stable x42-high native-front consumer when all E103-live low/separator/high
+body geometries and same-footprint modes are free?
+
+Why this experiment
+-------------------
+E114 sends one stored body/power representative per template state to the real
+consumer and rejects all 27 representatives. Those deaths are geometry-local.
+The next faithful finite cover keeps the exact 27-state basis but quantifies over
+all live geometry inside each state.
+
+Method
+------
+1. Pin E095/E100/E101, E103's exact 1,205 live high rows, E110's complete 27
+   separator template vectors, E112's complete 350-positive / 3-negative
+   separator class atlas, and E114's fixed-geometry deaths.
+
+2. For one separator template vector at a time, build E101's unchanged complete
+   x42-high model. Fix only E103-nonlive body variables to zero. Preserve exact
+   10/6/10 high-side template totals, fixed E092 power, body non-overlap, both
+   stable E078 bodies, every same-footprint mode and all eight B class coordinates.
+
+3. Constrain the separator body template counts to the selected E110 vector.
+   Derive eight separator class-count variables from the actual separator mode
+   variables and allow exactly the E112 positive class states matching that
+   template vector. This is an exact necessary filter: removing low/high bodies
+   can only relax a full witness.
+
+4. Order states only for search economy by the E114 representative's empty-body
+   count. The representative body set is a hint, never a constraint or cut.
+
+5. A high-side positive is sent immediately to E101's unchanged 65-body x42-low
+   complement. A paired result is combined with E095's frozen 128-body module-A
+   witness and replayed over all 219 manufacturing bodies.
+
+Decision rules
+--------------
+Paired 219-body replay PASS
+  Advance to terminal uniqueness, generic I/O and component-aware binding.
+
+High-side state positive, low complement not yet paired
+  Preserve the state, geometry and allocation. Continue only its allocation
+  handshake before returning to abstract interfaces.
+
+State exact INFEASIBLE
+  Reject that entire separator template state within the source-stable x42 and
+  fixed E092 skeleton.
+
+All 27 states exact INFEASIBLE
+  Close the complete E103-live x42-high native-front language and retire x42 as a
+  sufficient constructor. Return to a less restrictive geometry language.
+
+UNKNOWN
+  Remains local to the named state. It creates no rule.
+
+Truth boundary
+--------------
+The 27-state cover is complete only at the E110 body/power separator-template
+projection. State negatives are contextual to manufacturing-free x42, E103's
+exact unary-live filter and the fixed E092 pole/boundary skeleton. No routing,
+throughput, certification or U/L effect follows.

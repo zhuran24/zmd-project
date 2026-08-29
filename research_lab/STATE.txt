@@ -13,14 +13,14 @@ Statement: E095 remains the stable constructive base: module A is a checked
 128-body native-front half and module B is the sole 91-body wall. E100/E101 reduce
 that wall to a 26-body high side; E103 selects a y59/template hybrid. E110-E112
 compile the restored separator into 27 template duties and a complete 353-state
-class atlas. E113 supplies an exact low | separator+high interaction hypergraph,
-but the inertia audit pauses another interface layer. E114 instead sends E110's
-27 stored complete body/power geometries directly to the unchanged full high-side
-native-front consumer. All 27 are exact INFEASIBLE with zero UNKNOWN and diverse
-replay PASS. Every geometry already contains 11..22 bodies with empty mode/class
-domains; 440 such occurrences span 155 stable body digests. These are local
-geometry negatives, not template-state cuts. The live object is now a 27-state
-real-consumer cover over all E103-live geometry.
+class atlas. The inertia audit pauses E113's next interface layer and pays the
+real-consumer debt. E114 rejects all 27 stored representative geometries but only
+locally. E115 then reopens all 1,205 E103-live geometries inside each exact
+separator template state and applies E112's exact necessary class filter. States
+0/3/0 and 5/0/0 are exact INFEASIBLE with solver-diverse replay PASS. The other
+25 states remain named UNKNOWN and no positive exists. Five of those UNKNOWN
+states contain only twelve separator class tuples total, making tuple fixation
+the next finite discriminator.
 Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
@@ -51,6 +51,7 @@ Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E112_fixed_separator_class_state_closure/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E113_separator_side_interaction_compiler/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E114_e110_fixed_geometry_direct_consumer/RESULT.txt
+  research_lab/campaigns/zero_condition/experiments/E115_separator_template_state_full_consumer/RESULT.txt
 Identity audit:
   research_lab/campaigns/zero_condition/E079_E080_ARTIFACT_IDENTITY_AUDIT_20260828.txt
 Direction ref:
@@ -58,16 +59,15 @@ Direction ref:
 
 Live question
 -------------
-Q: Does any of E110's 27 exact separator template states admit the complete
-x42-high native-front consumer when all E103-live low/separator/high geometries
-are free? Build one state-conditioned model per template vector, with exact
-10/6/10 totals, fixed E092 power, body non-overlap, same-footprint modes and all
-eight B class coordinates. E112's 350 separator class positives may be compiled
-as an exact necessary allowed set; its three negatives remain forbidden. A state
-positive advances immediately through E101 x42-low and E095 module A. Exact
-INFEASIBLE rejects only that template state. UNKNOWN creates no rule. Preserve
-E114's geometry deaths as hints and diagnostics, not cuts, and do not resume the
-E113 cap proposer until this real-consumer finite cover is measured.
+Q: Do any of the twelve low-cardinality separator class tuples admit the complete
+x42-high native-front consumer? The parent UNKNOWN template states are 0/0/0,
+0/0/1, 0/1/0, 0/2/0 and 1/0/0. Build a fresh full 1,205-live-body model for each
+exact eight-coordinate separator tuple. Keep all body geometry, modes and the
+remaining high allocation free. Exact tuple INFEASIBLE removes only that tuple;
+a parent template state closes only when all its tuples are exact negative. Any
+high positive advances immediately through E101 x42-low and E095 module A.
+UNKNOWN remains local. Do not uniformly add time to the other 25 template-state
+models or resume E113 interface growth before this finite discriminator lands.
 
 Inflight / recovery
 -------------------
@@ -119,6 +119,7 @@ Recent consequential results
 - E112 fixes all 52 residual states: 49 are feasible and three exact negatives form one compact 1/0/3 class rule; the separator-only atlas is complete at 350/3/0. | evidence=research_lab/campaigns/zero_condition/experiments/E112_fixed_separator_class_state_closure/RESULT.txt | effect=end separator class search and compile the exact cross-module interaction interface
 - E113 compiles all candidate/body and mode-class/front cross interactions; low versus separator+high strictly dominates both alternative two-way partitions and persists the exact 7,325-edge / 2,040-nonempty-bucket interface. | evidence=research_lab/campaigns/zero_condition/experiments/E113_separator_side_interaction_compiler/RESULT.txt | effect=preserve the interface, but defer proposer orientation until direct consumer debt is paid
 - E114 sends all 27 stored E110 body/power representatives to the full x42-high native-front consumer; all are exact local negatives with empty body mode/class domains, and diverse replay passes. | evidence=research_lab/campaigns/zero_condition/experiments/E114_e110_fixed_geometry_direct_consumer/RESULT.txt | effect=replace representative-witness optimism with a 27-state full-consumer cover over all live geometry
+- E115 runs that full consumer over all live geometry in each separator template state: 0/3/0 and 5/0/0 are exact negatives, while 25 states remain named UNKNOWN and five reduce to twelve fixed separator-class tuples. | evidence=research_lab/campaigns/zero_condition/experiments/E115_separator_template_state_full_consumer/RESULT.txt | effect=replace blanket state reruns with a twelve-tuple exact discriminator
 
 Current unknowns and guards
 ---------------------------
@@ -158,7 +159,7 @@ Current unknowns and guards
 - E103's unary removal is exact for fixed power and fixed-obstacle native-front viability. Its interface and Hall counts are representation facts, not feasibility or runtime bounds. The selected y59 hybrid still retains an explicit separator until a new sufficient restriction removes it.
 - E104 is a censored result under the additional manufacturing-free y60 restriction. It does not reject y60, the explicit E103 separator, high, x42 or module B. Its run-001 import failure has no scientific effect; run-002 plus its independent checker are canonical.
 - E105 rejects only nested template totals lower 7/4/8 and upper 3/2/2 under reserved y60. It does not reject the particular body witness as a unique cause, any other template split, y60, high, x42 or module B. Runs 001/002 are apparatus aborts. The runner's dormant positive path contains run-001 pointer literals and must not be copied by successors.
-- E106's three allocation nogoods remain valid historical explanations, but E107's direct lower-projection negative subsumes them for continuation. E108's broad side atlases remain censored positive-only data. E109 closes only manufacturing-free y60. E111/E112 exactly partition the separator-only class basis, but all 350 positives omit low/high bodies. E113 is an exact static compiler, not feasibility. E114 rejects only its 27 stored representative geometries; those deaths cannot be promoted to separator-template cuts.
+- E106's three allocation nogoods remain valid historical explanations, but E107's direct lower-projection negative subsumes them for continuation. E108's broad side atlases remain censored positive-only data. E109 closes only manufacturing-free y60. E111/E112 exactly partition the separator-only class basis, but all 350 positives omit low/high bodies. E113 is an exact static compiler, not feasibility. E114 rejects only its representative geometries. E115 rejects only separator states 0/3/0 and 5/0/0; all other 25 are UNKNOWN.
 - Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
 
 History pointers

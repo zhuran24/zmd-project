@@ -1,0 +1,79 @@
+{
+  "schema": "zmd_e115_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "canonical_run": "research_lab/local/zero_condition/E115_separator_template_state_full_consumer/run-001",
+  "verdict": "SEPARATOR_TEMPLATE_STATE_FULL_CONSUMER_CENSORED",
+  "machine_decision": "REPLAY_ONLY_NAMED_UNKNOWN_STATES",
+  "checked_continuation_decision": "FIX_LOW_CARDINALITY_SEPARATOR_CLASS_TUPLES_FIRST",
+  "state_cover": {
+    "formal_state_count": 27,
+    "tested_state_count": 27,
+    "positive_state_count": 0,
+    "negative_state_count": 2,
+    "unknown_state_count": 25,
+    "untested_state_count": 0,
+    "total_elapsed_seconds": 248.8616369500087,
+    "model_variable_count_per_state": 12294,
+    "model_constraint_count_per_state": 24035,
+    "path": "research_lab/local/zero_condition/E115_separator_template_state_full_consumer/run-001/STATE_CONSUMER_RESULTS.json",
+    "sha256": "41f0560f5170d127fc7cbaeea379d47f70dd712f9eeb123e9b42a83148ae7a06"
+  },
+  "exact_negative_states": [
+    {
+      "separator_template_vector": [0, 3, 0],
+      "allowed_separator_class_state_count": 4,
+      "producer_status": "INFEASIBLE",
+      "producer_elapsed_seconds": 6.70623784000054,
+      "producer_branches": 9369,
+      "producer_conflicts": 11,
+      "solver_diverse_replay_status": "INFEASIBLE",
+      "solver_diverse_replay_elapsed_seconds": 13.685771274991566,
+      "solver_diverse_replay_branches": 21801,
+      "solver_diverse_replay_conflicts": 99
+    },
+    {
+      "separator_template_vector": [5, 0, 0],
+      "allowed_separator_class_state_count": 21,
+      "producer_status": "INFEASIBLE",
+      "producer_elapsed_seconds": 3.750279595988104,
+      "producer_branches": 0,
+      "producer_conflicts": 0,
+      "solver_diverse_replay_status": "INFEASIBLE",
+      "solver_diverse_replay_elapsed_seconds": 2.923471400004928,
+      "solver_diverse_replay_branches": 263,
+      "solver_diverse_replay_conflicts": 9
+    }
+  ],
+  "unknown_packet": {
+    "unknown_state_count": 25,
+    "low_cardinality_threshold": 3,
+    "low_cardinality_state_count": 5,
+    "low_cardinality_separator_class_tuple_count": 12,
+    "path": "research_lab/local/zero_condition/E115_separator_template_state_full_consumer/run-001/UNKNOWN_TEMPLATE_STATES.json",
+    "sha256": "0cc243e76134ed53958d22c68a04a6067685b17620b6c1a7676e5ad7b12f0731"
+  },
+  "downstream": {
+    "high_positive_state_count": 0,
+    "low_complement_test_count": 0,
+    "combined_219_body_witness": null
+  },
+  "independent_check": {
+    "status": "PASS",
+    "classification": "TWO_TEMPLATE_STATES_EXACT_NEGATIVE_TWENTY_FIVE_NAMED_UNKNOWN",
+    "workers": 1,
+    "search_branching": "PSEUDO_COST_SEARCH",
+    "symmetry_level": 0,
+    "probing_level": 0
+  },
+  "artifacts": {
+    "runner_sha256": "a0edaedefb0c71ca5424f2bed27336d4a8e7519f8b0d60bff95d70667d619782",
+    "checker_sha256": "078040df8c7c8b686d1cdf2a60f38badabe5df779cfdd841869ffa8d750fd5fe",
+    "result_sha256": "f6b1e3e4ef29aadd7d865a97424c4379b828608a857a3893172c03c3b9497ef2",
+    "state_results_sha256": "41f0560f5170d127fc7cbaeea379d47f70dd712f9eeb123e9b42a83148ae7a06",
+    "low_results_sha256": "84db25c7710a55c9aee9a42f49d1ce07d8c625b6c2ce8583e0ac0e4aade7f087",
+    "artifact_check_sha256": "7e76312570612dc299f73e7dec192fdaa19fc13dee28b958055146571955d76a",
+    "unknown_packet_sha256": "0cc243e76134ed53958d22c68a04a6067685b17620b6c1a7676e5ad7b12f0731"
+  },
+  "truth_boundary": "Vectors 0/3/0 and 5/0/0 are exact contextual negatives in the source-stable x42-high native-front consumer with E103 live rows and E112's exact separator class filter. The other 25 template vectors remain UNKNOWN."
+}

@@ -794,3 +794,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   27 个 template cuts。正确有限 cover 是保留 E110 的 27 个完整 template states，却让每一态
   在全部 E103-live geometry 上接受完整 high consumer；E112 的 350 separator class positives
   只作 exact necessary filter。这样继续偿还 consumer 债，而不是再在上游造一层漂亮基底。
+
+2026-08-29 08:48
+----------------
+数据：
+  E115 run-001 RESULT.json
+  research_lab/local/zero_condition/E115_separator_template_state_full_consumer/run-001/RESULT.json
+  sha256 f6b1e3e4ef29aadd7d865a97424c4379b828608a857a3893172c03c3b9497ef2
+  ARTIFACT_CHECK.json sha256
+  7e76312570612dc299f73e7dec192fdaa19fc13dee28b958055146571955d76a
+
+注意／发现：
+  E114 固定代表几何全死后，E115 把每个 separator template state 内的全部 1,205 个 E103-live
+  body 重新放开，只固定三种 separator template count，并把 separator class 限到 E112 已证的
+  positive tuples。27 态全部跑完：0 positive、2 exact INFEASIBLE、25 UNKNOWN。0/3/0 与 5/0/0
+  两态由异源单线程 PSEUDO_COST 再次关闭；其余 25 态没有被偷写成负例。
+
+推理：
+  这证明 real-consumer finite cover 能产生比代表几何更强的结构结论，但七秒 disjunctive model
+  对多数态仍分不清。不能再把 25 态统一加时：允许的 separator class tuple 数从 1 到 36 差异
+  很大。五个 UNKNOWN 态总共只含 12 个 tuple；逐 tuple 固定会消掉 E115 剩余的 class projection
+  选择，同时保留全部几何。下一轮先吃这 12 个，若一态所有 tuple 都 exact negative 才升级为
+  template rule；任一 positive 立即下沉到 x42-low，不再先造另一层接口。
