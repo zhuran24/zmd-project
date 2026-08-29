@@ -3956,6 +3956,50 @@ evidence:
   ARTIFACT_CHECK.json sha256
   38e1d0f1fde3e689f04a17101805cf3e3c874b5f7941324b552945bab473a346.
 
+R-ZC-116  Nested frontier accumulates split and allocation nogoods across two abstraction levels
+--------------------------------------------------------------------------------------------------
+status: four body/template proposals exact; three new split negatives and three allocation negatives independently replayed
+scope: source-stable x42 high side, E103 unary-live rows, manufacturing-free y60
+
+statement:
+  E106 loads E105's upper 3/2/2 split nogood into a persistent body/power model
+  over E104's 1,010 candidates. Three subsequent body proposals have upper
+  template totals 3/1/3, 7/0/3 and 6/1/2. Their complete smaller-side native-front
+  models are exact INFEASIBLE, so the full template splits enter the store. A
+  one-worker PSEUDO_COST replay independently reproduces all three negatives.
+
+  The fourth proposal has upper 5/2/1 and lower 5/4/9. Its upper model is feasible.
+  Three exact upper class vectors are produced, but the complete lower consumer
+  is INFEASIBLE for each remainder:
+
+    [3,1,1,2,0,1,0,0]
+    [0,1,4,0,2,0,1,0]
+    [0,0,5,0,2,0,0,1]
+
+  Independent replay fixes and revalidates each upper vector, then again closes
+  the corresponding lower consumer as INFEASIBLE. The split store therefore has
+  four exact upper-template nogoods including E105; the open upper 5/2/1 split
+  has three allocation nogoods but remains unresolved.
+
+non-implications:
+  E106 does not reject upper 5/2/1, manufacturing-free y60, high, x42 or module B.
+  A consumer negative rejects one exact proposer allocation, not the entire split.
+  No high pair, x42-low result, combined witness, binding or routing result exists.
+
+effect on next problem:
+  Freeze upper 5/2/1 and lower 5/4/9. Reconstruct its complete upper proposer,
+  consume the three exact allocation nogoods, and continue only that allocation
+  face. Return to the body frontier only after a paired high witness, a fully
+  replayed exhaustion of this split, or a censored exact context.
+
+evidence:
+  E106 RESULT.txt; local RESULT.json sha256
+  026fe686944616305ff5056a574152a5c8d57fac44b15a797563b555c33316ae;
+  TEMPLATE_SPLIT_NOGOODS.json sha256
+  48cac90a3e704b82b0e50c22644a604214156d8dcfbbaa90c78a5ae5f74ecb96;
+  ARTIFACT_CHECK.json sha256
+  acad46fdf658475d2dcc801a624514dde4213e0c890424debb7e2d5fb4ba9cfc.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

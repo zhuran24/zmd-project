@@ -1,0 +1,71 @@
+EXPERIMENT E106: NESTED TEMPLATE-SPLIT FRONTIER
+================================================
+
+Question
+--------
+After consuming E105's exact split nogood, can the manufacturing-free-y60 high
+constructor find a different lower/upper template split that admits a native-
+front allocation handshake?
+
+Why this experiment
+-------------------
+E105 proves that the first body-only proposal is rejected for a structural reason:
+upper template totals 3/2/2 have no native-front realization anywhere in the
+198-candidate upper domain. Banning the particular 26-body geometry would throw
+away the reusable theorem. E106 instead turns exact side negatives into template-
+split nogoods and feeds them back to the body proposer.
+
+Method
+------
+1. Reconstruct E104's source-stable 1,010-candidate lower/upper product under
+   fixed E092 poles, boundary_macro_09, x42 and manufacturing-free y60. Keep all
+   E103 unary-dead rows removed and both stable E078 bodies required.
+
+2. Build one persistent body/power model for 26 bodies and global high template
+   totals 10/6/10. Add explicit upper-side template-count variables. Initially
+   forbid only E105's exact upper vector 3/2/2, equivalently lower 7/4/8.
+
+3. Request the next body/template split. The smaller required nested side proposes
+   eight class coordinates with every legal body, same-footprint native mode,
+   fixed-pole power and native-front constraint still live. The other nested side
+   consumes the remaining class caps.
+
+4. Exact proposer INFEASIBLE bans only that complete template split and returns to
+   the persistent body model. Exact consumer INFEASIBLE bans only the exact
+   proposer allocation. UNKNOWN creates no nogood. The experiment is bounded to
+   four new template proposals and three allocations within any one proposal.
+
+5. A paired high allocation is sent to E101's unchanged x42-low complement. Only
+   an independently replayable 219-body positive advances downstream.
+
+Predeclared decisions
+---------------------
+Full positive
+  Advance to terminal uniqueness, generic I/O and component-aware binding.
+
+Body model INFEASIBLE after exact split nogoods
+  Close manufacturing-free y60 only if every excluded split is backed by an exact
+  nested-side negative. Restore E103's explicit separator next.
+
+New proposer-side INFEASIBLE
+  Append the exact template split to the split store and continue within the
+  frozen proposal limit.
+
+Consumer-side INFEASIBLE
+  Forbid only the exact proposer class vector and continue within the frozen
+  allocation limit.
+
+Any UNKNOWN
+  Preserve its exact body/template/allocation context and stop. Do not turn the
+  censored context into a split or allocation nogood.
+
+Proposal/allocation limit
+  Persist all exact nogoods and continue from that finite store in the successor;
+  do not restart from E104 or E105.
+
+Truth boundary
+--------------
+Template-split negatives are contextual to the source-stable x42, fixed E092
+skeleton and manufacturing-free y60 language. An exact split nogood is stronger
+than a body nogood but does not reject another split, y60's unrestricted separator,
+high, module B, routing or throughput. No certification or U/L effect.

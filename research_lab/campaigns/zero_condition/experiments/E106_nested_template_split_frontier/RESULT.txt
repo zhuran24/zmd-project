@@ -1,0 +1,142 @@
+E106 RESULT: SPLIT FRONTIER LEARNS THREE STRUCTURAL NOGOODS AND OPENS ONE ALLOCATION FACE
+================================================================================================
+
+Status
+------
+Closed at the preregistered allocation limit. E106 consumes E105's exact nested
+template-split nogood, requests four further body/template proposals, learns three
+new exact split nogoods, and reaches one split whose smaller side can produce
+native-front allocations. Three such allocations are then rejected exactly by
+the complementary nested side. Independent solver-diverse replay reports PASS.
+
+Verdict
+-------
+
+  NESTED_ALLOCATION_VECTOR_LIMIT_REACHED
+
+Decision
+--------
+
+  CONTINUE_FROM_SPLIT_AND_ALLOCATION_NOGOOD_STORE
+
+Machine evidence
+----------------
+Canonical wrapper:
+
+  research_lab/local/zero_condition/
+  E106_nested_template_split_frontier/run-001/RESULT.json
+
+SHA-256:
+
+  026fe686944616305ff5056a574152a5c8d57fac44b15a797563b555c33316ae
+
+Template-split store:
+
+  research_lab/local/zero_condition/
+  E106_nested_template_split_frontier/run-001/TEMPLATE_SPLIT_NOGOODS.json
+
+SHA-256:
+
+  48cac90a3e704b82b0e50c22644a604214156d8dcfbbaa90c78a5ae5f74ecb96
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E106_nested_template_split_frontier/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  acad46fdf658475d2dcc801a624514dde4213e0c890424debb7e2d5fb4ba9cfc
+
+Recursive split frontier
+------------------------
+The persistent body/power model keeps E104's exact 1,010 live candidates, 26 high
+bodies, global template totals 10/6/10, fixed E092 power, body non-overlap and
+both stable E078 bodies. It exposes the three upper-side template totals as the
+finite split interface. E105's exact upper vector 3/2/2 is loaded before the first
+solve.
+
+The next three body proposals are:
+
+  lower 7/5/7   upper 3/1/3
+  lower 3/6/7   upper 7/0/3
+  lower 4/5/8   upper 6/1/2
+
+Each body proposal is OPTIMAL in the satisfaction-only body model. For each, the
+smaller upper side is then solved over its complete spatial candidate domain,
+all same-footprint native modes and all eight B class coordinates. Each complete
+upper-side model returns exact INFEASIBLE in 1.1 to 2.0 seconds. Therefore each
+entire template split, rather than its particular body witness, enters the split
+store.
+
+Together with E105, the exact upper-side split nogoods are:
+
+  3/2/2
+  3/1/3
+  7/0/3
+  6/1/2
+
+Independent one-worker PSEUDO_COST replay with symmetry and probing disabled
+reproduces the three new negatives. Their replay times are 1.721, 1.469 and 2.507
+seconds.
+
+Open split and allocation face
+------------------------------
+The fourth body proposal has:
+
+  lower template totals   5 / 4 / 9   (18 bodies)
+  upper template totals   5 / 2 / 1   ( 8 bodies)
+
+Unlike the prior four vectors, the complete upper model can produce native-front
+witnesses. Three distinct upper class-allocation vectors are tested:
+
+  [3,1,1,2,0,1,0,0]
+  [0,1,4,0,2,0,1,0]
+  [0,0,5,0,2,0,0,1]
+
+For every vector, the upper proposer is OPTIMAL, while the complete lower side
+under the exact remaining class caps is INFEASIBLE. These are allocation nogoods,
+not a template-split nogood: upper 5/2/1 still has untested class vectors.
+
+Independent one-worker replay first fixes and confirms each upper vector, then
+solves the corresponding lower consumer. All three lower models again return
+INFEASIBLE. Replay times are 53.198, 60.180 and 24.690 seconds.
+
+What changed
+------------
+The outer loop has crossed two abstraction levels in one run:
+
+  body geometry failure
+    -> exact lower/upper template-split nogood
+
+  feasible upper template split
+    -> exact upper class-allocation nogood
+
+The body proposer consumes split rules immediately and produces a different
+question. The open 5/2/1 split then consumes allocation rules immediately and
+continues on its residual finite face. No complete high allocation, x42-low run,
+module-B witness or 219-body combined witness is claimed.
+
+Next problem
+------------
+Keep the open split fixed at upper 5/2/1 and lower 5/4/9. Reconstruct the complete
+upper proposer, forbid exactly the three checked allocation vectors, and continue
+the allocation handshake. Do not return to the body proposer until either:
+
+* a compatible lower consumer is found;
+* the upper allocation face is exact INFEASIBLE after the checked nogoods, in
+  which case the full 5/2/1 split may be promoted only after replaying the entire
+  nogood chain; or
+* a particular proposer or consumer remains UNKNOWN, in which case preserve that
+  exact context without learning a rule.
+
+A paired high allocation must still pass E101's unchanged x42-low complement and
+full 219-body replay before terminal uniqueness.
+
+Truth boundary
+--------------
+Only four template splits and three upper allocation vectors are rejected. The
+open upper 5/2/1 split remains unresolved beyond those vectors. E106 does not
+reject manufacturing-free y60, high, x42, module B, or any untested allocation.
+It proves no terminal uniqueness, binding, routing, throughput, certification or
+U/L change.

@@ -1,0 +1,83 @@
+{
+  "schema": "zmd_e106_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "verdict": "NESTED_ALLOCATION_VECTOR_LIMIT_REACHED",
+  "decision": "CONTINUE_FROM_SPLIT_AND_ALLOCATION_NOGOOD_STORE",
+  "terminal": "ALLOCATION_LIMIT",
+  "canonical_run": "research_lab/local/zero_condition/E106_nested_template_split_frontier/run-001",
+  "controls": {
+    "max_template_proposals": 4,
+    "max_allocations_per_proposal": 3,
+    "initial_upper_split_nogood": [3, 2, 2]
+  },
+  "template_split_nogoods": {
+    "count": 4,
+    "upper_vectors": [
+      [3, 2, 2],
+      [3, 1, 3],
+      [7, 0, 3],
+      [6, 1, 2]
+    ],
+    "new_count": 3,
+    "store_path": "research_lab/local/zero_condition/E106_nested_template_split_frontier/run-001/TEMPLATE_SPLIT_NOGOODS.json",
+    "store_sha256": "48cac90a3e704b82b0e50c22644a604214156d8dcfbbaa90c78a5ae5f74ecb96"
+  },
+  "open_template_split": {
+    "upper": [5, 2, 1],
+    "lower": [5, 4, 9],
+    "split_digest": "d62f3fa58cf6477041260ea638364076f775048ef5cb4f1d219efba580e4ec48"
+  },
+  "allocation_nogoods": [
+    [3, 1, 1, 2, 0, 1, 0, 0],
+    [0, 1, 4, 0, 2, 0, 1, 0],
+    [0, 0, 5, 0, 2, 0, 0, 1]
+  ],
+  "body_proposals": [
+    {
+      "upper": [3, 1, 3],
+      "lower": [7, 5, 7],
+      "body_elapsed_seconds": 0.03811893799866084,
+      "proposer_status": "INFEASIBLE",
+      "proposer_elapsed_seconds": 1.997521028999472
+    },
+    {
+      "upper": [7, 0, 3],
+      "lower": [3, 6, 7],
+      "body_elapsed_seconds": 0.11395253099908587,
+      "proposer_status": "INFEASIBLE",
+      "proposer_elapsed_seconds": 1.1235176599875558
+    },
+    {
+      "upper": [6, 1, 2],
+      "lower": [4, 5, 8],
+      "body_elapsed_seconds": 0.1583078569965437,
+      "proposer_status": "INFEASIBLE",
+      "proposer_elapsed_seconds": 2.003059067996219
+    },
+    {
+      "upper": [5, 2, 1],
+      "lower": [5, 4, 9],
+      "body_elapsed_seconds": 0.3302844569989247,
+      "proposer_status": "OPTIMAL",
+      "tested_allocation_count": 3,
+      "consumer_statuses": ["INFEASIBLE", "INFEASIBLE", "INFEASIBLE"]
+    }
+  ],
+  "independent_replay": {
+    "status": "PASS",
+    "classification": "THREE_NEW_SPLIT_NOGOODS_AND_THREE_ALLOCATION_NOGOODS_REPLAYED",
+    "workers": 1,
+    "search_branching": "PSEUDO_COST_SEARCH",
+    "symmetry_level": 0,
+    "probing_level": 0,
+    "artifact_check_path": "research_lab/local/zero_condition/E106_nested_template_split_frontier/run-001/ARTIFACT_CHECK.json",
+    "artifact_check_sha256": "acad46fdf658475d2dcc801a624514dde4213e0c890424debb7e2d5fb4ba9cfc"
+  },
+  "artifacts": {
+    "runner_sha256": "485698087b044f99fa5ca6146c16421e7600c8780474691e60939ede944d66ab",
+    "checker_sha256": "32885bf89fabb9de17c81ba8ae9687cfab4860ffde0c3816bbe9bb55c1a99646",
+    "result_sha256": "026fe686944616305ff5056a574152a5c8d57fac44b15a797563b555c33316ae"
+  },
+  "truth_boundary": "Only the four listed template splits and the three listed upper allocation vectors are rejected. The upper 5/2/1 split remains open beyond those vectors. No UNKNOWN produced a nogood and no combined witness exists."
+}

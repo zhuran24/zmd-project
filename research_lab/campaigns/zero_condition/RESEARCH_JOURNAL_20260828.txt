@@ -592,3 +592,27 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   `lower 7/4/8 + upper 3/2/2`，而不是那一份 body nogood。下一轮让同一个 body proposer 只排除
   这个 split，再出下一份 template proposal；每次 exact side negative 都能把模板分配空间
   砍掉一块，比在 geometry 层逐个排解更接近真正的 allocation outer loop。
+
+2026-08-29 04:57
+----------------
+数据：
+  E106 run-001 RESULT.json
+  research_lab/local/zero_condition/E106_nested_template_split_frontier/run-001/RESULT.json
+  sha256 026fe686944616305ff5056a574152a5c8d57fac44b15a797563b555c33316ae
+  ARTIFACT_CHECK.json sha256
+  acad46fdf658475d2dcc801a624514dde4213e0c890424debb7e2d5fb4ba9cfc
+
+注意／发现：
+  把 E105 的 upper 3/2/2 split nogood 编进 persistent body proposer 后，后续三份 body proposal
+  的 upper totals 依次为 3/1/3、7/0/3、6/1/2；完整 upper native-front 模型全部在约 1-2 秒
+  exact INFEASIBLE，于是 split store 一次长到 4 条。第四份 upper 5/2/1 则能出 native-front
+  witness；但前三个 allocation vectors 的 lower complement 分别 exact INFEASIBLE。异源单线程
+  PSEUDO_COST 重放重新确认三条 split negatives 与三条 allocation negatives，store 没有混入
+  UNKNOWN 或某次搜索轨迹的偶然终点。
+
+推理：
+  外环第一次在同一轮里跨过两个抽象层：先从 body witness 提炼 template-split rule，再在存活
+  split 内从 side witness 提炼 allocation rule。upper 5/2/1 不能因为前三个 vector 都死就整体
+  升格为 split nogood；当前最有价值的动作是固定这一个 split，只续扫它的 residual allocation
+  face。若 upper proposer 在消费所有 lower-side nogoods 后 exact INFEASIBLE，才能把“分配向量
+  全被覆盖”的链单独重放后升级为 split rule；否则一份 paired high 才送回 x42-low。
