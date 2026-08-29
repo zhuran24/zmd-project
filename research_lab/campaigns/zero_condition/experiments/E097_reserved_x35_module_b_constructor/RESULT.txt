@@ -1,0 +1,97 @@
+E097 RESULT: RESERVED-X35 CONSTRUCTOR TERMINAL BRANCH RECORDED AND CHECKED
+============================================================================
+
+Status
+------
+Closed from the fresh no-overwrite run. A branch-aware independent checker
+reports PASS. The canonical terminal status, verdict and next decision are the
+exact fields in the machine RESULT; this durable record intentionally does not
+retype those strings.
+
+Canonical machine result
+------------------------
+
+  research_lab/local/zero_condition/
+  E097_reserved_x35_module_b_constructor/run-001/RESULT.json
+
+Branch-aware checker
+--------------------
+
+  research_lab/local/zero_condition/
+  E097_reserved_x35_module_b_constructor/run-001/ARTIFACT_CHECK.json
+
+The checker joins the runner identity, reserved-column audit, module-B result and
+terminal branch. If the producer is positive, it independently replays the full
+combined 219-body native-front witness. If the producer is INFEASIBLE or
+censored, it proves that no combined witness or selected-body claim is smuggled
+into the record and preserves the branch's restricted scope.
+
+Frozen context
+--------------
+E097 consumes:
+
+  partition                 partition_90abd29523f2a0dc
+  seam                      horizontal y=41
+  boundary                  boundary_macro_09
+  poles                     E092 exact 53-pole set
+  frozen A half             E095 exact 128-body native-front witness
+  module-B body demand      91
+  module-B source universe  4,378 candidates
+
+Reserved-column transformation
+------------------------------
+Manufacturing bodies using x=35 are removed from the sufficient constructor:
+
+  removed separator candidates     436
+  surviving low candidates       1,915
+  surviving high candidates      2,027
+  surviving total                3,942
+
+Low bodies end at x<=34 and high bodies begin at x>=36. The fixed skeleton has
+no solid cell on x=35 above y=41. Column x=35 remains available to native fronts;
+it is not turned into an occupied wall.
+
+The mechanical audit establishes:
+
+  low/high shared body cells                0
+  low-front cells occupiable by high body   0
+  high-front cells occupiable by low body   0
+
+Front/front coincidence remains outside this layer exactly as in E095. The only
+low/high bridge consists of eight explicit class-allocation pairs satisfying
+
+  low[class] + high[class] = required[class].
+
+Exact model retained
+--------------------
+The module-B model keeps all exact template counts, named-operation front-demand
+classes, same-footprint native modes, body non-overlap, fixed-pole power and the
+two stable E078 bodies. It has no retained-count objective and stops at the first
+witness. E092-compatible bodies are hints only.
+
+Terminal identity and effect
+----------------------------
+The authoritative branch is:
+
+  RESULT.json.module_b.status
+  RESULT.json.verdict
+  RESULT.json.decision
+  ARTIFACT_CHECK.json.branch.classification
+
+Its effect is exactly the matching predeclared branch:
+
+* Positive: the combined native-front witness is real and independently replayed;
+  advance it to terminal uniqueness, generic I/O and component-aware binding.
+* INFEASIBLE: only the reserved-x35 sufficient restriction is rejected; restore
+  E096's explicit separator and solve conditioned allocation states.
+* UNKNOWN/censored: do not infer infeasibility; solve low/high sides conditioned
+  on allocation vectors instead of rerunning the same monolith.
+
+Truth boundary
+--------------
+E097 concerns one sufficient restriction of one fixed-pole, fixed-boundary
+native-front class problem. A positive transfers to the parent; a negative does
+not. Terminal uniqueness, generic I/O, commodity binding, component compatibility,
+routing and throughput remain outside unless the machine branch contains a
+separately checked downstream artifact. No certification, U/L, owner, production,
+publication or pruning effect follows.

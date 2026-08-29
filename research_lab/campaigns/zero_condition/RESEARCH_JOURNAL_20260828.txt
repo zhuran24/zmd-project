@@ -397,3 +397,23 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   low/separator/high。最便宜的充分构造是把 x=35 设为 manufacturing-free column：它删除
   separator body 变量并切断 low/high 的 body/front 耦合，只剩 8 维配额桥。若能出 witness，
   就与 E095 的 A 半件拼合；若失败，只否定这条新增充分限制，不倒灌成原 fixed skeleton 无解。
+
+2026-08-29 02:06
+----------------
+数据：
+  E097 run-001 RESULT.json
+  research_lab/local/zero_condition/E097_reserved_x35_module_b_constructor/run-001/RESULT.json
+  branch-aware ARTIFACT_CHECK.json in the same run directory
+
+注意／发现：
+  x=35 restriction 把 B 候选从 4,378 压到 3,942：low 1,915、high 2,027，删除 436 个
+  separator bodies。固定 skeleton 在 y>41 的 x=35 上没有实体占用；该列仍可承载 fronts。
+  audit 得到 low/high body overlap=0、low-front/high-body=0、high-front/low-body=0，八组
+  class allocation 成为唯一显式桥。机器终态由 RESULT 的 status/verdict/decision 唯一承载，
+  checker 按实际分支复核，不在日志里另造第二份终态字符串。
+
+推理：
+  这轮真正测试的是 E096 推出的充分构造，不是 unrestricted B。后继动作必须严格跟随机器
+  decision：正例才进入 terminal uniqueness/binding；INFEASIBLE 回到显式 separator；censored
+  则把八维 allocation 固定后分别解 low/high。无论哪个分支，都不再回 E094 单体，也不再
+  用点状 front-rule 增长代替结构切分。

@@ -1,0 +1,74 @@
+EXPERIMENT E097: RESERVED-X35 MODULE-B CONSTRUCTOR
+==================================================
+
+Question
+--------
+Can E095's exact 91-body module-B native-front problem be solved under the
+sufficient spatial restriction selected by E096: no manufacturing body occupies
+column x=35, low bodies end at x<=34, and high bodies begin at x>=36?
+
+Why this experiment
+-------------------
+E096 proves that the x=34 spatial split has a far thinner exact interface than
+the template split. Its unrestricted separator still contains 436 candidates.
+The cheapest constructive use of that discovery is to reserve the adjacent
+column x=35 from manufacturing bodies. This turns the low/high body and
+front/body relation into an exact product while preserving x=35 as a usable
+native-front lane. The only remaining bridge is the eight-dimensional allocation
+of B operation/front-demand classes between the two sides.
+
+Method
+------
+1. Pin E095's exact factorization packet and module-A witness, E096's selected
+   interface result/check, and E092's fixed 53-pole / boundary_macro_09 skeleton.
+   Reuse E095's hash-pinned context reconstruction and operation materialization.
+
+2. Reconstruct all active B candidates and delete only candidates whose body
+   occupies x=35. Classify every survivor uniquely:
+
+     low    max body x <= 34
+     high   min body x >= 36
+
+   Column x=35 above the y=41 seam must contain no fixed solid, but it remains
+   available to input/output fronts. Front/front coincidence remains outside the
+   native-front layer exactly as in E095.
+
+3. Build one exact satisfaction model with:
+
+     * all 91 B bodies and exact template counts;
+     * all B front-demand classes and same-footprint native modes;
+     * body non-overlap and fixed-pole power;
+     * the two stable E078 bodies and their required operations;
+     * eight explicit integer allocation pairs
+       low[class] + high[class] = required[class].
+
+   There is no retained-count objective. E092's compatible B bodies are hints
+   only. Stop after the first solution.
+
+4. A positive is materialized into deterministic named operations, combined with
+   E095's frozen 128-body A witness, and independently replayed as a complete
+   219-body power/native-front assignment.
+
+Predeclared decisions
+---------------------
+Positive and combined replay PASS
+  Advance the combined witness to duplicate terminal uniqueness, generic I/O and
+  component-aware binding.
+
+INFEASIBLE
+  Reject only the reserved-x35 sufficient restriction. Return to E096's full
+  low/separator/high language and solve conditioned on explicit allocation
+  vectors; do not call unrestricted module B infeasible.
+
+UNKNOWN
+  Preserve censorship. Decompose into low/high side solves conditioned on
+  allocation vectors, using the reserved column rather than rerunning the same
+  monolith.
+
+Truth boundary
+--------------
+E097 strengthens one fixed-pole, fixed-boundary native-front problem by reserving
+a manufacturing-free column. A positive is valid for the unrestricted parent;
+a negative is not. Terminal uniqueness, generic I/O, commodity binding,
+component compatibility, routing and throughput remain outside. Research-only;
+no certification, U/L, owner, production, publication or pruning effect.

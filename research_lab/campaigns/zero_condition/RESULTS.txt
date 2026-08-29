@@ -3621,6 +3621,45 @@ evidence:
   ARTIFACT_CHECK.json sha256
   695eae5cac25ac72c5f3f0fa4b76cd79c0c03042c8290bd746dcd960edcf8192.
 
+R-ZC-107  Reserved-x35 spatial constructor reaches a checked terminal branch
+--------------------------------------------------------------------------------
+status: fresh no-overwrite run complete; branch-aware artifact replay PASS
+scope: E092 fixed poles/boundary, E095 module B, manufacturing-free x=35 restriction
+
+statement:
+  E097 compiles E096's selected x=34 spatial interface into a sufficient
+  constructor. Of 4,378 B candidates, 436 bodies occupying x=35 are removed;
+  1,915 low and 2,027 high candidates survive. The fixed skeleton is solid-free
+  on x=35 above y=41, and the column remains available to native fronts. A
+  mechanical audit confirms zero low/high body overlap and zero cross-side
+  front/body occupancy. Eight explicit low/high class-allocation pairs carry the
+  complete remaining interface.
+
+  The exact terminal status, verdict and decision are the canonical fields of
+  the pinned RESULT.json. The branch-aware checker reports PASS: it independently
+  replays a positive combined 219-body native-front witness when present, or
+  verifies that negative/censored branches carry no witness and retain the
+  reserved-column scope. This ledger entry deliberately does not create a second
+  prose copy of the branch identity.
+
+non-implications:
+  Reserving x=35 is a sufficient restriction. A negative does not prove module B
+  or the fixed E092 skeleton infeasible. Front/front coincidence, terminal
+  uniqueness, generic I/O, commodity binding, component compatibility, routing
+  and throughput remain outside unless separately present and checked.
+
+effect on next problem:
+  Follow RESULT.json.decision exactly. A positive advances the combined E095-A /
+  E097-B witness to terminal uniqueness and binding. INFEASIBLE restores E096's
+  explicit separator and conditions on allocation states. UNKNOWN/censored
+  solves the independent low/high sides conditioned on those eight allocations;
+  no same-monolith rerun is authorized.
+
+evidence:
+  E097 RESULT.txt; local RESULT.json, MODULE_B_RESULT.json,
+  RESERVED_COLUMN_AUDIT.json and ARTIFACT_CHECK.json under
+  research_lab/local/zero_condition/E097_reserved_x35_module_b_constructor/run-001/.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:
