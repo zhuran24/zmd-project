@@ -1,0 +1,93 @@
+EXPERIMENT E089: TEMPORAL-HOLDOUT SPATIAL HAZARD ATLAS FOR MODULE B
+==================================================================
+
+Question
+--------
+Do E088's diffuse module-B front failures nevertheless concentrate in a small
+set of stable spatial roles that generalizes to later failures?
+
+The test must not select and evaluate regions on the same 178 labels. E089 uses
+module-B rules already present after E086 as training data and the 83 module-B
+rules added only by E087 as a temporal holdout.
+
+Why this experiment
+-------------------
+E088 rules out two attractive bulk languages. Translation-normalized stencil
+families cover most registered failures only by touching almost the whole B
+universe; context-sensitive support families are almost one per registered row.
+That negative says the point-rule representation is too fine, but does not yet
+say whether the geometry itself has a stable hazardous subregion.
+
+A spatial role that predicts later failures would justify changing the B-bay or
+reserving front halo there. A role that fits only earlier failures is not a
+constructor rule and must not steer the next master.
+
+Frozen data split
+-----------------
+Training labels:
+
+  module-B candidate indices in E086's final checkpoint
+
+Holdout labels:
+
+  module-B candidate indices added in E087's final checkpoint and absent from
+  E086
+
+The complete unlabeled universe is E088's 4,353 candidate map. Candidate ordering
+and checkpoint index identity are already checked by E088's exact remap.
+
+Spatial features
+----------------
+For every candidate, E089 computes only label-independent features:
+
+  * template and visible demand-class stratum;
+  * body gap to the y=41 seam;
+  * nearest top/left/right grid boundary gap;
+  * Manhattan gap to protocol-core body or reserved core terminals;
+  * Manhattan gap to the 52 inherited fixed-pole bodies;
+  * Manhattan gap to the removed seam-pole body;
+  * option-count band;
+  * universe-derived quartile bands for maximum manufacturing, pole and
+    boundary-state front-cell support pressure.
+
+Distance bins are fixed before labels are inspected. Pressure quartiles are
+computed from the complete unlabeled universe. Template and demand remain report
+strata; they are not allowed to disappear inside an aggregate score.
+
+Selection and holdout rule
+--------------------------
+E089 enumerates a fixed set of atomic role bins. Using training labels only, it
+chooses at most four bins whose union covers no more than half of the complete B
+universe. The exact lexicographic objective is:
+
+  1. maximize covered training failures;
+  2. minimize covered universe candidates;
+  3. minimize number of selected bins;
+  4. deterministic role identity.
+
+Only after selection is frozen does E089 reveal holdout coverage.
+
+Decision rule
+-------------
+STABLE_SPATIAL_HAZARD_REGIONS
+  Training coverage and holdout coverage are both at least 80 percent while the
+  selected union covers at most 50 percent of the B universe. Use the selected
+  roles as a bounded B-bay or front-halo constructor proposal, then test the exact
+  candidate-specific front rules inside it.
+
+TRAINING_HAZARD_DOES_NOT_GENERALIZE
+  Training coverage reaches 80 percent under the universe cap, but holdout
+  coverage does not. Do not promote the fitted regions; the apparent pattern is
+  cohort-specific.
+
+SPATIAL_ROLES_TOO_DIFFUSE
+  Even training coverage does not reach 80 percent under the cap. Retire the
+  fixed-52-plus-one-replacement B geometry before another expensive master solve;
+  widen pole or partition geometry.
+
+Truth boundary
+--------------
+E089 is a no-solver predictive atlas on one frozen candidate language and one
+temporal label split. Selected regions are constructor proposers only. They are
+not cuts, do not prove any candidate feasible or infeasible, and do not establish
+that future search distributions match E086/E087.

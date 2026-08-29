@@ -225,3 +225,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   预付 front 约束税；继续追细 support 则仍是坐标级记忆。下一问应从“规则长什么样”转为
   “失败住在哪里”：按 seam、外边界、protocol core、固定电杆与局部支撑密度构造空间角色
   atlas。若危险集中，重画 B bay 或保留 halo；若仍分散，退役固定 52+1 pole 的 B 几何语言。
+
+2026-08-28 21:57
+----------------
+数据：
+  E089 run-002 RESULT.json
+  research_lab/local/zero_condition/E089_module_b_spatial_hazard_holdout/run-002/RESULT.json
+  sha256 0a4b17f12a74edd644d53d31c6a445faba04b12544888b5ffcff10bfa077d7ef
+  ARTIFACT_CHECK.json sha256
+  906829304398cf62e055fb7af28bb194e53833a33cf60636616ad4f580af1d0b
+
+注意／发现：
+  用 E086 的 95 条 B 规则选区域、把 E087 新增 83 条完全留作 holdout 后，训练集最优四区域
+  已占 2,088/4,353 候选，却只覆盖 68/95；没碰到预定 80% 门槛。冻结选择后看 holdout 更差，
+  只覆盖 52/83。四块分别是 core gap 3-5、fixed-pole gap 6-9、最低 manufacturing support
+  quartile 与 seam-adjacent。run-001 还暴露出完整域存在 option_count=0，run-002 把它作为角色
+  保留而非先删掉。后来的 6x4 失败只覆盖 7/19，空间模式并不跨 cohort 稳定。
+
+推理：
+  E088 证明形状语言压不短，E089 又证明稳定空间危险带也压不短；继续同一 52 固定杆+1 替代杆
+  的 B bay 里调 seed、阈值或点规则，已经违反停止条件。下一问必须显式换对象空间，并用嵌套
+  松弛区分原因：先只放宽 pole mobility、保持 y=41 与 body/front 语言；若仍 front-dead，才把
+  预算移到 E081 其他 Pareto partition/seam。这样能判断墙来自电杆刚性还是直 seam 本身。

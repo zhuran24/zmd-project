@@ -1,0 +1,172 @@
+E089 RESULT: MODULE-B FAILURE ROLES DO NOT GENERALIZE INTO A SMALL SPATIAL HAZARD ZONE
+=======================================================================================
+
+Status
+------
+Completed as a research-only no-solver temporal-holdout discriminator. The
+candidate feature atlas, train-only role selection and holdout evaluation were
+independently replayed. No candidate feasibility, infeasibility, cut, routing,
+throughput, certification, U/L, owner, production or publication effect follows.
+
+Machine evidence
+----------------
+Main result:
+
+  research_lab/local/zero_condition/
+  E089_module_b_spatial_hazard_holdout/run-002/RESULT.json
+
+SHA-256:
+
+  0a4b17f12a74edd644d53d31c6a445faba04b12544888b5ffcff10bfa077d7ef
+
+Complete spatial atlas SHA-256:
+
+  9d555d2c87cf7ea119db48015c9707c0148ba2e6ec1524343002d4e17e9f769f
+
+Selected hazard-region artifact SHA-256:
+
+  b281e62f305913feabe9573ced7ae168a02e97b51410f6caca541b50a4697a64
+
+Independent artifact-check SHA-256:
+
+  906829304398cf62e055fb7af28bb194e53833a33cf60636616ad4f580af1d0b
+
+Verdict
+-------
+
+SPATIAL_ROLES_TOO_DIFFUSE
+
+Decision
+--------
+
+RETIRE_FIXED_52_PLUS_ONE_B_GEOMETRY_WIDEN_POLES_OR_PARTITION
+
+Apparatus correction
+--------------------
+Run-001 omitted `option_count=0` from the fixed option-count bins and failed
+closed while constructing the unlabeled feature atlas. Run-002 keeps zero-option
+candidates as an explicit role. The run-001 failure is preserved and has no
+scientific effect.
+
+Temporal split
+--------------
+Region selection and evaluation use disjoint cohorts:
+
+  training rules   E086 final module-B checkpoint     95
+  holdout rules    E087-only module-B additions       83
+  final B rules    union                              178
+
+The complete unlabeled universe is E088's 4,353 candidates. Candidate indices are
+stable across both checkpoints and the E088 exact remap.
+
+Role language
+-------------
+E089 defines 32 label-independent atomic roles using:
+
+  * distance to the y=41 seam;
+  * distance to top/left/right grid boundary;
+  * distance to protocol-core body and reserved terminals;
+  * distance to the 52 inherited fixed-pole bodies;
+  * distance to the removed seam-pole body;
+  * option-count bands, including a separate zero-option band;
+  * universe-derived quartiles of manufacturing, pole and boundary-state support
+    pressure.
+
+Template and demand-class strata remain visible in the result. They are not
+hidden inside one aggregate score.
+
+Train-only selection
+--------------------
+Using training labels only, E089 exhausts unions of at most four atomic roles and
+requires the union to cover at most half of the B universe. The exact objective is
+maximum training coverage, then minimum universe coverage, then minimum number of
+roles, then deterministic role identity.
+
+The best admissible union is:
+
+  core_gap:3_5
+  fixed_pole_gap:6_9
+  manufacturing_pressure:q1
+  seam_gap:0
+
+It covers:
+
+  universe candidates       2,088 / 4,353   47.97 percent
+  training failures            68 / 95      71.58 percent
+
+The predeclared training target was 76/95, or 80 percent. The best possible union
+inside the cap misses it by eight failures. Therefore the result is already
+`SPATIAL_ROLES_TOO_DIFFUSE` before holdout labels are consulted.
+
+Temporal holdout
+----------------
+After selection is frozen, the same four roles cover:
+
+  holdout failures             52 / 83      62.65 percent
+  all registered B failures   120 / 178     67.42 percent
+
+The holdout target was 67/83. Later failures are less concentrated than the
+training cohort, not more.
+
+Stratum reading
+---------------
+Selected holdout coverage differs materially by template:
+
+  3x3    38 / 50 holdout failures
+  5x5     7 / 14 holdout failures
+  6x4     7 / 19 holdout failures
+
+The strongest apparent spatial signal is therefore not a uniform module-B hazard
+zone. It is partially cohort- and template-dependent, with especially poor
+transfer to later 6x4 failures.
+
+Interpretation
+--------------
+E088 showed that rule shape is either too broad or too fine. E089 now shows that a
+small stable spatial region does not rescue the same geometry language. Even the
+best four-role union consumes nearly half of all B candidates while missing more
+than one quarter of training failures and more than one third of future failures.
+
+This is the predeclared stop condition for the fixed-52-plus-one-replacement
+module-B geometry. Continuing to add point rules, changing one threshold or
+running another seed would preserve the same representation after both its shape
+and spatial compression tests failed.
+
+Non-implications
+----------------
+E089 does not prove:
+
+  * the y=41 operation partition infeasible;
+  * module B globally impossible;
+  * any candidate outside the selected regions feasible;
+  * any candidate inside them infeasible;
+  * all wider pole languages necessary;
+  * a different partition better;
+  * any terminal uniqueness, binding, routing or throughput property.
+
+Effect on the next problem
+--------------------------
+Retire the bounded language that freezes 52 inherited poles and allows only one
+replacement in the y=41 module-B constructor. Do not run a sixth candidate search
+inside it.
+
+The next experiment must be deliberately wider and must separate two hypotheses:
+
+  1. pole rigidity is the obstruction, so allowing a bounded multi-pole repair
+     makes native-front-feasible B geometry constructible while retaining the
+     partition;
+  2. the straight y=41 partition itself is the obstruction, so even wider pole
+     mobility cannot make its B bay support the required front roles.
+
+The cheapest honest discriminator is a nested relaxation comparison using the
+same body/front language: first allow a small explicit multi-pole repair budget
+while keeping y=41; only if that remains front-dead should the experiment move to
+another E081 Pareto partition or seam geometry. Any positive must materialize the
+body, pole and operation/mode endpoint before terminal uniqueness and
+component-aware binding.
+
+Truth boundary
+--------------
+This result is a temporal predictive failure of a fixed role language. It changes
+the continuation budget and representation; it is not a mathematical
+infeasibility theorem for the layout problem.

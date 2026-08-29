@@ -1,0 +1,91 @@
+{
+  "schema": "zmd_e089_module_b_spatial_hazard_machine_snapshot_v1",
+  "created_at_local": "2026-08-28T21:57:48-04:00",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "verdict": "SPATIAL_ROLES_TOO_DIFFUSE",
+  "decision": "RETIRE_FIXED_52_PLUS_ONE_B_GEOMETRY_WIDEN_POLES_OR_PARTITION",
+  "temporal_split": {
+    "training_b_rules": 95,
+    "holdout_b_rules": 83,
+    "final_b_rules": 178,
+    "disjoint": true
+  },
+  "candidate_language": {
+    "module_b_candidates": 4353,
+    "atomic_spatial_roles": 32,
+    "maximum_selected_roles": 4,
+    "universe_cap_fraction": 0.5,
+    "training_success_fraction": 0.8,
+    "holdout_success_fraction": 0.8
+  },
+  "best_train_selected_union": {
+    "role_ids": [
+      "core_gap:3_5",
+      "fixed_pole_gap:6_9",
+      "manufacturing_pressure:q1",
+      "seam_gap:0"
+    ],
+    "universe_count": 2088,
+    "universe_fraction": 0.47966919365954513,
+    "training_count": 68,
+    "training_fraction": 0.7157894736842105,
+    "training_target_count": 76,
+    "holdout_count": 52,
+    "holdout_fraction": 0.6265060240963856,
+    "holdout_target_count": 67,
+    "final_registered_count": 120,
+    "final_registered_fraction": 0.6741573033707865
+  },
+  "selected_stratum_coverage": {
+    "manufacturing_3x3": {
+      "universe": 1335,
+      "training": 35,
+      "training_selected": 28,
+      "holdout": 50,
+      "holdout_selected": 38
+    },
+    "manufacturing_5x5": {
+      "universe": 1008,
+      "training": 11,
+      "training_selected": 7,
+      "holdout": 14,
+      "holdout_selected": 7
+    },
+    "manufacturing_6x4": {
+      "universe": 2010,
+      "training": 49,
+      "training_selected": 33,
+      "holdout": 19,
+      "holdout_selected": 7
+    }
+  },
+  "apparatus_correction": {
+    "run_001_path": "research_lab/local/zero_condition/E089_module_b_spatial_hazard_holdout/run-001/FAILURE.json",
+    "status": "EXECUTION_FAILURE",
+    "reason": "the fixed option-count bins omitted zero-option candidates; run-002 retains option_count=0 as its own unlabeled spatial role"
+  },
+  "artifacts": {
+    "result": {
+      "path": "research_lab/local/zero_condition/E089_module_b_spatial_hazard_holdout/run-002/RESULT.json",
+      "sha256": "0a4b17f12a74edd644d53d31c6a445faba04b12544888b5ffcff10bfa077d7ef"
+    },
+    "spatial_atlas": {
+      "path": "research_lab/local/zero_condition/E089_module_b_spatial_hazard_holdout/run-002/SPATIAL_ATLAS.json",
+      "sha256": "9d555d2c87cf7ea119db48015c9707c0148ba2e6ec1524343002d4e17e9f769f"
+    },
+    "selected_regions": {
+      "path": "research_lab/local/zero_condition/E089_module_b_spatial_hazard_holdout/run-002/SELECTED_HAZARD_REGIONS.json",
+      "sha256": "b281e62f305913feabe9573ced7ae168a02e97b51410f6caca541b50a4697a64"
+    },
+    "artifact_check": {
+      "path": "research_lab/local/zero_condition/E089_module_b_spatial_hazard_holdout/run-002/ARTIFACT_CHECK.json",
+      "sha256": "906829304398cf62e055fb7af28bb194e53833a33cf60636616ad4f580af1d0b"
+    }
+  },
+  "runners": {
+    "experiment_sha256": "8f7ece0d9d6ab262a8a940d970dfc5df2e9fba6ff63482c5a9c8304d72e6df82",
+    "artifact_check_sha256": "667945800cc54d306a626520f23513b3cefcdf28036260d8f278f332b5b9c353"
+  },
+  "truth_boundary": "Temporal-holdout no-solver predictive atlas. Region selection uses only E086 labels and evaluates E087-only labels after selection. Regions are constructor proposers, not cuts or feasibility judgments."
+}

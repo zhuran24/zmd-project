@@ -3313,6 +3313,44 @@ evidence:
   ARTIFACT_CHECK.json sha256
   c524fa736d03a11a4a3af24073bbf00c8aa568847f5b3563cf66c261e5cd8d8e.
 
+R-ZC-099  Temporal holdout rejects a small stable module-B spatial hazard zone
+--------------------------------------------------------------------------------
+status: complete no-solver train/holdout spatial-role discriminator
+scope: E088's 4,353 module-B candidates; E086 B rules as training; E087-only B rules as holdout
+
+statement:
+  E089 freezes 95 E086 module-B rules as training labels and 83 E087-only rules
+  as a disjoint temporal holdout. It defines 32 label-independent roles from
+  seam/boundary/core/fixed-pole/removed-pole distances, option-count bands and
+  universe-derived support-pressure quartiles.
+
+  Exhaustive selection of at most four roles under a 50-percent universe cap
+  finds a best union covering 2,088/4,353 candidates, 68/95 training failures and
+  52/83 holdout failures. The predeclared 80-percent targets were 76 and 67.
+  Training coverage is only 71.58 percent and holdout coverage falls to 62.65
+  percent. Later 6x4 failures transfer especially poorly: 7/19 are covered.
+
+non-implications:
+  This is a predictive failure of one role language, not an infeasibility proof.
+  The selected regions are not cuts, and E089 does not refute module B, y=41, a
+  wider pole repair, another partition, binding or routing.
+
+effect on next problem:
+  Retire the fixed-52-plus-one-replacement B geometry and stop adding point rules
+  inside it. Use a nested relaxation discriminator: first allow a bounded explicit
+  multi-pole repair while preserving y=41 and the body/front language; widen the
+  partition or seam only if that pole-relaxed context remains front-dead.
+
+evidence:
+  E089 RESULT.txt; local run-002 RESULT.json sha256
+  0a4b17f12a74edd644d53d31c6a445faba04b12544888b5ffcff10bfa077d7ef;
+  SPATIAL_ATLAS.json sha256
+  9d555d2c87cf7ea119db48015c9707c0148ba2e6ec1524343002d4e17e9f769f;
+  SELECTED_HAZARD_REGIONS.json sha256
+  b281e62f305913feabe9573ced7ae168a02e97b51410f6caca541b50a4697a64;
+  ARTIFACT_CHECK.json sha256
+  906829304398cf62e055fb7af28bb194e53833a33cf60636616ad4f580af1d0b.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:
@@ -3336,8 +3374,9 @@ power optimum”; it is “construct power and native-front feasibility together
 The fixed-rung r33 replay is explicitly censored. E086/E087 restore candidate
 production and turn four rejected geometries into 147 reusable rules, but the
 store grows 34->98->181 while every new E087 failure lies in module B and empty
-counts stay large. E088 now answers the compression question negatively: coarse
-stencil families touch almost the whole B universe, while fine support families
-are nearly one-per-failure. The next object is a spatial role/decomposition atlas,
-not another point-rule solve. The final repair size, pole language, terminal
-assignment, component-compatible binding and physical layer count remain open.
+counts stay large. E088 rejects both coarse and fine signature compilation; E089
+then shows that the best train-selected spatial roles do not cover even 80 percent
+of training failures and generalize worse to E087's holdout. The fixed-52-plus-one
+B geometry is retired. The next live object is a nested multi-pole-versus-partition
+relaxation, not another rule or seed. The final repair size, terminal assignment,
+component-compatible binding and physical layer count remain open.

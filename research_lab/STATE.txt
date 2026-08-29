@@ -9,14 +9,14 @@ Campaign ref: research_lab/campaigns/zero_condition/CAMPAIGN.txt
 
 Current endpoint
 ----------------
-Statement: The partition/seam line has reached a representation-level negative.
-E086/E087 turn four rejected body/pole/power candidates into 147 new necessary
-front rules and localize all later growth to module B. E088 then exhausts the
-complete 4,353-candidate B universe and shows that those 178 B rules do not form
-a bounded reusable signature family: six coarse stencil signatures cover 145
-rules but expand to 3,740 candidates, while 80 percent support coverage needs 129
-fine signatures. Point-rule closure is now retired as the next action; the live
-question is which stable spatial role or subregion of module B should be changed.
+Statement: The fixed-52-plus-one-replacement module-B geometry has failed both
+of its predeclared compression exits. E088 shows the 178 B rules are either coarse
+families touching almost the whole 4,353-candidate universe or fine families that
+are nearly one per failure. E089 then selects spatial regions on E086's 95 B
+rules and tests them on E087's disjoint 83-rule holdout: the best four-role union
+already covers 47.97 percent of the universe but only 71.58 percent of training
+failures and 62.65 percent of holdout failures. The bounded B geometry is retired;
+the next discriminator must separate pole rigidity from the y=41 partition.
 Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
@@ -26,6 +26,7 @@ Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E083_historical_bay_carrier_premise_audit/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E084_current_geometry_power_front_repair/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E088_module_b_front_rule_signature_atlas/RESULT.txt
+  research_lab/campaigns/zero_condition/experiments/E089_module_b_spatial_hazard_holdout/RESULT.txt
 Identity audit:
   research_lab/campaigns/zero_condition/E079_E080_ARTIFACT_IDENTITY_AUDIT_20260828.txt
 Direction ref:
@@ -33,16 +34,15 @@ Direction ref:
 
 Live question
 -------------
-Q: In the complete 4,353-candidate module-B universe, do the 178 registered
-front failures concentrate in a small set of stable spatial roles that excludes
-a large fraction of the remaining B domain? Build a no-solver hazard atlas using
-distance to the y=41 seam, outer boundary, protocol-core halo, fixed-pole bodies
-and local dynamic-support density, with template/demand strata kept visible. If a
-small region set captures at least 80 percent of failures while covering at most
-half the B universe, turn it into a decomposed B-bay or reserved-front-halo
-constructor. If spatial roles are also diffuse, retire the fixed-52-plus-one-
-replacement B geometry and widen the pole or partition language before any new
-master solve. The atlas is a proposer discriminator, not a feasibility claim.
+Q: Is native-front feasibility blocked primarily by pole rigidity or by the
+straight y=41 operation partition? Build a nested relaxation discriminator using
+the same body/front semantics and the complete 47-state boundary object. First
+keep y=41 and allow a small explicit multi-pole repair budget rather than 52 fixed
+poles plus one replacement. Search feasibility-first and materialize any exact
+body/pole/operation-mode witness. If bounded multi-pole mobility remains
+front-dead or censored, move the same consumer to the next E081 Pareto partition
+or seam. Do not reopen point-rule growth, and do not compare the two hypotheses
+with different front semantics or hidden retained-count rungs.
 
 Inflight / recovery
 -------------------
@@ -68,6 +68,7 @@ Recent consequential results
 - E086 removes the fixed retained rung and searches the complete bounded one-replacement retained-count language. It finds 184- and 181-retained candidates, both exact-checker EMPTY_DOMAIN, and grows the front-rule checkpoint 34->98 with no operation nogood. The checker corrects the raw derivation's false unchanged-feasible-set wording. | evidence=research_lab/campaigns/zero_condition/experiments/E086_feasibility_first_front_proposer/RESULT.txt | effect=continue from the 98-rule checkpoint; do not restart or cite 184/181 as final-language lower bounds
 - E087 continues from 98 rules with a new seed family. Two more front-dead candidates add 83 rules, all in module B, for a final 181-rule store; empty counts are 39 and 44 and no operation nogood or witness appears. | evidence=research_lab/campaigns/zero_condition/experiments/E087_feasibility_first_front_continuation/RESULT.txt | effect=stop blind lazy repetition and build a complete module-B front-rule signature atlas
 - E088 exhausts the 4,353-candidate module-B universe. Coarse stencils cover registered failures only by expanding to almost the whole domain, while fine support signatures are nearly one-per-failure; both predeclared bulk criteria fail. | evidence=research_lab/campaigns/zero_condition/experiments/E088_module_b_front_rule_signature_atlas/RESULT.txt | effect=retire point-rule bulk compilation and move to a spatial B-bay/pole decomposition discriminator
+- E089 uses E086's 95 module-B rules for train-only spatial-region selection and E087's disjoint 83 additions as holdout. The best four-role union consumes 47.97 percent of the universe but covers only 71.58 percent of training and 62.65 percent of holdout failures. | evidence=research_lab/campaigns/zero_condition/experiments/E089_module_b_spatial_hazard_holdout/RESULT.txt | effect=retire the fixed-52-plus-one B geometry and run a nested multi-pole-versus-partition relaxation
 
 Current unknowns and guards
 ---------------------------
@@ -92,6 +93,7 @@ Current unknowns and guards
 - E086 is not r33-equivalent: removing retained=186 broadens the model to all retained counts. Its 184 optimum is exact only for the intermediate 69-rule relaxation; the 181 candidate has bound 187. The durable effect is the 64 new necessary front rules and 98-rule checkpoint, not a moved-body bound.
 - E087 does not prove lazy closure cannot converge. Its durable signal is localization: all 83 new rules are module B, module-A count is unchanged, and empty-domain counts do not improve.
 - E088 is a finite census of one frozen candidate language and rule store. Its signatures are proposer groups only. Diffusion rejects the predeclared bulk-compilation strategy; it does not prove any signature member, module B, the partition or the one-replacement language infeasible.
+- E089 is a temporal predictive failure of one fixed spatial-role language. It authorizes retiring the 52+1 continuation budget, not declaring y=41, module B or any candidate infeasible. The next comparison must preserve the same front semantics while widening one structural axis at a time.
 - Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
 
 History pointers
