@@ -1,0 +1,172 @@
+E095 RESULT: THE Y=41 NATIVE-FRONT MODEL FACTORS EXACTLY, AND THE WALL IS MODULE B
+================================================================================
+
+Status
+------
+Closed from fresh staged runs and an independent no-solver replay. Module A has
+an exact native-front witness. Module B is UNKNOWN with no incumbent. No combined
+219-body front witness exists yet.
+
+Verdict
+-------
+
+MODULE_B_FRONT_SUBMODEL_CENSORED
+
+Decision
+--------
+
+DECOMPOSE_MODULE_B_BY_TEMPLATE_OR_BAY
+
+Machine evidence
+----------------
+Terminal result:
+
+  research_lab/local/zero_condition/
+  E095_y41_module_product_decomposition/run-001/RESULT.json
+
+SHA-256:
+
+  78de6850a02e66d1018a6f3f3ec545d624e16bdc0cf7e4ef1b455ea2eb25e609
+
+Independent artifact check:
+
+  research_lab/local/zero_condition/
+  E095_y41_module_product_decomposition/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  6d75894d7a79cb9611fc20d1121a832777f9cf4eeb8e67bb4fef85066d0ee43f
+
+1. The seam is an exact product cut at the current layer
+---------------------------------------------------------
+E095 fixes exactly the E092/E094 skeleton:
+
+  partition       partition_90abd29523f2a0dc
+  seam            horizontal y=41
+  poles           E092's exact 53-pole set
+  boundary        boundary_macro_09
+  manufacturing   219 bodies
+
+It reconstructs the active candidate universe after the fixed pole bodies,
+protocol core, boundary state and seam exclusions:
+
+  module A candidates   7,301
+  module B candidates   4,378
+
+The decomposition audit mechanically enumerates every candidate body and every
+same-footprint native pose mode. It obtains:
+
+  A-body / B-body shared cells            0
+  A native-front cells occupied by B body 0
+  B native-front cells occupied by A body 0
+
+The two modules have 52 possible front/front coincidence cells, all on the y=41
+seam. E094's native-front layer does not constrain front/front coincidence; it
+constrains whether enough front cells remain free of occupied bodies. Every
+operation-class and template-count equation is module-indexed, while poles,
+boundary and protocol-core occupancy are fixed constants.
+
+Therefore the fixed-skeleton E094 model is exactly the Cartesian product of an A
+native-front model and a B native-front model. This is not a heuristic search
+split. Terminal uniqueness and commodity semantics can later recouple the two
+modules and are explicitly outside this claim.
+
+Decomposition audit:
+
+  research_lab/local/zero_condition/
+  E095_y41_module_product_decomposition/run-001/DECOMPOSITION_AUDIT.json
+
+SHA-256:
+
+  7db4313765c04a08999672803204f08df1207031ebafb7cb8d937202a9b57b71
+
+2. Module A is solved
+---------------------
+The module-A satisfaction model keeps exact A template counts, all A
+operation/front-demand classes, same-footprint native modes, fixed-pole power and
+body non-overlap. It has no retained-count objective and stops at the first
+witness.
+
+Result:
+
+  status                       OPTIMAL
+  elapsed                       31.027 s
+  selected bodies                   128
+  retained current bodies           121
+  body candidates                 7,301
+  mode/class variables           37,630
+  model variables                44,931
+  model constraints              85,518
+  branches                        5,998
+  conflicts                           0
+
+The independent checker replays all 128 bodies against fixed obstacles, exact
+named-operation counts, power and native front capacity. It reports zero overlap,
+zero unpowered bodies and zero front failures.
+
+Module-A result:
+
+  research_lab/local/zero_condition/
+  E095_y41_module_product_decomposition/run-001/MODULE_A_RESULT.json
+
+SHA-256:
+
+  a8ced4827348ed6151157f7de58ff9ffefb50ad88005a1191f359ba9f2da4148
+
+3. Module B carries the wall
+----------------------------
+The independently built B model uses the same semantics and a separate
+120-second budget:
+
+  status                       UNKNOWN
+  elapsed                      120.248 s
+  incumbent                           none
+  selected bodies                       0
+  body candidates                   4,378
+  mode/class variables             36,026
+  model variables                  40,404
+  model constraints                78,379
+  branches                      4,481,380
+  conflicts                        72,038
+
+UNKNOWN is preserved as censorship. It is not evidence that module B or the
+fixed skeleton is infeasible. The contrast is nevertheless decisive for search
+allocation: A terminates with a witness in 31 seconds, while B consumes four and
+a half million branches without an incumbent. The monolithic E094 wall is now
+localized to one 91-body module.
+
+Module-B result:
+
+  research_lab/local/zero_condition/
+  E095_y41_module_product_decomposition/run-001/MODULE_B_RESULT.json
+
+SHA-256:
+
+  c97697a1240754d60519ee2815e0b6b87274ce43f73a39877b15614872416a14
+
+What did not happen
+-------------------
+E095 does not establish a combined front-feasible 219-body assignment, because
+B has no incumbent. It does not run duplicate terminal uniqueness, generic I/O,
+commodity binding, component compatibility, routing or throughput. It does not
+change U/L and has no certification, owner, production, publication or pruning
+effect.
+
+Effect on the next problem
+--------------------------
+Do not rerun the E094 monolith and do not spend further budget on module A.
+Preserve the exact A witness as a reusable constructive object. The next
+experiment must work only on module B and compare the two remaining natural
+cuts before selecting one:
+
+  template cut
+    53 bodies of 3x3, 17 bodies of 5x5 and 21 bodies of 6x4;
+
+  spatial/bay cut
+    regions induced by the fixed poles, protocol core, outer boundary and y=41
+    seam.
+
+First measure which cut has the thinner interaction interface. Then solve or
+construct through that interface. Any future full native-front witness is the
+product of the frozen A witness and a B witness, followed by an independent
+combined replay.

@@ -1,0 +1,76 @@
+EXPERIMENT E095: EXACT Y=41 MODULE-PRODUCT DECOMPOSITION
+=======================================================
+
+Question
+--------
+After fixing E092's exact 53-pole set and `boundary_macro_09`, does the y=41
+seam make E094's complete native-front class problem an exact product of an
+independent module-A model and an independent module-B model? If so, which
+module carries the remaining search wall?
+
+Why this experiment
+-------------------
+E094 removes pole choice and boundary choice but still returns UNKNOWN after
+10,332,007 branches. The remaining variables are body footprints, native modes
+and module-indexed front-demand classes. The y=41 seam is not an arbitrary
+solver partition: A bodies satisfy max(y)<41, B bodies satisfy min(y)>41, and
+the seam row itself is body-free. Before releasing poles or boundary, the
+project should exploit and mechanically verify this problem-derived cut.
+
+Method
+------
+1. Pin E094's censored result and derived model, E092's admitted y=41 skeleton,
+   the E081/E069/E079 inputs, candidate pools, mandatory operation multiset,
+   strict rules and operation profiles.
+
+2. Reconstruct the exact active body universe under the fixed pole set and fixed
+   boundary state. Mechanically verify:
+
+     * no A candidate body cell is a B candidate body cell;
+     * no native front cell of any A candidate/mode can be occupied by a B body;
+     * no native front cell of any B candidate/mode can be occupied by an A body;
+     * every class-count and template-count equation is module-local;
+     * poles, boundary and protocol-core occupancy are fixed constants.
+
+   Front/front coincidence on the seam is recorded but is not a coupling in the
+   E094 native-front layer, which constrains body occupancy only. Terminal
+   uniqueness is explicitly outside this experiment.
+
+3. Only if the audit passes, build two CP-SAT satisfaction models from the same
+   frozen semantics. Each module keeps its own exact template counts, complete
+   native mode/class choices, body non-overlap, fixed-pole power and relevant
+   stable E078 body requirements. Solve A and B independently in fresh process
+   stages with no retained-count objective.
+
+4. If both modules are feasible, combine the two witnesses and independently
+   replay the full 219-body assignment against the fixed poles, fixed boundary,
+   exact class counts, deterministic named-operation counts, power and native
+   front capacity.
+
+Predeclared decisions
+---------------------
+Both modules feasible and combined replay PASS
+  Advance this fixed skeleton to terminal uniqueness, generic I/O and
+  component-aware binding.
+
+One module INFEASIBLE
+  The fixed pole/boundary skeleton is contextually front-infeasible and the
+  obstruction is localized. Decompose that module by template/bay before
+  deciding which outer structural choice to release.
+
+One module UNKNOWN, the other terminal
+  Localize all next search work to the UNKNOWN module and decompose it by
+  template or spatial bay. Do not rerun the monolith.
+
+Both modules UNKNOWN
+  The seam cut is semantically valid but insufficient as an instrument; measure
+  and decompose both modules separately rather than releasing poles or boundary.
+
+Truth boundary
+--------------
+E095 covers body placement, fixed-pole power and native front-demand class
+capacity for one y=41 partition, one exact pole set and one exact boundary state.
+It does not include duplicate terminal uniqueness, generic I/O, commodity
+binding, component compatibility, routing, throughput or a whole-layout claim.
+All effects are research-only; no certification, U/L, production, owner,
+publication or pruning authority follows.

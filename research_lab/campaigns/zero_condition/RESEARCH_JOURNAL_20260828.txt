@@ -354,3 +354,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   body 位于相反开半平面，front 最远只到 seam，不能触及对侧 body；operation class count 也按
   module 分开。下一轮先机械证明这种 independence，再各自解 A、B 模块，负例或 UNKNOWN 只留在
   对应模块继续分解。
+
+2026-08-29 00:37
+----------------
+数据：
+  E095 run-001 RESULT.json
+  research_lab/local/zero_condition/E095_y41_module_product_decomposition/run-001/RESULT.json
+  sha256 78de6850a02e66d1018a6f3f3ec545d624e16bdc0cf7e4ef1b455ea2eb25e609
+  ARTIFACT_CHECK.json sha256
+  6d75894d7a79cb9611fc20d1121a832777f9cf4eeb8e67bb4fef85066d0ee43f
+
+注意／发现：
+  机械枚举证明固定 pole/boundary 后，A/B body 域无共享格，任一侧所有 native front 都不会
+  被另一侧 body 变量占据。两侧只有 y=41 上 52 个 front/front 交点，而当前层不约束 front
+  互占；class/template 计数也完全按 module 分开。因此 E094 在这一层确实是笛卡尔积，不是
+  为求快而做的近似切块。A 子模型 31.027 秒 OPTIMAL，产出 128-body witness；B 子模型
+  120.248 秒 UNKNOWN，4,481,380 branches / 72,038 conflicts，无 incumbent。
+
+推理：
+  E094 的千万分支墙已被定位到 91-body module B；继续解整盘或再动 A 都是浪费。A witness
+  现在是可复用的构造半件。下一问不直接挑模板拆分或空间拆分，而先测两种切口的接口厚度：
+  模板切口有 53/17/21 的数量账，但不同模板可能共享大量 footprint/front occupancy；空间切口
+  有 pole/core/seam 形成的天然边界，但会携带跨区模板配额。哪个桥更薄，才把 B 交给哪个表示。

@@ -3533,6 +3533,52 @@ evidence:
   ARTIFACT_CHECK.json sha256
   9e70b8ec451bfb52f9376cabc075adbd2d76056b91d01613e4d94753b344d6f8.
 
+R-ZC-105  The fixed y=41 native-front problem factors exactly; module B alone remains censored
+-------------------------------------------------------------------------------------------------
+status: exact product audit PASS; module-A witness independently replayed; module-B UNKNOWN preserved
+scope: partition_90abd29523f2a0dc, E092 exact 53-pole set, boundary_macro_09, native-front class layer
+
+statement:
+  E095 mechanically enumerates the complete active body and same-footprint mode
+  universes after fixing E092's poles and boundary. Module A has 7,301 candidates
+  and module B 4,378. No A/B candidate bodies share a cell; no A native-front
+  cell can be occupied by a B body and no B native-front cell can be occupied by
+  an A body. The 52 cross-module front/front coincidences lie on y=41 and are not
+  constrained by the current body-occupancy front layer. Count equations are
+  module-local and all remaining pole/boundary/core occupancy is constant.
+
+  Therefore the E094 problem is exactly a product at this layer. The independent
+  A model finds an OPTIMAL 128-body native-front witness in 31.027 seconds with
+  5,998 branches and zero conflicts; a no-solver checker replays its exact named
+  operation multiset, power and front capacity. The B model uses the same 120-
+  second budget but returns UNKNOWN after 4,481,380 branches and 72,038 conflicts,
+  with no incumbent. No combined witness is claimed.
+
+non-implications:
+  B UNKNOWN is not infeasibility. Product exactness ends at the native-front class
+  layer; terminal uniqueness, generic I/O and commodity semantics may recouple
+  the modules. E095 does not prove the fixed skeleton feasible and has no routing,
+  throughput, U/L or certification effect.
+
+effect on next problem:
+  Freeze the module-A witness as a constructive object and stop spending search
+  budget there. Work only on the 91-body module B. Before choosing a new solver
+  representation, compare the template cut (53 3x3 / 17 5x5 / 21 6x4 bodies)
+  with spatial/bay cuts induced by the fixed poles, protocol core, outer boundary
+  and seam; select the thinner interface, then solve through it.
+
+evidence:
+  E095 RESULT.txt; local RESULT.json sha256
+  78de6850a02e66d1018a6f3f3ec545d624e16bdc0cf7e4ef1b455ea2eb25e609;
+  DECOMPOSITION_AUDIT.json sha256
+  7db4313765c04a08999672803204f08df1207031ebafb7cb8d937202a9b57b71;
+  MODULE_A_RESULT.json sha256
+  a8ced4827348ed6151157f7de58ff9ffefb50ad88005a1191f359ba9f2da4148;
+  MODULE_B_RESULT.json sha256
+  c97697a1240754d60519ee2815e0b6b87274ce43f73a39877b15614872416a14;
+  ARTIFACT_CHECK.json sha256
+  6d75894d7a79cb9611fc20d1121a832777f9cf4eeb8e67bb4fef85066d0ee43f.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

@@ -1,0 +1,53 @@
+{
+  "schema": "zmd_e095_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "decomposition_audit": {
+    "path": "research_lab/local/zero_condition/E095_y41_module_product_decomposition/run-001/DECOMPOSITION_AUDIT.json",
+    "sha256": "7db4313765c04a08999672803204f08df1207031ebafb7cb8d937202a9b57b71",
+    "status": "PASS",
+    "module_candidate_counts": {"A": 7301, "B": 4378},
+    "cross_body_cell_count": 0,
+    "a_front_b_body_intersection_count": 0,
+    "b_front_a_body_intersection_count": 0,
+    "cross_front_front_intersection_count": 52
+  },
+  "module_a": {
+    "path": "research_lab/local/zero_condition/E095_y41_module_product_decomposition/run-001/MODULE_A_RESULT.json",
+    "sha256": "a8ced4827348ed6151157f7de58ff9ffefb50ad88005a1191f359ba9f2da4148",
+    "status": "OPTIMAL",
+    "elapsed_seconds": 31.02709230298933,
+    "selected_body_count": 128,
+    "retained_current_body_count": 121,
+    "body_candidate_count": 7301,
+    "mode_class_variable_count": 37630,
+    "model_variable_count": 44931,
+    "model_constraint_count": 85518,
+    "branches": 5998,
+    "conflicts": 0
+  },
+  "module_b": {
+    "path": "research_lab/local/zero_condition/E095_y41_module_product_decomposition/run-001/MODULE_B_RESULT.json",
+    "sha256": "c97697a1240754d60519ee2815e0b6b87274ce43f73a39877b15614872416a14",
+    "status": "UNKNOWN",
+    "elapsed_seconds": 120.24810262900428,
+    "selected_body_count": 0,
+    "body_candidate_count": 4378,
+    "mode_class_variable_count": 36026,
+    "model_variable_count": 40404,
+    "model_constraint_count": 78379,
+    "branches": 4481380,
+    "conflicts": 72038
+  },
+  "terminal_result": {
+    "path": "research_lab/local/zero_condition/E095_y41_module_product_decomposition/run-001/RESULT.json",
+    "sha256": "78de6850a02e66d1018a6f3f3ec545d624e16bdc0cf7e4ef1b455ea2eb25e609",
+    "verdict": "MODULE_B_FRONT_SUBMODEL_CENSORED",
+    "decision": "DECOMPOSE_MODULE_B_BY_TEMPLATE_OR_BAY"
+  },
+  "artifact_check": {
+    "path": "research_lab/local/zero_condition/E095_y41_module_product_decomposition/run-001/ARTIFACT_CHECK.json",
+    "sha256": "6d75894d7a79cb9611fc20d1121a832777f9cf4eeb8e67bb4fef85066d0ee43f",
+    "status": "PASS"
+  }
+}
