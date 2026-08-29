@@ -9,16 +9,14 @@ Campaign ref: research_lab/campaigns/zero_condition/CAMPAIGN.txt
 
 Current endpoint
 ----------------
-Statement: The partition/seam line has reached its first joint physical
-body/pole/power/front discriminator. E078 supplies one stable two-body semantic
-rewrite; E079 supplies an audited 47-state boundary object; E080 supplies the
-typed partition language; E081 and E082 independently select the same geometry-
-aware operation set, while E083 rejects the historical v3 carrier. E084 closes
-E081's apparent 16-body repair target and proves that post-filtering power optima
-leaves empty native-front domains. E085 then fresh-replays the first unresolved
-one-replacement r33 state for 250 seconds: status remains UNKNOWN with no
-incumbent and no OOM event. The next experiment must change the search instrument,
-not treat another identical replay as a new vote.
+Statement: The partition/seam line has reached a live knowledge-producing
+body/pole/power/front loop. E084 proves that post-filtering power optima leaves
+empty native-front domains. E085 shows the fixed retained=186 instrument is
+censored after 250 seconds. E086 broadens to the full bounded one-replacement
+retained-count language and restores candidate production: two exact fixed-
+geometry checks reject 184- and 181-retained candidates and grow the native-front
+rule store from 34 to 98. No front-operation witness exists yet, but the failed
+geometries now change the next master instead of disappearing.
 Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
@@ -34,16 +32,16 @@ Direction ref:
 
 Live question
 -------------
-Q: Can a representation-diverse, feasibility-first one-replacement front-aware
-proposer find any materialized body/pole/operation witness in the same horizontal
-y=41 language while preserving all 47 boundary states, the two stable E078
-bodies, 52 inherited poles plus one replacement pole, power and the 34 registered
-native-front rules? Do not freeze retained=186; maximize retained current
-footprints only as a ranking objective so witness discovery precedes optimality.
-A positive must pass the exact named-operation checker and then terminal
-uniqueness plus component-aware binding. UNKNOWN remains censorship. A terminal
-negative must state the exact widened or transformed language and cannot refute
-the partition or seam.
+Q: Starting from E086's 98-rule checkpoint and corrected full one-replacement
+scope, does further feasibility-first lazy closure reach a candidate with no
+empty native-front body and an exact named-operation/mode assignment? Use a fresh
+run directory and preserve the complete 47-state boundary language, y=41
+partition, 52 inherited poles plus one replacement pole, power and stable E078
+bodies. Do not restart from 34 rules. A positive advances immediately to terminal
+uniqueness, generic I/O and component-aware binding. A terminal contextual
+negative permits a wider pole/geometry language; UNKNOWN remains censorship and
+must motivate boundary/pole decomposition or solver diversity rather than another
+identical vote.
 
 Inflight / recovery
 -------------------
@@ -66,6 +64,7 @@ Recent consequential results
 - The E079/E080 run-001 paths were overwritten after admission. A machine audit proves the current E079 47-state projection and current E080 load-bearing semantics reproduce the admitted objects, but retains the original SHA records and forbids silent rebinding; a duplicate unexecuted E081 draft is tombstoned. | evidence=research_lab/campaigns/zero_condition/E079_E080_ARTIFACT_IDENTITY_AUDIT_20260828.txt | effect=separate semantic reproduction from byte identity and require new run directories
 - E084 closes the 16-body re-embedding premise: fixed-pole body packing moves 30, one-replacement power moves 31, all-pole objectives trade manufacturing versus pole movement, and their three materialized power optima have 18/35/26 empty native-front bodies. One-replacement front r31/r32 are producer MASTER_INFEASIBLE; r33 is UNKNOWN. | evidence=research_lab/campaigns/zero_condition/experiments/E084_current_geometry_power_front_repair/RESULT.txt | effect=put native-front feasibility inside the proposer and make fresh r33 the live discriminator
 - E085 fresh-replays r33 for 250 seconds with pinned source/checkpoint identities and memory telemetry. The result is UNKNOWN with no incumbent, unchanged 34-rule checkpoint, process ru_maxrss 1,941,080 KiB and no OOM counter increase. | evidence=research_lab/campaigns/zero_condition/experiments/E085_front_aware_r33_replay/RESULT.txt | effect=do not advance the rung; replace fixed-rung repetition with a representation-diverse feasibility-first proposer
+- E086 removes the fixed retained rung and searches the complete bounded one-replacement retained-count language. It finds 184- and 181-retained candidates, both exact-checker EMPTY_DOMAIN, and grows the front-rule checkpoint 34->98 with no operation nogood. The checker corrects the raw derivation's false unchanged-feasible-set wording. | evidence=research_lab/campaigns/zero_condition/experiments/E086_feasibility_first_front_proposer/RESULT.txt | effect=continue from the 98-rule checkpoint; do not restart or cite 184/181 as final-language lower bounds
 
 Current unknowns and guards
 ---------------------------
@@ -87,6 +86,7 @@ Current unknowns and guards
 - E084's exact positive geometries are body/pole/power witnesses only. The three checked all-pole optima are independently front-dead; the integrated front models are UNKNOWN. The r31/r32 MASTER_INFEASIBLE records are producer evidence and have not received a fresh heterogeneous solver replay. One inherited pole occupies optional protocol-core front (68,66); the slot may remain unused and no active-terminal claim follows.
 - E084 terminal-binding and global-binding scripts produced no result files. No terminal uniqueness, generic I/O, component-aware binding or routing conclusion may be cited.
 - E085 is a censored UNKNOWN, not an r33 negative. Its no-OOM telemetry does not diagnose the cause of search failure. A later duplicate invocation was rejected by no-overwrite and does not supersede the valid result.
+- E086 is not r33-equivalent: removing retained=186 broadens the model to all retained counts. Its 184 optimum is exact only for the intermediate 69-rule relaxation; the 181 candidate has bound 187. The durable effect is the 64 new necessary front rules and 98-rule checkpoint, not a moved-body bound.
 - Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
 
 History pointers

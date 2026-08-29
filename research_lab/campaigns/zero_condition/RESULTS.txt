@@ -3191,6 +3191,47 @@ evidence:
   ARTIFACT_CHECK.json sha256
   f53d5151a6b09e86f40b2f951160f66604b4d7e2e0a6151518309994a880919c.
 
+R-ZC-096  Feasibility-first one-replacement search returns 64 reusable native-front rules
+-------------------------------------------------------------------------------------------------
+status: two exact fixed-geometry rejections; checkpoint grows 34 -> 98; no witness
+scope: full bounded y=41 one-replacement language across all retained counts
+
+statement:
+  E086 removes the retained=186 rung equality, ranks the full bounded one-
+  replacement language by retained current manufacturing footprints, supplies a
+  complete power-feasible hint and changes the CP-SAT search controls. This is a
+  broader retained-count language than E085, not an equivalent r33 replay; the
+  independent checker records and corrects the raw derivation's contrary wording.
+
+  Iteration 0 reaches an OPTIMAL 184-retained candidate in 16.808 seconds under
+  the then-registered relaxation. The exact fixed-geometry operation checker
+  finds 35 empty native-front bodies and registers all 35. Iteration 1 reaches a
+  181-retained candidate with bound 187, finds 29 more empty bodies and registers
+  them. The final checkpoint contains 98 distinct necessary body-local front
+  rules and zero operation nogoods. Both candidates are front-dead and no final
+  operation/mode assignment exists.
+
+non-implications:
+  The 184 optimum belongs only to the intermediate 69-rule model, not the final
+  98-rule model. The second candidate is not optimal. Neither number is a global
+  or final-language moved-body lower bound. The rules are native-front capacity
+  necessities, not commodity bindings, external placement cuts, terminal-
+  uniqueness facts, routing or throughput results.
+
+effect on next problem:
+  Continue from the 98-rule checkpoint in a new run and corrected scope. Do not
+  restart at 34 rules or call the model r33. The next discriminator asks whether
+  lazy closure reaches a front-operation witness, a terminal contextual negative,
+  or a censored state that justifies boundary/pole decomposition or solver change.
+
+evidence:
+  E086 RESULT.txt; local RESULT.json sha256
+  fdb6ad438a05802c24f3a21d7eee5fe05b5bf738f41614e7af99476c887f1351;
+  CHECKPOINT.json sha256
+  06cadbed6f61cb04c8c5445b778378bca336ddc2fa1f2f0804962c1ceb70933d;
+  ARTIFACT_CHECK.json sha256
+  cfc7d91c728319cc3b30446761b39792c49b0c980be66b60dc0f30680e38b4b3.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:
@@ -3211,10 +3252,10 @@ optimum moves 30. Pole mobility improves the body currency, but every checked
 power optimum is front-dead. The current wall is therefore not “find another
 power optimum”; it is “construct power and native-front feasibility together.”
 
-The fixed-rung r33 replay is now explicitly censored: 250 seconds, no incumbent,
-no OOM event and no proof. Repeating that identical instrument would add machine
-time without new discrimination. The outer loop should carry the 47-state
-boundary object, typed seam, stable E078 bodies, y=41 partition context and 34
-registered front rules into a representation-diverse feasibility-first proposer.
-The final repair size, pole language, terminal assignment, component-compatible
-binding and physical layer count remain open.
+The fixed-rung r33 replay is explicitly censored, but E086's feasibility-first
+instrument restores candidate production and turns two rejected geometries into
+64 reusable rules. The live object is now the 98-rule checkpoint in the complete
+one-replacement retained-count language, not a guessed rung. The outer loop must
+continue that knowledge rather than restart. The final repair size, pole
+language, terminal assignment, component-compatible binding and physical layer
+count remain open.

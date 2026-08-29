@@ -1,0 +1,80 @@
+EXPERIMENT E086: FEASIBILITY-FIRST FRONT-AWARE ONE-REPLACEMENT PROPOSER
+============================================================================
+
+Question
+--------
+Can the same bounded y=41 one-replacement language produce any materialized
+front-operation witness when retained-current-footprint count is used as a
+ranking objective instead of an exact rung equality?
+
+Frozen semantic language
+------------------------
+E086 preserves:
+
+  * E081 partition_90abd29523f2a0dc and horizontal y=41 separation;
+  * all 219 module/template body counts;
+  * all 47 E079 boundary macro states;
+  * 52 inherited non-seam poles plus exactly one replacement pole;
+  * manufacturing power coverage;
+  * the two stable E078 body/operation identities;
+  * the 34 landed necessary body-local native-front rules;
+  * exact named operation counts in the fixed-geometry checker.
+
+Only the search instrument changes. E085 required retained=186 before a witness
+existed and remained UNKNOWN for 250 seconds. E086 removes that equality and
+maximizes retained current footprints. This is a feasibility-first ranking, not a
+new necessary condition and not permission to accept a worse semantic object.
+
+Representation-diverse derivation
+---------------------------------
+The runner pins the E084 producer bytes, applies a deterministic audited source
+transformation, saves the derived source in the fresh run directory, and executes
+that derived module. The transformation:
+
+1. replaces `retained == 186` with `Maximize(retained)`;
+2. supplies a complete search hint from E084's independently materialized
+   one-replacement power witness (hints do not change the feasible set);
+3. uses a different randomized portfolio-search seed family with hint repair;
+4. preserves the lazy front-rule and exact operation-checker loop;
+5. removes fixed-rung wording from the raw producer result.
+
+The source transformation must match each frozen text block exactly once. Any
+source drift fails closed.
+
+Controls
+--------
+
+  maximum Benders iterations   2
+  master cap per iteration    110 seconds
+  operation checker cap        20 seconds (inherited producer)
+  initial front rules          34
+  initial operation nogoods     0
+
+Decision rule
+-------------
+FRONT_OPERATION_FEASIBLE
+  Materialize the 219 bodies, boundary state, replacement pole and exact named
+  operation/mode assignment. Next run production pose-level binding patterns,
+  terminal uniqueness, generic I/O and component-aware binding.
+
+ITERATION_LIMIT with new rules or nogoods
+  The experiment has produced reusable knowledge. Continue from the new E086
+  checkpoint in a fresh successor run; do not restart from the 34-rule state.
+
+UNKNOWN
+  Preserve censorship. Use the telemetry and fixed objective bound/incumbent to
+  decide whether to decompose by boundary/pole state or change solver family.
+
+MASTER_INFEASIBLE
+  Close only the transformed feasibility-first one-replacement language. Because
+  retained is not fixed, this is stronger than a single rung negative but still
+  does not refute the partition, seam, wider pole mobility or other geometry.
+
+Truth boundary
+--------------
+Front rules in the proposer are necessary port-count conditions. The exact
+fixed-geometry checker enforces named operation counts and same-footprint native
+modes, but no commodity-to-port pattern, terminal uniqueness, generic I/O,
+component compatibility, exact routing or throughput is established until the
+named downstream consumers run. All output is research-only with no U/L,
+certification, production, owner, pruning or publication effect.

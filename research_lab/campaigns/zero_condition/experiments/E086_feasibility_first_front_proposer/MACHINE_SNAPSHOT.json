@@ -1,0 +1,85 @@
+{
+  "schema": "zmd_e086_feasibility_first_front_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "corrected_scope": "full bounded one-replacement y=41 feasibility-first language across all retained-current-footprint counts; not an r33-equivalent feasible set",
+  "result": {
+    "path": "research_lab/local/zero_condition/E086_feasibility_first_front_proposer/run-001/RESULT.json",
+    "sha256": "fdb6ad438a05802c24f3a21d7eee5fe05b5bf738f41614e7af99476c887f1351",
+    "raw_verdict": "FEASIBILITY_FIRST_PROPOSER_LEARNED_NEW_FRONT_KNOWLEDGE",
+    "raw_decision": "CONTINUE_FROM_E086_CHECKPOINT_IN_FRESH_SUCCESSOR"
+  },
+  "producer": {
+    "path": "research_lab/local/zero_condition/E086_feasibility_first_front_proposer/run-001/PRODUCER_RESULT.json",
+    "sha256": "7c0db41332c3362725209774de29ab95baca792e6cacd53fdc068da40bec593c",
+    "status": "ITERATION_LIMIT",
+    "search_objective": "MAXIMIZE_RETAINED_CURRENT_FOOTPRINTS",
+    "fixed_retained_target": null,
+    "iteration_count": 2,
+    "operation_nogood_count": 0,
+    "selected_manufacturing_count": 0
+  },
+  "iterations": [
+    {
+      "iteration": 0,
+      "master_status": "OPTIMAL",
+      "retained_current_footprints": 184,
+      "retained_best_bound": 184.0,
+      "operation_checker_status": "EMPTY_DOMAIN",
+      "empty_native_front_bodies": 35,
+      "new_front_rules": 35,
+      "cumulative_front_rules": 69,
+      "selected_boundary_state_id": "boundary_macro_27",
+      "selected_replacement_pole": "p_x52_y48_o0_m_omni",
+      "elapsed_seconds": 16.8075787830021
+    },
+    {
+      "iteration": 1,
+      "master_status": "FEASIBLE",
+      "retained_current_footprints": 181,
+      "retained_best_bound": 187.0,
+      "operation_checker_status": "EMPTY_DOMAIN",
+      "empty_native_front_bodies": 29,
+      "new_front_rules": 29,
+      "cumulative_front_rules": 98,
+      "selected_boundary_state_id": "boundary_macro_46",
+      "selected_replacement_pole": "p_x51_y42_o0_m_omni",
+      "elapsed_seconds": 110.0451351130032
+    }
+  ],
+  "checkpoint": {
+    "path": "research_lab/local/zero_condition/E086_feasibility_first_front_proposer/run-001/CHECKPOINT.json",
+    "sha256": "06cadbed6f61cb04c8c5445b778378bca336ddc2fa1f2f0804962c1ceb70933d",
+    "initial_front_rule_count": 34,
+    "final_front_rule_count": 98,
+    "new_verified_body_local_front_rules": 64,
+    "operation_nogood_count": 0,
+    "terminal": "ITERATION_LIMIT"
+  },
+  "derivation": {
+    "path": "research_lab/local/zero_condition/E086_feasibility_first_front_proposer/run-001/DERIVATION.json",
+    "sha256": "9fde5be7a4bdda9427f1e0b09be7884b1abef731e211dcb3548b1aa3f8d88b87",
+    "derived_source_path": "research_lab/local/zero_condition/E086_feasibility_first_front_proposer/run-001/DERIVED_PRODUCER.py",
+    "derived_source_sha256": "f78d6d6a1cffdb4d5f9e695c18ea60711befc3ad2129628845167ef2b3b8a8c7",
+    "patch_count": 9,
+    "raw_self_description_corrected": true
+  },
+  "artifact_check": {
+    "path": "research_lab/local/zero_condition/E086_feasibility_first_front_proposer/run-001/ARTIFACT_CHECK.json",
+    "sha256": "cfc7d91c728319cc3b30446761b39792c49b0c980be66b60dc0f30680e38b4b3",
+    "status": "PASS_WITH_SEMANTIC_CORRECTION",
+    "decision": "CONTINUE_FROM_98_RULE_CHECKPOINT_WITH_CORRECTED_SCOPE"
+  },
+  "telemetry": {
+    "elapsed_seconds": 129.41289707800024,
+    "process_ru_maxrss_kib": 2988464,
+    "oom_event_delta": 0,
+    "oom_kill_event_delta": 0
+  },
+  "sources": {
+    "experiment_sha256": "0f3a02e3cccca1a9f69681ae15f9488ae74a621004cf593da1d43c5c0ecb5df3",
+    "runner_sha256": "d45bbad8f09dfea93316cdb4fd3538f4749875313ac38198c33624ce4086b374",
+    "checker_sha256": "8a2beaea1613e704a944eb6f7d7f15ed7847e446ab7e450413defac8d13719bc"
+  },
+  "truth_boundary": "E086 produced two body/pole/power candidates and 64 additional necessary body-local front rules. Both candidates retained empty native-front bodies and no front-operation witness exists. The first 184-retained value is exact only under the then-registered 69-rule relaxation; the second 181-retained candidate is not optimal because its best bound is 187."
+}

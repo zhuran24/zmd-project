@@ -162,3 +162,24 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   同模型同 seed 继续加时的边际信息太低；下一步应改变表示或求解器。优先试 feasibility-first：
   保持 y=41、47-state、52+1 poles、power、stable E078 与 34 front rules，但把 retained=186
   等式改为“先找任意 front-operation witness，并以 retained 最大化排序”，让计算只吃真正剩余的自由度。
+
+2026-08-28 21:05
+----------------
+数据：
+  E086 run-001 RESULT.json
+  research_lab/local/zero_condition/E086_feasibility_first_front_proposer/run-001/RESULT.json
+  sha256 fdb6ad438a05802c24f3a21d7eee5fe05b5bf738f41614e7af99476c887f1351
+  ARTIFACT_CHECK.json sha256
+  cfc7d91c728319cc3b30446761b39792c49b0c980be66b60dc0f30680e38b4b3
+
+注意／发现：
+  去掉 retained=186 等式后，master 不再 250 秒无 incumbent。第一轮 16.808 秒精确找到
+  retained 184，但 exact operation checker 点出 35 个 empty-front bodies；把它们全部回灌后，
+  第二轮找到 retained 181 / bound 187 的候选，又点出 29 个。front rule store 从 34 长到 98，
+  两轮 operation nogood 都是 0。原 DERIVATION 自称 feasible set unchanged / hints-only 是错的：
+  去掉 rung 等式扩大了语言，objective、seed 和 solver controls 也变了；checker 已显式改判。
+
+推理：
+  固定 rung 是搜索仪器的一部分墙，不是对象本身的墙。feasibility-first 重新让计算产生候选，
+  而失败被压成 64 条下一轮直接消费的必要规则。下一轮必须从 98-rule checkpoint 续跑，不能
+  回 34 条重新发现。184 只对中途 69-rule 模型最优，181 也未证最优，不把它们记成下界。
