@@ -1,0 +1,61 @@
+{
+  "schema": "zmd_e091_next_pareto_three_pole_machine_snapshot_v1",
+  "created_at_local": "2026-08-28T23:16:25-04:00",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "verdict": "CONTROL_PARTITION_THREE_POLE_BODY_POWER_INFEASIBLE",
+  "decision": "REASSESS_REMAINING_PARETO_BEAM_OR_POLE_BUDGET",
+  "control": {
+    "partition_id": "partition_97f9ba7e7ad710dc",
+    "pareto_rank_zero_based": 1,
+    "corridor_axis": "y",
+    "corridor_coordinate": 17,
+    "corridor_width": 1,
+    "module_low": "B",
+    "module_high": "A",
+    "stable_module": "A",
+    "selected_pole_count_required": 53,
+    "maximum_relocated_poles": 3,
+    "minimum_retained_current_poles": 50,
+    "boundary_state_count": 47,
+    "manufacturing_count": 219
+  },
+  "power_stage": {
+    "status": "MASTER_INFEASIBLE",
+    "solver_status": "INFEASIBLE",
+    "elapsed_seconds": 10.776795503014,
+    "body_candidate_count": 14867,
+    "pole_candidate_count": 4316,
+    "selected_manufacturing_count": 0,
+    "selected_pole_count": 0,
+    "front_stage_ran": false,
+    "process_ru_maxrss_kib": 3566608
+  },
+  "artifacts": {
+    "result": {
+      "path": "research_lab/local/zero_condition/E091_next_pareto_three_pole_control/run-001/RESULT.json",
+      "sha256": "c7e06307c81b72cd12fa3dd7070cd7b9c5586863d0c369651ad4d5ac9b30d3f1"
+    },
+    "power_result": {
+      "path": "research_lab/local/zero_condition/E091_next_pareto_three_pole_control/run-001/POWER_RESULT.json",
+      "sha256": "4e9c05583ce43b910038493840d913af9ae2747ef31440b96ecd416be2b0a10c"
+    },
+    "power_derivation": {
+      "path": "research_lab/local/zero_condition/E091_next_pareto_three_pole_control/run-001/POWER_DERIVATION.json",
+      "sha256": "9290669d603a23faf50e9d517229ab1b3d274cfece4b9486b186a21e892eaa0f"
+    },
+    "power_derived": {
+      "path": "research_lab/local/zero_condition/E091_next_pareto_three_pole_control/run-001/POWER_DERIVED.py",
+      "sha256": "7a8e555b90ecfd9741b8b1dd88d3d071e4432ce6999c96d91126b080d3597b1a"
+    },
+    "artifact_check": {
+      "path": "research_lab/local/zero_condition/E091_next_pareto_three_pole_control/run-001/ARTIFACT_CHECK.json",
+      "sha256": "70c9e23fb4180b8f8131a97fa02cf7451dec65a1cd70a0610b9f57e87a0dbe0a"
+    }
+  },
+  "runners": {
+    "experiment_sha256": "b6b47d529d640d017a5657f8ebcb0b626145bc9ba0e262704d1db972789d1905",
+    "artifact_check_sha256": "7b62f843f4d0303a64adfa24fa2644d2ce55a6725fcaa8477da076eb727834dc"
+  },
+  "truth_boundary": "Exact contextual body/pole/power negative for partition_97f9ba7e7ad710dc at y=17 with exactly 53 poles and at most three relocations. The native-front stage did not run."
+}

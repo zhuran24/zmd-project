@@ -269,3 +269,24 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   模型加时或换 seed 投票。下一步把同一三杆 consumer 移到 E081 Pareto beam 的下一项
   partition_97f9ba7e7ad710dc / y=17：若它出 witness，partition 是差异来源；若仍 censored，
   应拆 consumer，而不是继续轮换 partition 故事。
+
+2026-08-28 23:14
+----------------
+数据：
+  E091 run-001 RESULT.json
+  research_lab/local/zero_condition/E091_next_pareto_three_pole_control/run-001/RESULT.json
+  sha256 c7e06307c81b72cd12fa3dd7070cd7b9c5586863d0c369651ad4d5ac9b30d3f1
+  ARTIFACT_CHECK.json sha256
+  70c9e23fb4180b8f8131a97fa02cf7451dec65a1cd70a0610b9f57e87a0dbe0a
+
+注意／发现：
+  第二个 Pareto partition_97f9ba7e7ad710dc 在 y=17、B 下 A 上、stable E078 转到 A 的
+  同一三杆预算下，body/pole/power 模型仅 10.777 秒就 exact INFEASIBLE。模型仍含 219 body、
+  53 poles、至少 50 current poles、完整 47-state boundary、power 与 non-overlap。因为 seed
+  层已关，完整 front stage 没有启动。
+
+推理：
+  这不是 front negative，却说明它不是 y=41 的同预算正面对照：三杆预算下连骨架都立不住。
+  不该立刻给这一个 partition 加 pole budget，也不该继续逐个造昂贵 front 模型。E081 beam 只有
+  7 项，下一问应先把全部 7 项通过同一 cheap body/power admission，校准 y=41 PASS 与 y=17
+  INFEASIBLE，再只把完整 front consumer 交给其余真正活着的 partition。

@@ -3391,6 +3391,41 @@ evidence:
   ARTIFACT_CHECK.json sha256
   fc46d1172b8f76252627db622fdbc7c1a997f07eec2edadddbd215bae387c7da.
 
+R-ZC-101  The next Pareto partition is body/power infeasible at the three-pole budget
+------------------------------------------------------------------------------------
+status: exact contextual body/pole/power negative; derivation and artifact check PASS
+scope: partition_97f9ba7e7ad710dc, y=17, exactly 53 poles with at most three relocations
+
+statement:
+  E091 applies the three-pole admission language to E081's second Pareto state:
+  partition_97f9ba7e7ad710dc with module B below y=17, module A above and the two
+  stable E078 bodies remapped to A. The complete 47-state boundary disjunction,
+  219 exact module/template bodies, non-overlap and manufacturing power remain.
+
+  The pure-feasibility body/pole/power model has 14,867 body candidates and 4,316
+  pole candidates. It terminates exact INFEASIBLE in 10.777 seconds. No body or
+  pole witness exists under the at-most-three-relocation budget, so the
+  preregistered complete-front stage does not run.
+
+non-implications:
+  This is not native-front infeasibility and does not refute the partition with a
+  larger pole budget or another geometry. It does not make y=41 front-feasible;
+  E090 remains censored.
+
+effect on next problem:
+  Before widening one chosen partition, sweep all seven E081 Pareto states through
+  the same cheap exact three-pole body/power admission model. Any survivor beyond
+  y=41 becomes the next complete-front control. If y=41 is the only survivor,
+  the three-pole skeleton language itself selects the current carrier.
+
+evidence:
+  E091 RESULT.txt; local RESULT.json sha256
+  c7e06307c81b72cd12fa3dd7070cd7b9c5586863d0c369651ad4d5ac9b30d3f1;
+  POWER_RESULT.json sha256
+  4e9c05583ce43b910038493840d913af9ae2747ef31440b96ecd416be2b0a10c;
+  ARTIFACT_CHECK.json sha256
+  70c9e23fb4180b8f8131a97fa02cf7451dec65a1cd70a0610b9f57e87a0dbe0a.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:
@@ -3419,7 +3454,9 @@ then shows that the best train-selected spatial roles do not cover even 80 perce
 of training failures and generalize worse to E087's holdout. E090 widens the pole
 budget to the first evidenced three-relocation language but the complete front
 consumer remains UNKNOWN without an incumbent and grows to about 8.3 GiB process
-RSS. Pole rigidity versus partition quality is therefore still unresolved. The
-next live object is the same three-pole consumer on E081's next Pareto partition,
-not another y=41 seed or point-rule pass. The final repair size, terminal
+RSS. E091 applies the same budget to the next Pareto partition and closes it one
+layer earlier as exact body/power INFEASIBLE. Pole rigidity versus partition
+quality is still unresolved at the front layer, but the finite beam can now be
+screened cheaply before any more complete-front builds. The next live object is a
+seven-state three-pole body/power admission atlas. The final repair size, terminal
 assignment, component-compatible binding and physical layer count remain open.

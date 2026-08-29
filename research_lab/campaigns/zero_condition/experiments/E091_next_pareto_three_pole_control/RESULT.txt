@@ -1,0 +1,154 @@
+E091 RESULT: THE NEXT E081 PARETO PARTITION FAILS BEFORE NATIVE-FRONT CHECKING AT THE THREE-POLE BUDGET
+================================================================================================================
+
+Status
+------
+Closed with an exact contextual body/pole/power negative. The native-front stage
+did not run because no body/power seed exists in this partition under the stated
+pole budget. The artifact and derivation checker passes. No global
+infeasibility, binding, routing, throughput, whole-layout, certification, U/L,
+owner, production, publication or pruning effect follows.
+
+Machine evidence
+----------------
+Wrapper result:
+
+  research_lab/local/zero_condition/
+  E091_next_pareto_three_pole_control/run-001/RESULT.json
+
+SHA-256:
+
+  c7e06307c81b72cd12fa3dd7070cd7b9c5586863d0c369651ad4d5ac9b30d3f1
+
+Power-stage result SHA-256:
+
+  4e9c05583ce43b910038493840d913af9ae2747ef31440b96ecd416be2b0a10c
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E091_next_pareto_three_pole_control/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  70c9e23fb4180b8f8131a97fa02cf7451dec65a1cd70a0610b9f57e87a0dbe0a
+
+Verdict
+-------
+
+CONTROL_PARTITION_THREE_POLE_BODY_POWER_INFEASIBLE
+
+Decision
+--------
+
+REASSESS_REMAINING_PARETO_BEAM_OR_POLE_BUDGET
+
+Control identity
+----------------
+E091 consumes the next item in E081's frozen Pareto order:
+
+  partition                  partition_97f9ba7e7ad710dc
+  Pareto position            second, zero-based rank 1
+  seam                       horizontal y=17, width 1
+  module B                   below the seam
+  module A                   above the seam
+  stable E078 bodies         module A
+  boundary language          complete 47-state disjunction
+  poles                      exactly 53
+  retained current poles     at least 50
+  relocated poles            at most 3
+
+This partition was selected before the E090 result as the finite control named by
+E090's decision. Its seam carries `dense_source_powder` and `sandleaf_powder`
+from B to A.
+
+Stage A: exact body/pole/power admission
+----------------------------------------
+The Stage-A producer is derived from E084's exact body/pole/power set-packing
+model. It preserves:
+
+  all 219 module/template body counts
+  exact body and pole non-overlap
+  protocol-core reservations
+  the complete 47-state boundary object
+  manufacturing power coverage
+  both stable E078 footprints
+  exactly 53 selected poles
+  at most three pole relocations
+
+Only the partition, seam coordinate, side assignment, stable-body module, pole
+floor and pure-feasibility objective are changed explicitly. The solver stops at
+the first witness if one exists.
+
+The model contains:
+
+  body candidates             14,867
+  pole candidates               4,316
+
+It terminates in:
+
+  elapsed                     10.777 s
+  solver status               INFEASIBLE
+  durable status              MASTER_INFEASIBLE
+  selected manufacturing            0
+  selected poles                    0
+
+The derived-source audit confirms:
+
+  partition_97f9ba7e7ad710dc is selected directly;
+  module B candidates lie wholly below y=17;
+  module A candidates lie wholly above y=17;
+  the stable E078 bodies are required in module A;
+  exactly 53 poles and at least 50 current pole poses are enforced;
+  the objective is removed and stop-after-first-solution is active.
+
+Stage B did not run
+-------------------
+E091 preregistered the E090 complete native-front consumer as Stage B, but a
+front comparison requires a body/pole/power seed in the same partition and pole
+language. Because Stage A is exact INFEASIBLE, no Stage-B source or result was
+materialized.
+
+Meaning
+-------
+This control does not show that y=41 is a good front carrier. E090 remains
+censored at the front layer. E091 shows something narrower and earlier:
+
+> the next E081 Pareto partition cannot even realize its body/pole/power skeleton
+> when only three current pole positions may be replaced.
+
+Thus partition_97f9ba7e7ad710dc is not a fair same-budget front competitor to
+y=41. The front hypotheses remain unseparated, but the finite beam has gained an
+exact admission cut: this partition must either receive a larger pole budget or
+leave the current constructor beam.
+
+Next problem
+------------
+Do not immediately enlarge this one partition's pole budget. First sweep the
+entire seven-item E081 Pareto beam through the same exact three-pole body/power
+admission model. This is a cheaper finite discriminator than constructing a
+complete front model for each state.
+
+For every Pareto partition, preserve:
+
+  its own selected straight seam and side assignment;
+  the complete 47-state boundary object;
+  exactly 219 module/template bodies;
+  the two stable E078 bodies in the partition-prescribed module;
+  exactly 53 poles, at least 50 current;
+  exact non-overlap and power;
+  pure feasibility and first incumbent.
+
+The sweep should reproduce y=41 as admitted and E091's y=17 control as
+INFEASIBLE. Any additional admitted partition becomes the next complete-front
+control. If y=41 is the only admitted state, the three-pole body/power language
+itself has selected the current carrier and the next choice is a larger explicit
+pole budget or decomposition, not another partition vote.
+
+Truth boundary
+--------------
+The exact negative belongs only to partition_97f9ba7e7ad710dc, its y=17 side
+assignment, the complete boundary object and the at-most-three-pole language. It
+does not prove the partition impossible with more pole mobility or another
+geometry, and it says nothing about native-front feasibility outside this
+context.

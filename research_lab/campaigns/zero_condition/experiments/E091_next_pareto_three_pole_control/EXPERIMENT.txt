@@ -1,0 +1,69 @@
+EXPERIMENT E091: IDENTICAL THREE-POLE FRONT CONSUMER ON THE NEXT E081 PARETO PARTITION
+=====================================================================================
+
+Question
+--------
+Does E081's next Pareto partition produce a native-front-feasible body/pole/
+operation-mode witness under the same three-pole consumer that remained censored
+on y=41?
+
+Control context
+---------------
+
+  partition                  partition_97f9ba7e7ad710dc
+  seam                       horizontal y=17, width 1
+  module B                   below the seam
+  module A                   above the seam
+  stable E078 bodies         module A
+  boundary language          complete 47-state disjunction
+  poles                      exactly 53, at least 50 current
+  front language             complete native mode/class formulation
+
+The partition is the next item in E081's finite geometry Pareto beam, not a
+post-result choice. Its seam carries `dense_source_powder` and
+`sandleaf_powder` from B to A.
+
+Two-stage instrument
+--------------------
+A different partition has no pre-existing exact body/power hint. E091 therefore
+uses two stages without changing the downstream semantics.
+
+Stage A, body/power seed
+  Derive from E084's exact body/pole/power set-packing model. Select the y=17
+  partition, keep all 47 boundary states, require exactly 219 module/template
+  bodies, exactly 53 poles with at least 50 current, power and non-overlap, and
+  the two stable E078 bodies in module A. Remove optimization and stop at the
+  first body/power witness. This stage is only a seed producer.
+
+Stage B, identical front consumer
+  Derive from E090's frozen complete-front producer. Change only the partition,
+  seam coordinate, side assignment, stable-body module and Stage-A hint. Keep
+  the three-pole budget, exact body/pole/power/boundary semantics, every native
+  mode, exact front-demand class totals, pure feasibility, first-incumbent
+  criterion and named-operation materialization.
+
+Decision rule
+-------------
+Stage A has no witness
+  Record whether it is INFEASIBLE or UNKNOWN. Do not compare front semantics;
+  this partition is blocked or censored at body/power under the chosen budget.
+
+Stage B FRONT_OPERATION_FEASIBLE
+  The partition change distinguishes the hypotheses. Retire y=41 as the current
+  carrier and run terminal uniqueness, generic I/O and component-aware binding.
+
+Stage B MASTER_INFEASIBLE
+  Close only the y=17 three-pole complete-front language. Reassess the remaining
+  finite Pareto beam or pole budget without upgrading this to global
+  infeasibility.
+
+Stage B UNKNOWN without incumbent
+  The monolithic complete-front consumer has now failed to compare two distinct
+  Pareto partitions. Decompose the consumer before any further partition vote.
+
+Truth boundary
+--------------
+Stage A is body/pole/power only. Stage B is native-front capacity plus exact
+named operation counts. Neither stage proves terminal uniqueness, generic I/O,
+component compatibility, routing, throughput, a complete zero-condition layout,
+U/L, certification, production, publication or pruning authority.
