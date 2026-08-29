@@ -1,0 +1,67 @@
+{
+  "schema": "zmd_e118_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "canonical_run": "research_lab/local/zero_condition/E118_solver_diverse_local_front_benders/run-001",
+  "verdict": "SOLVER_DIVERSE_LOCAL_FRONT_BENDERS_CENSORED_NO_IMPROVEMENT",
+  "decision": "MEASURE_CUT_FAMILY_COVERAGE_AND_SATURATION",
+  "imported_cut_store": {
+    "cut_count": 504,
+    "source": "E117",
+    "sha256": "6b671d1b97cb308fd109c75ced4d6521ffa2003deb386c0ad484406d1101e5fd"
+  },
+  "continuation": {
+    "optimal_geometry_count": 8,
+    "locally_live_geometry_found": false,
+    "new_cut_count": 83,
+    "merged_cut_count": 587,
+    "best_prior_empty_body_count": 6,
+    "best_new_empty_body_count": 6,
+    "new_cut_core_size_distribution": {
+      "1": 11,
+      "2": 51,
+      "3": 21
+    },
+    "new_cut_subject_template_distribution": {
+      "manufacturing_3x3": 41,
+      "manufacturing_5x5": 10,
+      "manufacturing_6x4": 32
+    },
+    "new_empty_body_count_distribution": {
+      "6": 1,
+      "8": 1,
+      "9": 1,
+      "11": 1,
+      "12": 3,
+      "13": 1
+    },
+    "terminal_primary": {
+      "profile": "one_worker_pseudo_cost",
+      "status": "UNKNOWN",
+      "elapsed_seconds": 29.985020415013423
+    },
+    "terminal_fallback": {
+      "profile": "multiworker_automatic",
+      "status": "UNKNOWN",
+      "elapsed_seconds": 12.037002165001468
+    },
+    "total_elapsed_seconds": 121.57729316299083
+  },
+  "independent_replay": {
+    "status": "PASS",
+    "classification": "EIGHT_NEW_GEOMETRIES_EIGHTY_THREE_NEW_CUTS_NO_BEST_IMPROVEMENT",
+    "replayed_optimal_geometry_count": 8,
+    "replayed_new_cut_count": 83,
+    "replayed_merged_cut_count": 587
+  },
+  "artifacts": {
+    "runner_sha256": "13f45e8ba3e8ff6c9a53e8c9b4e640508b7f650c956b13ae87d9c819391ff32f",
+    "checker_sha256": "121d1fc028c01c4dc12f7148bb307042af4e8a4502f61d4be55361ac379cf6fe",
+    "result_sha256": "4600f061f6fb4ca947f1108e81361e7643833889c686553c3138d56fccdac8a2",
+    "iterations_sha256": "0952a02be86887fc37c612e5043e4e92b8fbf1ee66733a34640ef48cfc1d0c24",
+    "new_cuts_sha256": "ab306b1096090d9e20042373e11e116e1a24d84b8cac93d28bc894d2a4a36474",
+    "merged_cuts_sha256": "93b4a05a9a19c2876cd9146f86ce6cbd11ee6a1923a6fed87f22b29ca5710375",
+    "artifact_check_sha256": "891d8ec1b41ac1ce178fb8345e748f51833d0279a8681993638e9db6fcbc813b"
+  },
+  "truth_boundary": "The solver-diverse continuation yields eight additional locally-dead geometries and 83 sound cuts, but no improvement below six empty bodies. Both terminal solver profiles are UNKNOWN; no feasibility or exhaustion claim follows."
+}

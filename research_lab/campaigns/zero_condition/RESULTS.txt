@@ -4489,6 +4489,38 @@ evidence:
   ARTIFACT_CHECK.json sha256
   c4529c108fe73ac6c871c3c5133d9592ad8d6091ceb543b58160cd553cd88d9d.
 
+R-ZC-128  Solver-diverse continuation adds 83 cuts without improving the best geometry
+----------------------------------------------------------------------------------------
+status: censored; eight new exact geometries rejected; no-improvement stop triggered
+scope: E117 cut-augmented x42-high local-front master
+
+statement:
+  E118 imports all 504 checked E117 cuts and changes only the master search
+  instrument. One-worker PSEUDO_COST produces eight more exact geometries with
+  empty-body counts 13,11,8,6,12,12,9,12. Their deaths yield 83 replayed cuts:
+  11 singleton, 51 pair and 21 triple cores. The merged store contains 587 rules.
+
+  After all rules are active, the primary returns UNKNOWN after 29.985 seconds;
+  a fresh eight-worker AUTOMATIC fallback also returns UNKNOWN after 12.037
+  seconds. No selected geometry or consumer witness leaks from either branch.
+
+non-implications:
+  The 587-cut master is not proved infeasible or saturated. No separator state
+  is rejected and no locally-live geometry is found.
+
+effect on next problem:
+  The best empty-body count remains six, equal to E117, so the predeclared stop
+  fires. Measure cut-family coverage, recurrence and novelty before another
+  Benders batch; continue only if a narrow unsaturated family is identified.
+
+evidence:
+  E118 RESULT.txt; RESULT.json sha256
+  4600f061f6fb4ca947f1108e81361e7643833889c686553c3138d56fccdac8a2;
+  merged cuts sha256
+  93b4a05a9a19c2876cd9146f86ce6cbd11ee6a1923a6fed87f22b29ca5710375;
+  ARTIFACT_CHECK.json sha256
+  891d8ec1b41ac1ce178fb8345e748f51833d0279a8681993638e9db6fcbc813b.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

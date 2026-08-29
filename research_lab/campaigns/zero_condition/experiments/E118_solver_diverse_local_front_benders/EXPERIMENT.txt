@@ -1,0 +1,66 @@
+EXPERIMENT E118: SOLVER-DIVERSE LOCAL-FRONT BENDERS CONTINUATION
+================================================================
+
+Question
+--------
+After importing all 504 independently replayed E117 local-front containment cuts,
+does the identical x42-high geometry master yield another exact geometry, a
+locally-live geometry, or exact exhaustion under a different search instrument?
+
+Why this experiment
+-------------------
+E117 changes the proposer language correctly but ends on a five-second
+multiworker UNKNOWN. Repeating the old run would only rediscover the same search
+boundary. E118 preserves the complete feasible set and cut store, changes only
+the master search profile, and continues the same local-front consumer loop.
+
+Method
+------
+1. Pin E117's runner, result, 504-cut packet and PASS checker. Reconstruct the
+   identical E103-live 1,205-row master with exact 10/6/10 template totals, fixed
+   E092 power, both stable E078 bodies and the 25 open separator template states.
+
+2. Import all 504 cuts through E117's own cut attachment function. Fail closed on
+   duplicates, missing identities or any model-validation drift.
+
+3. At each iteration, solve first with one worker, PSEUDO_COST_SEARCH, symmetry 0
+   and probing 0. If it returns UNKNOWN, optionally run a fresh eight-worker
+   AUTOMATIC_SEARCH fallback on the same cut model. FEASIBLE/OPTIMAL and exact
+   INFEASIBLE are terminal for that iteration; two UNKNOWN results remain censored.
+
+4. Every proposed geometry passes the unchanged complete local mode/class-domain
+   checker. Front-dead bodies yield only inclusion-minimal monotone containment
+   cuts. A locally-live geometry is fixed immediately in E114's full high-side
+   class consumer; a high positive continues through E101's x42-low complement
+   and E095's 219-body replay.
+
+Stop rule
+---------
+E117's best geometry has six empty bodies. If E118 finds no locally-live geometry
+and does not improve below six, stop Benders batching and measure cut-family
+coverage and saturation before another continuation. This rule applies even if
+new cuts are sound.
+
+Decision rules
+--------------
+Paired 219-body replay PASS
+  Advance to terminal uniqueness, generic I/O and component-aware binding.
+
+Locally-live geometry without paired replay
+  Freeze that geometry and continue only its class/allocation consumer.
+
+Master exact INFEASIBLE
+  Close the remaining x42-high language at the local-front necessary layer only
+  after imported and new cuts independently replay.
+
+Censored with best empty count below six
+  Preserve the merged cut store and continue one bounded Benders batch.
+
+Censored without improvement below six
+  Stop blind continuation and build a cut-family coverage/saturation audit.
+
+Truth boundary
+--------------
+Imported and new cuts are local-front necessary conditions. UNKNOWN proves no
+absence. Empty-body count is a diagnostic, not an objective or a lower bound on
+future geometries. No routing, throughput, certification or U/L effect follows.

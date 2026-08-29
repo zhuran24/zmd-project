@@ -1,0 +1,169 @@
+E118 RESULT: SOLVER DIVERSITY ADDS 83 CUTS BUT DOES NOT IMPROVE THE BEST GEOMETRY
+================================================================================
+
+Status
+------
+Closed as a censored continuation with the preregistered no-improvement stop
+triggered. E118 imports all 504 checked E117 containment cuts, changes only the
+master search instrument, obtains eight additional exact body/power geometries,
+and learns 83 new replayed cuts. No locally-live geometry appears. The best empty
+body count remains six, and both terminal solver profiles return UNKNOWN.
+
+Verdict
+-------
+
+  SOLVER_DIVERSE_LOCAL_FRONT_BENDERS_CENSORED_NO_IMPROVEMENT
+
+Decision
+--------
+
+  MEASURE_CUT_FAMILY_COVERAGE_AND_SATURATION
+
+Machine evidence
+----------------
+Canonical result:
+
+  research_lab/local/zero_condition/
+  E118_solver_diverse_local_front_benders/run-001/RESULT.json
+
+SHA-256:
+
+  4600f061f6fb4ca947f1108e81361e7643833889c686553c3138d56fccdac8a2
+
+Continuation iterations:
+
+  research_lab/local/zero_condition/
+  E118_solver_diverse_local_front_benders/run-001/CONTINUATION_ITERATIONS.json
+
+SHA-256:
+
+  0952a02be86887fc37c612e5043e4e92b8fbf1ee66733a34640ef48cfc1d0c24
+
+New cuts:
+
+  research_lab/local/zero_condition/
+  E118_solver_diverse_local_front_benders/run-001/NEW_LOCAL_FRONT_BLOCKER_CUTS.json
+
+SHA-256:
+
+  ab306b1096090d9e20042373e11e116e1a24d84b8cac93d28bc894d2a4a36474
+
+Merged cut store:
+
+  research_lab/local/zero_condition/
+  E118_solver_diverse_local_front_benders/run-001/MERGED_LOCAL_FRONT_BLOCKER_CUTS.json
+
+SHA-256:
+
+  93b4a05a9a19c2876cd9146f86ce6cbd11ee6a1923a6fed87f22b29ca5710375
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E118_solver_diverse_local_front_benders/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  891d8ec1b41ac1ce178fb8345e748f51833d0279a8681993638e9db6fcbc813b
+
+What was held fixed
+-------------------
+E118 reconstructs the identical E117 language:
+
+  1,205 E103-live body candidates
+  exact high-side template totals 10 / 6 / 10
+  fixed E092 power
+  both stable E078 bodies
+  25 open separator template vectors
+  complete same-footprint local option semantics
+
+It imports all 504 E117 cuts through the same attachment function. No template,
+class, body, power or local-front condition is added or removed before changing
+the solver profile.
+
+Solver-diverse continuation
+---------------------------
+Each iteration first uses:
+
+  one worker
+  PSEUDO_COST_SEARCH
+  symmetry level 0
+  probing level 0
+  30-second budget
+
+Only an UNKNOWN receives a fresh eight-worker AUTOMATIC_SEARCH fallback with a
+12-second budget.
+
+The one-worker arm produces eight new OPTIMAL body/power geometries before the
+terminal UNKNOWN. Their empty selected-body counts are:
+
+  13, 11, 8, 6, 12, 12, 9, 12
+
+Every geometry is rejected by the unchanged complete local mode/class-domain
+checker. No fallback is run after a positive master geometry.
+
+New knowledge
+-------------
+The eight deaths yield 83 new inclusion-minimal containment cuts:
+
+  singleton   11
+  pair        51
+  triple      21
+
+Subjects by template:
+
+  manufacturing_3x3   41
+  manufacturing_5x5   10
+  manufacturing_6x4   32
+
+Together with E117, the persistent store now contains:
+
+  imported cuts   504
+  new cuts         83
+  merged cuts     587
+
+Independent replay
+------------------
+A source-isolated checker rebuilds the original master, imports all 504 E117
+cuts, and replays all eight E118 geometries. It recomputes every local death,
+re-minimizes every blocker core, reattaches the 83 new cuts, and verifies the
+merged 587-record packet exactly.
+
+The terminal search record is also checked for censorship:
+
+  primary one-worker PSEUDO_COST   UNKNOWN after 29.985 seconds
+  fallback multiworker AUTOMATIC   UNKNOWN after 12.037 seconds
+
+Neither branch contains a selected geometry or consumer witness.
+
+Stop-rule settlement
+--------------------
+E117's best geometry had six empty bodies. E118's best geometry also has six.
+Therefore the preregistered no-improvement rule fires even though the new cuts are
+sound. A third blind Benders batch is not authorized by this result.
+
+This does not mean the 587-cut master is saturated or infeasible. It means the
+current evidence cannot distinguish those possibilities through another
+unmeasured continuation.
+
+Next problem
+------------
+Measure the 587-cut family before spending more solver budget:
+
+  * candidate and subject coverage;
+  * singleton/pair/triple family growth from E117 to E118;
+  * recurrence of the same subject/blocker signatures;
+  * how many witnessed geometries are rejected by old versus newly learned cuts;
+  * whether cut novelty and best empty-body count have plateaued together;
+  * which templates, spatial bands or separator states remain weakly covered.
+
+Only a demonstrably unsaturated, structurally targeted family should receive
+another continuation. If the store is broad but repetitive, the next change must
+be a stronger proposer representation rather than another Benders batch.
+
+Truth boundary
+--------------
+E118 proves only eight named geometries locally front-dead and adds 83 sound local
+necessary rules. It does not prove the 587-cut master infeasible, find a high-side
+or 219-body witness, or change terminal uniqueness, binding, routing, throughput,
+certification or U/L.
