@@ -1,0 +1,75 @@
+EXPERIMENT E085: FRESH FRONT-AWARE REPLAY OF THE FIRST UNRESOLVED R33 RUNG
+============================================================================
+
+Question
+--------
+In the bounded one-replacement language inherited from E084, can a fresh exact
+run retain 186 current manufacturing footprints and move 33 while satisfying:
+
+  * E081 partition_90abd29523f2a0dc;
+  * horizontal y=41 module separation;
+  * all 219 module/template body counts;
+  * the complete 47-state boundary disjunction;
+  * 52 inherited non-seam poles plus exactly one replacement pole;
+  * manufacturing power coverage;
+  * the two stable E078 body/operation identities;
+  * the 34 already registered necessary body-local native-front rules;
+  * exact named operation counts in the fixed-geometry checker?
+
+Why this experiment
+-------------------
+E084 closed retained rungs 188 and 187 as producer MASTER_INFEASIBLE and left
+186 as UNKNOWN. It also showed that optimizing body packing and power before
+front viability produces endpoints with empty native-front domains. R33 is the
+first unresolved state in the narrowest currently materialized front-aware
+language. It is cheaper and more diagnostic than reopening all pole positions or
+launching a full coordinate master.
+
+Method
+------
+1. Pin the E084 front-Benders producer source, its 34-rule checkpoint, E084's
+   durable snapshot/result, E081/E069/E079 geometry inputs, the candidate pool,
+   and operation-profile source by SHA-256.
+
+2. Import the frozen E084 producer without editing it. Redirect both its mutable
+   checkpoint and output into a new no-overwrite E085 run directory.
+
+3. Override only the experiment controls:
+
+     target retained manufacturing footprints   186
+     target moved manufacturing footprints       33
+     maximum Benders iterations                    1
+     master solve cap                            250 s
+
+4. Preserve the producer status exactly. `UNKNOWN` and `ITERATION_LIMIT` are
+   censored. A master positive must still pass the producer's exact named-
+   operation checker. `MASTER_INFEASIBLE` closes only this one-replacement r33
+   language.
+
+5. Record process maximum RSS and cgroup-v2 memory snapshots before and after the
+   run. Memory telemetry is diagnostic, not a proof condition.
+
+Decision rule
+-------------
+FRONT_OPERATION_FEASIBLE
+  Materialize the producer geometry and operation/mode assignment. Next run
+  production pose-level patterns with duplicate terminal uniqueness and generic
+  I/O, then component-aware binding.
+
+MASTER_INFEASIBLE
+  Close r33 inside this bounded language. Do not infer partition or seam
+  infeasibility; select a deliberately wider pole/repair language.
+
+UNKNOWN or ITERATION_LIMIT
+  Preserve censorship. Do not advance the rung. The next discriminator must be
+  solver-diverse replay, a larger explicit budget, or a representation repair
+  justified by telemetry.
+
+Truth boundary
+--------------
+E085 replays one producer model at one target rung. Its front rules are necessary
+body-local capacity conditions, not full commodity-to-port binding. A positive
+has no terminal-uniqueness, generic-I/O, component, routing or throughput status.
+A negative is contextual to 52 inherited poles plus one replacement pole and the
+y=41 partition context. No certification, U/L, owner, production, publication or
+pruning effect follows.

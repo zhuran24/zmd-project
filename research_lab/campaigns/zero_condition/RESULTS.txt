@@ -3151,6 +3151,46 @@ evidence:
   66205396d1669a0fba3a72bfdb520686f627812d27b2d4c8a0e3af852ca1fc0d;
   MACHINE_SNAPSHOT.json.
 
+R-ZC-095  Fresh r33 replay is a censored UNKNOWN without an OOM event
+------------------------------------------------------------------------
+status: fresh no-overwrite replay complete; artifact check PASS; no incumbent
+scope: E084 one-replacement front-aware language at retained 186 / moved 33
+
+statement:
+  E085 pins the frozen E084 front producer, its unchanged 34-rule checkpoint,
+  the audited E084 packet, E081/E069/E079 geometry inputs and operation-profile
+  source. It replays exactly one r33 master solve with a 250-second cap, all 47
+  boundary states, 52 inherited poles plus one replacement pole, power, the two
+  stable E078 bodies and the registered necessary native-front rules.
+
+  The producer consumes 250.035 seconds and returns UNKNOWN with no incumbent,
+  no selected manufacturing rows, no operation nogood and no checkpoint change.
+  The wrapper verdict is R33_REPLAY_CENSORED. Process ru_maxrss is 1,941,080 KiB;
+  cgroup OOM and OOM-kill counters do not increase. A later duplicate invocation
+  is rejected by the no-overwrite guard and does not supersede the valid result.
+
+non-implications:
+  UNKNOWN is not r33 infeasibility and does not advance the rung. The lack of an
+  observed OOM does not prove memory is irrelevant or diagnose the search wall.
+  E085 produces no body/pole witness, operation assignment, terminal uniqueness,
+  generic I/O, component-compatible binding, routing or throughput result.
+
+effect on next problem:
+  Do not repeat the same fixed-rung model and seed family as another vote. Change
+  the search instrument while preserving the semantic language. The next bounded
+  discriminator should be representation- or solver-diverse: in particular, a
+  feasibility-first front-aware proposer may maximize retained current footprints
+  rather than demand exact retained=186 before any witness exists. Any positive
+  must still pass the exact named-operation checker and be materialized.
+
+evidence:
+  E085 RESULT.txt; local RESULT.json sha256
+  8602a20c26dcb37742ec85a70cb619e402302807523b7a5006fa501cb1bb9a68;
+  PRODUCER_RESULT.json sha256
+  fffeac99595cb3f3a0c2b18b4fa48c49e570dfb843ae457a7c825e866f53a449;
+  ARTIFACT_CHECK.json sha256
+  f53d5151a6b09e86f40b2f951160f66604b4d7e2e0a6151518309994a880919c.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:
@@ -3171,8 +3211,10 @@ optimum moves 30. Pole mobility improves the body currency, but every checked
 power optimum is front-dead. The current wall is therefore not “find another
 power optimum”; it is “construct power and native-front feasibility together.”
 
-The first bounded unresolved state is the one-replacement r33 rung. The outer
-loop should carry the 47-state boundary object, typed seam, stable E078 bodies,
-y=41 partition context, registered front rules and exact producer status. The
-final repair size, pole language, terminal assignment, component-compatible
+The fixed-rung r33 replay is now explicitly censored: 250 seconds, no incumbent,
+no OOM event and no proof. Repeating that identical instrument would add machine
+time without new discrimination. The outer loop should carry the 47-state
+boundary object, typed seam, stable E078 bodies, y=41 partition context and 34
+registered front rules into a representation-diverse feasibility-first proposer.
+The final repair size, pole language, terminal assignment, component-compatible
 binding and physical layer count remain open.

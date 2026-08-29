@@ -141,3 +141,24 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   不能再先优化 body/power、再让 front 当验收员。front 必须进入 proposer。16-body live
   question 已被本模型内精确关闭；下一最便宜的未决点是 one-replacement r33（retain 186 / move 33），
   需新目录、显式状态和内存遥测，正例再进入 terminal uniqueness 与 component-aware binding。
+
+2026-08-28 19:06
+----------------
+数据：
+  E085 run-001 RESULT.json
+  research_lab/local/zero_condition/E085_front_aware_r33_replay/run-001/RESULT.json
+  sha256 8602a20c26dcb37742ec85a70cb619e402302807523b7a5006fa501cb1bb9a68
+  ARTIFACT_CHECK.json sha256
+  f53d5151a6b09e86f40b2f951160f66604b4d7e2e0a6151518309994a880919c
+
+注意／发现：
+  同一 one-replacement r33 模型在新目录完整吃满 250.035 秒，仍是 UNKNOWN，无 incumbent、
+  无 selected body、无新 front rule、无 operation nogood。进程 ru_maxrss 约 1,941,080 KiB，
+  cgroup OOM/OOM-kill 计数均未增加。后来的重复调用只触发 no-overwrite FileExistsError，
+  不覆盖先前有效终态。
+
+推理：
+  这轮只测出当前固定-rung 仪器在 250 秒内仍无判别力，不能把它写成 r33 negative。
+  同模型同 seed 继续加时的边际信息太低；下一步应改变表示或求解器。优先试 feasibility-first：
+  保持 y=41、47-state、52+1 poles、power、stable E078 与 34 front rules，但把 retained=186
+  等式改为“先找任意 front-operation witness，并以 retained 最大化排序”，让计算只吃真正剩余的自由度。

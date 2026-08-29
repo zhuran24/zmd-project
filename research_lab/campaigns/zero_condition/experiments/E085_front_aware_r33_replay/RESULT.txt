@@ -1,0 +1,127 @@
+E085 RESULT: FRESH R33 REPLAY REMAINS CENSORED UNKNOWN
+=====================================================
+
+Status
+------
+Completed as a research-only fresh replay of the first unresolved one-replacement
+front-aware rung. The run produced no incumbent and no infeasibility proof. It
+has no certification, U/L, production, owner, pruning, publication, binding,
+routing, or throughput effect.
+
+Frozen machine evidence
+-----------------------
+Wrapper result:
+
+  research_lab/local/zero_condition/
+  E085_front_aware_r33_replay/run-001/RESULT.json
+
+SHA-256:
+
+  8602a20c26dcb37742ec85a70cb619e402302807523b7a5006fa501cb1bb9a68
+
+Frozen-producer result SHA-256:
+
+  fffeac99595cb3f3a0c2b18b4fa48c49e570dfb843ae457a7c825e866f53a449
+
+Copied checkpoint SHA-256:
+
+  0648bf057670c454d1c55a73417d127867c597063362407fe732c4a1b4c6ad9d
+
+Independent artifact check:
+
+  research_lab/local/zero_condition/
+  E085_front_aware_r33_replay/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  f53d5151a6b09e86f40b2f951160f66604b4d7e2e0a6151518309994a880919c
+
+Artifact-check status:
+
+  PASS
+
+Verdict
+-------
+
+R33_REPLAY_CENSORED
+
+Decision
+--------
+
+DO_NOT_ADVANCE_RUNG_SELECT_SOLVER_DIVERSE_REPLAY_OR_EXPLICIT_BUDGET_CHANGE
+
+Frozen context
+--------------
+The replay preserved the exact E084 one-replacement r33 language:
+
+  retained current manufacturing footprints   186
+  moved manufacturing footprints               33
+  master cap                                   250 seconds
+  Benders iterations                             1
+  boundary language                             all 47 E079 states
+  poles                                         52 inherited + 1 replacement
+  registered native-front rules                 34
+  operation nogoods                              0
+  stable E078 body/operation identities          2
+
+The producer consumed the full 250-second cap and returned:
+
+  master status                UNKNOWN
+  incumbent                    none
+  selected manufacturing rows  0
+  infeasibility proof          none
+
+The copied checkpoint remained byte-identical to the source checkpoint because
+the UNKNOWN solve produced no candidate to check and no new rule to register.
+
+Memory telemetry
+----------------
+The E085 Python process reported:
+
+  ru_maxrss                    1,941,080 KiB
+  wrapper elapsed             252.678 s
+  producer master elapsed     250.035 s
+  cgroup OOM delta            0
+  cgroup OOM-kill delta       0
+
+The cgroup counters belong to the shared DevSpace service and may include sibling
+processes. The process RSS is local to the replay. The only permitted inference
+is that this run did not record an OOM event; that does not prove the search wall
+is unrelated to memory or identify a specific solver pathology.
+
+Later duplicate invocation
+--------------------------
+A later accidental invocation targeted the already existing run-001 directory
+and was rejected by the no-overwrite guard with FileExistsError. Its FAILURE.json
+was created after the valid RESULT.json and does not supersede it:
+
+  FAILURE.json sha256
+  2ae27570b1110ef4755bb679de4c4a82958d455f421ae8e0e817d15016150f99
+
+Scientific reading
+------------------
+E085 does not close r33. It also does not justify repeating the identical model,
+seed family and representation indefinitely. Compared with the known 28-GiB
+coordinate-master incident, E085 stayed near a 1.85-GiB process peak and reached
+the time cap without an incumbent. The next experiment should therefore change
+the search instrument rather than silently lengthen the same vote.
+
+A faithful successor may:
+
+  * decompose or quotient the complete 47-state boundary choice while preserving
+    its full disjunction;
+  * switch to a feasibility-first retained-footprint objective rather than pay
+    exact fixed-rung tax before any witness exists;
+  * use a solver-diverse exact 0-1 formulation;
+  * or apply an explicit, predeclared larger budget with different search controls.
+
+Any positive must still materialize the 219 body rows, replacement pole,
+boundary state and exact named operation/mode assignment before terminal
+uniqueness and component-aware binding. Any negative remains contextual to the
+one-replacement y=41 language.
+
+Truth boundary
+--------------
+UNKNOWN is censorship, not infeasibility. E085 produced no layout, no front-
+operation witness, no component result and no routing result. The absence of OOM
+is a telemetry observation, not a theorem about the cause of search failure.

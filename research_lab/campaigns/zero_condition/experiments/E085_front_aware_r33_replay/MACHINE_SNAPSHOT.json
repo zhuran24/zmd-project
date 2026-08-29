@@ -1,0 +1,55 @@
+{
+  "schema": "zmd_e085_front_aware_r33_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "result": {
+    "path": "research_lab/local/zero_condition/E085_front_aware_r33_replay/run-001/RESULT.json",
+    "sha256": "8602a20c26dcb37742ec85a70cb619e402302807523b7a5006fa501cb1bb9a68",
+    "verdict": "R33_REPLAY_CENSORED",
+    "decision": "DO_NOT_ADVANCE_RUNG_SELECT_SOLVER_DIVERSE_REPLAY_OR_EXPLICIT_BUDGET_CHANGE"
+  },
+  "producer": {
+    "path": "research_lab/local/zero_condition/E085_front_aware_r33_replay/run-001/PRODUCER_RESULT.json",
+    "sha256": "fffeac99595cb3f3a0c2b18b4fa48c49e570dfb843ae457a7c825e866f53a449",
+    "status": "UNKNOWN",
+    "target_retained_current_footprints": 186,
+    "target_moved_manufacturing_count": 33,
+    "master_seconds": 250.0,
+    "iteration_count": 1,
+    "registered_front_candidate_count": 34,
+    "operation_nogood_count": 0,
+    "selected_manufacturing_count": 0
+  },
+  "checkpoint": {
+    "path": "research_lab/local/zero_condition/E085_front_aware_r33_replay/run-001/CHECKPOINT.json",
+    "sha256": "0648bf057670c454d1c55a73417d127867c597063362407fe732c4a1b4c6ad9d",
+    "unchanged_from_source": true
+  },
+  "artifact_check": {
+    "path": "research_lab/local/zero_condition/E085_front_aware_r33_replay/run-001/ARTIFACT_CHECK.json",
+    "sha256": "f53d5151a6b09e86f40b2f951160f66604b4d7e2e0a6151518309994a880919c",
+    "status": "PASS",
+    "classification": "CENSORED_UNKNOWN_NO_WITNESS"
+  },
+  "later_duplicate_invocation": {
+    "path": "research_lab/local/zero_condition/E085_front_aware_r33_replay/run-001/FAILURE.json",
+    "sha256": "2ae27570b1110ef4755bb679de4c4a82958d455f421ae8e0e817d15016150f99",
+    "classification": "NO_OVERWRITE_REJECTION_AFTER_VALID_RESULT",
+    "supersedes_valid_result": false
+  },
+  "telemetry": {
+    "producer_elapsed_seconds": 250.03547569399962,
+    "wrapper_elapsed_seconds": 252.67767307800386,
+    "process_ru_maxrss_kib": 1941080,
+    "oom_event_delta": 0,
+    "oom_kill_event_delta": 0,
+    "cgroup_scope": "/user.slice/user-1000.slice/user@1000.service/app.slice/devspace.service",
+    "cgroup_peak_is_shared_with_siblings": true
+  },
+  "sources": {
+    "experiment_sha256": "ed16601ff7604ad61bde538b9aebb828b064738771f70e876ed16c7deda44898",
+    "runner_sha256": "facee8c090449f297c322d36545e37e565abb6d53f5a20448e2051ba09109fd7",
+    "checker_sha256": "b22f9ef8d3e94c7480a39317504dc3dd8acab06ba6552d49843d4c7f7ba2caea"
+  },
+  "truth_boundary": "E085 established neither feasibility nor infeasibility at r33. The result is a censored UNKNOWN with no incumbent. The no-OOM observation does not diagnose the cause of search failure."
+}
