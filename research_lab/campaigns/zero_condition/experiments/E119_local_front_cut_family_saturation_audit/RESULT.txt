@@ -1,0 +1,176 @@
+E119 RESULT: CUTS REMAIN NOVEL BUT DO NOT TRANSFER ACROSS GEOMETRIES
+===================================================================
+
+Status
+------
+Closed as a no-solver mixed-saturation audit. The 587-cut store is neither a
+narrow unfinished family nor a broad repetitive plateau under the preregistered
+criteria. E118 adds many structurally new local blocker arrangements, but few new
+subjects and no cross-geometry reuse. Blind Benders continuation remains stopped.
+
+Verdict
+-------
+
+  INCONCLUSIVE_MIXED_SATURATION
+
+Decision
+--------
+
+  DO_NOT_BLINDLY_CONTINUE_SELECT_ONE_MEASURED_DISCRIMINATOR
+
+Machine evidence
+----------------
+Canonical result:
+
+  research_lab/local/zero_condition/
+  E119_local_front_cut_family_saturation_audit/run-001/RESULT.json
+
+SHA-256:
+
+  1e587146d34e1e42dfe5261ed5d179f772e594fb6b455154cf5666576b57b8e4
+
+Cut-family atlas:
+
+  research_lab/local/zero_condition/
+  E119_local_front_cut_family_saturation_audit/run-001/CUT_FAMILY_ATLAS.json
+
+SHA-256:
+
+  8d3a5ebfedd6e169fe0ba5e88dd546fd8ea758fea81b674be0141e6e0668f8c0
+
+Geometry rejection matrix:
+
+  research_lab/local/zero_condition/
+  E119_local_front_cut_family_saturation_audit/run-001/
+  GEOMETRY_REJECTION_MATRIX.json
+
+SHA-256:
+
+  92dd864cb9c74ea1a74aa46f4cc49411e8999cde1e77e4aa103f1129a3bcb682
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E119_local_front_cut_family_saturation_audit/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  07c106647606ebc8faf5fee06bb826d3db6f4420d257d51bca6ee4a64680af7e
+
+Coverage
+--------
+The audited language contains:
+
+  candidate universe       1,205
+  witnessed geometries        47
+  merged cuts                587
+
+Across the 47 adaptively generated geometries:
+
+  distinct selected candidates    328
+  distinct cut subjects           270
+  distinct blockers               302
+  selected but never a subject     58
+  selected at least twice but
+    never a subject                 23
+  never selected                   877
+  never used as a blocker          903
+
+Thus the cut process has explained most candidates it repeatedly visits, but it
+has sampled only 27.2 percent of the full candidate universe. Universe absence is
+not evidence that a candidate is locally viable.
+
+Stable local structural signature
+---------------------------------
+E119 quotients absolute translation while preserving:
+
+  subject template and E103 group
+  subject body shape
+  every same-footprint option/front stencil relative to subject origin
+  blocker template and group
+  every blocker body footprint relative to subject origin
+
+The resulting signature counts are:
+
+  E117 cuts                         504
+  E117 unique structures            392
+  E118 cuts                          83
+  E118 unique structures             79
+  E118 cuts structurally new
+    relative to E117                 61
+  merged unique structures          451
+
+Therefore E118 structural novelty is:
+
+  61 / 83 = 73.49 percent
+
+But only 28 percent of E118's distinct subjects are new relative to E117. The
+same broad set of subject candidates is dying under mostly new relative blocker
+arrangements.
+
+No narrow family
+----------------
+The largest coarse family carries only 3.61 percent of all E118 cuts. Among the
+61 structurally novel cuts, the largest family carries 4.92 percent. Its subject
+address is:
+
+  manufacturing_6x4 / low / y40_44
+
+Every repeatedly sampled pre-E118 candidate in that address was already present
+as an E117 subject. This is not a narrow uncovered family waiting for completion.
+
+No repetitive plateau either
+-----------------------------
+The 73.49-percent structural novelty is far above the preregistered 25-percent
+plateau ceiling. Moreover, none of E118's eight geometries is rejected by a cut
+learned from a different E118 iteration.
+
+Every prior-cut hit count is zero, as required by adaptive master generation.
+Each geometry is explained almost entirely by its own newly learned cuts, not by
+rules learned from another new geometry.
+
+Scientific interpretation
+-------------------------
+The containment-cut language is paying for a large number of distinct local
+body arrangements around a recurring subject set. This is neither useful family
+completion nor ordinary duplicate rediscovery:
+
+  subject recurrence is substantial
+  blocker-geometry novelty remains high
+  cross-geometry transfer is zero
+  the best empty-body count remains six
+
+The natural missing object is already visible. E117's checker asks the same local
+existential question for every selected body:
+
+  does at least one same-footprint mode/class option retain enough free fronts?
+
+Representing that existential relation indirectly through one minimal blocker
+cut after another is economically poor when each geometry generates a new local
+arrangement. The measured discriminator is therefore to place this local option
+existence in the geometry proposer itself.
+
+Next problem
+------------
+Build one integrated local-option master over the same 1,205 candidates:
+
+  body selection
+  exact 10/6/10 template totals
+  fixed E092 power
+  both stable E078 bodies
+  25 open separator template vectors
+  one Boolean per syntactic local mode/class option
+  selected body implies at least one active option
+  active option enforces its exact input/output free-front inequalities
+
+Do not add global class totals yet. This model must express exactly the condition
+checked by E117, no more and no less. A positive geometry goes immediately to the
+full fixed-body class consumer. Exact INFEASIBLE closes the x42 sufficient
+language only at the local-front necessary layer. UNKNOWN is an instrument result.
+
+Truth boundary
+--------------
+E119 is descriptive and uses adaptively generated geometries. It proves neither
+cut saturation nor master feasibility. It authorizes one representation-changing
+discriminator, not another blind cut batch, and has no terminal uniqueness,
+binding, routing, certification or U/L effect.

@@ -884,3 +884,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   live geometry 更近”已经分叉。按事前停止线，下一步不再把规则数量增长当推进，先测 587
   条规则覆盖了哪些 subject/blocker 家族、E118 新颖性相对 E117 是否衰减、哪些候选/区域仍
   弱覆盖。只有找到窄且未饱和的家族才允许再开 Benders；否则应换 proposer 表示。
+
+2026-08-29 10:02
+----------------
+数据：
+  E119 run-001 RESULT.json
+  research_lab/local/zero_condition/E119_local_front_cut_family_saturation_audit/run-001/RESULT.json
+  sha256 1e587146d34e1e42dfe5261ed5d179f772e594fb6b455154cf5666576b57b8e4
+  ARTIFACT_CHECK.json sha256
+  07c106647606ebc8faf5fee06bb826d3db6f4420d257d51bca6ee4a64680af7e
+
+注意／发现：
+  587 条 cut 覆盖了 270 个 subject / 302 个 blocker，但 1,205 候选里只有 328 个曾被选中。
+  E118 的 83 条里 61 条是相对 E117 全新的 translation-normalized local structure，结构新颖度
+  73.49%；但 distinct subject 新颖度只有 28%，而且 8 份 E118 geometry 没有一份被另一轮
+  E118 cut 命中。最大 coarse family 只占 3.61%，不存在窄热点。
+
+推理：
+  当前不是普通饱和：同一批 subject 在不同 geometry 下不断产生新 blocker arrangement，cut
+  仍新，却完全不跨 geometry 运输。containment cut 正在逐个近似一个更简单的存在量——被选
+  body 是否至少有一个本地 mode/class option 保住足够 front。继续挖 cut 会持续产真知识，却
+  不会形成短语言。下一判别应让 geometry 与 local option existence 同住：9808 个 syntactic
+  option 直接进入 master，但暂不加 global class totals，使模型精确等价于 E117 local checker。

@@ -1,0 +1,91 @@
+EXPERIMENT E119: LOCAL-FRONT CUT-FAMILY COVERAGE AND SATURATION AUDIT
+====================================================================
+
+Question
+--------
+Are E117/E118's 587 local-front containment cuts still discovering a narrow,
+structurally new family worth targeted completion, or has the current Benders
+language become broad but repetitive?
+
+Why this experiment
+-------------------
+E118 triggers its preregistered no-improvement stop: eight new exact geometries
+and 83 sound cuts do not lower the best empty-body count below E117's six. Cut
+count alone is not progress. Before another solve, E119 measures what the store
+actually covers and whether the second cohort adds new causal shapes.
+
+Inputs
+------
+
+  E117: 39 witnessed geometries, 504 checked cuts
+  E118:  8 witnessed geometries,  83 checked cuts
+  merged cut store: 587 rules
+  candidate universe: 1,205 E103-live x42-high rows
+
+Static signatures
+-----------------
+Each cut receives two stable, component-free identities.
+
+1. Exact local structural signature:
+
+     subject template and E103 group
+     subject same-footprint option/front stencil normalized to subject origin
+     each blocker template and group
+     each blocker body footprint translated relative to subject origin
+
+   This preserves every local-front predicate used by the cut while quotienting
+   absolute board translation.
+
+2. Coarse family address:
+
+     subject template
+     subject E103 group
+     subject five-row centre-y band
+     core size
+     blocker template/group multiset
+
+Measurements
+------------
+
+  * universe, selected, subject and blocker candidate coverage;
+  * coverage by template, E103 group and spatial band;
+  * exact subject/blocker recurrence and structural-signature recurrence;
+  * E118 novelty relative to E117;
+  * per-iteration novelty progression;
+  * retrospective cut hits on all 47 witnessed geometries;
+  * leave-own-iteration hit rate inside each cohort;
+  * candidates selected repeatedly but never appearing as a dead subject;
+  * weakly covered families among candidates actually sampled.
+
+Adaptive-data guard
+-------------------
+The 47 geometries were generated adaptively under earlier cuts. Therefore:
+
+  * a geometry must have zero hits from cuts present before it was generated;
+  * own/later-cut hits are in-sample explanation, not predictive accuracy;
+  * universe coverage is descriptive, not a feasibility bound;
+  * absence from the cut store never means a candidate is locally live.
+
+Predeclared classification
+--------------------------
+NARROW_UNSATURATED_FAMILY
+  E118 structural novelty ratio is at least 0.50; one coarse family carries at
+  least half of E118's structurally novel cuts; and that family's pre-E118 subject
+  coverage among repeatedly sampled candidates is below 0.50. Continue only that
+  targeted family.
+
+BROAD_REPETITIVE_PLATEAU
+  E118 structural novelty ratio is at most 0.25; exact subject novelty is at most
+  0.25; at least half of E118 geometries are hit by a cut from a different E118
+  iteration; and no coarse family carries half of all E118 cuts. Change proposer
+  representation rather than continue Benders.
+
+INCONCLUSIVE_MIXED_SATURATION
+  Every other outcome. Do not authorize a blind batch. Use the measured weakest
+  family or a stronger representation in one bounded discriminator.
+
+Truth boundary
+--------------
+This is a no-solver descriptive audit of sound cuts and adaptively generated
+geometries. It proves neither saturation nor incompleteness of the master and has
+no routing, certification or U/L effect.

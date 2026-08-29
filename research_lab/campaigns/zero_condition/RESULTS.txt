@@ -4521,6 +4521,48 @@ evidence:
   ARTIFACT_CHECK.json sha256
   891d8ec1b41ac1ce178fb8345e748f51833d0279a8681993638e9db6fcbc813b.
 
+R-ZC-129  Cut audit finds high local novelty, low subject novelty and zero new-cohort reuse
+------------------------------------------------------------------------------------------------
+status: no-solver audit complete; mixed saturation; blind Benders remains stopped
+scope: E117/E118 47 witnessed geometries and merged 587-cut store
+
+statement:
+  E119 reconstructs stable translation-normalized cut signatures preserving the
+  subject option/front stencil and every blocker footprint relative to the
+  subject. E117 contributes 392 unique structures from 504 cuts. E118 contributes
+  79 unique structures from 83 cuts; 61 cuts, or 73.49 percent, are structurally
+  new relative to E117.
+
+  Exact subject novelty is only 28 percent. No E118 geometry is rejected by a cut
+  from another E118 iteration. The largest E118 family holds 3.61 percent of cuts,
+  and the largest structurally novel family holds 4.92 percent. Thus novelty is
+  broad and geometry-specific rather than a narrow unfinished family.
+
+  Across 1,205 candidates and 47 geometries, only 328 candidates are ever
+  selected, 270 appear as subjects and 302 as blockers. All prior-cut hit counts
+  are zero, preserving the adaptive-generation sanity condition.
+
+non-implications:
+  High novelty does not prove the cut language incomplete; low cross-geometry
+  reuse does not prove any candidate feasible. The audit is descriptive and
+  cannot close or reopen the master.
+
+effect on next problem:
+  Select one representation-changing discriminator: encode each selected body's
+  local same-footprint option existence directly in the geometry master. Do not
+  continue containment-cut batching. Keep global class totals outside this first
+  integrated local-option model so it matches E117's checker exactly.
+
+evidence:
+  E119 RESULT.txt; local RESULT.json sha256
+  1e587146d34e1e42dfe5261ed5d179f772e594fb6b455154cf5666576b57b8e4;
+  CUT_FAMILY_ATLAS.json sha256
+  8d3a5ebfedd6e169fe0ba5e88dd546fd8ea758fea81b674be0141e6e0668f8c0;
+  GEOMETRY_REJECTION_MATRIX.json sha256
+  92dd864cb9c74ea1a74aa46f4cc49411e8999cde1e77e4aa103f1129a3bcb682;
+  ARTIFACT_CHECK.json sha256
+  07c106647606ebc8faf5fee06bb826d3db6f4420d257d51bca6ee4a64680af7e.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

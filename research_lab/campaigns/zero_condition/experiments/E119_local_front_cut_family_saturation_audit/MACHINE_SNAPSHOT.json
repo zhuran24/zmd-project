@@ -1,0 +1,50 @@
+{
+  "schema": "zmd_e119_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "canonical_run": "research_lab/local/zero_condition/E119_local_front_cut_family_saturation_audit/run-001",
+  "verdict": "INCONCLUSIVE_MIXED_SATURATION",
+  "decision": "DO_NOT_BLINDLY_CONTINUE_SELECT_ONE_MEASURED_DISCRIMINATOR",
+  "coverage": {
+    "candidate_universe_count": 1205,
+    "geometry_count": 47,
+    "merged_cut_count": 587,
+    "selected_candidate_count": 328,
+    "subject_candidate_count": 270,
+    "blocker_candidate_count": 302,
+    "selected_but_never_subject_count": 58,
+    "repeatedly_selected_but_never_subject_count": 23,
+    "never_selected_candidate_count": 877,
+    "never_blocker_candidate_count": 903
+  },
+  "novelty": {
+    "E117_unique_structural_signatures": 392,
+    "E118_unique_structural_signatures": 79,
+    "E118_structurally_novel_cut_count": 61,
+    "E118_structural_novelty_ratio": 0.7349397590361446,
+    "E118_exact_subject_novelty_ratio": 0.28,
+    "E118_other_iteration_geometry_hit_rate": 0.0,
+    "dominant_novel_family_share": 0.04918032786885246,
+    "largest_E118_family_share": 0.03614457831325301,
+    "dominant_family_pre_E118_subject_coverage": 1.0
+  },
+  "interpretation": {
+    "narrow_unsaturated_family": false,
+    "broad_repetitive_plateau": false,
+    "mixed_state": "same subjects recur under mostly new relative blocker structures; new cuts do not transfer across E118 geometries",
+    "next_discriminator": "encode local option existence directly with geometry instead of accumulating containment cuts"
+  },
+  "independent_replay": {
+    "status": "PASS",
+    "classification": "HIGH_STRUCTURAL_NOVELTY_LOW_SUBJECT_NOVELTY_ZERO_CROSS_GEOMETRY_REUSE"
+  },
+  "artifacts": {
+    "runner_sha256": "6bdd42a01dac166d6e4958762fa3f148bc3b4e3df695001110651e9b6ba485d8",
+    "checker_sha256": "9c5c59453996d4740252460202e24bd724b5c29bf275fa9b5ffd48bf686d7cc4",
+    "result_sha256": "1e587146d34e1e42dfe5261ed5d179f772e594fb6b455154cf5666576b57b8e4",
+    "atlas_sha256": "8d3a5ebfedd6e169fe0ba5e88dd546fd8ea758fea81b674be0141e6e0668f8c0",
+    "rejection_matrix_sha256": "92dd864cb9c74ea1a74aa46f4cc49411e8999cde1e77e4aa103f1129a3bcb682",
+    "artifact_check_sha256": "07c106647606ebc8faf5fee06bb826d3db6f4420d257d51bca6ee4a64680af7e"
+  },
+  "truth_boundary": "No-solver audit of adaptively generated geometries. High novelty and low reuse diagnose representation economics; they prove neither saturation nor feasibility."
+}
