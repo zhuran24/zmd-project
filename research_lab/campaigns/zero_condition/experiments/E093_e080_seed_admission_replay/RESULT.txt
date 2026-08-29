@@ -1,0 +1,146 @@
+E093 RESULT: THE ORIGINAL E080 SEED IS EXACT BODY/POWER INFEASIBLE AT THE THREE-POLE BUDGET
+================================================================================================
+
+Status
+------
+Closed by a fresh solver-diverse replay. The first arm terminates exact
+INFEASIBLE, so the second arm does not run. The artifact and derivation checker
+passes. This is a contextual body/pole/power result only. No native-front,
+terminal, binding, routing, throughput, whole-layout, certification, U/L, owner,
+production, publication or pruning effect follows.
+
+Machine evidence
+----------------
+Wrapper result:
+
+  research_lab/local/zero_condition/
+  E093_e080_seed_admission_replay/run-001/RESULT.json
+
+SHA-256:
+
+  0fe35a818735c79ebeffef1329e748b8c796b656a57d9f160a4cc72c200025ea
+
+Terminal arm result SHA-256:
+
+  86895fe1cac1ca83ddadd3fc71477ee8ae7193e23d1e73fa921bd306436225e6
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E093_e080_seed_admission_replay/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  f50685119545eedbb35018b03995417aed4c5d1b9dd3b4e301ea25c11efba8a2
+
+Verdict
+-------
+
+E080_SEED_THREE_POLE_BODY_POWER_INFEASIBLE
+
+Decision
+--------
+
+Y41_IS_SOLE_ADMITTED_SKELETON_CHOOSE_POLE_BUDGET_OR_FRONT_DECOMPOSITION
+
+Frozen question
+---------------
+E093 consumes E092's sole unresolved state without changing its feasible set:
+
+  partition                  partition_5a72220e0268a3c1
+  seam                       horizontal y=21, width 1
+  module B                   below the seam
+  module A                   above the seam
+  stable E078 bodies         module A
+  manufacturing bodies       exactly 219
+  poles                      exactly 53
+  retained current poles     at least 50
+  relocated poles            at most 3
+  boundary language          complete 47-state disjunction
+  objective                  none; pure feasibility
+
+E092 had returned UNKNOWN after 35.056 seconds. E093 changes only CP-SAT search
+controls and explicit budget. The derivation records an empty feasible-set change
+list.
+
+Solver-diverse terminal arm
+---------------------------
+Arm 1 uses:
+
+  workers                    1
+  search branching           PSEUDO_COST_SEARCH
+  symmetry level             0
+  probing level              0
+  randomize search           false
+  seed                        93001
+  solve cap                   110 s
+  first-incumbent stop        enabled
+
+It terminates:
+
+  producer status            MASTER_INFEASIBLE
+  solver status              INFEASIBLE
+  elapsed                    21.064 s
+  branches                   400,933
+  conflicts                  452
+  body candidates            14,867
+  pole candidates             4,315
+  model variables            19,229
+  model constraints          19,562
+  incumbent                  none
+
+Process peak RSS is 1,189,028 KiB. Cgroup OOM and OOM-kill counters do not
+increase.
+
+The preregistered second arm, an eight-worker quick-restart portfolio, does not
+run because Arm 1 is already terminal. Its absence is part of the decision rule,
+not missing evidence.
+
+Meaning for the Pareto beam
+---------------------------
+Combining E092 and E093 yields a complete three-pole body/power admission status
+for all seven E081 Pareto states:
+
+  admitted
+    partition_90abd29523f2a0dc / y=41
+
+  exact body/power INFEASIBLE
+    partition_97f9ba7e7ad710dc / y=17
+    partition_5a72220e0268a3c1 / y=21
+    partition_a525b75dbae46085 / y=17
+    partition_70f78551b79b2eed / x=20
+    partition_05f225cf3333c982 / x=23
+    partition_6f23f93054aa6f22 / x=20
+
+Therefore y=41 is the sole admitted skeleton among the frozen seven-state beam
+when exactly 53 poles are selected and at most three current pole positions are
+replaced.
+
+This does not make y=41 native-front feasible. E090's complete y=41 front model
+remains UNKNOWN without an incumbent. Nor does E093 prove the six rejected
+partitions impossible with a larger pole budget or another geometry.
+
+Next problem
+------------
+The partition vote is finished at the three-pole skeleton layer. The next choice
+is between:
+
+  * increasing pole mobility, which strictly broadens the already censored E090
+    complete-front model; and
+
+  * decomposing the y=41 front consumer while keeping the admitted skeleton
+    language fixed.
+
+The cheaper and more discriminating next step is decomposition. First freeze the
+exact y=41 three-pole pole set and `boundary_macro_09` from the independently
+replayed skeleton, then solve all 219 bodies and complete native-front class
+assignment. If that slice is feasible, it supplies a front witness without a
+wider pole language. If it is exact INFEASIBLE, allow all 47 boundary states with
+the same pole set before changing poles. These nested slices isolate whether the
+known pole skeleton itself can carry native fronts.
+
+Truth boundary
+--------------
+The exact negative belongs only to partition_5a72220e0268a3c1, y=21, its module
+assignment, the complete boundary object and the at-most-three-pole language. It
+has no native-front or global partition-infeasibility meaning.

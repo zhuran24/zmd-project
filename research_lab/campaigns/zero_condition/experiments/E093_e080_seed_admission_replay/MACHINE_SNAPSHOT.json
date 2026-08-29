@@ -1,0 +1,76 @@
+{
+  "schema": "zmd_e093_e080_seed_admission_machine_snapshot_v1",
+  "created_at_local": "2026-08-28T23:46:17-04:00",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "verdict": "E080_SEED_THREE_POLE_BODY_POWER_INFEASIBLE",
+  "decision": "Y41_IS_SOLE_ADMITTED_SKELETON_CHOOSE_POLE_BUDGET_OR_FRONT_DECOMPOSITION",
+  "context": {
+    "partition_id": "partition_5a72220e0268a3c1",
+    "pareto_rank_zero_based": 2,
+    "corridor_axis": "y",
+    "corridor_coordinate": 21,
+    "module_low": "B",
+    "module_high": "A",
+    "stable_module": "A",
+    "manufacturing_count": 219,
+    "selected_pole_count": 53,
+    "maximum_relocated_poles": 3,
+    "minimum_retained_current_poles": 50,
+    "boundary_state_count": 47
+  },
+  "terminal_arm": {
+    "arm_id": "pseudo_cost_single_worker",
+    "workers": 1,
+    "search_branching": "PSEUDO_COST_SEARCH",
+    "symmetry_level": 0,
+    "probing_level": 0,
+    "randomize_search": false,
+    "seed": 93001,
+    "solve_cap_seconds": 110.0,
+    "status": "MASTER_INFEASIBLE",
+    "solver_status": "INFEASIBLE",
+    "elapsed_seconds": 21.064103946002433,
+    "branches": 400933,
+    "conflicts": 452,
+    "body_candidate_count": 14867,
+    "pole_candidate_count": 4315,
+    "model_variable_count": 19229,
+    "model_constraint_count": 19562,
+    "process_ru_maxrss_kib": 1189028,
+    "oom_delta": 0,
+    "oom_kill_delta": 0
+  },
+  "second_arm": {
+    "arm_id": "quick_restart_portfolio",
+    "ran": false,
+    "reason": "arm 1 terminated exact INFEASIBLE"
+  },
+  "artifacts": {
+    "result": {
+      "path": "research_lab/local/zero_condition/E093_e080_seed_admission_replay/run-001/RESULT.json",
+      "sha256": "0fe35a818735c79ebeffef1329e748b8c796b656a57d9f160a4cc72c200025ea"
+    },
+    "arm1_result": {
+      "path": "research_lab/local/zero_condition/E093_e080_seed_admission_replay/run-001/arm-01-pseudo_cost_single_worker/RESULT.json",
+      "sha256": "86895fe1cac1ca83ddadd3fc71477ee8ae7193e23d1e73fa921bd306436225e6"
+    },
+    "derivation": {
+      "path": "research_lab/local/zero_condition/E093_e080_seed_admission_replay/run-001/DERIVATION.json",
+      "sha256": "0358596e97d2ed0042ae45cd33573dd4313f187dd34f5b6a89fd2a825d92046c"
+    },
+    "derived_producer": {
+      "path": "research_lab/local/zero_condition/E093_e080_seed_admission_replay/run-001/DERIVED_PRODUCER.py",
+      "sha256": "101e33554d9279e5fbc3175aefda5923d307325e0ef91b3f0f71e6daf657d298"
+    },
+    "artifact_check": {
+      "path": "research_lab/local/zero_condition/E093_e080_seed_admission_replay/run-001/ARTIFACT_CHECK.json",
+      "sha256": "f50685119545eedbb35018b03995417aed4c5d1b9dd3b4e301ea25c11efba8a2"
+    }
+  },
+  "runners": {
+    "experiment_sha256": "d0b2e180a81c01c93f55db31bcb0b77772f77c7ea330ca7e3f12c05aa65969d2",
+    "artifact_check_sha256": "f063333ebf386156b7c4dcca7b90a34204829ee7ac3b0d53fd1dbb0c41b7b921"
+  },
+  "truth_boundary": "Exact contextual body/pole/power negative for partition_5a72220e0268a3c1/y=21 under the complete boundary object and at-most-three-pole language. No native-front or downstream claim."
+}

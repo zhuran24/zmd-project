@@ -311,3 +311,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   哪个 partition 更漂亮没有意义，唯一承重问题是 y=21 的 UNKNOWN。下一轮只对它做 fresh、
   solver-diverse、加预算的同语义 body/power replay：正例才进入 full-front control，负例才允许
   说 y=41 是三杆预算下唯一 admitted skeleton，仍 UNKNOWN 则是 admission 仪器没有闭合。
+
+2026-08-28 23:44
+----------------
+数据：
+  E093 run-001 RESULT.json
+  research_lab/local/zero_condition/E093_e080_seed_admission_replay/run-001/RESULT.json
+  sha256 0fe35a818735c79ebeffef1329e748b8c796b656a57d9f160a4cc72c200025ea
+  ARTIFACT_CHECK.json sha256
+  f50685119545eedbb35018b03995417aed4c5d1b9dd3b4e301ea25c11efba8a2
+
+注意／发现：
+  对 y=21 唯一 UNKNOWN 保持完整 feasible set，只把搜索器换成单线程 PSEUDO_COST、关闭
+  symmetry/probing/randomization、seed 93001 后，21.064 秒 exact INFEASIBLE；400,933 branches、
+  452 conflicts。因为第一臂已终止，预登记的 8-worker quick-restart arm 没有运行。过程峰值约
+  1,189,028 KiB，无 OOM 计数变化。
+
+推理：
+  E092+E093 已给七个 Pareto state 完整三杆 skeleton status：只有 y=41 admitted，另外六个
+  exact contextual negative。partition 选择在这一层已经走到结束点，不应再靠故事或加 seed
+  续投。下一问题是 y=41 自身的 front instrument：扩大 pole budget 会把已 censored 的 116k
+  变量模型继续放宽，判别力反而更差；先固定独立重放过的三杆 pole set 与 boundary_macro_09，
+  搜 body+完整 front class，随后再只放 boundary，是更便宜的嵌套分解。

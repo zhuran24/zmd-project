@@ -3463,6 +3463,42 @@ evidence:
   ARTIFACT_CHECK.json sha256
   eb26f090c01d803203c5f78806ec562e85319de60f9b59ced3496e60ab158a99.
 
+R-ZC-103  Solver-diverse replay closes the last three-pole Pareto admission state
+-----------------------------------------------------------------------------------
+status: fresh exact contextual body/pole/power negative; artifact check PASS
+scope: partition_5a72220e0268a3c1, y=21, exactly 53 poles with at most three relocations
+
+statement:
+  E093 replays E092's sole UNKNOWN state without changing its feasible set. Arm 1
+  uses one worker, PSEUDO_COST_SEARCH, symmetry/probing level 0, no randomized
+  search and seed 93001. It terminates exact INFEASIBLE in 21.064 seconds after
+  400,933 branches and 452 conflicts. The preregistered quick-restart portfolio
+  arm does not run because the first arm is terminal.
+
+  Combined with E092, all seven E081 Pareto states now have exact three-pole
+  body/power admission status: partition_90abd29523f2a0dc/y=41 is the sole
+  admitted skeleton, while the other six are contextual INFEASIBLE.
+
+non-implications:
+  E093 is not native-front infeasibility and does not refute the y=21 partition
+  under a wider pole budget or another geometry. The sole admitted y=41 skeleton
+  remains front-censored by E090.
+
+effect on next problem:
+  End the partition vote at the three-pole skeleton layer. Decompose y=41's
+  censored complete-front consumer before widening pole mobility: first fix the
+  independently replayed three-pole pole set and boundary_macro_09, then solve
+  bodies plus complete native-front classes; if needed, release the boundary
+  state while retaining the same pole set.
+
+evidence:
+  E093 RESULT.txt; local RESULT.json sha256
+  0fe35a818735c79ebeffef1329e748b8c796b656a57d9f160a4cc72c200025ea;
+  terminal arm RESULT.json sha256
+  86895fe1cac1ca83ddadd3fc71477ee8ae7193e23d1e73fa921bd306436225e6;
+  ARTIFACT_CHECK.json sha256
+  f50685119545eedbb35018b03995417aed4c5d1b9dd3b4e301ea25c11efba8a2.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:
@@ -3492,10 +3528,11 @@ of training failures and generalize worse to E087's holdout. E090 widens the pol
 budget to the first evidenced three-relocation language but the complete front
 consumer remains UNKNOWN without an incumbent and grows to about 8.3 GiB process
 RSS. E091 applies the same budget to the next Pareto partition and closes it one
-layer earlier as exact body/power INFEASIBLE. E092 then sweeps all seven Pareto
-states: five are exact body/power INFEASIBLE, y=41 is admitted, and only the
-original E080 y=21 seed remains UNKNOWN. The expensive front comparison has been
-reduced to one unresolved skeleton admission. The next live object is a fresh
-solver-diverse y=21 body/power replay, not another beam-wide or front-wide search.
-The final repair size, terminal assignment, component-compatible binding and
-physical layer count remain open.
+layer earlier as exact body/power INFEASIBLE. E092 sweeps all seven Pareto states,
+then E093 closes its sole UNKNOWN with a solver-diverse exact negative. At the
+three-pole skeleton layer, y=41 is now the sole admitted carrier. That settles the
+partition vote but not native-front feasibility: E090's monolithic y=41 front
+model remains censored. The next live object is a nested decomposition of that
+consumer around the independently replayed pole set and boundary state, not a
+wider beam or another point-rule loop. The final repair size, terminal assignment,
+component-compatible binding and physical layer count remain open.

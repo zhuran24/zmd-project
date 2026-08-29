@@ -1,0 +1,79 @@
+EXPERIMENT E093: SOLVER-DIVERSE REPLAY OF THE SOLE UNRESOLVED E080 SEED ADMISSION
+================================================================================
+
+Question
+--------
+Is `partition_5a72220e0268a3c1`, the original E080 seam-first seed, body/pole/
+power feasible in the exact three-pole language, or was E092's 35-second UNKNOWN
+only an instrument limit?
+
+Frozen semantic context
+-----------------------
+
+  partition                  partition_5a72220e0268a3c1
+  seam                       horizontal y=21, width 1
+  module B                   below the seam
+  module A                   above the seam
+  stable E078 bodies         module A
+  manufacturing bodies       exactly 219
+  poles                      exactly 53
+  retained current poles     at least 50
+  boundary language          complete 47-state disjunction
+  objective                  none; pure feasibility
+
+No body, pole, boundary, side, power, stable-identity or non-overlap constraint is
+changed relative to E092's unresolved state.
+
+Solver-diverse arms
+-------------------
+E093 derives once from E092's frozen state producer and changes only CP-SAT search
+controls. Each arm writes to a distinct no-overwrite file.
+
+Arm 1, pseudo-cost depth search
+
+  workers                    1
+  search branching           PSEUDO_COST_SEARCH
+  symmetry level             0
+  probing level              0
+  randomize search           false
+  seed                        93001
+  solve cap                   110 s
+
+Arm 2, quick-restart portfolio
+
+  run only if Arm 1 is UNKNOWN
+  workers                    8
+  search branching           PORTFOLIO_WITH_QUICK_RESTART_SEARCH
+  symmetry level             3
+  probing level              3
+  randomize search           true
+  seed                        93002
+  solve cap                   110 s
+
+Both retain first-incumbent stopping, repair-hint semantics and the same current-
+geometry hint surface. Search parameters change the instrument, not the feasible
+set.
+
+Decision rule
+-------------
+BODY_POWER_FEASIBLE in either arm
+  Materialize and independently replay the skeleton. It becomes the only remaining
+  complete-front control beside y=41; run the E090 native-front consumer on it.
+
+MASTER_INFEASIBLE in either arm
+  Close the y=21 state in the exact three-pole body/power language. y=41 becomes
+  the sole admitted E081 Pareto skeleton at this pole budget. The next explicit
+  choice is a larger pole budget or decomposition of y=41's censored front model.
+
+Both arms UNKNOWN
+  Preserve censorship. The Pareto carrier cannot be selected by the current
+  admission instrument; decompose or reformulate that instrument rather than
+  adding more seeds or partition votes.
+
+Truth boundary
+--------------
+E093 is body/pole/power admission only. A positive is not native-front feasible.
+A negative is contextual to the named partition, seam, complete boundary object
+and at-most-three-pole language. UNKNOWN is not infeasibility. Research-only; no
+terminal, binding, routing, throughput, whole-layout, U/L, certification,
+production, publication or pruning effect.
