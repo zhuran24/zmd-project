@@ -1,0 +1,210 @@
+E113 RESULT: MERGING SEPARATOR WITH HIGH DOMINATES THE STATIC INTERFACE FRONTIER
+================================================================================
+
+Status
+------
+Closed as an exact static interaction-hypergraph compilation and partition
+selection. The `low | separator+high` partition is no worse on every
+preregistered interface metric and strictly better than both alternatives. Its
+complete body-conflict and native-front coefficient interface is persisted and
+independently replayed.
+
+Verdict
+-------
+
+  LOW_VS_SEPARATOR_HIGH_CAP_INTERFACE_SELECTED
+
+Decision
+--------
+
+  BUILD_SEPARATOR_HIGH_CAP_PROPOSER_WITH_LOW_CONSUMER
+
+Machine evidence
+----------------
+Canonical result:
+
+  research_lab/local/zero_condition/
+  E113_separator_side_interaction_compiler/run-001/RESULT.json
+
+SHA-256:
+
+  511d5592142dcdce1832eca99e9d000ab439c2fee28d58b0f103aba96fb0108c
+
+Partition comparison:
+
+  research_lab/local/zero_condition/
+  E113_separator_side_interaction_compiler/run-001/PARTITION_COMPARISON.json
+
+SHA-256:
+
+  1c27fd5f77de1f3d9a588c4af43a2a17e29b543b15c7d376ac16f7886bc2d4d0
+
+Selected exact interface:
+
+  research_lab/local/zero_condition/
+  E113_separator_side_interaction_compiler/run-001/SELECTED_INTERFACE.json
+
+SHA-256:
+
+  1cd4674b1676a24f28fe39e2dec9d8286f700936fcc870b35fcc863fd47c7d98
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E113_separator_side_interaction_compiler/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  07f220365a6a825b73cbf69423d847315b73fef66c5e7d36ecfe3b98c01e874f
+
+What was compiled
+-----------------
+E113 does not select one E112 separator witness and pretend that its geometry is
+canonical. It reconstructs all 1,205 E103 unary-live candidates and compiles the
+complete static interaction language for every candidate body and every legal
+same-footprint pose/class row.
+
+For each candidate partition it records:
+
+  every cross-side body/body conflict edge
+  every input/output native-front row whose cells can be occupied by opposite-
+    side bodies
+  the exact coefficient of each opposite body variable, including coefficients
+    greater than one when one body covers multiple front cells
+  stable source identity by global row handle, body digest, template, source
+    group, pose index and B class key
+
+The persisted selected interface contains 7,325 body-conflict edges and 2,040
+nonempty coefficient buckets covering all 4,282 cross-active directional
+mode/class rows. Rows with no opposite-side coefficient remain internal to their
+own module and are counted separately.
+
+Three candidate partitions
+--------------------------
+The frozen selection metrics are:
+
+  cross-body conflict edge count
+  total unique directional front signatures, including empty signatures
+  total nonempty directional mode/class rows
+  maximum side candidate count
+
+Observed frontier:
+
+  low | separator+high
+    candidates                         812 / 393
+    body-conflict edges                  7,325
+    unique directional signatures        2,054
+    nonempty directional rows             4,282
+    maximum side candidates                 812
+
+  low+separator | high
+    candidates                         966 / 239
+    body-conflict edges                  8,769
+    unique directional signatures        2,142
+    nonempty directional rows             4,358
+    maximum side candidates                 966
+
+  low+high | separator
+    candidates                       1,051 / 154
+    body-conflict edges                 16,094
+    unique directional signatures        3,359
+    nonempty directional rows             7,090
+    maximum side candidates               1,051
+
+`low | separator+high` is strictly better on all four metrics than both
+alternatives. `low+separator | high` itself dominates `low+high | separator`, so
+the frontier is totally ordered under the preregistered metrics.
+
+Why separator belongs with high
+-------------------------------
+The earlier three-module picture made the separator appear to be a standalone
+bridge. The exact interaction graph shows a more useful computational identity:
+all 154 separator candidates participate in body conflicts with the high domain,
+and separator/high front coupling is dense. Putting them into one 393-candidate
+cap internalizes those interactions.
+
+Across the selected external interface:
+
+  low candidates with cross-body conflicts          166 / 812
+  cap candidates with cross-body conflicts           154 / 393
+  low candidates with cross-front interaction        201 / 812
+  cap candidates with cross-front interaction        183 / 393
+
+The 239 original high candidates have no body overlap with low; all 7,325
+cross-body edges are carried by separator candidates. High still participates in
+front coupling, which is preserved in the cap-to-low coefficient buckets.
+
+Selected interface contents
+----------------------------
+The selected artifact carries:
+
+  812 low and 393 cap candidate identities
+  all 7,325 oriented low/cap body-conflict edges
+  1,127 nonempty low-front-by-cap-body signature buckets
+  913 nonempty cap-front-by-low-body signature buckets
+  all member mode/class identities for every bucket
+  exact target-variable coefficients and required-free counts
+
+Its frozen-context digest is:
+
+  8feb91954463ceab4168483f636b9659136840878fe6ebf0385493ffeb0afe65
+
+Global row indices remain local handles. Every use must rejoin them to body
+digest, template and source group before consumption.
+
+Independent replay
+------------------
+The checker independently reconstructs all three partition metrics, verifies
+that the selected metrics dominate both alternatives, recomputes the entire
+7,325-edge body graph, and replays every nonempty directional member against its
+front cells and opposite-side body coverers. It confirms:
+
+  left nonempty buckets       1,127
+  right nonempty buckets        913
+  left active rows             2,348
+  right active rows            1,934
+  all coefficients and member identities exact
+
+The E112 compact negative class rule is transported unchanged. It remains a cap-
+internal necessary rule and does not become a cross-interface claim.
+
+What changed
+------------
+The live architecture is no longer:
+
+  low + separator + high as three symmetric modules
+
+and it is not the failed E104 product that deleted separator bodies. It is:
+
+  low consumer
+    <-> exact compiled interaction hypergraph
+  separator+high cap proposer
+
+This internalizes the densest coupling while retaining every E103 live candidate.
+The full 1,205-candidate monolith is replaced by two modules and a frozen,
+inspectable interface rather than by an unsupported independence assumption.
+
+Next problem
+------------
+Build the 393-candidate separator+high cap proposer with:
+
+  global cap template and class allocation variables
+  E112's 350 positive separator class states and compact three-state negative rule
+  exact internal separator/high body and native-front interactions
+  a materialized cross-interface signature over the E113 body edges and
+  coefficient buckets
+
+The cap should propose one class allocation plus one cross-interface signature.
+The 812-candidate low consumer must then solve the exact remaining template/class
+complement while enforcing every selected E113 body edge and coefficient row.
+Consumer INFEASIBLE may reject only that exact cap allocation/signature pair;
+UNKNOWN creates no rule. A paired high witness must still pass E101's unchanged
+x42-low complement and the full 219-body replay.
+
+Truth boundary
+--------------
+E113 proves exact static interface structure and metric dominance, not
+feasibility. It does not establish that a cap proposal exists, that the interface
+signature basis is small enough to enumerate completely, or that any separator
+positive survives low-side conditioning. Terminal uniqueness, generic I/O,
+binding, routing, throughput, certification and U/L remain open.

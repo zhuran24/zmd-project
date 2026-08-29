@@ -1,0 +1,72 @@
+EXPERIMENT E113: SEPARATOR/SIDE INTERACTION HYPERGRAPH COMPILER
+==============================================================
+
+Question
+--------
+Which exact two-way partition minimizes the cross-module body and native-front
+interface after E112 completes the separator-only class atlas?
+
+Why compile before solving
+--------------------------
+The 350 separator-only positive states cannot transfer through one representative
+geometry: separator bodies and fronts interact strongly with both side domains.
+The required object is not another witness sample but the complete static
+interaction hypergraph between candidate bodies and mode/class front constraints.
+
+Candidate partitions
+--------------------
+E113 compares exactly three ways to merge the E103 groups:
+
+  low | separator+high
+  low+separator | high
+  low+high | separator
+
+Each partition preserves all 1,205 unary-live candidates. It changes only which
+interactions are internalized and which cross the interface.
+
+Compiled predicates
+-------------------
+For each partition E113 compiles:
+
+1. Every cross-side body/body conflict edge.
+2. For every source candidate, same-footprint pose, B class and input/output
+   direction, the exact coefficient map from opposite-side body candidates to
+   the number of front cells they occupy. Coefficients greater than one are
+   preserved.
+3. Stable member identities carrying global row handle, body digest, pose index,
+   template and class key.
+
+The selected partition persists the complete body edge set and every nonempty
+front-signature bucket with its members. Global row indices remain frozen-context
+handles and are joined to physical body digests.
+
+Predeclared selection rule
+--------------------------
+A partition dominates another only if it is no worse on all four metrics and
+strictly better on at least one:
+
+  cross-body conflict edge count
+  total unique directional front signatures
+  total nonempty directional mode/class rows
+  maximum side candidate count
+
+Select a partition only if it dominates both alternatives. Otherwise preserve an
+incomparable frontier.
+
+Predeclared decisions
+---------------------
+low | separator+high dominates
+  Internalize the dense separator/high coupling in a joint cap proposer and keep
+  low as the consumer. The compiled hypergraph is the only legal cross-interface.
+
+another partition dominates
+  Follow the same rule with that partition.
+
+no dominance
+  Retain all nondominated partitions and use a later feasibility discriminator.
+
+Truth boundary
+--------------
+E113 compiles exact interaction structure but proves no partition feasible. It
+does not consume one separator witness as unique, solve the 350 positive states,
+or establish binding, routing, throughput, certification or U/L effect.

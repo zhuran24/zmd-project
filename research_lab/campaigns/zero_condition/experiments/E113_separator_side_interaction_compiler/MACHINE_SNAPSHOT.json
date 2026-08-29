@@ -1,0 +1,74 @@
+{
+  "schema": "zmd_e113_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "canonical_run": "research_lab/local/zero_condition/E113_separator_side_interaction_compiler/run-001",
+  "verdict": "LOW_VS_SEPARATOR_HIGH_CAP_INTERFACE_SELECTED",
+  "decision": "BUILD_SEPARATOR_HIGH_CAP_PROPOSER_WITH_LOW_CONSUMER",
+  "selected_partition": {
+    "partition_id": "low__separator_plus_high",
+    "left_groups": ["low"],
+    "right_groups": ["separator", "high"],
+    "left_candidate_count": 812,
+    "right_candidate_count": 393,
+    "left_mode_class_row_count": 6740,
+    "right_mode_class_row_count": 3068,
+    "body_conflict_edge_count": 7325,
+    "total_unique_directional_front_signatures": 2054,
+    "total_nonempty_directional_rows": 4282,
+    "maximum_side_candidate_count": 812,
+    "left_nonempty_front_signature_bucket_count": 1127,
+    "right_nonempty_front_signature_bucket_count": 913,
+    "interface_digest": "8feb91954463ceab4168483f636b9659136840878fe6ebf0385493ffeb0afe65"
+  },
+  "partition_frontier": {
+    "low__separator_plus_high": {
+      "body_conflict_edge_count": 7325,
+      "total_unique_directional_front_signatures": 2054,
+      "total_nonempty_directional_rows": 4282,
+      "maximum_side_candidate_count": 812
+    },
+    "low_plus_separator__high": {
+      "body_conflict_edge_count": 8769,
+      "total_unique_directional_front_signatures": 2142,
+      "total_nonempty_directional_rows": 4358,
+      "maximum_side_candidate_count": 966
+    },
+    "low_plus_high__separator": {
+      "body_conflict_edge_count": 16094,
+      "total_unique_directional_front_signatures": 3359,
+      "total_nonempty_directional_rows": 7090,
+      "maximum_side_candidate_count": 1051
+    }
+  },
+  "selected_interface_participation": {
+    "low_body_conflict_candidate_count": 166,
+    "cap_body_conflict_candidate_count": 154,
+    "low_front_interaction_candidate_count": 201,
+    "cap_front_interaction_candidate_count": 183
+  },
+  "independent_replay": {
+    "status": "PASS",
+    "classification": "LOW_SEPARATOR_HIGH_CAP_DOMINATES_STATIC_INTERFACE_FRONTIER",
+    "body_conflict_edge_count_replayed": 7325,
+    "left_front_bucket_count_replayed": 1127,
+    "right_front_bucket_count_replayed": 913,
+    "all_directional_members_replayed": true
+  },
+  "compact_separator_negative_rule": {
+    "template_vector": [1, 0, 3],
+    "manufacturing_6x4_5in_1out_count": 3,
+    "manufacturing_3x3_total_count": 1,
+    "manufacturing_3x3_class": "any_of_three_B_classes",
+    "covered_state_count": 3
+  },
+  "artifacts": {
+    "runner_sha256": "84e8cca03649d9da68c12d0ba747bd2a954b9b8d6529d6575b259cf1e6801c6e",
+    "checker_sha256": "204454e686a29d1566d7d401f677d282d183c224b237eb776c94c1f7738803a5",
+    "result_sha256": "511d5592142dcdce1832eca99e9d000ab439c2fee28d58b0f103aba96fb0108c",
+    "partition_comparison_sha256": "1c27fd5f77de1f3d9a588c4af43a2a17e29b543b15c7d376ac16f7886bc2d4d0",
+    "selected_interface_sha256": "1cd4674b1676a24f28fe39e2dec9d8286f700936fcc870b35fcc863fd47c7d98",
+    "artifact_check_sha256": "07f220365a6a825b73cbf69423d847315b73fef66c5e7d36ecfe3b98c01e874f"
+  },
+  "truth_boundary": "E113 proves static interaction-interface dominance only. Merging separator with high internalizes their dense coupling and yields the smallest tested exact cross-interface, but no cap or low witness is proved feasible."
+}

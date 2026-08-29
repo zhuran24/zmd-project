@@ -747,3 +747,26 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   rule，而不是误伤整个 1/0/3 template vector。下一步不应再做 class 枚举，也不能拿每态第一份
   separator geometry 当唯一代表；要把 350 个 positive witness 的 cross-module body/front 作用面
   编译成稳定 signature，再让 low/high consumers 对这些 signature 做存在量消去。
+
+2026-08-29 07:30
+----------------
+数据：
+  E113 run-001 RESULT.json
+  research_lab/local/zero_condition/E113_separator_side_interaction_compiler/run-001/RESULT.json
+  sha256 511d5592142dcdce1832eca99e9d000ab439c2fee28d58b0f103aba96fb0108c
+  ARTIFACT_CHECK.json sha256
+  07f220365a6a825b73cbf69423d847315b73fef66c5e7d36ecfe3b98c01e874f
+
+注意／发现：
+  把三组候选分别尝试合并成两侧后，`low | separator+high` 在四个冻结指标上全部胜出：跨体
+  edges 7,325（另两种 8,769/16,094），directional signatures 2,054（2,142/3,359），active
+  rows 4,282（4,358/7,090），最大侧 812（966/1,051）。完整接口落成 1,127 个 low-front
+  buckets + 913 个 cap-front buckets，所有 member 与系数独立重放。
+
+推理：
+  separator 不是适合单独站立的第三个对称模块：154 个 separator candidates 全部与 high 域有
+  body conflict，密集 front coupling 也应在内部消化。正确架构是把 separator+high 合成 393-
+  candidate cap，让 812-candidate low 做 consumer。这样既没有删 separator，也没有假设三侧
+  独立；原 1,205-row monolith 被替换成两个真实模块加一张 7,325-edge / 2,040-nonempty-bucket
+  的显式膜。下一步 cap 必须同时提出 class allocation 和 interface signature，consumer 才能
+  对精确 complement 做存在量消去。

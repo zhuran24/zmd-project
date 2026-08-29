@@ -4272,6 +4272,55 @@ evidence:
   ARTIFACT_CHECK.json sha256
   cdbae6428ba1514646e12836de069b26104e1872f7356b63fb1bdeb4c34e5e03.
 
+R-ZC-123  Exact interaction compiler selects low versus separator+high cap
+-------------------------------------------------------------------------
+status: complete static hypergraph; selected partition dominates all frozen metrics; independent replay PASS
+scope: E103 1,205 unary-live candidates, all same-footprint B mode/class rows
+
+statement:
+  E113 compiles every cross-module body conflict and every opposite-body
+  coefficient in native-front constraints for three candidate partitions. The
+  interface preserves coefficient multiplicity, stable candidate/mode/class
+  identity and all nonempty directional rows; it does not use one E112 witness
+  as a canonical geometry.
+
+  The frozen four-metric frontier is:
+
+    low | separator+high       7,325 edges / 2,054 signatures / 4,282 active rows / max side 812
+    low+separator | high       8,769 edges / 2,142 signatures / 4,358 active rows / max side 966
+    low+high | separator      16,094 edges / 3,359 signatures / 7,090 active rows / max side 1,051
+
+  `low | separator+high` is strictly better on every preregistered metric than
+  both alternatives. The selected exact interface has 812 low and 393 cap
+  candidates, 7,325 body-conflict edges, 1,127 low-front-by-cap-body buckets and
+  913 cap-front-by-low-body buckets. All 4,282 nonempty directional members and
+  their integer coefficients independently replay.
+
+  The result changes the computational identity of the bridge. Dense
+  separator/high coupling is internalized inside a joint cap module; low remains
+  the consumer. This retains all E103 candidates while avoiding an unsupported
+  three-way product or a return to the 1,205-candidate monolith.
+
+non-implications:
+  Static interface dominance is not feasibility or runtime dominance. E113 does
+  not prove a cap proposal, low complement or complete high witness.
+
+effect on next problem:
+  Build a 393-candidate separator+high cap proposer carrying E112's separator
+  class atlas plus one exact E113 cross-interface signature. Send its remaining
+  template/class complement and full edge/coefficient obligations to the
+  812-candidate low consumer. Learn only exact allocation/signature nogoods.
+
+evidence:
+  E113 RESULT.txt; local RESULT.json sha256
+  511d5592142dcdce1832eca99e9d000ab439c2fee28d58b0f103aba96fb0108c;
+  PARTITION_COMPARISON.json sha256
+  1c27fd5f77de1f3d9a588c4af43a2a17e29b543b15c7d376ac16f7886bc2d4d0;
+  SELECTED_INTERFACE.json sha256
+  1cd4674b1676a24f28fe39e2dec9d8286f700936fcc870b35fcc863fd47c7d98;
+  ARTIFACT_CHECK.json sha256
+  07f220365a6a825b73cbf69423d847315b73fef66c5e7d36ecfe3b98c01e874f.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:
