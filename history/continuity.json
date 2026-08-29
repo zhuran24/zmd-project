@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "project": "ZMD",
+  "audited_at": "2026-08-29",
+  "relationship": {
+    "project_continuity": "continuous",
+    "git_parentage_resets": 2,
+    "epoch_is_not_project_restart": true
+  },
+  "public_history": {
+    "sanitization": {
+      "reason": "historical Google API credential",
+      "method": "replace matching values in text blobs and files inside ZIP archives",
+      "original_commit_ids_preserved_locally": true,
+      "affected_public_commit_ids_rewritten": true
+    }
+  },
+  "epochs": [
+    {
+      "id": "epoch-1",
+      "public_primary_ref": "refs/heads/history/first-generation",
+      "original_git_root": "270bb2d243157c74c36cd4de82a029db7859e9fc",
+      "original_primary_endpoint": "2101450636b17e98504fb73d0680a95f601c9565",
+      "original_primary_branch": "project-foundation",
+      "primary_commit_count": 867,
+      "all_named_refs_commit_count": 937,
+      "archive": {
+        "file_name": "zmd_repo_all.bundle",
+        "storage": "owner-private forensic archive",
+        "size_bytes": 162358410,
+        "sha256": "8bb34b80a5f845e907b7a2b0dd87ddd76f4498ea210c06dc4238318f31ec751b"
+      }
+    },
+    {
+      "id": "epoch-2",
+      "public_primary_ref": "refs/heads/history/second-generation",
+      "git_root": "79afc8f478fa6f706ad0396b8df50235e1c640fe",
+      "primary_endpoint": "6ca5f38cf05baaf530b8b6f9ebe628f803a9405b",
+      "primary_branch": "main",
+      "primary_commit_count": 820,
+      "all_named_refs_commit_count": 836,
+      "archive": {
+        "file_name": "git-dir.tar.zst",
+        "storage": "owner-private forensic archive",
+        "size_bytes": 30622889,
+        "sha256": "dafeaa761c0993f50f516f9b94c9ed59027f0de3a761de22284f688f29b86b0a"
+      }
+    },
+    {
+      "id": "epoch-3",
+      "git_root": "a72003b527786254bf6fa699fe252610f4c8658b",
+      "canonical_refs": [
+        "refs/heads/main",
+        "refs/heads/research/main",
+        "refs/heads/certification/main"
+      ]
+    }
+  ],
+  "continuity_events": [
+    {
+      "id": "clear-1",
+      "date": "2026-06-16",
+      "relation": "logical_successor_without_git_parent",
+      "original_before_commit": "2101450636b17e98504fb73d0680a95f601c9565",
+      "after_commit": "79afc8f478fa6f706ad0396b8df50235e1c640fe",
+      "before_tag": "history/clear-1-before-20260616",
+      "after_tag": "history/clear-1-after-20260616",
+      "tree_comparison": {
+        "before_paths": 2357,
+        "after_paths": 2227,
+        "common_paths": 2223,
+        "byte_identical_common_paths": 2174,
+        "byte_changed_common_paths": 49,
+        "before_only_paths": 134,
+        "after_only_paths": 4
+      }
+    },
+    {
+      "id": "clear-2",
+      "date": "2026-08-09",
+      "relation": "logical_successor_without_git_parent",
+      "before_commit": "6ca5f38cf05baaf530b8b6f9ebe628f803a9405b",
+      "after_commit": "a72003b527786254bf6fa699fe252610f4c8658b",
+      "before_tag": "history/clear-2-before-20260809",
+      "after_tag": "history/clear-2-after-20260809",
+      "before_tag_represents": "committed_head_not_full_working_tree",
+      "tree_comparison": {
+        "before_paths": 3533,
+        "after_paths": 3422,
+        "common_paths": 3422,
+        "byte_identical_common_paths": 3415,
+        "byte_changed_common_paths": 7,
+        "before_only_paths": 111,
+        "after_only_paths": 0
+      }
+    }
+  ],
+  "three_tree_split": {
+    "tag": "history/three-tree-split-20260824",
+    "common_base_commit": "ede4fa4b883d0aa965141700d2475af1b96817c8",
+    "trees": [
+      {
+        "role": "history",
+        "canonical_ref": "refs/heads/main",
+        "first_unique_commit": "c0bd300b2ace087c36ac4e8f69cf304811330332"
+      },
+      {
+        "role": "research",
+        "canonical_ref": "refs/heads/research/main",
+        "first_unique_commit": "c3f02946957869c7d90fc94087699c4443e7753b"
+      },
+      {
+        "role": "certification",
+        "canonical_ref": "refs/heads/certification/main",
+        "first_unique_commit": "7392088898e2317fa47f497eb42b4de1880ea1da"
+      }
+    ]
+  },
+  "public_history_policy": {
+    "include": [
+      "all reviewed named refs",
+      "old GitHub-only named branches",
+      "seven reviewed detached worktree tips"
+    ],
+    "exclude": [
+      "unreachable reflog-only commits",
+      "dropped stash internals",
+      "temporary index, untracked, and WIP snapshots"
+    ],
+    "forensic_archives_remain_local": true
+  }
+}

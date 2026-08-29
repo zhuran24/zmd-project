@@ -1,7 +1,7 @@
 # 当前文档分区索引
 
 > 本页由 section registry 与有效 `DOC_POLICY.json` 自动生成；禁止手工修改。
-> 文档系统版本：`2.6.0`；分区摘要：`sha256:46e53c8b936f14b75b1a9bfe7badd5f6b721aad3db1306947293ee5c2a29f522`。
+> 文档系统版本：`2.6.0`；分区摘要：`sha256:e5ab7335964a4ac4dbef51f9aac321a232ca3430b09e0f8c37a6e2b381fd01e5`。
 > 真源：[`data/repository_governance/document_system/sections.json`](<../data/repository_governance/document_system/sections.json>)。
 
 分区把当前文档按问题域组织起来。它不改变 authority，也不把历史 evidence 提升为现行说明。一个文档可以跨多个分区，但每个分区只有一个登记入口。
@@ -12,7 +12,7 @@
 
 | Section | 入口 | 类型 | 当前成员 | 唯一职责 |
 |---|---|---|---:|---|
-| `repository-navigation` | [`README.md`](<../README.md>) | `manual` | 8 | 稳定仓库身份、任务路由、代码地图和 agent 最小自举入口。 |
+| `repository-navigation` | [`README.md`](<../README.md>) | `manual` | 9 | 稳定仓库身份、任务路由、代码地图和 agent 最小自举入口。 |
 | `knowledge` | [`data/knowledge/README.md`](<../data/knowledge/README.md>) | `manual` | 9 | current state、claim、decision、dossier、topic、terminology 与有效性投影的写入和查询入口。 |
 | `documentation-framework` | [`docs/governance/document-system/ARCHITECTURE.md`](<governance/document-system/ARCHITECTURE.md>) | `manual` | 35 | 文档类型、继承策略、框架维护、自举恢复、职责投影、周期审计与常态交接。 |
 | `project-manual` | [`docs/项目说明/README.md`](<项目说明/README.md>) | `manual` | 25 | 稳定语义、数学背景、工作流、风险、未来路线与编年史。 |
@@ -39,6 +39,7 @@
 | [`FILE_STATUS.md`](<../FILE_STATUS.md>) | `generated_projection` | `generator_only` | Generated compatibility redirect from the retired file-status page to current surfaces. |
 | [`HISTORY_START.md`](<../HISTORY_START.md>) | `living` | `direct` | Thin routing membrane for the history/material tree; it points active work to the owning tree and grants no current research or certification authority. |
 | [`NAV_MAP.md`](<../NAV_MAP.md>) | `living` | `direct` | Stable map of active code, data, script and adapter entrypoints; it never carries current project state. |
+| [`README.en.md`](<../README.en.md>) | `living` | `direct` | Maintained English-language companion to README.md with the same bounded project overview and repository navigation. |
 | [`README.md`](<../README.md>) **（入口）** | `living` | `direct` | 稳定仓库前门，只链接当前状态、知识目录、权威边界和开发入口。 |
 | [`docs/README.md`](<README.md>) | `living` | `direct` | 文档层稳定前门；按问题路由到唯一当前状态、知识投影、职责索引和框架说明。 |
 | [`docs/SECTION_INDEX.md`](<SECTION_INDEX.md>) | `generated_projection` | `generator_only` | Generated current document-section map from section registry and effective policy membership. |

@@ -1,7 +1,7 @@
 # 当前文档职责索引
 
 > 本页由有效 `DOC_POLICY.json` 契约、前门注册表与 section registry 自动生成；禁止手工修改。
-> 文档系统版本：`2.6.0`；职责摘要：`sha256:62dc36c6eaf53e00c906c3b69833814111a511f1f0191e3989651a81f6bde9bd`。
+> 文档系统版本：`2.6.0`；职责摘要：`sha256:8f9b46b8165828a616ca52d1fc42e4167d039242393c709321de3a08828f65c9`。
 
 本页回答“哪些文档仍承担当前职责、各自唯一负责什么”。它不授予新的 authority，也不列历史证据；历史 dossier 与快照分别从 CATALOG、BACKFILL_LEDGER 和 `docs/history/` 下钻。
 
@@ -84,7 +84,7 @@
 | `locked_authority` | 1 |
 | `generated_projection` | 25 |
 | `normative` | 33 |
-| `living` | 48 |
+| `living` | 49 |
 | `governance_control` | 1 |
 | `framework_core` | 26 |
 
@@ -170,6 +170,7 @@
 | [`BORROWED_COMPONENTS.md`](<../BORROWED_COMPONENTS.md>) | `repository-navigation`, `compatibility-adapters` | `current_guidance` | `direct` | External component borrowing ledger and compatibility boundary; it records provenance without granting certification authority. |
 | [`HISTORY_START.md`](<../HISTORY_START.md>) | `repository-navigation` | `current_guidance` | `direct` | Thin routing membrane for the history/material tree; it points active work to the owning tree and grants no current research or certification authority. |
 | [`NAV_MAP.md`](<../NAV_MAP.md>) | `repository-navigation`, `implementation-navigation` | `current_guidance` | `direct` | Stable map of active code, data, script and adapter entrypoints; it never carries current project state. |
+| [`README.en.md`](<../README.en.md>) | `repository-navigation` | `current_guidance` | `direct` | Maintained English-language companion to README.md with the same bounded project overview and repository navigation. |
 | [`README.md`](<../README.md>) | `repository-navigation` | `current_guidance` | `direct` | 稳定仓库前门，只链接当前状态、知识目录、权威边界和开发入口。 |
 | [`data/knowledge/README.md`](<../data/knowledge/README.md>) | `knowledge` | `current_guidance` | `governed` | Operating guide for the structured knowledge layer. |
 | [`docs/AGENT_OPERATIONS.md`](<AGENT_OPERATIONS.md>) | `operations` | `current_guidance` | `direct` | 按需加载的详细 agent 运行、测试、冻结、发布和故障处理手册。 |

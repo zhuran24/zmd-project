@@ -219,6 +219,14 @@
       "rationale": "Thin history/material routing membrane; not a legacy prune subject."
     },
     {
+      "id": "project_lineage_history",
+      "match": {
+        "path": "PROJECT_LINEAGE.md"
+      },
+      "document_class": "historical",
+      "rationale": "Audited project-continuity evidence; retained for provenance rather than current-state guidance."
+    },
+    {
       "id": "project_lock",
       "match": {
         "path": "PROJECT_LOCK.md"
@@ -289,6 +297,14 @@
       },
       "document_class": "living",
       "rationale": "Stable repository front door; volatile state is linked rather than copied."
+    },
+    {
+      "id": "project_status_report_english_companion",
+      "match": {
+        "path": "README.en.md"
+      },
+      "document_class": "living",
+      "rationale": "Maintained English companion to the stable repository front door."
     },
     {
       "id": "repository_governance_registry",

@@ -118,6 +118,50 @@
       "rationale": "根 README 只能做稳定前门，不能重新复制 CURRENT 中的易变状态。"
     },
     {
+      "id": "root_front_door_english_mirror",
+      "match": {
+        "path": "README.en.md"
+      },
+      "set": {
+        "document_class": "living",
+        "authority_role": "current_guidance",
+        "purpose": "Maintained English-language companion to README.md with the same bounded project overview and repository navigation.",
+        "volatile_facts": "forbidden",
+        "invariant_refs": [
+          "DOC-INV-001",
+          "DOC-INV-007",
+          "DOC-INV-009",
+          "DOC-INV-013",
+          "DOC-INV-014"
+        ],
+        "required_reads": [
+          "README.md"
+        ],
+        "section_refs": [
+          "repository-navigation"
+        ]
+      },
+      "rationale": "The translation stays discoverable and current while the Chinese front door remains the only canonical repository entry point."
+    },
+    {
+      "id": "project_lineage_evidence",
+      "match": {
+        "path": "PROJECT_LINEAGE.md"
+      },
+      "set": {
+        "document_class": "historical_evidence",
+        "authority_role": "evidence_only",
+        "mutation": "direct",
+        "purpose": "Evidence-only synthesis of the project's Git epochs, rebuild boundaries, archive identities and public-history redaction.",
+        "volatile_facts": "source_allowed",
+        "invariant_refs": [
+          "DOC-INV-002",
+          "DOC-INV-009"
+        ]
+      },
+      "rationale": "The lineage page records audited historical continuity without becoming a current-state or certification authority."
+    },
+    {
       "id": "history_material_frontdoor",
       "match": {
         "path": "HISTORY_START.md"
@@ -480,6 +524,22 @@
         },
         "document_class": "living",
         "rationale": "Stable repository front door; volatile state is linked rather than copied."
+      },
+      {
+        "id": "project_status_report_english_companion",
+        "match": {
+          "path": "README.en.md"
+        },
+        "document_class": "living",
+        "rationale": "Maintained English companion to the stable repository front door."
+      },
+      {
+        "id": "project_lineage_history",
+        "match": {
+          "path": "PROJECT_LINEAGE.md"
+        },
+        "document_class": "historical",
+        "rationale": "Audited project-continuity evidence; retained for provenance rather than current-state guidance."
       },
       {
         "id": "history_material_frontdoor",
