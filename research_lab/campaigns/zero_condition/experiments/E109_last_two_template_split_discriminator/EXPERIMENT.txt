@@ -1,0 +1,60 @@
+EXPERIMENT E109: LAST TWO TEMPLATE-SPLIT DISCRIMINATOR
+=====================================================
+
+Question
+--------
+Do either of E108's last two body-feasible template splits survive complete
+nested native-front projection?
+
+Exact targets
+-------------
+The complete E108 body/power atlas leaves only:
+
+  upper 3/0/4   lower 7/6/6
+  upper 6/0/3   lower 4/6/7
+
+All other body-feasible vectors are exact split nogoods from E105-E107.
+
+Method
+------
+1. Pin E108's complete seven-vector body atlas and independent check. Reconstruct
+   E104's source-stable 812-lower / 198-upper product under fixed E092 poles,
+   boundary_macro_09, x42 and manufacturing-free y60.
+
+2. For each remaining vector, use E108's corresponding 26-body witness only as
+   a hint. Solve the complete smaller upper side with its exact template totals,
+   every legal body, same-footprint native mode, fixed power, body non-overlap,
+   native-front capacity and all eight class coordinates free under global caps.
+
+3. If upper is exact INFEASIBLE, close only that split. If upper is feasible,
+   solve the complete lower side with its exact complementary template totals and
+   all eight class coordinates free. Lower INFEASIBLE closes only that split.
+   If both sides are individually feasible, retain the split for a separate
+   allocation-compatibility handshake. UNKNOWN creates no rule.
+
+Budgets
+-------
+
+  upper side per split   45 seconds
+  lower side per split   75 seconds
+
+Predeclared decisions
+---------------------
+Both splits exact negative
+  Combine the complete seven-state body atlas with seven exact split nogoods,
+  close manufacturing-free y60 at this native-front template layer, and restore
+  E103's explicit y59 separator.
+
+At least one split individually feasible
+  Run allocation handshake only on those surviving splits.
+
+Any censored side
+  Preserve the exact split/side context and replay only that model with solver
+  diversity. Do not infer absence or reopen the 847-vector space.
+
+Truth boundary
+--------------
+Individual side feasibility is necessary but not sufficient for compatible class
+allocation. Split negatives are contextual to source-stable x42, fixed E092
+skeleton and manufacturing-free y60. No binding, routing, throughput,
+certification or U/L effect follows.

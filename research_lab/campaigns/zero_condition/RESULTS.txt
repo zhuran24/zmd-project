@@ -4087,6 +4087,52 @@ evidence:
   ARTIFACT_CHECK.json sha256
   17095258691adafc54c29bf48dbc901a65cfa2d694293c044782262c306bb9c1.
 
+R-ZC-119  Seven exact split negatives close the manufacturing-free-y60 language
+--------------------------------------------------------------------------------
+status: final two split negatives exact; solver-diverse replay PASS; finite seven-state cover complete
+scope: source-stable x42 high side, E103 unary-live rows, fixed E092 skeleton, manufacturing-free y60
+
+statement:
+  E109 consumes E108's complete seven-vector body/power basis. Five vectors are
+  prior exact split nogoods. The final two are tested on their complete smaller
+  upper native-front sides with all bodies, same-footprint modes and eight class
+  coordinates free under global caps.
+
+  Upper 3/0/4 is exact INFEASIBLE in 1.122 seconds after 4,080 branches. Upper
+  6/0/3 is exact INFEASIBLE in 1.108 seconds after 4,048 branches. No lower side
+  runs because each split is already closed by its upper projection. A one-worker
+  PSEUDO_COST replay independently returns INFEASIBLE in 1.265 and 1.441 seconds.
+
+  The checker pins and verifies the set identity:
+
+    E108 seven-state body basis
+      = five E105-E107 exact split nogoods
+        union two E109 exact split nogoods.
+
+  Therefore no native-front witness exists in the manufacturing-free-y60
+  sufficient language.
+
+non-implications:
+  E109 does not reject E103's explicit 154-candidate separator, y60 without the
+  manufacturing reservation, x42, module B or the fixed E092 skeleton. No
+  terminal uniqueness, binding or routing result exists.
+
+effect on next problem:
+  Retire manufacturing-free y60 and restore E103's `y_after_59` explicit
+  separator. Keep 812 low, 154 separator and 239 high candidates as finite
+  modules; condition separator duties on side template projections rather than
+  rebuilding the 1,205-candidate monolith.
+
+evidence:
+  E109 RESULT.txt; local RESULT.json sha256
+  32a76ec37e5a51158fc19aabfd02da606e0337d8903a677f6a064ac25bb69875;
+  upper_3_0_4_UPPER_RESULT.json sha256
+  a22666a508e5c7d3a42f5c807a70d136f9e9b7e51ce6dcc6952744a25ab119b0;
+  upper_6_0_3_UPPER_RESULT.json sha256
+  3b6bd33b8b6dba936a194d29feac5366f0b3bd78bf75528fe315b954382a7c10;
+  ARTIFACT_CHECK.json sha256
+  a065ff1730e445bea7ae6825413b27a7bee641b63c4f20c084050229a9a511a0.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

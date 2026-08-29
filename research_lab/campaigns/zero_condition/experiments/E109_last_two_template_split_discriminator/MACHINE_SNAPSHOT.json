@@ -1,0 +1,60 @@
+{
+  "schema": "zmd_e109_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "canonical_run": "research_lab/local/zero_condition/E109_last_two_template_split_discriminator/run-001",
+  "verdict": "RESERVED_Y60_TEMPLATE_PROJECTION_CLOSED",
+  "decision": "RESTORE_E103_EXPLICIT_Y59_SEPARATOR",
+  "body_projection_basis": {
+    "complete": true,
+    "vector_count": 7,
+    "prior_exact_split_nogood_count": 5,
+    "new_exact_split_nogood_count": 2,
+    "covered_vector_count": 7
+  },
+  "new_split_nogoods": [
+    {
+      "upper": [3, 0, 4],
+      "lower": [7, 6, 6],
+      "decisive_side": "upper",
+      "producer_status": "INFEASIBLE",
+      "producer_elapsed_seconds": 1.1219325569982175,
+      "producer_branches": 4080,
+      "producer_conflicts": 0,
+      "solver_diverse_replay_status": "INFEASIBLE",
+      "solver_diverse_replay_elapsed_seconds": 1.265176771004917,
+      "solver_diverse_replay_branches": 7747,
+      "solver_diverse_replay_conflicts": 30
+    },
+    {
+      "upper": [6, 0, 3],
+      "lower": [4, 6, 7],
+      "decisive_side": "upper",
+      "producer_status": "INFEASIBLE",
+      "producer_elapsed_seconds": 1.1083889260044089,
+      "producer_branches": 4048,
+      "producer_conflicts": 0,
+      "solver_diverse_replay_status": "INFEASIBLE",
+      "solver_diverse_replay_elapsed_seconds": 1.4406594810134266,
+      "solver_diverse_replay_branches": 8112,
+      "solver_diverse_replay_conflicts": 39
+    }
+  ],
+  "independent_replay": {
+    "status": "PASS",
+    "classification": "SEVEN_STATE_BODY_ATLAS_FULLY_COVERED_BY_EXACT_SPLIT_NOGOODS",
+    "workers": 1,
+    "search_branching": "PSEUDO_COST_SEARCH",
+    "symmetry_level": 0,
+    "probing_level": 0
+  },
+  "artifacts": {
+    "runner_sha256": "a8e6ec35332db5ea7fa789f9f04a4081a8ed98d000d41620e0ea039c4d174889",
+    "checker_sha256": "bfbb62c1175e5e5fdde8e8bbfe799d7e4392303def47788bb80f60d96e5fb22e",
+    "result_sha256": "32a76ec37e5a51158fc19aabfd02da606e0337d8903a677f6a064ac25bb69875",
+    "artifact_check_sha256": "a065ff1730e445bea7ae6825413b27a7bee641b63c4f20c084050229a9a511a0",
+    "upper_3_0_4_sha256": "a22666a508e5c7d3a42f5c807a70d136f9e9b7e51ce6dcc6952744a25ab119b0",
+    "upper_6_0_3_sha256": "3b6bd33b8b6dba936a194d29feac5366f0b3bd78bf75528fe315b954382a7c10"
+  },
+  "truth_boundary": "E108's exact seven-state body/power basis is fully covered by five prior exact split negatives and the two E109 upper-side negatives. Therefore the manufacturing-free-y60 sufficient language has no native-front witness. This does not reject E103's explicit y59 separator, y60 without the reservation, x42, module B or the fixed skeleton."
+}

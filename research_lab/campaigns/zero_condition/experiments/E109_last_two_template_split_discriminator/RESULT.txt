@@ -1,0 +1,113 @@
+E109 RESULT: THE COMPLETE SEVEN-STATE BODY BASIS CLOSES MANUFACTURING-FREE Y60
+================================================================================
+
+Status
+------
+Closed as an exact contextual negative for the manufacturing-free-y60 sufficient
+language. E108 proves that only seven upper template vectors admit any body/power
+witness. Five are prior exact split nogoods. E109 tests the final two and closes
+both on the complete upper native-front side. Solver-diverse replay reports PASS.
+
+Verdict
+-------
+
+  RESERVED_Y60_TEMPLATE_PROJECTION_CLOSED
+
+Decision
+--------
+
+  RESTORE_E103_EXPLICIT_Y59_SEPARATOR
+
+Machine evidence
+----------------
+Canonical result:
+
+  research_lab/local/zero_condition/
+  E109_last_two_template_split_discriminator/run-001/RESULT.json
+
+SHA-256:
+
+  32a76ec37e5a51158fc19aabfd02da606e0337d8903a677f6a064ac25bb69875
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E109_last_two_template_split_discriminator/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  a065ff1730e445bea7ae6825413b27a7bee641b63c4f20c084050229a9a511a0
+
+Last two exact split negatives
+------------------------------
+E108 leaves exactly two body-feasible vectors after the five E105-E107 rules:
+
+  upper 3 / 0 / 4   lower 7 / 6 / 6
+  upper 6 / 0 / 3   lower 4 / 6 / 7
+
+For each vector, E109 uses the matching E108 26-body witness only as a hint and
+solves the complete 198-candidate upper side with:
+
+  exact upper template totals
+  all legal body footprints
+  every same-footprint native mode
+  all eight B class coordinates free under global caps
+  fixed E092 power
+  body non-overlap
+  native-front capacity
+
+The upper 3/0/4 model is exact INFEASIBLE in 1.122 seconds after 4,080 branches.
+The upper 6/0/3 model is exact INFEASIBLE in 1.108 seconds after 4,048 branches.
+No lower model runs because each split is already closed by its upper projection.
+
+Independent replay
+------------------
+A source-isolated checker reconstructs both upper models with one worker,
+`PSEUDO_COST_SEARCH`, symmetry level 0 and probing level 0. It again returns:
+
+  upper 3/0/4   INFEASIBLE in 1.265 seconds
+  upper 6/0/3   INFEASIBLE in 1.441 seconds
+
+The checker also pins E108's exact body atlas and verifies the set identity:
+
+  seven exact body-feasible vectors
+    = five prior exact split nogoods
+      union two E109 exact split nogoods.
+
+Therefore every body/power-feasible template split in the manufacturing-free-y60
+language has at least one nested side with empty complete native-front projection.
+No native-front witness exists in this sufficient language.
+
+What this closes
+----------------
+The closed object is exactly:
+
+  source-stable x42 module-B high side
+  E103 unary-live candidate language
+  fixed E092 pole/boundary skeleton
+  manufacturing bodies forbidden from y=60
+  complete native-front class semantics
+
+The closure is not a timeout argument and does not rely on the censored broad
+side atlases from E108. It is a finite cover:
+
+  exact seven-state body basis
+  + seven exact split negatives
+  = empty native-front language.
+
+Next problem
+------------
+Retire the manufacturing-free-y60 restriction and restore E103's explicit
+`y_after_59` separator. The next representation must keep the 154 separator
+candidates as an explicit finite module rather than deleting them. Preserve the
+812 low and 239 high groups, template-local class semantics, fixed E092 power and
+E103 unary-dead filtering. The cheapest next discriminator is to measure and
+solve separator body/template duties conditioned on the two side template
+projections, not to rebuild the former 1,205-candidate monolith.
+
+Truth boundary
+--------------
+E109 does not reject E103's explicit separator, y60 without manufacturing
+reservation, the x42 high side, module B or the fixed E092 skeleton. It proves no
+terminal uniqueness, generic I/O, commodity binding, component compatibility,
+routing, throughput, certification or U/L change.

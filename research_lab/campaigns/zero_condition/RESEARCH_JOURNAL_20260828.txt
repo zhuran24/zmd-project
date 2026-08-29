@@ -660,3 +660,24 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   这是取等账到有限结构基底的又一次兑现：847 个故事空间被 body/power 真实可实现性压成 7，
   再被递归规则压成 2。即便宽侧 atlas 仍 UNKNOWN，complete body basis + exact old rules 已足以
   安全地把预算只投给这两条。
+
+2026-08-29 05:43
+----------------
+数据：
+  E109 run-001 RESULT.json
+  research_lab/local/zero_condition/E109_last_two_template_split_discriminator/run-001/RESULT.json
+  sha256 32a76ec37e5a51158fc19aabfd02da606e0337d8903a677f6a064ac25bb69875
+  ARTIFACT_CHECK.json sha256
+  a065ff1730e445bea7ae6825413b27a7bee641b63c4f20c084050229a9a511a0
+
+注意／发现：
+  E108 剩下的 upper 3/0/4 和 6/0/3 都在完整 198-candidate upper native-front 模型中约 1.1 秒
+  exact INFEASIBLE；lower side 无需启动。异源单线程 PSEUDO_COST 重放分别在 1.265/1.441 秒
+  再次给出 INFEASIBLE。七态 body atlas 现在由五条旧 split negatives 加两条新 negatives 完整覆盖。
+
+推理：
+  这不是“逐个试了七个所以大概不行”，而是一个有限覆盖证明：body/power 层已证明所有完整
+  witness 的 template split 必在七态内；每一态又有一侧完整 native-front 投影为空。因此
+  manufacturing-free y60 sufficient language 整体为空。正确退回点不是 E104 joint high，也不是
+  1,205-candidate monolith，而是 E103 本来保留的 154-candidate explicit separator：删除 separator
+  已被证伪，下一表示必须让 separator 自己承担可见的 body/template/class duty。
