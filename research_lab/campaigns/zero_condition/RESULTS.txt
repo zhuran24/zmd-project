@@ -3351,6 +3351,46 @@ evidence:
   ARTIFACT_CHECK.json sha256
   906829304398cf62e055fb7af28bb194e53833a33cf60636616ad4f580af1d0b.
 
+R-ZC-100  Three-pole mobility remains censored on the y=41 complete-front consumer
+-----------------------------------------------------------------------------------
+status: fresh exact complete-class solve; UNKNOWN preserved; artifact check PASS
+scope: partition_90abd29523f2a0dc, y=41, exactly 53 poles with at most three relocations
+
+statement:
+  E090 derives from the complete E084 integrated native-front model, removes the
+  retained-body objective and adds only a retained-current-pole floor of 50. It
+  preserves 219 exact module/template bodies, the complete 47-state boundary
+  disjunction, power, non-overlap, all same-footprint native modes, exact front-
+  demand class totals and the two stable E078 bodies. E084's exact three-pole
+  body/power endpoint is supplied as a hint only.
+
+  A pure-feasibility solve with stop-after-first-solution consumes 240.241 seconds
+  and returns UNKNOWN without an incumbent. The model has 14,867 body candidates,
+  4,316 pole candidates, 92,188 mode-class variables, 116,318 total variables and
+  223,719 constraints. Process peak RSS is 8,309,028 KiB; cgroup OOM and OOM-kill
+  counters do not increase.
+
+non-implications:
+  The at-most-three-pole language is not infeasible, and pole mobility is not
+  shown irrelevant. The absence of an OOM event does not diagnose the search
+  wall. E090 yields no body, pole, operation, terminal, binding, routing or
+  throughput witness.
+
+effect on next problem:
+  Do not rerun the same y=41 monolith as another vote. Apply the identical
+  three-pole complete-front consumer to E081's next Pareto partition,
+  partition_97f9ba7e7ad710dc at y=17. A positive control distinguishes the
+  partition hypothesis; another censored result shows the monolithic consumer
+  cannot compare partitions and must be decomposed.
+
+evidence:
+  E090 RESULT.txt; local RESULT.json sha256
+  ff5398ee4064f01ded8d4b91d2ddc832fe52dceb4197c63dcad081bf52d89496;
+  PRODUCER_RESULT.json sha256
+  1a3725d8757fb055f85a04cc229e7ca3685bd21fd448ea0825fbd54da08329db;
+  ARTIFACT_CHECK.json sha256
+  fc46d1172b8f76252627db622fdbc7c1a997f07eec2edadddbd215bae387c7da.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:
@@ -3376,7 +3416,10 @@ production and turn four rejected geometries into 147 reusable rules, but the
 store grows 34->98->181 while every new E087 failure lies in module B and empty
 counts stay large. E088 rejects both coarse and fine signature compilation; E089
 then shows that the best train-selected spatial roles do not cover even 80 percent
-of training failures and generalize worse to E087's holdout. The fixed-52-plus-one
-B geometry is retired. The next live object is a nested multi-pole-versus-partition
-relaxation, not another rule or seed. The final repair size, terminal assignment,
-component-compatible binding and physical layer count remain open.
+of training failures and generalize worse to E087's holdout. E090 widens the pole
+budget to the first evidenced three-relocation language but the complete front
+consumer remains UNKNOWN without an incumbent and grows to about 8.3 GiB process
+RSS. Pole rigidity versus partition quality is therefore still unresolved. The
+next live object is the same three-pole consumer on E081's next Pareto partition,
+not another y=41 seed or point-rule pass. The final repair size, terminal
+assignment, component-compatible binding and physical layer count remain open.

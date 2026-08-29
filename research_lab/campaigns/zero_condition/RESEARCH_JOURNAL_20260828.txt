@@ -247,3 +247,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   的 B bay 里调 seed、阈值或点规则，已经违反停止条件。下一问必须显式换对象空间，并用嵌套
   松弛区分原因：先只放宽 pole mobility、保持 y=41 与 body/front 语言；若仍 front-dead，才把
   预算移到 E081 其他 Pareto partition/seam。这样能判断墙来自电杆刚性还是直 seam 本身。
+
+2026-08-28 22:55
+----------------
+数据：
+  E090 run-001 RESULT.json
+  research_lab/local/zero_condition/E090_three_pole_front_discriminator/run-001/RESULT.json
+  sha256 ff5398ee4064f01ded8d4b91d2ddc832fe52dceb4197c63dcad081bf52d89496
+  ARTIFACT_CHECK.json sha256
+  fc46d1172b8f76252627db622fdbc7c1a997f07eec2edadddbd215bae387c7da
+
+注意／发现：
+  保持 y=41、完整 47-state boundary、219 个 body、全 native-front class 与 power，只把 pole
+  语言从 52 固定+1 替代放宽到 53 根中至少保留 50 根后，纯 feasibility 模型仍在 240.241 秒
+  返回 UNKNOWN，无 incumbent。模型为 116,318 variables / 223,719 constraints，进程峰值约
+  8,309,028 KiB；OOM 与 OOM-kill 计数没有增加。E084 的 exact 三杆 body/power endpoint 只作 hint。
+
+推理：
+  这没有证明三杆 mobility 无用，也没有证明 y=41 有错；它证明当前 monolithic full-front
+  consumer 仍测不出两者差异，而且比 E085 明显更重。按预写结算规则，不再给同一个 y=41
+  模型加时或换 seed 投票。下一步把同一三杆 consumer 移到 E081 Pareto beam 的下一项
+  partition_97f9ba7e7ad710dc / y=17：若它出 witness，partition 是差异来源；若仍 censored，
+  应拆 consumer，而不是继续轮换 partition 故事。

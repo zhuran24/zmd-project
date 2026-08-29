@@ -1,0 +1,79 @@
+EXPERIMENT E090: THREE-POLE NATIVE-FRONT DISCRIMINATOR FOR THE Y=41 PARTITION
+================================================================================
+
+Question
+--------
+Is the current native-front wall caused mainly by the rigid 52-current-poles +
+one-replacement language, or does it survive the smallest already evidenced
+multi-pole repair budget?
+
+Context and budget
+------------------
+E084 has an exact body/pole/power endpoint for the same y=41 operation partition
+that retains 50 of the 53 current poles and relocates exactly three. E090 therefore
+uses the nested pole language:
+
+  select exactly 53 legal poles
+  retain at least 50 current pole poses
+  hence relocate at most 3 poles
+
+The number three is not an arbitrary escalation. It is the first nontrivial
+multi-pole budget already known to admit a complete body/pole/power geometry in
+this partition.
+
+Method
+------
+1. Pin E084's complete integrated body/pole/front producer, the exact three-pole
+   body/power hint, E089's decision, E081/E069/E079 context, candidate pools,
+   mandatory instances, strict rules and operation-profile source by SHA-256.
+
+2. Derive a no-overwrite producer that keeps the original complete front model:
+
+     219 exact module/template bodies
+     53 selected poles
+     full 47-state boundary disjunction
+     y=41 module separation
+     body/pole/boundary non-overlap
+     manufacturing power
+     all same-footprint native modes
+     exact module/template/input-count/output-count class totals
+     two stable E078 body identities
+
+   The only feasible-set change is the explicit `retained current poles >= 50`
+   bound. The original all-pole model is thereby restricted, while the retired
+   52+1 model is strictly widened.
+
+3. Remove the retained-body optimization and solve pure feasibility, stopping at
+   the first incumbent. Seed body, pole and boundary variables from E084's exact
+   three-pole power endpoint. The hint is not evidence and may be repaired or
+   rejected.
+
+4. If the class-level front model finds an incumbent, deterministically materialize
+   exact named operations. Operations within each class share module, template and
+   front needs; the two stable bodies are assigned their required named operations
+   first, and the remaining exact multiplicities are assigned to the remaining
+   selected rows. Independently replay body/pole/boundary geometry, power, pole
+   budget, front capacity and named operation counts.
+
+Decision rule
+-------------
+FRONT_OPERATION_FEASIBLE
+  Pole rigidity is a live causal explanation. Keep y=41 and send the materialized
+  witness to terminal uniqueness, generic I/O and component-aware binding.
+
+MASTER_INFEASIBLE
+  Close the at-most-three-pole front language for y=41. Move the identical
+  consumer to the next E081 Pareto partition/seam. This does not refute y=41 in a
+  wider pole language.
+
+UNKNOWN without incumbent
+  Preserve censorship. Do not rerun the same instrument as another vote. Move the
+  identical three-pole consumer to the next E081 Pareto partition as an instrument
+  control; only an asymmetric positive can distinguish the partition hypothesis.
+
+Truth boundary
+--------------
+E090 concerns native-front capacity and exact named operation counts only. It does
+not establish duplicate-terminal uniqueness, generic source/sink binding,
+component compatibility, routing, throughput, a whole-layout witness, U/L,
+certification, production, publication or pruning authority.

@@ -1,0 +1,83 @@
+{
+  "schema": "zmd_e090_three_pole_front_machine_snapshot_v1",
+  "created_at_local": "2026-08-28T23:00:22-04:00",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "verdict": "THREE_POLE_FRONT_DISCRIMINATOR_CENSORED",
+  "decision": "MOVE_IDENTICAL_THREE_POLE_CONSUMER_TO_NEXT_E081_PARETO_PARTITION_AS_CONTROL",
+  "context": {
+    "partition_id": "partition_90abd29523f2a0dc",
+    "corridor_axis": "y",
+    "corridor_coordinate": 41,
+    "corridor_width": 1,
+    "boundary_state_count": 47,
+    "manufacturing_count": 219,
+    "selected_pole_count_required": 53,
+    "maximum_relocated_poles": 3,
+    "minimum_retained_current_poles": 50,
+    "stable_e078_body_count": 2
+  },
+  "search": {
+    "pure_feasibility": true,
+    "stop_after_first_solution": true,
+    "solve_cap_seconds": 240.0,
+    "seed": 90001,
+    "producer_status": "UNKNOWN",
+    "solver_status": "UNKNOWN",
+    "elapsed_seconds": 240.24124173600285,
+    "branches": 4626,
+    "conflicts": 0,
+    "incumbent_present": false,
+    "selected_manufacturing_count": 0,
+    "selected_pole_count": 0
+  },
+  "model": {
+    "body_candidate_count": 14867,
+    "pole_candidate_count": 4316,
+    "mode_class_variable_count": 92188,
+    "model_variable_count": 116318,
+    "model_constraint_count": 223719
+  },
+  "telemetry": {
+    "wrapper_elapsed_seconds": 245.96182281599613,
+    "process_ru_maxrss_kib": 8309028,
+    "cgroup_oom_delta": 0,
+    "cgroup_oom_kill_delta": 0,
+    "note": "cgroup counters include the containing DevSpace service and may include sibling processes; process ru_maxrss belongs to the E090 Python process and its in-process native solver"
+  },
+  "hint": {
+    "path": "research_lab/local/zero_condition/E084_integrated_power_setpacking_total.json",
+    "sha256": "2fd3826610845b80ba19e5e78e0435e56d0685447e678679da3c5845ffbd677e",
+    "status": "OPTIMAL",
+    "relocated_pole_count": 3,
+    "retained_manufacturing_count": 190,
+    "role": "search hint only; not evidence of native-front feasibility"
+  },
+  "artifacts": {
+    "result": {
+      "path": "research_lab/local/zero_condition/E090_three_pole_front_discriminator/run-001/RESULT.json",
+      "sha256": "ff5398ee4064f01ded8d4b91d2ddc832fe52dceb4197c63dcad081bf52d89496"
+    },
+    "producer_result": {
+      "path": "research_lab/local/zero_condition/E090_three_pole_front_discriminator/run-001/PRODUCER_RESULT.json",
+      "sha256": "1a3725d8757fb055f85a04cc229e7ca3685bd21fd448ea0825fbd54da08329db"
+    },
+    "derivation": {
+      "path": "research_lab/local/zero_condition/E090_three_pole_front_discriminator/run-001/DERIVATION.json",
+      "sha256": "17e9f60551ebd751b609c8277eda1d54a1f46a1e499baa938f283b9ce03d556a"
+    },
+    "derived_producer": {
+      "path": "research_lab/local/zero_condition/E090_three_pole_front_discriminator/run-001/DERIVED_PRODUCER.py",
+      "sha256": "93471f93743d15dc2835c7e1c5a0637a219942e2aab6c4e77c4dcf4828cde0fb"
+    },
+    "artifact_check": {
+      "path": "research_lab/local/zero_condition/E090_three_pole_front_discriminator/run-001/ARTIFACT_CHECK.json",
+      "sha256": "fc46d1172b8f76252627db622fdbc7c1a997f07eec2edadddbd215bae387c7da"
+    }
+  },
+  "runners": {
+    "experiment_sha256": "0fa1ccf6e0dba1118a4824d6395893a30283120b8526aaeb559481b259cd0db6",
+    "artifact_check_sha256": "fa95441689761273f95f31efcfe93e578a8402ec40c3e520720f0736c89ad65b"
+  },
+  "truth_boundary": "Exact complete native-front class model for the current y=41 partition with exactly 53 poles and at most three relocations. UNKNOWN is censored and establishes neither infeasibility nor a witness."
+}

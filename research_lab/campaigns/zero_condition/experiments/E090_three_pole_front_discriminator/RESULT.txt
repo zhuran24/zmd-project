@@ -1,0 +1,173 @@
+E090 RESULT: THREE-POLE MOBILITY DOES NOT YET DISTINGUISH POLE RIGIDITY FROM THE Y=41 PARTITION
+=================================================================================================
+
+Status
+------
+Closed as a fresh censored discriminator. The complete native-front class model
+returned UNKNOWN without an incumbent. The artifact and derivation checker
+passes. No infeasibility, witness, terminal uniqueness, generic I/O, component-
+aware binding, routing, throughput, whole-layout, certification, U/L, owner,
+production, publication or pruning effect follows.
+
+Machine evidence
+----------------
+Wrapper result:
+
+  research_lab/local/zero_condition/
+  E090_three_pole_front_discriminator/run-001/RESULT.json
+
+SHA-256:
+
+  ff5398ee4064f01ded8d4b91d2ddc832fe52dceb4197c63dcad081bf52d89496
+
+Producer result SHA-256:
+
+  1a3725d8757fb055f85a04cc229e7ca3685bd21fd448ea0825fbd54da08329db
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E090_three_pole_front_discriminator/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  fc46d1172b8f76252627db622fdbc7c1a997f07eec2edadddbd215bae387c7da
+
+Durable compact snapshot:
+
+  research_lab/campaigns/zero_condition/experiments/
+  E090_three_pole_front_discriminator/MACHINE_SNAPSHOT.json
+
+Verdict
+-------
+
+THREE_POLE_FRONT_DISCRIMINATOR_CENSORED
+
+Decision
+--------
+
+MOVE_IDENTICAL_THREE_POLE_CONSUMER_TO_NEXT_E081_PARETO_PARTITION_AS_CONTROL
+
+Why three poles
+---------------
+E089 required the next discriminator to widen either pole mobility or the
+partition while preserving the same front semantics. E084 already contains an
+exact body/pole/power endpoint for partition_90abd29523f2a0dc that retains 50 of
+53 current poles and relocates exactly three. E090 therefore tests the smallest
+nontrivial multi-pole budget already known to admit a complete power geometry:
+
+  select exactly 53 legal pole poses
+  retain at least 50 current pole poses
+  relocate at most 3 poles
+
+This is a strict widening of the retired 52-current-plus-one-replacement
+language and a restriction of the prior all-poles model. The value three was not
+chosen after seeing the front result.
+
+Preserved semantics
+-------------------
+E090 derives its producer from the frozen E084 integrated front model and keeps:
+
+  partition                 partition_90abd29523f2a0dc
+  seam                      horizontal y=41, width 1
+  module A / module B sides below / above the seam
+  manufacturing bodies      exactly 219
+  poles                      exactly 53
+  boundary language         complete 47-state disjunction
+  manufacturing power       required
+  body/pole/boundary         exact non-overlap
+  operation front classes   exact module/template/input/output multiplicities
+  native modes              every same-footprint mode
+  stable E078 bodies         both forced at their stable footprints
+
+The prior E087 point rules are not transported into this model. Those rules were
+compiled after treating 52 pole bodies as fixed occupied cells; changing pole
+mobility changes that clipping context. E090 instead uses the complete dynamic
+native-front class formulation, where selected pole bodies participate directly
+in occupancy.
+
+The model has:
+
+  body candidates             14,867
+  pole candidates               4,316
+  mode-class variables         92,188
+  total variables             116,318
+  total constraints           223,719
+
+The retained-body objective is removed. The model asks only for one feasible
+body/pole/boundary/mode-class state and uses `stop_after_first_solution`. E084's
+exact three-relocation body/power endpoint is supplied as a hint only.
+
+Terminal observation
+--------------------
+The solve consumes:
+
+  solver cap                240.0 s
+  producer elapsed          240.241 s
+  branches                    4,626
+  conflicts                       0
+  solver status             UNKNOWN
+  incumbent                 none
+  selected manufacturing       0
+  selected poles                0
+
+Process peak RSS is:
+
+  8,309,028 KiB
+
+The containing cgroup reports no increase in OOM or OOM-kill counters during the
+run. Cgroup memory counters may include sibling processes, so only process RSS is
+attributed to E090. Absence of an OOM event does not diagnose the search wall.
+
+Meaning
+-------
+The three-pole language was not disproved. Nor did pole mobility produce the
+positive witness needed to identify pole rigidity as the primary obstruction.
+The instrument remains unable to distinguish:
+
+  pole rigidity remains the real wall but the monolithic class model cannot find
+  an incumbent;
+
+  the y=41 partition itself is structurally poor for native-front realization;
+
+  both effects are present.
+
+Repeating the same y=41 model with another seed or a longer cap would be another
+vote by an instrument that has not shown discriminating power. The predeclared
+control is instead the next member of E081's finite Pareto beam, using the same
+three-pole, complete-front consumer.
+
+Next experiment
+---------------
+The next E081 Pareto control is:
+
+  partition                  partition_97f9ba7e7ad710dc
+  seam                       horizontal y=17, width 1
+  module B below / module A above
+  quotient moved bodies      25
+  quotient pole moves         0
+  seam commodities           dense_source_powder, sandleaf_powder
+  seam direction             B -> A
+
+The same consumer means:
+
+  exactly 219 module/template bodies
+  exactly 53 poles, at least 50 current
+  complete 47-state boundary object
+  identical native-front class construction
+  exact power and non-overlap
+  the two stable E078 bodies remapped to module A
+  pure feasibility, first incumbent
+
+A positive on the control would distinguish the partition hypothesis and retire
+y=41 as the current constructor carrier. A second censored run would show that
+this monolithic consumer cannot compare partitions and should itself be
+decomposed. A terminal control negative would be contextual to that partition
+and three-pole budget.
+
+Truth boundary
+--------------
+UNKNOWN is not INFEASIBLE. The three-pole cap is local to this discriminator and
+is not a global theorem about required pole movement. The class model proves no
+commodity-to-port assignment, duplicate-terminal uniqueness, generic I/O,
+component support, route, throughput or complete zero-condition layout.

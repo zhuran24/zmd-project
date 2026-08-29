@@ -9,14 +9,17 @@ Campaign ref: research_lab/campaigns/zero_condition/CAMPAIGN.txt
 
 Current endpoint
 ----------------
-Statement: The fixed-52-plus-one-replacement module-B geometry has failed both
-of its predeclared compression exits. E088 shows the 178 B rules are either coarse
-families touching almost the whole 4,353-candidate universe or fine families that
-are nearly one per failure. E089 then selects spatial regions on E086's 95 B
-rules and tests them on E087's disjoint 83-rule holdout: the best four-role union
-already covers 47.97 percent of the universe but only 71.58 percent of training
-failures and 62.65 percent of holdout failures. The bounded B geometry is retired;
-the next discriminator must separate pole rigidity from the y=41 partition.
+Statement: The fixed-52-plus-one module-B geometry is retired, but the first
+bounded pole relaxation remains censored. E088 shows 178 B rules cannot be
+compressed into a bounded signature family; E089 shows train-selected spatial
+roles cover only 71.58 percent of training failures and 62.65 percent of a
+disjoint holdout. E090 then keeps the y=41 partition and complete native-front
+semantics while allowing up to three pole relocations, the first multi-pole budget
+already supported by an exact body/power endpoint. Its 116,318-variable complete
+front model consumes 240.241 seconds and about 8.3 GiB process RSS but returns
+UNKNOWN without an incumbent. Pole rigidity versus partition quality is still
+unresolved; the next discriminator is the identical consumer on the next E081
+Pareto partition.
 Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
@@ -34,15 +37,17 @@ Direction ref:
 
 Live question
 -------------
-Q: Is native-front feasibility blocked primarily by pole rigidity or by the
-straight y=41 operation partition? Build a nested relaxation discriminator using
-the same body/front semantics and the complete 47-state boundary object. First
-keep y=41 and allow a small explicit multi-pole repair budget rather than 52 fixed
-poles plus one replacement. Search feasibility-first and materialize any exact
-body/pole/operation-mode witness. If bounded multi-pole mobility remains
-front-dead or censored, move the same consumer to the next E081 Pareto partition
-or seam. Do not reopen point-rule growth, and do not compare the two hypotheses
-with different front semantics or hidden retained-count rungs.
+Q: With the same complete native-front class semantics, exactly 53 poles, at most
+three pole relocations and the full 47-state boundary object, can E081's next
+Pareto partition produce a body/pole/operation-mode witness where y=41 could not?
+Use partition_97f9ba7e7ad710dc with horizontal y=17, module B below and module A
+above, and remap the two stable E078 bodies to module A. First obtain a body/power
+hint inside that exact partition and pole budget, then run the same pure-feasibility
+front consumer. A positive distinguishes the partition hypothesis and retires
+y=41 as the current carrier. Another censored result means this monolithic
+consumer cannot compare partitions and must be decomposed; it is not a vote
+against the control partition. A terminal negative is contextual to the y=17
+three-pole language. Do not reopen point-rule growth or change front semantics.
 
 Inflight / recovery
 -------------------
@@ -69,6 +74,7 @@ Recent consequential results
 - E087 continues from 98 rules with a new seed family. Two more front-dead candidates add 83 rules, all in module B, for a final 181-rule store; empty counts are 39 and 44 and no operation nogood or witness appears. | evidence=research_lab/campaigns/zero_condition/experiments/E087_feasibility_first_front_continuation/RESULT.txt | effect=stop blind lazy repetition and build a complete module-B front-rule signature atlas
 - E088 exhausts the 4,353-candidate module-B universe. Coarse stencils cover registered failures only by expanding to almost the whole domain, while fine support signatures are nearly one-per-failure; both predeclared bulk criteria fail. | evidence=research_lab/campaigns/zero_condition/experiments/E088_module_b_front_rule_signature_atlas/RESULT.txt | effect=retire point-rule bulk compilation and move to a spatial B-bay/pole decomposition discriminator
 - E089 uses E086's 95 module-B rules for train-only spatial-region selection and E087's disjoint 83 additions as holdout. The best four-role union consumes 47.97 percent of the universe but covers only 71.58 percent of training and 62.65 percent of holdout failures. | evidence=research_lab/campaigns/zero_condition/experiments/E089_module_b_spatial_hazard_holdout/RESULT.txt | effect=retire the fixed-52-plus-one B geometry and run a nested multi-pole-versus-partition relaxation
+- E090 keeps y=41 and the complete front consumer but allows exactly 53 poles with at most three relocations. A 240-second pure-feasibility run returns UNKNOWN without an incumbent at about 8.3 GiB process RSS and no OOM-counter increase. | evidence=research_lab/campaigns/zero_condition/experiments/E090_three_pole_front_discriminator/RESULT.txt | effect=do not rerun y=41; move the identical three-pole consumer to partition_97f9ba7e7ad710dc/y=17 as the finite Pareto control
 
 Current unknowns and guards
 ---------------------------
@@ -94,6 +100,7 @@ Current unknowns and guards
 - E087 does not prove lazy closure cannot converge. Its durable signal is localization: all 83 new rules are module B, module-A count is unchanged, and empty-domain counts do not improve.
 - E088 is a finite census of one frozen candidate language and rule store. Its signatures are proposer groups only. Diffusion rejects the predeclared bulk-compilation strategy; it does not prove any signature member, module B, the partition or the one-replacement language infeasible.
 - E089 is a temporal predictive failure of one fixed spatial-role language. It authorizes retiring the 52+1 continuation budget, not declaring y=41, module B or any candidate infeasible. The next comparison must preserve the same front semantics while widening one structural axis at a time.
+- E090 is a censored UNKNOWN, not a negative for y=41 or the three-pole language. Its 8.3 GiB peak and zero conflicts are instrument telemetry, not a cause diagnosis. The y=17 control must use the same complete front semantics, pole budget and first-incumbent criterion; a second censored result retires the monolithic comparison instrument rather than either partition.
 - Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
 
 History pointers
