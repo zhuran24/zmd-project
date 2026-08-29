@@ -1,0 +1,54 @@
+{
+  "schema": "zmd_e107_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "canonical_run": "research_lab/local/zero_condition/E107_reverse_nested_allocation_handshake/run-001",
+  "producer_verdict": "OPEN_SPLIT_ALLOCATION_FACE_EXHAUSTED_PENDING_REPLAY",
+  "producer_decision": "REPLAY_COMPLETE_NOGOOD_CHAIN_BEFORE_SPLIT_PROMOTION",
+  "producer_terminal": "LOWER_DIRECT_INFEASIBLE",
+  "promoted_verdict": "OPEN_SPLIT_TEMPLATE_VECTOR_INFEASIBLE",
+  "promoted_decision": "RETURN_TO_BODY_FRONTIER_WITH_FIFTH_SPLIT_NOGOOD",
+  "template_split_nogood": {
+    "upper": [5, 2, 1],
+    "lower": [5, 4, 9],
+    "split_digest": "d62f3fa58cf6477041260ea638364076f775048ef5cb4f1d219efba580e4ec48",
+    "reason": "complete_lower_native_front_projection_empty"
+  },
+  "producer": {
+    "status": "INFEASIBLE",
+    "candidate_count": 812,
+    "template_counts": {
+      "manufacturing_3x3": 5,
+      "manufacturing_5x5": 4,
+      "manufacturing_6x4": 9
+    },
+    "elapsed_seconds": 9.18893387899152,
+    "branches": 7331,
+    "conflicts": 1,
+    "path": "research_lab/local/zero_condition/E107_reverse_nested_allocation_handshake/run-001/LOWER_PROPOSER_00.json",
+    "sha256": "7246918cdca6043462d71072d1dc201b43e4ccb8615d37107b7a86cd891a2ab2"
+  },
+  "solver_diverse_replay": {
+    "status": "INFEASIBLE",
+    "elapsed_seconds": 84.91283605000353,
+    "branches": 54395,
+    "conflicts": 394,
+    "workers": 1,
+    "search_branching": "PSEUDO_COST_SEARCH",
+    "symmetry_level": 0,
+    "probing_level": 0
+  },
+  "prior_allocation_store": {
+    "e106_upper_vectors_rejected_by_lower": 3,
+    "e107_lower_vectors_rejected_by_upper": 0,
+    "path": "research_lab/local/zero_condition/E107_reverse_nested_allocation_handshake/run-001/BIDIRECTIONAL_ALLOCATION_STORE.json",
+    "sha256": "e01257f3d129cf6398bfe14f500224ca9ef21af86509e9a90257b1bf38d9d8f2"
+  },
+  "artifacts": {
+    "runner_sha256": "321e81f1751aa5293522f725643cb84a9249c603040fee98359ae413122166f6",
+    "checker_sha256": "2a4f61b1daea107bf0d90682ef13c0bb70990302c0de23203fee9b4f597d4292",
+    "result_sha256": "ac3669812181c9659bb0e02ea45b291be6985f9ea90e3f849c42cbdd9c30348f",
+    "artifact_check_sha256": "9fc472de466d09e4d41d97ae221786fe19a72032294be82a576584c65b927235"
+  },
+  "truth_boundary": "The entire lower native-front projection at lower template totals 5/4/9 is empty, so split upper 5/2/1 plus lower 5/4/9 is one exact contextual split nogood. No other split, y60 parent, x42 parent or module-B parent is rejected."
+}

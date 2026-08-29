@@ -616,3 +616,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   升格为 split nogood；当前最有价值的动作是固定这一个 split，只续扫它的 residual allocation
   face。若 upper proposer 在消费所有 lower-side nogoods 后 exact INFEASIBLE，才能把“分配向量
   全被覆盖”的链单独重放后升级为 split rule；否则一份 paired high 才送回 x42-low。
+
+2026-08-29 05:13
+----------------
+数据：
+  E107 run-001 RESULT.json
+  research_lab/local/zero_condition/E107_reverse_nested_allocation_handshake/run-001/RESULT.json
+  sha256 ac3669812181c9659bb0e02ea45b291be6985f9ea90e3f849c42cbdd9c30348f
+  ARTIFACT_CHECK.json sha256
+  9fc472de466d09e4d41d97ae221786fe19a72032294be82a576584c65b927235
+
+注意／发现：
+  把 E106 open split 的握手方向反过来后，lower 5/4/9 不需要先固定任何 class vector：完整
+  812-candidate native-front model 直接在 9.189 秒 exact INFEASIBLE。异源单线程 PSEUDO_COST
+  重放在 84.913 秒后再次 INFEASIBLE。upper consumer 因此根本没有启动，E106 的三个具体
+  allocation nogoods 对闭合不是必要的。
+
+推理：
+  此前“upper 能提出多个向量”容易让人误以为 split 还有很大的 residual face；实际另一侧的
+  投影是空集。换谁先说话不只是求解器技巧，它改变了哪一侧的存在量先被消去：lower free-
+  allocation INFEASIBLE 一步量化掉全部向量，因此可以把 upper 5/2/1 + lower 5/4/9 升为第五
+  条 split rule。下一轮回 body frontier 时必须带五条 split nogood，而不是携带三条已被更强
+  结论吸收的 vector 负例继续磨这一 split。

@@ -4000,6 +4000,45 @@ evidence:
   ARTIFACT_CHECK.json sha256
   acad46fdf658475d2dcc801a624514dde4213e0c890424debb7e2d5fb4ba9cfc.
 
+R-ZC-117  Reverse handshake closes the open 5/2/1 split by direct lower projection
+-----------------------------------------------------------------------------------
+status: complete lower-side exact negative; solver-diverse replay PASS
+scope: source-stable x42 high side, manufacturing-free y60, split lower 5/4/9 plus upper 5/2/1
+
+statement:
+  E107 reverses E106's allocation handshake so that the lower side must first
+  emit a class vector it can realize. The complete 812-candidate lower model
+  retains template totals 5/4/9, all same-footprint native modes, all eight class
+  coordinates free under global caps, fixed E092 power, body non-overlap and
+  native-front capacity. It returns exact INFEASIBLE in 9.189 seconds after
+  7,331 branches and one conflict; no upper consumer runs.
+
+  A source-isolated one-worker PSEUDO_COST replay with symmetry and probing
+  disabled independently returns INFEASIBLE in 84.913 seconds after 54,395
+  branches and 394 conflicts. Therefore the entire lower allocation projection
+  is empty. Split lower 5/4/9 plus upper 5/2/1 becomes the fifth exact nested
+  template-split nogood. E106's three vector nogoods remain true but are subsumed
+  for continuation by this stronger split negative.
+
+non-implications:
+  E107 does not reject another template split, manufacturing-free y60, the E103
+  explicit separator, high, x42 or module B. No upper consumer, outer-low model,
+  combined witness, binding or routing result exists.
+
+effect on next problem:
+  Return to the same persistent 1,010-candidate body/power frontier with all five
+  split nogoods and request the next 26-body/template proposal. Exact side
+  negatives add only their split; feasible sides enter allocation handshake;
+  UNKNOWN creates no rule.
+
+evidence:
+  E107 RESULT.txt; local RESULT.json sha256
+  ac3669812181c9659bb0e02ea45b291be6985f9ea90e3f849c42cbdd9c30348f;
+  LOWER_PROPOSER_00.json sha256
+  7246918cdca6043462d71072d1dc201b43e4ccb8615d37107b7a86cd891a2ab2;
+  ARTIFACT_CHECK.json sha256
+  9fc472de466d09e4d41d97ae221786fe19a72032294be82a576584c65b927235.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

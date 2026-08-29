@@ -12,13 +12,13 @@ Current endpoint
 Statement: E095 remains the stable constructive base: module A is a checked
 128-body native-front half and module B is the sole 91-body wall. E100/E101 reduce
 that wall to a 26-body high side; E103/E104 turn its live domain into an exact
-812-lower / 198-upper product under manufacturing-free y60. E105/E106 now make
-that product recursive. Four upper template vectors are exact nogoods: 3/2/2,
-3/1/3, 7/0/3 and 6/1/2. The current split upper 5/2/1 plus lower 5/4/9 survives,
-and its upper side produces native-front witnesses. Three exact upper class
-vectors are independently confirmed feasible upstairs and exact INFEASIBLE in
-the lower consumer. The live object is the residual allocation face of this one
-split, not another body or joint-high solve.
+812-lower / 198-upper product under manufacturing-free y60. E105-E107 now make
+that product recursive. Five upper template vectors are exact contextual
+nogoods: 3/2/2, 3/1/3, 7/0/3, 6/1/2 and 5/2/1. The fifth is closed directly:
+the complete lower 5/4/9 native-front projection is INFEASIBLE, independently
+replayed with a solver-diverse one-worker model. E106's three vector negatives
+are subsumed for continuation. The live object returns to the body/template
+frontier with five structural rules, not to a geometry or allocation retry.
 Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
@@ -41,6 +41,7 @@ Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E104_high_reserved_y60_constructor/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E105_nested_allocation_handshake/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E106_nested_template_split_frontier/RESULT.txt
+  research_lab/campaigns/zero_condition/experiments/E107_reverse_nested_allocation_handshake/RESULT.txt
 Identity audit:
   research_lab/campaigns/zero_condition/E079_E080_ARTIFACT_IDENTITY_AUDIT_20260828.txt
 Direction ref:
@@ -48,16 +49,16 @@ Direction ref:
 
 Live question
 -------------
-Q: Does the residual upper-allocation face of split upper 5/2/1, lower 5/4/9
-contain a compatible nested pair? Rebuild only this split, forbid exactly E106's
-three checked upper allocation vectors, and continue upper-proposer / lower-
-consumer enumeration. A lower INFEASIBLE result learns only that exact upper
-vector. If the upper proposer becomes exact INFEASIBLE after consuming the full
-checked vector store, independently replay the entire nogood chain before
-promoting 5/2/1 to a template-split nogood. A paired high allocation goes to
-E101's unchanged x42-low complement, then full 219-body replay. UNKNOWN stops on
-its exact context without learning. Do not reopen the body frontier, joint high,
-unary-dead rows, or E105's dormant run-001 pointer literals.
+Q: What is the next body/template proposal after consuming all five exact split
+nogoods? Reuse the persistent E104 1,010-candidate body/power frontier, forbid
+upper vectors 3/2/2, 3/1/3, 7/0/3, 6/1/2 and 5/2/1, and request the next 26-body
+split. Send the smaller nested side through the complete native-front model.
+Direct side INFEASIBLE adds only that exact split; a feasible proposer enters an
+allocation handshake, preferably with the more restrictive side speaking first.
+UNKNOWN creates no rule. A paired high allocation must pass E101's unchanged
+x42-low complement and full 219-body replay. Do not restore unary-dead rows,
+rerun E104's joint high model, or retain E106's now-subsumed vector negatives as
+the live continuation object.
 
 Inflight / recovery
 -------------------
@@ -101,6 +102,7 @@ Recent consequential results
 - E104 reserves y60, yielding an exact 812/198 lower-upper product with 1,010 candidates. The 9,362-variable joint high model remains UNKNOWN after 2.83M branches and exposes no allocation vector. | evidence=research_lab/campaigns/zero_condition/experiments/E104_high_reserved_y60_constructor/RESULT.txt | effect=retire the joint high solve and externalize nested body/template/class allocations
 - E105 finds the first body/template proposal lower 7/4/8 plus upper 3/2/2, then closes the complete upper 3/2/2 native-front side as exact INFEASIBLE with solver-diverse replay. | evidence=research_lab/campaigns/zero_condition/experiments/E105_nested_allocation_handshake/RESULT.txt | effect=learn one exact nested template-split nogood and request the next body/template proposal
 - E106 consumes that rule, learns three more exact split nogoods, and opens split upper 5/2/1 with three independently replayed allocation nogoods. | evidence=research_lab/campaigns/zero_condition/experiments/E106_nested_template_split_frontier/RESULT.txt | effect=freeze the open split and continue only its residual upper-allocation face
+- E107 reverses the handshake and proves the complete lower 5/4/9 projection empty; solver-diverse replay promotes upper 5/2/1 as the fifth exact split nogood. | evidence=research_lab/campaigns/zero_condition/experiments/E107_reverse_nested_allocation_handshake/RESULT.txt | effect=return to the body/template frontier with five structural rules
 
 Current unknowns and guards
 ---------------------------
@@ -140,7 +142,7 @@ Current unknowns and guards
 - E103's unary removal is exact for fixed power and fixed-obstacle native-front viability. Its interface and Hall counts are representation facts, not feasibility or runtime bounds. The selected y59 hybrid still retains an explicit separator until a new sufficient restriction removes it.
 - E104 is a censored result under the additional manufacturing-free y60 restriction. It does not reject y60, the explicit E103 separator, high, x42 or module B. Its run-001 import failure has no scientific effect; run-002 plus its independent checker are canonical.
 - E105 rejects only nested template totals lower 7/4/8 and upper 3/2/2 under reserved y60. It does not reject the particular body witness as a unique cause, any other template split, y60, high, x42 or module B. Runs 001/002 are apparatus aborts. The runner's dormant positive path contains run-001 pointer literals and must not be copied by successors.
-- E106's split store rejects only upper vectors 3/2/2, 3/1/3, 7/0/3 and 6/1/2. Its three allocation nogoods reject only the listed upper vectors inside open split 5/2/1. The split is not closed, no outer-low model ran, and no combined witness exists.
+- E106's three allocation nogoods remain valid historical explanations, but E107's direct lower-projection negative subsumes them for continuation. The five exact split nogoods reject only their listed lower/upper template totals under reserved y60; no other split, y60 parent, x42 parent or module-B parent is closed.
 - Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
 
 History pointers

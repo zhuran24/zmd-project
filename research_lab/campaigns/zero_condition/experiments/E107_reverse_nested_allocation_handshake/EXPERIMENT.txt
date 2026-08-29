@@ -1,0 +1,67 @@
+EXPERIMENT E107: REVERSE NESTED ALLOCATION HANDSHAKE
+====================================================
+
+Question
+--------
+Inside E106's open split, can the lower side propose only allocations it can
+actually realize, so that the smaller upper side becomes the exact consumer?
+
+Why this experiment
+-------------------
+For split lower 5/4/9 plus upper 5/2/1, E106 lets upper propose three feasible
+class vectors; the lower side rejects all three exact complements. The proposal
+direction is therefore mispriced: it cheaply emits vectors precisely where the
+expensive side is blind. Reversing the handshake makes every proposal lower-
+feasible by construction and asks the 198-candidate upper side only whether its
+exact complement exists.
+
+Method
+------
+1. Pin E106's result, independent check, split store and open body/template
+   proposal. Reconstruct E104's source-stable 1,010-candidate lower/upper product.
+   Freeze only the template split:
+
+     lower  5 / 4 / 9
+     upper  5 / 2 / 1
+
+   The E106 body witness remains a hint, not a fixed geometry.
+
+2. Build the complete lower native-front model with free eight-coordinate class
+   allocation. E106's three upper vectors need no extra constraint: their exact
+   lower complements are already proved absent from this model. Let lower propose
+   a vector it can realize.
+
+3. Compute the exact upper complement and solve the complete upper side. On upper
+   INFEASIBLE, forbid only the exact lower proposer vector and continue. UNKNOWN
+   creates no nogood. The frozen limit is three new lower vectors.
+
+4. A paired high allocation is sent to E101's unchanged x42-low complement. A
+   full positive is materialized and replayed over all 219 manufacturing bodies.
+
+Predeclared decisions
+---------------------
+Full positive
+  Advance to terminal uniqueness, generic I/O and component-aware binding.
+
+Upper INFEASIBLE
+  Add only the exact lower allocation vector to the reverse-direction store and
+  continue within the frozen limit.
+
+Lower proposer INFEASIBLE after learned upper negatives
+  Do not immediately promote the split. Independently replay every lower-feasible
+  vector / upper-infeasible complement and the final exhausted lower model; only
+  that complete chain may close upper 5/2/1 as a template-split nogood.
+
+Any UNKNOWN
+  Stop on the exact side/allocation context with no learned rule.
+
+Iteration limit
+  Persist the bidirectional allocation store and continue from it; do not reopen
+  the body frontier or rerun a joint high model.
+
+Truth boundary
+--------------
+A reverse-direction nogood rejects one exact lower vector, equivalently one exact
+upper complement, inside split 5/2/1. It does not reject the split unless the full
+feasible lower projection is exhausted and replayed. No routing, throughput,
+certification or U/L effect.
