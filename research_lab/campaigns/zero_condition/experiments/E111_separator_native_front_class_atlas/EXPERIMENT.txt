@@ -1,0 +1,66 @@
+EXPERIMENT E111: SEPARATOR NATIVE-FRONT CLASS RELAXATION ATLAS
+==============================================================
+
+Question
+--------
+Which of E110's 353 formal separator class-allocation states survive the complete
+separator-internal native-front model?
+
+Why this is a relaxation
+------------------------
+The 154 separator candidates overlap the low/high body domains and their native
+fronts. A separator-only positive can therefore be destroyed when side bodies
+are restored. Conversely, every full low/separator/high witness restricts to a
+separator-only witness after side bodies are removed. Exact separator-only
+INFEASIBLE is thus a safe necessary rejection; separator-only feasible is only an
+optimistic candidate.
+
+Finite state basis
+------------------
+E110 proves exactly 27 separator template vectors at the body/power layer. The
+eight B class coordinates determine their own template totals, so the complete
+formal class basis contains only 353 bounded integer tuples. E111 enumerates this
+basis directly rather than solving 27 unrelated point experiments.
+
+Method
+------
+1. Reconstruct E110's source-stable 812-low / 154-separator / 239-high language.
+   Preserve E103 unary-live filtering, fixed E092 power, same-footprint mode
+   transport and stable row identities.
+
+2. Build one separator-only CP-SAT model over all 154 separator candidates. Keep
+   separator body non-overlap, fixed obstacles, fixed power, every legal native
+   mode, native-front capacity and all eight B class coordinates.
+
+3. Generate the exact 353 formal class tuples implied by E110's 27 template
+   vectors and global class caps. Add them as one allowed-assignment table on the
+   eight allocation variables. For each solution, store one separator body/mode
+   witness and forbid only its eight-coordinate allocation tuple.
+
+4. Enumeration is complete only when the post-blocking model returns exact
+   INFEASIBLE. UNKNOWN, stage budget or state cap leaves the atlas censored.
+
+5. Persist a coupling audit measuring separator/side body overlap and both
+   front-to-body directions. These measurements bound the meaning of positives
+   and define the interface needed by the next three-module consumer.
+
+Predeclared decisions
+---------------------
+Complete nonempty atlas
+  Reject every absent class state and every separator template vector with no
+  surviving class state. Condition low/high consumers only on surviving states.
+
+Complete empty atlas
+  Treat as an apparatus contradiction because the all-zero separator state is a
+  formal and geometric relaxation witness.
+
+Censored atlas
+  Preserve positive states and continue only this finite enumeration. Absence
+  creates no rule.
+
+Truth boundary
+--------------
+A positive state proves only separator-internal native-front feasibility with
+low/high bodies removed. It does not prove compatibility with either side,
+terminal uniqueness, binding, routing or throughput. Exact negatives remain
+scoped to E103's source-stable fixed-skeleton language.

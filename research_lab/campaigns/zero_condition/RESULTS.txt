@@ -4174,6 +4174,55 @@ evidence:
   ARTIFACT_CHECK.json sha256
   4b25595170b280f34951f563e61c5a17de46e1cc6b6afbfa97ee7e9421b17bf6.
 
+R-ZC-121  Separator class face yields 301 replayed positives and 52 explicit residual states
+------------------------------------------------------------------------------------------------
+status: finite projection censored; all positives replayed; residual packet exact
+scope: E103 explicit separator, separator-only optimistic native-front relaxation
+
+statement:
+  E111 lifts E110's 27 separator template duties to the eight B class
+  coordinates. Because class totals determine template totals, the complete
+  formal basis contains only 353 bounded allocation tuples. One generalized
+  154-candidate separator model stores a body/mode witness for each discovered
+  tuple and blocks only that eight-coordinate state.
+
+  The initial multiworker profile aborts inside OR-Tools before a terminal class
+  artifact and has no scientific effect. A one-worker PSEUDO_COST run finds 168
+  positives before UNKNOWN. A larger run finds 301 positives before UNKNOWN;
+  the first 168 are an exact subset. Independent replay validates all 301 for
+  stable identity, body non-overlap, fixed power, same-footprint mode membership,
+  exact class/template counts and separator-internal native-front capacity.
+
+  Subtracting the 301 positives from the exact formal basis leaves 52 explicit
+  unresolved states. All 27 E110 template vectors already have at least one
+  positive class state, so no template-vector cut is learned.
+
+  The coupling audit shows why positives cannot transfer directly: low/separator
+  and separator/high body unions intersect on 71 and 75 cells; separator fronts
+  intersect low/high body unions on 76 and 75 cells; low/high fronts intersect
+  separator body unions on 86 and 90 cells. Separator-only feasibility is an
+  optimistic necessary condition, not a three-module witness.
+
+non-implications:
+  E111 rejects no residual state and proves no positive compatible with low or
+  high bodies. UNKNOWN after 301 states is not evidence that the remaining 52 are
+  infeasible. No binding or routing result exists.
+
+effect on next problem:
+  Fix and classify only the 52 residual class tuples in fresh models without the
+  301 accumulated state-blocking rows. Exact positives join the atlas; exact
+  negatives become class-state nogoods; UNKNOWN remains local to one tuple.
+
+evidence:
+  E111 RESULT.txt; local run-003 RESULT.json sha256
+  044863b79194b591156ee991e78519aecb101553b98d9aaa27bf8e2d81a6cbad;
+  SEPARATOR_CLASS_PROJECTION.json sha256
+  58d8a27697ae03612ce770afece3d0bf395fb2dd8e7c6ad9a92163222ba5464c;
+  RESIDUAL_CLASS_STATES.json sha256
+  d5731a2260565d09eecc9f90e5eef761b63709622b09e6306ad3959efa50ccf0;
+  ARTIFACT_CHECK.json sha256
+  cc52d98fb0a5e0cdc715855174315e627dfd2de8d271dda317ee802779ade786.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

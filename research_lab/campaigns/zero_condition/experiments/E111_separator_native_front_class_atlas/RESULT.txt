@@ -1,0 +1,155 @@
+E111 RESULT: 301 OF 353 SEPARATOR CLASS STATES ARE REPLAYED POSITIVES; 52 REMAIN
+================================================================================
+
+Status
+------
+Closed as a censored but finite separator-only native-front projection. The
+canonical run stores 301 distinct positive class states from the exact 353-state
+formal basis. All positives independently replay. Fifty-two states remain open
+because the post-blocking model returns UNKNOWN; none is treated as negative.
+
+Verdict
+-------
+
+  SEPARATOR_NATIVE_FRONT_RELAXATION_ATLAS_CENSORED
+
+Checked continuation decision
+-----------------------------
+
+  FIX_AND_CLASSIFY_ONLY_FIFTY_TWO_RESIDUAL_STATES
+
+Machine evidence
+----------------
+Canonical result:
+
+  research_lab/local/zero_condition/
+  E111_separator_native_front_class_atlas/run-003/RESULT.json
+
+SHA-256:
+
+  044863b79194b591156ee991e78519aecb101553b98d9aaa27bf8e2d81a6cbad
+
+Class projection:
+
+  research_lab/local/zero_condition/
+  E111_separator_native_front_class_atlas/run-003/
+  SEPARATOR_CLASS_PROJECTION.json
+
+SHA-256:
+
+  58d8a27697ae03612ce770afece3d0bf395fb2dd8e7c6ad9a92163222ba5464c
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E111_separator_native_front_class_atlas/run-003/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  cc52d98fb0a5e0cdc715855174315e627dfd2de8d271dda317ee802779ade786
+
+Residual state packet:
+
+  research_lab/local/zero_condition/
+  E111_separator_native_front_class_atlas/run-003/RESIDUAL_CLASS_STATES.json
+
+SHA-256:
+
+  d5731a2260565d09eecc9f90e5eef761b63709622b09e6306ad3959efa50ccf0
+
+Finite class basis
+------------------
+The eight B class coordinates determine their own separator template totals.
+Combining their global caps with E110's exact 27 separator template vectors gives
+only 353 formal integer states. E111 therefore uses one generalized separator
+model and blocks eight-coordinate class states, rather than running 27 unrelated
+point experiments.
+
+The model retains all 154 unary-live separator candidates, every same-footprint
+native mode, fixed E092 power, fixed obstacles, separator body non-overlap and
+separator-internal native-front capacity. Low and high bodies are deliberately
+removed, so this is an optimistic necessary-condition model.
+
+Run progression
+---------------
+Run-001 aborts inside OR-Tools before any terminal class artifact:
+
+  Check failed: heuristics.fixed_search != nullptr
+
+It has no scientific effect.
+
+Run-002 changes only the search apparatus to one-worker PSEUDO_COST and stores
+168 positive states before UNKNOWN at 150.037 seconds.
+
+Run-003 uses the same feasible set and a larger bounded search envelope. It
+stores 301 positive states before UNKNOWN at 270.085 seconds. Every run-002 state
+is contained in run-003, with 133 additional positives.
+
+Independent replay
+------------------
+The checker reconstructs the source-stable language and replays all 301 stored
+witnesses for:
+
+  stable global-row, body-digest and template identity
+  separator body non-overlap
+  fixed E092 power
+  legal same-footprint mode membership
+  exact eight-coordinate allocation counts
+  exact separator template totals
+  fixed-obstacle plus selected-separator-body native-front capacity
+
+All 301 pass. The checker then subtracts them from the exact 353-state formal
+basis and writes the remaining 52 states as an explicit open packet. Their
+absence from run-003 has no negative meaning.
+
+Template-level result
+---------------------
+All 27 E110 separator template vectors already have at least one replayed class
+state. E111 therefore learns no template-vector cut at this stage. Its progress
+is within the class face:
+
+  formal states        353
+  replayed positives   301
+  unresolved states     52
+
+The remaining 52 are concentrated in twelve nonzero template vectors. They can
+now be fixed and classified independently, avoiding another expensive search for
+"any unseen state" behind 301 accumulated blocking rows.
+
+Why positives cannot yet transfer
+---------------------------------
+The coupling audit confirms that the separator is not an exact product from the
+side modules:
+
+  low/separator body-union intersection cells          71
+  separator/high body-union intersection cells         75
+  separator-front / low-body intersection cells        76
+  separator-front / high-body intersection cells       75
+  low-front / separator-body intersection cells        86
+  high-front / separator-body intersection cells       90
+
+Low and high body unions are disjoint, but both interact strongly with the
+separator. Removing side bodies can only relax separator feasibility. Therefore:
+
+  separator-only INFEASIBLE  is a safe necessary rejection
+  separator-only FEASIBLE    is only an optimistic candidate
+
+Next problem
+------------
+Fix and solve only the 52 residual eight-coordinate states. Each fixed-state
+model should use the same 154-candidate separator feasible set without the 301
+state-blocking rows. Exact positive states join the atlas; exact INFEASIBLE states
+become class-state nogoods; UNKNOWN remains local to that one fixed state.
+
+After all 353 states are terminal, build the side-conditioned interface using the
+surviving separator body/mode witnesses and explicit low/high occupancy effects.
+Do not transfer positives directly, do not rerun the 1,205-candidate monolith,
+and do not infer a template cut while every template vector already has a
+positive class witness.
+
+Truth boundary
+--------------
+E111 is exact only for its 301 stored separator-only positives and its 353-state
+formal basis. It proves no residual state negative and no positive compatible
+with low or high bodies. Terminal uniqueness, generic I/O, binding, routing,
+throughput, certification and U/L remain open.

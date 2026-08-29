@@ -703,3 +703,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   禁的是整行。下一层不该从某个代表 witness 偷走 low/high counts，而要在 27 态上显式接入
   separator class coordinates 与两侧 complement。这样桥终于成为一个有限、可消费的第三模块，
   不再是“删掉或放回全部 154 个”的二值开关。
+
+2026-08-29 07:05
+----------------
+数据：
+  E111 run-003 RESULT.json
+  research_lab/local/zero_condition/E111_separator_native_front_class_atlas/run-003/RESULT.json
+  sha256 044863b79194b591156ee991e78519aecb101553b98d9aaa27bf8e2d81a6cbad
+  ARTIFACT_CHECK.json sha256
+  cc52d98fb0a5e0cdc715855174315e627dfd2de8d271dda317ee802779ade786
+
+注意／发现：
+  E110 的 27 个 template duties 展开后，八维 class 形式空间总共只有 353 态。separator-only
+  generalized model 先找到 168 态，扩大同一单线程搜索包后扩到 301 态；前者严格包含在后者中，
+  301 份 body/mode witness 全部独立重放。剩下 52 态不是 negative，只是带着 301 条 blocking
+  rows 再找“任一新态”时 UNKNOWN。27 个 template vectors 均已有正例，因此没有 template cut。
+
+推理：
+  这次真正的转折不是 301 这个数字，而是 UNKNOWN 已能被拆成 52 个具名有限状态。下一步不应
+  继续让一个模型在 301 个禁止元组后搜索未知角落，而应把 52 态逐个固定，使几何搜索只回答
+  一个 yes/no 问题。另一个重要校正是 separator-only positive 不能直接传递：separator 与两侧
+  body/front 交叉分别达到 71/75、76/75、86/90 个格。negative 可以安全回灌，positive 只是
+  optimistic interface state，之后必须携带具体 body/mode 占用进入 side-conditioned consumer。

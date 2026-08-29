@@ -1,0 +1,57 @@
+{
+  "schema": "zmd_e111_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "canonical_run": "research_lab/local/zero_condition/E111_separator_native_front_class_atlas/run-003",
+  "verdict": "SEPARATOR_NATIVE_FRONT_RELAXATION_ATLAS_CENSORED",
+  "machine_decision": "CONTINUE_ONLY_FINITE_SEPARATOR_CLASS_ENUMERATION",
+  "checked_continuation_decision": "FIX_AND_CLASSIFY_ONLY_FIFTY_TWO_RESIDUAL_STATES",
+  "formal_basis": {
+    "separator_template_vector_count": 27,
+    "formal_class_state_count": 353,
+    "class_coordinate_count": 8
+  },
+  "run_progression": {
+    "run_001": {
+      "status": "NATIVE_ABORT_BEFORE_TERMINAL_OUTPUT",
+      "scientific_effect": "none"
+    },
+    "run_002": {
+      "status": "CENSORED",
+      "positive_state_count": 168,
+      "terminal_status": "UNKNOWN",
+      "total_elapsed_seconds": 150.03668805699272
+    },
+    "run_003": {
+      "status": "CENSORED",
+      "positive_state_count": 301,
+      "terminal_status": "UNKNOWN",
+      "total_elapsed_seconds": 270.0849111580028,
+      "run_002_subset": true
+    }
+  },
+  "residual": {
+    "state_count": 52,
+    "state_digest": "c0ea563c5267d40d20e839692abb0ecac18912e607af2088fe4f1e78b4bc7754",
+    "path": "research_lab/local/zero_condition/E111_separator_native_front_class_atlas/run-003/RESIDUAL_CLASS_STATES.json",
+    "sha256": "d5731a2260565d09eecc9f90e5eef761b63709622b09e6306ad3959efa50ccf0"
+  },
+  "coupling": {
+    "low_separator_body_intersection_cells": 71,
+    "separator_high_body_intersection_cells": 75,
+    "separator_front_low_body_intersection_cells": 76,
+    "separator_front_high_body_intersection_cells": 75,
+    "low_front_separator_body_intersection_cells": 86,
+    "high_front_separator_body_intersection_cells": 90,
+    "low_high_body_intersection_cells": 0
+  },
+  "artifacts": {
+    "runner_sha256": "ea0ce5442c485b6c992b2ec27edb86b18bfc6354bb22e0295909ee5813b435e4",
+    "checker_sha256": "3b2d9a89a2ccd8621e1f46553bfa850066a59b9c5d84476a6572c560aa3efec0",
+    "result_sha256": "044863b79194b591156ee991e78519aecb101553b98d9aaa27bf8e2d81a6cbad",
+    "projection_sha256": "58d8a27697ae03612ce770afece3d0bf395fb2dd8e7c6ad9a92163222ba5464c",
+    "coupling_audit_sha256": "880476606673319b3b869c31c5957094855f4c6240c78de97afa52b8b65903b6",
+    "artifact_check_sha256": "cc52d98fb0a5e0cdc715855174315e627dfd2de8d271dda317ee802779ade786"
+  },
+  "truth_boundary": "All 301 stored states are independently replayed in the separator-only optimistic relaxation. The remaining 52 formal states are unresolved, not negative. Nonzero separator/side body and front interactions prevent any positive state from transferring without conditioned side consumers."
+}
