@@ -290,3 +290,24 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   不该立刻给这一个 partition 加 pole budget，也不该继续逐个造昂贵 front 模型。E081 beam 只有
   7 项，下一问应先把全部 7 项通过同一 cheap body/power admission，校准 y=41 PASS 与 y=17
   INFEASIBLE，再只把完整 front consumer 交给其余真正活着的 partition。
+
+2026-08-28 23:29
+----------------
+数据：
+  E092 run-001 RESULT.json
+  research_lab/local/zero_condition/E092_pareto_three_pole_admission_atlas/run-001/RESULT.json
+  sha256 e60aaf29ff4b2db9e965c1d7c1932797099b3bd9a91759067821f49b8063e909
+  ARTIFACT_CHECK.json sha256
+  eb26f090c01d803203c5f78806ec562e85319de60f9b59ced3496e60ab158a99
+
+注意／发现：
+  七个 Pareto state 用同一 219-body、53-pole、至少 50 current poles、47-state boundary 的
+  pure-feasibility admission 扫完：y=41 在 exact hint 下 3.327 秒出 witness；五个 state 在
+  7.8-17.1 秒 exact INFEASIBLE；只有原 E080 seed partition_5a72220e0268a3c1 / y=21 在
+  35.056 秒 UNKNOWN。y=41 正例的 body/pole/non-overlap/power 已独立重放。
+
+推理：
+  beam 已从 7 个昂贵 front candidate 缩成“y=41 admitted + y=21 unresolved”。这时继续讨论
+  哪个 partition 更漂亮没有意义，唯一承重问题是 y=21 的 UNKNOWN。下一轮只对它做 fresh、
+  solver-diverse、加预算的同语义 body/power replay：正例才进入 full-front control，负例才允许
+  说 y=41 是三杆预算下唯一 admitted skeleton，仍 UNKNOWN 则是 admission 仪器没有闭合。

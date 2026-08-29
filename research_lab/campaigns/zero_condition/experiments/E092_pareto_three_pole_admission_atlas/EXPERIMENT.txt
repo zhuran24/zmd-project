@@ -1,0 +1,63 @@
+EXPERIMENT E092: COMPLETE THREE-POLE BODY/POWER ADMISSION ATLAS FOR THE E081 PARETO BEAM
+================================================================================================
+
+Question
+--------
+Which of E081's seven geometry Pareto partition/seam states can reach the native-
+front layer at all under the same exact three-pole body/power language?
+
+Why this experiment
+-------------------
+E090's complete front consumer is censored on the geometry winner. E091 then
+shows that the next Pareto state is exact body/power INFEASIBLE before front
+checking. Building another 100k-variable front model state by state would spend
+budget on candidates that may not even admit a skeleton. The seven-state beam is
+finite, so the body/power admission question should be closed first.
+
+Common language
+---------------
+For every Pareto state, E092 keeps:
+
+  * the state's own operation partition, axis, seam coordinate and side order;
+  * exactly 219 module/template manufacturing bodies;
+  * the two stable E078 bodies in the module recorded by that state;
+  * the complete 47-state boundary disjunction;
+  * exact body/pole/boundary non-overlap;
+  * manufacturing power coverage;
+  * exactly 53 poles, at least 50 at current pole poses;
+  * pure feasibility and stop after the first incumbent.
+
+The same derived producer is parameterized by state identity. The y=41 state
+alone receives E084's exact three-relocation body/power witness as a calibration
+hint. Other states receive current-geometry hints only. Hints do not alter the
+feasible set.
+
+Calibration
+-----------
+The sweep is admissible only if it reproduces:
+
+  partition_90abd29523f2a0dc / y=41   BODY_POWER_FEASIBLE
+  partition_97f9ba7e7ad710dc / y=17   MASTER_INFEASIBLE
+
+A calibration failure is an apparatus failure, not a partition conclusion.
+
+Decision rule
+-------------
+Additional admitted states exist
+  Send the earliest additional Pareto survivor to the same complete three-pole
+  native-front consumer used by E090.
+
+Only y=41 is admitted and no state is UNKNOWN
+  The three-pole skeleton language itself selects y=41. Choose explicitly between
+  a wider pole budget and decomposing the censored y=41 front consumer.
+
+Any remaining state is UNKNOWN and no additional survivor exists
+  Preserve censorship. Resolve the body/power admission instrument before
+  claiming y=41 is the sole survivor.
+
+Truth boundary
+--------------
+E092 is body/pole/power admission only. INFEASIBLE is contextual to the named
+partition, seam, boundary object and three-pole budget. FEASIBLE does not imply
+native-front, terminal, binding, routing, throughput or whole-layout feasibility.
+Research-only; no U/L, certification, production, publication or pruning effect.

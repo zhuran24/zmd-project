@@ -3426,6 +3426,43 @@ evidence:
   ARTIFACT_CHECK.json sha256
   70c9e23fb4180b8f8131a97fa02cf7451dec65a1cd70a0610b9f57e87a0dbe0a.
 
+R-ZC-102  Three-pole body/power admission collapses the seven-state Pareto beam to one survivor and one UNKNOWN
+----------------------------------------------------------------------------------------------------------------
+status: calibrated complete finite admission sweep; sole positive independently replayed
+scope: all seven E081 Pareto states, exactly 53 poles with at most three relocations
+
+statement:
+  E092 parameterizes one exact body/pole/power producer by each Pareto state's
+  axis, seam, side assignment, module counts and stable E078 target module. All
+  states retain 219 manufacturing bodies, the complete 47-state boundary object,
+  exact non-overlap, power, exactly 53 poles and at least 50 current pole poses.
+
+  Calibration reproduces y=41 as BODY_POWER_FEASIBLE in 3.327 seconds and
+  partition_97f9ba7e7ad710dc/y=17 as MASTER_INFEASIBLE in 9.880 seconds. Five
+  states are exact INFEASIBLE. Only y=41 is admitted. The original E080 seed,
+  partition_5a72220e0268a3c1/y=21, remains UNKNOWN after 35.056 seconds without
+  an incumbent. The checker independently replays the y=41 body/pole/boundary
+  geometry and power coverage.
+
+non-implications:
+  E092 does not prove y=41 is the sole survivor while y=21 remains UNKNOWN.
+  Admitted skeletons are not native-front witnesses, and contextual negatives do
+  not refute the partitions with larger pole budgets or different geometries.
+
+effect on next problem:
+  Resolve only partition_5a72220e0268a3c1 with a fresh solver-diverse, larger-
+  budget replay of the identical three-pole body/power model. A positive becomes
+  the sole remaining complete-front control; a negative makes y=41 the sole
+  admitted skeleton; another UNKNOWN leaves the admission instrument censored.
+
+evidence:
+  E092 RESULT.txt; local RESULT.json sha256
+  e60aaf29ff4b2db9e965c1d7c1932797099b3bd9a91759067821f49b8063e909;
+  ADMISSION_ATLAS.json sha256
+  d2f9db1ff9828f6a13a6278922fc02ddd722a57c36e5497009cb4705c0ad4464;
+  ARTIFACT_CHECK.json sha256
+  eb26f090c01d803203c5f78806ec562e85319de60f9b59ced3496e60ab158a99.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:
@@ -3455,8 +3492,10 @@ of training failures and generalize worse to E087's holdout. E090 widens the pol
 budget to the first evidenced three-relocation language but the complete front
 consumer remains UNKNOWN without an incumbent and grows to about 8.3 GiB process
 RSS. E091 applies the same budget to the next Pareto partition and closes it one
-layer earlier as exact body/power INFEASIBLE. Pole rigidity versus partition
-quality is still unresolved at the front layer, but the finite beam can now be
-screened cheaply before any more complete-front builds. The next live object is a
-seven-state three-pole body/power admission atlas. The final repair size, terminal
-assignment, component-compatible binding and physical layer count remain open.
+layer earlier as exact body/power INFEASIBLE. E092 then sweeps all seven Pareto
+states: five are exact body/power INFEASIBLE, y=41 is admitted, and only the
+original E080 y=21 seed remains UNKNOWN. The expensive front comparison has been
+reduced to one unresolved skeleton admission. The next live object is a fresh
+solver-diverse y=21 body/power replay, not another beam-wide or front-wide search.
+The final repair size, terminal assignment, component-compatible binding and
+physical layer count remain open.

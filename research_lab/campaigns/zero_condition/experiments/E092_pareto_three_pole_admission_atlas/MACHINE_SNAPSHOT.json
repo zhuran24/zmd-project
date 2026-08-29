@@ -1,0 +1,68 @@
+{
+  "schema": "zmd_e092_pareto_three_pole_admission_machine_snapshot_v1",
+  "created_at_local": "2026-08-28T23:32:05-04:00",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "verdict": "Y41_ONLY_OBSERVED_SURVIVOR_WITH_CENSORED_ADMISSION_STATES",
+  "decision": "RESOLVE_UNKNOWN_ADMISSION_STATES_BEFORE_SELECTING_CARRIER",
+  "controls": {
+    "pareto_state_count": 7,
+    "seconds_per_state": 35.0,
+    "manufacturing_count": 219,
+    "selected_pole_count": 53,
+    "maximum_relocated_poles": 3,
+    "minimum_retained_current_poles": 50,
+    "boundary_state_count": 47,
+    "pure_feasibility": true,
+    "stop_after_first_solution": true
+  },
+  "calibration": {
+    "positive_partition": "partition_90abd29523f2a0dc",
+    "positive_status": "BODY_POWER_FEASIBLE",
+    "negative_partition": "partition_97f9ba7e7ad710dc",
+    "negative_status": "MASTER_INFEASIBLE",
+    "pass": true
+  },
+  "admitted_partition_ids": [
+    "partition_90abd29523f2a0dc"
+  ],
+  "infeasible_partition_ids": [
+    "partition_97f9ba7e7ad710dc",
+    "partition_a525b75dbae46085",
+    "partition_70f78551b79b2eed",
+    "partition_05f225cf3333c982",
+    "partition_6f23f93054aa6f22"
+  ],
+  "unknown_partition_ids": [
+    "partition_5a72220e0268a3c1"
+  ],
+  "state_summary": [
+    {"rank": 0, "partition_id": "partition_90abd29523f2a0dc", "seam": "y=41", "status": "BODY_POWER_FEASIBLE", "elapsed_seconds": 3.32661855200422, "retained_manufacturing": 190, "relocated_poles": 3, "boundary_state": "boundary_macro_09"},
+    {"rank": 1, "partition_id": "partition_97f9ba7e7ad710dc", "seam": "y=17", "status": "MASTER_INFEASIBLE", "elapsed_seconds": 9.879799828006071},
+    {"rank": 2, "partition_id": "partition_5a72220e0268a3c1", "seam": "y=21", "status": "UNKNOWN", "elapsed_seconds": 35.05553741900076},
+    {"rank": 3, "partition_id": "partition_a525b75dbae46085", "seam": "y=17", "status": "MASTER_INFEASIBLE", "elapsed_seconds": 10.105691260003368},
+    {"rank": 4, "partition_id": "partition_70f78551b79b2eed", "seam": "x=20", "status": "MASTER_INFEASIBLE", "elapsed_seconds": 17.07128858199576},
+    {"rank": 5, "partition_id": "partition_05f225cf3333c982", "seam": "x=23", "status": "MASTER_INFEASIBLE", "elapsed_seconds": 7.829176685001585},
+    {"rank": 6, "partition_id": "partition_6f23f93054aa6f22", "seam": "x=20", "status": "MASTER_INFEASIBLE", "elapsed_seconds": 10.434515253000427}
+  ],
+  "positive_replay": {
+    "status": "PASS",
+    "partition_id": "partition_90abd29523f2a0dc",
+    "retained_manufacturing_count": 190,
+    "retained_current_pole_count": 50,
+    "relocated_pole_count": 3,
+    "selected_boundary_state_id": "boundary_macro_09"
+  },
+  "artifacts": {
+    "result": {"path": "research_lab/local/zero_condition/E092_pareto_three_pole_admission_atlas/run-001/RESULT.json", "sha256": "e60aaf29ff4b2db9e965c1d7c1932797099b3bd9a91759067821f49b8063e909"},
+    "atlas": {"path": "research_lab/local/zero_condition/E092_pareto_three_pole_admission_atlas/run-001/ADMISSION_ATLAS.json", "sha256": "d2f9db1ff9828f6a13a6278922fc02ddd722a57c36e5497009cb4705c0ad4464"},
+    "derivation": {"path": "research_lab/local/zero_condition/E092_pareto_three_pole_admission_atlas/run-001/DERIVATION.json", "sha256": "2069f4b9fc479f98b42a80ce000f480728e8621dce31750cd406cb6d77255e93"},
+    "derived_producer": {"path": "research_lab/local/zero_condition/E092_pareto_three_pole_admission_atlas/run-001/DERIVED_PRODUCER.py", "sha256": "306ccf5da973b97710ee6cf13c3190cc32c4c0ce3236fd581a75a756020b2e1c"},
+    "artifact_check": {"path": "research_lab/local/zero_condition/E092_pareto_three_pole_admission_atlas/run-001/ARTIFACT_CHECK.json", "sha256": "eb26f090c01d803203c5f78806ec562e85319de60f9b59ced3496e60ab158a99"}
+  },
+  "runners": {
+    "experiment_sha256": "96ae1d44a8af043c190cd8d2cc942e91aff172359bf9fd660bfd8562e7e13790",
+    "artifact_check_sha256": "6d0dc301178a1535638dbf0fab3a83ffba8d940aa3e8cbe7589958d86dac88cd"
+  },
+  "truth_boundary": "Complete finite body/pole/power admission sweep at the three-pole budget. The sole UNKNOWN remains censored; FEASIBLE does not imply native-front feasibility."
+}

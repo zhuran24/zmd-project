@@ -1,0 +1,172 @@
+E092 RESULT: FIVE PARETO STATES ARE BODY/POWER INFEASIBLE, Y=41 SURVIVES, AND ONE STATE REMAINS CENSORED
+================================================================================================================
+
+Status
+------
+Closed as a calibrated finite body/pole/power admission atlas. The sole positive
+witness is independently replayed. Five states terminate exact INFEASIBLE and one
+state remains UNKNOWN. No native-front, terminal, binding, routing, throughput,
+whole-layout, certification, U/L, owner, production, publication or pruning
+effect follows.
+
+Machine evidence
+----------------
+Result:
+
+  research_lab/local/zero_condition/
+  E092_pareto_three_pole_admission_atlas/run-001/RESULT.json
+
+SHA-256:
+
+  e60aaf29ff4b2db9e965c1d7c1932797099b3bd9a91759067821f49b8063e909
+
+Admission atlas SHA-256:
+
+  d2f9db1ff9828f6a13a6278922fc02ddd722a57c36e5497009cb4705c0ad4464
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E092_pareto_three_pole_admission_atlas/run-001/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  eb26f090c01d803203c5f78806ec562e85319de60f9b59ced3496e60ab158a99
+
+Verdict
+-------
+
+Y41_ONLY_OBSERVED_SURVIVOR_WITH_CENSORED_ADMISSION_STATES
+
+Decision
+--------
+
+RESOLVE_UNKNOWN_ADMISSION_STATES_BEFORE_SELECTING_CARRIER
+
+Common admission language
+-------------------------
+E092 consumes all seven entries of E081's frozen geometry Pareto order. Each
+state receives the same exact body/pole/power model, parameterized only by its
+own partition data:
+
+  state-specific operation partition
+  state-specific x/y seam and coordinate
+  state-specific module-low / module-high assignment
+  state-specific stable E078 target module
+  exactly 219 module/template manufacturing bodies
+  complete 47-state boundary disjunction
+  exact body/pole/boundary non-overlap
+  manufacturing power coverage
+  exactly 53 selected poles
+  at least 50 current pole poses
+  pure feasibility and first incumbent
+
+Each state receives 35 seconds. The y=41 state alone receives E084's exact
+three-relocation body/power witness as a calibration hint; all other states use
+current-geometry hints. Hints do not change the feasible set.
+
+Calibration
+-----------
+The predeclared positive and negative calibrations both reproduce:
+
+  partition_90abd29523f2a0dc / y=41
+    BODY_POWER_FEASIBLE in 3.327 s
+    retained manufacturing 190
+    relocated poles 3
+    boundary state boundary_macro_09
+
+  partition_97f9ba7e7ad710dc / y=17
+    MASTER_INFEASIBLE in 9.880 s
+
+The artifact checker independently replays the positive y=41 witness:
+
+  219 manufacturing bodies
+  53 poles
+  exact module/template counts
+  y=41 side restrictions
+  both stable E078 bodies in module B
+  boundary_macro_09 body/front identity
+  solid non-overlap
+  reserved core/front/seam cells
+  50 retained current pole poses
+  manufacturing power coverage
+
+The calibration therefore establishes that the generic axis/side/stable-module
+parameterization did not silently change the two already known cases.
+
+Complete seven-state atlas
+--------------------------
+
+  rank  partition                     seam   status                  elapsed
+     0  partition_90abd29523f2a0dc   y=41   BODY_POWER_FEASIBLE       3.327 s
+     1  partition_97f9ba7e7ad710dc   y=17   MASTER_INFEASIBLE         9.880 s
+     2  partition_5a72220e0268a3c1   y=21   UNKNOWN                  35.056 s
+     3  partition_a525b75dbae46085   y=17   MASTER_INFEASIBLE        10.106 s
+     4  partition_70f78551b79b2eed   x=20   MASTER_INFEASIBLE        17.071 s
+     5  partition_05f225cf3333c982   x=23   MASTER_INFEASIBLE         7.829 s
+     6  partition_6f23f93054aa6f22   x=20   MASTER_INFEASIBLE        10.435 s
+
+Five contextual negatives
+-------------------------
+The following states are exact body/pole/power INFEASIBLE at the three-pole
+budget:
+
+  partition_97f9ba7e7ad710dc
+  partition_a525b75dbae46085
+  partition_70f78551b79b2eed
+  partition_05f225cf3333c982
+  partition_6f23f93054aa6f22
+
+The three vertical-seam negatives and two horizontal-seam negatives show that
+E081's retention Pareto status does not imply physical admission after displaced
+bodies, boundary state and three-pole power are jointly restored.
+
+One unresolved state
+--------------------
+The original E080 seam-first seed remains censored:
+
+  partition                  partition_5a72220e0268a3c1
+  seam                       horizontal y=21
+  module B below / A above
+  stable E078 bodies         module A
+  producer status            UNKNOWN
+  elapsed                    35.056 s
+  branches                   16,632
+  conflicts                  0
+  incumbent                  none
+
+UNKNOWN is not infeasibility. Therefore E092 cannot yet claim that y=41 is the
+sole three-pole skeleton survivor.
+
+Meaning
+-------
+The finite beam has collapsed from seven expensive front candidates to two
+body/power possibilities:
+
+  admitted now               partition_90abd29523f2a0dc / y=41
+  unresolved                 partition_5a72220e0268a3c1 / y=21
+
+All other Pareto states are closed at the cheaper skeleton layer under the same
+pole budget. This is a substantial constructor-side reduction, but y=41 remains
+front-censored rather than front-feasible.
+
+Next problem
+------------
+Resolve only partition_5a72220e0268a3c1. Use a fresh no-overwrite body/power
+replay with a larger explicit budget and a solver-diverse search configuration,
+without changing its partition, seam, boundary object, stable module, body/power
+semantics or three-pole cap.
+
+If the state becomes BODY_POWER_FEASIBLE, it is the only remaining complete-front
+control and should receive the E090 consumer. If it becomes exact INFEASIBLE,
+y=41 is the sole admitted skeleton at the three-pole budget and the next decision
+is between widening pole mobility and decomposing y=41's censored complete-front
+instrument. If it remains UNKNOWN, preserve censorship and treat the admission
+instrument itself as unresolved.
+
+Truth boundary
+--------------
+FEASIBLE here means only a body/pole/power skeleton. INFEASIBLE is contextual to
+the named partition, seam, complete boundary object and at-most-three-pole
+language. No result establishes native-front feasibility or global partition
+impossibility.

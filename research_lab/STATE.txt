@@ -9,14 +9,14 @@ Campaign ref: research_lab/campaigns/zero_condition/CAMPAIGN.txt
 
 Current endpoint
 ----------------
-Statement: The complete three-pole front consumer is censored on y=41, while the
-next E081 Pareto partition dies one layer earlier. E090 keeps y=41 and complete
-native-front semantics with at most three pole relocations but returns UNKNOWN
-without an incumbent after 240.241 seconds and about 8.3 GiB process RSS. E091
-then tests partition_97f9ba7e7ad710dc at y=17 under the identical pole budget;
-its exact body/pole/power admission model is INFEASIBLE in 10.777 seconds, so the
-front stage does not run. The beam now needs a cheap complete admission atlas
-before another monolithic front model receives budget.
+Statement: The seven-state E081 Pareto beam has collapsed at the three-pole
+body/power layer. E090's complete front consumer remains censored on y=41. E091
+closes the second Pareto state before front checking. E092 then applies one exact
+body/pole/power admission model to all seven states: y=41 is admitted and its
+witness is independently replayed, five states are exact INFEASIBLE, and only the
+original E080 seed partition_5a72220e0268a3c1/y=21 remains UNKNOWN after 35.056
+seconds. No further beam-wide or front-wide search is justified until that one
+admission state is resolved.
 Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
@@ -34,17 +34,17 @@ Direction ref:
 
 Live question
 -------------
-Q: Which of E081's seven Pareto partition/seam states admit any exact body/pole/
-power skeleton with exactly 219 module/template bodies, the two stable E078
-bodies in the partition-prescribed module, the complete 47-state boundary object,
-exactly 53 poles and at most three pole relocations? Run the same pure-feasibility
-first-incumbent admission model for every state, reproducing y=41 as admitted and
-partition_97f9ba7e7ad710dc/y=17 as INFEASIBLE. Preserve each state's own seam,
-side assignment and module counts. Only admitted states may receive the complete
-native-front consumer. If y=41 is the sole survivor, choose explicitly between a
-larger pole budget and decomposing the censored y=41 front instrument; do not
-resume point-rule growth or treat admission failure as global partition
-infeasibility.
+Q: Is partition_5a72220e0268a3c1, the original E080 seam-first seed at horizontal
+y=21 with module B below and module A above, body/pole/power feasible under the
+same complete 47-state boundary object and at-most-three-pole language? Run a
+fresh no-overwrite replay of the identical E092 state model with a larger explicit
+budget and a solver-diverse search configuration. Preserve 219 exact
+module/template bodies, the two stable E078 bodies in module A, exactly 53 poles,
+at least 50 current poles, power, non-overlap and pure feasibility. A positive
+becomes the only remaining complete-front control. An exact negative makes y=41
+the sole admitted skeleton at this pole budget. Another UNKNOWN preserves
+censorship and moves the problem to admission-model decomposition, not another
+seed or partition vote.
 
 Inflight / recovery
 -------------------
@@ -73,6 +73,7 @@ Recent consequential results
 - E089 uses E086's 95 module-B rules for train-only spatial-region selection and E087's disjoint 83 additions as holdout. The best four-role union consumes 47.97 percent of the universe but covers only 71.58 percent of training and 62.65 percent of holdout failures. | evidence=research_lab/campaigns/zero_condition/experiments/E089_module_b_spatial_hazard_holdout/RESULT.txt | effect=retire the fixed-52-plus-one B geometry and run a nested multi-pole-versus-partition relaxation
 - E090 keeps y=41 and the complete front consumer but allows exactly 53 poles with at most three relocations. A 240-second pure-feasibility run returns UNKNOWN without an incumbent at about 8.3 GiB process RSS and no OOM-counter increase. | evidence=research_lab/campaigns/zero_condition/experiments/E090_three_pole_front_discriminator/RESULT.txt | effect=do not rerun y=41; move the identical three-pole consumer to partition_97f9ba7e7ad710dc/y=17 as the finite Pareto control
 - E091 tests partition_97f9ba7e7ad710dc/y=17 under the same three-pole skeleton budget. Its exact body/pole/power model is INFEASIBLE in 10.777 seconds, so the complete-front stage does not run. | evidence=research_lab/campaigns/zero_condition/experiments/E091_next_pareto_three_pole_control/RESULT.txt | effect=sweep the entire seven-state Pareto beam through the cheap body/power admission model before another front build
+- E092 completes that seven-state admission sweep: y=41 is BODY_POWER_FEASIBLE, five states are exact MASTER_INFEASIBLE, and only partition_5a72220e0268a3c1/y=21 remains UNKNOWN. The y=41 witness is independently replayed. | evidence=research_lab/campaigns/zero_condition/experiments/E092_pareto_three_pole_admission_atlas/RESULT.txt | effect=resolve only the y=21 admission state before selecting a skeleton carrier
 
 Current unknowns and guards
 ---------------------------
@@ -99,7 +100,8 @@ Current unknowns and guards
 - E088 is a finite census of one frozen candidate language and rule store. Its signatures are proposer groups only. Diffusion rejects the predeclared bulk-compilation strategy; it does not prove any signature member, module B, the partition or the one-replacement language infeasible.
 - E089 is a temporal predictive failure of one fixed spatial-role language. It authorizes retiring the 52+1 continuation budget, not declaring y=41, module B or any candidate infeasible. The next comparison must preserve the same front semantics while widening one structural axis at a time.
 - E090 is a censored UNKNOWN, not a negative for y=41 or the three-pole language. Its 8.3 GiB peak and zero conflicts are instrument telemetry, not a cause diagnosis.
-- E091 is exact only at body/pole/power admission for partition_97f9ba7e7ad710dc, y=17 and at most three relocated poles. It makes no native-front claim and does not refute that partition with more pole mobility or another geometry. The remaining Pareto sweep must use each partition's own side assignment and stable-body module.
+- E091 is exact only at body/pole/power admission for partition_97f9ba7e7ad710dc, y=17 and at most three relocated poles. It makes no native-front claim and does not refute that partition with more pole mobility or another geometry.
+- E092's five negatives are contextual body/pole/power results at the three-pole budget. Its y=41 positive is not native-front feasible merely because the skeleton exists. partition_5a72220e0268a3c1 remains censored; y=41 may not yet be called the sole admitted skeleton.
 - Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
 
 History pointers
