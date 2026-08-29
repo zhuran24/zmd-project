@@ -1,0 +1,91 @@
+EXPERIMENT E088: COMPLETE MODULE-B FRONT-RULE SIGNATURE ATLAS
+================================================================
+
+Question
+--------
+Do the 178 registered module-B front rules occupy a small reusable family inside
+the complete module-B candidate universe, or are they diffuse enough that the
+y=41 bay/pole language should change before another master solve?
+
+Why this experiment
+-------------------
+E086/E087 grow the rule store 34 -> 98 -> 181. E087's 83 new rules are all in
+module B and its two candidates still have 39 and 44 empty-front bodies. Blindly
+continuing the lazy loop would pay for more coordinate rows without first asking
+whether those rows are translations of a small rule language.
+
+Object space
+------------
+E088 exactly reconstructs E086/E087's ordered manufacturing candidate rows:
+
+  module A then B
+  manufacturing_3x3, manufacturing_5x5, manufacturing_6x4
+  same y=41 side restrictions
+  fixed 52 non-seam poles
+  protocol-core body and front exclusions
+  corridor exclusion
+  complete 47-state boundary eligibility
+
+The initial calibration hypothesis imported a 5,706-row module-B count from the
+all-poles integrated model. Run-001 rejected that hypothesis immediately: the
+fixed-52-plus-one-replacement language has only 1,335 B 3x3 candidates before the
+other template counts are reached. That failure is retained as apparatus evidence.
+
+Run-002 therefore derives all module-B counts from the current language itself.
+Correct reconstruction is established by ordered index/body/template remapping of
+all 181 checkpoint rules, exact demand-class matching, exact option-count matching,
+and the complete 47-state/fixed-obstacle construction, not by borrowing counts
+from a neighboring pole language.
+
+Two canonical proposer signatures
+---------------------------------
+For each module-B candidate, the actual rule demand is the minimal module/template
+class used by E086, except the stable E078 operation overrides recorded in the
+checkpoint.
+
+`stencil_signature` contains:
+
+  template
+  demand classes
+  every same-footprint pose mode
+  input/output front cells after in-grid and fixed-occupied clipping
+  all front cells normalized by subtracting the body's minimum x/y
+
+`support_signature` additionally records, for every normalized front cell, the
+number of possible dynamic manufacturing, replacement-pole and boundary-state
+occupiers.
+
+These signatures are **proposer groupings only**. They do not merge CP-SAT
+variables or authorize one shared constraint. Any bulk consumer must instantiate
+the existing exact candidate-specific front rule for every selected candidate in
+a chosen signature family.
+
+Outputs
+-------
+
+  RESULT.json                 compact decision and concentration metrics
+  SIGNATURE_ATLAS.json        per-signature universe/registered counts
+  CANDIDATE_SIGNATURES.json   complete current-language candidate-to-signature map
+
+Predeclared decision rule
+-------------------------
+BULK_COMPILE_HOT_SUPPORT_SIGNATURES
+  The minimum support-signature prefix covering at least 80% of registered B
+  rules has at most 8 signatures and expands to at most 2,500 B candidates.
+
+BULK_COMPILE_HOT_STENCIL_SIGNATURES_WITH_EXACT_PER_CANDIDATE_RULES
+  The support criterion fails, but at most 4 stencil signatures cover at least
+  90% of registered B rules and expand to at most 3,500 candidates.
+
+RULE_FAILURES_DIFFUSE_REVISE_MODULE_B_GEOMETRY_OR_DECOMPOSE
+  Neither concentration condition holds. Do not eagerly instantiate essentially
+  the whole B universe merely to imitate a coordinate-level closure; change the
+  B-bay/pole language or decompose it first.
+
+Truth boundary
+--------------
+This is an exact finite census and a representation discriminator, not a
+feasibility result. Signature concentration does not prove all members fail and
+signature diffusion does not prove the one-replacement language infeasible.
+Research-only; no certification, U/L, production, owner, pruning, publication,
+routing or throughput effect.

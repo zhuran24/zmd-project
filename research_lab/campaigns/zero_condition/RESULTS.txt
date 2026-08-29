@@ -3270,6 +3270,49 @@ evidence:
   ARTIFACT_CHECK.json sha256
   10463e14fc0fe736ba2350803f21cb27314f8eb3a28f3fc6164f35d2a62ae899.
 
+R-ZC-098  Module-B point failures are not a bounded reusable signature family
+--------------------------------------------------------------------------------
+status: complete no-solver candidate/signature census with independent aggregation replay
+scope: fixed-52-plus-one-replacement y=41 module-B candidate universe and E087's frozen 178 registered B rules
+
+statement:
+  E088 reconstructs 4,353 module-B candidates in the current bounded language:
+  1,335 3x3, 1,008 5x5 and 2,010 6x4. All 178 registered B rules remap exactly,
+  including their body, template, demand-class and option-count identities.
+
+  Translation-normalized stencil signatures yield 146 families, 33 of which
+  contain registered rules. Six hot stencil signatures cover 145/178 registered
+  rules but expand to 3,740 candidates; sixteen cover 161/178 and expand to
+  3,818. Context-sensitive support signatures yield 3,709 families, 164 carrying
+  registered rules; reaching 80 percent coverage requires 129 signatures.
+
+  The predeclared bulk criteria therefore fail. Coarse grouping is nearly the
+  whole B universe, while fine grouping is sparse coordinate knowledge rather
+  than a reusable rule language. Run-001's stale all-poles domain-count
+  calibration is retained as an apparatus failure and has no scientific effect.
+
+non-implications:
+  Signatures are proposer groups only. E088 proves no unregistered member
+  feasible or infeasible, authorizes no shared cut, and does not refute the
+  one-replacement language, module B, the partition or the seam.
+
+effect on next problem:
+  Stop endpoint-by-endpoint front-rule growth. Build a spatial hazard/decomposition
+  discriminator for module B, using stable distances and geometric roles around
+  seam, boundary, core and fixed-pole obstacles. A concentrated spatial region
+  should become a revised B-bay or reserved halo; spatial diffusion should retire
+  the fixed-52-plus-one-replacement B geometry before another master solve.
+
+evidence:
+  E088 RESULT.txt; local run-002 RESULT.json sha256
+  ba1ecfa3772f7b0a7837818f4945a303e12ab15b61853aaf5fb773cc142bd2c8;
+  SIGNATURE_ATLAS.json sha256
+  06cebb6ef75aa3584f9779b768698b2bf89041b7f0f18c1a81c198f734df15c6;
+  CANDIDATE_SIGNATURES.json sha256
+  3037fe5f2539fc4b155cde387481d60681cd34a0302656e58a73870bfff64798;
+  ARTIFACT_CHECK.json sha256
+  c524fa736d03a11a4a3af24073bbf00c8aa568847f5b3563cf66c261e5cd8d8e.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:
@@ -3293,7 +3336,8 @@ power optimum”; it is “construct power and native-front feasibility together
 The fixed-rung r33 replay is explicitly censored. E086/E087 restore candidate
 production and turn four rejected geometries into 147 reusable rules, but the
 store grows 34->98->181 while every new E087 failure lies in module B and empty
-counts stay large. The next object is no longer another candidate solve: it is a
-finite module-B rule-signature atlas that can tell whether the point language is
-compressible. The final repair size, pole language, terminal assignment,
-component-compatible binding and physical layer count remain open.
+counts stay large. E088 now answers the compression question negatively: coarse
+stencil families touch almost the whole B universe, while fine support families
+are nearly one-per-failure. The next object is a spatial role/decomposition atlas,
+not another point-rule solve. The final repair size, pole language, terminal
+assignment, component-compatible binding and physical layer count remain open.

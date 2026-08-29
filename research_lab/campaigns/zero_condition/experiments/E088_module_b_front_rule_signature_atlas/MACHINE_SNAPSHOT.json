@@ -1,0 +1,85 @@
+{
+  "schema": "zmd_e088_module_b_front_rule_signature_machine_snapshot_v1",
+  "created_at_local": "2026-08-28T21:44:48-04:00",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "verdict": "REGISTERED_B_FAILURES_ARE_TOO_DIFFUSE_FOR_BOUNDED_BULK_COMPILATION",
+  "decision": "RULE_FAILURES_DIFFUSE_REVISE_MODULE_B_GEOMETRY_OR_DECOMPOSE",
+  "candidate_universe": {
+    "module": "B",
+    "candidate_count": 4353,
+    "domain_counts": {
+      "manufacturing_3x3": 1335,
+      "manufacturing_5x5": 1008,
+      "manufacturing_6x4": 2010
+    },
+    "registered_rule_count": 178,
+    "registered_fraction": 0.04089133930622559
+  },
+  "signature_counts": {
+    "stencil_total": 146,
+    "stencil_with_registered_rule": 33,
+    "support_total": 3709,
+    "support_with_registered_rule": 164
+  },
+  "concentration": {
+    "stencil_80": {
+      "signature_count": 6,
+      "covered_registered_count": 145,
+      "target_registered_count": 143,
+      "bulk_candidate_count": 3740
+    },
+    "stencil_90": {
+      "signature_count": 16,
+      "covered_registered_count": 161,
+      "target_registered_count": 161,
+      "bulk_candidate_count": 3818
+    },
+    "support_80": {
+      "signature_count": 129,
+      "covered_registered_count": 143,
+      "target_registered_count": 143,
+      "bulk_candidate_count": 259
+    },
+    "support_90": {
+      "signature_count": 147,
+      "covered_registered_count": 161,
+      "target_registered_count": 161,
+      "bulk_candidate_count": 294
+    }
+  },
+  "artifacts": {
+    "result": {
+      "path": "research_lab/local/zero_condition/E088_module_b_front_rule_signature_atlas/run-002/RESULT.json",
+      "sha256": "ba1ecfa3772f7b0a7837818f4945a303e12ab15b61853aaf5fb773cc142bd2c8"
+    },
+    "signature_atlas": {
+      "path": "research_lab/local/zero_condition/E088_module_b_front_rule_signature_atlas/run-002/SIGNATURE_ATLAS.json",
+      "sha256": "06cebb6ef75aa3584f9779b768698b2bf89041b7f0f18c1a81c198f734df15c6"
+    },
+    "candidate_signatures": {
+      "path": "research_lab/local/zero_condition/E088_module_b_front_rule_signature_atlas/run-002/CANDIDATE_SIGNATURES.json",
+      "sha256": "3037fe5f2539fc4b155cde387481d60681cd34a0302656e58a73870bfff64798"
+    },
+    "artifact_check": {
+      "path": "research_lab/local/zero_condition/E088_module_b_front_rule_signature_atlas/run-002/ARTIFACT_CHECK.json",
+      "sha256": "c524fa736d03a11a4a3af24073bbf00c8aa568847f5b3563cf66c261e5cd8d8e"
+    },
+    "run_001_failure": {
+      "path": "research_lab/local/zero_condition/E088_module_b_front_rule_signature_atlas/run-001/FAILURE.json",
+      "status": "EXECUTION_FAILURE",
+      "reason": "stale all-pole domain-count calibration rejected by the fixed-52-plus-one-replacement reconstruction"
+    }
+  },
+  "runners": {
+    "experiment": {
+      "path": "research_lab/campaigns/zero_condition/experiments/E088_module_b_front_rule_signature_atlas/run_e088.py",
+      "sha256": "f8a8b36fd6021bda7f62364de87206ce3205be89876f118af119b4b90b94b240"
+    },
+    "artifact_check": {
+      "path": "research_lab/campaigns/zero_condition/experiments/E088_module_b_front_rule_signature_atlas/check_artifacts.py",
+      "sha256": "1f4b7cf0c190d1301d3a4004b209c29f6dc40f50772620b8268b1e11ed78e397"
+    }
+  },
+  "truth_boundary": "No-solver finite census. Signatures are proposer groupings only; they neither merge candidate variables nor prove a family feasible or infeasible."
+}

@@ -1,0 +1,161 @@
+E088 RESULT: MODULE-B FRONT FAILURES DO NOT COLLAPSE TO A SMALL BULK RULE FAMILY
+================================================================================
+
+Status
+------
+Completed as a research-only no-solver representation discriminator. The finite
+candidate/signature census and the predeclared concentration decision were
+independently replayed. No feasibility, infeasibility, placement cut, routing,
+throughput, certification, U/L, owner, production or publication effect follows.
+
+Machine evidence
+----------------
+Main result:
+
+  research_lab/local/zero_condition/
+  E088_module_b_front_rule_signature_atlas/run-002/RESULT.json
+
+SHA-256:
+
+  ba1ecfa3772f7b0a7837818f4945a303e12ab15b61853aaf5fb773cc142bd2c8
+
+Complete signature atlas:
+
+  research_lab/local/zero_condition/
+  E088_module_b_front_rule_signature_atlas/run-002/SIGNATURE_ATLAS.json
+
+SHA-256:
+
+  06cebb6ef75aa3584f9779b768698b2bf89041b7f0f18c1a81c198f734df15c6
+
+Complete candidate-to-signature map SHA-256:
+
+  3037fe5f2539fc4b155cde387481d60681cd34a0302656e58a73870bfff64798
+
+Independent artifact-check SHA-256:
+
+  c524fa736d03a11a4a3af24073bbf00c8aa568847f5b3563cf66c261e5cd8d8e
+
+Verdict
+-------
+
+REGISTERED_B_FAILURES_ARE_TOO_DIFFUSE_FOR_BOUNDED_BULK_COMPILATION
+
+Decision
+--------
+
+RULE_FAILURES_DIFFUSE_REVISE_MODULE_B_GEOMETRY_OR_DECOMPOSE
+
+Apparatus correction
+--------------------
+Run-001 imported module-B domain counts from the neighboring all-poles integrated
+model. The fixed-52-plus-one-replacement language reconstructed only 1,335 B 3x3
+candidates rather than the borrowed 1,585 and failed closed before producing an
+atlas.
+
+Run-002 removes that neighboring-language calibration and derives every domain
+count from the current language. Correct reconstruction is established instead by
+exact ordered remapping of all 181 checkpoint rules, body/template identity,
+demand classes and producer option counts. The run-001 failure remains on disk as
+apparatus evidence and is not interpreted as a scientific negative.
+
+Complete module-B universe
+--------------------------
+The bounded y=41 one-replacement language contains:
+
+  manufacturing_3x3       1,335 candidates
+  manufacturing_5x5       1,008 candidates
+  manufacturing_6x4       2,010 candidates
+  ------------------------------------------------
+  total                    4,353 candidates
+
+The E087 checkpoint contains 178 registered module-B rules, or about 4.09 percent
+of this universe. All 178 rows remap exactly. The two stable E078 operation
+requirements remain distinct overrides.
+
+Signature languages
+-------------------
+E088 builds two proposer-only signatures.
+
+`stencil_signature` preserves template, demand class, every same-footprint pose
+mode and its input/output front cells after in-grid and fixed-obstacle clipping,
+then removes absolute translation. There are:
+
+  total stencil signatures                  146
+  signatures containing a registered rule   33
+
+`support_signature` additionally records how many dynamic manufacturing,
+replacement-pole and boundary-state bodies can occupy each normalized front cell.
+There are:
+
+  total support signatures                3,709
+  signatures containing a registered rule  164
+
+Neither signature merges CP-SAT variables. Any future consumer would still need
+to instantiate the exact candidate-specific rule for every selected candidate.
+
+Concentration result
+--------------------
+The coarse stencil language groups most failures into a few shapes, but those
+shapes cover nearly the entire module-B candidate universe:
+
+  target coverage   signatures   registered covered   candidates expanded
+  80 percent                 6                  145                3,740
+  90 percent                16                  161                3,818
+
+The finer support language expands to fewer candidates, but loses reusable
+compression because almost every registered rule needs its own signature:
+
+  target coverage   signatures   registered covered   candidates expanded
+  80 percent               129                  143                  259
+  90 percent               147                  161                  294
+
+The predeclared bulk-support criterion required at most 8 signatures for 80
+percent coverage. The predeclared bulk-stencil criterion required at most 4
+signatures for 90 percent coverage and at most 3,500 expanded candidates. Both
+fail.
+
+Interpretation
+--------------
+The 178 failures are not one or two reusable front rules wearing different
+coordinate labels.
+
+At coarse resolution, the hot shapes are too broad: compiling them would eagerly
+attach rules to roughly 86 percent of the whole B universe. At fine resolution,
+the failures are sparse and context-specific: 129 support signatures are needed
+to explain only 143 registered rows.
+
+Therefore another blind lazy solve is not the next justified action. The point
+rule language has reached the wrong grain. The next discriminator should measure
+where failures live in module B as spatial roles or subregions, and should use
+that measurement to redesign or decompose the B bay or pole language.
+
+Non-implications
+----------------
+E088 does not prove:
+
+  * any unregistered member of a signature feasible or infeasible;
+  * the bounded one-replacement language infeasible;
+  * module B globally responsible for every future failure;
+  * any shared signature cut sound;
+  * the y=41 partition or seam invalid;
+  * any terminal uniqueness, binding, routing or throughput property.
+
+Effect on the next problem
+--------------------------
+Stop adding coordinate rules one endpoint at a time. Build a no-solver spatial
+hazard atlas for the complete module-B universe and the 178 registered failures.
+Measure concentration by stable geometric roles such as distance to the seam,
+outer boundary, protocol core, fixed poles and candidate-front support density.
+
+If a small set of spatial regions captures most failures while excluding a large
+fraction of the B universe, derive a decomposed B-bay constructor or reserved
+front halo from those regions. If spatial roles are also diffuse, retire the
+fixed-52-plus-one-replacement B-bay language and widen pole or partition geometry
+before another expensive master solve.
+
+Truth boundary
+--------------
+This result is an exact finite census of one frozen rule store and one frozen
+candidate language. It changes the research representation and next question; it
+is not a theorem about existence of a complete layout.

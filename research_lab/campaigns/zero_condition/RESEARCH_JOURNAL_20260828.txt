@@ -204,3 +204,24 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   module B。下一步不再盲跑 master；先穷尽 B 候选并按平移归一、固定障碍与 front stencil
   建 signature atlas，测 178 条 B 规则是否集中在少数类。集中就整类编译，分散则说明该改
   B bay / pole 语言，而不是再添一批点规则。
+
+2026-08-28 21:44
+----------------
+数据：
+  E088 run-002 RESULT.json
+  research_lab/local/zero_condition/E088_module_b_front_rule_signature_atlas/run-002/RESULT.json
+  sha256 ba1ecfa3772f7b0a7837818f4945a303e12ab15b61853aaf5fb773cc142bd2c8
+  ARTIFACT_CHECK.json sha256
+  c524fa736d03a11a4a3af24073bbf00c8aa568847f5b3563cf66c261e5cd8d8e
+
+注意／发现：
+  当前 one-replacement B 侧完整候选域是 4,353，不是邻近 all-poles 模型的 5,706；run-001
+  因借错对象空间的数量校准而 fail closed。run-002 把 178 条规则全部精确重映射后发现：
+  146 个 translation-normalized stencil 里，6 个热类覆盖 145 条规则，却同时展开到 3,740
+  个候选；加入动态 blocker support 后，80% 覆盖需要 129 个 signature。粗类太宽，细类太碎。
+
+推理：
+  这些失败不是少数规则模板套了不同坐标壳。继续批量编译粗 stencil 等于给约 86% 的 B 域
+  预付 front 约束税；继续追细 support 则仍是坐标级记忆。下一问应从“规则长什么样”转为
+  “失败住在哪里”：按 seam、外边界、protocol core、固定电杆与局部支撑密度构造空间角色
+  atlas。若危险集中，重画 B bay 或保留 halo；若仍分散，退役固定 52+1 pole 的 B 几何语言。
