@@ -12,7 +12,7 @@ Mode: `RESEARCH`。Branch: `research/main`。
 
 首次进树或目标层级变了,读 `research_lab/PROGRAM.txt`;STATE 之后按当前问题读 `.zmd-worktree-mode` 指的活跃 campaign;旧治理与历史只按需加载。
 
-每个新会话、每次上下文压缩后,装载 `/zmd-method` 与 `/research-charter`——方法论与纲领,是我们对这个问题的理解;当前押注只看 `/home/zhuran24/zmd-pj/docs/项目说明/30_research_charter.md` 末节。owner 原话档案在 `research_lab/METHOD_ORIGIN.txt`(方法)与 `research_lab/STANCE_ORIGIN.txt`(姿态),想回出发点的感觉时去翻。
+每个新会话、每次上下文压缩后,装载 `/zmd-method` 与 `/research-charter`——它们提供为什么与边界,装载后退到背景,不是逐实验自审清单。运行中何时必须停,由 memory 的 `REFLEX:RESEARCH-PAUSE` 与 `research_lab/ATTENTION_AND_REFLECTION.txt` 负责。当前押注只看 `/home/zhuran24/zmd-pj/docs/项目说明/30_research_charter.md` 末节。owner 原话档案在 `research_lab/METHOD_ORIGIN.txt`(方法)与 `research_lab/STANCE_ORIGIN.txt`(姿态),想回出发点的感觉时去翻。
 
 CC 自动记忆绑在 `research_lab/CC_MEMORY.txt` 记录的研究专用目录,装稳定研究习惯,不装 campaign 状态;现在发生着什么,以 `STATE.txt` 与活跃 campaign 为准。
 
@@ -21,6 +21,12 @@ CC 自动记忆绑在 `research_lab/CC_MEMORY.txt` 记录的研究专用目录,�
 从问题出发:规则、资源账、死亡形状、构造结构、表示、层边界、最便宜的判别实验。现有模块、F1-F9 名字、当前层数与当前 cut 形式都是历史候选,不是公理。
 
 普通发现不预载 `PROJECT_LOCK.md`、`docs/CURRENT.md`、台账或完整操作手册;要精确的当前权威、认证语义、晋级、发布、共享 Git 修复或某条具体操作契约时,再按需去读。
+
+## 运行时停顿
+
+方法论不是只在开场读。命中任一事件,先按 `research_lab/ATTENTION_AND_REFLECTION.txt` §3-4 做一屏反思脉冲,再开下一个实验:同一 skeleton/consumer/成功信号连续两次未推进最深正见证而准备开第三次;连续两次只涨知识账或机器账;UNKNOWN 后只想加时间、seed、profile、cut、atlas 或再套一层表示;已有正几何/见证/有限基底尚未送进更深 consumer 却准备再建抽象;预设停止条件、owner 回看或证据身份变化出现。
+
+这不是写报告或反复盯着纲领。正常工作不自审;触发时一分钟内决定 CONTINUE、BRANCH/CONTROL 或 STOP/SWITCH。只有方向或活问题改变,才更新 `STATE.txt` 的 `Reflection checkpoint`。
 
 ## CodeGraph 优先
 

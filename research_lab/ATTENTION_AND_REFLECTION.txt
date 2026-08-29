@@ -1,0 +1,199 @@
+ZMD RESEARCH ATTENTION AND REFLECTION
+=====================================
+
+Status
+------
+This file is the canonical runtime-attention contract for the research tree. It
+is not another methodology, charter, approval gate, or research report.
+
+Three major direction corrections occurred only after the owner stopped the
+line, even though the relevant principles already existed in the methodology.
+The missing object was not another reason. It was a concrete trigger telling the
+agent when ordinary continuation must pause and the reasons must be brought back
+into working attention.
+
+1. The three entry surfaces have different jobs
+------------------------------------------------
+
+AGENTS.md / CLAUDE.md
+  Always-on router. They establish role, read order, default attention, hard
+  truth boundaries, and short pointers to runtime reflexes. They must remain
+  compact. They do not carry changing campaign facts or the full methodology.
+
+Claude Code MEMORY.md and cards
+  Always-light reflex layer. It carries stable events that must interrupt work
+  while a line is already running. It answers "when must I stop?" Dynamic state,
+  experiment counts, and current thresholds do not belong here.
+
+Skill index: /zmd-method and /research-charter
+  Deep doctrine layer. It explains why the project works this way, how to reason
+  about layers, cuts, evidence, frontier, and research economics. Load it at cold
+  start and after context compression; reopen the relevant section when a pause
+  exposes a real method dispute. Do not reread the whole doctrine after every
+  experiment.
+
+Division rule:
+  why and distinctions live in skills;
+  when-to-interrupt lives in memory;
+  mode and routing live in AGENTS/CLAUDE;
+  the complete operational statement lives here.
+
+A fact has one truth source. Higher-frequency entry surfaces point to it instead
+of copying it in full.
+
+2. Attention map for the rest of the tree
+-----------------------------------------
+
+research_lab/STATE.txt
+  First live read. Current endpoint, deepest positive witness, one live question,
+  current reflection checkpoint, inflight recovery, and a small set of immediate
+  truth guards. It is not a historical ledger.
+
+campaigns/<id>/CAMPAIGN.txt
+  Stable success object, scope, non-implications, and current campaign tension.
+
+campaigns/<id>/RESULTS.txt
+  Durable consequential conclusions with evidence identity and effect on the
+  next problem. It may be long because it is queried, not read front-to-back at
+  every entry.
+
+campaigns/<id>/experiments/
+  Tracked hypotheses, runners, checkers, and compact durable result records.
+
+research_lab/local/
+  Raw runs, caches, dumps, temporary models, and large receipts. Presence here
+  does not make a result durable.
+
+research_lab/PROGRAM.txt and ARCHITECTURE.txt
+  Stable mission and file-flow design. Read on first entry, changed mission, or
+  architecture work, not during every ordinary experiment.
+
+research_lab/CHECKS.txt
+  Validation weight selected by claimed effect. It is not the research rhythm.
+
+3. Mandatory pause triggers
+---------------------------
+
+The pause happens before opening the next experiment or abstraction, not after a
+long report has already rationalized the continuation.
+
+P1. Same-language third step
+  Before a third consecutive consequential experiment that preserves the same
+  frozen skeleton/context, consumer depth, and primary success signal, when the
+  previous two did not advance the deepest positive witness.
+
+P2. Two account-only results
+  After two consecutive consequential results that moved only the knowledge-
+  leverage or research-machine account, before spending a third result without
+  named frontier or deeper-witness movement.
+
+P3. UNKNOWN continuation
+  Immediately when the proposed response to UNKNOWN is only more time, another
+  seed, solver profile, threshold, cut batch, atlas, or representation layer,
+  without a new semantic variable, direct consumer, or orthogonal control.
+
+P4. Unconsumed positive object
+  Before building another abstraction above a positive geometry, witness,
+  finite basis, atlas, or interface object that has not yet been sent to the
+  next real consumer it was meant to serve.
+
+P5. Interface inflation
+  Before compiling another interface layer when the current cut/atlas/signature
+  store is growing while cross-context reuse, transfer, or discrimination stays
+  weak. A smaller state count alone is not deeper progress.
+
+P6. Skeleton monopoly
+  After three consequential experiments inherit the same skeleton or local
+  basin without an orthogonal constructor/control, even if the metric or local
+  representation changed between them.
+
+P7. Stop or contradiction signal
+  Immediately when a preregistered stop condition fires, an owner asks to look
+  back, a new result contradicts the current narrative, or an evidence identity
+  changes under the line.
+
+P8. High-attention file change
+  Before creating a new default-read file or editing AGENTS.md, CLAUDE.md,
+  MEMORY.md/core memory cards, a skill description/body, START.txt, the STATE
+  schema, .zmd-worktree-mode, or this attention architecture.
+
+These are event triggers, not a per-step self-review ritual. Normal research
+continues at full speed until one fires.
+
+4. The reflection pulse
+-----------------------
+
+The pulse fits on one screen and should usually take less time than starting the
+next experiment. Answer only these questions:
+
+  1. What is the deepest positive witness/consumer layer now, and what was it at
+     the last checkpoint?
+  2. Did the last results change the problem or consumer, or only the instrument,
+     representation, evidence store, or explanation?
+  3. Which of the three accounts moved: frontier, knowledge leverage, research
+     machine?
+  4. What assumption, skeleton, metric, or interface has silently become
+     furniture rather than a tested choice?
+  5. What is the cheapest direct-consumer attempt or orthogonal control now?
+  6. Decision: CONTINUE, BRANCH/CONTROL, or STOP/SWITCH, with one sentence why.
+
+Do not create an experiment number, dossier, or long reflection report merely to
+perform the pulse. Do not reread both full skills unless the answers reveal a
+method conflict.
+
+Recording rule:
+  unchanged CONTINUE
+    Continue immediately. No durable file is required.
+
+  changed direction, live question, stop condition, or tested assumption
+    Update STATE.txt's Reflection checkpoint and Live question. Put supporting
+    evidence in the campaign result/experiment that earned the change.
+
+  architecture or entry-surface change
+    Update this file and ARCHITECTURE.txt; keep high-frequency pointers short.
+
+5. Attention effect of every durable file change
+------------------------------------------------
+
+Before creating or modifying a durable file, consider five things. This is a
+mental placement check, not a form to fill out:
+
+  audience
+    Which agent/role is expected to read it?
+
+  load frequency
+    Every prompt/session, every campaign entry, only on a matching trigger, or
+    only as evidence lookup?
+
+  half-life
+    Stable doctrine, stable reflex, live state, consequential result, or raw run?
+
+  induced behavior
+    What will a future agent do earlier, later, more often, or stop doing because
+    this file is visible?
+
+  identity and duplication
+    Where is the one truth source, and which higher-frequency files should only
+    point to it?
+
+Placement defaults:
+  role/mode/read order                 -> AGENTS/CLAUDE
+  stable runtime interrupt             -> memory card + pointer here
+  method/charter reasoning             -> skill
+  current endpoint/question/checkpoint -> STATE
+  campaign scope/success object        -> CAMPAIGN
+  consequential conclusion             -> RESULTS + experiment record
+  raw/reproducible runtime output       -> local
+  file-flow architecture               -> ARCHITECTURE
+
+High-frequency files must be shorter and more pointer-rich than low-frequency
+evidence files. A new idea should enter at the lowest-frequency layer that still
+reaches the agent at the moment it matters.
+
+6. Anti-goal
+------------
+
+The purpose is to make methodology fire at the right moment, not to keep the
+agent staring at methodology. Respecting the charter means doing research with
+its distinctions present in the background, then surfacing them when an event
+trigger says the current continuation may have become automatic.

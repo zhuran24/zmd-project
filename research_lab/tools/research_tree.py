@@ -27,6 +27,7 @@ REQUIRED_MODE_KEYS = frozenset(
         "entry",
         "program",
         "architecture",
+        "attention",
         "checks",
         "state",
         "active_campaign",
@@ -175,6 +176,7 @@ def collect_report() -> tuple[CheckReport, dict[str, str]]:
         "entry": path_from_mode(mode, "entry"),
         "program": path_from_mode(mode, "program"),
         "architecture": path_from_mode(mode, "architecture"),
+        "attention": path_from_mode(mode, "attention"),
         "checks": path_from_mode(mode, "checks"),
         "state": path_from_mode(mode, "state"),
         "active campaign": path_from_mode(mode, "active_campaign_file"),
@@ -386,8 +388,10 @@ def collect_report() -> tuple[CheckReport, dict[str, str]]:
             report.errors.append("STATE.txt branch does not match mode file")
         if f"Active campaign: {mode['active_campaign']}" not in state_text:
             report.errors.append("STATE.txt active campaign does not match mode file")
-        if line_count(state_path) > 140:
-            report.warnings.append("STATE.txt exceeds 140 lines; consider moving detail into the campaign")
+        if extract_section(state_path, "Reflection checkpoint") is None:
+            report.errors.append("STATE.txt lacks the required Reflection checkpoint section")
+        if line_count(state_path) > 100:
+            report.warnings.append("STATE.txt exceeds 100 lines; move history into campaign RESULTS/journals")
 
     if campaign_path.is_file():
         campaign_text = campaign_path.read_text(encoding="utf-8")
@@ -403,6 +407,7 @@ def collect_report() -> tuple[CheckReport, dict[str, str]]:
     report.info["mode"] = mode.get("mode", "UNKNOWN")
     report.info["active_campaign"] = mode.get("active_campaign", "UNKNOWN")
     report.info["active_campaign_file"] = mode.get("active_campaign_file", "UNKNOWN")
+    report.info["attention"] = mode.get("attention", "UNKNOWN")
 
     return report, mode
 
@@ -417,6 +422,7 @@ def print_human(report: CheckReport, mode: dict[str, str], *, enter: bool) -> No
         "head",
         "active_campaign",
         "active_campaign_file",
+        "attention",
         "history_tree",
         "history_branch",
         "certification_tree",
@@ -444,6 +450,7 @@ def print_human(report: CheckReport, mode: dict[str, str], *, enter: bool) -> No
 
     if enter:
         state_path = path_from_mode(mode, "state")
+        reflection_checkpoint = extract_section(state_path, "Reflection checkpoint")
         live_question = extract_section(state_path, "Live question")
         print("\nREAD NOW")
         print(f"  1. {mode['state']}")
@@ -453,6 +460,11 @@ def print_human(report: CheckReport, mode: dict[str, str], *, enter: bool) -> No
             "  RESEARCH mode: produce candidate knowledge for "
             f"{mode['active_campaign']}; this session cannot grant certification or update U/L."
         )
+        if reflection_checkpoint:
+            print("\nREFLECTION CHECKPOINT")
+            for line in reflection_checkpoint.splitlines():
+                print(f"  {line}")
+            print(f"  pause guide: {mode['attention']}")
         if live_question:
             print("\nLIVE QUESTION")
             for line in live_question.splitlines():

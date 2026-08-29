@@ -11,6 +11,7 @@
 - [游戏语义与正式名称](game-semantics-and-official-names.md) — 正式名、游戏实测和未坐实语义先查真源
 
 ## 即时触发
+- [REFLEX:RESEARCH-PAUSE](research-pause-reflex.md) — 同一语言连续不推进、两次只涨知识/机器账、UNKNOWN 后只想加预算/表示、正见证未消费、接口膨胀、单骨架垄断、stop/owner/身份变化或高注意力文件修改时，先做一屏反思再开下一实验；不是逐步仪式。
 - 每次进入先读 `research_lab/STATE.txt` 与 active campaign；auto-memory 不复制动态战况。
 - 挂起事项必须进入未来会话必经的 STATE／CAMPAIGN／RESULTS 或具名触发器，不能只留在对话和日志里。
 - 研究结论准备跨树时，只冻结 promotion packet；不得整体合并 `research/main`，不得由本树自授认证效力。

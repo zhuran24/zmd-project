@@ -1,0 +1,23 @@
+---
+name: research-pause-reflex
+description: 方法论已知但续作开始自动化时，按事件触发短暂停顿，不把反思变成逐步仪式
+metadata:
+  node_type: memory
+  type: feedback
+  role: research
+---
+
+方法论存在不等于它会在正确时刻进入工作注意力。命中以下任一事件，必须在开启下一个实验或抽象前，读取 `/home/zhuran24/zmd-research/research_lab/ATTENTION_AND_REFLECTION.txt` §3-4，做一次一屏反思脉冲：
+
+- 同一 skeleton／consumer 深度／成功信号连续两次未推进最深正见证，准备开第三次；
+- 连续两次只增长知识账或研究机器账，准备再花第三次结果；
+- UNKNOWN 后只想加时间、seed、profile、cut、atlas 或再套一层表示，没有新语义变量、直接 consumer 或正交 control；
+- 已有正几何、见证、有限基底或 atlas 尚未送进更深 consumer，却准备继续建抽象；
+- 接口、signature、cut store 继续膨胀而跨上下文复用／判别力很弱；
+- 同一冻结 skeleton 连续三次承重实验没有异源 control；
+- 预设停止条件、owner 回看、叙事矛盾或证据身份变化出现；
+- 准备修改 CLAUDE／AGENTS、MEMORY、skill、START、STATE schema、mode 或新增默认必读文件。
+
+脉冲不是报告，也不是每一步自审。只回答：最深正见证有没有前进，三本账哪本在涨，什么选择变成了未经复核的家具，最便宜的直接 consumer／正交 control 是什么，决定 CONTINUE、BRANCH/CONTROL 还是 STOP/SWITCH。方向不变就立刻继续，不写新文件；方向或活问题改变才更新 STATE 的 Reflection checkpoint。
+
+skill 负责为什么，memory 负责什么时候打断，AGENTS／CLAUDE 负责把这条反射路由进工作流。不要因为这张卡存在，就让正常研究始终盯着方法论本身。

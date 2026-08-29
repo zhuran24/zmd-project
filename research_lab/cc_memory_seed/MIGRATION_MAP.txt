@@ -93,6 +93,15 @@ wf-default-anomaly-monitor.md
   Not injected. Workflow retry and cache semantics remain in ops markdown and
   AGENT_OPERATIONS.
 
+Post-migration role evolution
+----------------------------
+research-pause-reflex.md
+  Added on 2026-08-29 from owner feedback after three major direction changes
+  required an external stop despite the methodology already containing the right
+  principles. It is a runtime attention trigger, not a recovered P5 card and not
+  dynamic campaign state. The canonical tracked statement is
+  research_lab/ATTENTION_AND_REFLECTION.txt.
+
 No-loss boundary
 ----------------
 "Not injected" means "not placed in default role memory", not deleted. The old

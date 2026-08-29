@@ -42,8 +42,28 @@ certification tree
 
 2. Attention architecture
 -------------------------
-The root README and agent overlays only establish mode and route attention. They
-do not carry the whole project state.
+Attention is routed through three entry surfaces with deliberately different
+weights. Their division is part of the research architecture, not presentation.
+
+AGENTS.md / CLAUDE.md
+  Always-on mode and routing overlay. It says what role the agent has, what to
+  read first, which truth boundaries are non-negotiable, and where runtime
+  reflexes live. It must remain short and must not accumulate changing facts.
+
+Claude Code MEMORY.md and cards
+  Always-light reflex layer. It carries stable events that must interrupt a line
+  while it is already running. It answers when to stop, not the current campaign
+  state. The external native directory and tracked seed are described in
+  CC_MEMORY.txt.
+
+Skill index: /zmd-method and /research-charter
+  Deep doctrine layer. It explains why and how; it is loaded at cold start and
+  after context compression, then recedes into the background. It is reopened
+  when a runtime pause exposes a real method or charter dispute, not after every
+  ordinary experiment.
+
+The full routing and pause contract lives in:
+  research_lab/ATTENTION_AND_REFLECTION.txt
 
 Stable orientation:
   research_lab/PROGRAM.txt
@@ -51,16 +71,9 @@ Stable orientation:
 
 Live orientation:
   research_lab/STATE.txt
-    Active campaign pointer, current wall, latest consequential result, and the
-    one live question. Kept short enough to reread every session.
-
-Role memory:
-  research_lab/CC_MEMORY.txt and research_lab/cc_memory_seed/
-    Bind Claude Code to a research-only native memory directory. MEMORY.md stays
-    a short index of stable habits; campaign state, old line status, quotas, and
-    changing thresholds stay in STATE, campaign files, handbooks, or ops state.
-    The tracked seed makes the machine-local memory recoverable without freezing
-    later role-consistent memory evolution.
+    Active campaign pointer, current endpoint, deepest positive witness, one live
+    question, reflection checkpoint, and immediate truth guards. It is kept short
+    enough to reread every session; history belongs elsewhere.
 
 Validation level:
   research_lab/CHECKS.txt
@@ -71,6 +84,12 @@ Campaign context:
   research_lab/campaigns/<id>/CAMPAIGN.txt
     Success object, scope, known facts, non-implications, current research
     tension, and links to source evidence.
+
+Information placement follows attention frequency: high-frequency entry files are
+short and pointer-rich; live facts stay in STATE; consequential conclusions stay
+in RESULTS/experiment records; raw bytes stay in local. Before adding a durable
+file, consider its audience, load frequency, half-life, induced behavior, and one
+truth source. The complete placement rule is in ATTENTION_AND_REFLECTION.txt.
 
 The inherited repository is a library, not the front door. Agents load old
 CURRENT/PROJECT_LOCK/ledgers/history only when the current question needs exact
@@ -103,7 +122,13 @@ program layer
   PROGRAM.txt. Stable mission and principles.
 
 state layer
-  STATE.txt. Current position and next question, not a diary.
+  STATE.txt. Current position, reflection checkpoint, and next question, not a
+  diary or cumulative result ledger.
+
+attention/reflex layer
+  ATTENTION_AND_REFLECTION.txt plus the research memory reflex. Event-triggered
+  pauses and file-placement rules live here; it is not consulted after every
+  ordinary step.
 
 campaign layer
   campaigns/<id>/. Self-contained active research surface.
@@ -145,6 +170,13 @@ No detailed global plan is required. Pre-registration is optional and used only
 when looking at the outcome could move thresholds, when a causal A/B claim is
 intended, when a high-budget run needs a stop rule, or when owner instructions
 explicitly require it.
+
+The loop is interrupted only by the event triggers in
+ATTENTION_AND_REFLECTION.txt. A pause is a one-screen decision pulse, not a new
+experiment, dossier, or per-step audit. It exists because methodology can be
+known yet remain absent from working attention at the moment continuation becomes
+automatic. If the pulse leaves the direction unchanged, work resumes immediately;
+if it changes the direction or live question, STATE records the checkpoint.
 
 A result is durable only when RESULTS.txt records:
 
@@ -238,6 +270,13 @@ solely to make an unrelated research experiment pass.
 
 11. Architecture change rule
 ----------------------------
+Every durable file change has an attention effect. Before adding a new default
+read or editing a high-frequency index, identify who reads it, how often, how
+long the information stays true, and what behavior it will induce. Put the full
+content at the lowest-frequency layer that still reaches the agent when needed;
+higher-frequency layers should point rather than duplicate. The canonical
+placement check is in ATTENTION_AND_REFLECTION.txt.
+
 This architecture should not grow a new rule for every incident. Change it only
 when one of these is true:
 

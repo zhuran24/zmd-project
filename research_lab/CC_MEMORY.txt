@@ -27,6 +27,12 @@ MEMORY.md remains a short default-injection index. Detailed cards are loaded onl
 when their trigger matches. Dynamic campaign state is not copied into auto-memory;
 it stays in research_lab/STATE.txt and the active CAMPAIGN.txt.
 
+Runtime research pauses belong here as a stable reflex because the missing
+failure mode was not ignorance of the methodology, but failure to surface it at
+the moment continuation became automatic. The memory card points to the tracked
+canonical contract in research_lab/ATTENTION_AND_REFLECTION.txt; it does not copy
+current experiment counts or turn every step into a self-review.
+
 The old combined-tree memory was not copied wholesale. P5 had already routed
 many old cards into tracked handbooks, ops state, trigger ledgers, or archive.
 This tree imports only the parts that must shape research attention, rewritten

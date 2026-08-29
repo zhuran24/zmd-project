@@ -9,6 +9,7 @@
   "source_archive_path": "/home/zhuran24/.claude/ops/zmd-pj/archive/memory-cards/metab_knives23_p1_gptpro_20260824T125103Z/P5_FINAL",
   "files": [
     {"seed": "MEMORY.txt", "target": "MEMORY.md"},
+    {"seed": "research-pause-reflex.txt", "target": "research-pause-reflex.md"},
     {"seed": "research-role-and-goal-hierarchy.txt", "target": "research-role-and-goal-hierarchy.md"},
     {"seed": "question-framing-carries-answers.txt", "target": "question-framing-carries-answers.md"},
     {"seed": "existing-knowledge-and-errata-reconciliation.txt", "target": "existing-knowledge-and-errata-reconciliation.md"},

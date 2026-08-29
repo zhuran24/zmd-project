@@ -9,61 +9,45 @@ Campaign ref: research_lab/campaigns/zero_condition/CAMPAIGN.txt
 
 Current endpoint
 ----------------
-Statement: E095 remains the stable constructive base: module A is a checked
-128-body native-front half and module B is the sole 91-body wall. E114-E119 pay
-the direct-consumer debt, learn 587 replayed local-front cuts, and stop blind cut
-growth when the rules prove structurally novel but nontransportable. E120 then
-puts the exact local-option existential relation into the 1,205-body proposer.
-E121 factors the repeated body-cover sums through 1,714 exact cell-occupancy
-channels. Dynamic coefficient occurrences fall from 4,548,696 to 121,095, a
-37.5622x reduction; every option row has at most six occupancy terms instead of
-up to 482 body terms. Independent replay matches expanded and factored viability
-on 384,160 selected options across all 47 known dead geometries. Yet the direct
-one-worker model and a fresh multiworker model with all 587 cuts both remain
-UNKNOWN with no incumbent. Common-subexpression expansion was a major tax, not
-the whole wall. The live fork is now exact spatial-collar closure versus a
-different pole/boundary skeleton control.
-Evidence refs:
-  research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E080_dependency_partition_seam_frontier/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E081_axis_seam_recolor_frontier/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E082_bay_alignment_partition_frontier/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E083_historical_bay_carrier_premise_audit/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E084_current_geometry_power_front_repair/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E088_module_b_front_rule_signature_atlas/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E089_module_b_spatial_hazard_holdout/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E095_y41_module_product_decomposition/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E096_module_b_interface_thickness/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E097_reserved_x35_module_b_constructor/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E098_e097_machine_packet_recovery/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E099_source_isolated_e096_revalidation/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E100_source_stable_reserved_x42_hybrid/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E101_x42_allocation_handshake/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E102_high_side_solver_diverse_replay/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E103_high_side_interface_capacity_audit/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E104_high_reserved_y60_constructor/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E105_nested_allocation_handshake/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E106_nested_template_split_frontier/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E107_reverse_nested_allocation_handshake/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E108_nested_template_projection_atlas/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E109_last_two_template_split_discriminator/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E110_explicit_separator_template_duty_atlas/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E111_separator_native_front_class_atlas/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E112_fixed_separator_class_state_closure/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E113_separator_side_interaction_compiler/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E114_e110_fixed_geometry_direct_consumer/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E115_separator_template_state_full_consumer/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E116_low_cardinality_separator_tuple_discriminator/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E117_high_geometry_local_front_benders/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E118_solver_diverse_local_front_benders/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E119_local_front_cut_family_saturation_audit/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E120_integrated_local_option_master/RESULT.txt
-  research_lab/campaigns/zero_condition/experiments/E121_occupancy_factored_local_option_master/RESULT.txt
-Identity audit:
-  research_lab/campaigns/zero_condition/E079_E080_ARTIFACT_IDENTITY_AUDIT_20260828.txt
-Direction ref:
-  research_lab/campaigns/zero_condition/DIRECTION_CUT_TRANSPORT_20260828.txt
+E095 remains the deepest positive constructive witness: module A has an
+independently checked 128-body native-front half; module B remains the sole
+91-body wall. E114-E119 pay the direct-consumer debt, learn 587 replayed
+local-front cuts, and stop blind cut growth when those rules prove truthful but
+nontransportable across geometries. E120 puts the exact local-option existential
+relation into the 1,205-candidate proposer. E121 factors repeated body-cover sums
+through 1,714 exact cell-occupancy channels, reducing dynamic coefficient
+occurrences from 4,548,696 to 121,095, a 37.5622x reduction with zero replay
+mismatch across 384,160 selected options. Both complete solver arms remain
+UNKNOWN without an incumbent. The encoding tax was real; removing it did not
+produce a deeper positive witness.
+
+Deepest positive witness: E095 module-A 128-body native-front half.
+Current live basin: y=41 partition / E092 pole-boundary skeleton / x42 high-side language.
+Primary evidence: E095, E113, and E119-E121 RESULT.txt files under the active
+campaign experiments directory; full consequential history is in RESULTS.txt.
+
+Reflection checkpoint
+---------------------
+Date: 2026-08-29
+Trigger: the owner identified that three major direction corrections occurred
+only after an external stop, even though the relevant methodology was already
+written.
+
+Diagnosis: the missing layer was event timing, not doctrine. Method and charter
+were loaded at cold start but had no concrete runtime interrupt. The current line
+also shows the exact risk: several recent results moved the knowledge and machine
+accounts while the deepest positive witness stayed at E095.
+
+Decision: install event-triggered reflection in the attention architecture. Keep
+the current collar-versus-skeleton discriminator as the live question, but do
+not open a third same-language continuation after two non-deepening results
+without the one-screen pulse in ATTENTION_AND_REFLECTION.txt. A direct consumer
+or orthogonal control has priority over another abstraction layer.
+
+Next mandatory pause: before a third consecutive experiment that preserves the
+same skeleton, consumer depth, and success signal without advancing the deepest
+positive witness; immediately on any other P1-P8 trigger in
+research_lab/ATTENTION_AND_REFLECTION.txt.
 
 Live question
 -------------
@@ -81,110 +65,31 @@ build a collar constructor with side consumers. If closure absorbs nearly all
 preregistered different-skeleton control. This is a no-solver representation
 audit and may make no feasibility claim.
 
-
 Inflight / recovery
 -------------------
 - NONE
 
-Recent consequential results
-----------------------------
-- The cut/transport candidate direction was frozen and heterogeneously reviewed: theorem CONFIRMED witness-conditionally, forced-rate premise and geometric-core equality refuted, novelty reframed as a rate-strengthening of shipped SAC-Hull/F2/F4. | evidence=research_lab/campaigns/zero_condition/DIRECTION_CUT_TRANSPORT_20260828_REVIEW.txt | effect=campaign main line moves to the corrected cut-deficiency/transport-core frame
-- The blind rediscovery lab collided with the mainline: independent convergence on necessity accounts, finite structural bases, and partition/seam construction; the blind K=47 boundary-packing theorem passed heterogeneous recheck. | evidence=research_lab/campaigns/zero_condition/BLIND_COLLISION_20260828.txt | effect=tight-equality accounts promoted as the route to finite macro-structures
-- E063 exhausted 858 pole-conditioned second-object states with no zero and no UNKNOWN. | evidence=research_lab/campaigns/zero_condition/experiments/E063_pole_conditioned_second_object_frontier/RESULT.txt | effect=individual representatives were replaced by a complete-face atlas
-- E068 exhausted 678 admitted final cached actions with no zero or UNKNOWN. | evidence=research_lab/campaigns/zero_condition/experiments/E068_final_cached_fourth_action/RESULT.txt | effect=retired the pole-conditioned external-action lineage
-- E069 exposed the distinct 6x4 parent's regular twelve-way source-only face. | evidence=research_lab/campaigns/zero_condition/experiments/E069_six4_near_miss_complete_face/RESULT.txt | effect=selected a synthetic dual filling-signature discriminator before any physical scan
-- E070 closed the discriminator: six synthetic dual signatures are OPTIMAL and six INFEASIBLE, with no native exact dual option. | evidence=research_lab/campaigns/zero_condition/experiments/E070_dual_filling_signature_targets/RESULT.txt | effect=the twelve-signature line becomes a bounded constructive specification feeding E074 rather than an open scan
-- E078 closes the frozen-face discriminator: the reference target-26 two-row rewrite works across the full parent face, while alternate equal-size minima prove the core is nonunique. | evidence=research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt | effect=keep one stable constructive rewrite, reject unique-core wording, and move the go/no-go to physical/cross-geometry remapping
-- E079 compiles all 47 boundary-only packings into a reversible one-hot macro with the full up-to-K license. | evidence=research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt | effect=the first proved finite structural basis is ready for a bounded constructor
-- E080 exhausts 65,535 operation-type bipartitions and selects a connected balanced two-module contract with a two-commodity typed seam. | evidence=research_lab/campaigns/zero_condition/experiments/E080_dependency_partition_seam_frontier/RESULT.txt | effect=the sufficient side now has a concrete bay/seam constructor input rather than a prose sketch
-- E081 exhausts 12,864 balanced straight-seam states on E069's real body geometry: the E080 seed ranks 3 with 26 moves, while a seven-member Pareto beam contains an E078-preserving 16-move winner. | evidence=research_lab/campaigns/zero_condition/experiments/E081_axis_seam_recolor_frontier/RESULT.txt | effect=replace the single semantic seed with a bounded geometry-aware moved-body repair beam
-- E082 independently selects the same operation partition by minimizing mixed bays in a historical 17-bay count scaffold: one mixed bay versus E080's four. | evidence=research_lab/campaigns/zero_condition/experiments/E082_bay_alignment_partition_frontier/RESULT.txt | effect=corroborates the partition at count level but does not supply geometry
-- E083 audits the historical carrier and finds G=(10,5,5) already exact INFEASIBLE in the recorded final35 context while H=(11,6,4) has no admitted positive row. | evidence=research_lab/campaigns/zero_condition/experiments/E083_historical_bay_carrier_premise_audit/RESULT.txt | effect=retire unchanged v3 carrier and make E081 current-geometry set packing the live path
-- The E079/E080 run-001 paths were overwritten after admission. A machine audit proves the current E079 47-state projection and current E080 load-bearing semantics reproduce the admitted objects, but retains the original SHA records and forbids silent rebinding; a duplicate unexecuted E081 draft is tombstoned. | evidence=research_lab/campaigns/zero_condition/E079_E080_ARTIFACT_IDENTITY_AUDIT_20260828.txt | effect=separate semantic reproduction from byte identity and require new run directories
-- E084 closes the 16-body re-embedding premise: fixed-pole body packing moves 30, one-replacement power moves 31, all-pole objectives trade manufacturing versus pole movement, and their three materialized power optima have 18/35/26 empty native-front bodies. One-replacement front r31/r32 are producer MASTER_INFEASIBLE; r33 is UNKNOWN. | evidence=research_lab/campaigns/zero_condition/experiments/E084_current_geometry_power_front_repair/RESULT.txt | effect=put native-front feasibility inside the proposer and make fresh r33 the live discriminator
-- E085 fresh-replays r33 for 250 seconds with pinned source/checkpoint identities and memory telemetry. The result is UNKNOWN with no incumbent, unchanged 34-rule checkpoint, process ru_maxrss 1,941,080 KiB and no OOM counter increase. | evidence=research_lab/campaigns/zero_condition/experiments/E085_front_aware_r33_replay/RESULT.txt | effect=do not advance the rung; replace fixed-rung repetition with a representation-diverse feasibility-first proposer
-- E086 removes the fixed retained rung and searches the complete bounded one-replacement retained-count language. It finds 184- and 181-retained candidates, both exact-checker EMPTY_DOMAIN, and grows the front-rule checkpoint 34->98 with no operation nogood. The checker corrects the raw derivation's false unchanged-feasible-set wording. | evidence=research_lab/campaigns/zero_condition/experiments/E086_feasibility_first_front_proposer/RESULT.txt | effect=continue from the 98-rule checkpoint; do not restart or cite 184/181 as final-language lower bounds
-- E087 continues from 98 rules with a new seed family. Two more front-dead candidates add 83 rules, all in module B, for a final 181-rule store; empty counts are 39 and 44 and no operation nogood or witness appears. | evidence=research_lab/campaigns/zero_condition/experiments/E087_feasibility_first_front_continuation/RESULT.txt | effect=stop blind lazy repetition and build a complete module-B front-rule signature atlas
-- E088 exhausts the 4,353-candidate module-B universe. Coarse stencils cover registered failures only by expanding to almost the whole domain, while fine support signatures are nearly one-per-failure; both predeclared bulk criteria fail. | evidence=research_lab/campaigns/zero_condition/experiments/E088_module_b_front_rule_signature_atlas/RESULT.txt | effect=retire point-rule bulk compilation and move to a spatial B-bay/pole decomposition discriminator
-- E089 uses E086's 95 module-B rules for train-only spatial-region selection and E087's disjoint 83 additions as holdout. The best four-role union consumes 47.97 percent of the universe but covers only 71.58 percent of training and 62.65 percent of holdout failures. | evidence=research_lab/campaigns/zero_condition/experiments/E089_module_b_spatial_hazard_holdout/RESULT.txt | effect=retire the fixed-52-plus-one B geometry and run a nested multi-pole-versus-partition relaxation
-- E090 keeps y=41 and the complete front consumer but allows exactly 53 poles with at most three relocations. A 240-second pure-feasibility run returns UNKNOWN without an incumbent at about 8.3 GiB process RSS and no OOM-counter increase. | evidence=research_lab/campaigns/zero_condition/experiments/E090_three_pole_front_discriminator/RESULT.txt | effect=do not rerun y=41; move the identical three-pole consumer to partition_97f9ba7e7ad710dc/y=17 as the finite Pareto control
-- E091 tests partition_97f9ba7e7ad710dc/y=17 under the same three-pole skeleton budget. Its exact body/pole/power model is INFEASIBLE in 10.777 seconds, so the complete-front stage does not run. | evidence=research_lab/campaigns/zero_condition/experiments/E091_next_pareto_three_pole_control/RESULT.txt | effect=sweep the entire seven-state Pareto beam through the cheap body/power admission model before another front build
-- E092 completes that seven-state admission sweep: y=41 is BODY_POWER_FEASIBLE, five states are exact MASTER_INFEASIBLE, and only partition_5a72220e0268a3c1/y=21 remains UNKNOWN. The y=41 witness is independently replayed. | evidence=research_lab/campaigns/zero_condition/experiments/E092_pareto_three_pole_admission_atlas/RESULT.txt | effect=resolve only the y=21 admission state before selecting a skeleton carrier
-- E093 solver-diverse-replays the sole y=21 UNKNOWN and returns exact MASTER_INFEASIBLE in 21.064 seconds. All seven Pareto states now have terminal three-pole skeleton status, with y=41 the sole admitted state. | evidence=research_lab/campaigns/zero_condition/experiments/E093_e080_seed_admission_replay/RESULT.txt | effect=end the partition vote and decompose y=41's censored complete-front consumer around the admitted pole/boundary skeleton
-- E094 fixes the admitted y=41 pole set and boundary_macro_09 but leaves all bodies and complete front classes free. It remains UNKNOWN after 10.3M branches and 89k conflicts. | evidence=research_lab/campaigns/zero_condition/experiments/E094_y41_fixed_pole_front_decomposition/RESULT.txt | effect=use the y=41 seam to prove and execute an exact A/B module decomposition before any pole or boundary release
-- E095 proves that fixed-skeleton native-front semantics factor exactly across y=41. Module A yields an independently replayed 128-body witness in 31.027 seconds; module B remains UNKNOWN after 4.48M branches. | evidence=research_lab/campaigns/zero_condition/experiments/E095_y41_module_product_decomposition/RESULT.txt | effect=freeze A and compare template versus spatial interfaces inside the 91-body B problem
-- E096 exhaustively compares template and spatial interfaces inside module B. The template bridge spans 1,926 cells and all 4,378 candidates; the guarded x=34 spatial cut spans 133 cells with a 436-candidate separator and eight allocation dimensions. | evidence=research_lab/campaigns/zero_condition/experiments/E096_module_b_interface_thickness/RESULT.txt | effect=select a reserved-x35 sufficient constructor before any further module-B solver work
-- E097 attempted a reserved-x35 constructor from E096's x_after_34 premise, but its local packet is absent and its durable text omits the branch identity. E099 later invalidates the premise itself. | evidence=research_lab/campaigns/zero_condition/experiments/E097_reserved_x35_module_b_constructor/RESULT.txt | effect=retracted; no E097 branch or decision is consumable
-- E098 attempts fail-closed packet recovery but fresh E096 semantics disagree with the committed snapshot, so it stops before executing E097. | evidence=research_lab/campaigns/zero_condition/experiments/E098_e097_machine_packet_recovery/RESULT.txt | effect=escalate from missing artifacts to source-identity revalidation
-- E099 source-isolates operation_profiles/E095/E096 and independently reproduces E098, not the committed E096 snapshot: x_after_41 and template/spatial incomparability replace x_after_34 dominance across 19 changed fields. | evidence=research_lab/campaigns/zero_condition/experiments/E099_source_isolated_e096_revalidation/RESULT.txt | effect=retract E096/E097 and build a source-stable x41/template hybrid
-- E100 reserves x=42 in that source-stable hybrid, producing an exact 2,805/1,324 low/high product with an eight-coordinate class bridge. Its 240-second pure-feasibility solve is UNKNOWN after 8.42M branches and no incumbent. | evidence=research_lab/campaigns/zero_condition/experiments/E100_source_stable_reserved_x42_hybrid/RESULT.txt | effect=externalize the allocation bridge and solve conditioned sides instead of rerunning the monolith
-- E101 finds an exact x42 body/power allocation in 0.326 seconds, but the smaller 1,324-candidate high native-front model remains UNKNOWN in 25.061 seconds before producing a class vector. | evidence=research_lab/campaigns/zero_condition/experiments/E101_x42_allocation_handshake/RESULT.txt | effect=solver-diverse-replay the unchanged high side before building a high-interface atlas
-- E102 preserves the high feasible set and changes only to one-worker pseudo-cost search. It remains UNKNOWN for 90.013 seconds with zero branches/conflicts and no allocation. | evidence=research_lab/campaigns/zero_condition/experiments/E102_high_side_solver_diverse_replay/RESULT.txt | effect=stop solver repetition and measure high-side template/spatial/capacity interfaces
-- E103 removes exact unary dead rows and exhausts high-side interfaces. Template and spatial are incomparable, capability signatures are degenerate, and the y_after_59/template hybrid passes all frozen selection gates. | evidence=research_lab/campaigns/zero_condition/experiments/E103_high_side_interface_capacity_audit/RESULT.txt | effect=test a manufacturing-free y60 sufficient constructor
-- E104 reserves y60, yielding an exact 812/198 lower-upper product with 1,010 candidates. The 9,362-variable joint high model remains UNKNOWN after 2.83M branches and exposes no allocation vector. | evidence=research_lab/campaigns/zero_condition/experiments/E104_high_reserved_y60_constructor/RESULT.txt | effect=retire the joint high solve and externalize nested body/template/class allocations
-- E105 finds the first body/template proposal lower 7/4/8 plus upper 3/2/2, then closes the complete upper 3/2/2 native-front side as exact INFEASIBLE with solver-diverse replay. | evidence=research_lab/campaigns/zero_condition/experiments/E105_nested_allocation_handshake/RESULT.txt | effect=learn one exact nested template-split nogood and request the next body/template proposal
-- E106 consumes that rule, learns three more exact split nogoods, and opens split upper 5/2/1 with three independently replayed allocation nogoods. | evidence=research_lab/campaigns/zero_condition/experiments/E106_nested_template_split_frontier/RESULT.txt | effect=freeze the open split and continue only its residual upper-allocation face
-- E107 reverses the handshake and proves the complete lower 5/4/9 projection empty; solver-diverse replay promotes upper 5/2/1 as the fifth exact split nogood. | evidence=research_lab/campaigns/zero_condition/experiments/E107_reverse_nested_allocation_handshake/RESULT.txt | effect=return to the body/template frontier with five structural rules
-- E108 exactly enumerates the body/power template projection: seven of 847 formal upper vectors are realizable, five are prior split nogoods, leaving only 3/0/4 and 6/0/3 for direct testing. | evidence=research_lab/campaigns/zero_condition/experiments/E108_nested_template_projection_atlas/RESULT.txt | effect=replace serial body proposals with a two-state exact discriminator
-- E109 closes both remaining vectors on complete upper-side native-front models; seven exact split negatives now cover E108's complete seven-state body basis. | evidence=research_lab/campaigns/zero_condition/experiments/E109_last_two_template_split_discriminator/RESULT.txt | effect=retire manufacturing-free y60 and restore E103's explicit separator as a third finite module
-- E110 restores E103's 812/154/239 groups and exactly enumerates 27 body/power-feasible separator template vectors from an 847-vector formal box. | evidence=research_lab/campaigns/zero_condition/experiments/E110_explicit_separator_template_duty_atlas/RESULT.txt | effect=replace 154 separator coordinates with a 27-state template-duty interface
-- E111 expands the 27 duties into a 353-state class basis, independently replays 301 separator-only positives, and externalizes the remaining 52 states. | evidence=research_lab/campaigns/zero_condition/experiments/E111_separator_native_front_class_atlas/RESULT.txt | effect=replace censored unseen-state search with 52 fixed exact discriminators
-- E112 fixes all 52 residual states: 49 are feasible and three exact negatives form one compact 1/0/3 class rule; the separator-only atlas is complete at 350/3/0. | evidence=research_lab/campaigns/zero_condition/experiments/E112_fixed_separator_class_state_closure/RESULT.txt | effect=end separator class search and compile the exact cross-module interaction interface
-- E113 compiles all candidate/body and mode-class/front cross interactions; low versus separator+high strictly dominates both alternative two-way partitions and persists the exact 7,325-edge / 2,040-nonempty-bucket interface. | evidence=research_lab/campaigns/zero_condition/experiments/E113_separator_side_interaction_compiler/RESULT.txt | effect=preserve the interface, but defer proposer orientation until direct consumer debt is paid
-- E114 sends all 27 stored E110 body/power representatives to the full x42-high native-front consumer; all are exact local negatives with empty body mode/class domains, and diverse replay passes. | evidence=research_lab/campaigns/zero_condition/experiments/E114_e110_fixed_geometry_direct_consumer/RESULT.txt | effect=replace representative-witness optimism with a 27-state full-consumer cover over all live geometry
-- E115 runs that full consumer over all live geometry in each separator template state: 0/3/0 and 5/0/0 are exact negatives, while 25 states remain named UNKNOWN and five reduce to twelve fixed separator-class tuples. | evidence=research_lab/campaigns/zero_condition/experiments/E115_separator_template_state_full_consumer/RESULT.txt | effect=replace blanket state reruns with a twelve-tuple exact discriminator
-- E116 fixes all twelve low-cardinality separator-class tuples; all remain UNKNOWN with no positive or negative, so class fixation does not change current consumer discrimination. | evidence=research_lab/campaigns/zero_condition/experiments/E116_low_cardinality_separator_tuple_discriminator/RESULT.txt | effect=retire class-tuple enumeration and build a geometry proposer that learns empty local-option blocker cores
-- E117 rejects 39 exact body/power geometries through complete local option checks and learns 504 independently replayed 1-4 body containment cuts; the next five-second master solve remains UNKNOWN. | evidence=research_lab/campaigns/zero_condition/experiments/E117_high_geometry_local_front_benders/RESULT.txt | effect=continue only from the persisted cut store with a solver-diverse master, not from class tuple enumeration
-- E118 uses a solver-diverse master to obtain eight more dead geometries and 83 new replayed cuts, but the best empty-body count remains six and both terminal profiles are UNKNOWN. | evidence=research_lab/campaigns/zero_condition/experiments/E118_solver_diverse_local_front_benders/RESULT.txt | effect=trigger the no-improvement stop and audit cut-family coverage/saturation before any further Benders batch
-- E119 finds mixed saturation: 73.49% of E118 cuts are structurally new, exact subject novelty is only 28%, and no E118 cut transfers to another E118 geometry. | evidence=research_lab/campaigns/zero_condition/experiments/E119_local_front_cut_family_saturation_audit/RESULT.txt | effect=stop blind containment-cut growth and encode local option existence directly with geometry
-- E120 encodes exact local-option existence in the geometry master; both solver arms remain UNKNOWN, while the faithful model exposes 4,548,696 dynamic body/front coefficient occurrences. | evidence=research_lab/campaigns/zero_condition/experiments/E120_integrated_local_option_master/RESULT.txt | effect=replace full cohabitation with an exact spatial collar audit or switch skeleton if the collar is not materially thinner
-- E121 factors repeated body-cover sums through exact cell-occupancy channels, reducing dynamic terms 37.5622x with zero replay mismatch; both complete solver arms still remain UNKNOWN. | evidence=research_lab/campaigns/zero_condition/experiments/E121_occupancy_factored_local_option_master/RESULT.txt | effect=measure exact collar closure; if it remains broad, switch skeleton rather than adding another solver profile
+Immediate truth guards
+----------------------
+- There is no complete zero-condition whole-layout witness and exact routing has
+  not been reached on any line.
+- E121 is an algebraically equivalent encoding result, not evidence that x42 or
+  the y=41 skeleton is feasible or infeasible.
+- E113 is a static interaction compiler, not feasibility or proof that cap-first
+  is the correct quantifier order. The y=41 skeleton is preferred only inside the
+  frozen seven-state, three-pole language, not globally.
+- UNKNOWN is not infeasibility. Direct coordinate-master work remains disfavored
+  without the blind-line pathology preflight and build/solve telemetry.
+- Cross-context transport requires stable witnesses; component/destination
+  integers are local handles. All results remain research-only with no
+  certification, U/L, owner, production, or publication effect.
 
-Current unknowns and guards
----------------------------
-- There is no complete zero-condition whole-layout witness; exact routing has not been reached on any line — neither the mainline's relaxation scouting nor the blind tree's direct assault.
-- E069 is a terminal-signature relaxation (no second-object change, full binding, or routing), and its 103-object causal inventory is not an admitted second-object search space.
-- E070 is durably closed: verdict DUAL_FILLING_SIGNATURE_TARGETS_SUFFICIENT, 6 OPTIMAL / 6 INFEASIBLE / 0 UNKNOWN, decision SEARCH_PHYSICAL_DUAL_SIGNATURE_RELATIONS; synthetic feasibility still does not prove a legal physical realization.
-- E068's negative conclusion applies only to the retired pole-conditioned lineage; component 40 and every other single representative are not stable complete-face properties; all cross-context transport is bound by research_lab/methods/STABLE_IDENTITY_TRANSPORT.txt (component/destination integers are enumeration-local).
-- Direction consumption guards: keep the witness-conditional phrasing; no numerical cut-capacity inequality is an admitted solver cut; separator INFEASIBLE remains telemetry/core-shrinking only (specs/10 10.10 binds Stage 1, not only Stage 4); the REVIEW note's standing qualifications apply.
-- Master memory-wall preflight: direct coordinate-master solves can hit a 28 GiB solve-side wall (blind tree evidence); E077's only persisted run is a 207-core checkpoint with unrecorded terminal status; absorb the blind encoding fix and run with memory telemetry before any further full-master attempt (BLIND_COLLISION_20260828.txt).
-- Evidence qualifications: K=47 holds only in its boundary-local object space under the five-condition up-to-K license (rank 1 is never WLOG; keep the 47-packing disjunction; research_lab/local/reviews/20260828_k47_boundary_packing_recheck.md). The original admitted E079/E080 byte packets were overwritten; current run-001 bytes are audited semantic reruns, not replacements for old hash pins. Blind D2-D4 numeric claims are unrechecked; post-hygiene residual opens are the superseded E069 run's uncommitted runner, the unreconciled 190-vs-225 boundary-owner count, and E073's premise with no machine evidence anywhere.
-- All results here are research-only and have no certification, U/L, owner, production, or publication effect.
-
-- E078 is confined to one frozen occupied geometry and a terminal-signature abstraction with one synthetic dual option. The reference rewrite is stable but minimum cores are nonunique. Local destination/component integers remain non-transportable; cross-geometry use requires unique stable-witness remapping and a fresh exact check.
-- E079 is exact only for boundary body packing. Rank 1 is never WLOG, all 47 states remain live unless a separate proof removes states, and every omitted full-layout constraint must be reintroduced.
-- E080 is a type-level sufficient-construction seed. All copies of one operation type are kept together; no facility has been placed, no generic commodity has been bound, no duty/rate is frozen, and seam slot incidence is not throughput.
-- E081's 16- and 26-body figures are exact only for retaining current footprints outside one straight corridor while same-template operation assignment is quotiented. E084 has now refuted physical extension of the 16-body figure inside the fixed-pole bounded packing language: its exact body optimum moves 30. The 26-body control remains only a retention quotient until separately consumed.
-- E082 is exact only in the historical `SEARCH_PLAN_ONLY` template-count scaffold. Its one-mixed-bay number is an optimistic lower bound and independent partition corroboration, not an admitted physical carrier.
-- E083 blocks only the unchanged historical v3 carrier. The G-row negative is contextual to its pole phase and connectivity models; H is unadmitted rather than globally infeasible.
-- E084's exact positive geometries are body/pole/power witnesses only. The three checked all-pole optima are independently front-dead; the integrated front models are UNKNOWN. The r31/r32 MASTER_INFEASIBLE records are producer evidence and have not received a fresh heterogeneous solver replay. One inherited pole occupies optional protocol-core front (68,66); the slot may remain unused and no active-terminal claim follows.
-- E084 terminal-binding and global-binding scripts produced no result files. No terminal uniqueness, generic I/O, component-aware binding or routing conclusion may be cited.
-- E085 is a censored UNKNOWN, not an r33 negative. Its no-OOM telemetry does not diagnose the cause of search failure. A later duplicate invocation was rejected by no-overwrite and does not supersede the valid result.
-- E086 is not r33-equivalent: removing retained=186 broadens the model to all retained counts. Its 184 optimum is exact only for the intermediate 69-rule relaxation; the 181 candidate has bound 187. The durable effect is the 64 new necessary front rules and 98-rule checkpoint, not a moved-body bound.
-- E087 does not prove lazy closure cannot converge. Its durable signal is localization: all 83 new rules are module B, module-A count is unchanged, and empty-domain counts do not improve.
-- E088 is a finite census of one frozen candidate language and rule store. Its signatures are proposer groups only. Diffusion rejects the predeclared bulk-compilation strategy; it does not prove any signature member, module B, the partition or the one-replacement language infeasible.
-- E089 is a temporal predictive failure of one fixed spatial-role language. It authorizes retiring the 52+1 continuation budget, not declaring y=41, module B or any candidate infeasible. The next comparison must preserve the same front semantics while widening one structural axis at a time.
-- E090 is a censored UNKNOWN, not a negative for y=41 or the three-pole language. Its 8.3 GiB peak and zero conflicts are instrument telemetry, not a cause diagnosis.
-- E091 is exact only at body/pole/power admission for partition_97f9ba7e7ad710dc, y=17 and at most three relocated poles. It makes no native-front claim and does not refute that partition with more pole mobility or another geometry.
-- E092's five negatives and E093's y=21 negative are contextual body/pole/power results at the three-pole budget. Together they make y=41 the sole admitted skeleton only inside the frozen seven-state Pareto beam and pole language. The y=41 skeleton is not native-front feasible merely because it exists.
-- E094 is a censored nested subset, not a negative for boundary_macro_09 or the fixed pole set. Its all-boundary arm did not run. The proposed A/B split must first prove that opposite-module body occupancy cannot affect a module's native-front constraints; otherwise the split is not exact.
-- E095 exact product status applies only to body occupancy, fixed-pole power and native-front class capacity. Its 52 seam front/front coincidences can be recoupled by terminal uniqueness or commodity binding. Module B UNKNOWN is not infeasibility; no combined 219-body front witness exists.
-- E096's committed x_after_34 packet is superseded and its local bytes are absent. E099's source-stable E096 census is current: x_after_41, template/spatial incomparable. Interface counts remain finite coupling censuses, not runtime or feasibility bounds.
-- E097 has no recoverable terminal identity and consumes the withdrawn x_after_34 premise. Its x35 restriction, branch and decision have no current research effect.
-- E098 is an apparatus stop before E097. E099 corrects representation identity only; it makes no module-B feasibility claim. The exact cause of the old E096 snapshot remains unknown.
-- E100 is a censored UNKNOWN under an additional manufacturing-free x=42 restriction. It is not a negative for that restriction or module B. Its 19 cross-side front/front coincidences remain outside native-front semantics and can recouple at terminal uniqueness.
-- E101's body witness is exact only for one low/high template allocation. High-side UNKNOWN provides no allocation tuple and no nogood; low was not run.
-- E102 is a second censored measurement of the same high feasible set, not corroborating infeasibility. Its zero-branch pseudo-cost behavior and E101's branching portfolio behavior are instrument telemetry only.
-- E103's unary removal is exact for fixed power and fixed-obstacle native-front viability. Its interface and Hall counts are representation facts, not feasibility or runtime bounds. The selected y59 hybrid still retains an explicit separator until a new sufficient restriction removes it.
-- E104 is a censored result under the additional manufacturing-free y60 restriction. It does not reject y60, the explicit E103 separator, high, x42 or module B. Its run-001 import failure has no scientific effect; run-002 plus its independent checker are canonical.
-- E105 rejects only nested template totals lower 7/4/8 and upper 3/2/2 under reserved y60. It does not reject the particular body witness as a unique cause, any other template split, y60, high, x42 or module B. Runs 001/002 are apparatus aborts. The runner's dormant positive path contains run-001 pointer literals and must not be copied by successors.
-- E106's three allocation nogoods remain valid historical explanations, but E107's direct lower-projection negative subsumes them for continuation. E108's broad side atlases remain censored positive-only data. E109 closes only manufacturing-free y60. E111/E112 exactly partition the separator-only class basis, but all 350 positives omit low/high bodies. E113 is an exact static compiler, not feasibility. E114 rejects only its representative geometries. E115 rejects only separator states 0/3/0 and 5/0/0. E116 leaves all twelve tested class tuples UNKNOWN. E117/E118's 587 cuts are valid local-front necessary rules; E119 diagnoses their economics only. E120 faithfully integrates local-option existence but both arms are UNKNOWN, so its 4.55-million-term density is an instrument result, not an x42 negative. E121 is algebraically equivalent and cuts that density 37.5622x, but both arms again remain UNKNOWN; the reduction is an encoding result, not evidence that x42 is feasible or infeasible.
-- Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
-
-History pointers
-----------------
+Pointers
+--------
+- Attention and pause contract: research_lab/ATTENTION_AND_REFLECTION.txt
+- Program: research_lab/PROGRAM.txt
 - Campaign: research_lab/campaigns/zero_condition/CAMPAIGN.txt
 - Results: research_lab/campaigns/zero_condition/RESULTS.txt
-- Journals: research_lab/campaigns/zero_condition/RESEARCH_JOURNAL_20260825_20260826.txt; research_lab/campaigns/zero_condition/RESEARCH_JOURNAL_20260827.txt; research_lab/campaigns/zero_condition/RESEARCH_JOURNAL_20260828.txt
-- Experiments: research_lab/campaigns/zero_condition/experiments/
-- Historical material register: research_lab/HISTORICAL_REFERENCE_REGISTER.txt
+- Current journals: research_lab/campaigns/zero_condition/RESEARCH_JOURNAL_20260828.txt
+- Direction: research_lab/campaigns/zero_condition/DIRECTION_CUT_TRANSPORT_20260828.txt
+- Stable identity: research_lab/methods/STABLE_IDENTITY_TRANSPORT.txt

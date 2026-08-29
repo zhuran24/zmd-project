@@ -5,6 +5,7 @@ branch=research/main
 entry=research_lab/START.txt
 program=research_lab/PROGRAM.txt
 architecture=research_lab/ARCHITECTURE.txt
+attention=research_lab/ATTENTION_AND_REFLECTION.txt
 checks=research_lab/CHECKS.txt
 state=research_lab/STATE.txt
 active_campaign=zero_condition
