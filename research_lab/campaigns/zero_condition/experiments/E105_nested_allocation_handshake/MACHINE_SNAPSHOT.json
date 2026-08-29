@@ -1,0 +1,86 @@
+{
+  "schema": "zmd_e105_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "canonical_run": "research_lab/local/zero_condition/E105_nested_allocation_handshake/run-003",
+  "verdict": "NESTED_TEMPLATE_SPLIT_NATIVE_FRONT_INFEASIBLE",
+  "decision": "ADD_EXACT_BODY_TEMPLATE_SPLIT_NOGOOD",
+  "apparatus_failures": [
+    {
+      "run": "run-001",
+      "status": "NATIVE_ABORT_BEFORE_TERMINAL_OUTPUT",
+      "error": "OR_TOOLS_CHECK_FAILURE",
+      "detail": "Check failed: heuristics.fixed_search != nullptr",
+      "sha256": "6478a18a556f6b6fc4d6c591e35b06bea51a8c46d7d198e5020c1df87f51de17",
+      "scientific_effect": "none"
+    },
+    {
+      "run": "run-002",
+      "status": "NATIVE_ABORT_BEFORE_TERMINAL_OUTPUT",
+      "error": "OR_TOOLS_CHECK_FAILURE",
+      "detail": "Check failed: heuristics.fixed_search != nullptr",
+      "sha256": "691373a7030abc1dc192c7ca0a64d04dfb7989f36db151ff2380d833ee146ced",
+      "scientific_effect": "none"
+    }
+  ],
+  "body_only": {
+    "status": "OPTIMAL",
+    "candidate_count": 1010,
+    "selected_body_count": 26,
+    "elapsed_seconds": 0.0378712529927725,
+    "branches": 1529,
+    "conflicts": 50,
+    "model_variable_count": 1010,
+    "model_constraint_count": 526,
+    "nested_side_body_counts": {
+      "lower": 19,
+      "upper": 7
+    },
+    "nested_side_template_counts": {
+      "lower:manufacturing_3x3": 7,
+      "lower:manufacturing_5x5": 4,
+      "lower:manufacturing_6x4": 8,
+      "upper:manufacturing_3x3": 3,
+      "upper:manufacturing_5x5": 2,
+      "upper:manufacturing_6x4": 2
+    },
+    "selected_body_digest": "923da147720efced7d1130482bc1f2a20fab85b563c41bcbf1144345ba60a979",
+    "path": "research_lab/local/zero_condition/E105_nested_allocation_handshake/run-003/BODY_ONLY_RESULT.json",
+    "sha256": "8c4a4b0c72f2fed7bca59cde513d9a286b5c368c3d06f9ed0c9033a9b1d319ca"
+  },
+  "nested_proposer": {
+    "side": "upper",
+    "template_counts": {
+      "manufacturing_3x3": 3,
+      "manufacturing_5x5": 2,
+      "manufacturing_6x4": 2
+    },
+    "status": "INFEASIBLE",
+    "candidate_count": 198,
+    "elapsed_seconds": 2.187719636989641,
+    "branches": 5322,
+    "conflicts": 0,
+    "model_variable_count": 1794,
+    "model_constraint_count": 3523,
+    "path": "research_lab/local/zero_condition/E105_nested_allocation_handshake/run-003/PROPOSER_RESULT_00.json",
+    "sha256": "dfad7745d7aaf239d87a02d3e446d3dfe267c137df2762e24d2b1bd85aeeed55"
+  },
+  "solver_diverse_replay": {
+    "status": "INFEASIBLE",
+    "workers": 1,
+    "search_branching": "PSEUDO_COST_SEARCH",
+    "symmetry_level": 0,
+    "probing_level": 0,
+    "elapsed_seconds": 1.638264781999169,
+    "branches": 13748,
+    "conflicts": 458
+  },
+  "artifacts": {
+    "runner_sha256": "7dbdf3be073dd77b6ef091b4302442aa5766882d2f384b285576b84c368588b9",
+    "checker_sha256": "005ba763535cc1e1fc6b17e0d1d3f5facc884175cbfc468e6e0660d69a8fb347",
+    "result_sha256": "95ae95cc649097aae4010cb5ebe96f6027fefdfac2ee469d877cb8940a009ecb",
+    "artifact_check_sha256": "38e1d0f1fde3e689f04a17101805cf3e3c874b5f7941324b552945bab473a346"
+  },
+  "dormant_source_guard": "The unexecuted positive branch in run_e105.py hard-codes run-001 witness pointer strings. The canonical run-003 negative never enters that branch. No successor may copy those pointer literals; successor writers must derive paths from their actual run directory.",
+  "truth_boundary": "The exact reusable fact is only that, under the reserved-y60 source-stable context, upper template totals 3/2/2 admit no native-front assignment. Equivalently the full nested template split lower 7/4/8 plus upper 3/2/2 is forbidden. No body-specific geometry, other template split, y60 parent, x42 parent or module-B parent is rejected."
+}

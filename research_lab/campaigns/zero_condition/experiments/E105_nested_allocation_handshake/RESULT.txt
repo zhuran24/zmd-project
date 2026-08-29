@@ -1,0 +1,133 @@
+E105 RESULT: FIRST NESTED TEMPLATE SPLIT IS EXACTLY FRONT-INFEASIBLE
+==================================================================
+
+Status
+------
+Closed as one exact contextual template-split nogood. The canonical run is
+`run-003`. Runs 001 and 002 aborted inside OR-Tools before writing any scientific
+terminal artifact and have no effect. The run-003 packet and a solver-diverse
+replay both support the same narrow negative.
+
+Verdict
+-------
+
+  NESTED_TEMPLATE_SPLIT_NATIVE_FRONT_INFEASIBLE
+
+Decision
+--------
+
+  ADD_EXACT_BODY_TEMPLATE_SPLIT_NOGOOD
+
+Machine evidence
+----------------
+Canonical wrapper:
+
+  research_lab/local/zero_condition/
+  E105_nested_allocation_handshake/run-003/RESULT.json
+
+SHA-256:
+
+  95ae95cc649097aae4010cb5ebe96f6027fefdfac2ee469d877cb8940a009ecb
+
+Body-only result:
+
+  research_lab/local/zero_condition/
+  E105_nested_allocation_handshake/run-003/BODY_ONLY_RESULT.json
+
+SHA-256:
+
+  8c4a4b0c72f2fed7bca59cde513d9a286b5c368c3d06f9ed0c9033a9b1d319ca
+
+Nested proposer result:
+
+  research_lab/local/zero_condition/
+  E105_nested_allocation_handshake/run-003/PROPOSER_RESULT_00.json
+
+SHA-256:
+
+  dfad7745d7aaf239d87a02d3e446d3dfe267c137df2762e24d2b1bd85aeeed55
+
+Artifact check:
+
+  research_lab/local/zero_condition/
+  E105_nested_allocation_handshake/run-003/ARTIFACT_CHECK.json
+
+SHA-256:
+
+  38e1d0f1fde3e689f04a17101805cf3e3c874b5f7941324b552945bab473a346
+
+Body/template proposal
+----------------------
+On E104's exact 1,010-candidate lower/upper product, the body/power-only model
+selects 26 bodies in 0.038 seconds. It preserves both stable E078 bodies and has
+no overlap or unpowered body. The selected nested totals are:
+
+  lower bodies             19
+    manufacturing_3x3       7
+    manufacturing_5x5       4
+    manufacturing_6x4       8
+
+  upper bodies              7
+    manufacturing_3x3       3
+    manufacturing_5x5       2
+    manufacturing_6x4       2
+
+The body-only solve is OPTIMAL because the model is satisfaction-only and a
+witness is found. Its 1,010 variables and 526 constraints finish after 1,529
+branches and 50 conflicts.
+
+Exact nested negative
+---------------------
+The smaller upper side is then solved over all 198 surviving upper candidates,
+all same-footprint native modes, fixed-pole power, body non-overlap and every B
+front-demand class under the global per-class caps. Only the template totals
+3/2/2 are fixed; the body geometry and eight class coordinates remain free.
+
+The producer returns exact INFEASIBLE in 2.188 seconds. A fresh one-worker
+`PSEUDO_COST_SEARCH` replay with symmetry and probing disabled independently
+returns INFEASIBLE in 1.638 seconds after 13,748 branches and 458 conflicts.
+
+Therefore the reusable statement is not a body-specific nogood. It is the exact
+nested template-split nogood:
+
+  lower template totals = 7 / 4 / 8
+  upper template totals = 3 / 2 / 2
+
+under the source-stable x42, manufacturing-free y60, fixed E092 pole/boundary
+context. Since the upper side cannot realize any class vector at totals 3/2/2,
+no body-only geometry with this same nested template split can complete the
+native-front handshake.
+
+Apparatus history
+-----------------
+Runs 001 and 002 terminate before any body/template/allocation result because an
+OR-Tools native check rejects the chosen search configuration:
+
+  Check failed: heuristics.fixed_search != nullptr
+
+They are retained as apparatus failures only. Run 003 removes that solver-control
+combination and is the sole scientific packet.
+
+Next problem
+------------
+Return to the same 1,010-candidate body/power proposer, forbid exactly the nested
+template split above, and ask for the next body/template proposal. Do not ban the
+selected 26-body geometry alone, do not restore E103 unary-dead rows, and do not
+rerun E104's joint high model. The next proposal again sends its smaller nested
+side through the class-allocation handshake; only exact contextual negatives may
+be accumulated.
+
+Implementation guard
+--------------------
+The dormant positive branch in the E105 runner contains run-001 witness pointer
+literals. Run 003 never enters that branch, so the present negative packet is
+unaffected. Successor experiments must derive all positive artifact paths from
+the actual run directory rather than copying those literals.
+
+Truth boundary
+--------------
+This is not infeasibility for reserved y60, high, x42, module B, or any other
+nested template split. It proves no terminal uniqueness, generic I/O, commodity
+binding, component compatibility, routing or throughput. It has no certification,
+U/L, owner, production, publication or pruning effect outside this research
+constructor.

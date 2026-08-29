@@ -3912,6 +3912,50 @@ evidence:
   ARTIFACT_CHECK.json sha256
   7d2167688af5e8b49233d26df49bfaf764dd372e9c103d9437157db483457d86.
 
+R-ZC-115  The first reserved-y60 nested template split is exactly front-infeasible
+-----------------------------------------------------------------------------------
+status: body/template witness exact; upper-side negative solver-diverse replay PASS
+scope: source-stable x42 high side, E103 unary-live rows, manufacturing-free y60
+
+statement:
+  E105 first solves body/power only on E104's exact 1,010-candidate lower/upper
+  product. It finds 26 bodies in 0.038 seconds with both stable E078 bodies,
+  no overlap and no unpowered body. The nested template split is lower 7/4/8
+  and upper 3/2/2 for manufacturing_3x3 / 5x5 / 6x4.
+
+  The smaller upper side is then solved over all 198 upper candidates, every
+  same-footprint native mode and all eight B front-demand classes under global
+  per-class caps. Only the upper template totals 3/2/2 are fixed. The producer
+  returns exact INFEASIBLE in 2.188 seconds. A one-worker PSEUDO_COST replay with
+  symmetry and probing disabled independently returns INFEASIBLE in 1.638 seconds
+  after 13,748 branches and 458 conflicts. The artifact checker reports PASS.
+
+  Therefore the reusable failure is the exact nested template-split nogood
+  lower 7/4/8 plus upper 3/2/2, not the particular 26-body witness. Runs 001 and
+  002 are OR-Tools native apparatus aborts before terminal output and carry no
+  scientific effect.
+
+non-implications:
+  E105 does not reject manufacturing-free y60, high, x42, module B, or another
+  nested template split. No class allocation, outer-low result, combined witness,
+  terminal uniqueness, binding or routing result exists.
+
+effect on next problem:
+  Add exactly this nested template split as a body-proposer nogood and request the
+  next 26-body/template proposal in the unchanged 1,010-candidate language. Send
+  its smaller nested side through the same exact allocation handshake. Do not
+  ban only the witnessed geometry and do not rerun E104's joint high model.
+
+evidence:
+  E105 RESULT.txt; local RESULT.json sha256
+  95ae95cc649097aae4010cb5ebe96f6027fefdfac2ee469d877cb8940a009ecb;
+  BODY_ONLY_RESULT.json sha256
+  8c4a4b0c72f2fed7bca59cde513d9a286b5c368c3d06f9ed0c9033a9b1d319ca;
+  PROPOSER_RESULT_00.json sha256
+  dfad7745d7aaf239d87a02d3e446d3dfe267c137df2762e24d2b1bd85aeeed55;
+  ARTIFACT_CHECK.json sha256
+  38e1d0f1fde3e689f04a17101805cf3e3c874b5f7941324b552945bab473a346.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

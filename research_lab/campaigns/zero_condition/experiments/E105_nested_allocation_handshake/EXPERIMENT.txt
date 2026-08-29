@@ -1,0 +1,61 @@
+EXPERIMENT E105: NESTED LOWER/UPPER ALLOCATION HANDSHAKE
+========================================================
+
+Question
+--------
+Can E104's exact lower/upper product produce the first concrete high-side class
+allocation without putting both geometries and all allocation coordinates back
+into one solver?
+
+Method
+------
+1. Pin and source-isolate E095, E100, E101 and the committed E104 constructor.
+   Reconstruct exactly E104's 1,010 live survivors under fixed E092 poles,
+   boundary_macro_09, x42 and manufacturing-free y60.
+
+2. Solve body/power only for exactly 26 high bodies and template totals 10/6/10,
+   preserving both stable E078 bodies. The selected geometry is a hint; the
+   resulting lower/upper template totals are the binding proposal.
+
+3. Let the nested side with fewer required bodies propose an eight-coordinate
+   class allocation under its exact template totals. Let the other high side
+   solve with its exact template totals and per-class caps equal to global B
+   demand minus the proposer allocation. If that consumer is exact INFEASIBLE,
+   forbid only the exact proposer vector and request another, for at most three
+   vectors. UNKNOWN never creates a nogood.
+
+4. For a paired high witness, sum the two nested allocations and send the exact
+   complement to E101's unchanged x42-low model. A low positive is combined with
+   both high witnesses and E095's frozen module-A half, then replayed over all
+   219 manufacturing bodies.
+
+Predeclared decisions
+---------------------
+Body-only INFEASIBLE
+  Reject reserved y60 for the high 10/6/10 template totals and restore E103's
+  explicit separator. UNKNOWN preserves censorship.
+
+Nested proposer UNKNOWN
+  Change only that side's solver or derive side-specific capacity bounds.
+
+Nested consumer INFEASIBLE
+  Forbid only the exact proposer allocation and continue, up to the frozen limit.
+  If the limit closes without a pair, preserve the remaining open vectors.
+
+Nested pair positive, x42-low INFEASIBLE
+  Record the exact total-high allocation nogood. Do not forbid the proposer alone.
+
+Any UNKNOWN downstream
+  Preserve the exact body/template/allocation context and replay only that
+  consumer; do not rerun the whole high model.
+
+Full positive
+  Advance the independently replayed 219-body native-front witness to terminal
+  uniqueness, generic I/O and component-aware binding.
+
+Truth boundary
+--------------
+Body-only geometry does not prove native fronts. A nested-side negative is scoped
+to the exact template split and allocation bounds. An outer-low negative is scoped
+to one total-high allocation. Only a complete replayed positive transfers to the
+fixed-skeleton parent. No routing, throughput, certification or U/L effect.

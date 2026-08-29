@@ -11,15 +11,14 @@ Current endpoint
 ----------------
 Statement: E095 remains the stable constructive base: module A is a checked
 128-body native-front half and module B is the sole 91-body wall. E100/E101 reduce
-that wall to a 26-body high side, and E103 selects a y59/template hybrid after
-unary pruning. E104 realizes its cheapest sufficient form by forbidding high
-manufacturing bodies on y=60. The 1,205 live rows become an exact 812-lower /
-198-upper product after removing 195 rows; 22 body hints and both stable E078
-bodies survive. The full 26-body model keeps template totals 10/6/10, all eight
-high class coordinates and explicit lower+upper allocation pairs, but remains
-UNKNOWN after 2,833,391 branches and 201,008 conflicts in 120.067 seconds. The
-joint high solver is retired; the exact nested allocation bridge is now the live
-construction object.
+that wall to a 26-body high side; E103/E104 turn its live domain into an exact
+812-lower / 198-upper product under manufacturing-free y60. E105 now executes the
+first nested handshake. Body/power-only finds a 26-body proposal in 0.038 seconds
+with template split lower 7/4/8 and upper 3/2/2. The complete 198-candidate upper
+native-front side is exact INFEASIBLE at totals 3/2/2, and a one-worker
+PSEUDO_COST replay independently confirms the negative. The reusable object is
+therefore one exact nested template-split nogood, not one body geometry. The
+joint high solver remains retired.
 Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E078_target26_transport_core_stability/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E079_k47_boundary_macro/RESULT.txt
@@ -40,6 +39,7 @@ Evidence refs:
   research_lab/campaigns/zero_condition/experiments/E102_high_side_solver_diverse_replay/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E103_high_side_interface_capacity_audit/RESULT.txt
   research_lab/campaigns/zero_condition/experiments/E104_high_reserved_y60_constructor/RESULT.txt
+  research_lab/campaigns/zero_condition/experiments/E105_nested_allocation_handshake/RESULT.txt
 Identity audit:
   research_lab/campaigns/zero_condition/E079_E080_ARTIFACT_IDENTITY_AUDIT_20260828.txt
 Direction ref:
@@ -47,16 +47,16 @@ Direction ref:
 
 Live question
 -------------
-Q: Can the E104 lower/upper product turn the missing high class vector into a
-finite handshake? First solve body/power only on the 1,010 survivors for exactly
-26 bodies and high template totals 10/6/10, preserving both stable E078 bodies.
-Use that witness to freeze lower/upper template totals. Let the smaller nested
-side propose its eight class coordinates; let the other high side consume a
-compatible remainder under the global B class caps; then test the resulting total
-high vector against E101's unchanged x42-low complement. Only a replayed 219-body
-positive advances to terminal uniqueness. A side INFEASIBLE rejects only the
-exact template/allocation proposal, and UNKNOWN remains censored. Do not rerun
-E104's joint high model or restore E103 unary-dead rows.
+Q: What is the next nested template proposal after learning E105's exact split
+nogood? Reuse the same E104 1,010-candidate body/power proposer, but forbid exactly
+`lower 7/4/8 + upper 3/2/2`; do not forbid E105's individual footprint witness.
+For the next 26-body proposal, choose the smaller nested side as class proposer,
+let the other side consume the compatible remainder, and send any total-high
+allocation to E101's unchanged x42-low complement. Exact side negatives become
+only their justified template/allocation nogoods; UNKNOWN remains censored. A
+replayed 219-body positive alone advances to terminal uniqueness. Do not rerun
+E104's joint high model, restore unary-dead rows, or copy E105's dormant run-001
+positive artifact pointers.
 
 Inflight / recovery
 -------------------
@@ -98,6 +98,7 @@ Recent consequential results
 - E102 preserves the high feasible set and changes only to one-worker pseudo-cost search. It remains UNKNOWN for 90.013 seconds with zero branches/conflicts and no allocation. | evidence=research_lab/campaigns/zero_condition/experiments/E102_high_side_solver_diverse_replay/RESULT.txt | effect=stop solver repetition and measure high-side template/spatial/capacity interfaces
 - E103 removes exact unary dead rows and exhausts high-side interfaces. Template and spatial are incomparable, capability signatures are degenerate, and the y_after_59/template hybrid passes all frozen selection gates. | evidence=research_lab/campaigns/zero_condition/experiments/E103_high_side_interface_capacity_audit/RESULT.txt | effect=test a manufacturing-free y60 sufficient constructor
 - E104 reserves y60, yielding an exact 812/198 lower-upper product with 1,010 candidates. The 9,362-variable joint high model remains UNKNOWN after 2.83M branches and exposes no allocation vector. | evidence=research_lab/campaigns/zero_condition/experiments/E104_high_reserved_y60_constructor/RESULT.txt | effect=retire the joint high solve and externalize nested body/template/class allocations
+- E105 finds the first body/template proposal lower 7/4/8 plus upper 3/2/2, then closes the complete upper 3/2/2 native-front side as exact INFEASIBLE with solver-diverse replay. | evidence=research_lab/campaigns/zero_condition/experiments/E105_nested_allocation_handshake/RESULT.txt | effect=learn one exact nested template-split nogood and request the next body/template proposal
 
 Current unknowns and guards
 ---------------------------
@@ -136,6 +137,7 @@ Current unknowns and guards
 - E102 is a second censored measurement of the same high feasible set, not corroborating infeasibility. Its zero-branch pseudo-cost behavior and E101's branching portfolio behavior are instrument telemetry only.
 - E103's unary removal is exact for fixed power and fixed-obstacle native-front viability. Its interface and Hall counts are representation facts, not feasibility or runtime bounds. The selected y59 hybrid still retains an explicit separator until a new sufficient restriction removes it.
 - E104 is a censored result under the additional manufacturing-free y60 restriction. It does not reject y60, the explicit E103 separator, high, x42 or module B. Its run-001 import failure has no scientific effect; run-002 plus its independent checker are canonical.
+- E105 rejects only nested template totals lower 7/4/8 and upper 3/2/2 under reserved y60. It does not reject the particular body witness as a unique cause, any other template split, y60, high, x42 or module B. Runs 001/002 are apparatus aborts. The runner's dormant positive path contains run-001 pointer literals and must not be copied by successors.
 - Direct full coordinate-master runs remain disfavored until the blind line's long-table/AddElement pathology is mapped to the current implementation and build/solve memory telemetry is present.
 
 History pointers

@@ -569,3 +569,26 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   candidates；失明点已明确是 allocation 仍和两侧 geometry 同住在一个 solver 里。继续给同一
   joint high 加时违背实验产出。下一步先用 body/power-only 模型确定 lower/upper template split，
   再让较小一侧提出 class vector，另一侧吃剩余容量，最后才把总 high allocation 交给原 x42-low。
+
+2026-08-29 03:27
+----------------
+数据：
+  E105 run-003 RESULT.json
+  research_lab/local/zero_condition/E105_nested_allocation_handshake/run-003/RESULT.json
+  sha256 95ae95cc649097aae4010cb5ebe96f6027fefdfac2ee469d877cb8940a009ecb
+  ARTIFACT_CHECK.json sha256
+  38e1d0f1fde3e689f04a17101805cf3e3c874b5f7941324b552945bab473a346
+
+注意／发现：
+  在 E104 的 1,010-row lower/upper product 上，body/power-only 仅 0.038 秒就找到 26-body
+  witness：lower 19、upper 7，模板拆分分别为 7/4/8 与 3/2/2。较小的 upper 侧随后在全部
+  198 candidates、same-footprint modes 和八类 front-demand cap 下 exact INFEASIBLE；原
+  producer 2.188 秒结束，单线程 PSEUDO_COST 异源重放 1.638 秒再次 INFEASIBLE。runs 001/002
+  都是在任何 terminal output 前的 OR-Tools native apparatus abort，不进入科学账。
+
+推理：
+  负例不依赖 body-only 返回的具体 26 个 footprint：upper 模型已把模板 3/2/2 下的全部合法
+  geometry、mode 与 class allocation 一次性关掉。因此应该回灌的是 nested template split
+  `lower 7/4/8 + upper 3/2/2`，而不是那一份 body nogood。下一轮让同一个 body proposer 只排除
+  这个 split，再出下一份 template proposal；每次 exact side negative 都能把模板分配空间
+  砍掉一块，比在 geometry 层逐个排解更接近真正的 allocation outer loop。
