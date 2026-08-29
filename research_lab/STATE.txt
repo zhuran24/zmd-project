@@ -9,17 +9,17 @@ Campaign ref: research_lab/campaigns/zero_condition/CAMPAIGN.txt
 
 Current endpoint
 ----------------
-E095 remains the deepest positive constructive witness: module A has an
+The deepest positive witness has not moved since E095: module A keeps its
 independently checked 128-body native-front half; module B remains the sole
-91-body wall. E114-E119 pay the direct-consumer debt, learn 587 replayed
-local-front cuts, and stop blind cut growth when those rules prove truthful but
-nontransportable across geometries. E120 puts the exact local-option existential
-relation into the 1,205-candidate proposer. E121 factors repeated body-cover sums
-through 1,714 exact cell-occupancy channels, reducing dynamic coefficient
-occurrences from 4,548,696 to 121,095, a 37.5622x reduction with zero replay
-mismatch across 384,160 selected options. Both complete solver arms remain
-UNKNOWN without an incumbent. The encoding tax was real; removing it did not
-produce a deeper positive witness.
+91-body wall; both complete solver arms remain UNKNOWN without an incumbent.
+The work below is knowledge- and machine-account and did not move that line.
+E114-E119 paid the direct-consumer debt, learned 587 replayed local-front cuts,
+then stopped blind cut growth once those rules proved truthful but not
+transportable across geometries. E120 put the exact local-option existential
+relation into the 1,205-candidate proposer. E121 factored body-cover sums
+through 1,714 cell-occupancy channels, cutting dynamic-coefficient occurrences
+from 4,548,696 to 121,095 (37.5622x, zero replay mismatch, 384,160 options).
+The encoding tax was real; removing it produced no deeper positive witness.
 
 Deepest positive witness: E095 module-A 128-body native-front half.
 Current live basin: y=41 partition / E092 pole-boundary skeleton / x42 high-side language.
