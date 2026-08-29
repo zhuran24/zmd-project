@@ -524,3 +524,25 @@ ZERO-CONDITION RESEARCH JOURNAL — 2026-08-28
   这不能累加成两票 negative；它说明高侧表示本身让不同搜索器在不同地方失明。第三次换
   solver 的信息价值很低。下一步应对 1,324 候选做完整 no-solver interaction/capacity audit，
   比较 template、spatial separator 与 capability signature 的桥厚度，先把问题再压一层。
+
+2026-08-29 02:46
+----------------
+数据：
+  E103 run-003 RESULT.json
+  research_lab/local/zero_condition/E103_high_side_interface_capacity_audit/run-003/RESULT.json
+  sha256 6fefd59e3b8c5551501a2504e9c620bb6cc5468ac5847b92baa20a8ec6e6a32c
+  ARTIFACT_CHECK.json sha256
+  63ba0d4085263d12c153db0f639bfd984f9bfd373de0b9828eeaf6e94f98850d
+
+注意／发现：
+  high 原始 1,324 candidates 中，116 unpowered、3 static-mode dead，互不重叠，活域只剩
+  1,205；E101 body-only 的 26 个 high anchor 里有 1 个 static-front dead。template 切仍让
+  1,205 candidates 全上桥、539 cells。穷尽空间切后，y_after_59 最薄：812/154/239 candidates，
+  19/1/5 live anchors，151 cells、568 participating。能力签名看似 5 类，但 1,203/1,205 都是
+  full capability；proper-subset Hall tightening 为 0，三个全集“界”只是 10/6/10 恒等式。
+
+推理：
+  template 与 spatial 没有纯 dominance：y59 bridge 远小，但 largest side 812 大于 template
+  最大组 567。capability basis 基本退化。预设 hybrid 门槛却全部通过，因此选择已结束：保留
+  template-local class 语义，用 y_after_59 做几何桥。下一步最便宜充分化是 manufacturing-free
+  y=60；若它失败，只否定这条 corridor，不否定 154-candidate separator 或 high 本身。

@@ -1,0 +1,139 @@
+E103 RESULT: HIGH-SIDE SPATIAL/TEMPLATE HYBRID SELECTED AFTER UNARY PRUNING
+================================================================================
+
+Status
+------
+Closed as an exact no-solver representation audit with independent replay PASS.
+E103 consumes the high-side 10/6/10 template allocation shared by E101 and E102.
+It first removes unary forced-zero candidates already implied by fixed power and
+fixed-obstacle native-front semantics, then compares template, spatial and
+capability representations on the exact live domain.
+
+Machine evidence
+----------------
+Terminal result:
+
+  research_lab/local/zero_condition/
+  E103_high_side_interface_capacity_audit/run-003/RESULT.json
+
+SHA-256:
+
+  6fefd59e3b8c5551501a2504e9c620bb6cc5468ac5847b92baa20a8ec6e6a32c
+
+Artifact check SHA-256:
+
+  63ba0d4085263d12c153db0f639bfd984f9bfd373de0b9828eeaf6e94f98850d
+
+Candidate, template, spatial, capability and Hall artifacts have hashes recorded
+in MACHINE_SNAPSHOT.json and the terminal result.
+
+Verdict
+-------
+
+HIGH_SIDE_SPATIAL_TEMPLATE_HYBRID_SELECTED
+
+Decision
+--------
+
+RESERVE_SELECTED_SPATIAL_ROW_WITH_TEMPLATE_CLASS_BRIDGE
+
+Unary exact simplification
+--------------------------
+The E101/E102 high model exposes 1,324 body candidates. Exact unary facts remove:
+
+  unpowered candidates                 116
+  fixed-obstacle mode/class dead         3
+  overlap between those sets              0
+
+leaving:
+
+  live candidates                    1,205
+    3x3                                350
+    5x5                                288
+    6x4                                567
+
+One of E101's 26 body-only high witness rows is static-front dead. This is not a
+contradiction: body/power legality never promised a native-front option. The
+remaining 25 witness rows are used only as balance anchors.
+
+Template representation
+-----------------------
+Grouping the live domain by 3x3 / 5x5 / 6x4 keeps class demands local but leaves a
+thick geometric bridge:
+
+  interface occupancy cells            539
+  participating candidates            1,205
+  largest group                          567
+  cross-template allocation coords         0
+
+Every live candidate participates in a cross-template body or front/body
+interaction.
+
+Spatial representation
+----------------------
+E103 exhausts all deterministic vertical and horizontal cuts in the high half.
+The frozen balance guard requires at least five live witness bodies on each side,
+at most six in the separator and at least 15 percent of nonseparator candidates
+on either side.
+
+The best guarded cut is:
+
+  y_after_59
+
+with:
+
+  low / separator / high candidates   812 / 154 / 239
+  live witness anchors                 19 /   1 /   5
+  interface occupancy cells                    151
+  participating candidates                     568
+  separator fraction                         12.78%
+  class dimensions                                 8
+  explicit allocation coordinates                 16
+
+It cuts interface cells by 72 percent and participants by 53 percent relative to
+the template split, while keeping the separator below the preregistered 15-percent
+cap. Its largest side, 812 candidates, is nevertheless larger than the largest
+template group, so it does not strictly dominate the template representation.
+
+Capability representation
+-------------------------
+Fixed-obstacle capability signatures do not provide a useful third basis:
+
+  signatures                                  5
+  full-capability candidates              1,203 / 1,205
+  full-capability fraction                     99.83%
+  proper-subset Hall tightenings                   0
+
+The two exceptional 6x4 candidates are stable special rows with single-class
+support. The three full-template Hall equalities merely restate the fixed 10/6/10
+template totals and are explicitly excluded from the nontrivial count.
+
+Selection
+---------
+No pure interface strictly dominates another under the frozen four-coordinate
+rule. Capability signatures are degenerate. The spatial/template hybrid passes
+all predeclared sufficient gates:
+
+  spatial cells <= one third template cells       PASS
+  spatial participants <= one half template       PASS
+  separator candidates <= 15 percent              PASS
+
+Therefore the next constructor retains template-local class semantics but uses
+`y_after_59` as its geometric cut. The cheapest faithful sufficient form reserves
+manufacturing row y=60 while leaving that row available to native fronts.
+
+Apparatus history
+-----------------
+run-001 stopped before science because it incorrectly required every body-only
+anchor to survive unary front filtering. run-002 reached the census but counted
+full-template allocation identities as nontrivial Hall bounds. run-003 fixes both
+apparatus errors: front-dead anchors are reported, and only proper class subsets
+can tighten Hall bounds.
+
+Truth boundary
+--------------
+This is an exact interface census after unary forced-zero removal. It does not
+predict solver runtime or prove high-side feasibility. Hall bounds ignore dynamic
+body packing. No terminal uniqueness, generic I/O, commodity binding, component
+compatibility, routing, throughput, U/L, certification, owner, production or
+publication effect follows.

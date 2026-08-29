@@ -3832,6 +3832,44 @@ evidence:
   ARTIFACT_CHECK.json sha256
   6ab9a259389c6e6cbeea77b936af8e43f5c9c0850cb1cb8aaa7c8901c2a56710.
 
+R-ZC-113  High-side unary pruning and interface audit select a y59/template hybrid
+-----------------------------------------------------------------------------------
+status: complete no-solver census; independent replay PASS
+scope: E101/E102 high 10/6/10 template allocation under reserved x42
+
+statement:
+  E103 removes 116 unpowered and three static-mode-dead rows from the raw 1,324-
+  candidate high domain, leaving 1,205 live candidates. One E101 body-only anchor
+  is static-front dead; 25 live anchors remain. The template interface touches
+  all 1,205 candidates and 539 cells. The best of all guarded spatial cuts is
+  y_after_59: 812 / 154 / 239 candidates, 19 / 1 / 5 anchors, 151 interface
+  cells and 568 participating candidates. It carries eight class dimensions and
+  16 explicit group-allocation coordinates.
+
+  Capability signatures are degenerate: 1,203 / 1,205 candidates have full
+  template capability and no proper class subset yields a nontrivial optimistic
+  Hall bound. No pure representation dominates, but the y59/template hybrid
+  passes every preregistered hybrid gate: at most one third of template cells,
+  one half of participants and 15 percent separator candidates.
+
+non-implications:
+  Interface counts do not predict runtime or prove high feasibility. Full-template
+  Hall equalities are identities, not tightenings. The body-only dead anchor does
+  not make the body witness invalid at its own layer.
+
+effect on next problem:
+  Reserve manufacturing row y=60 as the cheapest sufficient realization of the
+  selected y_after_59 cut, retain template-local class semantics, and test the
+  resulting exact constructor before restoring the 154-candidate separator.
+
+evidence:
+  E103 RESULT.txt; local RESULT.json sha256
+  6fefd59e3b8c5551501a2504e9c620bb6cc5468ac5847b92baa20a8ec6e6a32c;
+  LIVE_HIGH_CANDIDATES.json sha256
+  ebf0c34b174df7036cf6c4bf2f3283dd4ea303998f62520cbd0c74d70aebfd08;
+  ARTIFACT_CHECK.json sha256
+  63ba0d4085263d12c153db0f639bfd984f9bfd373de0b9828eeaf6e94f98850d.
+
 Current synthesis
 -----------------
 The sufficient-side search language now has an explicit chain:

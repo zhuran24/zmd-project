@@ -1,0 +1,63 @@
+{
+  "schema": "zmd_e103_machine_snapshot_v1",
+  "authority": "research_only_noncertified",
+  "ledger_effect": "none",
+  "terminal_result": {
+    "path": "research_lab/local/zero_condition/E103_high_side_interface_capacity_audit/run-003/RESULT.json",
+    "sha256": "6fefd59e3b8c5551501a2504e9c620bb6cc5468ac5847b92baa20a8ec6e6a32c",
+    "verdict": "HIGH_SIDE_SPATIAL_TEMPLATE_HYBRID_SELECTED",
+    "decision": "RESERVE_SELECTED_SPATIAL_ROW_WITH_TEMPLATE_CLASS_BRIDGE"
+  },
+  "unary_filter": {
+    "raw_candidate_count": 1324,
+    "unpowered_candidate_count": 116,
+    "static_mode_dead_candidate_count": 3,
+    "live_candidate_count": 1205,
+    "raw_anchor_count": 26,
+    "removed_anchor_count": 1,
+    "live_anchor_count": 25,
+    "live_template_counts": {
+      "manufacturing_3x3": 350,
+      "manufacturing_5x5": 288,
+      "manufacturing_6x4": 567
+    }
+  },
+  "template_interface": {
+    "interface_occupancy_cell_count": 539,
+    "interface_candidate_count": 1205,
+    "largest_group_candidate_count": 567,
+    "allocation_coordinate_count": 0
+  },
+  "selected_spatial_cut": {
+    "cut_id": "y_after_59",
+    "group_candidate_counts": {
+      "low": 812,
+      "separator": 154,
+      "high": 239
+    },
+    "group_anchor_counts": {
+      "low": 19,
+      "separator": 1,
+      "high": 5
+    },
+    "interface_occupancy_cell_count": 151,
+    "interface_candidate_count": 568,
+    "largest_group_candidate_count": 812,
+    "separator_candidate_fraction": 0.12780082987551866,
+    "allocation_coordinate_count": 16,
+    "class_allocation_dimension_count": 8
+  },
+  "capability": {
+    "signature_count": 5,
+    "full_capability_candidate_count": 1203,
+    "full_capability_fraction": 0.9983402489626556,
+    "proper_subset_nontrivial_hall_bound_count": 0,
+    "degenerate": true
+  },
+  "artifact_check": {
+    "path": "research_lab/local/zero_condition/E103_high_side_interface_capacity_audit/run-003/ARTIFACT_CHECK.json",
+    "sha256": "63ba0d4085263d12c153db0f639bfd984f9bfd373de0b9828eeaf6e94f98850d",
+    "status": "PASS",
+    "classification": "HIGH_SIDE_HYBRID_SELECTION_REPLAYED"
+  }
+}

@@ -1,0 +1,65 @@
+EXPERIMENT E103: HIGH-SIDE TEMPLATE / SPATIAL / CAPABILITY INTERFACE AUDIT
+============================================================================
+
+Question
+--------
+Which exact finite representation is thinnest inside E101's censored
+1,324-candidate high-side problem under the fixed 10/6/10 template allocation?
+
+Why this experiment
+-------------------
+E101's eight-worker portfolio and E102's one-worker pseudo-cost search preserve
+the same high feasible set but both fail to emit a class allocation. A third
+solver vote would measure the instruments again. E103 measures the object.
+
+Method
+------
+1. Reconstruct E100's source-stable x42 language and E101's exact body witness.
+   Apply only unary facts already compiled by the side model: fixed-pole power and
+   existence of at least one fixed-obstacle-compatible native mode/class option.
+   Report both the raw 1,324-candidate domain and the exact live subset. Any of
+   E101's body-only witness rows killed by these unary front facts are reported as
+   front-dead anchors and excluded from the balance guard; body-only legality never
+   promised front viability.
+
+2. On the live subset, build three finite representations:
+
+   Template interface
+     Groups are 3x3, 5x5 and 6x4. Count shared body cells, directed front/body
+     interface cells, participating candidates and largest group.
+
+   Spatial interface
+     Exhaust every vertical and horizontal integer cut in the high half. Bodies
+     crossing the cut form an explicit separator. A cut passes the frozen balance
+     guard only when each nonseparator side contains at least five bodies from
+     E101's exact 26-body witness, at most six witness bodies lie in the separator,
+     and each side contains at least 15 percent of nonseparator live candidates.
+     Record class-allocation dimensions and exact interface metrics.
+
+   Capability interface
+     Group candidates by template plus the complete set of native-front demand
+     classes supportable against fixed obstacles. Count signatures, occupancy
+     interface and class support. Enumerate every nonempty class subset within
+     each template and derive optimistic Hall-style candidate-support bounds.
+     Only a **proper subset** can count as a nontrivial tightening; the full class
+     set merely restates the fixed template total. No dynamic body-packing
+     capacity is inferred from these bounds.
+
+Predeclared selection
+---------------------
+A representation strictly dominates another only if it is no worse in interface
+cells, participating candidates, largest group and bridge dimensions, and is
+strictly better in at least one.
+
+If no pure representation dominates, select a spatial/template hybrid when the
+best guarded spatial cut uses at most one third of the template interface cells,
+at most one half of template participating candidates, and at most 15 percent
+separator candidates. Template-local class structure remains explicit. Otherwise
+retain all incomparable representations and redesign the high bay.
+
+Truth boundary
+--------------
+E103 is an exact no-solver census after unary forced-zero removal. Interface and
+Hall counts do not predict CP-SAT runtime or prove feasibility. Capability bounds
+ignore dynamic body occupancy. Research-only; no pruning, terminal, binding,
+routing, throughput, U/L, certification, owner, production or publication effect.
