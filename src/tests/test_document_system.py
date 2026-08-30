@@ -214,6 +214,21 @@ def test_external_evidence_links_are_checkout_stable(tmp_path: Path) -> None:
 
 def test_governed_markdown_exclude_globs_skip_non_document_packages(tmp_path: Path) -> None:
     root = _copy_framework_fixture(tmp_path)
+    subprocess.run(
+        [
+            "git",
+            "-c",
+            "user.name=Document System Test",
+            "-c",
+            "user.email=document-system@example.invalid",
+            "commit",
+            "-q",
+            "-m",
+            "fixture baseline",
+        ],
+        cwd=root,
+        check=True,
+    )
     skill_paths = (
         root / ".agents/skills/example/SKILL.md",
         root / ".claude/skills/example/SKILL.md",
@@ -230,12 +245,22 @@ def test_governed_markdown_exclude_globs_skip_non_document_packages(tmp_path: Pa
         "UNMANAGED.md",
     )
 
-    failures = DocumentSystem(root)._check_markdown_coverage()
+    system = DocumentSystem(root)
+    failures = system._check_markdown_coverage()
+    intake = system.intake_changed()
 
     for skill_path in skill_paths:
         relpath = skill_path.relative_to(root).as_posix()
         assert not any(relpath in failure for failure in failures)
+        assert not any(
+            event.id == "DOC-EVENT-DOCUMENT-CREATED" and relpath in event.paths
+            for event in intake.events
+        )
     assert "governed markdown has no effective policy: UNMANAGED.md" in failures
+    assert any(
+        failure == "UNMANAGED.md: new Markdown has no effective document policy"
+        for failure in intake.failures
+    )
 
 
 def test_real_repository_document_system_is_self_consistent() -> None:
