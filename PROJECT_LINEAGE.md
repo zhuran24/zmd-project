@@ -128,6 +128,8 @@ ede4fa4b883d0aa965141700d2475af1b96817c8
 
 旧仓库 `zhuran24/zmd_pj` 的主线停在第二代中途；其两个 `legacy-20260701-prerebuild-*` 分支不在本地第一、二代完整备份中。本公开仓库把它们保存在 `history/old-github-zmd_pj/*`。
 
+四条旧分支与新仓库逐一核对哈希后，`zhuran24/zmd_pj` 于 2026-08-29 从 GitHub 删除。`zhuran24/zmd-legacy` 不属于这次淘汰范围，继续保留。
+
 另一个旧仓库 `zhuran24/zmd-legacy` 的独立 `gemini-line` 同样不在第一代 bundle 中，本公开仓库把它保存在 `history/old-github-zmd-legacy/*`。
 
 ## 公开历史与本地法证档案

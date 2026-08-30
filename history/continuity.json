@@ -17,6 +17,15 @@
       "affected_public_commit_ids_rewritten": true
     }
   },
+  "retired_github_repositories": [
+    {
+      "name": "zhuran24/zmd_pj",
+      "deleted_at": "2026-08-29",
+      "verified_branch_count": 4,
+      "preserved_under": "refs/heads/history/old-github-zmd_pj/",
+      "branch_commit_ids_preserved": true
+    }
+  ],
   "epochs": [
     {
       "id": "epoch-1",
