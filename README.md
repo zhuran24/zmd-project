@@ -31,6 +31,8 @@
 
 详细运行、测试、冻结与发布流程见 [Agent 操作手册](docs/AGENT_OPERATIONS.md)。文档治理 gate 验收文档框架且保证检查前后 Git-visible 状态不变；production preflight 验收另一套运行与认证边界。checker 或 preflight 通过只证明其声明的检查面，不自动授予数学 soundness、owner close 或 production certification。
 
+项目 Skill 的唯一正文位于 `.agents/skills/`，Claude Code 只通过仓库内相对链接进入；可恢复的认证角色 memory seed 位于 `certification_lab/cc_memory_seed/`，当前 packet 状态仍只看 `certification_lab/STATE.txt`。
+
 ## 代码与规范
 
 - [代码地图](NAV_MAP.md)
