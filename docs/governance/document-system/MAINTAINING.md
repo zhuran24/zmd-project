@@ -127,6 +127,8 @@ Accepted ADR 还必须加入 `.docsystem/manifest.json` 的 `adrs` 映射。文�
 
 项目 Skill 的唯一正文位于 `.agents/skills/**`；`.claude/skills/*` 只能是指向该正文的仓库内相对链接。迁移 Skill 时要同时覆盖这两个窄排除面，逐个运行 Skill validator，并从每个链接复核 `SKILL.md` 可达。排除面必须同时作用于全仓 Markdown coverage 和 Git-diff document intake，Skill 内的 Markdown 不能产生普通项目文档的创建事件。根 `CLAUDE.md` / `AGENTS.md` 仍是可选 workspace overlay：干净克隆的回归 fixture 必须自行生成无权威的测试 overlay，不能从当前机器复制根文件。否则本机存在会掩盖公开 checkout 的缺件。
 
+这类框架语义、对应的两层回归和维护说明应作为一个连贯变更提交；把 companion 分散到相邻提交，会让逐次 Git diff 无法证明每一步都自洽。
+
 ## 4. 新增研究 dossier
 
 ```bash
