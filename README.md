@@ -35,6 +35,7 @@
 - `research_lab/STATE.txt`：唯一当前状态、反思 checkpoint 与 live question。
 - `research_lab/ATTENTION_AND_REFLECTION.txt`：文件/链接注意力拓扑与事件触发停顿，按架构工作或运行时触发加载。
 - `research_lab/CC_MEMORY.txt`：研究角色专属 Claude Code 记忆的绑定、种子与漂移边界。
+- `.agents/skills/`：项目 Skill 的可移植唯一正文；`.claude/skills/` 只保存仓库内相对入口。
 - `research_lab/campaigns/`：每条当前研究战役的自包含工作面。
 - `research_lab/local/`：日志、缓存、临时模型与可再生运行产物，全部不进 Git。
 - `research_lab/promotion/`：送往独立认证树的冻结候选包模板。

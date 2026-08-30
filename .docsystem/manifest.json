@@ -126,6 +126,10 @@
     "*.md",
     "**/*.md"
   ],
+  "governed_markdown_exclude_globs": [
+    ".agents/skills/**",
+    ".claude/skills/**"
+  ],
   "actions": {
     "code_assets.check": {
       "description": "校验代码资产分类和计数投影。",
