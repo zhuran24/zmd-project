@@ -5,7 +5,7 @@ description: 追溯 ZMD 旧结论、owner 原话或证据谱系时使用：先�
 
 # ZMD 历史考据路由
 
-本 skill 从历史树前门之后开始；进入 `/home/zhuran24/zmd-pj` 仍先读 `HISTORY_START.md`。历史树只提供材料与登记点，不产生今日 current、研究 authority 或认证效力。
+本 skill 从历史树前门之后开始；进入历史树仍先读仓库根目录的 `HISTORY_START.md`。历史树只提供材料与登记点，不产生今日 current、研究 authority 或认证效力。
 
 ## 检索次序
 

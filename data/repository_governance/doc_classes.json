@@ -33,12 +33,12 @@
     "exclude_globs": [],
     "out_of_scope_notes": [
       {
-        "pattern": ".artifacts/**",
-        "rationale": "Read-only or local historical evidence roots; never a prune subject."
+        "pattern": ".agents/skills/**",
+        "rationale": "Project Skills are executable instruction packages shared by agent hosts, not repository documentation or legacy prune subjects."
       },
       {
-        "pattern": ".claude/skills/**",
-        "rationale": "Claude skills are executable instruction packages, not repository documentation or legacy prune subjects."
+        "pattern": ".artifacts/**",
+        "rationale": "Read-only or local historical evidence roots; never a prune subject."
       },
       {
         "pattern": "P1_2_TECHNICAL_CLOSE_PACKET/**",

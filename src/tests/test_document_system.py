@@ -214,16 +214,27 @@ def test_external_evidence_links_are_checkout_stable(tmp_path: Path) -> None:
 
 def test_governed_markdown_exclude_globs_skip_non_document_packages(tmp_path: Path) -> None:
     root = _copy_framework_fixture(tmp_path)
-    skill_path = root / ".claude/skills/example/SKILL.md"
-    skill_path.parent.mkdir(parents=True)
-    skill_path.write_text("# Example skill\n", encoding="utf-8")
+    skill_paths = (
+        root / ".agents/skills/example/SKILL.md",
+        root / ".claude/skills/example/SKILL.md",
+    )
+    for skill_path in skill_paths:
+        skill_path.parent.mkdir(parents=True)
+        skill_path.write_text("# Example skill\n", encoding="utf-8")
     unmanaged_path = root / "UNMANAGED.md"
     unmanaged_path.write_text("# Unmanaged document\n", encoding="utf-8")
-    _stage_paths(root, ".claude/skills/example/SKILL.md", "UNMANAGED.md")
+    _stage_paths(
+        root,
+        ".agents/skills/example/SKILL.md",
+        ".claude/skills/example/SKILL.md",
+        "UNMANAGED.md",
+    )
 
     failures = DocumentSystem(root)._check_markdown_coverage()
 
-    assert not any(".claude/skills/example/SKILL.md" in failure for failure in failures)
+    for skill_path in skill_paths:
+        relpath = skill_path.relative_to(root).as_posix()
+        assert not any(relpath in failure for failure in failures)
     assert "governed markdown has no effective policy: UNMANAGED.md" in failures
 
 

@@ -16,6 +16,7 @@ ZMD 在 `70×70` 网格上联合求解设施摆放、供电覆盖、端口绑定
 | 复验 | 独立 checker、负控和另一套实现或环境的重放检查输入、实现和作用域 |
 | 工程 | CodeGraph、pytest、pytest-xdist、Ruff 支持代码理解与回归检查 |
 | 过境 | Git 三树与 promotion packet 分离研究发现和认证审查 |
+| Agent 工具 | `.agents/skills` 保存项目 Skill 唯一正文；Claude Code 通过仓库内相对链接读取同一份内容 |
 
 锁定依赖见 [`requirements.lock.txt`](requirements.lock.txt) 与 [`requirements-dev.lock.txt`](requirements-dev.lock.txt)。
 
@@ -32,10 +33,8 @@ ZMD 在 `70×70` 网格上联合求解设施摆放、供电覆盖、端口绑定
 ## 项目历史
 
 ZMD 是一个连续项目。两次备份并重建 Git 形成三个无父根时期，随后第三代正常分叉为三树；Git parent 的断开不代表项目重新开始。
-
-`第一代 → 第一次 Git 重建 → 第二代 → 第二次 Git 重建 → 第三代 → main / research / certification`
-
 完整时间线、备份点、公开脱敏和旧 GitHub 独有支线见 [`PROJECT_LINEAGE.md`](PROJECT_LINEAGE.md)；机器索引见 [`history/continuity.json`](history/continuity.json)。
+研究和认证的可恢复 Claude Code memory seed 分别随对应分支保存在 `research_lab/cc_memory_seed` 与 `certification_lab/cc_memory_seed`；会变化的当前状态不写入 memory。四个分支和历史标签保存可读 Git 材料，GitHub Release 的 `backup-v1-*` 快照保存冻结大工件、原始研究证据和未提交工作区补充；每个快照都带成员清单和 SHA-256，私人会话、凭据与可再生缓存不进入公开资产。
 
 ## 项目入口
 

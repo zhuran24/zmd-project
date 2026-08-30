@@ -584,8 +584,12 @@
         "rationale": "Read-only or local historical evidence roots; never a prune subject."
       },
       {
+        "pattern": ".agents/skills/**",
+        "rationale": "Project Skills are executable instruction packages shared by agent hosts, not repository documentation or legacy prune subjects."
+      },
+      {
         "pattern": ".claude/skills/**",
-        "rationale": "Claude skills are executable instruction packages, not repository documentation or legacy prune subjects."
+        "rationale": "Claude Skill entries are thin compatibility links to the shared project Skill source, not repository documentation or legacy prune subjects."
       },
       {
         "pattern": "rules/derived/**",

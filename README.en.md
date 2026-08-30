@@ -16,6 +16,7 @@ ZMD jointly solves facility placement, power coverage, port binding, and two-lay
 | Verification | Independent checkers, negative controls, and replay through a separate implementation or environment check inputs, implementations, and scope |
 | Engineering | CodeGraph, pytest, pytest-xdist, and Ruff support code understanding and regression checks |
 | Promotion | The three-tree Git structure and promotion packets separate research discovery from certification |
+| Agent tooling | `.agents/skills` holds the single project Skill source; Claude Code reads the same content through repository-relative links |
 
 Pinned dependencies are listed in [`requirements.lock.txt`](requirements.lock.txt) and [`requirements-dev.lock.txt`](requirements-dev.lock.txt).
 
@@ -32,10 +33,8 @@ Mature research crosses in a compact promotion packet containing the exact claim
 ## Project history
 
 ZMD is one continuous project. Two complete backups and Git rebuilds created three parentless epochs; the third epoch later split normally into the three trees. Breaks in Git parentage are not project restarts.
-
-`first epoch → first Git rebuild → second epoch → second Git rebuild → third epoch → main / research / certification`
-
 See [`PROJECT_LINEAGE.md`](PROJECT_LINEAGE.md) for the timeline, backup points, public redaction, and branches found only on former GitHub repositories. The machine-readable index is [`history/continuity.json`](history/continuity.json).
+Recoverable Claude Code memory seeds travel with the research and certification branches under `research_lab/cc_memory_seed` and `certification_lab/cc_memory_seed`; changing current state does not live in memory. The four branches and history tags retain readable Git material, while `backup-v1-*` GitHub Releases retain frozen large artifacts, raw research evidence, and uncommitted workspace supplements with member manifests and SHA-256 checksums. Private conversations, credentials, and regenerable caches are excluded from public assets.
 
 ## Project entry points
 
