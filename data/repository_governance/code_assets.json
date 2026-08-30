@@ -52,11 +52,11 @@
       }
     ],
     "certified_exact_source_baseline": {
-      "measured_on": "2026-08-06",
-      "commit": "a90e9bb2bf44257b5ed3407c12f8a61ce76d43ef",
-      "path_count": 804,
-      "path_tuple_sha256": "24fc86f0a9641e13f954e05b55414ac52f9c08f485dc4440cb3ca09d0f901540",
-      "source_digest": "d5a5dc51519b2b93678a340699b722578c8fd67fcddb883ec7d4d8e090cf10a3"
+      "measured_on": "2026-08-21",
+      "commit": "bc6f8b1393f58f7bdad019de76a4e8e09d25c69e",
+      "path_count": 813,
+      "path_tuple_sha256": "f408d7636c787ad2019c4e7ba08ef2afeba6ab6105d34326c8c2df1069b10274",
+      "source_digest": "0d4589fd1b1743701db5fc274bf5f24431a005ac41791920e14f09b3c24cba37"
     }
   },
   "code_selector": {

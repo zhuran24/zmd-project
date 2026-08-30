@@ -52,7 +52,13 @@ def _copy_framework_fixture(tmp_path: Path) -> Path:
         PROJECT_ROOT / "docs/governance/document-system",
         root / "docs/governance/document-system",
     )
-    shutil.copy2(PROJECT_ROOT / "CLAUDE.md", root / "CLAUDE.md")
+    # The real repository deliberately keeps this as an optional, untracked
+    # workspace overlay.  A clean clone must therefore be able to build the
+    # fixture without borrowing a machine-local root file.
+    (root / "CLAUDE.md").write_text(
+        "# Fixture workspace overlay\n",
+        encoding="utf-8",
+    )
     manifest_payload = json.loads(
         (PROJECT_ROOT / ".docsystem/manifest.json").read_text(encoding="utf-8")
     )

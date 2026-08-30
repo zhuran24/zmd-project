@@ -789,7 +789,7 @@ def test_source_discovery_implementations_agree_and_exclude_devtools() -> None:
         return
 
     receipt = assets._source_discovery_receipt()
-    assert receipt["path_count"] == 804
+    assert receipt["path_count"] == 813
     assert receipt["devtools_paths"] == []
     assert len(receipt["sha256"]) == 64
 
