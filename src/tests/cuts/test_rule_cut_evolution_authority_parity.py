@@ -6,8 +6,9 @@ preflight_gate.py is pinned to its latest authorized successor (see the
 succession chain above `_PROTECTED_SURFACE_SHA256` — this docstring had
 previously gone stale at the 2026-08-03 successor while the chain moved on,
 so the chain comment is the single authority now);
-and PROJECT_LOCK.md is pinned to the W0 D6 plus AB16 research-only protocol
-successor.
+and PROJECT_LOCK.md is pinned to the owner-authored documentation-hygiene
+successor described beside `_PROJECT_LOCK_SHA256`.  Historical W0 D6 protocol
+artifacts retain their original lock digest as part of their frozen identity.
 The new semantic/family specifications may be imported by tests and by one
 another, but the existing runtime must not import them during this
 non-authorizing batch.
@@ -42,7 +43,21 @@ from src.cuts.typed_platform import (
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[3]
 _BASELINE_COMMIT = "398f8725c770f3c36408adebe9448a890ed886fe"
-_PROJECT_LOCK_SHA256 = "105cd3794034f583232254d8645bd5b43a6b0bc7c2046799efd8cb745590f2d3"
+
+# Authority provenance for the live PROJECT_LOCK successor:
+#
+# * 105cd379... remains the frozen W0 D6 / AB16 protocol identity and is not
+#   rewritten in historical research inputs or receipts.
+# * owner-authored commit 94d5df036980cbd4ebd5c2a2986a3e44eaf245dc changed
+#   PROJECT_LOCK.md only to repair its live-document date and move edit history
+#   into CHANGELOG.md.  The accompanying independent facade-diff audit found no
+#   exactness or certified-boundary movement.
+# * the resulting live lock bytes are therefore an authorized successor, not a
+#   replacement of the historical W0 protocol identity.
+_PROJECT_LOCK_AUTHORIZED_SUCCESSOR_COMMIT = (
+    "94d5df036980cbd4ebd5c2a2986a3e44eaf245dc"
+)
+_PROJECT_LOCK_SHA256 = "3361e81a3f1b31121c06b3861cb6663185e45daa367234f74d621180b9d76495"
 
 # Historical hashes for the six pre-existing Python surfaces touched during
 # the abandoned runtime-wiring attempt.  Five remain byte-identical to
@@ -361,8 +376,11 @@ def _is_forbidden_runtime_import(module_name: str) -> bool:
     )
 
 
-def test_project_lock_matches_authorized_research_protocol_successor() -> None:
+def test_project_lock_matches_authorized_documentation_successor() -> None:
     assert _BASELINE_COMMIT == "398f8725c770f3c36408adebe9448a890ed886fe"
+    assert _PROJECT_LOCK_AUTHORIZED_SUCCESSOR_COMMIT == (
+        "94d5df036980cbd4ebd5c2a2986a3e44eaf245dc"
+    )
     assert _sha256(_PROJECT_ROOT / "PROJECT_LOCK.md") == _PROJECT_LOCK_SHA256
 
 

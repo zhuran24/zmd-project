@@ -870,6 +870,28 @@ class PoseBoolExactMasterDelegate:
             return self.ro_vars.get((tpl, pose_idx_int))
         return None
 
+    def _pose_optional_operation(self, facility_type: str) -> str:
+        operation_map = getattr(
+            self.owner,
+            "utility_operation_by_template",
+            None,
+        )
+        if not isinstance(operation_map, Mapping):
+            raise RuntimeError(
+                "exact master lacks the preprocess-plan utility operation snapshot"
+            )
+        operation_type = operation_map.get(facility_type)
+        if (
+            not isinstance(operation_type, str)
+            or not operation_type
+            or operation_type.strip() != operation_type
+        ):
+            raise RuntimeError(
+                "selected pose-optional template lacks a valid plan-derived operation: "
+                f"{facility_type!r}"
+            )
+        return operation_type
+
     def _resolve_pose_pool_for_instance(
         self,
         instance_id: str,
@@ -886,11 +908,20 @@ class PoseBoolExactMasterDelegate:
             op = self._mandatory_operation_by_group.get(gid, "")
             return ("mandatory", gid, op, self.owner.facility_pools.get(tpl, []))
         if key.startswith("pose_optional::power_pole::"):
-            return ("pole", "power_pole", "", self.owner.facility_pools.get("power_pole", []))
+            return (
+                "pole",
+                "power_pole",
+                self._pose_optional_operation("power_pole"),
+                self.owner.facility_pools.get("power_pole", []),
+            )
         if key.startswith("pose_optional::"):
             _, tpl, *_rest = key.split("::")
-            op = "box_sink" if tpl == "protocol_storage_box" else ""
-            return ("ro", tpl, op, self.owner.facility_pools.get(tpl, []))
+            return (
+                "ro",
+                tpl,
+                self._pose_optional_operation(tpl),
+                self.owner.facility_pools.get(tpl, []),
+            )
         return None
 
     def enumerate_pose_vars_with_patch_signature(
@@ -1068,7 +1099,7 @@ class PoseBoolExactMasterDelegate:
                 solution[synthetic_id] = {
                     "instance_id": synthetic_id,
                     "facility_type": tpl,
-                    "operation_type": "box_sink" if tpl == "protocol_storage_box" else "",
+                    "operation_type": self._pose_optional_operation(tpl),
                     "pose_idx": int(pose_idx),
                     "pose_id": pose["pose_id"],
                     "anchor": dict(pose["anchor"]),
@@ -1084,7 +1115,7 @@ class PoseBoolExactMasterDelegate:
                 solution[synthetic_id] = {
                     "instance_id": synthetic_id,
                     "facility_type": "power_pole",
-                    "operation_type": "power_supply",
+                    "operation_type": self._pose_optional_operation("power_pole"),
                     "pose_idx": int(pose_idx),
                     "pose_id": pose["pose_id"],
                     "anchor": dict(pose["anchor"]),

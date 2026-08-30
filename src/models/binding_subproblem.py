@@ -152,12 +152,21 @@ def _generic_output_slot_map_from_payload(payload: Any) -> Dict[str, int]:
     return _generic_slot_map_from_payload(payload, slot_field="generic_output_slots")
 
 
+def _strict_nonempty_identifier(value: Any, *, field: str) -> str:
+    if not isinstance(value, str):
+        raise TypeError(f"{field} must be a non-empty string")
+    if not value or value.strip() != value:
+        raise ValueError(f"{field} must be a non-empty, whitespace-free identifier")
+    return value
+
+
 def _utility_operation_map_from_payload(payload: Any) -> Dict[str, str]:
     """Derive facility-template → utility-operation from preprocess_plan.
 
     This is intentionally the unfiltered utility map.  A binding model derives
-    pose-optional entries by subtracting operations represented by authoritative
-    instances, so mandatory boundary/core utilities are never silently synthesized.
+    pose-optional entries locally by subtracting operations represented by
+    authoritative instances, so mandatory boundary/core utilities are never
+    silently synthesized and no second stateful identity map is created.
     """
 
     if not isinstance(payload, Mapping):
@@ -167,15 +176,18 @@ def _utility_operation_map_from_payload(payload: Any) -> Dict[str, str]:
         raise KeyError("preprocess_plan.utility_operations is required")
     by_template: Dict[str, str] = {}
     for raw_operation, raw_entry in utility_operations.items():
-        operation_type = str(raw_operation)
-        if not operation_type or not isinstance(raw_entry, Mapping):
+        operation_type = _strict_nonempty_identifier(
+            raw_operation,
+            field="preprocess_plan.utility_operations operation identifier",
+        )
+        if not isinstance(raw_entry, Mapping):
             raise TypeError("preprocess_plan utility operation entry is invalid")
-        facility_type = raw_entry.get("facility_type")
-        if not isinstance(facility_type, str) or not facility_type:
-            raise TypeError(
-                f"preprocess_plan.utility_operations.{operation_type}.facility_type "
-                "must be a non-empty string"
-            )
+        facility_type = _strict_nonempty_identifier(
+            raw_entry.get("facility_type"),
+            field=(
+                f"preprocess_plan.utility_operations.{operation_type}.facility_type"
+            ),
+        )
         previous = by_template.get(facility_type)
         if previous is not None and previous != operation_type:
             raise ValueError(
@@ -647,30 +659,27 @@ class PortBindingModel:
             str(inst["instance_id"]): dict(inst)
             for inst in instances
         }
-        instance_operations = {
-            str(instance.get("operation_type", ""))
-            for instance in self.instances_by_id.values()
-            if str(instance.get("operation_type", ""))
-        }
         if utility_operation_by_template is None:
             utility_operation_by_template = load_utility_operation_by_template(
                 project_root=self.project_root
             )
         normalized_utility_map: Dict[str, str] = {}
-        for raw_template, raw_operation in dict(utility_operation_by_template).items():
-            facility_type = str(raw_template)
-            operation_type = str(raw_operation)
-            if not facility_type or not operation_type:
-                raise ValueError("utility operation map contains an empty identifier")
+        for raw_template, raw_operation in utility_operation_by_template.items():
+            facility_type = _strict_nonempty_identifier(
+                raw_template,
+                field="utility_operation_by_template facility identifier",
+            )
+            operation_type = _strict_nonempty_identifier(
+                raw_operation,
+                field=(
+                    "utility_operation_by_template operation identifier for "
+                    f"{facility_type!r}"
+                ),
+            )
             normalized_utility_map[facility_type] = operation_type
-        self._utility_operation_by_template = dict(
+        self.utility_operation_by_template = dict(
             sorted(normalized_utility_map.items())
         )
-        self._pose_optional_operation_by_template = {
-            facility_type: operation_type
-            for facility_type, operation_type in self._utility_operation_by_template.items()
-            if operation_type not in instance_operations
-        }
 
         if required_generic_outputs is None or required_generic_inputs is None:
             io_requirements = load_generic_io_requirements(
@@ -802,12 +811,18 @@ class PortBindingModel:
         self._materialize_pose_optional_instances()
         self._validate_placement_instance_metadata()
 
-    def _pose_optional_operation_map(self) -> Dict[str, str]:
-        return dict(self._pose_optional_operation_by_template)
-
     def _materialize_pose_optional_instances(self) -> None:
         synthesized: List[str] = []
-        operation_by_template = self._pose_optional_operation_map()
+        represented_operations = {
+            str(instance.get("operation_type", ""))
+            for instance in self.instances_by_id.values()
+            if str(instance.get("operation_type", ""))
+        }
+        operation_by_template = {
+            facility_type: operation_type
+            for facility_type, operation_type in self.utility_operation_by_template.items()
+            if operation_type not in represented_operations
+        }
 
         for instance_id, sol in self.placement_solution.items():
             if instance_id in self.instances_by_id:

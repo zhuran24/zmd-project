@@ -7179,12 +7179,27 @@ class CoordinateExactMasterDelegate:
             len(self.required_optional_slots.get("protocol_storage_box", []))
         )
         protocol_slots = list(self.residual_optional_slots.get("protocol_storage_box", []))
+        protocol_operation = self.owner.utility_operation_by_template.get(
+            "protocol_storage_box"
+        )
+        if protocol_operation is None:
+            if protocol_count > 0 or protocol_fixed_required_count > 0:
+                raise RuntimeError(
+                    "required protocol storage boxes lack a plan-derived utility "
+                    "operation identity"
+                )
+            protocol_slots_per_pose = 0
+        else:
+            protocol_slots_per_pose = int(
+                self.owner.generic_input_slots_by_operation.get(
+                    self._pose_optional_operation("protocol_storage_box"),
+                    0,
+                )
+            )
         stats["optional_cardinality_bounds"]["protocol_storage_box"] = {
             "mode": "required_lower_bound",
             "required_generic_input_slots": int(self.owner._required_generic_input_slot_total()),
-            "slots_per_pose": int(
-                self.owner.generic_input_slots_by_operation.get("box_sink", 0)
-            ),
+            "slots_per_pose": int(protocol_slots_per_pose),
             "lower": int(protocol_count),
             "upper": None,
             "candidate_pose_count": int(len(self.owner.facility_pools.get("protocol_storage_box", []))),
@@ -7794,10 +7809,30 @@ class CoordinateExactMasterDelegate:
             raise KeyError(f"Unknown pose tuple for {slot.key}: {pose_tuple}")
         return int(pose_idx)
 
+    def _pose_optional_operation(self, facility_type: str) -> str:
+        operation_map = getattr(
+            self.owner,
+            "utility_operation_by_template",
+            None,
+        )
+        if not isinstance(operation_map, Mapping):
+            raise RuntimeError(
+                "exact master lacks the preprocess-plan utility operation snapshot"
+            )
+        operation_type = operation_map.get(facility_type)
+        if (
+            not isinstance(operation_type, str)
+            or not operation_type
+            or operation_type.strip() != operation_type
+        ):
+            raise RuntimeError(
+                "selected pose-optional template lacks a valid plan-derived operation: "
+                f"{facility_type!r}"
+            )
+        return operation_type
+
     def extract_solution(self) -> Dict[str, Any]:
         solution: Dict[str, Any] = {}
-        # 批 5: box_sink 改名（与 master_model.POSE_LEVEL_OPTIONAL_OPERATIONS 同步）
-        optional_operations = {"power_pole": "power_supply", "protocol_storage_box": "box_sink"}
         for group in self.owner._mandatory_groups:
             group_id = str(group["group_id"])
             tpl = str(group["facility_type"])
@@ -7823,7 +7858,7 @@ class CoordinateExactMasterDelegate:
                 solution[synthetic_id] = {
                     "instance_id": synthetic_id,
                     "facility_type": tpl,
-                    "operation_type": optional_operations[tpl],
+                    "operation_type": self._pose_optional_operation(tpl),
                     "pose_idx": int(pose_idx),
                     "pose_id": pose["pose_id"],
                     "anchor": dict(pose["anchor"]),
@@ -7843,7 +7878,7 @@ class CoordinateExactMasterDelegate:
                 solution[synthetic_id] = {
                     "instance_id": synthetic_id,
                     "facility_type": tpl,
-                    "operation_type": optional_operations[tpl],
+                    "operation_type": self._pose_optional_operation(tpl),
                     "pose_idx": int(pose_idx),
                     "pose_id": pose["pose_id"],
                     "anchor": dict(pose["anchor"]),
@@ -7863,7 +7898,7 @@ class CoordinateExactMasterDelegate:
                 solution[synthetic_id] = {
                     "instance_id": synthetic_id,
                     "facility_type": "power_pole",
-                    "operation_type": optional_operations["power_pole"],
+                    "operation_type": self._pose_optional_operation("power_pole"),
                     "pose_idx": int(pose_idx),
                     "pose_id": pose["pose_id"],
                     "anchor": dict(pose["anchor"]),

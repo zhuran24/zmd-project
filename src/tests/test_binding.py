@@ -1651,3 +1651,103 @@ def test_round3_pose_optional_synthesis_loads_plan_utility_map(
     assert model.extract_conflict_summary()["synthesized_instances"] == [
         "pose_optional::power_pole::pole_0"
     ]
+
+
+def test_binding_keeps_one_full_utility_snapshot_and_filters_synthesis_locally() -> None:
+    from src.models.binding_subproblem import PortBindingModel
+
+    utility_map = {
+        "boundary_storage_port": "boundary_io",
+        "power_pole": "power_supply",
+        "protocol_core": "protocol_core",
+        "protocol_storage_box": "box_sink",
+    }
+    placement = {
+        "pose_optional::power_pole::pole_0": {
+            "facility_type": "power_pole",
+            "pose_idx": 0,
+        },
+        "pose_optional::protocol_core::core_0": {
+            "facility_type": "protocol_core",
+            "pose_idx": 0,
+        },
+    }
+    pools = {
+        "power_pole": [
+            {
+                "pose_id": "pole_0",
+                "anchor": {"x": 0, "y": 0},
+                "occupied_cells": [],
+                "input_port_cells": [],
+                "output_port_cells": [],
+            }
+        ],
+        "protocol_core": [
+            {
+                "pose_id": "core_0",
+                "anchor": {"x": 1, "y": 0},
+                "occupied_cells": [],
+                "input_port_cells": [],
+                "output_port_cells": [],
+            }
+        ],
+    }
+    instances = [
+        {
+            "instance_id": "core_001",
+            "facility_type": "protocol_core",
+            "operation_type": "protocol_core",
+            "is_mandatory": True,
+        }
+    ]
+
+    model = PortBindingModel(
+        placement_solution=placement,
+        facility_pools=pools,
+        instances=instances,
+        required_generic_outputs={},
+        required_generic_inputs={},
+        utility_operation_by_template=utility_map,
+        canonical_commodity_metadata={},
+    )
+
+    assert model.utility_operation_by_template == utility_map
+    assert not hasattr(model, "_utility_operation_by_template")
+    assert not hasattr(model, "_pose_optional_operation_by_template")
+    assert model.instances_by_id["pose_optional::power_pole::pole_0"][
+        "operation_type"
+    ] == "power_supply"
+    assert "pose_optional::protocol_core::core_0" not in model.instances_by_id
+    assert model.extract_conflict_summary()["missing_instance_ids"] == [
+        "pose_optional::protocol_core::core_0"
+    ]
+
+
+@pytest.mark.parametrize(
+    "utility_map",
+    [
+        {None: "power_supply"},
+        {"power_pole": None},
+        {"": "power_supply"},
+        {" power_pole": "power_supply"},
+        {"power_pole": "power_supply "},
+    ],
+)
+def test_binding_rejects_malformed_utility_operation_identifiers(
+    utility_map: dict[object, object],
+) -> None:
+    from src.models.binding_subproblem import PortBindingModel
+
+    with pytest.raises(
+        (TypeError, ValueError),
+        match="utility_operation_by_template",
+    ):
+        PortBindingModel(
+            placement_solution={},
+            facility_pools={},
+            instances=[],
+            required_generic_outputs={},
+            required_generic_inputs={},
+            utility_operation_by_template=utility_map,  # type: ignore[arg-type]
+            canonical_commodity_metadata={},
+        )

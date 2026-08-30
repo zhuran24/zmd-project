@@ -75,7 +75,10 @@ from src.models.exact_coordinate_master import (
 )
 from src.models.pose_bool_exact_master import PoseBoolExactMasterDelegate
 from src.models.solution_hint_parser import parse_strict_int_hint_value
-from src.preprocess.operation_profiles import OPERATION_PORT_PROFILES
+from src.preprocess.operation_profiles import (
+    DEFAULT_PREPROCESS_CONTEXT,
+    OPERATION_PORT_PROFILES,
+)
 
 ModeToken = Tuple[str, str]
 POSE_LEVEL_OPTIONAL_TEMPLATES = {"power_pole", "protocol_storage_box"}
@@ -2019,42 +2022,92 @@ def _resolve_generic_input_slots_by_operation(
     }
 
 
+def _strict_utility_identifier(value: Any, *, field: str) -> str:
+    if not isinstance(value, str):
+        raise TypeError(f"{field} must be a non-empty string")
+    if not value or value.strip() != value:
+        raise ValueError(f"{field} must be a non-empty, whitespace-free identifier")
+    return value
+
+
 def _resolve_utility_operation_by_template(
     utility_operation_by_template: Optional[Mapping[str, Any]],
 ) -> Dict[str, str]:
-    """Resolve pose-optional identities from plan-derived operation profiles."""
+    """Normalize the complete preprocess-plan utility identity snapshot.
+
+    The default is derived only from ``PreprocessContext.utility_operations``.
+    Recipe profiles may legitimately share one facility template, so scanning all
+    operation profiles and silently dropping multi-operation templates would mix
+    recipe semantics into the utility namespace and fracture the exact snapshot.
+    """
 
     if utility_operation_by_template is None:
-        result: Dict[str, str] = {}
-        for template in sorted(POSE_LEVEL_OPTIONAL_TEMPLATES):
-            matches = sorted(
-                str(operation_type)
-                for operation_type, profile in OPERATION_PORT_PROFILES.items()
-                if str(profile.facility_type) == template
+        candidates: Dict[str, Set[str]] = {}
+        for raw_operation, utility in sorted(
+            DEFAULT_PREPROCESS_CONTEXT.utility_operations.items()
+        ):
+            operation_type = _strict_utility_identifier(
+                raw_operation,
+                field="preprocess utility operation identifier",
             )
-            if len(matches) != 1:
-                raise ValueError(
-                    "pose-optional facility template must map to exactly one plan-derived "
-                    f"operation: {template!r} -> {matches}"
-                )
-            result[template] = matches[0]
-        return result
+            facility_type = _strict_utility_identifier(
+                utility.facility_type,
+                field=f"preprocess utility {operation_type!r} facility identifier",
+            )
+            candidates.setdefault(facility_type, set()).add(operation_type)
+        ambiguous = {
+            facility_type: sorted(operation_types)
+            for facility_type, operation_types in sorted(candidates.items())
+            if len(operation_types) != 1
+        }
+        if ambiguous:
+            raise ValueError(
+                "preprocess utility facility templates must map to exactly one "
+                f"operation: {ambiguous}"
+            )
+        return {
+            facility_type: next(iter(operation_types))
+            for facility_type, operation_types in sorted(candidates.items())
+        }
+
     normalized: Dict[str, str] = {}
     for raw_template, raw_operation in utility_operation_by_template.items():
-        template = str(raw_template)
-        operation = str(raw_operation)
-        if not template or not operation:
-            raise ValueError(
-                "utility_operation_by_template keys and values must be non-empty"
-            )
-        normalized[template] = operation
+        facility_type = _strict_utility_identifier(
+            raw_template,
+            field="utility_operation_by_template facility identifier",
+        )
+        operation_type = _strict_utility_identifier(
+            raw_operation,
+            field=(
+                "utility_operation_by_template operation identifier for "
+                f"{facility_type!r}"
+            ),
+        )
+        normalized[facility_type] = operation_type
     return dict(sorted(normalized.items()))
 
 
-# Compatibility export for consumers that only need the canonical plan-derived
-# identity table.  The bytes are computed from OPERATION_PORT_PROFILES rather
-# than maintained as a second template→operation truth table.
-POSE_LEVEL_OPTIONAL_OPERATIONS = _resolve_utility_operation_by_template(None)
+def _pose_optional_operation_projection(
+    utility_operation_by_template: Mapping[str, str],
+) -> Dict[str, str]:
+    projected: Dict[str, str] = {}
+    for template in sorted(POSE_LEVEL_OPTIONAL_TEMPLATES):
+        operation_type = utility_operation_by_template.get(template)
+        if operation_type is None:
+            raise ValueError(
+                "pose-optional facility template must map to exactly one "
+                f"preprocess-plan utility operation: {template!r}"
+            )
+        projected[template] = operation_type
+    return projected
+
+
+# Compatibility export for consumers that only need pose-optional identities.
+# It is a projection of the one complete preprocess-plan utility snapshot, not a
+# second hand-maintained template→operation truth table.
+POSE_LEVEL_OPTIONAL_OPERATIONS = _pose_optional_operation_projection(
+    _resolve_utility_operation_by_template(None)
+)
 
 
 def _resolve_generic_output_slots_by_operation(
@@ -2075,35 +2128,12 @@ def _resolve_generic_output_slots_by_operation(
     }
 
 
-def _resolve_utility_operation_by_template(
-    value: Optional[Mapping[str, Any]],
-) -> Dict[str, str]:
-    if value is None:
-        candidates: Dict[str, Set[str]] = {}
-        for operation_type, profile in OPERATION_PORT_PROFILES.items():
-            facility_type = str(profile.facility_type)
-            if facility_type:
-                candidates.setdefault(facility_type, set()).add(str(operation_type))
-        return {
-            facility_type: next(iter(operation_types))
-            for facility_type, operation_types in sorted(candidates.items())
-            if len(operation_types) == 1
-        }
-    result: Dict[str, str] = {}
-    for raw_template, raw_operation in value.items():
-        facility_type = str(raw_template)
-        operation_type = str(raw_operation)
-        if not facility_type or not operation_type:
-            raise ValueError("utility_operation_by_template contains an empty identifier")
-        result[facility_type] = operation_type
-    return dict(sorted(result.items()))
-
-
 def infer_certified_optional_lower_bounds(
     rules: Mapping[str, Any],
     generic_io_requirements: Optional[Mapping[str, Any]] = None,
     *,
     generic_input_slots_by_operation: Optional[Mapping[str, Any]] = None,
+    utility_operation_by_template: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, int]:
     """Infer the gross box lower bound before mandatory-provider credits.
 
@@ -2117,21 +2147,29 @@ def infer_certified_optional_lower_bounds(
         generic_io_requirements
     )
     templates = dict(rules.get("facility_templates", {}))
+    utility_map = _resolve_utility_operation_by_template(
+        utility_operation_by_template
+    )
     required_counts: Dict[str, int] = {}
 
     if "protocol_storage_box" in templates:
         slot_map = _resolve_generic_input_slots_by_operation(
             generic_input_slots_by_operation
         )
-        box_operation = _resolve_utility_operation_by_template(None)[
-            "protocol_storage_box"
-        ]
-        slots_per_box = int(slot_map.get(box_operation, 0))
         required_slots = sum(
             int(v)
             for v in normalized_requirements.get("required_generic_inputs", {}).values()
         )
-        if slots_per_box > 0 and required_slots > 0:
+        if required_slots <= 0:
+            return required_counts
+        box_operation = utility_map.get("protocol_storage_box")
+        if box_operation is None:
+            raise ValueError(
+                "positive generic-input demand requires a plan-derived utility "
+                "operation for 'protocol_storage_box'"
+            )
+        slots_per_box = int(slot_map.get(box_operation, 0))
+        if slots_per_box > 0:
             required_box_count = (required_slots + slots_per_box - 1) // slots_per_box
             if required_box_count > 0:
                 required_counts["protocol_storage_box"] = int(required_box_count)
@@ -2163,6 +2201,7 @@ def infer_certified_optional_lower_bounds_for_instances(
     generic_io_requirements: Optional[Mapping[str, Any]] = None,
     *,
     generic_input_slots_by_operation: Optional[Mapping[str, Any]] = None,
+    utility_operation_by_template: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, int]:
     """Infer residual box optionals after crediting actual mandatory providers.
 
@@ -2177,19 +2216,15 @@ def infer_certified_optional_lower_bounds_for_instances(
         generic_io_requirements
     )
     templates = dict(rules.get("facility_templates", {}))
+    utility_map = _resolve_utility_operation_by_template(
+        utility_operation_by_template
+    )
     if "protocol_storage_box" not in templates:
         return {}
 
     slot_map = _resolve_generic_input_slots_by_operation(
         generic_input_slots_by_operation
     )
-    box_operation = _resolve_utility_operation_by_template(None)[
-        "protocol_storage_box"
-    ]
-    slots_per_box = int(slot_map.get(box_operation, 0))
-    if slots_per_box <= 0:
-        return {}
-
     required_slots = sum(
         int(value)
         for value in normalized_requirements.get("required_generic_inputs", {}).values()
@@ -2200,6 +2235,15 @@ def infer_certified_optional_lower_bounds_for_instances(
     )
     residual_slots = max(0, int(required_slots) - int(mandatory_capacity))
     if residual_slots <= 0:
+        return {}
+    box_operation = utility_map.get("protocol_storage_box")
+    if box_operation is None:
+        raise ValueError(
+            "residual generic-input demand requires a plan-derived utility "
+            "operation for 'protocol_storage_box'"
+        )
+    slots_per_box = int(slot_map.get(box_operation, 0))
+    if slots_per_box <= 0:
         return {}
     return {
         "protocol_storage_box": int(
@@ -2213,6 +2257,7 @@ def infer_exact_required_pose_optional_counts(
     generic_io_requirements: Optional[Mapping[str, Any]] = None,
     *,
     generic_input_slots_by_operation: Optional[Mapping[str, Any]] = None,
+    utility_operation_by_template: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, int]:
     """Backward-compatible gross lower-bound alias for legacy callers."""
 
@@ -2220,6 +2265,7 @@ def infer_exact_required_pose_optional_counts(
         rules,
         generic_io_requirements,
         generic_input_slots_by_operation=generic_input_slots_by_operation,
+        utility_operation_by_template=utility_operation_by_template,
     )
 
 
@@ -2229,6 +2275,7 @@ def infer_exact_required_pose_optional_counts_for_instances(
     generic_io_requirements: Optional[Mapping[str, Any]] = None,
     *,
     generic_input_slots_by_operation: Optional[Mapping[str, Any]] = None,
+    utility_operation_by_template: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, int]:
     """Instance-aware lower-bound alias for exact pose-optional overlays."""
 
@@ -2237,6 +2284,7 @@ def infer_exact_required_pose_optional_counts_for_instances(
         rules,
         generic_io_requirements,
         generic_input_slots_by_operation=generic_input_slots_by_operation,
+        utility_operation_by_template=utility_operation_by_template,
     )
 
 
@@ -2405,7 +2453,6 @@ class ExactMasterCore:
     generic_input_slots_by_operation: Mapping[str, int]
     generic_output_slots_by_operation: Mapping[str, int]
     utility_operation_by_template: Mapping[str, str]
-    utility_operation_by_template: Mapping[str, str]
     exact_required_pose_optional_counts: Mapping[str, int]
     build_stats: Mapping[str, Any]
     z_var_indices: Dict[str, Dict[int, int]]
@@ -2492,11 +2539,6 @@ class MasterPlacementModel:
         self.utility_operation_by_template = _resolve_utility_operation_by_template(
             utility_operation_by_template
         )
-        self.utility_operation_by_template = {
-            template: self.utility_operation_by_template[template]
-            for template in sorted(POSE_LEVEL_OPTIONAL_TEMPLATES)
-            if template in self.utility_operation_by_template
-        }
         # A utility identity is required when a pose-optional facility is actually
         # selected, not merely because a dormant candidate pool exists.  Solution
         # extraction below fails closed on a selected template without an identity;
@@ -2512,6 +2554,7 @@ class MasterPlacementModel:
                 self.rules,
                 self.generic_io_requirements,
                 generic_input_slots_by_operation=self.generic_input_slots_by_operation,
+                utility_operation_by_template=self.utility_operation_by_template,
             )
             if self.exact_mode
             else {}
@@ -2969,6 +3012,7 @@ class MasterPlacementModel:
                     core.rules,
                     core.generic_io_requirements,
                     generic_input_slots_by_operation=core.generic_input_slots_by_operation,
+                    utility_operation_by_template=core.utility_operation_by_template,
                 )
             )
 

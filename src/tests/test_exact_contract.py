@@ -10297,11 +10297,16 @@ def test_round3_exact_session_carries_plan_utility_operation_map(
         project_root / "rules" / "preprocess_plan.json",
         {
             "utility_operations": {
+                "boundary_io": {
+                    "facility_type": "boundary_storage_port",
+                    "generic_input_slots": 0,
+                    "generic_output_slots": 0,
+                },
                 "power_supply": {
                     "facility_type": "power_pole",
                     "generic_input_slots": 0,
                     "generic_output_slots": 0,
-                }
+                },
             }
         },
     )
@@ -10312,12 +10317,64 @@ def test_round3_exact_session_carries_plan_utility_operation_map(
     )
 
     assert session.core.utility_operation_by_template == {
-        "power_pole": "power_supply"
+        "boundary_storage_port": "boundary_io",
+        "power_pole": "power_supply",
     }
     master = MasterPlacementModel.from_exact_core(
         session.core,
         ghost_rect=(1, 1),
     )
     assert master.utility_operation_by_template == {
-        "power_pole": "power_supply"
+        "boundary_storage_port": "boundary_io",
+        "power_pole": "power_supply",
     }
+
+
+def test_default_utility_resolver_rejects_ambiguous_plan_facility(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import src.models.master_model as master_model_module
+
+    monkeypatch.setattr(
+        master_model_module,
+        "DEFAULT_PREPROCESS_CONTEXT",
+        SimpleNamespace(
+            utility_operations={
+                "utility_a": SimpleNamespace(facility_type="shared_utility"),
+                "utility_b": SimpleNamespace(facility_type="shared_utility"),
+            }
+        ),
+    )
+
+    with pytest.raises(ValueError, match="exactly one operation"):
+        master_model_module._resolve_utility_operation_by_template(None)
+
+
+def test_pose_optional_delegates_consume_master_utility_snapshot() -> None:
+    from src.models.exact_coordinate_master import CoordinateExactMasterDelegate
+    from src.models.pose_bool_exact_master import PoseBoolExactMasterDelegate
+
+    owner = SimpleNamespace(
+        utility_operation_by_template={
+            "power_pole": "future_power_supply",
+            "protocol_storage_box": "future_box_sink",
+        }
+    )
+    for delegate_type in (
+        CoordinateExactMasterDelegate,
+        PoseBoolExactMasterDelegate,
+    ):
+        delegate = delegate_type.__new__(delegate_type)
+        delegate.owner = owner
+        assert delegate._pose_optional_operation("power_pole") == (
+            "future_power_supply"
+        )
+        assert delegate._pose_optional_operation("protocol_storage_box") == (
+            "future_box_sink"
+        )
+
+    missing_owner = SimpleNamespace(utility_operation_by_template={})
+    delegate = CoordinateExactMasterDelegate.__new__(CoordinateExactMasterDelegate)
+    delegate.owner = missing_owner
+    with pytest.raises(RuntimeError, match="lacks a valid plan-derived operation"):
+        delegate._pose_optional_operation("power_pole")
