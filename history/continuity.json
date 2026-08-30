@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "project": "ZMD",
   "audited_at": "2026-08-29",
   "public_repository": "https://github.com/zhuran24/zmd-project",
@@ -22,14 +22,16 @@
       "name": "zhuran24/zmd_pj",
       "deleted_at": "2026-08-29",
       "verified_branch_count": 4,
-      "preserved_under": "refs/heads/history/old-github-zmd_pj/",
+      "former_ref_mapping": "history/ref-architecture.json",
+      "preservation_form": "fixed endpoint tags plus exact former-ref mapping",
       "branch_commit_ids_preserved": true
     }
   ],
   "epochs": [
     {
       "id": "epoch-1",
-      "public_primary_ref": "refs/heads/history/first-generation",
+      "public_primary_ref": "refs/tags/history/clear-1-before-20260616",
+      "retired_public_browsing_ref": "refs/heads/history/first-generation",
       "original_git_root": "270bb2d243157c74c36cd4de82a029db7859e9fc",
       "public_git_root": "270bb2d243157c74c36cd4de82a029db7859e9fc",
       "original_primary_endpoint": "2101450636b17e98504fb73d0680a95f601c9565",
@@ -46,7 +48,8 @@
     },
     {
       "id": "epoch-2",
-      "public_primary_ref": "refs/heads/history/second-generation",
+      "public_primary_ref": "refs/tags/history/clear-2-before-20260809",
+      "retired_public_browsing_ref": "refs/heads/history/second-generation",
       "git_root": "79afc8f478fa6f706ad0396b8df50235e1c640fe",
       "primary_endpoint": "6ca5f38cf05baaf530b8b6f9ebe628f803a9405b",
       "primary_branch": "main",
@@ -66,6 +69,38 @@
         "refs/heads/main",
         "refs/heads/research/main",
         "refs/heads/certification/main"
+      ],
+      "published_branches": [
+        "refs/heads/main",
+        "refs/heads/research/main",
+        "refs/heads/certification/main",
+        "refs/heads/certification/baseline-repair-20260825"
+      ],
+      "published_branch_roles": [
+        {
+          "ref": "refs/heads/main",
+          "tree": "history",
+          "role": "canonical",
+          "canonical_tree_ref": true
+        },
+        {
+          "ref": "refs/heads/research/main",
+          "tree": "research",
+          "role": "canonical",
+          "canonical_tree_ref": true
+        },
+        {
+          "ref": "refs/heads/certification/main",
+          "tree": "certification",
+          "role": "canonical",
+          "canonical_tree_ref": true
+        },
+        {
+          "ref": "refs/heads/certification/baseline-repair-20260825",
+          "tree": "certification",
+          "role": "baseline_repair",
+          "canonical_tree_ref": false
+        }
       ]
     }
   ],
@@ -130,11 +165,45 @@
       }
     ]
   },
+  "ref_cleanup_event": {
+    "id": "public-ref-cleanup-20260829",
+    "date": "2026-08-29",
+    "reason": "The public import had materialized several different historical ref types as GitHub branches. Only live working lines remain branches; historical endpoints are fixed tags.",
+    "before_head_ref_count": 82,
+    "before_distinct_tip_commit_count": 60,
+    "before_independent_tip_commit_count": 21,
+    "current_independent_tip_commit_count": 3,
+    "historical_independent_tip_commit_count": 18,
+    "retained_head_ref_count": 4,
+    "deleted_head_ref_count": 78,
+    "after_tag_ref_count": 21,
+    "preexisting_continuity_tag_ref_count": 5,
+    "new_historical_endpoint_tag_ref_count": 16,
+    "canonical_tree_count": 3,
+    "pre_cleanup_head_mapping": {
+      "path": "history/ref-architecture.json",
+      "entry_count": 82,
+      "sha256": "43d798e1f4f27de5507244f7b71b7b9d341a21bb92f6bd52a3bd3050df888771",
+      "records_source_kind": true,
+      "records_tip_commit": true,
+      "records_independent_tip_status": true,
+      "records_preserving_ref_and_ancestry_relation": true
+    },
+    "reachable_commit_set_before_and_immediately_after_cleanup": {
+      "count": 2273,
+      "sha256": "4ccff0b135aa602f060e7c80dd73f95d902d77d5d9217d09fb17c979bb63852b",
+      "byte_identical": true
+    },
+    "all_pre_cleanup_head_tip_commits_remain_reachable": true
+  },
   "public_history_policy": {
     "include": [
-      "all reviewed named refs",
-      "old GitHub-only named branches",
-      "seven reviewed detached worktree tips"
+      "four published working branch refs",
+      "five continuity tags",
+      "sixteen additional historical independent-tip tags",
+      "the complete mapping of all 82 pre-cleanup public head names, including the four retained names and 78 retired names, source types, commits and preserving refs",
+      "old GitHub-only commits through endpoint tags and the ref-architecture mapping",
+      "seven reviewed detached worktree tips through fixed endpoint tags"
     ],
     "exclude": [
       "unreachable reflog-only commits",

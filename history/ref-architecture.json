@@ -1,0 +1,1369 @@
+{
+  "schema_version": 1,
+  "audited_at": "2026-08-29",
+  "scope": "sanitized public Git object graph",
+  "before_cleanup": {
+    "branch_name_count": 82,
+    "distinct_branch_tip_count": 60,
+    "independent_branch_tip_count": 21,
+    "current_independent_tip_count": 3,
+    "historical_independent_tip_count": 18,
+    "head_map_sha256": "86dd6fd2b29a4c0911693276cb47fedbf33f6456f517ccca637bc41cf29c6f14",
+    "head_map_sha256_format": "UTF-8 lines 'ref SP oid LF', sorted by ref",
+    "source_kind_head_name_counts": {
+      "current_branch": 4,
+      "epoch_1_local_branch": 10,
+      "epoch_1_remote_tracking_record": 13,
+      "epoch_2_local_branch": 37,
+      "epoch_2_remote_tracking_record": 3,
+      "epoch_3_detached_tip_preservation_head": 7,
+      "generated_generation_browsing_head": 2,
+      "old_github_zmd_legacy_branch": 2,
+      "old_github_zmd_pj_branch": 4
+    },
+    "tag_count": 5,
+    "reachable_commit_count": 2273,
+    "reachable_commit_set_sha256": "4ccff0b135aa602f060e7c80dd73f95d902d77d5d9217d09fb17c979bb63852b"
+  },
+  "final_branch_refs": [
+    "refs/heads/main",
+    "refs/heads/research/main",
+    "refs/heads/certification/main",
+    "refs/heads/certification/baseline-repair-20260825"
+  ],
+  "historical_endpoint_anchors": [
+    {
+      "tag": "refs/tags/history/clear-2-before-20260809",
+      "target_commit": "6ca5f38cf05baaf530b8b6f9ebe628f803a9405b",
+      "anchor_origin": "preexisting_continuity_tag",
+      "source_refs_at_same_tip": [
+        "refs/heads/history/epoch-2/heads/main",
+        "refs/heads/history/second-generation"
+      ]
+    },
+    {
+      "tag": "refs/tags/history/clear-1-before-20260616",
+      "target_commit": "a7a827164880426319b78f1ca60a9d7cab50b49d",
+      "anchor_origin": "preexisting_continuity_tag",
+      "source_refs_at_same_tip": [
+        "refs/heads/history/epoch-1/heads/project-foundation",
+        "refs/heads/history/epoch-1/remotes/origin/project-foundation",
+        "refs/heads/history/first-generation"
+      ]
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-1/local/diff-fuzz-binding",
+      "source_ref": "refs/heads/history/epoch-1/heads/diff-fuzz-binding",
+      "target_commit": "4ab0ee42b19f4e8774d4965c4558f3b40ce94a7a",
+      "description": "Independent first-generation local experiment tip",
+      "anchor_origin": "created_for_branch_cleanup"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-1/local/project-guardrails",
+      "source_ref": "refs/heads/history/epoch-1/heads/project-guardrails",
+      "target_commit": "6ff5496091da745ae12b0302c5d6fc8de22f27d9",
+      "description": "Independent first-generation local guardrails tip",
+      "anchor_origin": "created_for_branch_cleanup"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-1/local/spike-prod-scale-master-integration",
+      "source_ref": "refs/heads/history/epoch-1/heads/spike/prod_scale_master_integration_20260526",
+      "target_commit": "438f582fe68ded5eac2592ac144648477a4ff8cd",
+      "description": "Independent first-generation local production-scale integration tip",
+      "anchor_origin": "created_for_branch_cleanup"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-1/remote/origin-codex-memory-tree-publish-safety",
+      "source_ref": "refs/heads/history/epoch-1/remotes/origin/codex/20260606-memory-tree-publish-safety",
+      "target_commit": "2b0b8bde99bf9acb0e2a25d4bf876d4b03c25912",
+      "description": "Independent first-generation remote-tracking position from origin/codex",
+      "anchor_origin": "created_for_branch_cleanup"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-1/remote/origin-diff-fuzz-binding",
+      "source_ref": "refs/heads/history/epoch-1/remotes/origin/diff-fuzz-binding",
+      "target_commit": "9cebfdbe1505701561f480e2a067d58de9cc98b6",
+      "description": "Independent first-generation remote-tracking position from origin/diff-fuzz-binding",
+      "anchor_origin": "created_for_branch_cleanup"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-1/remote/origin-gpt-memory-tree-publish-safety",
+      "source_ref": "refs/heads/history/epoch-1/remotes/origin/gpt/20260606-memory-tree-publish-safety",
+      "target_commit": "535e7f1e78c94aae34c556206f1dc372336049d1",
+      "description": "Independent first-generation remote-tracking position from origin/gpt",
+      "anchor_origin": "created_for_branch_cleanup"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "source_ref": "refs/heads/history/epoch-2/heads/mixflow-surgery",
+      "target_commit": "c6a9f8b4262c5276a21fac1ea97833b23c36f35b",
+      "description": "Independent second-generation local mixflow-surgery tip",
+      "anchor_origin": "created_for_branch_cleanup"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-3/detached/devspace-1a26a71",
+      "source_ref": "refs/heads/history/epoch-3/detached/devspace-1a26a71",
+      "target_commit": "1a26a71eed72a84b90e7a19d1e51f21439f143e7",
+      "description": "Detached third-generation DevSpace tip",
+      "anchor_origin": "created_for_branch_cleanup"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-3/detached/devspace-85d9ac4",
+      "source_ref": "refs/heads/history/epoch-3/detached/devspace-85d9ac4",
+      "target_commit": "85d9ac407fc84a96542b97c36251d9e2b6e7f843",
+      "description": "Detached third-generation DevSpace tip",
+      "anchor_origin": "created_for_branch_cleanup"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-3/detached/devspace-af4837f",
+      "source_ref": "refs/heads/history/epoch-3/detached/devspace-af4837f",
+      "target_commit": "af4837f15646fa4f3d9b674a5d1810cccfaddec4",
+      "description": "Detached third-generation DevSpace tip",
+      "anchor_origin": "created_for_branch_cleanup"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-3/detached/devspace-bc15ab4",
+      "source_ref": "refs/heads/history/epoch-3/detached/devspace-bc15ab4",
+      "target_commit": "bc15ab4899650df86c6b83c44c2cf78f4259d93b",
+      "description": "Detached third-generation DevSpace tip",
+      "anchor_origin": "created_for_branch_cleanup"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-3/detached/devspace-c32bd82",
+      "source_ref": "refs/heads/history/epoch-3/detached/devspace-c32bd82",
+      "target_commit": "c32bd82f16d2667a0843f97a925c653422cada2e",
+      "description": "Detached third-generation DevSpace tip",
+      "anchor_origin": "created_for_branch_cleanup"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-3/detached/devspace-e57520d",
+      "source_ref": "refs/heads/history/epoch-3/detached/devspace-e57520d",
+      "target_commit": "e57520d9a991b159645c75b094f554aae5364caf",
+      "description": "Detached third-generation DevSpace tip",
+      "anchor_origin": "created_for_branch_cleanup"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-3/detached/devspace-faa2867",
+      "source_ref": "refs/heads/history/epoch-3/detached/devspace-faa2867",
+      "target_commit": "faa2867bd5159113603087b140201d17708c2609",
+      "description": "Detached third-generation DevSpace tip",
+      "anchor_origin": "created_for_branch_cleanup"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/old-github/zmd-legacy/gemini-line",
+      "source_ref": "refs/heads/history/old-github-zmd-legacy/gemini-line",
+      "target_commit": "f4bdf793159f0217c404702a0747268e0cf1ad2e",
+      "description": "Independent old zmd-legacy GitHub tip",
+      "anchor_origin": "created_for_branch_cleanup"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/old-github/zmd-pj/legacy-prerebuild-main",
+      "source_ref": "refs/heads/history/old-github-zmd_pj/legacy-20260701-prerebuild-main",
+      "target_commit": "5ab006f4d7fa33cb855cfba47161c3572bf680b1",
+      "description": "Independent old zmd_pj GitHub tip",
+      "anchor_origin": "created_for_branch_cleanup"
+    }
+  ],
+  "new_historical_endpoint_tags": [
+    {
+      "tag": "refs/tags/history/endpoints/epoch-1/local/diff-fuzz-binding",
+      "source_ref": "refs/heads/history/epoch-1/heads/diff-fuzz-binding",
+      "target_commit": "4ab0ee42b19f4e8774d4965c4558f3b40ce94a7a",
+      "description": "Independent first-generation local experiment tip"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-1/local/project-guardrails",
+      "source_ref": "refs/heads/history/epoch-1/heads/project-guardrails",
+      "target_commit": "6ff5496091da745ae12b0302c5d6fc8de22f27d9",
+      "description": "Independent first-generation local guardrails tip"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-1/local/spike-prod-scale-master-integration",
+      "source_ref": "refs/heads/history/epoch-1/heads/spike/prod_scale_master_integration_20260526",
+      "target_commit": "438f582fe68ded5eac2592ac144648477a4ff8cd",
+      "description": "Independent first-generation local production-scale integration tip"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-1/remote/origin-codex-memory-tree-publish-safety",
+      "source_ref": "refs/heads/history/epoch-1/remotes/origin/codex/20260606-memory-tree-publish-safety",
+      "target_commit": "2b0b8bde99bf9acb0e2a25d4bf876d4b03c25912",
+      "description": "Independent first-generation remote-tracking position from origin/codex"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-1/remote/origin-diff-fuzz-binding",
+      "source_ref": "refs/heads/history/epoch-1/remotes/origin/diff-fuzz-binding",
+      "target_commit": "9cebfdbe1505701561f480e2a067d58de9cc98b6",
+      "description": "Independent first-generation remote-tracking position from origin/diff-fuzz-binding"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-1/remote/origin-gpt-memory-tree-publish-safety",
+      "source_ref": "refs/heads/history/epoch-1/remotes/origin/gpt/20260606-memory-tree-publish-safety",
+      "target_commit": "535e7f1e78c94aae34c556206f1dc372336049d1",
+      "description": "Independent first-generation remote-tracking position from origin/gpt"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "source_ref": "refs/heads/history/epoch-2/heads/mixflow-surgery",
+      "target_commit": "c6a9f8b4262c5276a21fac1ea97833b23c36f35b",
+      "description": "Independent second-generation local mixflow-surgery tip"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-3/detached/devspace-1a26a71",
+      "source_ref": "refs/heads/history/epoch-3/detached/devspace-1a26a71",
+      "target_commit": "1a26a71eed72a84b90e7a19d1e51f21439f143e7",
+      "description": "Detached third-generation DevSpace tip"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-3/detached/devspace-85d9ac4",
+      "source_ref": "refs/heads/history/epoch-3/detached/devspace-85d9ac4",
+      "target_commit": "85d9ac407fc84a96542b97c36251d9e2b6e7f843",
+      "description": "Detached third-generation DevSpace tip"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-3/detached/devspace-af4837f",
+      "source_ref": "refs/heads/history/epoch-3/detached/devspace-af4837f",
+      "target_commit": "af4837f15646fa4f3d9b674a5d1810cccfaddec4",
+      "description": "Detached third-generation DevSpace tip"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-3/detached/devspace-bc15ab4",
+      "source_ref": "refs/heads/history/epoch-3/detached/devspace-bc15ab4",
+      "target_commit": "bc15ab4899650df86c6b83c44c2cf78f4259d93b",
+      "description": "Detached third-generation DevSpace tip"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-3/detached/devspace-c32bd82",
+      "source_ref": "refs/heads/history/epoch-3/detached/devspace-c32bd82",
+      "target_commit": "c32bd82f16d2667a0843f97a925c653422cada2e",
+      "description": "Detached third-generation DevSpace tip"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-3/detached/devspace-e57520d",
+      "source_ref": "refs/heads/history/epoch-3/detached/devspace-e57520d",
+      "target_commit": "e57520d9a991b159645c75b094f554aae5364caf",
+      "description": "Detached third-generation DevSpace tip"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/epoch-3/detached/devspace-faa2867",
+      "source_ref": "refs/heads/history/epoch-3/detached/devspace-faa2867",
+      "target_commit": "faa2867bd5159113603087b140201d17708c2609",
+      "description": "Detached third-generation DevSpace tip"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/old-github/zmd-legacy/gemini-line",
+      "source_ref": "refs/heads/history/old-github-zmd-legacy/gemini-line",
+      "target_commit": "f4bdf793159f0217c404702a0747268e0cf1ad2e",
+      "description": "Independent old zmd-legacy GitHub tip"
+    },
+    {
+      "tag": "refs/tags/history/endpoints/old-github/zmd-pj/legacy-prerebuild-main",
+      "source_ref": "refs/heads/history/old-github-zmd_pj/legacy-20260701-prerebuild-main",
+      "target_commit": "5ab006f4d7fa33cb855cfba47161c3572bf680b1",
+      "description": "Independent old zmd_pj GitHub tip"
+    }
+  ],
+  "preexisting_continuity_tags": [
+    {
+      "ref": "refs/tags/history/clear-1-after-20260616",
+      "ref_object": "652bd4fc2020f0249a346742816fb634b4bec663",
+      "object_type": "tag",
+      "target_commit": "79afc8f478fa6f706ad0396b8df50235e1c640fe"
+    },
+    {
+      "ref": "refs/tags/history/clear-1-before-20260616",
+      "ref_object": "211fb100c4c271892efd6ba0323cbd738765f396",
+      "object_type": "tag",
+      "target_commit": "a7a827164880426319b78f1ca60a9d7cab50b49d"
+    },
+    {
+      "ref": "refs/tags/history/clear-2-after-20260809",
+      "ref_object": "4e6f1698b05530617aa0fb9e1e79f3916ee6366c",
+      "object_type": "tag",
+      "target_commit": "a72003b527786254bf6fa699fe252610f4c8658b"
+    },
+    {
+      "ref": "refs/tags/history/clear-2-before-20260809",
+      "ref_object": "b2f1652d097bec39e3b94697c2db162f97592dce",
+      "object_type": "tag",
+      "target_commit": "6ca5f38cf05baaf530b8b6f9ebe628f803a9405b"
+    },
+    {
+      "ref": "refs/tags/history/three-tree-split-20260824",
+      "ref_object": "4a2c200c65baad0e8224d4ccb7fc124a0f3001b1",
+      "object_type": "tag",
+      "target_commit": "ede4fa4b883d0aa965141700d2475af1b96817c8"
+    }
+  ],
+  "original_public_heads": [
+    {
+      "ref": "refs/heads/certification/baseline-repair-20260825",
+      "tip_commit": "bd4e438f1886b0147929cee4017398ae785e0e7c",
+      "source_kind": "current_branch",
+      "retained_as_branch": true,
+      "independent_tip": true,
+      "other_names_at_same_tip": [
+        "refs/heads/certification/main"
+      ],
+      "preserved_by": "refs/heads/certification/main",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/certification/main",
+      "tip_commit": "bd4e438f1886b0147929cee4017398ae785e0e7c",
+      "source_kind": "current_branch",
+      "retained_as_branch": true,
+      "independent_tip": true,
+      "other_names_at_same_tip": [
+        "refs/heads/certification/baseline-repair-20260825"
+      ],
+      "preserved_by": "refs/heads/certification/main",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/heads/canary-cal-r2",
+      "tip_commit": "409f2a2c1942ddd86a8026c0fb939f495ffdb2ae",
+      "source_kind": "epoch_1_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/remote/origin-diff-fuzz-binding",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 20
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/heads/diff-fuzz-binding",
+      "tip_commit": "4ab0ee42b19f4e8774d4965c4558f3b40ce94a7a",
+      "source_kind": "epoch_1_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/local/diff-fuzz-binding",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/heads/doc_subject_projection_v20260606_003",
+      "tip_commit": "636c44fc4e2beb76808f1a9d80d500859eee3708",
+      "source_kind": "epoch_1_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/remotes/origin/doc_subject_projection_v20260606_003"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/remote/origin-codex-memory-tree-publish-safety",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 3
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/heads/doc_tree_closeout_v20260606_004",
+      "tip_commit": "ec4ee580d8a75749ede68daed7b81c979f88fee7",
+      "source_kind": "epoch_1_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/remotes/origin/doc_tree_closeout_v20260606_004"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/local/project-guardrails",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 5
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/heads/main",
+      "tip_commit": "4b934cb8e274e7129dd7891ae37e25186a565444",
+      "source_kind": "epoch_1_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/remotes/origin/HEAD",
+        "refs/heads/history/epoch-1/remotes/origin/main"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/local/project-guardrails",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 4
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/heads/master",
+      "tip_commit": "49aee3da0bcde55879971c540a3c34f3c5bbe77c",
+      "source_kind": "epoch_1_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/remotes/origin/master"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/remote/origin-codex-memory-tree-publish-safety",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 5
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/heads/project-foundation",
+      "tip_commit": "a7a827164880426319b78f1ca60a9d7cab50b49d",
+      "source_kind": "epoch_1_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/remotes/origin/project-foundation",
+        "refs/heads/history/first-generation"
+      ],
+      "preserved_by": "refs/tags/history/clear-1-before-20260616",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/heads/project-guardrails",
+      "tip_commit": "6ff5496091da745ae12b0302c5d6fc8de22f27d9",
+      "source_kind": "epoch_1_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/remotes/origin/project-guardrails"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/local/project-guardrails",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/heads/project-knowledge-tree",
+      "tip_commit": "30405ff4322a7d7b51a5b718205a723654e13ffb",
+      "source_kind": "epoch_1_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/remotes/origin/project-knowledge-tree"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/local/project-guardrails",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 1
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/heads/spike/prod_scale_master_integration_20260526",
+      "tip_commit": "438f582fe68ded5eac2592ac144648477a4ff8cd",
+      "source_kind": "epoch_1_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/remotes/origin/spike/prod_scale_master_integration_20260526"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/local/spike-prod-scale-master-integration",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/remotes/origin/HEAD",
+      "tip_commit": "4b934cb8e274e7129dd7891ae37e25186a565444",
+      "source_kind": "epoch_1_remote_tracking_record",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/heads/main",
+        "refs/heads/history/epoch-1/remotes/origin/main"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/local/project-guardrails",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 4
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/remotes/origin/codex/20260606-memory-tree-publish-safety",
+      "tip_commit": "2b0b8bde99bf9acb0e2a25d4bf876d4b03c25912",
+      "source_kind": "epoch_1_remote_tracking_record",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/remote/origin-codex-memory-tree-publish-safety",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/remotes/origin/codex/20260606-memory-tree-publish-safety-v2",
+      "tip_commit": "848ef7978c4d754b1a5c28045ec759352c95935c",
+      "source_kind": "epoch_1_remote_tracking_record",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/remote/origin-codex-memory-tree-publish-safety",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 1
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/remotes/origin/diff-fuzz-binding",
+      "tip_commit": "9cebfdbe1505701561f480e2a067d58de9cc98b6",
+      "source_kind": "epoch_1_remote_tracking_record",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/remote/origin-diff-fuzz-binding",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/remotes/origin/doc_subject_projection_v20260606_003",
+      "tip_commit": "636c44fc4e2beb76808f1a9d80d500859eee3708",
+      "source_kind": "epoch_1_remote_tracking_record",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/heads/doc_subject_projection_v20260606_003"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/remote/origin-codex-memory-tree-publish-safety",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 3
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/remotes/origin/doc_tree_closeout_v20260606_004",
+      "tip_commit": "ec4ee580d8a75749ede68daed7b81c979f88fee7",
+      "source_kind": "epoch_1_remote_tracking_record",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/heads/doc_tree_closeout_v20260606_004"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/local/project-guardrails",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 5
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/remotes/origin/gpt/20260606-memory-tree-publish-safety",
+      "tip_commit": "535e7f1e78c94aae34c556206f1dc372336049d1",
+      "source_kind": "epoch_1_remote_tracking_record",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/remote/origin-gpt-memory-tree-publish-safety",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/remotes/origin/main",
+      "tip_commit": "4b934cb8e274e7129dd7891ae37e25186a565444",
+      "source_kind": "epoch_1_remote_tracking_record",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/heads/main",
+        "refs/heads/history/epoch-1/remotes/origin/HEAD"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/local/project-guardrails",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 4
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/remotes/origin/master",
+      "tip_commit": "49aee3da0bcde55879971c540a3c34f3c5bbe77c",
+      "source_kind": "epoch_1_remote_tracking_record",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/heads/master"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/remote/origin-codex-memory-tree-publish-safety",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 5
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/remotes/origin/project-foundation",
+      "tip_commit": "a7a827164880426319b78f1ca60a9d7cab50b49d",
+      "source_kind": "epoch_1_remote_tracking_record",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/heads/project-foundation",
+        "refs/heads/history/first-generation"
+      ],
+      "preserved_by": "refs/tags/history/clear-1-before-20260616",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/remotes/origin/project-guardrails",
+      "tip_commit": "6ff5496091da745ae12b0302c5d6fc8de22f27d9",
+      "source_kind": "epoch_1_remote_tracking_record",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/heads/project-guardrails"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/local/project-guardrails",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/remotes/origin/project-knowledge-tree",
+      "tip_commit": "30405ff4322a7d7b51a5b718205a723654e13ffb",
+      "source_kind": "epoch_1_remote_tracking_record",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/heads/project-knowledge-tree"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/local/project-guardrails",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 1
+    },
+    {
+      "ref": "refs/heads/history/epoch-1/remotes/origin/spike/prod_scale_master_integration_20260526",
+      "tip_commit": "438f582fe68ded5eac2592ac144648477a4ff8cd",
+      "source_kind": "epoch_1_remote_tracking_record",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/heads/spike/prod_scale_master_integration_20260526"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/local/spike-prod-scale-master-integration",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/codex/ab16-r11-lock-20260802",
+      "tip_commit": "0b8b3432a208e5771fbf601e308b44e009bccb09",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 191
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/codex/ab16-r12-chain-20260802",
+      "tip_commit": "3c4ff6b135ec8297cc7af1d642c609e352b29879",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 188
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/codex/ab16-r13-gate1-freshhead-20260803",
+      "tip_commit": "da1d5867ace41d71187c394bb67e6d108c79726a",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 187
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/codex/ab16-r14-ortools-proto-20260803",
+      "tip_commit": "d0e6fada0aabdb69a28bf11f4f6ea78b1eaf9107",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 186
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/codex/ab16-r15-coord-replay-20260803",
+      "tip_commit": "f4cb628b798029049f1e06148586f2916df6b56f",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 185
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/codex/ab16-r16-attestor-identity-20260803",
+      "tip_commit": "2581e6c33a7704e00ba3832e0bb2ed87bca6ba95",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 184
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/codex/ab16-r17-zerohook-terminal-20260803",
+      "tip_commit": "ee339a78a23ac6cd3b9d936d869068fa24bcc14a",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 183
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/codex/ab16-r18-terminal-collection-20260803",
+      "tip_commit": "d981a59615ecc664be0583fd04b1d2dafae2ebe0",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 182
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/codex/ab16-r19-altcap-censor-20260803",
+      "tip_commit": "dc0a8431ae61dd969b795a3b213d9912e3726c06",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 181
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/codex/ab16-r20-suite-identity-20260803",
+      "tip_commit": "9b29da7d372f9e48c2f7bb9c6ef54633cb0b0426",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 180
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/codex/ab16-slimdown-20260801",
+      "tip_commit": "93835fd22ccc1f8b93f41cadce045d84458c84a7",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 193
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/codex/r21-hygiene-20260803",
+      "tip_commit": "ffcf0eea47fa86ae50ca9661db24fc4cc776b819",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 172
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/codex/r22-artifacts-governance-20260803",
+      "tip_commit": "0dcb531692cde2ea5beb89481fd94f8817f687c9",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-2/heads/worktree-wf_27e88eef-fd4-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_7bea58bf-55f-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_97aa72b5-cc8-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_d4c922f3-085-2",
+        "refs/heads/history/epoch-2/heads/worktree-wf_d4c922f3-085-3",
+        "refs/heads/history/epoch-2/heads/worktree-wf_e0e722e3-e7d-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_f640bf94-c69-1"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 169
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/main",
+      "tip_commit": "6ca5f38cf05baaf530b8b6f9ebe628f803a9405b",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [
+        "refs/heads/history/second-generation"
+      ],
+      "preserved_by": "refs/tags/history/clear-2-before-20260809",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/mixflow-surgery",
+      "tip_commit": "c6a9f8b4262c5276a21fac1ea97833b23c36f35b",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/prune/docs-adapter-p1-20260803",
+      "tip_commit": "98800544ed40da184fc4db474d80fea8ab76c832",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 158
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/prune/p2-gap-lens-20260803",
+      "tip_commit": "831e4910975a45de03c7a333fabe195ce97e3e9c",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 106
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/prune/p2-main-20260803",
+      "tip_commit": "5da141143df014cccfe845a7a19e13531f78f429",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 133
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/prune/p2-prefix-fixes-20260803",
+      "tip_commit": "448e02d41f47b55198740251edda182deb2e6c95",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 159
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/prune/p2-prefix-fixes-r2-20260803",
+      "tip_commit": "f3cdbc552f71904ccabc516805507417b5c1de3e",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 161
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/prune/p4-batch1-20260805",
+      "tip_commit": "f62b33565133dc5964a572813ac7ec30d6b8ecda",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/clear-2-before-20260809",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 47
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/w0/fixrerun-20260804",
+      "tip_commit": "dfba027f1c10155bcfe998e37e00d6d6142f908c",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 74
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/w0/front-aware-g1-20260803",
+      "tip_commit": "e23f7acf417e38c0b02484de068c575312023efa",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 154
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/worktree-agent-a1e5174b682fe3427",
+      "tip_commit": "27969ca42f334be394cdd1d0f967e6423dd5f1db",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/clear-2-before-20260809",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 66
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/worktree-agent-a3470b5da1139f1c4",
+      "tip_commit": "5af80d0d2508cfbb3fedda02998e75e28680aeff",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 16
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/worktree-agent-a4a614a08c720c6f6",
+      "tip_commit": "3234c30c37fc95d72c6ce9a9e6fe143af65ebf08",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/clear-2-before-20260809",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 27
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/worktree-agent-abbb35e6fe0946fe6",
+      "tip_commit": "bf9649aa9145edd6a5b1ddcc8252df7f68c8ff80",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 359
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/worktree-wf_27e88eef-fd4-1",
+      "tip_commit": "0dcb531692cde2ea5beb89481fd94f8817f687c9",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-2/heads/codex/r22-artifacts-governance-20260803",
+        "refs/heads/history/epoch-2/heads/worktree-wf_7bea58bf-55f-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_97aa72b5-cc8-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_d4c922f3-085-2",
+        "refs/heads/history/epoch-2/heads/worktree-wf_d4c922f3-085-3",
+        "refs/heads/history/epoch-2/heads/worktree-wf_e0e722e3-e7d-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_f640bf94-c69-1"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 169
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/worktree-wf_2f774edf-cc8-1",
+      "tip_commit": "cf13b3ca7b18d306900aaf5421885f7b189cf3e4",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 85
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/worktree-wf_7bea58bf-55f-1",
+      "tip_commit": "0dcb531692cde2ea5beb89481fd94f8817f687c9",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-2/heads/codex/r22-artifacts-governance-20260803",
+        "refs/heads/history/epoch-2/heads/worktree-wf_27e88eef-fd4-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_97aa72b5-cc8-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_d4c922f3-085-2",
+        "refs/heads/history/epoch-2/heads/worktree-wf_d4c922f3-085-3",
+        "refs/heads/history/epoch-2/heads/worktree-wf_e0e722e3-e7d-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_f640bf94-c69-1"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 169
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/worktree-wf_80bd1fb3-e48-6",
+      "tip_commit": "cc12e9aa0d374c6ed58b5139d51cd5d57a2b72e0",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/clear-2-before-20260809",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 49
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/worktree-wf_97aa72b5-cc8-1",
+      "tip_commit": "0dcb531692cde2ea5beb89481fd94f8817f687c9",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-2/heads/codex/r22-artifacts-governance-20260803",
+        "refs/heads/history/epoch-2/heads/worktree-wf_27e88eef-fd4-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_7bea58bf-55f-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_d4c922f3-085-2",
+        "refs/heads/history/epoch-2/heads/worktree-wf_d4c922f3-085-3",
+        "refs/heads/history/epoch-2/heads/worktree-wf_e0e722e3-e7d-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_f640bf94-c69-1"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 169
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/worktree-wf_aec29291-00f-1",
+      "tip_commit": "bf815e2db1721091856c117f47aeb99e04814fbc",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 157
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/worktree-wf_d4c922f3-085-2",
+      "tip_commit": "0dcb531692cde2ea5beb89481fd94f8817f687c9",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-2/heads/codex/r22-artifacts-governance-20260803",
+        "refs/heads/history/epoch-2/heads/worktree-wf_27e88eef-fd4-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_7bea58bf-55f-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_97aa72b5-cc8-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_d4c922f3-085-3",
+        "refs/heads/history/epoch-2/heads/worktree-wf_e0e722e3-e7d-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_f640bf94-c69-1"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 169
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/worktree-wf_d4c922f3-085-3",
+      "tip_commit": "0dcb531692cde2ea5beb89481fd94f8817f687c9",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-2/heads/codex/r22-artifacts-governance-20260803",
+        "refs/heads/history/epoch-2/heads/worktree-wf_27e88eef-fd4-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_7bea58bf-55f-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_97aa72b5-cc8-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_d4c922f3-085-2",
+        "refs/heads/history/epoch-2/heads/worktree-wf_e0e722e3-e7d-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_f640bf94-c69-1"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 169
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/worktree-wf_e0e722e3-e7d-1",
+      "tip_commit": "0dcb531692cde2ea5beb89481fd94f8817f687c9",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-2/heads/codex/r22-artifacts-governance-20260803",
+        "refs/heads/history/epoch-2/heads/worktree-wf_27e88eef-fd4-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_7bea58bf-55f-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_97aa72b5-cc8-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_d4c922f3-085-2",
+        "refs/heads/history/epoch-2/heads/worktree-wf_d4c922f3-085-3",
+        "refs/heads/history/epoch-2/heads/worktree-wf_f640bf94-c69-1"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 169
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/heads/worktree-wf_f640bf94-c69-1",
+      "tip_commit": "0dcb531692cde2ea5beb89481fd94f8817f687c9",
+      "source_kind": "epoch_2_local_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-2/heads/codex/r22-artifacts-governance-20260803",
+        "refs/heads/history/epoch-2/heads/worktree-wf_27e88eef-fd4-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_7bea58bf-55f-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_97aa72b5-cc8-1",
+        "refs/heads/history/epoch-2/heads/worktree-wf_d4c922f3-085-2",
+        "refs/heads/history/epoch-2/heads/worktree-wf_d4c922f3-085-3",
+        "refs/heads/history/epoch-2/heads/worktree-wf_e0e722e3-e7d-1"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 169
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/remotes/origin/main",
+      "tip_commit": "1c2c1ab351057a336fd41530443ea611816e624d",
+      "source_kind": "epoch_2_remote_tracking_record",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-2/remotes/winc/cachy-main",
+        "refs/heads/history/old-github-zmd_pj/main"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 392
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/remotes/origin/topology-opt",
+      "tip_commit": "26931e8a963913c1bb66a04a538fca47acc75e25",
+      "source_kind": "epoch_2_remote_tracking_record",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/old-github-zmd_pj/topology-opt"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 700
+    },
+    {
+      "ref": "refs/heads/history/epoch-2/remotes/winc/cachy-main",
+      "tip_commit": "1c2c1ab351057a336fd41530443ea611816e624d",
+      "source_kind": "epoch_2_remote_tracking_record",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-2/remotes/origin/main",
+        "refs/heads/history/old-github-zmd_pj/main"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 392
+    },
+    {
+      "ref": "refs/heads/history/epoch-3/detached/devspace-1a26a71",
+      "tip_commit": "1a26a71eed72a84b90e7a19d1e51f21439f143e7",
+      "source_kind": "epoch_3_detached_tip_preservation_head",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-3/detached/devspace-1a26a71",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-3/detached/devspace-85d9ac4",
+      "tip_commit": "85d9ac407fc84a96542b97c36251d9e2b6e7f843",
+      "source_kind": "epoch_3_detached_tip_preservation_head",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-3/detached/devspace-85d9ac4",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-3/detached/devspace-af4837f",
+      "tip_commit": "af4837f15646fa4f3d9b674a5d1810cccfaddec4",
+      "source_kind": "epoch_3_detached_tip_preservation_head",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-3/detached/devspace-af4837f",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-3/detached/devspace-bc15ab4",
+      "tip_commit": "bc15ab4899650df86c6b83c44c2cf78f4259d93b",
+      "source_kind": "epoch_3_detached_tip_preservation_head",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-3/detached/devspace-bc15ab4",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-3/detached/devspace-c32bd82",
+      "tip_commit": "c32bd82f16d2667a0843f97a925c653422cada2e",
+      "source_kind": "epoch_3_detached_tip_preservation_head",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-3/detached/devspace-c32bd82",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-3/detached/devspace-e57520d",
+      "tip_commit": "e57520d9a991b159645c75b094f554aae5364caf",
+      "source_kind": "epoch_3_detached_tip_preservation_head",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-3/detached/devspace-e57520d",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/epoch-3/detached/devspace-faa2867",
+      "tip_commit": "faa2867bd5159113603087b140201d17708c2609",
+      "source_kind": "epoch_3_detached_tip_preservation_head",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-3/detached/devspace-faa2867",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/first-generation",
+      "tip_commit": "a7a827164880426319b78f1ca60a9d7cab50b49d",
+      "source_kind": "generated_generation_browsing_head",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-1/heads/project-foundation",
+        "refs/heads/history/epoch-1/remotes/origin/project-foundation"
+      ],
+      "preserved_by": "refs/tags/history/clear-1-before-20260616",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/old-github-zmd-legacy/gemini-line",
+      "tip_commit": "f4bdf793159f0217c404702a0747268e0cf1ad2e",
+      "source_kind": "old_github_zmd_legacy_branch",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/old-github/zmd-legacy/gemini-line",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/old-github-zmd-legacy/master",
+      "tip_commit": "25ad94267145889c3e248e08d60f93e416518f87",
+      "source_kind": "old_github_zmd_legacy_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/epoch-1/remote/origin-codex-memory-tree-publish-safety",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 93
+    },
+    {
+      "ref": "refs/heads/history/old-github-zmd_pj/legacy-20260701-prerebuild-main",
+      "tip_commit": "5ab006f4d7fa33cb855cfba47161c3572bf680b1",
+      "source_kind": "old_github_zmd_pj_branch",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/old-github/zmd-pj/legacy-prerebuild-main",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/history/old-github-zmd_pj/legacy-20260701-prerebuild-topology-opt",
+      "tip_commit": "a20ee3191d7e7a0078b2ff05fc4346dc195a3387",
+      "source_kind": "old_github_zmd_pj_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/tags/history/endpoints/old-github/zmd-pj/legacy-prerebuild-main",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 81
+    },
+    {
+      "ref": "refs/heads/history/old-github-zmd_pj/main",
+      "tip_commit": "1c2c1ab351057a336fd41530443ea611816e624d",
+      "source_kind": "old_github_zmd_pj_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-2/remotes/origin/main",
+        "refs/heads/history/epoch-2/remotes/winc/cachy-main"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 392
+    },
+    {
+      "ref": "refs/heads/history/old-github-zmd_pj/topology-opt",
+      "tip_commit": "26931e8a963913c1bb66a04a538fca47acc75e25",
+      "source_kind": "old_github_zmd_pj_branch",
+      "retained_as_branch": false,
+      "independent_tip": false,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-2/remotes/origin/topology-opt"
+      ],
+      "preserved_by": "refs/tags/history/endpoints/epoch-2/local/mixflow-surgery",
+      "preservation_relationship": "ancestor_of",
+      "commit_distance_to_preserving_tip": 700
+    },
+    {
+      "ref": "refs/heads/history/second-generation",
+      "tip_commit": "6ca5f38cf05baaf530b8b6f9ebe628f803a9405b",
+      "source_kind": "generated_generation_browsing_head",
+      "retained_as_branch": false,
+      "independent_tip": true,
+      "other_names_at_same_tip": [
+        "refs/heads/history/epoch-2/heads/main"
+      ],
+      "preserved_by": "refs/tags/history/clear-2-before-20260809",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/main",
+      "tip_commit": "474ce6bfb8a8fa71d92d9ea752dc00c872efeae4",
+      "source_kind": "current_branch",
+      "retained_as_branch": true,
+      "independent_tip": true,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/heads/main",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    },
+    {
+      "ref": "refs/heads/research/main",
+      "tip_commit": "3af39b76d7189d9893a8ff39c680c4a4f14c9e73",
+      "source_kind": "current_branch",
+      "retained_as_branch": true,
+      "independent_tip": true,
+      "other_names_at_same_tip": [],
+      "preserved_by": "refs/heads/research/main",
+      "preservation_relationship": "same_commit",
+      "commit_distance_to_preserving_tip": 0
+    }
+  ],
+  "ref_cleanup_event": {
+    "id": "public-ref-cleanup-20260829",
+    "completed_at": "2026-08-29",
+    "repository": "https://github.com/zhuran24/zmd-project",
+    "operation": "retire imported historical branch names after anchoring every historical independent tip",
+    "deleted_branch_name_count": 78,
+    "retained_branch_name_count": 4,
+    "final_tag_ref_count": 21,
+    "historical_endpoint_anchor_count": 18,
+    "preexisting_endpoint_anchor_count": 2,
+    "new_endpoint_tag_count": 16,
+    "rollback_bundle": {
+      "file_name": "zmd-project-public-pre-branch-cleanup-20260829.bundle",
+      "storage": "owner-private forensic archive",
+      "size_bytes": 188757838,
+      "sha256": "7ae50cf0c8db5548ec8e9899b9b105bb4539ac37d4a732d3f35176018d4365ab",
+      "bundle_verify": "passed",
+      "advertised_ref_count": 87
+    },
+    "verification_snapshot": {
+      "moment": "immediately after remote ref cleanup and before committing this record",
+      "source": "fresh full mirror clone from the public GitHub repository",
+      "repository_visibility": "PUBLIC",
+      "default_branch": "main",
+      "branch_ref_count": 4,
+      "tag_ref_count": 21,
+      "reachable_commit_count": 2273,
+      "reachable_commit_set_sha256": "4ccff0b135aa602f060e7c80dd73f95d902d77d5d9217d09fb17c979bb63852b",
+      "pre_cleanup_head_mapping_count_verified": 82,
+      "all_pre_cleanup_head_preservation_relationships_verified": true,
+      "new_tags_are_annotated": true,
+      "new_tag_objects_and_peeled_commits_match_upload": true,
+      "git_fsck_full_strict_no_dangling": "passed"
+    }
+  },
+  "invariants": {
+    "final_branch_count": 4,
+    "every_original_head_tip_remains_reachable": true,
+    "preexisting_reachable_commit_set_was_byte_identical_immediately_after_cleanup": true,
+    "removed_head_names_remain_queryable_in_this_manifest": true
+  }
+}

@@ -27,7 +27,7 @@ Pinned dependencies are listed in [`requirements.lock.txt`](requirements.lock.tx
 | `research/main` | Conjectures, experiments, constructions, counterexamples, and new representations |
 | `certification/main` | From-scratch independent review and replay of mature candidates (cold review) |
 
-Mature research crosses in a compact promotion packet containing the exact claim, premises, selected changes, reproduction commands, controls, and known unknowns; the research branch is not merged wholesale.
+Mature research crosses in a compact promotion packet containing the exact claim, premises, selected changes, reproduction commands, controls, and known unknowns; the research branch is not merged wholesale. The public repository also retains `certification/baseline-repair-20260825`, an internal repair line of the certification tree rather than a fourth tree.
 
 ## Project history
 
