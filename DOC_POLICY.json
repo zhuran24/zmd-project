@@ -482,6 +482,10 @@
     ],
     "out_of_scope_notes": [
       {
+        "pattern": ".agents/skills/**",
+        "rationale": "Project Skills are executable instruction packages shared by agent hosts, not repository documentation or legacy prune subjects."
+      },
+      {
         "pattern": ".artifacts/**",
         "rationale": "Read-only or local historical evidence roots; never a prune subject."
       },

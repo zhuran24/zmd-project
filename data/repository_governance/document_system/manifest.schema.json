@@ -32,6 +32,7 @@
     "knowledge_sources",
     "workspace_overlays",
     "governed_markdown_globs",
+    "governed_markdown_exclude_globs",
     "actions",
     "adrs",
     "framework_core"
@@ -156,6 +157,13 @@
     "governed_markdown_globs": {
       "type": "array",
       "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/relpath"
+      }
+    },
+    "governed_markdown_exclude_globs": {
+      "type": "array",
       "uniqueItems": true,
       "items": {
         "$ref": "#/$defs/relpath"
