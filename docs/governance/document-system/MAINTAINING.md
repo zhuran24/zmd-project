@@ -125,7 +125,7 @@ Accepted ADR 还必须加入 `.docsystem/manifest.json` 的 `adrs` 映射。文�
 
 扩展名为 Markdown、但语义上不是仓库文档的机器包，只能通过 manifest 的 `governed_markdown_exclude_globs` 以窄通配显式排除；排除项不获得 document class、section 或 authority。新增或扩大排除范围必须同步 schema、coverage 回归与 framework gate，不能用它隐藏尚未分类的普通文档。
 
-项目 Skill 的唯一正文位于 `.agents/skills/**`；`.claude/skills/*` 只能是指向该正文的仓库内相对链接。迁移 Skill 时要同时覆盖这两个窄排除面，逐个运行 Skill validator，并从每个链接复核 `SKILL.md` 可达。根 `CLAUDE.md` / `AGENTS.md` 仍是可选 workspace overlay：干净克隆的回归 fixture 必须自行生成无权威的测试 overlay，不能从当前机器复制根文件。否则本机存在会掩盖公开 checkout 的缺件。
+项目 Skill 的唯一正文位于 `.agents/skills/**`；`.claude/skills/*` 只能是指向该正文的仓库内相对链接。迁移 Skill 时要同时覆盖这两个窄排除面，逐个运行 Skill validator，并从每个链接复核 `SKILL.md` 可达。排除面必须同时作用于全仓 Markdown coverage 和 Git-diff document intake，Skill 内的 Markdown 不能产生普通项目文档的创建事件。根 `CLAUDE.md` / `AGENTS.md` 仍是可选 workspace overlay：干净克隆的回归 fixture 必须自行生成无权威的测试 overlay，不能从当前机器复制根文件。否则本机存在会掩盖公开 checkout 的缺件。
 
 ## 4. 新增研究 dossier
 

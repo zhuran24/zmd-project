@@ -276,6 +276,22 @@ def test_new_unclassified_markdown_is_blocked(tmp_path: Path) -> None:
     assert any("new Markdown has no effective document policy" in failure for failure in result.failures)
 
 
+def test_new_excluded_skill_markdown_is_not_a_document_intake_event(tmp_path: Path) -> None:
+    root = _copy_framework_fixture(tmp_path)
+    _commit(root)
+    target = root / ".agents/skills/example/SKILL.md"
+    target.parent.mkdir(parents=True)
+    target.write_text("# Example skill\n", encoding="utf-8")
+
+    result = DocumentSystem(root).intake_changed()
+
+    assert result.failures == ()
+    assert not any(
+        event.id == "DOC-EVENT-DOCUMENT-CREATED" and target.relative_to(root).as_posix() in event.paths
+        for event in result.events
+    )
+
+
 def test_stable_claim_identity_blocks_rewrite_and_deletion(tmp_path: Path) -> None:
     root = _copy_framework_fixture(tmp_path)
     _commit(root)

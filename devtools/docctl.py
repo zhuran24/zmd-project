@@ -2212,18 +2212,21 @@ class DocumentSystem:
                 failures.append(f"{label}: {exc}")
         return failures
 
+    def _is_governed_markdown_excluded(self, relpath: str) -> bool:
+        return any(
+            _glob_match(relpath, str(pattern))
+            for pattern in self.manifest["governed_markdown_exclude_globs"]
+        )
+
     def _check_markdown_coverage(self) -> list[str]:
         failures: list[str] = []
         globs = tuple(str(value) for value in self.manifest["governed_markdown_globs"])
-        exclude_globs = tuple(
-            str(value) for value in self.manifest["governed_markdown_exclude_globs"]
-        )
         for relpath in self.visible_paths():
             if not relpath.endswith(".md"):
                 continue
             if not any(_glob_match(relpath, pattern) for pattern in globs):
                 continue
-            if any(_glob_match(relpath, pattern) for pattern in exclude_globs):
+            if self._is_governed_markdown_excluded(relpath):
                 continue
             try:
                 resolution = self.resolve(relpath, "read")
@@ -3201,6 +3204,7 @@ class DocumentSystem:
             if (
                 relpath.endswith(".md")
                 and current_path.is_file()
+                and not self._is_governed_markdown_excluded(relpath)
                 and not _path_at_revision(self.root, comparison_revision, relpath)
             ):
                 try:
