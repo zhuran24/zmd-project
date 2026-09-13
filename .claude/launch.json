@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "industrialplanner",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd third_party/industrialplanner && npm run dev"],
+      "port": 5173
+    }
+  ]
+}
