@@ -1,0 +1,36 @@
+{
+  "timestamp": "2026-09-22T16:57:37-04:00",
+  "vote": "认可",
+  "target": "共识稿-v4-7aae9e20.md",
+  "sha256": "7aae9e20fdfab4edc5cb44b4de5a083436c86874449af654e9b0ee9871da5578",
+  "full_text_reviewed": [
+    "共识稿-v3-27411280.md",
+    "共识稿-v4-7aae9e20.md"
+  ],
+  "versions": [
+    {
+      "path": "共识稿-v3-27411280.md",
+      "sha256": "2741128068095bb9cbd57df9e918dbffb91e836474155777735df494713b6def",
+      "lines": 129,
+      "bytes": 38816,
+      "mode": "0o444"
+    },
+    {
+      "path": "共识稿-v4-7aae9e20.md",
+      "sha256": "7aae9e20fdfab4edc5cb44b4de5a083436c86874449af654e9b0ee9871da5578",
+      "lines": 130,
+      "bytes": 39519,
+      "mode": "0o444"
+    }
+  ],
+  "checks": {
+    "P6_explicit_restriction": true,
+    "fixed_iron_brick_scope": true,
+    "gate_projection_and_fixed_settings": true,
+    "support_not_automatic": true,
+    "source_complement_cut_orientation": true
+  },
+  "cut_identity": "D-C(R)=d(X)+l(out X)-u(in X)=-d(R)+l(in R)-u(out R)",
+  "cut_check_report": "seat-codex-1/cut-side-round8-result.json",
+  "meeting_end_declared": false
+}

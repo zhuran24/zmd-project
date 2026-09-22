@@ -1,0 +1,38 @@
+[
+  {
+    "source": "共识稿.md",
+    "snapshot": "seat-codex-1/round6-source-snapshots/共识稿.md",
+    "sha256": "be6c0aad8f80688af5ea49bde7754345876ebd24fb21bb9de69e45a57ed938df",
+    "bytes": 35990
+  },
+  {
+    "source": "seat-opus-1/共识段-分解与割.md",
+    "snapshot": "seat-codex-1/round6-source-snapshots/共识段-分解与割.md",
+    "sha256": "663b3bd04bb669f696fb41d8123bcf44d765a82a71d8113f354d50e571d49f9a",
+    "bytes": 6146
+  },
+  {
+    "source": "seat-opus-1/共识段-问题2.md",
+    "snapshot": "seat-codex-1/round6-source-snapshots/共识段-问题2.md",
+    "sha256": "a44679009497c4323572f99235a935514a91a8fabde339a9d08de61bae687aa1",
+    "bytes": 5135
+  },
+  {
+    "source": "seat-opus-3/共识稿-1.3段.md",
+    "snapshot": "seat-codex-1/round6-source-snapshots/共识稿-1.3段.md",
+    "sha256": "3a5d4916d08f83eef9aedeb073c04faac5ae4693f847088586f390e9d9d83d33",
+    "bytes": 4260
+  },
+  {
+    "source": "seat-opus-2/共识稿-问题1节.md",
+    "snapshot": "seat-codex-1/round6-source-snapshots/共识稿-问题1节.md",
+    "sha256": "29be5b671709127e7f9ae0113af10ee873c864666222b759bea6f445b0b68e8c",
+    "bytes": 4690
+  },
+  {
+    "source": "seat-opus-4/共识段-问题3.md",
+    "snapshot": "seat-codex-1/round6-source-snapshots/共识段-问题3.md",
+    "sha256": "7235d21051e6c3398240801cffc3c03541812be5371b9294ed187c0c12235665",
+    "bytes": 5859
+  }
+]

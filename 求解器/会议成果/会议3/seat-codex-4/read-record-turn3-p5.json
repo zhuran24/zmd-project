@@ -1,0 +1,22 @@
+[
+  {
+    "source": "seat-opus-3/check.py",
+    "sha256": "8f9448a0431e643e3d71b3c888e98669613e832a93f87bca549d1f1757dea832",
+    "copy": "seat-codex-4/review-turn3-p5-8f9448a0-check.py"
+  },
+  {
+    "source": "seat-opus-3/p2p.py",
+    "sha256": "a51cec436d595a2b0ea9616ccca5c7185cc902b578d2b95fe02a9e1025de6115",
+    "copy": "seat-codex-4/review-turn3-p5-a51cec43-p2p.py"
+  },
+  {
+    "source": "seat-opus-3/r_k2_tile30.json",
+    "sha256": "3d362e27838560cde015697cbc5d7ff3caf8c04c9e8f7f330ec37257c76dbe41",
+    "copy": "seat-codex-4/review-turn3-p5-3d362e27-r_k2_tile30.json"
+  },
+  {
+    "source": "seat-opus-3/r_k17_tile.json",
+    "sha256": "ececb924d609ac9617578a008ffa06b39439889c1818042fbd77ed4acd3d09eb",
+    "copy": "seat-codex-4/review-turn3-p5-ececb924-r_k17_tile.json"
+  }
+]

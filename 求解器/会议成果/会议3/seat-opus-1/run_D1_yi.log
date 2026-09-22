@@ -1,0 +1,2 @@
+{"inst": "D1", "rect": "none", "mode": "yi", "tu": 0, "subsets": 0, "threads": 4, "load_start": 30.71, "build_s": 0.71, "nvars": 24812, "ncons": 34282, "placements": 508, "free": 126}
+{"inst": "D1", "rect": "none", "mode": "yi", "tu": 0, "subsets": 0, "threads": 4, "load_start": 30.71, "build_s": 0.71, "nvars": 24812, "ncons": 34282, "placements": 508, "free": 126, "status": "UNKNOWN", "wall": 900.32, "load_end": 17.02}

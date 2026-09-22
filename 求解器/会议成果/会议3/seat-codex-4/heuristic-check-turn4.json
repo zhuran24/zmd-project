@@ -1,0 +1,20 @@
+[
+  {
+    "file": "rt_k16.json",
+    "k": 16,
+    "check": {
+      "channels": 999,
+      "errors": [],
+      "warnings": []
+    }
+  },
+  {
+    "file": "rt_k17.json",
+    "k": 17,
+    "check": {
+      "channels": 1186,
+      "errors": [],
+      "warnings": []
+    }
+  }
+]

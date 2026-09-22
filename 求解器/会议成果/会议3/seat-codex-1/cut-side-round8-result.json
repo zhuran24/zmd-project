@@ -1,0 +1,64 @@
+{
+  "scope": "exact algebra on abstract networks; not a factory/performance test",
+  "identity": "need-capacity = d(X)+l(out X)-u(in X) = -d(R)+l(in R)-u(out R)",
+  "cases": [
+    {
+      "name": "forced a->b without return",
+      "d": {
+        "a": 0,
+        "b": 0
+      },
+      "shifted_r": {
+        "a": 1,
+        "b": -1
+      },
+      "need": 1,
+      "min_cut_capacity": 0,
+      "minimum_cuts": [
+        {
+          "R": [
+            "b"
+          ],
+          "X": [
+            "a"
+          ],
+          "aux_cut_capacity": 0,
+          "gap": 1,
+          "correct_X_residual": 1,
+          "correct_R_residual": 1,
+          "incoming_form_wrongly_on_R": -1
+        }
+      ],
+      "all_subset_identity_checks": 4
+    },
+    {
+      "name": "nonzero demand sign check",
+      "d": {
+        "a": -1,
+        "b": 1
+      },
+      "shifted_r": {
+        "a": -1,
+        "b": 1
+      },
+      "need": 1,
+      "min_cut_capacity": 0,
+      "minimum_cuts": [
+        {
+          "R": [
+            "a"
+          ],
+          "X": [
+            "b"
+          ],
+          "aux_cut_capacity": 0,
+          "gap": 1,
+          "correct_X_residual": 1,
+          "correct_R_residual": 1,
+          "incoming_form_wrongly_on_R": -1
+        }
+      ],
+      "all_subset_identity_checks": 4
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+ "W": 18,
+ "H": 18,
+ "status": "UNKNOWN",
+ "wall": 90.1,
+ "build_s": 0.3,
+ "nvars": 12132,
+ "ncons": 57463,
+ "first_sol": null,
+ "trace": [],
+ "k": 2
+}

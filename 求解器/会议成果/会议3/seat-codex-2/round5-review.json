@@ -1,0 +1,57 @@
+{
+  "round": 5,
+  "reviewed_consensus": {
+    "file": "共识稿-v3-27411280.md",
+    "sha256": "2741128068095bb9cbd57df9e918dbffb91e836474155777735df494713b6def"
+  },
+  "previous_consensus_sha256": "ca4c1fbe867b3326da30773579a15b5096c485238bdbc76709fc90a2af21d59f",
+  "stance": "认可冻结v3，无实质保留；源侧/补集方向作非阻塞证书使用补充。",
+  "reviewed_positions": {
+    "seat-opus-1.md": "739c40dd7511dbc0a27bedb8661b523e633b23251ae80e0047f2daa06c9eaaba",
+    "seat-opus-2.md": "f656414e5f191738c3449c172480fce59677ef16503ef32de1a3f4fc707c3289",
+    "seat-opus-3.md": "0358ce18a9b211f2ce5434541d3118f2319cc0de506a2eea98c1cd950decb3d9",
+    "seat-opus-4.md": "0c72b129426ea8edf1ce33373c08350e3790ad62119266683eb76162260cc0b5",
+    "seat-codex-1.md": "d1b6e780f9e56010020ad13893663a7820f375cfdc502a4a1bbb8cc703617bc9",
+    "seat-codex-3.md": "bb51d176ea44cb689327cc76cbcbdab392134110d5fb777c3a6770ac43fb722a",
+    "seat-codex-4.md": "3c7cf3bae3c90eb129da26e3adb42d535c30f4855ae144d04fd8f731a7ca59cf"
+  },
+  "no_factory_experiment": true,
+  "cut_direction_check": {
+    "nodes": [
+      "a",
+      "b"
+    ],
+    "arcs": [
+      [
+        "a",
+        "b",
+        1,
+        1
+      ]
+    ],
+    "net_demand": {
+      "a": 0,
+      "b": 0
+    },
+    "saved_source_side_original": [
+      "b"
+    ],
+    "formula": "d(X)+l(out X)<=u(in X)",
+    "source_side_values": [
+      0,
+      1
+    ],
+    "correct_complement": [
+      "a"
+    ],
+    "complement_values": [
+      1,
+      0
+    ],
+    "scope": "two-node algebra check; not a factory counterexample or performance result"
+  },
+  "reader_review": "保留5.3/5.4、6.3/6.4/6.5、8.2引用；区分已关闭意见、唯一两项局部修订、已确认接口及后续未决；未宣布会议结束。",
+  "vote": "APPROVE",
+  "no_meeting_end_claim": true,
+  "position_sha256": "af3552522fa5c022cfdceb70300916be00927ac211e7bea68ae3ee69b9380ee5"
+}

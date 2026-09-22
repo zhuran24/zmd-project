@@ -1,0 +1,8 @@
+{"inst": "D1", "rect": "none", "mode": "bing2", "tu": 1, "threads": 4, "load_start": 14.95, "build_s": 0.22, "nvars": 14162, "ncons": 19912, "placements": 508, "free": 126}
+{"iter": 0, "status": "OPTIMAL", "master_s": 9.81, "cuts": 0, "lp_s": 0.018, "shortfall": 1.0, "cut_terms": 101, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 1.012}
+{"iter": 1, "status": "OPTIMAL", "master_s": 9.44, "cuts": 1, "lp_s": 0.028, "shortfall": 1.0, "cut_terms": 272, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 1.004}
+{"iter": 2, "status": "OPTIMAL", "master_s": 11.08, "cuts": 2, "lp_s": 0.019, "shortfall": 1.0, "cut_terms": 96, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.987}
+{"iter": 3, "status": "OPTIMAL", "master_s": 8.29, "cuts": 3, "lp_s": 0.021, "shortfall": 1.0, "cut_terms": 117, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.948}
+{"iter": 4, "status": "OPTIMAL", "master_s": 6.72, "cuts": 4, "lp_s": 0.018, "shortfall": 1.0, "cut_terms": 105, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.968}
+{"iter": 5, "status": "OPTIMAL", "master_s": 8.27, "cuts": 5, "lp_s": 0.024, "shortfall": 1.0, "cut_terms": 28, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.979}
+{"iter": 6, "status": "OPTIMAL", "master_s": 6.09, "cuts": 6, "lp_s": 0.01, "shortfall": 1.0, "cut_terms": 173, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.416}

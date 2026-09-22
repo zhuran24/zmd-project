@@ -1,0 +1,69 @@
+{
+  "scope": "Static bridge-chain consistency regression; not a factory or robust execution witness.",
+  "layout": {
+    "W": 4,
+    "H": 1,
+    "machines": [],
+    "transport": [
+      {
+        "x": 0,
+        "y": 0,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      },
+      {
+        "x": 1,
+        "y": 0,
+        "type": "bridge",
+        "H_in": 2,
+        "V_in": null
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "type": "bridge",
+        "H_in": 2,
+        "V_in": null
+      },
+      {
+        "x": 3,
+        "y": 0,
+        "type": "belt",
+        "in_side": 2,
+        "out_side": 0
+      }
+    ],
+    "vin": [
+      {
+        "x": 0,
+        "y": 0,
+        "side": 2,
+        "label": "蓝铁矿"
+      }
+    ],
+    "vout": [
+      {
+        "x": 3,
+        "y": 0,
+        "side": 0,
+        "label": "蓝铁矿"
+      }
+    ]
+  },
+  "result": {
+    "channels": 2,
+    "errors": [
+      "C2 桥 (1, 0) 轴0 只 2 端有端口朝它：通道形成但走不通",
+      "C2 桥 (1, 0) 轴0 求解器方向 2 与重算 None 不符",
+      "C2 桥 (2, 0) 轴0 只 0 端有端口朝它：通道形成但走不通",
+      "C2 桥 (2, 0) 轴0 求解器方向 2 与重算 None 不符",
+      "C3 运输物品格 ('T', (0, 0)) 进 1 出 0",
+      "C3 运输物品格 ('T', (3, 0)) 进 0 出 1"
+    ],
+    "warnings": [
+      "C3 运输物品格 ('T', (3, 0)) 不在任何源出发的路径上（无源环或断头）"
+    ]
+  },
+  "checker_sha256": "b67a90380709540691912b0409218b035837e1b264925920bb946888de3da157"
+}

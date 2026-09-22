@@ -1,0 +1,173 @@
+{
+ "status": "ROUTED",
+ "overuse": 0,
+ "p5": 0,
+ "iters": 1,
+ "wall": 0.0,
+ "nets": 9,
+ "log": [
+  [
+   0,
+   0,
+   0,
+   0.0
+  ]
+ ],
+ "layout": {
+  "W": 12,
+  "H": 12,
+  "machines": [
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 0,
+    "y0": 1,
+    "x1": 2,
+    "y1": 3
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 0,
+    "y0": 6,
+    "x1": 2,
+    "y1": 8
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 3,
+    "y0": 4,
+    "x1": 5,
+    "y1": 6
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 3,
+    "y0": 8,
+    "x1": 5,
+    "y1": 10
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 7,
+    "y0": 6,
+    "x1": 10,
+    "y1": 11
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 9,
+    "y0": 3,
+    "x1": 11,
+    "y1": 5
+   }
+  ],
+  "transport": [
+   {
+    "x": 0,
+    "y": 5,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 11,
+    "y": 2,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 8,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 11,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 6,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 11,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 0,
+    "y": 0,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   }
+  ],
+  "vin": [
+   {
+    "x": 0,
+    "y": 0,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 0,
+    "y": 5,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 6,
+    "y": 11,
+    "side": 1,
+    "label": "砂叶粉末"
+   }
+  ],
+  "vout": [
+   {
+    "x": 11,
+    "y": 2,
+    "side": 0,
+    "label": "钢块"
+   }
+  ]
+ },
+ "T": 9,
+ "bridges": 0,
+ "k": 1,
+ "allsides": true
+}

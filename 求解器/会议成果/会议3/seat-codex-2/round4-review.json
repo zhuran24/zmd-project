@@ -1,0 +1,15 @@
+{
+  "consensus_sha256": "71f0348bb0d28b53cea9f7d2df62328652311ecfb2e648ab910dc357062772b7",
+  "consensus_snapshot": "seat-codex-2/consensus-review-71f0348b.md",
+  "seats": {
+    "seat-opus-1": "35cdc5cf373e166fe9e6e818fe49d822267d1643784fda1bbfb6eaa843d55667",
+    "seat-opus-2": "bb6061d95db120815085d1d6f833fdce7d04cc8ae7e02d08a20cb5334a88e522",
+    "seat-opus-3": "186d32184a64c4a55696ce95a850e6e9d5a3f6b2542cf8bd18bc8e7e81a3d80a",
+    "seat-opus-4": "221c8a45dfd72c39312ba449531a5853561fd033840b695f4fa1b43c256e56a2",
+    "seat-codex-1": "71313a0594efe225caddf95bd4df4072f159c670fe2800fbb295b4dd2b1a0ca0",
+    "seat-codex-3": "e09951226b09b168b9c9c9cb256504eafd11249cf8c416b8533a4663eb6ca92c",
+    "seat-codex-4": "9a28fe70a2d55006a9f5414c5ee1076191d3f8466545a8e4cc3f564b87b1c149"
+  },
+  "last_reviewed_consensus_sha256": "fe7f620d85e72d34fd05395f9cf49e71f2ad719c110f464310fa52aa316dcc17",
+  "last_reviewed_consensus_snapshot": "seat-codex-2/consensus-review-fe7f620d.md"
+}

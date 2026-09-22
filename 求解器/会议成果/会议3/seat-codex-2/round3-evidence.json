@@ -1,0 +1,74 @@
+{
+  "scope": "Read-only evidence snapshot; no solver run by seat-codex-2",
+  "records": [
+    {
+      "path": "seat-opus-2/r_noflow_norect_300.json",
+      "sha256": "eebb7dd93375a5458669ca61dcb121b871bb3b5508a3eff220f8f779ca53796c",
+      "result": {
+        "status": "OPTIMAL",
+        "wall": 26.8,
+        "stats": {
+          "placements": 156312,
+          "core": 7442,
+          "cells": 4761,
+          "build_s": 7.9
+        },
+        "rect": "none",
+        "flow": 0,
+        "power": 0,
+        "tu": 1,
+        "threads": 6,
+        "T": 1388,
+        "bridges": 0
+      }
+    },
+    {
+      "path": "seat-opus-2/r_flow_tu_norect_120.json",
+      "sha256": "0485fa3733ffafe029688bbf1772e09f37a317376157d328d3ed49ff1d4b75fa",
+      "result": {
+        "status": "UNKNOWN",
+        "wall": 120.5,
+        "stats": {
+          "placements": 156312,
+          "core": 7442,
+          "cells": 4761,
+          "flowvars": 55200,
+          "build_s": 6.2
+        },
+        "rect": "none",
+        "flow": 1,
+        "power": 0,
+        "tu": 1,
+        "threads": 6
+      }
+    },
+    {
+      "path": "seat-opus-2/r_flow_tu_norect_900.json",
+      "sha256": "356941b39e1b9940caaa25034d5a096b5dcc2ff1211163a6c1b0a2d4daa28a13",
+      "result": {
+        "status": "UNKNOWN",
+        "wall": 902.8,
+        "stats": {
+          "placements": 156312,
+          "core": 7442,
+          "cells": 4761,
+          "flowvars": 55200,
+          "build_s": 8.2
+        },
+        "rect": "none",
+        "flow": 1,
+        "power": 0,
+        "tu": 1,
+        "threads": 6
+      }
+    },
+    {
+      "path": "seat-opus-2/flowcheck.py",
+      "sha256": "3aa6a025e41a9c0f5dc05926d4aa6bacbcc89b4bb4ca7d86c6b173652cf75658"
+    },
+    {
+      "path": "seat-opus-2/aggflow.py",
+      "sha256": "1a9adcc8361b3f7d87f04625a5c9e498ac546f9110c6ca0f9591a7bd7df2ec74"
+    }
+  ]
+}

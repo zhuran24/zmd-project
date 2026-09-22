@@ -1,0 +1,13 @@
+{
+ "W": 70,
+ "H": 56,
+ "status": "UNKNOWN",
+ "wall": 300.6,
+ "build_s": 4.8,
+ "nvars": 159708,
+ "ncons": 813053,
+ "first_sol": null,
+ "trace": [],
+ "k": 17,
+ "allsides": true
+}

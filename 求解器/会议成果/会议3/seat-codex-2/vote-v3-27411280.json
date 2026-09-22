@@ -1,0 +1,9 @@
+{
+  "seat": "seat-codex-2",
+  "vote": "认可",
+  "file": "共识稿-v3-27411280.md",
+  "sha256": "2741128068095bb9cbd57df9e918dbffb91e836474155777735df494713b6def",
+  "substantive_reservations": [],
+  "nonblocking_note": "保存超级源侧R；核d(X)+l(出X)<=u(入X)的违反时取原节点补集X。详见seat-codex-2.md 9.2。",
+  "declares_meeting_end": false
+}

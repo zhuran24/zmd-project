@@ -1,0 +1,1132 @@
+{
+ "W": 30,
+ "H": 30,
+ "status": "FEASIBLE",
+ "wall": 60.1,
+ "build_s": 1.6,
+ "nvars": 35508,
+ "ncons": 179659,
+ "first_sol": 4.0,
+ "trace": [
+  [
+   20.4,
+   118.0
+  ],
+  [
+   21.4,
+   114.0
+  ],
+  [
+   21.4,
+   113.0
+  ],
+  [
+   22.3,
+   108.0
+  ],
+  [
+   29.8,
+   107.0
+  ],
+  [
+   42.8,
+   105.0
+  ],
+  [
+   48.5,
+   104.0
+  ],
+  [
+   53.8,
+   103.0
+  ]
+ ],
+ "T": 103,
+ "bound": 77.0,
+ "bridges": 52,
+ "grid": [
+  "......#.......v......#........",
+  "......#.......v......#........",
+  "......#.......#......#........",
+  "......>Cccc...#......>Cccc....",
+  "...Bbb#Cccc...v...Bbb.Cccc....",
+  "..>Bbb.Cccc...#..>Bbb#Cccc....",
+  "aaaBbb.Cccc...#aaaBbb.Cccc....",
+  "aaa....Cccc...vaaa....Cccc....",
+  "AAABbb#Ccccv..#AAABbb#Ccccv...",
+  "^..Bbb...DDD..>^..Bbb...DDD...",
+  "..>Bbb...ddd.....>Bbb...ddd...",
+  "aaa......ddd...aaa......ddd...",
+  "aaav<<##<<.....aaa........>###",
+  "AAA#...........AAA............",
+  "#<<<.............^####<#<#####",
+  "^.............................",
+  "..............................",
+  ".....................v#<###<#<",
+  "###>>##Cccc..........>Cccc....",
+  "...Bbb>Cccc.......Bbb.Cccc....",
+  "..>Bbb.Cccc......>Bbb.Cccc....",
+  "aaaBbb.Cccc....aaaBbb#Cccc....",
+  "aaa....Cccc....aaa....Cccc....",
+  "AAABbb>Ccccv...AAABbb#Ccccv...",
+  "^..Bbb...DDD..>^..Bbb...DDD...",
+  "..>Bbb...ddd..#..>Bbb...ddd...",
+  "aaa......ddd..#aaa......ddd...",
+  "aaa.......#...^aaa.......v....",
+  "AAA.......#...#AAA.......v....",
+  "..#.......#...^..#.......v...."
+ ],
+ "roles": {
+  "A": "精炼-蓝铁矿",
+  "B": "粉碎-蓝铁块",
+  "C": "研磨-致密蓝铁",
+  "D": "精炼-致密蓝铁"
+ },
+ "layout": {
+  "W": 30,
+  "H": 30,
+  "machines": [
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 0,
+    "y0": 1,
+    "x1": 2,
+    "y1": 3
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 0,
+    "y0": 6,
+    "x1": 2,
+    "y1": 8
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 0,
+    "y0": 16,
+    "x1": 2,
+    "y1": 18
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 0,
+    "y0": 21,
+    "x1": 2,
+    "y1": 23
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 15,
+    "y0": 1,
+    "x1": 17,
+    "y1": 3
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 15,
+    "y0": 6,
+    "x1": 17,
+    "y1": 8
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 15,
+    "y0": 16,
+    "x1": 17,
+    "y1": 18
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 15,
+    "y0": 21,
+    "x1": 17,
+    "y1": 23
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 3,
+    "y0": 4,
+    "x1": 5,
+    "y1": 6
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 3,
+    "y0": 8,
+    "x1": 5,
+    "y1": 10
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 3,
+    "y0": 19,
+    "x1": 5,
+    "y1": 21
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 3,
+    "y0": 23,
+    "x1": 5,
+    "y1": 25
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 18,
+    "y0": 4,
+    "x1": 20,
+    "y1": 6
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 18,
+    "y0": 8,
+    "x1": 20,
+    "y1": 10
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 18,
+    "y0": 19,
+    "x1": 20,
+    "y1": 21
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 18,
+    "y0": 23,
+    "x1": 20,
+    "y1": 25
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 7,
+    "y0": 6,
+    "x1": 10,
+    "y1": 11
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 7,
+    "y0": 21,
+    "x1": 10,
+    "y1": 26
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 22,
+    "y0": 6,
+    "x1": 25,
+    "y1": 11
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 22,
+    "y0": 21,
+    "x1": 25,
+    "y1": 26
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 9,
+    "y0": 3,
+    "x1": 11,
+    "y1": 5
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 9,
+    "y0": 18,
+    "x1": 11,
+    "y1": 20
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 24,
+    "y0": 3,
+    "x1": 26,
+    "y1": 5
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 24,
+    "y0": 18,
+    "x1": 26,
+    "y1": 20
+   }
+  ],
+  "transport": [
+   {
+    "x": 0,
+    "y": 5,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 0,
+    "y": 11,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   },
+   {
+    "x": 0,
+    "y": 14,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 0,
+    "y": 15,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": 3
+   },
+   {
+    "x": 0,
+    "y": 20,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 1,
+    "y": 11,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   },
+   {
+    "x": 1,
+    "y": 15,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 2,
+    "y": 0,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 3
+   },
+   {
+    "x": 2,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 11,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   },
+   {
+    "x": 2,
+    "y": 15,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 2,
+    "y": 19,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 24,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 3,
+    "y": 11,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 3,
+    "y": 15,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 3,
+    "y": 16,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 3,
+    "y": 17,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 4,
+    "y": 11,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 4,
+    "y": 17,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 5,
+    "y": 11,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   },
+   {
+    "x": 5,
+    "y": 17,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 6,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 10,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 11,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   },
+   {
+    "x": 6,
+    "y": 17,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": null
+   },
+   {
+    "x": 6,
+    "y": 21,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   },
+   {
+    "x": 6,
+    "y": 25,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   },
+   {
+    "x": 6,
+    "y": 26,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 27,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 6,
+    "y": 28,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 6,
+    "y": 29,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 7,
+    "y": 17,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": null
+   },
+   {
+    "x": 8,
+    "y": 17,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 9,
+    "y": 17,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 10,
+    "y": 0,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 10,
+    "y": 1,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 10,
+    "y": 2,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 11,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 11,
+    "y": 21,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 14,
+    "y": 0,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 14,
+    "y": 1,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 3
+   },
+   {
+    "x": 14,
+    "y": 2,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 14,
+    "y": 3,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 3
+   },
+   {
+    "x": 14,
+    "y": 4,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 3
+   },
+   {
+    "x": 14,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 14,
+    "y": 20,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 14,
+    "y": 21,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 14,
+    "y": 22,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 14,
+    "y": 23,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 14,
+    "y": 24,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 14,
+    "y": 25,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 14,
+    "y": 26,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 14,
+    "y": 27,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 14,
+    "y": 28,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 14,
+    "y": 29,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 15,
+    "y": 5,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 15,
+    "y": 20,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 17,
+    "y": 0,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 3
+   },
+   {
+    "x": 17,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 17,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 17,
+    "y": 15,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "x": 17,
+    "y": 19,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 17,
+    "y": 24,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 18,
+    "y": 15,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": null
+   },
+   {
+    "x": 19,
+    "y": 15,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": null
+   },
+   {
+    "x": 20,
+    "y": 15,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": null
+   },
+   {
+    "x": 21,
+    "y": 6,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   },
+   {
+    "x": 21,
+    "y": 8,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   },
+   {
+    "x": 21,
+    "y": 11,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 21,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 21,
+    "y": 15,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": null
+   },
+   {
+    "x": 21,
+    "y": 21,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   },
+   {
+    "x": 21,
+    "y": 24,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   },
+   {
+    "x": 21,
+    "y": 26,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 21,
+    "y": 27,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 21,
+    "y": 28,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 21,
+    "y": 29,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 22,
+    "y": 12,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": null
+   },
+   {
+    "x": 22,
+    "y": 15,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 23,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 23,
+    "y": 15,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": null
+   },
+   {
+    "x": 24,
+    "y": 12,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": null
+   },
+   {
+    "x": 24,
+    "y": 15,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 25,
+    "y": 0,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 25,
+    "y": 1,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 25,
+    "y": 2,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 25,
+    "y": 12,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": null
+   },
+   {
+    "x": 25,
+    "y": 15,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": null
+   },
+   {
+    "x": 26,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 26,
+    "y": 12,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": null
+   },
+   {
+    "x": 26,
+    "y": 15,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": null
+   },
+   {
+    "x": 26,
+    "y": 17,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 26,
+    "y": 21,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 27,
+    "y": 15,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": null
+   },
+   {
+    "x": 27,
+    "y": 17,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   },
+   {
+    "x": 28,
+    "y": 12,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": null
+   },
+   {
+    "x": 28,
+    "y": 15,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": null
+   },
+   {
+    "x": 28,
+    "y": 17,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   },
+   {
+    "x": 29,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 29,
+    "y": 15,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": null
+   },
+   {
+    "x": 29,
+    "y": 17,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   }
+  ],
+  "vin": [
+   {
+    "x": 0,
+    "y": 5,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 0,
+    "y": 14,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 0,
+    "y": 20,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 2,
+    "y": 0,
+    "side": 3,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 14,
+    "y": 0,
+    "side": 3,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 14,
+    "y": 29,
+    "side": 1,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 17,
+    "y": 0,
+    "side": 3,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 29,
+    "y": 15,
+    "side": 0,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 0,
+    "y": 11,
+    "side": 2,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 6,
+    "y": 29,
+    "side": 1,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 21,
+    "y": 29,
+    "side": 1,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 29,
+    "y": 12,
+    "side": 0,
+    "label": "砂叶粉末"
+   }
+  ],
+  "vout": [
+   {
+    "x": 0,
+    "y": 15,
+    "side": 2,
+    "label": "钢块"
+   },
+   {
+    "x": 10,
+    "y": 0,
+    "side": 3,
+    "label": "钢块"
+   },
+   {
+    "x": 25,
+    "y": 0,
+    "side": 3,
+    "label": "钢块"
+   },
+   {
+    "x": 29,
+    "y": 17,
+    "side": 0,
+    "label": "钢块"
+   }
+  ]
+ },
+ "k": 4,
+ "allsides": true
+}

@@ -1,0 +1,16 @@
+{
+  "seat": "seat-codex-2",
+  "round": 6,
+  "vote": "认可",
+  "file": "共识稿-v4-7aae9e20.md",
+  "sha256": "7aae9e20fdfab4edc5cb44b4de5a083436c86874449af654e9b0ee9871da5578",
+  "bytes": 39519,
+  "mode": "0o444",
+  "full_read": true,
+  "old_vote_migrated": false,
+  "substantive_reservations": [],
+  "reporter_nominee": "seat-opus-4",
+  "reporter_condition": "八席本人对同一冻结SHA的认可齐备且无未决实质反对",
+  "declares_meeting_end": false,
+  "position_sha256": "36cd39dc86b7cd0adde666f25b31092365b30905a615d9dbb5d00aab604e043d"
+}

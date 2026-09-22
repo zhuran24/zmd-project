@@ -1,0 +1,8378 @@
+{
+ "dbg": [],
+ "status": "ROUTED",
+ "overuse": 0,
+ "p5": 0,
+ "iters": 71,
+ "wall": 15.4,
+ "nets": 153,
+ "log": [
+  [
+   61,
+   1,
+   0,
+   13.4
+  ],
+  [
+   62,
+   1,
+   0,
+   13.6
+  ],
+  [
+   63,
+   1,
+   0,
+   13.8
+  ],
+  [
+   64,
+   1,
+   0,
+   14.1
+  ],
+  [
+   65,
+   1,
+   0,
+   14.3
+  ],
+  [
+   66,
+   1,
+   0,
+   14.5
+  ],
+  [
+   67,
+   0,
+   2,
+   14.7
+  ],
+  [
+   68,
+   1,
+   0,
+   15.0
+  ],
+  [
+   69,
+   1,
+   1,
+   15.2
+  ],
+  [
+   70,
+   0,
+   0,
+   15.4
+  ]
+ ],
+ "layout": {
+  "W": 70,
+  "H": 56,
+  "machines": [
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 0,
+    "y0": 1,
+    "x1": 2,
+    "y1": 3
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 0,
+    "y0": 6,
+    "x1": 2,
+    "y1": 8
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 3,
+    "y0": 4,
+    "x1": 5,
+    "y1": 6
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 3,
+    "y0": 8,
+    "x1": 5,
+    "y1": 10
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 7,
+    "y0": 6,
+    "x1": 10,
+    "y1": 11
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 9,
+    "y0": 3,
+    "x1": 11,
+    "y1": 5
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 14,
+    "y0": 1,
+    "x1": 16,
+    "y1": 3
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 14,
+    "y0": 6,
+    "x1": 16,
+    "y1": 8
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 17,
+    "y0": 4,
+    "x1": 19,
+    "y1": 6
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 17,
+    "y0": 8,
+    "x1": 19,
+    "y1": 10
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 21,
+    "y0": 6,
+    "x1": 24,
+    "y1": 11
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 23,
+    "y0": 3,
+    "x1": 25,
+    "y1": 5
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 28,
+    "y0": 1,
+    "x1": 30,
+    "y1": 3
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 28,
+    "y0": 6,
+    "x1": 30,
+    "y1": 8
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 31,
+    "y0": 4,
+    "x1": 33,
+    "y1": 6
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 31,
+    "y0": 8,
+    "x1": 33,
+    "y1": 10
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 35,
+    "y0": 6,
+    "x1": 38,
+    "y1": 11
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 37,
+    "y0": 3,
+    "x1": 39,
+    "y1": 5
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 42,
+    "y0": 1,
+    "x1": 44,
+    "y1": 3
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 42,
+    "y0": 6,
+    "x1": 44,
+    "y1": 8
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 45,
+    "y0": 4,
+    "x1": 47,
+    "y1": 6
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 45,
+    "y0": 8,
+    "x1": 47,
+    "y1": 10
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 49,
+    "y0": 6,
+    "x1": 52,
+    "y1": 11
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 51,
+    "y0": 3,
+    "x1": 53,
+    "y1": 5
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 56,
+    "y0": 1,
+    "x1": 58,
+    "y1": 3
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 56,
+    "y0": 6,
+    "x1": 58,
+    "y1": 8
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 59,
+    "y0": 4,
+    "x1": 61,
+    "y1": 6
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 59,
+    "y0": 8,
+    "x1": 61,
+    "y1": 10
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 63,
+    "y0": 6,
+    "x1": 66,
+    "y1": 11
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 65,
+    "y0": 3,
+    "x1": 67,
+    "y1": 5
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 0,
+    "y0": 15,
+    "x1": 2,
+    "y1": 17
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 0,
+    "y0": 20,
+    "x1": 2,
+    "y1": 22
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 3,
+    "y0": 18,
+    "x1": 5,
+    "y1": 20
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 3,
+    "y0": 22,
+    "x1": 5,
+    "y1": 24
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 7,
+    "y0": 20,
+    "x1": 10,
+    "y1": 25
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 9,
+    "y0": 17,
+    "x1": 11,
+    "y1": 19
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 14,
+    "y0": 15,
+    "x1": 16,
+    "y1": 17
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 14,
+    "y0": 20,
+    "x1": 16,
+    "y1": 22
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 17,
+    "y0": 18,
+    "x1": 19,
+    "y1": 20
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 17,
+    "y0": 22,
+    "x1": 19,
+    "y1": 24
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 21,
+    "y0": 20,
+    "x1": 24,
+    "y1": 25
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 23,
+    "y0": 17,
+    "x1": 25,
+    "y1": 19
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 28,
+    "y0": 15,
+    "x1": 30,
+    "y1": 17
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 28,
+    "y0": 20,
+    "x1": 30,
+    "y1": 22
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 31,
+    "y0": 18,
+    "x1": 33,
+    "y1": 20
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 31,
+    "y0": 22,
+    "x1": 33,
+    "y1": 24
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 35,
+    "y0": 20,
+    "x1": 38,
+    "y1": 25
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 37,
+    "y0": 17,
+    "x1": 39,
+    "y1": 19
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 42,
+    "y0": 15,
+    "x1": 44,
+    "y1": 17
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 42,
+    "y0": 20,
+    "x1": 44,
+    "y1": 22
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 45,
+    "y0": 18,
+    "x1": 47,
+    "y1": 20
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 45,
+    "y0": 22,
+    "x1": 47,
+    "y1": 24
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 49,
+    "y0": 20,
+    "x1": 52,
+    "y1": 25
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 51,
+    "y0": 17,
+    "x1": 53,
+    "y1": 19
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 56,
+    "y0": 15,
+    "x1": 58,
+    "y1": 17
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 56,
+    "y0": 20,
+    "x1": 58,
+    "y1": 22
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 59,
+    "y0": 18,
+    "x1": 61,
+    "y1": 20
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 59,
+    "y0": 22,
+    "x1": 61,
+    "y1": 24
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 63,
+    "y0": 20,
+    "x1": 66,
+    "y1": 25
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 65,
+    "y0": 17,
+    "x1": 67,
+    "y1": 19
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 0,
+    "y0": 29,
+    "x1": 2,
+    "y1": 31
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 0,
+    "y0": 34,
+    "x1": 2,
+    "y1": 36
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 3,
+    "y0": 32,
+    "x1": 5,
+    "y1": 34
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 3,
+    "y0": 36,
+    "x1": 5,
+    "y1": 38
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 7,
+    "y0": 34,
+    "x1": 10,
+    "y1": 39
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 9,
+    "y0": 31,
+    "x1": 11,
+    "y1": 33
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 14,
+    "y0": 29,
+    "x1": 16,
+    "y1": 31
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 14,
+    "y0": 34,
+    "x1": 16,
+    "y1": 36
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 17,
+    "y0": 32,
+    "x1": 19,
+    "y1": 34
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 17,
+    "y0": 36,
+    "x1": 19,
+    "y1": 38
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 21,
+    "y0": 34,
+    "x1": 24,
+    "y1": 39
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 23,
+    "y0": 31,
+    "x1": 25,
+    "y1": 33
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 28,
+    "y0": 29,
+    "x1": 30,
+    "y1": 31
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 28,
+    "y0": 34,
+    "x1": 30,
+    "y1": 36
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 31,
+    "y0": 32,
+    "x1": 33,
+    "y1": 34
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 31,
+    "y0": 36,
+    "x1": 33,
+    "y1": 38
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 35,
+    "y0": 34,
+    "x1": 38,
+    "y1": 39
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 37,
+    "y0": 31,
+    "x1": 39,
+    "y1": 33
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 42,
+    "y0": 29,
+    "x1": 44,
+    "y1": 31
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 42,
+    "y0": 34,
+    "x1": 44,
+    "y1": 36
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 45,
+    "y0": 32,
+    "x1": 47,
+    "y1": 34
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 45,
+    "y0": 36,
+    "x1": 47,
+    "y1": 38
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 49,
+    "y0": 34,
+    "x1": 52,
+    "y1": 39
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 51,
+    "y0": 31,
+    "x1": 53,
+    "y1": 33
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 56,
+    "y0": 29,
+    "x1": 58,
+    "y1": 31
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 56,
+    "y0": 34,
+    "x1": 58,
+    "y1": 36
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 59,
+    "y0": 32,
+    "x1": 61,
+    "y1": 34
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 59,
+    "y0": 36,
+    "x1": 61,
+    "y1": 38
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 63,
+    "y0": 34,
+    "x1": 66,
+    "y1": 39
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 65,
+    "y0": 31,
+    "x1": 67,
+    "y1": 33
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 0,
+    "y0": 43,
+    "x1": 2,
+    "y1": 45
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 0,
+    "y0": 48,
+    "x1": 2,
+    "y1": 50
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 3,
+    "y0": 46,
+    "x1": 5,
+    "y1": 48
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 3,
+    "y0": 50,
+    "x1": 5,
+    "y1": 52
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 7,
+    "y0": 48,
+    "x1": 10,
+    "y1": 53
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 9,
+    "y0": 45,
+    "x1": 11,
+    "y1": 47
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 14,
+    "y0": 43,
+    "x1": 16,
+    "y1": 45
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 14,
+    "y0": 48,
+    "x1": 16,
+    "y1": 50
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 17,
+    "y0": 46,
+    "x1": 19,
+    "y1": 48
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 17,
+    "y0": 50,
+    "x1": 19,
+    "y1": 52
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 21,
+    "y0": 48,
+    "x1": 24,
+    "y1": 53
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 23,
+    "y0": 45,
+    "x1": 25,
+    "y1": 47
+   }
+  ],
+  "transport": [
+   {
+    "x": 44,
+    "y": 37,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 37,
+    "y": 2,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 37,
+    "y": 1,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 40,
+    "y": 2,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 37,
+    "y": 0,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 41,
+    "y": 2,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 3,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 34,
+    "y": 2,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 0,
+    "y": 10,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 0,
+    "y": 11,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 0,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 1,
+    "y": 10,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 1,
+    "y": 11,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 1,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 2,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 10,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 2,
+    "y": 11,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "x": 6,
+    "y": 2,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 3,
+    "y": 11,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 3,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 4,
+    "y": 11,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 4,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 5,
+    "y": 11,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 5,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 6,
+    "y": 11,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "x": 6,
+    "y": 6,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "x": 0,
+    "y": 5,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 0,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 1,
+    "y": 12,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 2,
+    "y": 12,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 3,
+    "y": 12,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 4,
+    "y": 12,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 5,
+    "y": 12,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 6,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 53,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 42,
+    "y": 0,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 41,
+    "y": 0,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 41,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 41,
+    "y": 3,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 41,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 42,
+    "y": 4,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 41,
+    "y": 5,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 42,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 0,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 0,
+    "y": 28,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": 3
+   },
+   {
+    "x": 0,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 48,
+    "y": 20,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 16,
+    "y": 18,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 37,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 30,
+    "y": 18,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 16,
+    "y": 51,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 13,
+    "y": 55,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 13,
+    "y": 54,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 13,
+    "y": 53,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 13,
+    "y": 52,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 13,
+    "y": 51,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 13,
+    "y": 50,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 13,
+    "y": 49,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 13,
+    "y": 48,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 13,
+    "y": 47,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 14,
+    "y": 47,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 12,
+    "y": 55,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 12,
+    "y": 54,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 12,
+    "y": 53,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 12,
+    "y": 52,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 12,
+    "y": 51,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 12,
+    "y": 50,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 12,
+    "y": 49,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 12,
+    "y": 48,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 12,
+    "y": 47,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 11,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 28,
+    "y": 0,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 27,
+    "y": 0,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 25,
+    "y": 30,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 23,
+    "y": 29,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 24,
+    "y": 29,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 26,
+    "y": 30,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 25,
+    "y": 29,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 22,
+    "y": 29,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 26,
+    "y": 31,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 29,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 21,
+    "y": 29,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 26,
+    "y": 32,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 28,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 20,
+    "y": 29,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 23,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 24,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 26,
+    "y": 33,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 27,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 25,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 19,
+    "y": 29,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 22,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 27,
+    "y": 33,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 28,
+    "y": 28,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 34,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 26,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 25,
+    "y": 25,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 18,
+    "y": 29,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 20,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 21,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 28,
+    "y": 33,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 27,
+    "y": 34,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 28,
+    "y": 27,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 27,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 26,
+    "y": 35,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 25,
+    "y": 34,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 26,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 20,
+    "y": 34,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 17,
+    "y": 29,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 19,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 20,
+    "y": 26,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "x": 30,
+    "y": 32,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 27,
+    "y": 35,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 28,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 27,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 26,
+    "y": 36,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 17,
+    "y": 28,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 18,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 19,
+    "y": 26,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 20,
+    "y": 25,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 27,
+    "y": 36,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 28,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 26,
+    "y": 37,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 20,
+    "y": 36,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 16,
+    "y": 28,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 17,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 19,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 27,
+    "y": 37,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 29,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 26,
+    "y": 38,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 16,
+    "y": 27,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "x": 18,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 28,
+    "y": 37,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 27,
+    "y": 38,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 30,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 25,
+    "y": 20,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 14,
+    "y": 28,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 15,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 16,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 17,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 20,
+    "y": 22,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 28,
+    "y": 38,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 39,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 31,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 20,
+    "y": 39,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 13,
+    "y": 28,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "x": 14,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 15,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 16,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 30,
+    "y": 37,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 28,
+    "y": 39,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 40,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 32,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 30,
+    "y": 23,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 20,
+    "y": 40,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 13,
+    "y": 29,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 12,
+    "y": 28,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 13,
+    "y": 27,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 14,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 15,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 20,
+    "y": 20,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 28,
+    "y": 40,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 41,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 33,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 20,
+    "y": 41,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 13,
+    "y": 30,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 12,
+    "y": 29,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 12,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 13,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 14,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 16,
+    "y": 23,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 28,
+    "y": 41,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 42,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 34,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 28,
+    "y": 19,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 27,
+    "y": 18,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 26,
+    "y": 43,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 20,
+    "y": 42,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": 1
+   },
+   {
+    "x": 13,
+    "y": 31,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 11,
+    "y": 29,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 11,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 12,
+    "y": 26,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "x": 13,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 28,
+    "y": 42,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "x": 27,
+    "y": 43,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 28,
+    "y": 18,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 27,
+    "y": 17,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 44,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 25,
+    "y": 43,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 21,
+    "y": 42,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 20,
+    "y": 43,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 19,
+    "y": 42,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 13,
+    "y": 32,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 10,
+    "y": 29,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 10,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 11,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 12,
+    "y": 25,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 29,
+    "y": 42,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 28,
+    "y": 43,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 44,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 16,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 45,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 25,
+    "y": 44,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 24,
+    "y": 43,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 21,
+    "y": 43,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 20,
+    "y": 44,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 18,
+    "y": 42,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 13,
+    "y": 33,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 12,
+    "y": 32,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 9,
+    "y": 29,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 9,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 10,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 20,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 29,
+    "y": 43,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 28,
+    "y": 44,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 45,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 34,
+    "y": 34,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 34,
+    "y": 22,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 27,
+    "y": 15,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 46,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 23,
+    "y": 43,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 26,
+    "y": 14,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 22,
+    "y": 43,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 20,
+    "y": 45,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 17,
+    "y": 42,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 16,
+    "y": 37,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 14,
+    "y": 33,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 13,
+    "y": 34,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 12,
+    "y": 33,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 9,
+    "y": 30,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 8,
+    "y": 29,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 8,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 9,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 21,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 19,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 34,
+    "y": 39,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 29,
+    "y": 44,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 28,
+    "y": 45,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 46,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 39,
+    "y": 30,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 27,
+    "y": 14,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "x": 26,
+    "y": 47,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 23,
+    "y": 16,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 26,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 20,
+    "y": 46,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 16,
+    "y": 42,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "x": 13,
+    "y": 39,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 16,
+    "y": 32,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 13,
+    "y": 35,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 12,
+    "y": 34,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 8,
+    "y": 30,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": 1
+   },
+   {
+    "x": 7,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 8,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 22,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 18,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 34,
+    "y": 40,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 29,
+    "y": 45,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 28,
+    "y": 46,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 47,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 40,
+    "y": 30,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 34,
+    "y": 36,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 34,
+    "y": 20,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 28,
+    "y": 14,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 27,
+    "y": 13,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 48,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 25,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 20,
+    "y": 47,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 13,
+    "y": 40,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 12,
+    "y": 39,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 13,
+    "y": 38,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 13,
+    "y": 36,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 12,
+    "y": 35,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 11,
+    "y": 34,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 8,
+    "y": 31,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 7,
+    "y": 30,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 6,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 7,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 17,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 20,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 34,
+    "y": 41,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 29,
+    "y": 46,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 28,
+    "y": 47,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 48,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 40,
+    "y": 31,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 27,
+    "y": 12,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 49,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 25,
+    "y": 48,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 24,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 20,
+    "y": 48,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "x": 13,
+    "y": 41,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 12,
+    "y": 40,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 12,
+    "y": 38,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 13,
+    "y": 37,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 12,
+    "y": 36,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 8,
+    "y": 32,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 6,
+    "y": 30,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 5,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 21,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 17,
+    "y": 15,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 19,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 34,
+    "y": 42,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 29,
+    "y": 47,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 28,
+    "y": 48,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 49,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 44,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 32,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 27,
+    "y": 11,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 50,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 23,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 20,
+    "y": 49,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 13,
+    "y": 42,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 12,
+    "y": 41,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 12,
+    "y": 37,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 8,
+    "y": 33,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 5,
+    "y": 30,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 3,
+    "y": 28,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 4,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 5,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 11,
+    "y": 20,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 14,
+    "y": 19,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 13,
+    "y": 18,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 22,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 17,
+    "y": 14,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 18,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 34,
+    "y": 43,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 29,
+    "y": 48,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 28,
+    "y": 49,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 50,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 45,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 40,
+    "y": 33,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 27,
+    "y": 10,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 51,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 20,
+    "y": 50,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "x": 12,
+    "y": 42,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 11,
+    "y": 41,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 7,
+    "y": 33,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 4,
+    "y": 30,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 3,
+    "y": 29,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 2,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 3,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 4,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 5,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 14,
+    "y": 18,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 13,
+    "y": 17,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 16,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 17,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 34,
+    "y": 44,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 29,
+    "y": 49,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 28,
+    "y": 50,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 51,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 46,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 41,
+    "y": 33,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 40,
+    "y": 34,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 27,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 52,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 20,
+    "y": 51,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 11,
+    "y": 42,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 10,
+    "y": 41,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 33,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 3,
+    "y": 30,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 1,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 2,
+    "y": 27,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 3,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 4,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 13,
+    "y": 16,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 16,
+    "y": 13,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "x": 34,
+    "y": 45,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 29,
+    "y": 50,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 28,
+    "y": 51,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 52,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 47,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 42,
+    "y": 33,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 41,
+    "y": 34,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 40,
+    "y": 35,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 39,
+    "y": 34,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 39,
+    "y": 20,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 8,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 53,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 20,
+    "y": 52,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 12,
+    "y": 44,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 10,
+    "y": 42,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 9,
+    "y": 41,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 34,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "x": 1,
+    "y": 27,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 3,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 22,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 13,
+    "y": 15,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 14,
+    "y": 14,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 15,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 16,
+    "y": 12,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 20,
+    "y": 8,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 40,
+    "y": 40,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 34,
+    "y": 46,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 29,
+    "y": 51,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 28,
+    "y": 52,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 53,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 48,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 44,
+    "y": 32,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 41,
+    "y": 35,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 40,
+    "y": 36,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 27,
+    "y": 7,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 54,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 20,
+    "y": 53,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "x": 12,
+    "y": 45,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 11,
+    "y": 44,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 9,
+    "y": 42,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 8,
+    "y": 41,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 35,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 1,
+    "y": 26,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "x": 2,
+    "y": 25,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 13,
+    "y": 14,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 14,
+    "y": 13,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "x": 15,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 20,
+    "y": 7,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 41,
+    "y": 40,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 40,
+    "y": 41,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 39,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 34,
+    "y": 47,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 29,
+    "y": 52,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 28,
+    "y": 53,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 54,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 49,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 44,
+    "y": 23,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 41,
+    "y": 36,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 40,
+    "y": 37,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 30,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 27,
+    "y": 6,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 55,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 25,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 26,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 67,
+    "y": 34,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 69,
+    "y": 40,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 68,
+    "y": 40,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 67,
+    "y": 40,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 66,
+    "y": 40,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 65,
+    "y": 40,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 64,
+    "y": 40,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 63,
+    "y": 40,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 62,
+    "y": 40,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 62,
+    "y": 39,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 69,
+    "y": 41,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 68,
+    "y": 41,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 67,
+    "y": 41,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 66,
+    "y": 41,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 65,
+    "y": 41,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 64,
+    "y": 41,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 63,
+    "y": 41,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 62,
+    "y": 41,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 16,
+    "y": 46,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 48,
+    "y": 0,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 48,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 48,
+    "y": 2,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 48,
+    "y": 3,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 48,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 48,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 48,
+    "y": 6,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "x": 48,
+    "y": 7,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 48,
+    "y": 8,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 48,
+    "y": 12,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 48,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 67,
+    "y": 20,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 69,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 68,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 67,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 66,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 65,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 64,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 63,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 62,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 62,
+    "y": 25,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 60,
+    "y": 26,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 59,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 58,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 57,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 49,
+    "y": 12,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 47,
+    "y": 12,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 56,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 55,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 49,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 47,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 54,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 53,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 52,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 51,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 50,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 49,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 48,
+    "y": 26,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 62,
+    "y": 0,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 62,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 62,
+    "y": 2,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 62,
+    "y": 3,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 62,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 62,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 62,
+    "y": 6,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "x": 67,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 58,
+    "y": 37,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 57,
+    "y": 37,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 0,
+    "y": 42,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 0,
+    "y": 41,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 0,
+    "y": 0,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 56,
+    "y": 0,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 55,
+    "y": 0,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 55,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 55,
+    "y": 2,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 55,
+    "y": 3,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 55,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 56,
+    "y": 4,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 56,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 0,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 54,
+    "y": 1,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 54,
+    "y": 2,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 54,
+    "y": 3,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 54,
+    "y": 4,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 54,
+    "y": 5,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 44,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 0,
+    "y": 14,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 0,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 65,
+    "y": 2,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 65,
+    "y": 1,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 65,
+    "y": 0,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 16,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 58,
+    "y": 23,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 32,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 0,
+    "y": 24,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 0,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 20,
+    "y": 0,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 1,
+    "y": 24,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 1,
+    "y": 25,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 20,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 2,
+    "y": 23,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 24,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 20,
+    "y": 2,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 20,
+    "y": 3,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 20,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 20,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 20,
+    "y": 6,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "x": 0,
+    "y": 19,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 0,
+    "y": 26,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 18,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 23,
+    "y": 0,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 23,
+    "y": 1,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 23,
+    "y": 2,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 11,
+    "y": 48,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 20,
+    "y": 55,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 20,
+    "y": 54,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 19,
+    "y": 55,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 19,
+    "y": 54,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 19,
+    "y": 53,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 51,
+    "y": 0,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 51,
+    "y": 1,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 51,
+    "y": 2,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 69,
+    "y": 30,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 68,
+    "y": 30,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 67,
+    "y": 30,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 69,
+    "y": 29,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 68,
+    "y": 29,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 67,
+    "y": 29,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 66,
+    "y": 29,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 65,
+    "y": 29,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 64,
+    "y": 29,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 63,
+    "y": 29,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 62,
+    "y": 29,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 61,
+    "y": 29,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 60,
+    "y": 29,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 59,
+    "y": 29,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 69,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 68,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 67,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 66,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 65,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 64,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 63,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 62,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 61,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 60,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 59,
+    "y": 28,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 62,
+    "y": 34,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 58,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "x": 69,
+    "y": 27,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 68,
+    "y": 27,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 67,
+    "y": 27,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 66,
+    "y": 27,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 65,
+    "y": 27,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 64,
+    "y": 27,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 63,
+    "y": 27,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 62,
+    "y": 27,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 61,
+    "y": 27,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 60,
+    "y": 27,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": 1
+   },
+   {
+    "x": 59,
+    "y": 27,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 58,
+    "y": 27,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 57,
+    "y": 28,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 2
+   },
+   {
+    "x": 57,
+    "y": 27,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "x": 56,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 61,
+    "y": 41,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 60,
+    "y": 41,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 59,
+    "y": 41,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 58,
+    "y": 41,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 58,
+    "y": 40,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 58,
+    "y": 39,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 58,
+    "y": 38,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 62,
+    "y": 36,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 55,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 57,
+    "y": 38,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 55,
+    "y": 33,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 56,
+    "y": 33,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 56,
+    "y": 37,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 62,
+    "y": 22,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 20,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 48,
+    "y": 34,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 58,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 65,
+    "y": 16,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 2
+   },
+   {
+    "x": 67,
+    "y": 16,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 64,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 65,
+    "y": 15,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "x": 66,
+    "y": 15,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 68,
+    "y": 16,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 67,
+    "y": 15,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 63,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 64,
+    "y": 15,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 65,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "x": 66,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 69,
+    "y": 16,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 68,
+    "y": 15,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 67,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 62,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 63,
+    "y": 15,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 65,
+    "y": 13,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 66,
+    "y": 13,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 62,
+    "y": 8,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 30,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 27,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 27,
+    "y": 2,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 27,
+    "y": 3,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 27,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 28,
+    "y": 4,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 27,
+    "y": 5,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 28,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 0,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 2,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 3,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 26,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 44,
+    "y": 18,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 34,
+    "y": 8,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 16,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 62,
+    "y": 20,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 41,
+    "y": 37,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 40,
+    "y": 38,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 41,
+    "y": 38,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 41,
+    "y": 39,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 41,
+    "y": 41,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 50,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 40,
+    "y": 42,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 41,
+    "y": 42,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 51,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 48,
+    "y": 25,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 42,
+    "y": 19,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 41,
+    "y": 18,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 40,
+    "y": 43,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 41,
+    "y": 43,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 52,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 42,
+    "y": 18,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 41,
+    "y": 17,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 44,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 16,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 41,
+    "y": 44,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 53,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 41,
+    "y": 16,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 45,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 39,
+    "y": 16,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 40,
+    "y": 15,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 41,
+    "y": 45,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 54,
+    "y": 28,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 48,
+    "y": 22,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 41,
+    "y": 15,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 46,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 14,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 48,
+    "y": 39,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 41,
+    "y": 46,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 53,
+    "y": 30,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 41,
+    "y": 14,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 47,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 13,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 48,
+    "y": 40,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 41,
+    "y": 47,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 54,
+    "y": 30,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 41,
+    "y": 13,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 48,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 12,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 48,
+    "y": 36,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 48,
+    "y": 41,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 41,
+    "y": 48,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 54,
+    "y": 31,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 41,
+    "y": 12,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "x": 40,
+    "y": 49,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 48,
+    "y": 42,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 41,
+    "y": 49,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 54,
+    "y": 32,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 44,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "x": 42,
+    "y": 12,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 41,
+    "y": 11,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 50,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 34,
+    "y": 48,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 48,
+    "y": 43,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 41,
+    "y": 50,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 54,
+    "y": 33,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 45,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 43,
+    "y": 12,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 41,
+    "y": 10,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 51,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 34,
+    "y": 49,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 48,
+    "y": 44,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 41,
+    "y": 51,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 54,
+    "y": 34,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 46,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 44,
+    "y": 12,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 41,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 52,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 34,
+    "y": 50,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 48,
+    "y": 45,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 41,
+    "y": 52,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 55,
+    "y": 34,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 54,
+    "y": 35,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 53,
+    "y": 34,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 53,
+    "y": 20,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 45,
+    "y": 12,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 41,
+    "y": 8,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 53,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 34,
+    "y": 51,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 54,
+    "y": 40,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 48,
+    "y": 46,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 41,
+    "y": 53,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 55,
+    "y": 35,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 54,
+    "y": 36,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 46,
+    "y": 12,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 41,
+    "y": 7,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 54,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 34,
+    "y": 52,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 54,
+    "y": 41,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 39,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 48,
+    "y": 47,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 41,
+    "y": 54,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 55,
+    "y": 36,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 54,
+    "y": 37,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 44,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 41,
+    "y": 6,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 40,
+    "y": 55,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 39,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 34,
+    "y": 7,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 34,
+    "y": 53,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 58,
+    "y": 32,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 54,
+    "y": 42,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 38,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 48,
+    "y": 48,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 41,
+    "y": 55,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 55,
+    "y": 37,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 29,
+    "y": 53,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 28,
+    "y": 54,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 27,
+    "y": 55,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 6,
+    "y": 36,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "x": 6,
+    "y": 37,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 6,
+    "y": 38,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 6,
+    "y": 39,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "x": 28,
+    "y": 55,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 29,
+    "y": 55,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 29,
+    "y": 54,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 1,
+    "y": 41,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "x": 1,
+    "y": 42,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 41,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 42,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 3,
+    "y": 41,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 3,
+    "y": 42,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 4,
+    "y": 41,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 4,
+    "y": 42,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 5,
+    "y": 41,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 5,
+    "y": 42,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 41,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 42,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 7,
+    "y": 41,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 7,
+    "y": 42,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 8,
+    "y": 42,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 12,
+    "y": 46,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 0,
+    "y": 40,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 1,
+    "y": 40,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 2,
+    "y": 40,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 3,
+    "y": 40,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 4,
+    "y": 40,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 5,
+    "y": 40,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 40,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 34,
+    "y": 0,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 34,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 34,
+    "y": 3,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 34,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 34,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 34,
+    "y": 6,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "x": 34,
+    "y": 55,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 34,
+    "y": 54,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 6,
+    "y": 50,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 14,
+    "y": 0,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 13,
+    "y": 0,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 1,
+    "y": 13,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "x": 13,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 1,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 2,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 13,
+    "y": 2,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 2,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 3,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 13,
+    "y": 3,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 3,
+    "y": 14,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 4,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 13,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 4,
+    "y": 14,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 3,
+    "y": 15,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 5,
+    "y": 13,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 14,
+    "y": 4,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 13,
+    "y": 5,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 5,
+    "y": 14,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 3,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 6,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 14,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 13,
+    "y": 6,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 6,
+    "y": 14,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 4,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 7,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 13,
+    "y": 7,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 7,
+    "y": 14,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 5,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 8,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 13,
+    "y": 8,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 8,
+    "y": 14,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 9,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 13,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 9,
+    "y": 14,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 7,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 10,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 14,
+    "y": 9,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 10,
+    "y": 14,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 8,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 11,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 14,
+    "y": 10,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 13,
+    "y": 11,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "x": 11,
+    "y": 14,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 9,
+    "y": 16,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 12,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 14,
+    "y": 11,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": 3
+   },
+   {
+    "x": 13,
+    "y": 12,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 2
+   },
+   {
+    "x": 12,
+    "y": 14,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 13,
+    "y": 13,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 14,
+    "y": 12,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 12,
+    "y": 0,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 12,
+    "y": 1,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 12,
+    "y": 2,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 12,
+    "y": 3,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 12,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 12,
+    "y": 5,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 7,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 8,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 9,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 10,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 11,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 12,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 15,
+    "y": 11,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 48,
+    "y": 55,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 48,
+    "y": 54,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 48,
+    "y": 53,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 48,
+    "y": 52,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 48,
+    "y": 51,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 48,
+    "y": 50,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 48,
+    "y": 49,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 0,
+    "y": 33,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 0,
+    "y": 38,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 1,
+    "y": 38,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 38,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 0,
+    "y": 39,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 1,
+    "y": 39,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 39,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 3
+   },
+   {
+    "x": 3,
+    "y": 39,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 4,
+    "y": 39,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 5,
+    "y": 39,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 46,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 55,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 6,
+    "y": 54,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 6,
+    "y": 53,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 58,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 0,
+    "y": 47,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 53,
+    "y": 16,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 54,
+    "y": 16,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 51,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 52,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 55,
+    "y": 16,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 15,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 53,
+    "y": 14,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 2
+   },
+   {
+    "x": 50,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 55,
+    "y": 17,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 55,
+    "y": 15,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 14,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 53,
+    "y": 13,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "x": 51,
+    "y": 12,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 52,
+    "y": 12,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 55,
+    "y": 18,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 55,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 13,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": 1
+   },
+   {
+    "x": 53,
+    "y": 12,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 50,
+    "y": 12,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 56,
+    "y": 18,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 56,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 55,
+    "y": 13,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 54,
+    "y": 12,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 53,
+    "y": 11,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 56,
+    "y": 19,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 57,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 56,
+    "y": 13,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 54,
+    "y": 11,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "x": 58,
+    "y": 18,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 58,
+    "y": 14,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": 3
+   },
+   {
+    "x": 57,
+    "y": 13,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 2
+   },
+   {
+    "x": 55,
+    "y": 11,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 54,
+    "y": 10,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 59,
+    "y": 14,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 58,
+    "y": 13,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "x": 57,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "x": 56,
+    "y": 11,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 54,
+    "y": 9,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 60,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 59,
+    "y": 15,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 59,
+    "y": 13,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 58,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 57,
+    "y": 11,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 54,
+    "y": 8,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 61,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 60,
+    "y": 13,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 2
+   },
+   {
+    "x": 59,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 3
+   },
+   {
+    "x": 59,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 58,
+    "y": 11,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 54,
+    "y": 7,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 62,
+    "y": 14,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": 3
+   },
+   {
+    "x": 60,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 60,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 59,
+    "y": 11,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 54,
+    "y": 6,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 63,
+    "y": 14,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 2
+   },
+   {
+    "x": 62,
+    "y": 15,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 62,
+    "y": 13,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 61,
+    "y": 16,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 61,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 60,
+    "y": 11,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 63,
+    "y": 13,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 1
+   },
+   {
+    "x": 62,
+    "y": 12,
+    "type": "bridge",
+    "H_in": 0,
+    "V_in": 3
+   },
+   {
+    "x": 61,
+    "y": 11,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 64,
+    "y": 13,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 63,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 62,
+    "y": 11,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 64,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 65,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 68,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 67,
+    "y": 13,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 66,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 69,
+    "y": 14,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 68,
+    "y": 13,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 67,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 2,
+    "y": 51,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 9,
+    "y": 2,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 9,
+    "y": 1,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 9,
+    "y": 0,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 6,
+    "y": 48,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 69,
+    "y": 15,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 0
+   },
+   {
+    "x": 69,
+    "y": 13,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 69,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 68,
+    "y": 12,
+    "type": "belt",
+    "in_side": 0,
+    "out_side": 2
+   },
+   {
+    "x": 6,
+    "y": 10,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 6,
+    "y": 9,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 6,
+    "y": 8,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": 1
+   },
+   {
+    "x": 6,
+    "y": 7,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 54,
+    "y": 43,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 44,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 45,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 46,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 47,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 48,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 49,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 50,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 51,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 52,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 53,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 54,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 54,
+    "y": 55,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 62,
+    "y": 7,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   }
+  ],
+  "vin": [
+   {
+    "x": 0,
+    "y": 0,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 0,
+    "y": 5,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 0,
+    "y": 14,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 0,
+    "y": 19,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 0,
+    "y": 27,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 0,
+    "y": 33,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 0,
+    "y": 42,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 0,
+    "y": 47,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 56,
+    "y": 0,
+    "side": 3,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 14,
+    "y": 0,
+    "side": 3,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 28,
+    "y": 0,
+    "side": 3,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 42,
+    "y": 0,
+    "side": 3,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 13,
+    "y": 55,
+    "side": 1,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 55,
+    "y": 0,
+    "side": 3,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 13,
+    "y": 0,
+    "side": 3,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 27,
+    "y": 0,
+    "side": 3,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 41,
+    "y": 0,
+    "side": 3,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 27,
+    "y": 55,
+    "side": 1,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 69,
+    "y": 13,
+    "side": 0,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 69,
+    "y": 14,
+    "side": 0,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 69,
+    "y": 29,
+    "side": 0,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 69,
+    "y": 41,
+    "side": 0,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 0,
+    "y": 38,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 12,
+    "y": 0,
+    "side": 3,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 0,
+    "y": 13,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 0,
+    "y": 40,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 69,
+    "y": 12,
+    "side": 0,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 0,
+    "y": 10,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 41,
+    "y": 55,
+    "side": 1,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 28,
+    "y": 55,
+    "side": 1,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 40,
+    "y": 0,
+    "side": 3,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 26,
+    "y": 0,
+    "side": 3,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 69,
+    "y": 27,
+    "side": 0,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 0,
+    "y": 26,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 62,
+    "y": 0,
+    "side": 3,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 69,
+    "y": 26,
+    "side": 0,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 69,
+    "y": 40,
+    "side": 0,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 6,
+    "y": 55,
+    "side": 1,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 19,
+    "y": 55,
+    "side": 1,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 0,
+    "y": 24,
+    "side": 2,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 0,
+    "y": 11,
+    "side": 2,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 20,
+    "y": 0,
+    "side": 3,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 34,
+    "y": 0,
+    "side": 3,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 48,
+    "y": 0,
+    "side": 3,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 0,
+    "y": 39,
+    "side": 2,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 20,
+    "y": 55,
+    "side": 1,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 69,
+    "y": 28,
+    "side": 0,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 34,
+    "y": 55,
+    "side": 1,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 48,
+    "y": 55,
+    "side": 1,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 0,
+    "y": 25,
+    "side": 2,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 0,
+    "y": 41,
+    "side": 2,
+    "label": "砂叶粉末"
+   }
+  ],
+  "vout": [
+   {
+    "x": 9,
+    "y": 0,
+    "side": 3,
+    "label": "钢块"
+   },
+   {
+    "x": 23,
+    "y": 0,
+    "side": 3,
+    "label": "钢块"
+   },
+   {
+    "x": 37,
+    "y": 0,
+    "side": 3,
+    "label": "钢块"
+   },
+   {
+    "x": 51,
+    "y": 0,
+    "side": 3,
+    "label": "钢块"
+   },
+   {
+    "x": 65,
+    "y": 0,
+    "side": 3,
+    "label": "钢块"
+   },
+   {
+    "x": 0,
+    "y": 12,
+    "side": 2,
+    "label": "钢块"
+   },
+   {
+    "x": 6,
+    "y": 0,
+    "side": 3,
+    "label": "钢块"
+   },
+   {
+    "x": 69,
+    "y": 15,
+    "side": 0,
+    "label": "钢块"
+   },
+   {
+    "x": 54,
+    "y": 0,
+    "side": 3,
+    "label": "钢块"
+   },
+   {
+    "x": 69,
+    "y": 16,
+    "side": 0,
+    "label": "钢块"
+   },
+   {
+    "x": 0,
+    "y": 28,
+    "side": 2,
+    "label": "钢块"
+   },
+   {
+    "x": 29,
+    "y": 55,
+    "side": 1,
+    "label": "钢块"
+   },
+   {
+    "x": 40,
+    "y": 55,
+    "side": 1,
+    "label": "钢块"
+   },
+   {
+    "x": 54,
+    "y": 55,
+    "side": 1,
+    "label": "钢块"
+   },
+   {
+    "x": 69,
+    "y": 30,
+    "side": 0,
+    "label": "钢块"
+   },
+   {
+    "x": 12,
+    "y": 55,
+    "side": 1,
+    "label": "钢块"
+   },
+   {
+    "x": 26,
+    "y": 55,
+    "side": 1,
+    "label": "钢块"
+   }
+  ]
+ },
+ "T": 995,
+ "bridges": 38,
+ "k": 17,
+ "allsides": true
+}

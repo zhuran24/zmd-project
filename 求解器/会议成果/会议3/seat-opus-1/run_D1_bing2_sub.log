@@ -1,0 +1,17 @@
+{"inst": "D1", "rect": "none", "mode": "bing2", "tu": 0, "subsets": 1, "threads": 4, "load_start": 26.13, "build_s": 0.56, "nvars": 31202, "ncons": 44035, "placements": 508, "free": 126}
+{"iter": 0, "status": "OPTIMAL", "master_s": 133.18, "cuts": 0, "lp_s": 0.025, "shortfall": 0.5, "cut_terms": 202, "cut_rhs": 1.0, "cut_lhs_now": 0.5, "repaired": 0, "violated": true, "cut_s": 1.006}
+{"iter": 1, "status": "OPTIMAL", "master_s": 25.15, "cuts": 1, "lp_s": 0.015, "shortfall": 1.0, "cut_terms": 253, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.889}
+{"iter": 2, "status": "OPTIMAL", "master_s": 19.77, "cuts": 2, "lp_s": 0.009, "shortfall": 0.5, "cut_terms": 251, "cut_rhs": 1.0, "cut_lhs_now": 0.5, "repaired": 1, "violated": true, "cut_s": 0.37}
+{"iter": 3, "status": "OPTIMAL", "master_s": 11.77, "cuts": 3, "lp_s": 0.009, "shortfall": 0.7, "cut_terms": 435, "cut_rhs": 1.0, "cut_lhs_now": 0.3, "repaired": 0, "violated": true, "cut_s": 0.366}
+{"iter": 4, "status": "OPTIMAL", "master_s": 26.21, "cuts": 4, "lp_s": 0.008, "shortfall": 0.333333, "cut_terms": 224, "cut_rhs": 1.0, "cut_lhs_now": 0.666667, "repaired": 1, "violated": true, "cut_s": 0.375}
+{"iter": 5, "status": "OPTIMAL", "master_s": 48.05, "cuts": 5, "lp_s": 0.009, "shortfall": 0.55, "cut_terms": 273, "cut_rhs": 1.0, "cut_lhs_now": 0.45, "repaired": 0, "violated": true, "cut_s": 0.364}
+{"iter": 6, "status": "OPTIMAL", "master_s": 11.62, "cuts": 6, "lp_s": 0.009, "shortfall": 0.4375, "cut_terms": 442, "cut_rhs": 1.0, "cut_lhs_now": 0.5625, "repaired": 0, "violated": true, "cut_s": 0.374}
+{"iter": 7, "status": "OPTIMAL", "master_s": 30.23, "cuts": 7, "lp_s": 0.008, "shortfall": 0.666667, "cut_terms": 203, "cut_rhs": 1.0, "cut_lhs_now": 0.333334, "repaired": 1, "violated": true, "cut_s": 0.361}
+{"iter": 8, "status": "OPTIMAL", "master_s": 25.08, "cuts": 8, "lp_s": 0.009, "shortfall": 0.590909, "cut_terms": 429, "cut_rhs": 1.0, "cut_lhs_now": 0.409095, "repaired": 17, "violated": true, "cut_s": 0.399}
+{"iter": 9, "status": "OPTIMAL", "master_s": 46.23, "cuts": 9, "lp_s": 0.009, "shortfall": 1.0, "cut_terms": 140, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.367}
+{"iter": 10, "status": "OPTIMAL", "master_s": 32.79, "cuts": 10, "lp_s": 0.015, "shortfall": 1.0, "cut_terms": 87, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.915}
+{"iter": 11, "status": "OPTIMAL", "master_s": 40.03, "cuts": 11, "lp_s": 0.019, "shortfall": 0.7, "cut_terms": 315, "cut_rhs": 1.0, "cut_lhs_now": 0.3, "repaired": 0, "violated": true, "cut_s": 0.923}
+{"iter": 12, "status": "OPTIMAL", "master_s": 15.01, "cuts": 12, "lp_s": 0.019, "shortfall": 0.7, "cut_terms": 418, "cut_rhs": 1.0, "cut_lhs_now": 0.3, "repaired": 0, "violated": true, "cut_s": 0.973}
+{"iter": 13, "status": "OPTIMAL", "master_s": 62.94, "cuts": 13, "lp_s": 0.022, "shortfall": 0.4375, "cut_terms": 366, "cut_rhs": 1.0, "cut_lhs_now": 0.5625, "repaired": 0, "violated": true, "cut_s": 0.891}
+{"iter": 14, "status": "OPTIMAL", "master_s": 18.0, "cuts": 14, "lp_s": 0.017, "shortfall": 0.470588, "cut_terms": 622, "cut_rhs": 1.0, "cut_lhs_now": 0.529413, "repaired": 38, "violated": true, "cut_s": 0.935}
+{"iter": 15, "status": "OPTIMAL", "master_s": 18.1, "cuts": 15, "lp_s": 0.018, "shortfall": 0.447368, "cut_terms": 372, "cut_rhs": 1.0, "cut_lhs_now": 0.552635, "repaired": 11, "violated": true, "cut_s": 0.945}

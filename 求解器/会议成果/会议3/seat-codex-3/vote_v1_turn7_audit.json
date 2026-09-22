@@ -1,0 +1,45 @@
+{
+  "scope": "frozen-text, local support-marker, and cut-orientation checks only",
+  "frozen_sha256": "ca4c1fbe867b3326da30773579a15b5096c485238bdbc76709fc90a2af21d59f",
+  "frozen_lines": 124,
+  "second_section_matches_signed_a4467900": true,
+  "P6_explicit": true,
+  "supplement_entries_present": [
+    false,
+    false,
+    false
+  ],
+  "support_marker_example": {
+    "f": 0,
+    "z": 1,
+    "h": 1,
+    "S": 1,
+    "R": 0,
+    "D": 0,
+    "M": 0,
+    "inequality_holds": false
+  },
+  "lower_bound_example": {
+    "required_auxiliary_flow": 1,
+    "maximum_auxiliary_flow": 0,
+    "source_side_formula": {
+      "nodes": [
+        "b"
+      ],
+      "demand": 0,
+      "lower_out": 0,
+      "upper_in": 1,
+      "violated": false
+    },
+    "complement_formula": {
+      "nodes": [
+        "a"
+      ],
+      "demand": 0,
+      "lower_out": 1,
+      "upper_in": 0,
+      "violated": true
+    }
+  },
+  "elapsed_seconds_excluding_imports_and_write": 0.0004247290016792249
+}

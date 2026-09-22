@@ -1,0 +1,28 @@
+{
+ "info": {
+  "rect": "13,45,53,21",
+  "B": 5,
+  "tmax": 0,
+  "tmin": 0,
+  "tb": 0,
+  "threads": 6,
+  "placements": 108064,
+  "core": 4592,
+  "free": 3648,
+  "build_s": 5.0,
+  "load_start": 13.8,
+  "final": "UNKNOWN",
+  "total_s": 600.4,
+  "iters": 1,
+  "load_end": 12.8
+ },
+ "log": [
+  {
+   "iter": 0,
+   "status": "UNKNOWN",
+   "master_s": 600.4,
+   "cuts": 0,
+   "load": 12.8
+  }
+ ]
+}

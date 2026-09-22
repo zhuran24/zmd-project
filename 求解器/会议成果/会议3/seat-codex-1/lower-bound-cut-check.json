@@ -1,0 +1,32 @@
+{
+  "scope": "exact small-network algebra checks, not factory or performance validation",
+  "instances_checked": 280,
+  "methods_compared": [
+    "exhaustive_integer_flows",
+    "all_lower_bound_cut_inequalities",
+    "integer_maxflow_after_lower_shift"
+  ],
+  "cut_convention": "d=in-out; d(S)+l(delta_out(S))<=u(delta_in(S))",
+  "missing_lower_bound_example": [
+    {
+      "x": 0,
+      "naive_all_subsets_pass": true,
+      "feasible": false,
+      "violated_cut": {
+        "S": [
+          0
+        ],
+        "demand": 0,
+        "lower_out": 1,
+        "upper_in": 0
+      }
+    },
+    {
+      "x": 1,
+      "naive_all_subsets_pass": true,
+      "feasible": true,
+      "violated_cut": null
+    }
+  ],
+  "parametric_global_cut": "1<=x"
+}

@@ -1,0 +1,14 @@
+{
+  "seat": "seat-codex-4",
+  "decision": "认可",
+  "file": "共识稿-v2-e0722305.md",
+  "sha256": "e072230560176404d72c36715866a10c09d496e13f2d13847b04a8f79a74d83c",
+  "mode": "0o444",
+  "full_document_read": true,
+  "mechanism_segment_sha256": "b0bc80a865dad5653c224814efda0b140c2da7fb4b99ced1a17321dd93ec32c7",
+  "mechanism_segment_matches": true,
+  "p6_explicit": true,
+  "four_five_entries_present": true,
+  "v1_vote_migration": false,
+  "meeting_end_claimed": false
+}

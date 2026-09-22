@@ -1,0 +1,20 @@
+{
+  "scope": "Local model implication counterexample, not a target factory counterexample.",
+  "geometry": "One non-transport output faces a belt input. The belt output faces empty space.",
+  "flow_on_only_channel": 0,
+  "z_on_only_channel": 1,
+  "transport_balance": [
+    0,
+    0
+  ],
+  "T": 1,
+  "b": 0,
+  "D": 0,
+  "M": 0,
+  "marked_S": 1,
+  "marked_R": 0,
+  "marked_E": 0,
+  "actual_positive_S": 0,
+  "actual_positive_R": 0,
+  "claimed_R_minus_S_bounds_hold_for_marked_z": false
+}

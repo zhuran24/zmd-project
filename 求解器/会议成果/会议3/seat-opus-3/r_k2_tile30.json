@@ -1,0 +1,478 @@
+{
+ "W": 30,
+ "H": 15,
+ "status": "OPTIMAL",
+ "wall": 5.3,
+ "build_s": 0.4,
+ "nvars": 17208,
+ "ncons": 87379,
+ "first_sol": 0.7,
+ "trace": [
+  [
+   1.0,
+   54.0
+  ],
+  [
+   1.0,
+   46.0
+  ],
+  [
+   1.0,
+   44.0
+  ],
+  [
+   1.1,
+   38.0
+  ],
+  [
+   1.4,
+   37.0
+  ],
+  [
+   1.4,
+   36.0
+  ],
+  [
+   1.5,
+   35.0
+  ],
+  [
+   1.5,
+   34.0
+  ]
+ ],
+ "T": 34,
+ "bound": 34.0,
+ "bridges": 15,
+ "grid": [
+  "......#..............#........",
+  "......v..............v........",
+  "......#..............#........",
+  "......>Cccc..........>Cccc....",
+  "...Bbb.Cccc.......Bbb.Cccc....",
+  "..>Bbb#Cccc......>Bbb#Cccc....",
+  "aaaBbb.Cccc....aaaBbb.Cccc....",
+  "aaa....Cccc....aaa....Cccc....",
+  "AAABbb#Ccccv...AAABbb#Ccccv...",
+  "^..Bbb...DDD...#..Bbb...DDD...",
+  "..>Bbb...ddd..>^.>Bbb...ddd...",
+  "aaa......ddd..^aaa......ddd...",
+  "aaa......#....^aaa........v...",
+  "AAA......v....#AAA........v...",
+  "#........#....^.#.........#..."
+ ],
+ "roles": {
+  "A": "精炼-蓝铁矿",
+  "B": "粉碎-蓝铁块",
+  "C": "研磨-致密蓝铁",
+  "D": "精炼-致密蓝铁"
+ },
+ "layout": {
+  "W": 30,
+  "H": 15,
+  "machines": [
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 0,
+    "y0": 1,
+    "x1": 2,
+    "y1": 3
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 0,
+    "y0": 6,
+    "x1": 2,
+    "y1": 8
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 15,
+    "y0": 1,
+    "x1": 17,
+    "y1": 3
+   },
+   {
+    "role": "精炼-蓝铁矿",
+    "kind": "小",
+    "Din": 3,
+    "x0": 15,
+    "y0": 6,
+    "x1": 17,
+    "y1": 8
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 3,
+    "y0": 4,
+    "x1": 5,
+    "y1": 6
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 3,
+    "y0": 8,
+    "x1": 5,
+    "y1": 10
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 18,
+    "y0": 4,
+    "x1": 20,
+    "y1": 6
+   },
+   {
+    "role": "粉碎-蓝铁块",
+    "kind": "小",
+    "Din": 2,
+    "x0": 18,
+    "y0": 8,
+    "x1": 20,
+    "y1": 10
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 7,
+    "y0": 6,
+    "x1": 10,
+    "y1": 11
+   },
+   {
+    "role": "研磨-致密蓝铁",
+    "kind": "大",
+    "Din": 2,
+    "x0": 22,
+    "y0": 6,
+    "x1": 25,
+    "y1": 11
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 9,
+    "y0": 3,
+    "x1": 11,
+    "y1": 5
+   },
+   {
+    "role": "精炼-致密蓝铁",
+    "kind": "小",
+    "Din": 1,
+    "x0": 24,
+    "y0": 3,
+    "x1": 26,
+    "y1": 5
+   }
+  ],
+  "transport": [
+   {
+    "x": 0,
+    "y": 0,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 3
+   },
+   {
+    "x": 0,
+    "y": 5,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 2,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 2,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 6,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   },
+   {
+    "x": 6,
+    "y": 9,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   },
+   {
+    "x": 6,
+    "y": 11,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 6,
+    "y": 12,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 6,
+    "y": 13,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 6,
+    "y": 14,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 9,
+    "y": 0,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 9,
+    "y": 1,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 9,
+    "y": 2,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 11,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   },
+   {
+    "x": 14,
+    "y": 0,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 14,
+    "y": 1,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 3
+   },
+   {
+    "x": 14,
+    "y": 2,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 14,
+    "y": 3,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 1
+   },
+   {
+    "x": 14,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 15,
+    "y": 4,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 1
+   },
+   {
+    "x": 15,
+    "y": 5,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 3
+   },
+   {
+    "x": 16,
+    "y": 0,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 3
+   },
+   {
+    "x": 17,
+    "y": 4,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 17,
+    "y": 9,
+    "type": "belt",
+    "in_side": 3,
+    "out_side": 0
+   },
+   {
+    "x": 21,
+    "y": 6,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   },
+   {
+    "x": 21,
+    "y": 9,
+    "type": "bridge",
+    "H_in": 2,
+    "V_in": null
+   },
+   {
+    "x": 21,
+    "y": 11,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 0
+   },
+   {
+    "x": 21,
+    "y": 12,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 21,
+    "y": 13,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 21,
+    "y": 14,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 26,
+    "y": 0,
+    "type": "bridge",
+    "H_in": null,
+    "V_in": 1
+   },
+   {
+    "x": 26,
+    "y": 1,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 26,
+    "y": 2,
+    "type": "belt",
+    "in_side": 1,
+    "out_side": 3
+   },
+   {
+    "x": 26,
+    "y": 6,
+    "type": "belt",
+    "in_side": 2,
+    "out_side": 3
+   }
+  ],
+  "vin": [
+   {
+    "x": 0,
+    "y": 0,
+    "side": 3,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 0,
+    "y": 5,
+    "side": 2,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 14,
+    "y": 0,
+    "side": 3,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 16,
+    "y": 0,
+    "side": 3,
+    "label": "蓝铁矿"
+   },
+   {
+    "x": 6,
+    "y": 14,
+    "side": 1,
+    "label": "砂叶粉末"
+   },
+   {
+    "x": 21,
+    "y": 14,
+    "side": 1,
+    "label": "砂叶粉末"
+   }
+  ],
+  "vout": [
+   {
+    "x": 9,
+    "y": 0,
+    "side": 3,
+    "label": "钢块"
+   },
+   {
+    "x": 26,
+    "y": 0,
+    "side": 3,
+    "label": "钢块"
+   }
+  ]
+ },
+ "k": 2,
+ "allsides": true
+}

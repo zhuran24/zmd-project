@@ -1,0 +1,29 @@
+{
+ "info": {
+  "inst": "D1",
+  "rect": "none",
+  "mode": "bing2",
+  "tu": 1,
+  "threads": 4,
+  "load_start": 15.87,
+  "build_s": 0.21,
+  "nvars": 14162,
+  "ncons": 19912,
+  "placements": 508,
+  "free": 126,
+  "lp_cols": 22730,
+  "lp_rows": 7884,
+  "final": "INFEASIBLE",
+  "total_s": 0.23,
+  "iters": 1,
+  "load_end": 15.64
+ },
+ "log": [
+  {
+   "iter": 0,
+   "status": "INFEASIBLE",
+   "master_s": 0.23,
+   "cuts": 0
+  }
+ ]
+}

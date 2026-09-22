@@ -1,0 +1,106 @@
+{
+  "scope": "exact algebraic/network fixtures only; not a factory witness",
+  "algorithm": "integer augmenting paths plus exhaustive cut enumeration",
+  "network_cases": [
+    {
+      "internal_capacity": 0,
+      "nodes": 10,
+      "arcs": 12,
+      "direct_assignments_checked": 16,
+      "direct_solutions": [],
+      "maxflow_check": {
+        "feasible": false,
+        "maxflow": 2,
+        "required": 4
+      },
+      "all_cuts_check": {
+        "feasible": false,
+        "subsets_checked": 1024,
+        "violation_count": 15,
+        "first_violation": {
+          "S": [
+            "I1",
+            "IG",
+            "VO"
+          ],
+          "lower_out": 2,
+          "upper_in": 1
+        }
+      }
+    },
+    {
+      "internal_capacity": 1,
+      "nodes": 10,
+      "arcs": 12,
+      "direct_assignments_checked": 16,
+      "direct_solutions": [],
+      "maxflow_check": {
+        "feasible": false,
+        "maxflow": 3,
+        "required": 4
+      },
+      "all_cuts_check": {
+        "feasible": false,
+        "subsets_checked": 1024,
+        "violation_count": 3,
+        "first_violation": {
+          "S": [
+            "I1",
+            "I2",
+            "IG",
+            "VO"
+          ],
+          "lower_out": 2,
+          "upper_in": 1
+        }
+      }
+    },
+    {
+      "internal_capacity": 2,
+      "nodes": 10,
+      "arcs": 12,
+      "direct_assignments_checked": 16,
+      "direct_solutions": [
+        [
+          1,
+          1,
+          1,
+          1
+        ]
+      ],
+      "maxflow_check": {
+        "feasible": true,
+        "maxflow": 4,
+        "required": 4
+      },
+      "all_cuts_check": {
+        "feasible": true,
+        "subsets_checked": 1024,
+        "violation_count": 0,
+        "first_violation": null
+      }
+    }
+  ],
+  "lower_bound_counterexample": {
+    "feasible": false,
+    "subsets_checked": 4,
+    "violation_count": 1,
+    "first_violation": {
+      "S": [
+        "a"
+      ],
+      "lower_out": 1,
+      "upper_in": 0
+    }
+  },
+  "recipe_examples_equivalent_under_u_equals_r": true,
+  "floor_conservation_slack_example": {
+    "K": 20,
+    "conservation_rows": 20,
+    "source": 0,
+    "claimed_output_items_per_tick": 1,
+    "original_equalities_feasible": false,
+    "relaxed_integer_rows_feasible": true
+  },
+  "elapsed_seconds_excluding_imports_and_write": 0.006716481999319512
+}

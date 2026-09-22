@@ -1,0 +1,20 @@
+[
+  {
+    "path": "seat-opus-2.md",
+    "sha256": "bb6061d95db120815085d1d6f833fdce7d04cc8ae7e02d08a20cb5334a88e522",
+    "bytes": 7677,
+    "snapshot": "seat-codex-1/round3-source-snapshots/seat-opus-2.md"
+  },
+  {
+    "path": "seat-opus-2/aggflow.py",
+    "sha256": "70802f199c5a164514bd0d09bf68a16cbb970bdad975e8fafdae18415ec44061",
+    "bytes": 14722,
+    "snapshot_status": "source changed since recorded review hash; no replacement snapshot saved"
+  },
+  {
+    "path": "seat-opus-1.md",
+    "sha256": "2fc0e291cd0bddbff4e300b375aa1c9196f0b1b29daf52e6ec95b79b4d2a48d8",
+    "bytes": 11139,
+    "snapshot": "seat-codex-1/round3-source-snapshots/seat-opus-1.md"
+  }
+]

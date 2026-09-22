@@ -1,0 +1,15 @@
+{
+ "status": "UNKNOWN",
+ "wall": 600.5,
+ "stats": {
+  "placements": 116244,
+  "core": 5216,
+  "cells": 3648,
+  "build_s": 9.5
+ },
+ "rect": "17,49,53,21",
+ "flow": 0,
+ "power": 0,
+ "tu": 1,
+ "threads": 6
+}

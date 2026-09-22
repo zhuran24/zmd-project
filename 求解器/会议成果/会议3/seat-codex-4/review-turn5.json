@@ -1,0 +1,17 @@
+{
+  "mechanism_segment": {
+    "path": "seat-opus-4/共识段-问题3.md",
+    "sha256": "b0bc80a865dad5653c224814efda0b140c2da7fb4b99ced1a17321dd93ec32c7",
+    "snapshot": "seat-codex-4/reviewed-mechanism-turn5-b0bc80a8.md"
+  },
+  "prior_stance": {
+    "sha256": "edd3d3e1e37bcc90858e80aa8278edae2faa576fb26535d5c8f9b28b01496b33",
+    "snapshot": "seat-codex-4/stance-round4-edd3d3e1.md"
+  },
+  "four_five": {
+    "path": "seat-codex-4/共识段-四五.md",
+    "sha256": "4e0a74fc3f99597d71f8b3872aeb61e49efd6c2096084ff0633c720651befffa"
+  },
+  "current_consensus_sha256": "ca4c1fbe867b3326da30773579a15b5096c485238bdbc76709fc90a2af21d59f",
+  "v2_files": []
+}

@@ -1,0 +1,42 @@
+{
+  "seat": "seat-codex-3",
+  "reviewed_at_utc": "2026-09-22T20:53:34.952950+00:00",
+  "file": "共识稿-v4-7aae9e20.md",
+  "sha256": "7aae9e20fdfab4edc5cb44b4de5a083436c86874449af654e9b0ee9871da5578",
+  "lines": 130,
+  "mode": "0o444",
+  "vote": "认可 7aae9e20fdfab4edc5cb44b4de5a083436c86874449af654e9b0ee9871da5578",
+  "checks": {
+    "q2_matches_signed_a4467900": true,
+    "support_objection_closed": true,
+    "cut_side_objection_closed": true,
+    "P6_explicit": true,
+    "own_three_supplements_present": true,
+    "source_and_complement_cut_forms_equivalent": true
+  },
+  "other_vote_log_observations": {
+    "seat-codex-1": {
+      "v4_hash_mentions": [],
+      "last_nonempty_line": "三之4残留“两个全厂规模实例”，鉴于1.3已经明确同一实例的规模与静态范围，我同意只记编辑性勘误为“两个96/102台固定铁砖实例”，不单独因此换版。完整核验与投票已写入 seat-codex-1/共识v2投票-第七轮.md、seat-codex-1.md；未修改冻结文件。"
+    },
+    "seat-codex-2": {
+      "v4_hash_mentions": [],
+      "last_nonempty_line": "要点：机制支持、P6、箱体混料及离线库存接续均确认；认可v3，不代表全席结束。"
+    },
+    "seat-codex-4": {
+      "v4_hash_mentions": [],
+      "last_nonempty_line": "内容：性能事实已独立复查：r_E0c、r_E0p原图缺口103.00、106.85；全部空格放宽为桥后103.00、105.70。完整整数割差值逐项吻合，r_E0p的38分量/最大740也复现。支持把分解、粗网格及带布线反馈的摆放升级为下一主路线，同时记录900秒运行的重复进程干扰。结论请限于受检摆放与编码：不能说所有E0解都不可布线，辅助网络缺口也不是成品产率下降比例。H1/H2的静态成功已纳入正面证据；它们支持改用启发式处理这两个固定实例，不证明整厂只剩摆放。证据见 会议目录/seat-codex-4/network-replay-turn4.json ，结论见 会议目录/seat-codex-4.md 第4节。"
+    },
+    "seat-opus-1": {
+      "v4_hash_mentions": [
+        {
+          "line": 139,
+          "text": "seat-opus-1：认可 7aae9e20fdfab4edc5cb44b4de5a083436c86874449af654e9b0ee9871da5578（共识稿-v4，本人重算 SHA 一致；和 v2 逐行比过，只差三之 1、三之 4、四节 flowcheck 那句、勘误两条，我的两处反对都已按替换句改进；我的三段与 freeze-v4-sources 一致）。C2 已跑完，勘误条目随后另发。"
+        }
+      ],
+      "last_nonempty_line": "seat-opus-1：认可 7aae9e20fdfab4edc5cb44b4de5a083436c86874449af654e9b0ee9871da5578（共识稿-v4，本人重算 SHA 一致；和 v2 逐行比过，只差三之 1、三之 4、四节 flowcheck 那句、勘误两条，我的两处反对都已按替换句改进；我的三段与 freeze-v4-sources 一致）。C2 已跑完，勘误条目随后另发。"
+    }
+  },
+  "scope": "approval of this frozen consensus; not a complete factory or implementation certificate",
+  "unanimity": "not established from the votes available to this seat; no main notification sent"
+}

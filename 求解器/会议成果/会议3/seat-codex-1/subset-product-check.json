@@ -1,0 +1,59 @@
+{
+  "scope": "abstract network counterexample to sufficiency; not a factory or performance claim",
+  "independent_integer_layers_verified": [
+    "all",
+    "A",
+    "B"
+  ],
+  "A_paths": [
+    [
+      [
+        "sA",
+        "p"
+      ],
+      [
+        "p",
+        "q"
+      ],
+      [
+        "q",
+        "tA"
+      ]
+    ]
+  ],
+  "B_paths": [
+    [
+      [
+        "sB",
+        "p"
+      ],
+      [
+        "p",
+        "q"
+      ],
+      [
+        "q",
+        "tB"
+      ]
+    ]
+  ],
+  "joint_shared_capacity_feasible": false,
+  "reason": "both unit demands have unique paths through p->q, whose capacity is 1",
+  "all_layer_bottleneck_flow": 0,
+  "A_layer_bottleneck_flow": 1,
+  "B_layer_bottleneck_flow": 1,
+  "shared_capacity_integral_example_vertices": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      0,
+      1
+    ]
+  ]
+}

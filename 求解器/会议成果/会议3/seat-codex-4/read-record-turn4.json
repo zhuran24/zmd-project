@@ -1,0 +1,47 @@
+[
+  {
+    "path": "seat-opus-1.md",
+    "sha256": "5076e7cb3df492957c61e328c1fed7838b73e6a07a1dd7641cf814eff9a6e6ec",
+    "bytes": 19087
+  },
+  {
+    "path": "seat-opus-2.md",
+    "sha256": "3e2bb3fb8e2d8436ec3291cb96ff04403f91e8d5d648720dbc3814293e15e4e6",
+    "bytes": 11659
+  },
+  {
+    "path": "seat-opus-3.md",
+    "sha256": "186d32184a64c4a55696ce95a850e6e9d5a3f6b2542cf8bd18bc8e7e81a3d80a",
+    "bytes": 9382
+  },
+  {
+    "path": "seat-opus-4.md",
+    "sha256": "221c8a45dfd72c39312ba449531a5853561fd033840b695f4fa1b43c256e56a2",
+    "bytes": 16125
+  },
+  {
+    "path": "seat-codex-1.md",
+    "sha256": "71313a0594efe225caddf95bd4df4072f159c670fe2800fbb295b4dd2b1a0ca0",
+    "bytes": 45838
+  },
+  {
+    "path": "seat-codex-2.md",
+    "sha256": "973c98bb4a24c026dfa04a9e3285316a48ed638e1923156991df1000f5aaa2c8",
+    "bytes": 31913
+  },
+  {
+    "path": "seat-codex-3.md",
+    "sha256": "e09951226b09b168b9c9c9cb256504eafd11249cf8c416b8533a4663eb6ca92c",
+    "bytes": 13734
+  },
+  {
+    "path": "seat-codex-4.md",
+    "sha256": "9a28fe70a2d55006a9f5414c5ee1076191d3f8466545a8e4cc3f564b87b1c149",
+    "bytes": 19386
+  },
+  {
+    "path": "共识稿.md",
+    "sha256": "fe7f620d85e72d34fd05395f9cf49e71f2ad719c110f464310fa52aa316dcc17",
+    "bytes": 20200
+  }
+]

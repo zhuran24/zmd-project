@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "scope": "algebraic validity and strict separation for the supplied matrix and literal RHS map; not a game-model or all-cuts certification",
+  "input": "seat-opus-1/cert_D1_iter0.json",
+  "sha256": "49ca41607bdef949a7e72d64149888a5cf93541d891175e8391e0c116274fd9a",
+  "bytes": 4293916,
+  "rows": 7884,
+  "row_kinds": {
+    "cap": 4150,
+    "eq": 3733,
+    "tgt": 1
+  },
+  "columns": 22730,
+  "used_rows": 7884,
+  "nonzero_dual_rows": 17,
+  "all_dual_signs_valid": true,
+  "all_literal_rhs_values_consistent": true,
+  "max_column_residual": "0",
+  "min_column_residual": "-1",
+  "positive_column_residuals": 0,
+  "zero_column_residuals": 22363,
+  "capacity_constant_rows": [
+    {
+      "row": "('cap', 'outlet', 0)",
+      "rhs": "1"
+    },
+    {
+      "row": "('cap', 'outlet', 1)",
+      "rhs": "1"
+    },
+    {
+      "row": "('cap', 'outlet', 2)",
+      "rhs": "1"
+    }
+  ],
+  "raw_cut_reconstructed": true,
+  "raw_terms": 14,
+  "raw_lhs": "0",
+  "raw_rhs": "1",
+  "raw_violation": "1",
+  "weighted_rhs_now": "1",
+  "rounding_recomputed": true,
+  "rounding_scale": 10000,
+  "rounded_lhs": 0,
+  "rounded_rhs": 10000,
+  "rounded_violation": 10000,
+  "producer_self_check_used": false
+}

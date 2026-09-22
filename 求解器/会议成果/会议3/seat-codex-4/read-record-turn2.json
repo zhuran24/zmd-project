@@ -1,0 +1,52 @@
+[
+  {
+    "path": "seat-opus-1.md",
+    "sha256": "2fc0e291cd0bddbff4e300b375aa1c9196f0b1b29daf52e6ec95b79b4d2a48d8",
+    "bytes": 11139
+  },
+  {
+    "path": "seat-opus-2.md",
+    "sha256": "e9d321ce9d586432901a33d451044f29882af3ba293d5c15d66a3dd69e4217da",
+    "bytes": 7051
+  },
+  {
+    "path": "seat-opus-3.md",
+    "sha256": "6ec0a08f983bd9f416fa662edadcb14d904c928695852fa50bdd7a7d60322b91",
+    "bytes": 4369
+  },
+  {
+    "path": "seat-opus-4.md",
+    "sha256": "6e246fe3e4ce470239ee85c66ce1d75baba609ca8d8848b395d8a70c9e63d0d9",
+    "bytes": 11903
+  },
+  {
+    "path": "seat-codex-1.md",
+    "sha256": "44076be7eed06f88dd9ff736334ec7ebf78b0804c3b245616dd77b2b33bedeba",
+    "bytes": 26922
+  },
+  {
+    "path": "seat-codex-2.md",
+    "sha256": "9891dbad69c7bdaa05de7b527b9a8cba517ef2b214e9d2742750e25839c86bc8",
+    "bytes": 15316
+  },
+  {
+    "path": "seat-codex-3.md",
+    "sha256": "8171d602cac409a79ec7a464be94c18f781f9498ccee09b6621aa397ef3e6df7",
+    "bytes": 14313
+  },
+  {
+    "path": "seat-codex-4.md",
+    "sha256": "95c5b64a7471655f5376205bb66dc3ebc8778070540627234241ca6844315251",
+    "bytes": 15299
+  },
+  {
+    "path": "seat-opus-2/aggflow.py",
+    "sha256": "aedbec111a5b3e72a7d20ebf2697b6069edcdb8db1ecb3547f4a8f9ecebf300c",
+    "bytes": 14135
+  },
+  {
+    "path": "seat-opus-2/msg-2.txt",
+    "sha256": "396ba6a1161fe38520f0e356a2f3a5b0b9b707f9e2aa1fbb4f64a828aa9cf528",
+    "bytes": 2523
+  }
+]

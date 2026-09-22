@@ -1,0 +1,31 @@
+17:from fractions import Fraction as Fr
+287:        m.Add(sum(tout['crush']) >= int(3 * D * K)); m.Add(sum(tin['crush']) >= int(Fr(7, 3) * D * K))
+477:            return Fr(round(x * denom), denom)
+ 15:55:00 up  7:05,  1 user,  load average: 32.42, 21.84, 10.98
+{"iter": 176, "status": "OPTIMAL", "master_s": 0.71, "cuts": 176, "lp_s": 0.012, "shortfall": 1.0, "cut_terms": 18, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.492}
+{"iter": 177, "status": "OPTIMAL", "master_s": 0.68, "cuts": 177, "lp_s": 0.01, "shortfall": 1.0, "cut_terms": 19, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.408}
+{"iter": 178, "status": "OPTIMAL", "master_s": 0.6, "cuts": 178, "lp_s": 0.011, "shortfall": 1.0, "cut_terms": 18, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.422}
+{"iter": 179, "status": "OPTIMAL", "master_s": 0.65, "cuts": 179, "lp_s": 0.012, "shortfall": 1.0, "cut_terms": 14, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.487}
+{"iter": 180, "status": "OPTIMAL", "master_s": 0.69, "cuts": 180, "lp_s": 0.011, "shortfall": 1.0, "cut_terms": 14, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.584}
+{"iter": 181, "status": "OPTIMAL", "master_s": 0.67, "cuts": 181, "lp_s": 0.012, "shortfall": 1.0, "cut_terms": 16, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.52}
+{"iter": 182, "status": "OPTIMAL", "master_s": 0.69, "cuts": 182, "lp_s": 0.011, "shortfall": 1.0, "cut_terms": 14, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.567}
+{"iter": 183, "status": "OPTIMAL", "master_s": 0.68, "cuts": 183, "lp_s": 0.019, "shortfall": 1.0, "cut_terms": 18, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.951}
+{"iter": 184, "status": "OPTIMAL", "master_s": 0.67, "cuts": 184, "lp_s": 0.011, "shortfall": 1.0, "cut_terms": 14, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.492}
+{"iter": 185, "status": "OPTIMAL", "master_s": 0.7, "cuts": 185, "lp_s": 0.01, "shortfall": 1.0, "cut_terms": 14, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.458}
+{"iter": 186, "status": "OPTIMAL", "master_s": 0.6, "cuts": 186, "lp_s": 0.01, "shortfall": 1.0, "cut_terms": 19, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.426}
+{"iter": 187, "status": "OPTIMAL", "master_s": 0.66, "cuts": 187, "lp_s": 0.019, "shortfall": 1.0, "cut_terms": 16, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.632}
+{"iter": 188, "status": "OPTIMAL", "master_s": 0.61, "cuts": 188, "lp_s": 0.01, "shortfall": 1.0, "cut_terms": 15, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.502}
+{"iter": 189, "status": "OPTIMAL", "master_s": 0.62, "cuts": 189, "lp_s": 0.01, "shortfall": 1.0, "cut_terms": 34, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.403}
+{"iter": 190, "status": "OPTIMAL", "master_s": 0.61, "cuts": 190, "lp_s": 0.011, "shortfall": 1.0, "cut_terms": 24, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.475}
+{"iter": 191, "status": "OPTIMAL", "master_s": 0.63, "cuts": 191, "lp_s": 0.01, "shortfall": 1.0, "cut_terms": 15, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.45}
+{"iter": 192, "status": "OPTIMAL", "master_s": 0.62, "cuts": 192, "lp_s": 0.011, "shortfall": 1.0, "cut_terms": 16, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.394}
+{"iter": 193, "status": "OPTIMAL", "master_s": 0.63, "cuts": 193, "lp_s": 0.011, "shortfall": 1.0, "cut_terms": 16, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.457}
+{"iter": 194, "status": "OPTIMAL", "master_s": 0.61, "cuts": 194, "lp_s": 0.021, "shortfall": 1.0, "cut_terms": 15, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.632}
+{"iter": 195, "status": "OPTIMAL", "master_s": 0.7, "cuts": 195, "lp_s": 0.021, "shortfall": 1.0, "cut_terms": 15, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 1.042}
+{"iter": 196, "status": "OPTIMAL", "master_s": 0.69, "cuts": 196, "lp_s": 0.016, "shortfall": 1.0, "cut_terms": 17, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.949}
+{"iter": 197, "status": "OPTIMAL", "master_s": 0.73, "cuts": 197, "lp_s": 0.011, "shortfall": 1.0, "cut_terms": 15, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.628}
+{"iter": 198, "status": "OPTIMAL", "master_s": 0.66, "cuts": 198, "lp_s": 0.012, "shortfall": 1.0, "cut_terms": 17, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.43}
+{"iter": 199, "status": "OPTIMAL", "master_s": 0.66, "cuts": 199, "lp_s": 0.012, "shortfall": 1.0, "cut_terms": 15, "cut_rhs": 1.0, "cut_lhs_now": 0.0, "repaired": 0, "violated": true, "cut_s": 0.606}
+{"inst": "D1", "rect": "none", "mode": "bing2", "tu": 0, "threads": 4, "load_start": 32.42, "build_s": 0.12, "nvars": 9884, "ncons": 13859, "placements": 508, "free": 126, "lp_cols": 22730, "lp_rows": 7884, "total_s": 290.35, "iters": 200, "load_end": 16.48}
+
+[exited with code 0]

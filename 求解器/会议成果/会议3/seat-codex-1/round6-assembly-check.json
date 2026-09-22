@@ -1,0 +1,14 @@
+{
+  "assembled_sha256": "be6c0aad8f80688af5ea49bde7754345876ebd24fb21bb9de69e45a57ed938df",
+  "bytes": 35990,
+  "missing_markers": {
+    "待交": 0,
+    "待签": 0,
+    "待填": 0
+  },
+  "coverage_section_present": true,
+  "own_beyond_section_present": true,
+  "own_unresolved_section_present": true,
+  "all_main_sections_present": true,
+  "freeze_vote": "not approved pending scoped substantive text corrections; section signoffs recorded separately"
+}
