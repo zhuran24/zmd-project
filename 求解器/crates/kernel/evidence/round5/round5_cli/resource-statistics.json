@@ -1,0 +1,18 @@
+{
+  "completed_ticks": 0,
+  "elapsed_ns": "631000",
+  "output": "disabled",
+  "statistics": {
+    "completed": 0,
+    "inconclusive": 1,
+    "stopped": 0
+  },
+  "status": "inconclusive",
+  "stop": {
+    "axis": "resource.sweeps",
+    "location": "J|0|0|4: instant=0 sweep=1",
+    "reason": "未见完整状态重复，不能推进时刻",
+    "status": "inconclusive"
+  },
+  "ticks": 2
+}

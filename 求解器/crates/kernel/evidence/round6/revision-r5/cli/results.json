@@ -6,7 +6,7 @@
       "exit": 0,
       "result": {
         "out": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/original-cycle.json",
-        "status": "counterexample"
+        "status": "diagnostic_cycle"
       }
     },
     {
@@ -148,11 +148,17 @@
         "records": [
           {
             "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/package/checkpoint_delta/records/record.json",
-            "ticks": 21
+            "ticks": {
+              "ticks": 21,
+              "wireless_item_transactions": 1
+            }
           },
           {
             "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/package/full_state_each_instant/records/record.json",
-            "ticks": 21
+            "ticks": {
+              "ticks": 21,
+              "wireless_item_transactions": 1
+            }
           }
         ],
         "cycles": [
@@ -190,9 +196,8 @@
           }
         ],
         "reference_records": 0,
-        "protected_baseline_files": 12,
         "historical_records": [],
-        "scope": "全部当前v3记录和v2循环独立验收；历史v1/v2记录仅列出，固定基线另核字节。"
+        "scope": "当前v4记录和v3周期按现行源、schema、Rust重放及Python部分接收账验收；旧版本列作史料。"
       }
     },
     {
@@ -252,35 +257,45 @@
         "records": [
           {
             "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/分流器三路轮询-checkpoint_delta.json",
-            "ticks": 12
+            "ticks": {
+              "ticks": 12,
+              "wireless_item_transactions": 0
+            }
           },
           {
             "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/分流器三路轮询-full_state_each_instant.json",
-            "ticks": 12
-          },
-          {
-            "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/分流器三路轮询-reference.json",
-            "ticks": 12
+            "ticks": {
+              "ticks": 12,
+              "wireless_item_transactions": 0
+            }
           },
           {
             "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/混做粉碎机两下游-checkpoint_delta.json",
-            "ticks": 4
+            "ticks": {
+              "ticks": 4,
+              "wireless_item_transactions": 0
+            }
           },
           {
             "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/混做粉碎机两下游-full_state_each_instant.json",
-            "ticks": 4
-          },
-          {
-            "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/混做粉碎机两下游-reference.json",
-            "ticks": 4
+            "ticks": {
+              "ticks": 4,
+              "wireless_item_transactions": 0
+            }
           }
         ],
         "cycles": [],
-        "reference_records": 6,
-        "protected_baseline_files": 12,
-        "historical_records": [],
-        "scope": "全部当前v3记录和v2循环独立验收；历史v1/v2记录仅列出，固定基线另核字节。"
+        "reference_records": 0,
+        "historical_records": [
+          "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/分流器三路轮询-reference.json",
+          "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/混做粉碎机两下游-reference.json"
+        ],
+        "scope": "当前v4记录和v3周期按现行源、schema、Rust重放及Python部分接收账验收；旧版本列作史料。"
       }
+    },
+    {
+      "name": "bounded-reference-batch-unsupported",
+      "exit_code": 2
     },
     {
       "name": "ore-79999-seed",
@@ -643,6 +658,22 @@
       "name": "reject-hash",
       "exit": 2,
       "result": {
+        "evidence_scope": {
+          "context_bindings": [],
+          "direction": "diagnostic",
+          "fixed_parameter_lifecycle": "judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作",
+          "initial_state_coverage": {
+            "description": "一个显式种子及其实际已重放前缀；调试程序全部可能后态另核",
+            "exact_reachable_set_enumerated": false
+          },
+          "kind": "diagnostic",
+          "proof_sources": [],
+          "review_status": "author_checked",
+          "support_domain": [
+            "固定布局、设定、global/event-order-v1及整数时钟的受限工程执行",
+            "ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明"
+          ]
+        },
         "execution_mode": "finite_concrete",
         "fingerprints": [],
         "input_history": null,
@@ -658,7 +689,7 @@
         },
         "profile_id": "kernel_profile_v1",
         "run_id": "kernel:load-stop",
-        "schema": "kernel-output-v3",
+        "schema": "kernel-output-v4",
         "status": "invalid_input",
         "trace": null,
         "uncovered_axes": [],
@@ -669,6 +700,22 @@
       "name": "reject-missing",
       "exit": 2,
       "result": {
+        "evidence_scope": {
+          "context_bindings": [],
+          "direction": "diagnostic",
+          "fixed_parameter_lifecycle": "judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作",
+          "initial_state_coverage": {
+            "description": "一个显式种子及其实际已重放前缀；调试程序全部可能后态另核",
+            "exact_reachable_set_enumerated": false
+          },
+          "kind": "diagnostic",
+          "proof_sources": [],
+          "review_status": "author_checked",
+          "support_domain": [
+            "固定布局、设定、global/event-order-v1及整数时钟的受限工程执行",
+            "ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明"
+          ]
+        },
         "execution_mode": "finite_concrete",
         "fingerprints": [],
         "input_history": null,
@@ -684,7 +731,7 @@
         },
         "profile_id": "kernel_profile_v1",
         "run_id": "kernel:load-stop",
-        "schema": "kernel-output-v3",
+        "schema": "kernel-output-v4",
         "status": "invalid_input",
         "trace": null,
         "uncovered_axes": [],
@@ -695,6 +742,22 @@
       "name": "reject-dependency",
       "exit": 2,
       "result": {
+        "evidence_scope": {
+          "context_bindings": [],
+          "direction": "diagnostic",
+          "fixed_parameter_lifecycle": "judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作",
+          "initial_state_coverage": {
+            "description": "一个显式种子及其实际已重放前缀；调试程序全部可能后态另核",
+            "exact_reachable_set_enumerated": false
+          },
+          "kind": "diagnostic",
+          "proof_sources": [],
+          "review_status": "author_checked",
+          "support_domain": [
+            "固定布局、设定、global/event-order-v1及整数时钟的受限工程执行",
+            "ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明"
+          ]
+        },
         "execution_mode": "finite_concrete",
         "fingerprints": [],
         "input_history": null,
@@ -710,7 +773,7 @@
         },
         "profile_id": "kernel_profile_v1",
         "run_id": "kernel:load-stop",
-        "schema": "kernel-output-v3",
+        "schema": "kernel-output-v4",
         "status": "invalid_input",
         "trace": null,
         "uncovered_axes": [],
@@ -721,6 +784,22 @@
       "name": "reject-producer",
       "exit": 2,
       "result": {
+        "evidence_scope": {
+          "context_bindings": [],
+          "direction": "diagnostic",
+          "fixed_parameter_lifecycle": "judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作",
+          "initial_state_coverage": {
+            "description": "一个显式种子及其实际已重放前缀；调试程序全部可能后态另核",
+            "exact_reachable_set_enumerated": false
+          },
+          "kind": "diagnostic",
+          "proof_sources": [],
+          "review_status": "author_checked",
+          "support_domain": [
+            "固定布局、设定、global/event-order-v1及整数时钟的受限工程执行",
+            "ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明"
+          ]
+        },
         "execution_mode": "finite_concrete",
         "fingerprints": [],
         "input_history": null,
@@ -736,7 +815,7 @@
         },
         "profile_id": "kernel_profile_v1",
         "run_id": "kernel:load-stop",
-        "schema": "kernel-output-v3",
+        "schema": "kernel-output-v4",
         "status": "invalid_input",
         "trace": null,
         "uncovered_axes": [],
@@ -747,6 +826,22 @@
       "name": "reject-state",
       "exit": 2,
       "result": {
+        "evidence_scope": {
+          "context_bindings": [],
+          "direction": "diagnostic",
+          "fixed_parameter_lifecycle": "judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作",
+          "initial_state_coverage": {
+            "description": "一个显式种子及其实际已重放前缀；调试程序全部可能后态另核",
+            "exact_reachable_set_enumerated": false
+          },
+          "kind": "diagnostic",
+          "proof_sources": [],
+          "review_status": "author_checked",
+          "support_domain": [
+            "固定布局、设定、global/event-order-v1及整数时钟的受限工程执行",
+            "ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明"
+          ]
+        },
         "execution_mode": "finite_concrete",
         "fingerprints": [],
         "input_history": null,
@@ -762,7 +857,7 @@
         },
         "profile_id": "kernel_profile_v1",
         "run_id": "kernel:load-stop",
-        "schema": "kernel-output-v3",
+        "schema": "kernel-output-v4",
         "status": "invalid_input",
         "trace": null,
         "uncovered_axes": [],

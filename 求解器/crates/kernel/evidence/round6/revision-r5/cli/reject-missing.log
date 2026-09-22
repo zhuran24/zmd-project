@@ -1,5 +1,21 @@
 {"command": ["/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel", "verify-record", "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/negative/missing.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh", "exit": 2}
 {
+  "evidence_scope": {
+    "context_bindings": [],
+    "direction": "diagnostic",
+    "fixed_parameter_lifecycle": "judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作",
+    "initial_state_coverage": {
+      "description": "一个显式种子及其实际已重放前缀；调试程序全部可能后态另核",
+      "exact_reachable_set_enumerated": false
+    },
+    "kind": "diagnostic",
+    "proof_sources": [],
+    "review_status": "author_checked",
+    "support_domain": [
+      "固定布局、设定、global/event-order-v1及整数时钟的受限工程执行",
+      "ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明"
+    ]
+  },
   "execution_mode": "finite_concrete",
   "fingerprints": [],
   "input_history": null,
@@ -15,7 +31,7 @@
   },
   "profile_id": "kernel_profile_v1",
   "run_id": "kernel:load-stop",
-  "schema": "kernel-output-v3",
+  "schema": "kernel-output-v4",
   "status": "invalid_input",
   "trace": null,
   "uncovered_axes": [],

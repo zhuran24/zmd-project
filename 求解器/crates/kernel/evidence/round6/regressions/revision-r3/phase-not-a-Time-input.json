@@ -1,7 +1,7 @@
 {
   "catalog": {
     "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
-    "sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43"
+    "sha256": "c252c5fae915e2e4002869d7830fff61a50407c47c2ffd9fa855ad0fc893879d"
   },
   "construction": {
     "complete_event": "blueprint_complete",
@@ -986,7 +986,7 @@
             },
             {
               "axis": "connection.port_meeting",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "basis": [
                   "受限模型声明；内核输入 §5.2–5.4；open：shared_edge_opposite（共边全长重合且法向相反，本版选值）／closed_segment_touch（闭边段有非空交集，含仅角点相交，待审方向）；角色仍须存取互补且至少一端运输。一般相遇是否要求全长重合未获证明，不相交占格不能排除角点相遇；不据此准许角接通。两非运输端口、同类端口成PC仍排除。详见T5。据：端口、通道、约束·端口对接；条件几何约束不提供一般相遇的充要定义"
@@ -1119,13 +1119,13 @@
             },
             {
               "axis": "gate.identity_recovery",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "basis": [
-                  "受限模型声明；内核输入 §5.2–5.4；open：条件重符自动恢复／一次触发保持阻断；不能从设定可改直接推恢复。据：物品准入口、设定"
+                  "规则L16、L22、L64；v46 N-F19"
                 ],
                 "status": "specified",
-                "value": "latched"
+                "value": "current_conditions"
               }
             },
             {
@@ -1152,18 +1152,18 @@
             },
             {
               "axis": "gate.total_recovery",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "basis": [
-                  "受限模型声明；内核输入 §5.2–5.4；open：调高现值留有余额即恢复／原阻断锁存；额度仍限1…5000。据：物品准入口、设定"
+                  "规则L16、L22、L64；v46 N-F19"
                 ],
                 "status": "specified",
-                "value": "latched"
+                "value": "current_conditions"
               }
             },
             {
               "axis": "gate.window_clock",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "basis": [
                   "受限模型声明；内核输入 §5.2–5.4；open：wall_clock／identity_only_pause（仅身份原因阻断且非窗口耗尽时停表；恢复后续计，待审）；对一切阻断全盘暂停已排除，窗口原因不能停表。据：物品准入口、约束·准入累计、约束·来源定序"
@@ -1298,13 +1298,13 @@
             },
             {
               "axis": "judgment.order_scope",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "basis": [
-                  "受限模型声明；内核输入 §5.2–5.4；open：global／per_instant，前者共用排序，后者 order_at(t) 每时刻固定；不得同刻临时改序。两读法的据及区别见 T2；据：判定、判定次序"
+                  "任务L15；约束L3、L10；任务6 SP-02/PA-08"
                 ],
                 "status": "specified",
-                "value": "global"
+                "value": "fixed_run_order"
               }
             },
             {
@@ -1578,7 +1578,7 @@
             },
             {
               "axis": "polling.both_failure",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "basis": [
                   "受限模型声明；内核输入 §5.2–5.4；open：advance_authorized（一次失败判定仅前移已给该边权限的侧）／no_attempt_hold（不足双方权限时不判定、均保持）／advance_both（两侧均前移，须说明无权限侧为何可前移）；后两项有规则29的字面冲突，待审不可默认执行。实际发生的失败尝试不前移已排除。据：轮询、判定；T3"
@@ -1809,7 +1809,7 @@
             },
             {
               "axis": "transfer.cooldown_scope",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "basis": [
                   "受限模型声明；内核输入 §5.2–5.4；open：box／slot；单一单位判定不等于单一冷却，六格冷却相位与到期掩码另记录。据：传输、协议储存箱"
@@ -1820,7 +1820,7 @@
             },
             {
               "axis": "transfer.failure_cooldown",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "basis": [
                   "受限模型声明；内核输入 §5.2–5.4；open：每次尝试（含空/失败）起冷却／仅满足某成功条件时起冷却；空格仍须尝试，不可无视。据：传输、物品格"
@@ -1831,13 +1831,13 @@
             },
             {
               "axis": "transfer.partial_acceptance",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "basis": [
-                  "受限模型声明；内核输入 §5.2–5.4；open：全箱全部能收才转移／一次单位判定内可收部分；按格或按物种/件的部分还需定义，不能穿插六个外部判定。据：传输、协议核心、物品格"
+                  "规则L36“能送多少送多少”、L13、L41；主会话三审-0920.md §6"
                 ],
                 "status": "specified",
-                "value": "all_or_nothing"
+                "value": "max_receivable"
               }
             },
             {
@@ -1917,24 +1917,24 @@
             },
             {
               "axis": "warehouse.acceptance",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "basis": [
-                  "受限模型声明；内核输入 §5.2–5.4；open：有可用入库路径／有容量／两者，须与真实接收及两成品目标联合核。据：目标、约束·入库途径"
+                  "任务L2、L9；规则L36；任务2§6.5.1；三审§6"
                 ],
                 "status": "specified",
-                "value": "capacity_and_path"
+                "value": "receivable_products"
               }
             },
             {
               "axis": "warehouse.acceptance_quantifier",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "basis": [
-                  "受限模型声明；内核输入 §5.2–5.4；open：逐时刻接收域／验收状态条件；不能以某个满仓时刻直接宣判全题无解。据：目标、循环态"
+                  "任务L2、L9—10；任务2§6.5.1、§6.5.6"
                 ],
                 "status": "specified",
-                "value": "per_instant"
+                "value": "all_candidate_and_actual_checks"
               }
             },
             {
@@ -1966,12 +1966,12 @@
               "lifetime": "U",
               "value": {
                 "basis": [
-                  "受限模型声明；内核输入 §5.2–5.4；obligation：仓库抽象到合法完整周期的提升关系；不能枚举 true 当证明。据：循环态、操作精度、目标"
+                  "任务L2、L7—10、L13；规则L14；任务2§6.5；任务6 SP-11"
                 ],
                 "status": "specified",
                 "value": {
                   "policy": "stop",
-                  "trigger": "请求级二完整基地周期提升；F仅限制成品未满不足以排除整箱容量拒收"
+                  "trigger": "请求缺少逐项复原证据的完整基地周期或缺少覆盖证明的全称认证"
                 }
               }
             },
@@ -2563,7 +2563,7 @@
   "parameters": {
     "axis_registry": {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
-      "sha256": "37427b530246a263018fa44a826893b46032c9d97eb8db1b6be06c7bcada080d"
+      "sha256": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b"
     },
     "fixed": {
       "bridge.inventory_scope": {
@@ -2708,6 +2708,83 @@
         ],
         "status": "specified",
         "value": "actual_inbound"
+      },
+      "connection.port_meeting": {
+        "basis": [
+          "受限模型声明；内核输入 §5.2–5.4；open：shared_edge_opposite（共边全长重合且法向相反，本版选值）／closed_segment_touch（闭边段有非空交集，含仅角点相交，待审方向）；角色仍须存取互补且至少一端运输。一般相遇是否要求全长重合未获证明，不相交占格不能排除角点相遇；不据此准许角接通。两非运输端口、同类端口成PC仍排除。详见T5。据：端口、通道、约束·端口对接；条件几何约束不提供一般相遇的充要定义"
+        ],
+        "status": "specified",
+        "value": "shared_edge_opposite"
+      },
+      "gate.identity_recovery": {
+        "status": "specified",
+        "value": "current_conditions",
+        "basis": [
+          "规则L16、L22、L64；v46 N-F19"
+        ]
+      },
+      "gate.total_recovery": {
+        "status": "specified",
+        "value": "current_conditions",
+        "basis": [
+          "规则L16、L22、L64；v46 N-F19"
+        ]
+      },
+      "gate.window_clock": {
+        "basis": [
+          "受限模型声明；内核输入 §5.2–5.4；open：wall_clock／identity_only_pause（仅身份原因阻断且非窗口耗尽时停表；恢复后续计，待审）；对一切阻断全盘暂停已排除，窗口原因不能停表。据：物品准入口、约束·准入累计、约束·来源定序"
+        ],
+        "status": "specified",
+        "value": "wall_clock"
+      },
+      "judgment.order_scope": {
+        "status": "specified",
+        "value": "fixed_run_order",
+        "basis": [
+          "任务L15；约束L3、L10；任务6 SP-02/PA-08"
+        ]
+      },
+      "polling.both_failure": {
+        "basis": [
+          "受限模型声明；内核输入 §5.2–5.4；open：advance_authorized（一次失败判定仅前移已给该边权限的侧）／no_attempt_hold（不足双方权限时不判定、均保持）／advance_both（两侧均前移，须说明无权限侧为何可前移）；后两项有规则29的字面冲突，待审不可默认执行。实际发生的失败尝试不前移已排除。据：轮询、判定；T3"
+        ],
+        "status": "specified",
+        "value": "advance_authorized"
+      },
+      "transfer.cooldown_scope": {
+        "basis": [
+          "受限模型声明；内核输入 §5.2–5.4；open：box／slot；单一单位判定不等于单一冷却，六格冷却相位与到期掩码另记录。据：传输、协议储存箱"
+        ],
+        "status": "specified",
+        "value": "box"
+      },
+      "transfer.failure_cooldown": {
+        "basis": [
+          "受限模型声明；内核输入 §5.2–5.4；open：每次尝试（含空/失败）起冷却／仅满足某成功条件时起冷却；空格仍须尝试，不可无视。据：传输、物品格"
+        ],
+        "status": "specified",
+        "value": "every_attempt"
+      },
+      "transfer.partial_acceptance": {
+        "status": "specified",
+        "value": "max_receivable",
+        "basis": [
+          "规则L36“能送多少送多少”、L13、L41；主会话三审-0920.md §6"
+        ]
+      },
+      "warehouse.acceptance": {
+        "status": "specified",
+        "value": "receivable_products",
+        "basis": [
+          "任务L2、L9；规则L36；任务2§6.5.1；三审§6"
+        ]
+      },
+      "warehouse.acceptance_quantifier": {
+        "status": "specified",
+        "value": "all_candidate_and_actual_checks",
+        "basis": [
+          "任务L2、L9—10；任务2§6.5.1、§6.5.6"
+        ]
       }
     },
     "fixedness_unproven": {
@@ -2741,13 +2818,6 @@
           "policy": "stop",
           "trigger": "先接并列或桥互依赖，不能由唯一无环见证定向"
         }
-      },
-      "connection.port_meeting": {
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：shared_edge_opposite（共边全长重合且法向相反，本版选值）／closed_segment_touch（闭边段有非空交集，含仅角点相交，待审方向）；角色仍须存取互补且至少一端运输。一般相遇是否要求全长重合未获证明，不相交占格不能排除角点相遇；不据此准许角接通。两非运输端口、同类端口成PC仍排除。详见T5。据：端口、通道、约束·端口对接；条件几何约束不提供一般相遇的充要定义"
-        ],
-        "status": "specified",
-        "value": "shared_edge_opposite"
       },
       "connection.tie": {
         "basis": [
@@ -2835,13 +2905,6 @@
         "status": "specified",
         "value": "since_build"
       },
-      "gate.identity_recovery": {
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：条件重符自动恢复／一次触发保持阻断；不能从设定可改直接推恢复。据：物品准入口、设定"
-        ],
-        "status": "specified",
-        "value": "latched"
-      },
       "gate.identity_subject": {
         "basis": [
           "受限模型声明；内核输入 §5.2–5.4；open：当前候选来件／上游可能种类集合；后者需要定义集合和可达性，不能默认静态阻断。据：物品准入口"
@@ -2855,20 +2918,6 @@
         ],
         "status": "specified",
         "value": "original_build_record"
-      },
-      "gate.total_recovery": {
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：调高现值留有余额即恢复／原阻断锁存；额度仍限1…5000。据：物品准入口、设定"
-        ],
-        "status": "specified",
-        "value": "latched"
-      },
-      "gate.window_clock": {
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：wall_clock／identity_only_pause（仅身份原因阻断且非窗口耗尽时停表；恢复后续计，待审）；对一切阻断全盘暂停已排除，窗口原因不能停表。据：物品准入口、约束·准入累计、约束·来源定序"
-        ],
-        "status": "specified",
-        "value": "wall_clock"
       },
       "initialization.belt_shape_lifecycle": {
         "basis": [
@@ -2957,13 +3006,6 @@
         ],
         "status": "specified",
         "value": "manufacture_subactions"
-      },
-      "judgment.order_scope": {
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：global／per_instant，前者共用排序，后者 order_at(t) 每时刻固定；不得同刻临时改序。两读法的据及区别见 T2；据：判定、判定次序"
-        ],
-        "status": "specified",
-        "value": "global"
       },
       "manufacturing.buffer_power_gate": {
         "basis": [
@@ -3154,13 +3196,6 @@
           "trigger": "离线需更新进度/时钟"
         }
       },
-      "polling.both_failure": {
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：advance_authorized（一次失败判定仅前移已给该边权限的侧）／no_attempt_hold（不足双方权限时不判定、均保持）／advance_both（两侧均前移，须说明无权限侧为何可前移）；后两项有规则29的字面冲突，待审不可默认执行。实际发生的失败尝试不前移已排除。据：轮询、判定；T3"
-        ],
-        "status": "specified",
-        "value": "advance_authorized"
-      },
       "polling.dual_permission": {
         "basis": [
           "受限模型声明；内核输入 §5.2–5.4；open：both（成功需双方许可，单侧许可仍可触发失败判定）／either_trigger（任侧触发且另核对端规则）／协调请求过程；both的失败后效由polling.both_failure另定，不将成功合取等同于尝试合取。据：轮询、优先级、判定"
@@ -3301,27 +3336,6 @@
         "status": "specified",
         "value": "ordered_sweeps"
       },
-      "transfer.cooldown_scope": {
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：box／slot；单一单位判定不等于单一冷却，六格冷却相位与到期掩码另记录。据：传输、协议储存箱"
-        ],
-        "status": "specified",
-        "value": "box"
-      },
-      "transfer.failure_cooldown": {
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：每次尝试（含空/失败）起冷却／仅满足某成功条件时起冷却；空格仍须尝试，不可无视。据：传输、物品格"
-        ],
-        "status": "specified",
-        "value": "every_attempt"
-      },
-      "transfer.partial_acceptance": {
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：全箱全部能收才转移／一次单位判定内可收部分；按格或按物种/件的部分还需定义，不能穿插六个外部判定。据：传输、协议核心、物品格"
-        ],
-        "status": "specified",
-        "value": "all_or_nothing"
-      },
       "transfer.pause": {
         "basis": [
           "受限模型声明；内核输入 §5.2–5.4；open：冷却属于停用进度而暂停／冷却按墙钟继续；制造进度保留已定，不允许停用清零。据：需电功能、传输"
@@ -3385,20 +3399,6 @@
         "status": "specified",
         "value": "ready_in_closure"
       },
-      "warehouse.acceptance": {
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：有可用入库路径／有容量／两者，须与真实接收及两成品目标联合核。据：目标、约束·入库途径"
-        ],
-        "status": "specified",
-        "value": "capacity_and_path"
-      },
-      "warehouse.acceptance_quantifier": {
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；open：逐时刻接收域／验收状态条件；不能以某个满仓时刻直接宣判全题无解。据：目标、循环态"
-        ],
-        "status": "specified",
-        "value": "per_instant"
-      },
       "warehouse.empty_slot_identity": {
         "basis": [
           "受限模型声明；内核输入 §5.2–5.4；T12；open：retain_history／release_on_empty及再次入库选格关系待审；非空仓库格与在库物种一一对应，新物种可用新格，空格指派须附该格empty_identity决策，未给则拒绝执行。沿用本轴登记批量落格；当前空格序O(S)随成功入库原子稳定删项，失败保留，重载存后态，详见受限转移定义§4.1；空格序不决定物种序，本版len(U)>=2且E中至少一格被warehouse_assignments[].slot引用时返回unsupported，U/E及事务停止见受限转移定义§4.3；未指派格按物种UTF-8字节序选择规范代表是工程编码，非规则物种优先级；覆盖损失仍包括释放身份及有指派格的竞争，等价仅限无改指派/拿取/离线且retain_history的支持域。不授权玩家改物种。据：物品格、仓库、协议核心、设定；T12；规则L13、L41、L73，任务L8"
@@ -3416,14 +3416,14 @@
         }
       },
       "warehouse.periodic_lift": {
-        "basis": [
-          "受限模型声明；内核输入 §5.2–5.4；obligation：仓库抽象到合法完整周期的提升关系；不能枚举 true 当证明。据：循环态、操作精度、目标"
-        ],
         "status": "specified",
         "value": {
           "policy": "stop",
-          "trigger": "请求级二完整基地周期提升；F仅限制成品未满不足以排除整箱容量拒收"
-        }
+          "trigger": "请求缺少逐项复原证据的完整基地周期或缺少覆盖证明的全称认证"
+        },
+        "basis": [
+          "任务L2、L7—10、L13；规则L14；任务2§6.5；任务6 SP-11"
+        ]
       },
       "warehouse.withdrawal_policy": {
         "basis": [

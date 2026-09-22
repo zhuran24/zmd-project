@@ -5,38 +5,42 @@
   "records": [
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/分流器三路轮询-checkpoint_delta.json",
-      "ticks": 12
+      "ticks": {
+        "ticks": 12,
+        "wireless_item_transactions": 0
+      }
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/分流器三路轮询-full_state_each_instant.json",
-      "ticks": 12
-    },
-    {
-      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/分流器三路轮询-reference.json",
-      "ticks": 12
+      "ticks": {
+        "ticks": 12,
+        "wireless_item_transactions": 0
+      }
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/混做粉碎机两下游-checkpoint_delta.json",
-      "ticks": 4
+      "ticks": {
+        "ticks": 4,
+        "wireless_item_transactions": 0
+      }
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/混做粉碎机两下游-full_state_each_instant.json",
-      "ticks": 4
-    },
-    {
-      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/混做粉碎机两下游-reference.json",
-      "ticks": 4
+      "ticks": {
+        "ticks": 4,
+        "wireless_item_transactions": 0
+      }
     }
   ],
   "cycles": [],
-  "reference_records": 6,
-  "protected_baseline_files": 12,
-  "historical_records": [],
-  "scope": "全部当前v3记录和v2循环独立验收；历史v1/v2记录仅列出，固定基线另核字节。"
+  "reference_records": 0,
+  "historical_records": [
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/分流器三路轮询-reference.json",
+    "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/reference-package/混做粉碎机两下游-reference.json"
+  ],
+  "scope": "当前v4记录和v3周期按现行源、schema、Rust重放及Python部分接收账验收；旧版本列作史料。"
 }
 已核 分流器三路轮询-checkpoint_delta.json
 已核 分流器三路轮询-full_state_each_instant.json
-已核 分流器三路轮询-reference.json
 已核 混做粉碎机两下游-checkpoint_delta.json
 已核 混做粉碎机两下游-full_state_each_instant.json
-已核 混做粉碎机两下游-reference.json

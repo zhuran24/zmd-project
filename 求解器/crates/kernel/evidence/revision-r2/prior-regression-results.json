@@ -68,7 +68,7 @@
       "case": "混做粉碎机两下游-full_state_each_instant-bad_summary",
       "kind": "篡改拒收",
       "status": "通过",
-      "reason": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/tmp/cli-5izrcds1/混做粉碎机两下游-full_state_each_instant-bad_summary.json"
+      "reason": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/tmp/cli-eo8cx770/混做粉碎机两下游-full_state_each_instant-bad_summary.json"
     },
     {
       "case": "混做粉碎机两下游-checkpoint_delta",
@@ -133,7 +133,7 @@
       "case": "混做粉碎机两下游-checkpoint_delta-bad_summary",
       "kind": "篡改拒收",
       "status": "通过",
-      "reason": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/tmp/cli-5izrcds1/混做粉碎机两下游-checkpoint_delta-bad_summary.json"
+      "reason": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/tmp/cli-eo8cx770/混做粉碎机两下游-checkpoint_delta-bad_summary.json"
     },
     {
       "case": "分流器三路轮询-full_state_each_instant",
@@ -198,7 +198,7 @@
       "case": "分流器三路轮询-full_state_each_instant-bad_summary",
       "kind": "篡改拒收",
       "status": "通过",
-      "reason": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/tmp/cli-5izrcds1/分流器三路轮询-full_state_each_instant-bad_summary.json"
+      "reason": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/tmp/cli-eo8cx770/分流器三路轮询-full_state_each_instant-bad_summary.json"
     },
     {
       "case": "分流器三路轮询-checkpoint_delta",
@@ -263,7 +263,7 @@
       "case": "分流器三路轮询-checkpoint_delta-bad_summary",
       "kind": "篡改拒收",
       "status": "通过",
-      "reason": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/tmp/cli-5izrcds1/分流器三路轮询-checkpoint_delta-bad_summary.json"
+      "reason": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/tmp/cli-eo8cx770/分流器三路轮询-checkpoint_delta-bad_summary.json"
     },
     {
       "case": "snapshot_bool",

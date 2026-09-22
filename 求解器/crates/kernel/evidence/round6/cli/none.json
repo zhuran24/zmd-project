@@ -467,19 +467,177 @@
         }
       }
     ],
+    "correspondence": {
+      "all_reachable_cycles": {
+        "checks": [
+          {
+            "condition": "all_initial_states",
+            "evidence": [
+              "单个种子及固定参数的受限运行，未提交全称覆盖证明"
+            ],
+            "status": "not_claimed"
+          },
+          {
+            "condition": "all_fixed_parameters",
+            "evidence": [
+              "单个种子及固定参数的受限运行，未提交全称覆盖证明"
+            ],
+            "status": "not_claimed"
+          },
+          {
+            "condition": "legal_offline_and_recovery",
+            "evidence": [
+              "单个种子及固定参数的受限运行，未提交全称覆盖证明"
+            ],
+            "status": "not_claimed"
+          },
+          {
+            "condition": "all_real_cycle_projections",
+            "evidence": [
+              "单个种子及固定参数的受限运行，未提交全称覆盖证明"
+            ],
+            "status": "not_claimed"
+          },
+          {
+            "condition": "all_positive_duration_cycles",
+            "evidence": [
+              "单个种子及固定参数的受限运行，未提交全称覆盖证明"
+            ],
+            "status": "not_claimed"
+          }
+        ],
+        "proof_sources": [],
+        "status": "not_claimed"
+      },
+      "forward_projection": {
+        "checks": [
+          {
+            "condition": "production_representation",
+            "evidence": [
+              "字段投影及代表接收经实现读取核对；一般真实事件推进到工程闭包的PC-06对应仍缺推导"
+            ],
+            "status": "unresolved"
+          },
+          {
+            "condition": "warehouse_label_noninterference",
+            "evidence": [
+              "字段投影及代表接收经实现读取核对；一般真实事件推进到工程闭包的PC-06对应仍缺推导"
+            ],
+            "status": "unresolved"
+          },
+          {
+            "condition": "candidate_and_actual_acceptance",
+            "evidence": [
+              "字段投影及代表接收经实现读取核对；一般真实事件推进到工程闭包的PC-06对应仍缺推导"
+            ],
+            "status": "unresolved"
+          },
+          {
+            "condition": "successor_time_delivery_preservation",
+            "evidence": [
+              "字段投影及代表接收经实现读取核对；一般真实事件推进到工程闭包的PC-06对应仍缺推导"
+            ],
+            "status": "unresolved"
+          }
+        ],
+        "proof_sources": [
+          {
+            "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/周期键读取审计.md",
+            "sha256": "b8b8d2cdd017f3d0c88d71f3885b865d0776c0c390fec645598fd1997ec9eea5"
+          }
+        ],
+        "status": "unresolved"
+      },
+      "reverse_reconstruction": {
+        "checks": [
+          {
+            "condition": "reachable_start",
+            "evidence": [
+              "当前只重放一个条件种子的工程生产前缀；完整真实循环复原逐项另证"
+            ],
+            "status": "not_claimed"
+          },
+          {
+            "condition": "fixed_parameters",
+            "evidence": [
+              "当前只重放一个条件种子的工程生产前缀；完整真实循环复原逐项另证"
+            ],
+            "status": "not_claimed"
+          },
+          {
+            "condition": "positive_real_duration",
+            "evidence": [
+              "当前只重放一个条件种子的工程生产前缀；完整真实循环复原逐项另证"
+            ],
+            "status": "not_claimed"
+          },
+          {
+            "condition": "repeated_production",
+            "evidence": [
+              "当前只重放一个条件种子的工程生产前缀；完整真实循环复原逐项另证"
+            ],
+            "status": "not_claimed"
+          },
+          {
+            "condition": "periodic_withdrawal_program",
+            "evidence": [
+              "当前只重放一个条件种子的工程生产前缀；完整真实循环复原逐项另证"
+            ],
+            "status": "not_claimed"
+          },
+          {
+            "condition": "withdrawal_prefix_legality",
+            "evidence": [
+              "当前只重放一个条件种子的工程生产前缀；完整真实循环复原逐项另证"
+            ],
+            "status": "not_claimed"
+          },
+          {
+            "condition": "product_balance",
+            "evidence": [
+              "当前只重放一个条件种子的工程生产前缀；完整真实循环复原逐项另证"
+            ],
+            "status": "not_claimed"
+          },
+          {
+            "condition": "ore_and_other_warehouse_restoration",
+            "evidence": [
+              "当前只重放一个条件种子的工程生产前缀；完整真实循环复原逐项另证"
+            ],
+            "status": "not_claimed"
+          },
+          {
+            "condition": "labels_and_all_effective_state_restoration",
+            "evidence": [
+              "当前只重放一个条件种子的工程生产前缀；完整真实循环复原逐项另证"
+            ],
+            "status": "not_claimed"
+          },
+          {
+            "condition": "operation_precision",
+            "evidence": [
+              "当前只重放一个条件种子的工程生产前缀；完整真实循环复原逐项另证"
+            ],
+            "status": "not_claimed"
+          }
+        ],
+        "proof_sources": [],
+        "status": "not_claimed"
+      }
+    },
     "end_key": {
-      "domain": "production_v1",
+      "domain": "phase_production_v1",
       "product_acceptance": [
         {
           "item": "高容谷地电池",
-          "state": "under_capacity"
+          "state": "receivable_at_all_checks"
         },
         {
           "item": "精选荞愈胶囊",
-          "state": "under_capacity"
+          "state": "receivable_at_all_checks"
         }
       ],
-      "schema": "production-cycle-key-v1",
+      "schema": "phase-cycle-key-v1",
       "state": {
         "environment": {
           "online": true,
@@ -507,8 +665,8 @@
             "contents": [
               {
                 "entered_at": {
-                  "age": {
-                    "value": "0"
+                  "residual": {
+                    "value": "1"
                   }
                 },
                 "item": "高容谷地电池",
@@ -873,7 +1031,7 @@
             },
             {
               "axis": "connection.port_meeting",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
                 "value": "shared_edge_opposite"
@@ -976,10 +1134,10 @@
             },
             {
               "axis": "gate.identity_recovery",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
-                "value": "latched"
+                "value": "current_conditions"
               }
             },
             {
@@ -1008,15 +1166,15 @@
             },
             {
               "axis": "gate.total_recovery",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
-                "value": "latched"
+                "value": "current_conditions"
               }
             },
             {
               "axis": "gate.window_clock",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
                 "value": "wall_clock"
@@ -1172,10 +1330,10 @@
             },
             {
               "axis": "judgment.order_scope",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
-                "value": "global"
+                "value": "fixed_run_order"
               }
             },
             {
@@ -1416,7 +1574,7 @@
             },
             {
               "axis": "polling.both_failure",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
                 "value": "advance_authorized"
@@ -1592,7 +1750,7 @@
             },
             {
               "axis": "transfer.cooldown_scope",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
                 "value": "box"
@@ -1600,7 +1758,7 @@
             },
             {
               "axis": "transfer.failure_cooldown",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
                 "value": "every_attempt"
@@ -1616,10 +1774,10 @@
             },
             {
               "axis": "transfer.partial_acceptance",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
-                "value": "all_or_nothing"
+                "value": "max_receivable"
               }
             },
             {
@@ -1662,18 +1820,18 @@
             },
             {
               "axis": "warehouse.acceptance",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
-                "value": "capacity_and_path"
+                "value": "receivable_products"
               }
             },
             {
               "axis": "warehouse.acceptance_quantifier",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
-                "value": "per_instant"
+                "value": "all_candidate_and_actual_checks"
               }
             },
             {
@@ -1719,7 +1877,7 @@
                 "status": "specified",
                 "value": {
                   "policy": "stop",
-                  "trigger": "请求级二完整基地周期提升；F仅限制成品未满不足以排除整箱容量拒收"
+                  "trigger": "请求缺少逐项复原证据的完整基地周期或缺少覆盖证明的全称认证"
                 }
               }
             },
@@ -2455,7 +2613,7 @@
           },
           {
             "axis": "connection.port_meeting",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
                 "受限模型声明；内核输入 §5.2–5.4；open：shared_edge_opposite（共边全长重合且法向相反，本版选值）／closed_segment_touch（闭边段有非空交集，含仅角点相交，待审方向）；角色仍须存取互补且至少一端运输。一般相遇是否要求全长重合未获证明，不相交占格不能排除角点相遇；不据此准许角接通。两非运输端口、同类端口成PC仍排除。详见T5。据：端口、通道、约束·端口对接；条件几何约束不提供一般相遇的充要定义"
@@ -2588,13 +2746,13 @@
           },
           {
             "axis": "gate.identity_recovery",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
-                "受限模型声明；内核输入 §5.2–5.4；open：条件重符自动恢复／一次触发保持阻断；不能从设定可改直接推恢复。据：物品准入口、设定"
+                "规则L16、L22、L64；v46 N-F19"
               ],
               "status": "specified",
-              "value": "latched"
+              "value": "current_conditions"
             }
           },
           {
@@ -2621,18 +2779,18 @@
           },
           {
             "axis": "gate.total_recovery",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
-                "受限模型声明；内核输入 §5.2–5.4；open：调高现值留有余额即恢复／原阻断锁存；额度仍限1…5000。据：物品准入口、设定"
+                "规则L16、L22、L64；v46 N-F19"
               ],
               "status": "specified",
-              "value": "latched"
+              "value": "current_conditions"
             }
           },
           {
             "axis": "gate.window_clock",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
                 "受限模型声明；内核输入 §5.2–5.4；open：wall_clock／identity_only_pause（仅身份原因阻断且非窗口耗尽时停表；恢复后续计，待审）；对一切阻断全盘暂停已排除，窗口原因不能停表。据：物品准入口、约束·准入累计、约束·来源定序"
@@ -2767,13 +2925,13 @@
           },
           {
             "axis": "judgment.order_scope",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
-                "受限模型声明；内核输入 §5.2–5.4；open：global／per_instant，前者共用排序，后者 order_at(t) 每时刻固定；不得同刻临时改序。两读法的据及区别见 T2；据：判定、判定次序"
+                "任务L15；约束L3、L10；任务6 SP-02/PA-08"
               ],
               "status": "specified",
-              "value": "global"
+              "value": "fixed_run_order"
             }
           },
           {
@@ -3047,7 +3205,7 @@
           },
           {
             "axis": "polling.both_failure",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
                 "受限模型声明；内核输入 §5.2–5.4；open：advance_authorized（一次失败判定仅前移已给该边权限的侧）／no_attempt_hold（不足双方权限时不判定、均保持）／advance_both（两侧均前移，须说明无权限侧为何可前移）；后两项有规则29的字面冲突，待审不可默认执行。实际发生的失败尝试不前移已排除。据：轮询、判定；T3"
@@ -3278,7 +3436,7 @@
           },
           {
             "axis": "transfer.cooldown_scope",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
                 "受限模型声明；内核输入 §5.2–5.4；open：box／slot；单一单位判定不等于单一冷却，六格冷却相位与到期掩码另记录。据：传输、协议储存箱"
@@ -3289,7 +3447,7 @@
           },
           {
             "axis": "transfer.failure_cooldown",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
                 "受限模型声明；内核输入 §5.2–5.4；open：每次尝试（含空/失败）起冷却／仅满足某成功条件时起冷却；空格仍须尝试，不可无视。据：传输、物品格"
@@ -3300,13 +3458,13 @@
           },
           {
             "axis": "transfer.partial_acceptance",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
-                "受限模型声明；内核输入 §5.2–5.4；open：全箱全部能收才转移／一次单位判定内可收部分；按格或按物种/件的部分还需定义，不能穿插六个外部判定。据：传输、协议核心、物品格"
+                "规则L36“能送多少送多少”、L13、L41；主会话三审-0920.md §6"
               ],
               "status": "specified",
-              "value": "all_or_nothing"
+              "value": "max_receivable"
             }
           },
           {
@@ -3359,24 +3517,24 @@
           },
           {
             "axis": "warehouse.acceptance",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
-                "受限模型声明；内核输入 §5.2–5.4；open：有可用入库路径／有容量／两者，须与真实接收及两成品目标联合核。据：目标、约束·入库途径"
+                "任务L2、L9；规则L36；任务2§6.5.1；三审§6"
               ],
               "status": "specified",
-              "value": "capacity_and_path"
+              "value": "receivable_products"
             }
           },
           {
             "axis": "warehouse.acceptance_quantifier",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
-                "受限模型声明；内核输入 §5.2–5.4；open：逐时刻接收域／验收状态条件；不能以某个满仓时刻直接宣判全题无解。据：目标、循环态"
+                "任务L2、L9—10；任务2§6.5.1、§6.5.6"
               ],
               "status": "specified",
-              "value": "per_instant"
+              "value": "all_candidate_and_actual_checks"
             }
           },
           {
@@ -3408,12 +3566,12 @@
             "lifetime": "U",
             "value": {
               "basis": [
-                "受限模型声明；内核输入 §5.2–5.4；obligation：仓库抽象到合法完整周期的提升关系；不能枚举 true 当证明。据：循环态、操作精度、目标"
+                "任务L2、L7—10、L13；规则L14；任务2§6.5；任务6 SP-11"
               ],
               "status": "specified",
               "value": {
                 "policy": "stop",
-                "trigger": "请求级二完整基地周期提升；F仅限制成品未满不足以排除整箱容量拒收"
+                "trigger": "请求缺少逐项复原证据的完整基地周期或缺少覆盖证明的全称认证"
               }
             }
           },
@@ -5257,14 +5415,13 @@
         }
       }
     ],
-    "lift": null,
     "normalization": {
       "basis": [
         "受限转移定义§6.1–6.4：D域商转移及入库率保持"
       ],
       "definition": {
         "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
-        "sha256": "55e3caee8ab40d1003b6002f1283c46734ef77a122e2870a2455fb4f14355450"
+        "sha256": "f93fe01d4f2e93f87f73c29a1d455be0e4295da3edeed6b82afdceadeaad208a"
       },
       "domain_checks": [
         "D.1",
@@ -5273,7 +5430,11 @@
         "D.4",
         "D.5"
       ],
-      "schema": "cycle-normalization-v1"
+      "mapping_proof": {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/周期键读取审计.md",
+        "sha256": "b8b8d2cdd017f3d0c88d71f3885b865d0776c0c390fec645598fd1997ec9eea5"
+      },
+      "schema": "cycle-normalization-v2"
     },
     "period": {
       "category": "算术推论",
@@ -5321,19 +5482,32 @@
         }
       }
     ],
+    "reception_scope": {
+      "checks": "all_candidate_and_actual_checks",
+      "interval": "(0,20]，全部候选查询及实际提交",
+      "proof_sources": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/周期键读取审计.md",
+          "sha256": "b8b8d2cdd017f3d0c88d71f3885b865d0776c0c390fec645598fd1997ec9eea5"
+        }
+      ],
+      "recovery_state_coverage": "此证据限持续接收区间；接收中断后的恢复状态集合待联合证明",
+      "state_coverage": "D.1—D.5通过的生产代表；每刻先归零成品，结构入量界保证整刻接收容量",
+      "status": "proved"
+    },
     "start_key": {
-      "domain": "production_v1",
+      "domain": "phase_production_v1",
       "product_acceptance": [
         {
           "item": "高容谷地电池",
-          "state": "under_capacity"
+          "state": "receivable_at_all_checks"
         },
         {
           "item": "精选荞愈胶囊",
-          "state": "under_capacity"
+          "state": "receivable_at_all_checks"
         }
       ],
-      "schema": "production-cycle-key-v1",
+      "schema": "phase-cycle-key-v1",
       "state": {
         "environment": {
           "online": true,
@@ -5361,8 +5535,8 @@
             "contents": [
               {
                 "entered_at": {
-                  "age": {
-                    "value": "0"
+                  "residual": {
+                    "value": "1"
                   }
                 },
                 "item": "高容谷地电池",
@@ -5727,7 +5901,7 @@
             },
             {
               "axis": "connection.port_meeting",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
                 "value": "shared_edge_opposite"
@@ -5830,10 +6004,10 @@
             },
             {
               "axis": "gate.identity_recovery",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
-                "value": "latched"
+                "value": "current_conditions"
               }
             },
             {
@@ -5862,15 +6036,15 @@
             },
             {
               "axis": "gate.total_recovery",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
-                "value": "latched"
+                "value": "current_conditions"
               }
             },
             {
               "axis": "gate.window_clock",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
                 "value": "wall_clock"
@@ -6026,10 +6200,10 @@
             },
             {
               "axis": "judgment.order_scope",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
-                "value": "global"
+                "value": "fixed_run_order"
               }
             },
             {
@@ -6270,7 +6444,7 @@
             },
             {
               "axis": "polling.both_failure",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
                 "value": "advance_authorized"
@@ -6446,7 +6620,7 @@
             },
             {
               "axis": "transfer.cooldown_scope",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
                 "value": "box"
@@ -6454,7 +6628,7 @@
             },
             {
               "axis": "transfer.failure_cooldown",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
                 "value": "every_attempt"
@@ -6470,10 +6644,10 @@
             },
             {
               "axis": "transfer.partial_acceptance",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
-                "value": "all_or_nothing"
+                "value": "max_receivable"
               }
             },
             {
@@ -6516,18 +6690,18 @@
             },
             {
               "axis": "warehouse.acceptance",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
-                "value": "capacity_and_path"
+                "value": "receivable_products"
               }
             },
             {
               "axis": "warehouse.acceptance_quantifier",
-              "lifetime": "U",
+              "lifetime": "F",
               "value": {
                 "status": "specified",
-                "value": "per_instant"
+                "value": "all_candidate_and_actual_checks"
               }
             },
             {
@@ -6573,7 +6747,7 @@
                 "status": "specified",
                 "value": {
                   "policy": "stop",
-                  "trigger": "请求级二完整基地周期提升；F仅限制成品未满不足以排除整箱容量拒收"
+                  "trigger": "请求缺少逐项复原证据的完整基地周期或缺少覆盖证明的全称认证"
                 }
               }
             },
@@ -7309,7 +7483,7 @@
           },
           {
             "axis": "connection.port_meeting",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
                 "受限模型声明；内核输入 §5.2–5.4；open：shared_edge_opposite（共边全长重合且法向相反，本版选值）／closed_segment_touch（闭边段有非空交集，含仅角点相交，待审方向）；角色仍须存取互补且至少一端运输。一般相遇是否要求全长重合未获证明，不相交占格不能排除角点相遇；不据此准许角接通。两非运输端口、同类端口成PC仍排除。详见T5。据：端口、通道、约束·端口对接；条件几何约束不提供一般相遇的充要定义"
@@ -7442,13 +7616,13 @@
           },
           {
             "axis": "gate.identity_recovery",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
-                "受限模型声明；内核输入 §5.2–5.4；open：条件重符自动恢复／一次触发保持阻断；不能从设定可改直接推恢复。据：物品准入口、设定"
+                "规则L16、L22、L64；v46 N-F19"
               ],
               "status": "specified",
-              "value": "latched"
+              "value": "current_conditions"
             }
           },
           {
@@ -7475,18 +7649,18 @@
           },
           {
             "axis": "gate.total_recovery",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
-                "受限模型声明；内核输入 §5.2–5.4；open：调高现值留有余额即恢复／原阻断锁存；额度仍限1…5000。据：物品准入口、设定"
+                "规则L16、L22、L64；v46 N-F19"
               ],
               "status": "specified",
-              "value": "latched"
+              "value": "current_conditions"
             }
           },
           {
             "axis": "gate.window_clock",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
                 "受限模型声明；内核输入 §5.2–5.4；open：wall_clock／identity_only_pause（仅身份原因阻断且非窗口耗尽时停表；恢复后续计，待审）；对一切阻断全盘暂停已排除，窗口原因不能停表。据：物品准入口、约束·准入累计、约束·来源定序"
@@ -7621,13 +7795,13 @@
           },
           {
             "axis": "judgment.order_scope",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
-                "受限模型声明；内核输入 §5.2–5.4；open：global／per_instant，前者共用排序，后者 order_at(t) 每时刻固定；不得同刻临时改序。两读法的据及区别见 T2；据：判定、判定次序"
+                "任务L15；约束L3、L10；任务6 SP-02/PA-08"
               ],
               "status": "specified",
-              "value": "global"
+              "value": "fixed_run_order"
             }
           },
           {
@@ -7901,7 +8075,7 @@
           },
           {
             "axis": "polling.both_failure",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
                 "受限模型声明；内核输入 §5.2–5.4；open：advance_authorized（一次失败判定仅前移已给该边权限的侧）／no_attempt_hold（不足双方权限时不判定、均保持）／advance_both（两侧均前移，须说明无权限侧为何可前移）；后两项有规则29的字面冲突，待审不可默认执行。实际发生的失败尝试不前移已排除。据：轮询、判定；T3"
@@ -8132,7 +8306,7 @@
           },
           {
             "axis": "transfer.cooldown_scope",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
                 "受限模型声明；内核输入 §5.2–5.4；open：box／slot；单一单位判定不等于单一冷却，六格冷却相位与到期掩码另记录。据：传输、协议储存箱"
@@ -8143,7 +8317,7 @@
           },
           {
             "axis": "transfer.failure_cooldown",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
                 "受限模型声明；内核输入 §5.2–5.4；open：每次尝试（含空/失败）起冷却／仅满足某成功条件时起冷却；空格仍须尝试，不可无视。据：传输、物品格"
@@ -8154,13 +8328,13 @@
           },
           {
             "axis": "transfer.partial_acceptance",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
-                "受限模型声明；内核输入 §5.2–5.4；open：全箱全部能收才转移／一次单位判定内可收部分；按格或按物种/件的部分还需定义，不能穿插六个外部判定。据：传输、协议核心、物品格"
+                "规则L36“能送多少送多少”、L13、L41；主会话三审-0920.md §6"
               ],
               "status": "specified",
-              "value": "all_or_nothing"
+              "value": "max_receivable"
             }
           },
           {
@@ -8213,24 +8387,24 @@
           },
           {
             "axis": "warehouse.acceptance",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
-                "受限模型声明；内核输入 §5.2–5.4；open：有可用入库路径／有容量／两者，须与真实接收及两成品目标联合核。据：目标、约束·入库途径"
+                "任务L2、L9；规则L36；任务2§6.5.1；三审§6"
               ],
               "status": "specified",
-              "value": "capacity_and_path"
+              "value": "receivable_products"
             }
           },
           {
             "axis": "warehouse.acceptance_quantifier",
-            "lifetime": "U",
+            "lifetime": "F",
             "value": {
               "basis": [
-                "受限模型声明；内核输入 §5.2–5.4；open：逐时刻接收域／验收状态条件；不能以某个满仓时刻直接宣判全题无解。据：目标、循环态"
+                "任务L2、L9—10；任务2§6.5.1、§6.5.6"
               ],
               "status": "specified",
-              "value": "per_instant"
+              "value": "all_candidate_and_actual_checks"
             }
           },
           {
@@ -8262,12 +8436,12 @@
             "lifetime": "U",
             "value": {
               "basis": [
-                "受限模型声明；内核输入 §5.2–5.4；obligation：仓库抽象到合法完整周期的提升关系；不能枚举 true 当证明。据：循环态、操作精度、目标"
+                "任务L2、L7—10、L13；规则L14；任务2§6.5；任务6 SP-11"
               ],
               "status": "specified",
               "value": {
                 "policy": "stop",
-                "trigger": "请求级二完整基地周期提升；F仅限制成品未满不足以排除整箱容量拒收"
+                "trigger": "请求缺少逐项复原证据的完整基地周期或缺少覆盖证明的全称认证"
               }
             }
           },
@@ -8597,32 +8771,198 @@
       "status": "pass"
     }
   ],
+  "environment_assumption": "仓库收得下成品。",
+  "evidence_scope": {
+    "context_bindings": [
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+        "sha256": "5174e559e046e5e615f0e200f2d06963addc95de9a0ff1b3cef7d2c90662aa5e"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+        "sha256": "a6ecebadfb0e322726f22dd3967301691063965c45f56bd62e0d84965a810fee"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+        "sha256": "c252c5fae915e2e4002869d7830fff61a50407c47c2ffd9fa855ad0fc893879d"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+        "sha256": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+        "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+        "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+        "sha256": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+        "sha256": "beca7dd638b255a66d82b9a94c7efdf0389bba778fb55adf547015a14b875b2c"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+        "sha256": "f93fe01d4f2e93f87f73c29a1d455be0e4295da3edeed6b82afdceadeaad208a"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+        "sha256": "c41075d7a060c44b88f021549d537692b96a5e5da5fe4307c3ec08b038bb89f1"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+        "sha256": "4e19faa38b979fac58b5b7910248c255689c2da4ac2b6e974f47e5a0daa1cff6"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+        "sha256": "6c83a0204d48255fcf8e797950258dffbb613743fdf62871e7c6a8d1c7634454"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
+        "sha256": "c302365255678e1719ef0fd47cba50936ced68aac64b60bd6162f15a29c27ce8"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/周期键读取审计.md",
+        "sha256": "b8b8d2cdd017f3d0c88d71f3885b865d0776c0c390fec645598fd1997ec9eea5"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs",
+        "sha256": "0cd34a9c7877861580caa0711e643575cbb9ce631a445919c69f093c2392d32b"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs",
+        "sha256": "69676c866f8030ea877e662fdb85f600618f23edd99e4262699997adf9786f5a"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs",
+        "sha256": "6f4d3dfb5133b834ef52dba2fa398cee3f6e3f88f1da77630aaf66326e81a842"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs",
+        "sha256": "3a0a7c3e21b46d626928fca81e90a617bd55189b8e3f357019c529109510636f"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+        "sha256": "d40bf539f789708e64e3a52d909a9a4a96819545a384b3906acba91f1e3d7c79"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs",
+        "sha256": "3ee13ba29adc7ae58abf29e09f938900895f12908fa5b428b261b9909da9d919"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+        "sha256": "1c0f7bd68fef463bee4780f90be237e540f5e6fda680553a9fac9aa8933ec6d7"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs",
+        "sha256": "25a4f4442232845d2fedf80ed368fb02ce502f2c350e16e73355296183f3e70e"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs",
+        "sha256": "6d50eb1678921d2f3621149d60766463e6c4ce4fd57e0978ae1af7253557d5f5"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+        "sha256": "7d75aa6d73d0a76aaace36581e5aba0457db239cb7f3d59bb13c1610e551d26c"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+        "sha256": "8d2d45792827cd813efd3fd38a39dee0318b999c9d3c7262bea9203c61f1bbb8"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
+        "sha256": "059ad007e43a2df0ab3a4d59a9264a6fd8371be75e08eb26d9f070f6738d12b2"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/ledger.rs",
+        "sha256": "f85ecea3240dd1ec0598a026bafe3b863c13220c7bdb7cdb0aa24c1e2577d9e7"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs",
+        "sha256": "d169699dde2e0e0a18b0ae8a441c9923811c0bc5330e317ed02ba5c68449200b"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle_io.rs",
+        "sha256": "93afc189315738f11780b04ac4ff5cbabf93afb2fabc04233ef5c3dd63f4de30"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/digest.rs",
+        "sha256": "e8d8d5c8df1f7124ec5739fa158a41b4d7ca662f1b246d3604994cbe81eb1ef0"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/seed.rs",
+        "sha256": "35f7a669eba69516a2eeef9b66291ab1b5841ff79d7c165388bfd1bf8f6b03a5"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cache.rs",
+        "sha256": "3278f432f020daa2eef8b234a844b5b665f81cabce695ff1346205d729ef47c7"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+        "sha256": "5d63008aa0f7b9c8a1da93dc96b13496398cc3fbad93c3775d709d77340b4c6a"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+        "sha256": "b38a6cf3afd455a7b440f4e86bb3c27e5684ff872d4c0a2bfa8b84368f9f651d"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml",
+        "sha256": "279ef923475621d73a24e2d04781ae126c93fbfc82f9646947aee8025e96de95"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/Cargo.lock",
+        "sha256": "031faaaec5455f074df40817d326fc59fa9ebb3d7ecd5e1a2af85a1c0b3a5a94"
+      },
+      {
+        "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/Cargo.toml",
+        "sha256": "f547eba51b5e70d1054b513193e405869c9f62f794dea0382f758b031aee3b73"
+      }
+    ],
+    "direction": "diagnostic",
+    "fixed_parameter_lifecycle": "judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作",
+    "initial_state_coverage": {
+      "description": "一个显式种子及其实际已重放前缀；调试程序全部可能后态另核",
+      "exact_reachable_set_enumerated": false
+    },
+    "kind": "diagnostic",
+    "proof_sources": [],
+    "review_status": "author_checked",
+    "support_domain": [
+      "固定布局、设定、global/event-order-v1及整数时钟的受限工程执行",
+      "ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明"
+    ]
+  },
   "execution_mode": "production_abstraction",
   "fingerprints": [
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
       "role": "input",
-      "sha256": "6043e8736a6caad5d8ce52e7f64e25e3647db4cfdd731ed4f3fff8b2d95d279d"
+      "sha256": "5174e559e046e5e615f0e200f2d06963addc95de9a0ff1b3cef7d2c90662aa5e"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
       "role": "profile",
-      "sha256": "bb0864eec811a6a77065ede33af165ced5e31e384afb166eaa30af554589e34a"
+      "sha256": "a6ecebadfb0e322726f22dd3967301691063965c45f56bd62e0d84965a810fee"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
       "role": "catalog",
-      "sha256": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43"
+      "sha256": "c252c5fae915e2e4002869d7830fff61a50407c47c2ffd9fa855ad0fc893879d"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
       "role": "formal_source",
-      "sha256": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670"
+      "sha256": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
       "role": "formal_source",
-      "sha256": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864"
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
@@ -8632,37 +8972,42 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
       "role": "axis_registry",
-      "sha256": "37427b530246a263018fa44a826893b46032c9d97eb8db1b6be06c7bcada080d"
+      "sha256": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
       "role": "profile",
-      "sha256": "da0ab2073221bca451c676d54c44c98705bac2886c4ebf7049b7a87fd3509e86"
+      "sha256": "beca7dd638b255a66d82b9a94c7efdf0389bba778fb55adf547015a14b875b2c"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
       "role": "semantics",
-      "sha256": "55e3caee8ab40d1003b6002f1283c46734ef77a122e2870a2455fb4f14355450"
+      "sha256": "f93fe01d4f2e93f87f73c29a1d455be0e4295da3edeed6b82afdceadeaad208a"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
       "role": "semantics",
-      "sha256": "1ce70540bd9f82e6fb0d1661ded855c7c723abccc4f9c13d646753cbece5a02c"
+      "sha256": "c41075d7a060c44b88f021549d537692b96a5e5da5fe4307c3ec08b038bb89f1"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
       "role": "semantics",
-      "sha256": "0ca6312ed5142008d136f2d298bf23937dfbcb4cc80b7e3bfc023278833e9ec9"
+      "sha256": "4e19faa38b979fac58b5b7910248c255689c2da4ac2b6e974f47e5a0daa1cff6"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
       "role": "semantics",
-      "sha256": "5c2d6530a62a4066c1cc05b8ce95b554dae6059c9c90d107ded9f3e81a570790"
+      "sha256": "6c83a0204d48255fcf8e797950258dffbb613743fdf62871e7c6a8d1c7634454"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
       "role": "schema",
-      "sha256": "5033e231db40bab01b0466e3763bc53d6a3e4bc3b7d74c70e30659446e595bfc"
+      "sha256": "c302365255678e1719ef0fd47cba50936ced68aac64b60bd6162f15a29c27ce8"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/周期键读取审计.md",
+      "role": "semantics",
+      "sha256": "b8b8d2cdd017f3d0c88d71f3885b865d0776c0c390fec645598fd1997ec9eea5"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs",
@@ -8672,7 +9017,7 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs",
       "role": "checker",
-      "sha256": "f2a22d1bbc264a75179fa45d41b03cce33f6e44d197112ba84486446d3df20ad"
+      "sha256": "69676c866f8030ea877e662fdb85f600618f23edd99e4262699997adf9786f5a"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs",
@@ -8697,7 +9042,7 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
       "role": "checker",
-      "sha256": "9ae85971e83fb24d885f067f7a5dd3a9ca9c689b274683f2ad1e153b894d888b"
+      "sha256": "1c0f7bd68fef463bee4780f90be237e540f5e6fda680553a9fac9aa8933ec6d7"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs",
@@ -8707,22 +9052,22 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs",
       "role": "checker",
-      "sha256": "aa5b1505d447b378a4cbb015f758c4ae5403b6201895db80576be4e0c8d22082"
+      "sha256": "6d50eb1678921d2f3621149d60766463e6c4ce4fd57e0978ae1af7253557d5f5"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
       "role": "checker",
-      "sha256": "852be59eca89fb4a3efe85fa6d35bc510b65435b89319655b1dad88b10111430"
+      "sha256": "7d75aa6d73d0a76aaace36581e5aba0457db239cb7f3d59bb13c1610e551d26c"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
       "role": "checker",
-      "sha256": "3cc3c75c3ad325f7ab4cc77a66468e733b867ac05e56f2607f34a64e7888769c"
+      "sha256": "8d2d45792827cd813efd3fd38a39dee0318b999c9d3c7262bea9203c61f1bbb8"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
       "role": "checker",
-      "sha256": "4d5f7bcb6f6882f761a8b95ff1456df8ac070c97202955f61d7553c9e9b3c187"
+      "sha256": "059ad007e43a2df0ab3a4d59a9264a6fd8371be75e08eb26d9f070f6738d12b2"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/ledger.rs",
@@ -8732,12 +9077,12 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs",
       "role": "checker",
-      "sha256": "b45b62b20f948509a4cfba08d8413dfd4413284eb0bf6ed318870e1d2ceb53f8"
+      "sha256": "d169699dde2e0e0a18b0ae8a441c9923811c0bc5330e317ed02ba5c68449200b"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle_io.rs",
       "role": "checker",
-      "sha256": "9dee7e9f7f13831563741ce49d9f124a1a948cda439bc459f8bb18c8da5c279e"
+      "sha256": "93afc189315738f11780b04ac4ff5cbabf93afb2fabc04233ef5c3dd63f4de30"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/digest.rs",
@@ -8762,7 +9107,7 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
       "role": "checker",
-      "sha256": "2572e0796e9edb0ca2aa39c0a1c19159d99eb483dba8b96b559297951533de73"
+      "sha256": "b38a6cf3afd455a7b440f4e86bb3c27e5684ff872d4c0a2bfa8b84368f9f651d"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/Cargo.toml",
@@ -8783,16 +9128,16 @@
   "last_state": null,
   "level": "production_part",
   "open_items": [
-    "仅为生产部分周期或有限诊断，不是完整基地循环",
-    "级二F存在整批容量卡点；periodic_lift未获证",
-    "一般动态约束相容性与种子/参数/读法族认证未完成",
-    "精确年龄和累计计数可能造成周期漏检"
+    "工程生产周期按diagnostic_cycle交付，平均率保留实际计算结果",
+    "PC-06：一般双端协调、失败环真实唤醒及关闭intake对应待证明",
+    "反向完整周期、全部初态/固定参数/离线恢复与全部可达循环逐项待证",
+    "整数固定环境为本次支持域；实数时间有限化仍待证明"
   ],
   "parameter_point": {
     "assignment": {
       "axis_registry": {
         "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
-        "sha256": "37427b530246a263018fa44a826893b46032c9d97eb8db1b6be06c7bcada080d"
+        "sha256": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b"
       },
       "fixed": {
         "bridge.inventory_scope": {
@@ -8847,12 +9192,40 @@
           "status": "derived",
           "value": "construction.selected_order"
         },
+        "connection.port_meeting": {
+          "basis": [
+            "受限模型声明；内核输入 §5.2–5.4；open：shared_edge_opposite（共边全长重合且法向相反，本版选值）／closed_segment_touch（闭边段有非空交集，含仅角点相交，待审方向）；角色仍须存取互补且至少一端运输。一般相遇是否要求全长重合未获证明，不相交占格不能排除角点相遇；不据此准许角接通。两非运输端口、同类端口成PC仍排除。详见T5。据：端口、通道、约束·端口对接；条件几何约束不提供一般相遇的充要定义"
+          ],
+          "status": "specified",
+          "value": "shared_edge_opposite"
+        },
+        "gate.identity_recovery": {
+          "basis": [
+            "规则L16、L22、L64；v46 N-F19"
+          ],
+          "status": "specified",
+          "value": "current_conditions"
+        },
         "gate.limit_requires_identity": {
           "basis": [
             "受限模型声明；内核输入 §5.2–5.4；known：先设放行种类才有“设定后可再”设限的明文授权；无身份限流没有正面授权，不能默认存在。据：物品准入口"
           ],
           "status": "specified",
           "value": true
+        },
+        "gate.total_recovery": {
+          "basis": [
+            "规则L16、L22、L64；v46 N-F19"
+          ],
+          "status": "specified",
+          "value": "current_conditions"
+        },
+        "gate.window_clock": {
+          "basis": [
+            "受限模型声明；内核输入 §5.2–5.4；open：wall_clock／identity_only_pause（仅身份原因阻断且非窗口耗尽时停表；恢复后续计，待审）；对一切阻断全盘暂停已排除，窗口原因不能停表。据：物品准入口、约束·准入累计、约束·来源定序"
+          ],
+          "status": "specified",
+          "value": "wall_clock"
         },
         "gate.window_recovery": {
           "basis": [
@@ -8902,6 +9275,13 @@
             ]
           }
         },
+        "judgment.order_scope": {
+          "basis": [
+            "任务L15；约束L3、L10；任务6 SP-02/PA-08"
+          ],
+          "status": "specified",
+          "value": "fixed_run_order"
+        },
         "manufacturing.output_blocked": {
           "basis": [
             "受限模型声明；内核输入 §5.2–5.4；known：不满足整批兼容容量或拟提交后违反本单位非缓存普通格同种单格时不能整批通过；缓存保留，不得分拆或无据销毁。是否重新尝试由 T1 决定。据：缓存格、物品格"
@@ -8916,6 +9296,13 @@
           "status": "specified",
           "value": "distributed"
         },
+        "polling.both_failure": {
+          "basis": [
+            "受限模型声明；内核输入 §5.2–5.4；open：advance_authorized（一次失败判定仅前移已给该边权限的侧）／no_attempt_hold（不足双方权限时不判定、均保持）／advance_both（两侧均前移，须说明无权限侧为何可前移）；后两项有规则29的字面冲突，待审不可默认执行。实际发生的失败尝试不前移已排除。据：轮询、判定；T3"
+          ],
+          "status": "specified",
+          "value": "advance_authorized"
+        },
         "polling.direct_peer": {
           "basis": [
             "受限模型声明；内核输入 §5.2–5.4；known：physical_peer；直接接指PC另一端即相应分流器或汇流器。隔传送带才遇到该单位不是同一PC的直接端点，已排除。据：通道、端口、取货优先级、存货优先级"
@@ -8923,12 +9310,47 @@
           "status": "specified",
           "value": "physical_peer"
         },
+        "transfer.cooldown_scope": {
+          "basis": [
+            "受限模型声明；内核输入 §5.2–5.4；open：box／slot；单一单位判定不等于单一冷却，六格冷却相位与到期掩码另记录。据：传输、协议储存箱"
+          ],
+          "status": "specified",
+          "value": "box"
+        },
+        "transfer.failure_cooldown": {
+          "basis": [
+            "受限模型声明；内核输入 §5.2–5.4；open：每次尝试（含空/失败）起冷却／仅满足某成功条件时起冷却；空格仍须尝试，不可无视。据：传输、物品格"
+          ],
+          "status": "specified",
+          "value": "every_attempt"
+        },
         "transfer.judgment": {
           "basis": [
             "受限模型声明；内核输入 §5.2–5.4；known：unit；不能六格各一独立判定，据：判定（一个单位一次）、传输（自身所有格所有物品）"
           ],
           "status": "specified",
           "value": "unit"
+        },
+        "transfer.partial_acceptance": {
+          "basis": [
+            "规则L36“能送多少送多少”、L13、L41；主会话三审-0920.md §6"
+          ],
+          "status": "specified",
+          "value": "max_receivable"
+        },
+        "warehouse.acceptance": {
+          "basis": [
+            "任务L2、L9；规则L36；任务2§6.5.1；三审§6"
+          ],
+          "status": "specified",
+          "value": "receivable_products"
+        },
+        "warehouse.acceptance_quantifier": {
+          "basis": [
+            "任务L2、L9—10；任务2§6.5.1、§6.5.6"
+          ],
+          "status": "specified",
+          "value": "all_candidate_and_actual_checks"
         },
         "warehouse.capacity": {
           "basis": [
@@ -8979,13 +9401,6 @@
             "policy": "stop",
             "trigger": "先接并列或桥互依赖，不能由唯一无环见证定向"
           }
-        },
-        "connection.port_meeting": {
-          "basis": [
-            "受限模型声明；内核输入 §5.2–5.4；open：shared_edge_opposite（共边全长重合且法向相反，本版选值）／closed_segment_touch（闭边段有非空交集，含仅角点相交，待审方向）；角色仍须存取互补且至少一端运输。一般相遇是否要求全长重合未获证明，不相交占格不能排除角点相遇；不据此准许角接通。两非运输端口、同类端口成PC仍排除。详见T5。据：端口、通道、约束·端口对接；条件几何约束不提供一般相遇的充要定义"
-          ],
-          "status": "specified",
-          "value": "shared_edge_opposite"
         },
         "connection.tie": {
           "basis": [
@@ -9073,13 +9488,6 @@
           "status": "specified",
           "value": "since_build"
         },
-        "gate.identity_recovery": {
-          "basis": [
-            "受限模型声明；内核输入 §5.2–5.4；open：条件重符自动恢复／一次触发保持阻断；不能从设定可改直接推恢复。据：物品准入口、设定"
-          ],
-          "status": "specified",
-          "value": "latched"
-        },
         "gate.identity_subject": {
           "basis": [
             "受限模型声明；内核输入 §5.2–5.4；open：当前候选来件／上游可能种类集合；后者需要定义集合和可达性，不能默认静态阻断。据：物品准入口"
@@ -9093,20 +9501,6 @@
           ],
           "status": "specified",
           "value": "original_build_record"
-        },
-        "gate.total_recovery": {
-          "basis": [
-            "受限模型声明；内核输入 §5.2–5.4；open：调高现值留有余额即恢复／原阻断锁存；额度仍限1…5000。据：物品准入口、设定"
-          ],
-          "status": "specified",
-          "value": "latched"
-        },
-        "gate.window_clock": {
-          "basis": [
-            "受限模型声明；内核输入 §5.2–5.4；open：wall_clock／identity_only_pause（仅身份原因阻断且非窗口耗尽时停表；恢复后续计，待审）；对一切阻断全盘暂停已排除，窗口原因不能停表。据：物品准入口、约束·准入累计、约束·来源定序"
-          ],
-          "status": "specified",
-          "value": "wall_clock"
         },
         "initialization.belt_shape_lifecycle": {
           "basis": [
@@ -9195,13 +9589,6 @@
           ],
           "status": "specified",
           "value": "manufacture_subactions"
-        },
-        "judgment.order_scope": {
-          "basis": [
-            "受限模型声明；内核输入 §5.2–5.4；open：global／per_instant，前者共用排序，后者 order_at(t) 每时刻固定；不得同刻临时改序。两读法的据及区别见 T2；据：判定、判定次序"
-          ],
-          "status": "specified",
-          "value": "global"
         },
         "manufacturing.buffer_power_gate": {
           "basis": [
@@ -9392,13 +9779,6 @@
             "trigger": "离线需更新进度/时钟"
           }
         },
-        "polling.both_failure": {
-          "basis": [
-            "受限模型声明；内核输入 §5.2–5.4；open：advance_authorized（一次失败判定仅前移已给该边权限的侧）／no_attempt_hold（不足双方权限时不判定、均保持）／advance_both（两侧均前移，须说明无权限侧为何可前移）；后两项有规则29的字面冲突，待审不可默认执行。实际发生的失败尝试不前移已排除。据：轮询、判定；T3"
-          ],
-          "status": "specified",
-          "value": "advance_authorized"
-        },
         "polling.dual_permission": {
           "basis": [
             "受限模型声明；内核输入 §5.2–5.4；open：both（成功需双方许可，单侧许可仍可触发失败判定）／either_trigger（任侧触发且另核对端规则）／协调请求过程；both的失败后效由polling.both_failure另定，不将成功合取等同于尝试合取。据：轮询、优先级、判定"
@@ -9539,27 +9919,6 @@
           "status": "specified",
           "value": "ordered_sweeps"
         },
-        "transfer.cooldown_scope": {
-          "basis": [
-            "受限模型声明；内核输入 §5.2–5.4；open：box／slot；单一单位判定不等于单一冷却，六格冷却相位与到期掩码另记录。据：传输、协议储存箱"
-          ],
-          "status": "specified",
-          "value": "box"
-        },
-        "transfer.failure_cooldown": {
-          "basis": [
-            "受限模型声明；内核输入 §5.2–5.4；open：每次尝试（含空/失败）起冷却／仅满足某成功条件时起冷却；空格仍须尝试，不可无视。据：传输、物品格"
-          ],
-          "status": "specified",
-          "value": "every_attempt"
-        },
-        "transfer.partial_acceptance": {
-          "basis": [
-            "受限模型声明；内核输入 §5.2–5.4；open：全箱全部能收才转移／一次单位判定内可收部分；按格或按物种/件的部分还需定义，不能穿插六个外部判定。据：传输、协议核心、物品格"
-          ],
-          "status": "specified",
-          "value": "all_or_nothing"
-        },
         "transfer.pause": {
           "basis": [
             "受限模型声明；内核输入 §5.2–5.4；open：冷却属于停用进度而暂停／冷却按墙钟继续；制造进度保留已定，不允许停用清零。据：需电功能、传输"
@@ -9596,20 +9955,6 @@
           "status": "specified",
           "value": "ready_in_closure"
         },
-        "warehouse.acceptance": {
-          "basis": [
-            "受限模型声明；内核输入 §5.2–5.4；open：有可用入库路径／有容量／两者，须与真实接收及两成品目标联合核。据：目标、约束·入库途径"
-          ],
-          "status": "specified",
-          "value": "capacity_and_path"
-        },
-        "warehouse.acceptance_quantifier": {
-          "basis": [
-            "受限模型声明；内核输入 §5.2–5.4；open：逐时刻接收域／验收状态条件；不能以某个满仓时刻直接宣判全题无解。据：目标、循环态"
-          ],
-          "status": "specified",
-          "value": "per_instant"
-        },
         "warehouse.empty_slot_identity": {
           "basis": [
             "受限模型声明；内核输入 §5.2–5.4；T12；open：retain_history／release_on_empty及再次入库选格关系待审；非空仓库格与在库物种一一对应，新物种可用新格，空格指派须附该格empty_identity决策，未给则拒绝执行。沿用本轴登记批量落格；当前空格序O(S)随成功入库原子稳定删项，失败保留，重载存后态，详见受限转移定义§4.1；空格序不决定物种序，本版len(U)>=2且E中至少一格被warehouse_assignments[].slot引用时返回unsupported，U/E及事务停止见受限转移定义§4.3；未指派格按物种UTF-8字节序选择规范代表是工程编码，非规则物种优先级；覆盖损失仍包括释放身份及有指派格的竞争，等价仅限无改指派/拿取/离线且retain_history的支持域。不授权玩家改物种。据：物品格、仓库、协议核心、设定；T12；规则L13、L41、L73，任务L8"
@@ -9628,12 +9973,12 @@
         },
         "warehouse.periodic_lift": {
           "basis": [
-            "受限模型声明；内核输入 §5.2–5.4；obligation：仓库抽象到合法完整周期的提升关系；不能枚举 true 当证明。据：循环态、操作精度、目标"
+            "任务L2、L7—10、L13；规则L14；任务2§6.5；任务6 SP-11"
           ],
           "status": "specified",
           "value": {
             "policy": "stop",
-            "trigger": "请求级二完整基地周期提升；F仅限制成品未满不足以排除整箱容量拒收"
+            "trigger": "请求缺少逐项复原证据的完整基地周期或缺少覆盖证明的全称认证"
           }
         },
         "warehouse.withdrawal_policy": {
@@ -9914,14 +10259,14 @@
   },
   "port_meeting": "shared_edge_opposite",
   "reading": {
-    "acceptance_quantifier": "per_instant",
+    "acceptance_quantifier": "all_candidate_and_actual_checks",
     "cycle_interpretation": "production_projection",
     "port_meeting": "shared_edge_opposite",
     "remaining_assumptions": [
       "shared_edge_opposite及kernel_profile_v1固定受限转移",
       "条件种子的可达性证据按输入单列"
     ],
-    "warehouse_acceptance": "capacity_and_path"
+    "warehouse_acceptance": "receivable_products"
   },
   "record_mode": "none",
   "replay_input_ref": {
@@ -9932,11 +10277,11 @@
       "kind": "kernel",
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"
     },
-    "sha256": "6043e8736a6caad5d8ce52e7f64e25e3647db4cfdd731ed4f3fff8b2d95d279d"
+    "sha256": "5174e559e046e5e615f0e200f2d06963addc95de9a0ff1b3cef7d2c90662aa5e"
   },
   "result_id": "cycle:生产循环环带:50:100000",
   "run_record_ref": null,
-  "schema": "kernel-cycle-v2",
+  "schema": "kernel-cycle-v3",
   "seed": {
     "reachability": {
       "basis": [
@@ -9951,26 +10296,13 @@
     },
     "source_event": "build_0"
   },
-  "status": "counterexample",
-  "stop": {
-    "axis": null,
-    "event": null,
-    "kind": "low_rate",
-    "partial_events": [],
-    "reason": "已核生产周期至少一成品入库率低于目标；种子可达性和受限读法使本结论为条件反例",
-    "time": {
-      "kind": "rational",
-      "value": {
-        "category": "候选",
-        "value": "20"
-      }
-    }
-  },
+  "status": "diagnostic_cycle",
+  "stop": null,
   "support_domain": {
-    "name": "production_v1",
+    "name": "phase_production_v1",
     "uncovered": [
       "D域外库存抽象",
-      "级二完整基地提升",
+      "具体完整基地周期复原",
       "种子/参数/读法族全称覆盖"
     ]
   }
