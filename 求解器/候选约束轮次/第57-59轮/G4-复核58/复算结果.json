@@ -1,0 +1,656 @@
+{
+  "status": "PASS",
+  "input_sha256": {
+    "《明日方舟：终末地》游戏规则.txt": "4f04de50b2f743aec1da903f00f0f89f92f1aeba60eb4513320b71d0ee0a57fd",
+    "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+    "候选约束.txt": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+    "思路.txt": "95d2af723613bfd61c325ab2fafd89bcd060f099d2a2172a1d79b206c3995cee",
+    "求解器/候选约束轮次/第57-59轮/G4-推导.md": "26e5c5d3d7a21752ba47ed06a60212f00ecea9674e2006724861ab26902f9390"
+  },
+  "script_sha256": "e9d990002eba1db148af0f965f83376cb66eac3ec6c0d8566d88f0afae4bd114",
+  "method": "Fraction 精确消元；17 条物品守恒式，18 个配方，15 种中间物品非负净入库率与非负回炼率；逐系数代回校验。",
+  "recipe_rates": [
+    {
+      "machine": "粉碎机",
+      "line": 81,
+      "inputs": {
+        "源矿": 1
+      },
+      "outputs": {
+        "源石粉末": 1
+      },
+      "ticks": 1,
+      "minimum_batches_per_tick": "18",
+      "full_rate_expression": {
+        "常数": "18",
+        "入库:源石粉末": "1",
+        "入库:致密源石粉末": "2"
+      }
+    },
+    {
+      "machine": "粉碎机",
+      "line": 82,
+      "inputs": {
+        "蓝铁块": 1
+      },
+      "outputs": {
+        "蓝铁粉末": 1
+      },
+      "ticks": 1,
+      "minimum_batches_per_tick": "34",
+      "full_rate_expression": {
+        "常数": "34",
+        "入库:致密蓝铁粉末": "2",
+        "入库:蓝铁粉末": "1",
+        "入库:钢制零件": "2",
+        "入库:钢块": "2",
+        "入库:钢质瓶": "4",
+        "回炼批次率:q": "1"
+      }
+    },
+    {
+      "machine": "粉碎机",
+      "line": 83,
+      "inputs": {
+        "荞花": 1
+      },
+      "outputs": {
+        "荞花粉末": 2
+      },
+      "ticks": 1,
+      "minimum_batches_per_tick": "11/2",
+      "full_rate_expression": {
+        "常数": "11/2",
+        "入库:细磨荞花粉末": "1",
+        "入库:荞花粉末": "1/2"
+      }
+    },
+    {
+      "machine": "粉碎机",
+      "line": 84,
+      "inputs": {
+        "砂叶": 1
+      },
+      "outputs": {
+        "砂叶粉末": 3
+      },
+      "ticks": 1,
+      "minimum_batches_per_tick": "21/2",
+      "full_rate_expression": {
+        "常数": "21/2",
+        "入库:砂叶粉末": "1/3",
+        "入库:细磨荞花粉末": "1/3",
+        "入库:致密源石粉末": "1/3",
+        "入库:致密蓝铁粉末": "1/3",
+        "入库:钢制零件": "1/3",
+        "入库:钢块": "1/3",
+        "入库:钢质瓶": "2/3"
+      }
+    },
+    {
+      "machine": "精炼炉",
+      "line": 87,
+      "inputs": {
+        "蓝铁矿": 1
+      },
+      "outputs": {
+        "蓝铁块": 1
+      },
+      "ticks": 1,
+      "minimum_batches_per_tick": "34",
+      "full_rate_expression": {
+        "常数": "34",
+        "入库:致密蓝铁粉末": "2",
+        "入库:蓝铁块": "1",
+        "入库:蓝铁粉末": "1",
+        "入库:钢制零件": "2",
+        "入库:钢块": "2",
+        "入库:钢质瓶": "4"
+      }
+    },
+    {
+      "machine": "精炼炉",
+      "line": 88,
+      "inputs": {
+        "致密蓝铁粉末": 1
+      },
+      "outputs": {
+        "钢块": 1
+      },
+      "ticks": 1,
+      "minimum_batches_per_tick": "17",
+      "full_rate_expression": {
+        "常数": "17",
+        "入库:钢制零件": "1",
+        "入库:钢块": "1",
+        "入库:钢质瓶": "2"
+      }
+    },
+    {
+      "machine": "精炼炉",
+      "line": 89,
+      "inputs": {
+        "蓝铁粉末": 1
+      },
+      "outputs": {
+        "蓝铁块": 1
+      },
+      "ticks": 1,
+      "minimum_batches_per_tick": "0",
+      "full_rate_expression": {
+        "回炼批次率:q": "1"
+      }
+    },
+    {
+      "machine": "研磨机",
+      "line": 92,
+      "inputs": {
+        "蓝铁粉末": 2,
+        "砂叶粉末": 1
+      },
+      "outputs": {
+        "致密蓝铁粉末": 1
+      },
+      "ticks": 1,
+      "minimum_batches_per_tick": "17",
+      "full_rate_expression": {
+        "常数": "17",
+        "入库:致密蓝铁粉末": "1",
+        "入库:钢制零件": "1",
+        "入库:钢块": "1",
+        "入库:钢质瓶": "2"
+      }
+    },
+    {
+      "machine": "研磨机",
+      "line": 93,
+      "inputs": {
+        "源石粉末": 2,
+        "砂叶粉末": 1
+      },
+      "outputs": {
+        "致密源石粉末": 1
+      },
+      "ticks": 1,
+      "minimum_batches_per_tick": "9",
+      "full_rate_expression": {
+        "常数": "9",
+        "入库:致密源石粉末": "1"
+      }
+    },
+    {
+      "machine": "研磨机",
+      "line": 94,
+      "inputs": {
+        "荞花粉末": 2,
+        "砂叶粉末": 1
+      },
+      "outputs": {
+        "细磨荞花粉末": 1
+      },
+      "ticks": 1,
+      "minimum_batches_per_tick": "11/2",
+      "full_rate_expression": {
+        "常数": "11/2",
+        "入库:细磨荞花粉末": "1"
+      }
+    },
+    {
+      "machine": "塑形机",
+      "line": 97,
+      "inputs": {
+        "钢块": 2
+      },
+      "outputs": {
+        "钢质瓶": 1
+      },
+      "ticks": 1,
+      "minimum_batches_per_tick": "11/2",
+      "full_rate_expression": {
+        "常数": "11/2",
+        "入库:钢质瓶": "1"
+      }
+    },
+    {
+      "machine": "配件机",
+      "line": 100,
+      "inputs": {
+        "钢块": 1
+      },
+      "outputs": {
+        "钢制零件": 1
+      },
+      "ticks": 1,
+      "minimum_batches_per_tick": "6",
+      "full_rate_expression": {
+        "常数": "6",
+        "入库:钢制零件": "1"
+      }
+    },
+    {
+      "machine": "种植机",
+      "line": 103,
+      "inputs": {
+        "荞花种子": 1
+      },
+      "outputs": {
+        "荞花": 1
+      },
+      "ticks": 1,
+      "minimum_batches_per_tick": "11",
+      "full_rate_expression": {
+        "常数": "11",
+        "入库:细磨荞花粉末": "2",
+        "入库:荞花": "2",
+        "入库:荞花种子": "1",
+        "入库:荞花粉末": "1"
+      }
+    },
+    {
+      "machine": "种植机",
+      "line": 104,
+      "inputs": {
+        "砂叶种子": 1
+      },
+      "outputs": {
+        "砂叶": 1
+      },
+      "ticks": 1,
+      "minimum_batches_per_tick": "21",
+      "full_rate_expression": {
+        "常数": "21",
+        "入库:砂叶": "2",
+        "入库:砂叶种子": "1",
+        "入库:砂叶粉末": "2/3",
+        "入库:细磨荞花粉末": "2/3",
+        "入库:致密源石粉末": "2/3",
+        "入库:致密蓝铁粉末": "2/3",
+        "入库:钢制零件": "2/3",
+        "入库:钢块": "2/3",
+        "入库:钢质瓶": "4/3"
+      }
+    },
+    {
+      "machine": "采种机",
+      "line": 107,
+      "inputs": {
+        "荞花": 1
+      },
+      "outputs": {
+        "荞花种子": 2
+      },
+      "ticks": 1,
+      "minimum_batches_per_tick": "11/2",
+      "full_rate_expression": {
+        "常数": "11/2",
+        "入库:细磨荞花粉末": "1",
+        "入库:荞花": "1",
+        "入库:荞花种子": "1",
+        "入库:荞花粉末": "1/2"
+      }
+    },
+    {
+      "machine": "采种机",
+      "line": 108,
+      "inputs": {
+        "砂叶": 1
+      },
+      "outputs": {
+        "砂叶种子": 2
+      },
+      "ticks": 1,
+      "minimum_batches_per_tick": "21/2",
+      "full_rate_expression": {
+        "常数": "21/2",
+        "入库:砂叶": "1",
+        "入库:砂叶种子": "1",
+        "入库:砂叶粉末": "1/3",
+        "入库:细磨荞花粉末": "1/3",
+        "入库:致密源石粉末": "1/3",
+        "入库:致密蓝铁粉末": "1/3",
+        "入库:钢制零件": "1/3",
+        "入库:钢块": "1/3",
+        "入库:钢质瓶": "2/3"
+      }
+    },
+    {
+      "machine": "封装机",
+      "line": 111,
+      "inputs": {
+        "钢制零件": 10,
+        "致密源石粉末": 15
+      },
+      "outputs": {
+        "高容谷地电池": 1
+      },
+      "ticks": 5,
+      "minimum_batches_per_tick": "3/5",
+      "full_rate_expression": {
+        "常数": "3/5"
+      }
+    },
+    {
+      "machine": "灌装机",
+      "line": 114,
+      "inputs": {
+        "钢质瓶": 10,
+        "细磨荞花粉末": 10
+      },
+      "outputs": {
+        "精选荞愈胶囊": 1
+      },
+      "ticks": 5,
+      "minimum_batches_per_tick": "11/20",
+      "full_rate_expression": {
+        "常数": "11/20"
+      }
+    }
+  ],
+  "ore_supply": {
+    "源矿": {
+      "常数": "18",
+      "入库:源石粉末": "1",
+      "入库:致密源石粉末": "2"
+    },
+    "蓝铁矿": {
+      "常数": "34",
+      "入库:致密蓝铁粉末": "2",
+      "入库:蓝铁块": "1",
+      "入库:蓝铁粉末": "1",
+      "入库:钢制零件": "2",
+      "入库:钢块": "2",
+      "入库:钢质瓶": "4"
+    }
+  },
+  "machine_capacity": [
+    {
+      "machine": "粉碎机",
+      "minimum_batches_per_tick": "68",
+      "minimum_busy_ticks_per_tick": "68",
+      "minimum_uncontaminated_machines": 68,
+      "full_workload_expression": {
+        "常数": "68",
+        "入库:源石粉末": "1",
+        "入库:砂叶粉末": "1/3",
+        "入库:细磨荞花粉末": "4/3",
+        "入库:致密源石粉末": "7/3",
+        "入库:致密蓝铁粉末": "7/3",
+        "入库:荞花粉末": "1/2",
+        "入库:蓝铁粉末": "1",
+        "入库:钢制零件": "7/3",
+        "入库:钢块": "7/3",
+        "入库:钢质瓶": "14/3",
+        "回炼批次率:q": "1"
+      }
+    },
+    {
+      "machine": "精炼炉",
+      "minimum_batches_per_tick": "51",
+      "minimum_busy_ticks_per_tick": "51",
+      "minimum_uncontaminated_machines": 51,
+      "full_workload_expression": {
+        "常数": "51",
+        "入库:致密蓝铁粉末": "2",
+        "入库:蓝铁块": "1",
+        "入库:蓝铁粉末": "1",
+        "入库:钢制零件": "3",
+        "入库:钢块": "3",
+        "入库:钢质瓶": "6",
+        "回炼批次率:q": "1"
+      }
+    },
+    {
+      "machine": "研磨机",
+      "minimum_batches_per_tick": "63/2",
+      "minimum_busy_ticks_per_tick": "63/2",
+      "minimum_uncontaminated_machines": 32,
+      "full_workload_expression": {
+        "常数": "63/2",
+        "入库:细磨荞花粉末": "1",
+        "入库:致密源石粉末": "1",
+        "入库:致密蓝铁粉末": "1",
+        "入库:钢制零件": "1",
+        "入库:钢块": "1",
+        "入库:钢质瓶": "2"
+      }
+    },
+    {
+      "machine": "塑形机",
+      "minimum_batches_per_tick": "11/2",
+      "minimum_busy_ticks_per_tick": "11/2",
+      "minimum_uncontaminated_machines": 6,
+      "full_workload_expression": {
+        "常数": "11/2",
+        "入库:钢质瓶": "1"
+      }
+    },
+    {
+      "machine": "配件机",
+      "minimum_batches_per_tick": "6",
+      "minimum_busy_ticks_per_tick": "6",
+      "minimum_uncontaminated_machines": 6,
+      "full_workload_expression": {
+        "常数": "6",
+        "入库:钢制零件": "1"
+      }
+    },
+    {
+      "machine": "种植机",
+      "minimum_batches_per_tick": "32",
+      "minimum_busy_ticks_per_tick": "32",
+      "minimum_uncontaminated_machines": 32,
+      "full_workload_expression": {
+        "常数": "32",
+        "入库:砂叶": "2",
+        "入库:砂叶种子": "1",
+        "入库:砂叶粉末": "2/3",
+        "入库:细磨荞花粉末": "8/3",
+        "入库:致密源石粉末": "2/3",
+        "入库:致密蓝铁粉末": "2/3",
+        "入库:荞花": "2",
+        "入库:荞花种子": "1",
+        "入库:荞花粉末": "1",
+        "入库:钢制零件": "2/3",
+        "入库:钢块": "2/3",
+        "入库:钢质瓶": "4/3"
+      }
+    },
+    {
+      "machine": "采种机",
+      "minimum_batches_per_tick": "16",
+      "minimum_busy_ticks_per_tick": "16",
+      "minimum_uncontaminated_machines": 16,
+      "full_workload_expression": {
+        "常数": "16",
+        "入库:砂叶": "1",
+        "入库:砂叶种子": "1",
+        "入库:砂叶粉末": "1/3",
+        "入库:细磨荞花粉末": "4/3",
+        "入库:致密源石粉末": "1/3",
+        "入库:致密蓝铁粉末": "1/3",
+        "入库:荞花": "1",
+        "入库:荞花种子": "1",
+        "入库:荞花粉末": "1/2",
+        "入库:钢制零件": "1/3",
+        "入库:钢块": "1/3",
+        "入库:钢质瓶": "2/3"
+      }
+    },
+    {
+      "machine": "封装机",
+      "minimum_batches_per_tick": "3/5",
+      "minimum_busy_ticks_per_tick": "3",
+      "minimum_uncontaminated_machines": 3,
+      "full_workload_expression": {
+        "常数": "3"
+      }
+    },
+    {
+      "machine": "灌装机",
+      "minimum_batches_per_tick": "11/20",
+      "minimum_busy_ticks_per_tick": "11/4",
+      "minimum_uncontaminated_machines": 3,
+      "full_workload_expression": {
+        "常数": "11/4"
+      }
+    }
+  ],
+  "planting_32_forces_zero": [
+    "入库:砂叶",
+    "入库:砂叶种子",
+    "入库:砂叶粉末",
+    "入库:细磨荞花粉末",
+    "入库:致密源石粉末",
+    "入库:致密蓝铁粉末",
+    "入库:荞花",
+    "入库:荞花种子",
+    "入库:荞花粉末",
+    "入库:钢制零件",
+    "入库:钢块",
+    "入库:钢质瓶"
+  ],
+  "plant_partitions": [
+    {
+      "plant": "荞花",
+      "exact_batches_per_tick": {
+        "种植": "11",
+        "采种": "11/2",
+        "粉碎": "11/2"
+      },
+      "whole_stream_partitions_checked": 12,
+      "whole_stream_matches": [],
+      "period_20_batches": {
+        "种植": 220,
+        "采种": 110,
+        "粉碎": 110
+      },
+      "nearest_integer_split": [
+        5,
+        6
+      ]
+    },
+    {
+      "plant": "砂叶",
+      "exact_batches_per_tick": {
+        "种植": "21",
+        "采种": "21/2",
+        "粉碎": "21/2"
+      },
+      "whole_stream_partitions_checked": 22,
+      "whole_stream_matches": [],
+      "period_20_batches": {
+        "种植": 420,
+        "采种": 210,
+        "粉碎": 210
+      },
+      "nearest_integer_split": [
+        10,
+        11
+      ]
+    }
+  ],
+  "contamination": [
+    {
+      "machine": "粉碎机",
+      "input_slots": 1,
+      "recipe_input_kind_counts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "wrong_item_classes": 16,
+      "storage_assignments_checked": 16,
+      "new_batch_counterexamples": []
+    },
+    {
+      "machine": "精炼炉",
+      "input_slots": 1,
+      "recipe_input_kind_counts": [
+        1,
+        1,
+        1
+      ],
+      "wrong_item_classes": 17,
+      "storage_assignments_checked": 17,
+      "new_batch_counterexamples": []
+    },
+    {
+      "machine": "研磨机",
+      "input_slots": 2,
+      "recipe_input_kind_counts": [
+        2,
+        2,
+        2
+      ],
+      "wrong_item_classes": 16,
+      "storage_assignments_checked": 400,
+      "new_batch_counterexamples": []
+    },
+    {
+      "machine": "塑形机",
+      "input_slots": 1,
+      "recipe_input_kind_counts": [
+        1
+      ],
+      "wrong_item_classes": 19,
+      "storage_assignments_checked": 19,
+      "new_batch_counterexamples": []
+    },
+    {
+      "machine": "配件机",
+      "input_slots": 1,
+      "recipe_input_kind_counts": [
+        1
+      ],
+      "wrong_item_classes": 19,
+      "storage_assignments_checked": 19,
+      "new_batch_counterexamples": []
+    },
+    {
+      "machine": "种植机",
+      "input_slots": 1,
+      "recipe_input_kind_counts": [
+        1,
+        1
+      ],
+      "wrong_item_classes": 18,
+      "storage_assignments_checked": 18,
+      "new_batch_counterexamples": []
+    },
+    {
+      "machine": "采种机",
+      "input_slots": 1,
+      "recipe_input_kind_counts": [
+        1,
+        1
+      ],
+      "wrong_item_classes": 18,
+      "storage_assignments_checked": 18,
+      "new_batch_counterexamples": []
+    },
+    {
+      "machine": "封装机",
+      "input_slots": 2,
+      "recipe_input_kind_counts": [
+        2
+      ],
+      "wrong_item_classes": 18,
+      "storage_assignments_checked": 414,
+      "new_batch_counterexamples": []
+    },
+    {
+      "machine": "灌装机",
+      "input_slots": 2,
+      "recipe_input_kind_counts": [
+        2
+      ],
+      "wrong_item_classes": 18,
+      "storage_assignments_checked": 414,
+      "new_batch_counterexamples": []
+    }
+  ],
+  "total_contaminated_storage_assignments": 1335,
+  "scope": "复算配方守恒、台数、整股划分和开批前存货格条件；通道图的一般论证、误料不可离开和周期推论见报告。"
+}

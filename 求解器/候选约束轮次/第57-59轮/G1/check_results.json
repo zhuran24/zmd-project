@@ -1,0 +1,929 @@
+{
+  "formal_file_sha256": {
+    "《明日方舟：终末地》游戏规则.txt": "4f04de50b2f743aec1da903f00f0f89f92f1aeba60eb4513320b71d0ee0a57fd",
+    "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+  },
+  "material_polling": {
+    "passed": true,
+    "exhaustive_cases": 33642,
+    "subset_permutation_cases": 210,
+    "scope": "binary words length 1..8; ternary 1..6; k 1..6; all initial ports",
+    "examples": [
+      {
+        "word": "XY",
+        "outlets": 2,
+        "joint_success_period": 2,
+        "counts_per_outlet": [
+          {
+            "X": 1
+          },
+          {
+            "Y": 1
+          }
+        ]
+      },
+      {
+        "word": "XXYY",
+        "outlets": 2,
+        "joint_success_period": 4,
+        "counts_per_outlet": [
+          {
+            "X": 1,
+            "Y": 1
+          },
+          {
+            "X": 1,
+            "Y": 1
+          }
+        ]
+      },
+      {
+        "word": "XY",
+        "outlets": 3,
+        "joint_success_period": 6,
+        "counts_per_outlet": [
+          {
+            "X": 1,
+            "Y": 1
+          },
+          {
+            "Y": 1,
+            "X": 1
+          },
+          {
+            "X": 1,
+            "Y": 1
+          }
+        ]
+      },
+      {
+        "word": "XXY",
+        "outlets": 3,
+        "joint_success_period": 3,
+        "counts_per_outlet": [
+          {
+            "X": 1
+          },
+          {
+            "X": 1
+          },
+          {
+            "Y": 1
+          }
+        ]
+      }
+    ]
+  },
+  "dense_nodes": {
+    "passed": true,
+    "cases": [
+      {
+        "foreign_phase": 0,
+        "M_drains_before_D": false,
+        "initial_pointer": 0,
+        "period_ticks": 20,
+        "counts": {
+          "D_in": 4,
+          "D_to_M": 0,
+          "D_to_B": 4,
+          "foreign_to_M": 4,
+          "M_out": 4,
+          "B_out": 4
+        },
+        "period_state_closes": true,
+        "events": [
+          {
+            "tick": 0,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 0,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 1,
+            "event": "D->B"
+          },
+          {
+            "tick": 1,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 2,
+            "event": "B->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 5,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 5,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 6,
+            "event": "D->B"
+          },
+          {
+            "tick": 6,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 7,
+            "event": "B->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 10,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 10,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 11,
+            "event": "D->B"
+          },
+          {
+            "tick": 11,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 12,
+            "event": "B->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 15,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 15,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 16,
+            "event": "D->B"
+          },
+          {
+            "tick": 16,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 17,
+            "event": "B->sink",
+            "tag": "D"
+          }
+        ]
+      },
+      {
+        "foreign_phase": 0,
+        "M_drains_before_D": false,
+        "initial_pointer": 1,
+        "period_ticks": 20,
+        "counts": {
+          "D_in": 4,
+          "D_to_M": 0,
+          "D_to_B": 4,
+          "foreign_to_M": 4,
+          "M_out": 4,
+          "B_out": 4
+        },
+        "period_state_closes": true,
+        "events": [
+          {
+            "tick": 0,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 0,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 1,
+            "event": "D->B"
+          },
+          {
+            "tick": 1,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 2,
+            "event": "B->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 5,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 5,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 6,
+            "event": "D->B"
+          },
+          {
+            "tick": 6,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 7,
+            "event": "B->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 10,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 10,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 11,
+            "event": "D->B"
+          },
+          {
+            "tick": 11,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 12,
+            "event": "B->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 15,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 15,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 16,
+            "event": "D->B"
+          },
+          {
+            "tick": 16,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 17,
+            "event": "B->sink",
+            "tag": "D"
+          }
+        ]
+      },
+      {
+        "foreign_phase": 0,
+        "M_drains_before_D": true,
+        "initial_pointer": 0,
+        "period_ticks": 20,
+        "counts": {
+          "D_in": 4,
+          "D_to_M": 2,
+          "D_to_B": 2,
+          "foreign_to_M": 4,
+          "M_out": 6,
+          "B_out": 2
+        },
+        "period_state_closes": true,
+        "events": [
+          {
+            "tick": 0,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 0,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 1,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 1,
+            "event": "D->M"
+          },
+          {
+            "tick": 2,
+            "event": "M->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 5,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 5,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 6,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 6,
+            "event": "D->B"
+          },
+          {
+            "tick": 7,
+            "event": "B->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 10,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 10,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 11,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 11,
+            "event": "D->M"
+          },
+          {
+            "tick": 12,
+            "event": "M->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 15,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 15,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 16,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 16,
+            "event": "D->B"
+          },
+          {
+            "tick": 17,
+            "event": "B->sink",
+            "tag": "D"
+          }
+        ]
+      },
+      {
+        "foreign_phase": 0,
+        "M_drains_before_D": true,
+        "initial_pointer": 1,
+        "period_ticks": 20,
+        "counts": {
+          "D_in": 4,
+          "D_to_M": 2,
+          "D_to_B": 2,
+          "foreign_to_M": 4,
+          "M_out": 6,
+          "B_out": 2
+        },
+        "period_state_closes": true,
+        "events": [
+          {
+            "tick": 0,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 0,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 1,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 1,
+            "event": "D->B"
+          },
+          {
+            "tick": 2,
+            "event": "B->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 5,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 5,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 6,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 6,
+            "event": "D->M"
+          },
+          {
+            "tick": 7,
+            "event": "M->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 10,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 10,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 11,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 11,
+            "event": "D->B"
+          },
+          {
+            "tick": 12,
+            "event": "B->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 15,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 15,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 16,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 16,
+            "event": "D->M"
+          },
+          {
+            "tick": 17,
+            "event": "M->sink",
+            "tag": "D"
+          }
+        ]
+      },
+      {
+        "foreign_phase": 3,
+        "M_drains_before_D": false,
+        "initial_pointer": 0,
+        "period_ticks": 20,
+        "counts": {
+          "D_in": 4,
+          "D_to_M": 2,
+          "D_to_B": 2,
+          "foreign_to_M": 4,
+          "M_out": 6,
+          "B_out": 2
+        },
+        "period_state_closes": true,
+        "events": [
+          {
+            "tick": 0,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 1,
+            "event": "D->M"
+          },
+          {
+            "tick": 2,
+            "event": "M->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 3,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 4,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 5,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 6,
+            "event": "D->B"
+          },
+          {
+            "tick": 7,
+            "event": "B->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 8,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 9,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 10,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 11,
+            "event": "D->M"
+          },
+          {
+            "tick": 12,
+            "event": "M->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 13,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 14,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 15,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 16,
+            "event": "D->B"
+          },
+          {
+            "tick": 17,
+            "event": "B->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 18,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 19,
+            "event": "M->sink",
+            "tag": "foreign"
+          }
+        ]
+      },
+      {
+        "foreign_phase": 3,
+        "M_drains_before_D": false,
+        "initial_pointer": 1,
+        "period_ticks": 20,
+        "counts": {
+          "D_in": 4,
+          "D_to_M": 2,
+          "D_to_B": 2,
+          "foreign_to_M": 4,
+          "M_out": 6,
+          "B_out": 2
+        },
+        "period_state_closes": true,
+        "events": [
+          {
+            "tick": 0,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 1,
+            "event": "D->B"
+          },
+          {
+            "tick": 2,
+            "event": "B->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 3,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 4,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 5,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 6,
+            "event": "D->M"
+          },
+          {
+            "tick": 7,
+            "event": "M->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 8,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 9,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 10,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 11,
+            "event": "D->B"
+          },
+          {
+            "tick": 12,
+            "event": "B->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 13,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 14,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 15,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 16,
+            "event": "D->M"
+          },
+          {
+            "tick": 17,
+            "event": "M->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 18,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 19,
+            "event": "M->sink",
+            "tag": "foreign"
+          }
+        ]
+      },
+      {
+        "foreign_phase": 3,
+        "M_drains_before_D": true,
+        "initial_pointer": 0,
+        "period_ticks": 20,
+        "counts": {
+          "D_in": 4,
+          "D_to_M": 2,
+          "D_to_B": 2,
+          "foreign_to_M": 4,
+          "M_out": 6,
+          "B_out": 2
+        },
+        "period_state_closes": true,
+        "events": [
+          {
+            "tick": 0,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 1,
+            "event": "D->M"
+          },
+          {
+            "tick": 2,
+            "event": "M->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 3,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 4,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 5,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 6,
+            "event": "D->B"
+          },
+          {
+            "tick": 7,
+            "event": "B->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 8,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 9,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 10,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 11,
+            "event": "D->M"
+          },
+          {
+            "tick": 12,
+            "event": "M->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 13,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 14,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 15,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 16,
+            "event": "D->B"
+          },
+          {
+            "tick": 17,
+            "event": "B->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 18,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 19,
+            "event": "M->sink",
+            "tag": "foreign"
+          }
+        ]
+      },
+      {
+        "foreign_phase": 3,
+        "M_drains_before_D": true,
+        "initial_pointer": 1,
+        "period_ticks": 20,
+        "counts": {
+          "D_in": 4,
+          "D_to_M": 2,
+          "D_to_B": 2,
+          "foreign_to_M": 4,
+          "M_out": 6,
+          "B_out": 2
+        },
+        "period_state_closes": true,
+        "events": [
+          {
+            "tick": 0,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 1,
+            "event": "D->B"
+          },
+          {
+            "tick": 2,
+            "event": "B->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 3,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 4,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 5,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 6,
+            "event": "D->M"
+          },
+          {
+            "tick": 7,
+            "event": "M->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 8,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 9,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 10,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 11,
+            "event": "D->B"
+          },
+          {
+            "tick": 12,
+            "event": "B->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 13,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 14,
+            "event": "M->sink",
+            "tag": "foreign"
+          },
+          {
+            "tick": 15,
+            "event": "upstream->D"
+          },
+          {
+            "tick": 16,
+            "event": "D->M"
+          },
+          {
+            "tick": 17,
+            "event": "M->sink",
+            "tag": "D"
+          },
+          {
+            "tick": 18,
+            "event": "foreign->M"
+          },
+          {
+            "tick": 19,
+            "event": "M->sink",
+            "tag": "foreign"
+          }
+        ]
+      }
+    ],
+    "scope": "local periodic boundary streams, not a whole-base reachability certificate"
+  },
+  "capacity": {
+    "passed": true,
+    "integer_flow_cases": 1770,
+    "scope": "checks algebra on feasible integer cycle counts; proof is conservation"
+  }
+}

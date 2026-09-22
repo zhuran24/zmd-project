@@ -1,0 +1,115 @@
+{
+ "input_sha256": {
+  "rules": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+  "task": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+  "constraints": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+  "candidates": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+  "idea": "95d2af723613bfd61c325ab2fafd89bcd060f099d2a2172a1d79b206c3995cee"
+ },
+ "input_version_note": {
+  "rules": "第 21 行开关改写后的版本",
+  "task": "第 57 轮推导所读版本",
+  "constraints": "第 57 轮推导所读版本"
+ },
+ "rules_line21": "开关：需电功能有开关，属可设定项；可一次把多个开关都打开或都关闭",
+ "G1_mixed_round_robin": {
+  "formula_cases": 78260,
+  "timed_cases": 1050
+ },
+ "G1_shared_cells_dense_node": {
+  "random_runs": 24000,
+  "pattern_sets": {
+   "invariant": 79,
+   "varies": 130,
+   "invariant_with_external_and_both_branches_positive": 3
+  },
+  "g57_section4_examples": {
+   "外来件注入相位 3": [
+    "D→M 1/10, D→B 1/10, 外来 1/5"
+   ],
+   "外来件注入相位 0": [
+    "D→M 0, D→B 1/5, 外来 1/5",
+    "D→M 1/10, D→B 1/10, 外来 1/5"
+   ]
+  }
+ },
+ "G2_zero_inbound_transfer": {
+  "battery_ore": {
+   "蓝铁矿": "20",
+   "源矿": "30"
+  },
+  "capsule_ore": {
+   "蓝铁矿": "40"
+  },
+  "steel_example": {
+   "80000": {
+    "wireless_sent_total": 0,
+    "physical_out_total": 1200
+   },
+   "79999": {
+    "wireless_sent_total": 25,
+    "physical_out_total": 1190
+   }
+  }
+ },
+ "G2_admission_windows": {
+  "legal_sequences": 266975,
+  "full_rate_sequences": 8446,
+  "k2_0456_selfstart_legal": true,
+  "k2_0456_sliding_max": 3
+ },
+ "G2_box_head": {
+  "cases": 981720,
+  "tight_cases_found": 6
+ },
+ "G2_box_blocked_tail": {
+  "random_steps": 480000,
+  "runs_returning_to_start": 304,
+  "j2_front_cycles": true
+ },
+ "G3_dual_feed": {
+  "random_events": 450000,
+  "per_lane_bias_after_400": [
+   -200,
+   -200
+  ]
+ },
+ "G3_mixed_output": {
+  "words_checked": 1314,
+  "feasible": 678,
+  "violations": 0,
+  "two_port_sand_3run_feasible": false,
+  "two_port_sand_2run_feasible": true
+ },
+ "G3_plant_graphs": {
+  "lp_instances": 400,
+  "subsets_checked": 158676,
+  "positive_grinders_checked": 403
+ },
+ "G3_occupancy": {
+  "cells_checked": 3000
+ },
+ "G4_streams": {
+  "grind_qiao": "11/2",
+  "grind_sand": "21/2",
+  "planting_total": "32",
+  "feasible_single_exit_graphs": 1017
+ },
+ "G4_misfeed": {
+  "misfeed_combos": 1199,
+  "starts_found": 0,
+  "lower_bounds": {
+   "粉碎机": 68,
+   "精炼炉": 51,
+   "研磨机": 32,
+   "塑形机": 6,
+   "配件机": 6,
+   "种植机": 32,
+   "采种机": 16,
+   "封装机": 3,
+   "灌装机": 3
+  }
+ },
+ "fails": [],
+ "status": "PASS"
+}

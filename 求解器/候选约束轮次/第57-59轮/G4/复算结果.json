@@ -1,0 +1,151 @@
+{
+  "scope": "配方格数与整数/容量算术；不覆盖几何、可达性、整厂运行或准入口重连",
+  "status": "pass",
+  "source_sha256": {
+    "《明日方舟：终末地》游戏规则.txt": "4f04de50b2f743aec1da903f00f0f89f92f1aeba60eb4513320b71d0ee0a57fd",
+    "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+    "候选约束.txt": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+    "思路.txt": "95d2af723613bfd61c325ab2fafd89bcd060f099d2a2172a1d79b206c3995cee"
+  },
+  "recipe_count": 18,
+  "poisoned_storage": [
+    {
+      "machine": "粉碎机",
+      "storage_slots": 1,
+      "recipe_distinct_input_counts": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "one_foreign_slot_blocks_every_recipe": true,
+      "recipe_lines": [
+        81,
+        82,
+        83,
+        84
+      ]
+    },
+    {
+      "machine": "精炼炉",
+      "storage_slots": 1,
+      "recipe_distinct_input_counts": [
+        1,
+        1,
+        1
+      ],
+      "one_foreign_slot_blocks_every_recipe": true,
+      "recipe_lines": [
+        87,
+        88,
+        89
+      ]
+    },
+    {
+      "machine": "配件机",
+      "storage_slots": 1,
+      "recipe_distinct_input_counts": [
+        1
+      ],
+      "one_foreign_slot_blocks_every_recipe": true,
+      "recipe_lines": [
+        100
+      ]
+    },
+    {
+      "machine": "塑形机",
+      "storage_slots": 1,
+      "recipe_distinct_input_counts": [
+        1
+      ],
+      "one_foreign_slot_blocks_every_recipe": true,
+      "recipe_lines": [
+        97
+      ]
+    },
+    {
+      "machine": "种植机",
+      "storage_slots": 1,
+      "recipe_distinct_input_counts": [
+        1,
+        1
+      ],
+      "one_foreign_slot_blocks_every_recipe": true,
+      "recipe_lines": [
+        103,
+        104
+      ]
+    },
+    {
+      "machine": "采种机",
+      "storage_slots": 1,
+      "recipe_distinct_input_counts": [
+        1,
+        1
+      ],
+      "one_foreign_slot_blocks_every_recipe": true,
+      "recipe_lines": [
+        107,
+        108
+      ]
+    },
+    {
+      "machine": "研磨机",
+      "storage_slots": 2,
+      "recipe_distinct_input_counts": [
+        2,
+        2,
+        2
+      ],
+      "one_foreign_slot_blocks_every_recipe": true,
+      "recipe_lines": [
+        92,
+        93,
+        94
+      ]
+    },
+    {
+      "machine": "封装机",
+      "storage_slots": 2,
+      "recipe_distinct_input_counts": [
+        2
+      ],
+      "one_foreign_slot_blocks_every_recipe": true,
+      "recipe_lines": [
+        111
+      ]
+    },
+    {
+      "machine": "灌装机",
+      "storage_slots": 2,
+      "recipe_distinct_input_counts": [
+        2
+      ],
+      "one_foreign_slot_blocks_every_recipe": true,
+      "recipe_lines": [
+        114
+      ]
+    }
+  ],
+  "plant_integer_partitions": [
+    {
+      "plant": "荞花",
+      "whole_stream_count": 11,
+      "target_to_each_consumer_type": "11/2",
+      "integer_partitions_checked": 12,
+      "feasible_integer_partitions": [],
+      "one_half_split_arithmetic": "11/2"
+    },
+    {
+      "plant": "砂叶",
+      "whole_stream_count": 21,
+      "target_to_each_consumer_type": "21/2",
+      "integer_partitions_checked": 22,
+      "feasible_integer_partitions": [],
+      "one_half_split_arithmetic": "21/2"
+    }
+  ],
+  "saturation_small_cases": 82194,
+  "padded_polling_sequences": 11907
+}

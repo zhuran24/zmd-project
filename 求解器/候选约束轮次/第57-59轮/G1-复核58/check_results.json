@@ -1,0 +1,173 @@
+{
+  "input_sha256": {
+    "《明日方舟：终末地》游戏规则.txt": "4f04de50b2f743aec1da903f00f0f89f92f1aeba60eb4513320b71d0ee0a57fd",
+    "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+    "候选约束.txt": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+    "思路.txt": "95d2af723613bfd61c325ab2fafd89bcd060f099d2a2172a1d79b206c3995cee",
+    "求解器/候选约束轮次/第57-59轮/G1-推导.md": "66d4cd16fdfcb3afa1447d395fff9b16ad287aecf0d8d4ba7315527d4e8c83a2",
+    "求解器/候选约束轮次/第57-59轮/G1/check_g1.py": "642850bdc98652f9b0a75bad19642d49e146b98b41d754bacc34bf67f48f69f8",
+    "求解器/候选约束轮次/第57-59轮/G1/check_results.json": "60dff2a8a832b693eacb6da32eccb0176cd504e732434388eb64bcc3e1352b1e"
+  },
+  "cyclic_slots": {
+    "closed_labelled_traces": 13781,
+    "by_period": {
+      "1": 5,
+      "2": 15,
+      "3": 53,
+      "4": 195,
+      "5": 725,
+      "6": 2703,
+      "7": 10085
+    },
+    "bridge_two_axes_rate": "2",
+    "manufacturing_example": {
+      "slots": 2,
+      "period": 5,
+      "input": 25,
+      "to_cache": 25,
+      "rate": "5",
+      "stock_closes": true
+    },
+    "serial_two_slot_example": {
+      "outside_entry_rate": "1",
+      "sum_of_slot_entry_rates": "2",
+      "sum_of_slot_exit_rates": "2"
+    }
+  },
+  "dense_algebra": {
+    "integer_cycle_flow_cases": 19480,
+    "periods": [
+      1,
+      20
+    ],
+    "two_slots_foreign_0_6_own_capacity": "7/5",
+    "F1_b0_4_z_at_most_0_3_feasible": false
+  },
+  "dense_schedules": {
+    "cases": 480,
+    "event_orders": 120,
+    "window_ticks": 20,
+    "scope": "five local event groups, two phases, two initial pointers",
+    "outcomes": [
+      {
+        "foreign_phase": 0,
+        "x_z_b_counts": [
+          0,
+          4,
+          4
+        ],
+        "cases": 120
+      },
+      {
+        "foreign_phase": 0,
+        "x_z_b_counts": [
+          2,
+          2,
+          4
+        ],
+        "cases": 120
+      },
+      {
+        "foreign_phase": 3,
+        "x_z_b_counts": [
+          2,
+          2,
+          4
+        ],
+        "cases": 240
+      }
+    ]
+  },
+  "sequence_formula": {
+    "cases": 298389,
+    "scope": "binary L=1..9, ternary L=1..6, k=1..6; every list offset and initial outlet",
+    "examples": [
+      {
+        "word": "XY",
+        "k": 2,
+        "joint_items": 2,
+        "rates_when_F_is_1": [
+          {
+            "X": "1/2",
+            "Y": "0"
+          },
+          {
+            "X": "0",
+            "Y": "1/2"
+          }
+        ]
+      },
+      {
+        "word": "XXYY",
+        "k": 2,
+        "joint_items": 4,
+        "rates_when_F_is_1": [
+          {
+            "X": "1/4",
+            "Y": "1/4"
+          },
+          {
+            "X": "1/4",
+            "Y": "1/4"
+          }
+        ]
+      },
+      {
+        "word": "XY",
+        "k": 3,
+        "joint_items": 6,
+        "rates_when_F_is_1": [
+          {
+            "X": "1/6",
+            "Y": "1/6"
+          },
+          {
+            "X": "1/6",
+            "Y": "1/6"
+          },
+          {
+            "X": "1/6",
+            "Y": "1/6"
+          }
+        ]
+      },
+      {
+        "word": "XXY",
+        "k": 3,
+        "joint_items": 3,
+        "rates_when_F_is_1": [
+          {
+            "X": "1/3",
+            "Y": "0"
+          },
+          {
+            "X": "1/3",
+            "Y": "0"
+          },
+          {
+            "X": "0",
+            "Y": "1/3"
+          }
+        ]
+      }
+    ]
+  },
+  "time_patterns": {
+    "periodic_batch_schedules": 1536,
+    "nonminimal_list_comparisons": 4608,
+    "scope": "positive groups, periods 1..4, k=2..6, all adjacent sums <= k; four mixed lists"
+  },
+  "subset_permutations": {
+    "cases": 168,
+    "premise": "word and total rate fixed across realizable arbitrary outlet permutations"
+  },
+  "original_recheck": {
+    "matches_saved_result": true,
+    "material_polling": 33642,
+    "subset_permutations": 210,
+    "dense_node_runs": 8,
+    "capacity": 1770
+  },
+  "all_assertions_passed": true
+}

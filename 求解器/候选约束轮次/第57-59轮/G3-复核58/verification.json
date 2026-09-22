@@ -1,0 +1,182 @@
+{
+  "scope": "独立局部复算；一般结论由报告解析证明；非整厂可行性证书",
+  "sources": {
+    "《明日方舟：终末地》游戏规则.txt": "4f04de50b2f743aec1da903f00f0f89f92f1aeba60eb4513320b71d0ee0a57fd",
+    "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+    "候选约束.txt": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+    "思路.txt": "95d2af723613bfd61c325ab2fafd89bcd060f099d2a2172a1d79b206c3995cee",
+    "求解器/候选约束轮次/第57-59轮/G3-推导.md": "10e1a1c1e0e2a56153d590912b622f8169ce79e348dda05337a01b164b167e79"
+  },
+  "inventory": {
+    "fixed_recipe_states": 7803,
+    "fixed_recipe_events": 20907,
+    "regions": [
+      {
+        "recipe": "研磨",
+        "states": 2601,
+        "raw_bounds": [
+          -100,
+          50
+        ],
+        "raw_width": 150,
+        "safe_open": [
+          -99,
+          50
+        ]
+      },
+      {
+        "recipe": "封装",
+        "states": 2601,
+        "raw_bounds": [
+          -500,
+          750
+        ],
+        "raw_width": 1250,
+        "safe_open": [
+          -365,
+          610
+        ]
+      },
+      {
+        "recipe": "灌装",
+        "states": 2601,
+        "raw_bounds": [
+          -500,
+          500
+        ],
+        "raw_width": 1000,
+        "safe_open": [
+          -410,
+          410
+        ]
+      }
+    ],
+    "mixed_recipe_states": 15201,
+    "mixed_recipe_starts": 7350,
+    "three_channel_trace": [
+      [
+        21,
+        19
+      ],
+      [
+        20,
+        20
+      ]
+    ],
+    "after_400_ticks": {
+      "inventory": [
+        20,
+        20
+      ],
+      "receipts": [
+        800,
+        400
+      ],
+      "single_mixed_line_deviation": -200,
+      "total_deviation": 0
+    },
+    "balanced_burst": {
+      "blocked": true,
+      "inventory": [
+        50,
+        0
+      ],
+      "accepted": 100,
+      "starts": 50
+    }
+  },
+  "output_window": {
+    "local_cases": 900,
+    "periodic_words_and_ports": 1482,
+    "periodic_cases_with_cycle": 729,
+    "three_sandleaf": {
+      "demand": 9,
+      "capacity": 8,
+      "feasible": false
+    },
+    "two_sandleaf_periodic_relaxation": [
+      {
+        "phase": 0,
+        "completed": 3,
+        "sent": 2,
+        "remaining": 1
+      },
+      {
+        "phase": 1,
+        "completed": 3,
+        "sent": 2,
+        "remaining": 2
+      },
+      {
+        "phase": 2,
+        "completed": 1,
+        "sent": 2,
+        "remaining": 1
+      },
+      {
+        "phase": 3,
+        "completed": 1,
+        "sent": 2,
+        "remaining": 0
+      }
+    ]
+  },
+  "partitions": {
+    "units": 11,
+    "all_subsets": 2048,
+    "whole_network": {
+      "A": 4,
+      "Z": 7,
+      "F": 2,
+      "W_s": 1,
+      "W_p": 1
+    },
+    "seed_only_group": {
+      "A": 2,
+      "Z": 0,
+      "F": 0,
+      "I_p": 2,
+      "E_s": 4
+    }
+  },
+  "regeneration": {
+    "balanced_integer_flow_graphs": 1943,
+    "positive_crushers_checked": 3216,
+    "range": "2 采种、2 种植、2 粉碎；每台采种每周期 0..2 批；逐一枚举所有整数分配",
+    "unrelated_cycle_negative_control": "PASS；库存支线净支出，不能成为循环态"
+  },
+  "occupancy": {
+    "half_tick_periodic_cell_schedules": 7183,
+    "wrapped_occupancies": 3244,
+    "periods_in_half_ticks": [
+      2,
+      8
+    ],
+    "manufacture_interval_check": "同一枚举检查每批至少 1 tick 的在制投入占用",
+    "extra_transport_cell_at_rate_1_over_2": "平均下界增加 1/2 件",
+    "recovery_at_32_planters": [
+      {
+        "plant": "荞花",
+        "z": 11,
+        "a": 5.5,
+        "f": 5.5,
+        "Q_s": 11,
+        "Q_p": 11,
+        "seed_bound": 22,
+        "plant_bound": 22.0
+      },
+      {
+        "plant": "砂叶",
+        "z": 21,
+        "a": 10.5,
+        "f": 10.5,
+        "Q_s": 21,
+        "Q_p": 21,
+        "seed_bound": 42,
+        "plant_bound": 42.0
+      }
+    ]
+  },
+  "status": "PASS"
+}
