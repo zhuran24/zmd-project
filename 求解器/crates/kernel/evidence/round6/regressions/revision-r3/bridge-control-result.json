@@ -3,7 +3,7 @@
     "context_bindings": [
       {
         "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/regressions/revision-r3/bridge-input.json",
-        "sha256": "55c471cf64a8d0992827ee90d2c46aab34cda44fc6f16f6c6d8c2448c6b13ba0"
+        "sha256": "75eee9d02ab941d97d2fbba2b3c894bc2a32cc874bcd5ee0ca10bd5ad4ba3f74"
       },
       {
         "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
@@ -11,7 +11,7 @@
       },
       {
         "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
-        "sha256": "c252c5fae915e2e4002869d7830fff61a50407c47c2ffd9fa855ad0fc893879d"
+        "sha256": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff"
       },
       {
         "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
@@ -23,7 +23,7 @@
       },
       {
         "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
-        "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+        "sha256": "cf44821f07779490b9b1d913bfb87d7757ae8abfe784c912bb7891868780f7f3"
       },
       {
         "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
@@ -169,7 +169,7 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/regressions/revision-r3/bridge-input.json",
       "role": "input",
-      "sha256": "55c471cf64a8d0992827ee90d2c46aab34cda44fc6f16f6c6d8c2448c6b13ba0"
+      "sha256": "75eee9d02ab941d97d2fbba2b3c894bc2a32cc874bcd5ee0ca10bd5ad4ba3f74"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
@@ -179,7 +179,7 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
       "role": "catalog",
-      "sha256": "c252c5fae915e2e4002869d7830fff61a50407c47c2ffd9fa855ad0fc893879d"
+      "sha256": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
@@ -194,7 +194,7 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
       "role": "formal_source",
-      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+      "sha256": "cf44821f07779490b9b1d913bfb87d7757ae8abfe784c912bb7891868780f7f3"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",

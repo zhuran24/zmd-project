@@ -2,7 +2,7 @@
   "status": "通过",
   "controls": [
     {
-      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-3yakkyez/混做粉碎机两下游-full_state_each_instant.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-_02vejj3/混做粉碎机两下游-full_state_each_instant.json",
       "ticks": 4,
       "events": 156,
       "coverage_status_counts": {
@@ -12,10 +12,10 @@
         "stop_not_triggered": 17,
         "proof_pending": 1
       },
-      "sha256": "3c2fbec584d503df6713e2d3a998317e42cfd24ea39f76c432ee3555cced6dfb"
+      "sha256": "aec41ba5d9ea2381864f9b74f00c9def04f5c14e45eb3b170dab962b170d971d"
     },
     {
-      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-3yakkyez/混做粉碎机两下游-checkpoint_delta.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-_02vejj3/混做粉碎机两下游-checkpoint_delta.json",
       "ticks": 4,
       "events": 156,
       "coverage_status_counts": {
@@ -25,10 +25,10 @@
         "stop_not_triggered": 17,
         "proof_pending": 1
       },
-      "sha256": "9a77ed939151b8cbe040c786346f3687fd74a0ee6ae7de44ad7822a0b2c08628"
+      "sha256": "f1c701decf328d92fcac736f29d36242ba23f80ce7667239bfd942b74ca0623d"
     },
     {
-      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-3yakkyez/分流器三路轮询-full_state_each_instant.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-_02vejj3/分流器三路轮询-full_state_each_instant.json",
       "ticks": 12,
       "events": 794,
       "coverage_status_counts": {
@@ -38,10 +38,10 @@
         "stop_not_triggered": 17,
         "proof_pending": 1
       },
-      "sha256": "c1d6a32b98cc7af1c643ecdca4da861c3638cc4c6ff5fcbef2de466356574e02"
+      "sha256": "d1bdbe58f1e1329a70463a7a4af8144eaf32e782124fffc388321f689eeb827b"
     },
     {
-      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-3yakkyez/分流器三路轮询-checkpoint_delta.json",
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-_02vejj3/分流器三路轮询-checkpoint_delta.json",
       "ticks": 12,
       "events": 794,
       "coverage_status_counts": {
@@ -51,7 +51,7 @@
         "stop_not_triggered": 17,
         "proof_pending": 1
       },
-      "sha256": "f56a41fdbc9fbb0bfc9da14c7acca106b3b10014062aea05d55553bf3ddad656"
+      "sha256": "9140c62cbbe56d98000bf42d572316361d8e08473ef089cff43b306055e06b01"
     }
   ],
   "metadata_mutations": [
@@ -137,7 +137,7 @@
       "format": "full_state_each_instant",
       "mutation": "wrong_producer_path",
       "accepted": false,
-      "reason": "('来源或producer路径不可访问', \"[Errno 2] No such file or directory: '/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-3yakkyez/fake.rs'\")"
+      "reason": "('来源或producer路径不可访问', \"[Errno 2] No such file or directory: '/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-_02vejj3/fake.rs'\")"
     },
     {
       "sample": "混做粉碎机两下游",
@@ -165,7 +165,7 @@
       "format": "full_state_each_instant",
       "mutation": "bad_summary_control",
       "accepted": false,
-      "reason": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-3yakkyez/mutation.json"
+      "reason": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-_02vejj3/mutation.json"
     },
     {
       "sample": "混做粉碎机两下游",
@@ -249,7 +249,7 @@
       "format": "checkpoint_delta",
       "mutation": "wrong_producer_path",
       "accepted": false,
-      "reason": "('来源或producer路径不可访问', \"[Errno 2] No such file or directory: '/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-3yakkyez/fake.rs'\")"
+      "reason": "('来源或producer路径不可访问', \"[Errno 2] No such file or directory: '/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-_02vejj3/fake.rs'\")"
     },
     {
       "sample": "混做粉碎机两下游",
@@ -277,7 +277,7 @@
       "format": "checkpoint_delta",
       "mutation": "bad_summary_control",
       "accepted": false,
-      "reason": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-3yakkyez/mutation.json"
+      "reason": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-_02vejj3/mutation.json"
     },
     {
       "sample": "分流器三路轮询",
@@ -361,7 +361,7 @@
       "format": "full_state_each_instant",
       "mutation": "wrong_producer_path",
       "accepted": false,
-      "reason": "('来源或producer路径不可访问', \"[Errno 2] No such file or directory: '/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-3yakkyez/fake.rs'\")"
+      "reason": "('来源或producer路径不可访问', \"[Errno 2] No such file or directory: '/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-_02vejj3/fake.rs'\")"
     },
     {
       "sample": "分流器三路轮询",
@@ -389,7 +389,7 @@
       "format": "full_state_each_instant",
       "mutation": "bad_summary_control",
       "accepted": false,
-      "reason": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-3yakkyez/mutation.json"
+      "reason": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-_02vejj3/mutation.json"
     },
     {
       "sample": "分流器三路轮询",
@@ -473,7 +473,7 @@
       "format": "checkpoint_delta",
       "mutation": "wrong_producer_path",
       "accepted": false,
-      "reason": "('来源或producer路径不可访问', \"[Errno 2] No such file or directory: '/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-3yakkyez/fake.rs'\")"
+      "reason": "('来源或producer路径不可访问', \"[Errno 2] No such file or directory: '/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-_02vejj3/fake.rs'\")"
     },
     {
       "sample": "分流器三路轮询",
@@ -501,7 +501,7 @@
       "format": "checkpoint_delta",
       "mutation": "bad_summary_control",
       "accepted": false,
-      "reason": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-3yakkyez/mutation.json"
+      "reason": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/revision-r2/r2-cli-_02vejj3/mutation.json"
     }
   ],
   "input_cases": [

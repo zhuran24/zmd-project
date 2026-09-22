@@ -84,7 +84,7 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/revision-r5/cli/ore-79999-seed.json",
       "role": "input",
-      "sha256": "5bfbf9d750e5d0a0331d52f9bbfde1f32a45bdac28efb8b2695da75e0a7d9998"
+      "sha256": "6a972e4a878b87c9606ce8521e3eb94cb6b02306f28c446c7b33fb7b252cf6cb"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
@@ -224,7 +224,7 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
       "role": "catalog",
-      "sha256": "c252c5fae915e2e4002869d7830fff61a50407c47c2ffd9fa855ad0fc893879d"
+      "sha256": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
@@ -244,7 +244,7 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
       "role": "formal_source",
-      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+      "sha256": "cf44821f07779490b9b1d913bfb87d7757ae8abfe784c912bb7891868780f7f3"
     }
   ],
   "last_state": null,

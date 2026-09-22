@@ -84,7 +84,7 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-1_2-input.json",
       "role": "input",
-      "sha256": "8feda998abffa9c6a20c5a13cfcf72a5706a66c379fdb9f69a0ad046c1a5685e"
+      "sha256": "96447f7042bd959fd6946c6f1b5f95e3255c6b6ca9b18f176f5d2d7540a7010b"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
@@ -224,7 +224,7 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
       "role": "catalog",
-      "sha256": "c252c5fae915e2e4002869d7830fff61a50407c47c2ffd9fa855ad0fc893879d"
+      "sha256": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
@@ -244,7 +244,7 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
       "role": "formal_source",
-      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+      "sha256": "cf44821f07779490b9b1d913bfb87d7757ae8abfe784c912bb7891868780f7f3"
     }
   ],
   "last_state": null,

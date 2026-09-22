@@ -84,7 +84,7 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/evidence/round6/regressions/revision-r3/phase-not-a-Time-input.json",
       "role": "input",
-      "sha256": "5d1f53b889ca7e0b9498e9a7591a0d273b51e0c4783a3e30e8490df9e56c4d0d"
+      "sha256": "737ceff4f0c4012b30f386044856e69c1c3b78bd60cd634cfce73056381a2db4"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
@@ -224,7 +224,7 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
       "role": "catalog",
-      "sha256": "c252c5fae915e2e4002869d7830fff61a50407c47c2ffd9fa855ad0fc893879d"
+      "sha256": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff"
     },
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
@@ -244,7 +244,7 @@
     {
       "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
       "role": "formal_source",
-      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+      "sha256": "cf44821f07779490b9b1d913bfb87d7757ae8abfe784c912bb7891868780f7f3"
     }
   ],
   "last_state": null,

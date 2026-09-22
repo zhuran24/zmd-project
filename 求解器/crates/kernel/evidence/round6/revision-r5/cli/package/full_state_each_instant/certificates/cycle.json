@@ -8776,7 +8776,7 @@
     "context_bindings": [
       {
         "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
-        "sha256": "5174e559e046e5e615f0e200f2d06963addc95de9a0ff1b3cef7d2c90662aa5e"
+        "sha256": "ba34effdb9309d3907eb0c3a2c16567069c69c46e610a6562e3ec66ca53ea9ed"
       },
       {
         "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
@@ -8784,7 +8784,7 @@
       },
       {
         "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
-        "sha256": "c252c5fae915e2e4002869d7830fff61a50407c47c2ffd9fa855ad0fc893879d"
+        "sha256": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff"
       },
       {
         "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
@@ -8796,7 +8796,7 @@
       },
       {
         "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
-        "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+        "sha256": "cf44821f07779490b9b1d913bfb87d7757ae8abfe784c912bb7891868780f7f3"
       },
       {
         "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
@@ -8942,7 +8942,7 @@
     {
       "path": "../../../../../../../../../数据/样例/生产循环环带.json",
       "role": "input",
-      "sha256": "5174e559e046e5e615f0e200f2d06963addc95de9a0ff1b3cef7d2c90662aa5e"
+      "sha256": "ba34effdb9309d3907eb0c3a2c16567069c69c46e610a6562e3ec66ca53ea9ed"
     },
     {
       "path": "../../../../../../../../../规格/内核配置-v1.json",
@@ -8952,7 +8952,7 @@
     {
       "path": "../../../../../../../../../数据/正式静态目录.json",
       "role": "catalog",
-      "sha256": "c252c5fae915e2e4002869d7830fff61a50407c47c2ffd9fa855ad0fc893879d"
+      "sha256": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff"
     },
     {
       "path": "../../../../../../../../../../《明日方舟：终末地》游戏规则.txt",
@@ -8967,7 +8967,7 @@
     {
       "path": "../../../../../../../../../../求解约束.txt",
       "role": "formal_source",
-      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+      "sha256": "cf44821f07779490b9b1d913bfb87d7757ae8abfe784c912bb7891868780f7f3"
     },
     {
       "path": "../../../../../../../../../规格/选择点参数轴.md",
@@ -10277,7 +10277,7 @@
       "kind": "kernel",
       "path": "../../../../../../../src/lib.rs"
     },
-    "sha256": "5174e559e046e5e615f0e200f2d06963addc95de9a0ff1b3cef7d2c90662aa5e"
+    "sha256": "ba34effdb9309d3907eb0c3a2c16567069c69c46e610a6562e3ec66ca53ea9ed"
   },
   "result_id": "cycle:生产循环环带:50:100000",
   "run_record_ref": {
@@ -10288,7 +10288,7 @@
       "kind": "kernel",
       "path": "../../../../../../../src/lib.rs"
     },
-    "sha256": "9923b897f080f3758c2896a4a24e53b320c681dd005797311e6799ce1725edd7"
+    "sha256": "67f4af5ab295a03432f4e081772b0283dfee50bc72f652720e920e35759572e2"
   },
   "schema": "kernel-cycle-v3",
   "seed": {

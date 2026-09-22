@@ -10,11 +10,11 @@
     "context_bindings": [
       {
         "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
-        "sha256": "5c03fbcf5c83c18adc3d18f6e96467fc99894feea8874d6727e0a438077a6fc6"
+        "sha256": "0aa13f4a7e6856a6cdafdca444297bb3f133d77b120afba3dca2fbdda74b0ef6"
       },
       {
         "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
-        "sha256": "c252c5fae915e2e4002869d7830fff61a50407c47c2ffd9fa855ad0fc893879d"
+        "sha256": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff"
       },
       {
         "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
@@ -70,7 +70,7 @@
       },
       {
         "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py",
-        "sha256": "2640084e2801664c4f49e2d8f0a3c3ac275cb0e183bfd5e714b9ca291c8e3bd1"
+        "sha256": "2980833bf41fa7521cb53c138934e1a2b4ee3766f4fa549058dbaa360b801e91"
       },
       {
         "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/runtime_record.py",
@@ -118,7 +118,7 @@
       },
       {
         "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
-        "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+        "sha256": "cf44821f07779490b9b1d913bfb87d7757ae8abfe784c912bb7891868780f7f3"
       }
     ],
     "initial_state_coverage": {
@@ -142,12 +142,12 @@
     {
       "role": "input",
       "path": "../../../../../../../数据/样例/混做粉碎机两下游.json",
-      "sha256": "5c03fbcf5c83c18adc3d18f6e96467fc99894feea8874d6727e0a438077a6fc6"
+      "sha256": "0aa13f4a7e6856a6cdafdca444297bb3f133d77b120afba3dca2fbdda74b0ef6"
     },
     {
       "role": "catalog",
       "path": "../../../../../../../数据/正式静态目录.json",
-      "sha256": "c252c5fae915e2e4002869d7830fff61a50407c47c2ffd9fa855ad0fc893879d"
+      "sha256": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff"
     },
     {
       "role": "axis_registry",
@@ -217,7 +217,7 @@
     {
       "role": "checker",
       "path": "../../../../../../../数据/样例/check_examples.py",
-      "sha256": "2640084e2801664c4f49e2d8f0a3c3ac275cb0e183bfd5e714b9ca291c8e3bd1"
+      "sha256": "2980833bf41fa7521cb53c138934e1a2b4ee3766f4fa549058dbaa360b801e91"
     },
     {
       "role": "checker",
@@ -277,7 +277,7 @@
     {
       "role": "formal_source",
       "path": "../../../../../../../../求解约束.txt",
-      "sha256": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+      "sha256": "cf44821f07779490b9b1d913bfb87d7757ae8abfe784c912bb7891868780f7f3"
     }
   ],
   "parameter_assignment": {

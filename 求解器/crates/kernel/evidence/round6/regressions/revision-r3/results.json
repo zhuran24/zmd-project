@@ -1,7 +1,7 @@
 {
   "status": "pass",
   "binary": "/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel",
-  "binary_sha256": "e8c824c1149053b901b0e4b4f7cacd1977940a7cc3cd6b7ecace8b16b0275363",
+  "binary_sha256": "e1bbca96ca4aa8476e40c3105fe6688a3731d3e93dc90eddcfb16a8686fe04f4",
   "cases": [
     {
       "case": "bridge-control",
