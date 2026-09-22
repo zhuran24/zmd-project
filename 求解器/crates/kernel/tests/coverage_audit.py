@@ -116,7 +116,7 @@ def expected_coverage(data, ticks, root):
         if conf['disposition'] == '超出覆盖即停':
             status, evidence = 'stop_not_triggered', ['所请求的有限前缀未触及停止域，不证明该域后效。']
         if name == 'warehouse.periodic_lift':
-            status, evidence = 'proof_pending', ['完整基地周期提升未证明，请求提升立即停止。']
+            status, evidence = 'proof_pending', ['具体完整周期复原及全称覆盖分别待证；当前接口生成受限生产诊断。']
         if name in ('warehouse.acceptance', 'warehouse.acceptance_quantifier') and acceptance:
             status, evidence = 'exercised', acceptance
         result[name] = {'axis': name, 'reason': conf['coverage_loss'], 'disposition': conf['disposition'],

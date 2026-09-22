@@ -1,0 +1,8 @@
+   Compiling autocfg v1.5.1
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+   Compiling num-traits v0.2.19
+   Compiling num-integer v0.1.47
+   Compiling num-bigint v0.4.8
+   Compiling num-rational v0.4.2
+   Compiling topology v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/topology)
+    Finished `release` profile [optimized] target(s) in 8.46s

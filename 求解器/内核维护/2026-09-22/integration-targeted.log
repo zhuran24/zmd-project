@@ -1,0 +1,138 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running tests/revision_cli.rs (target/debug/deps/revision_cli-6e74e26d9cc8e0e1)
+
+running 1 test
+test revision_cli_and_python_record_negatives ... FAILED
+
+failures:
+
+---- revision_cli_and_python_record_negatives stdout ----
+
+thread 'revision_cli_and_python_record_negatives' (304070) panicked at crates/kernel/tests/revision_cli.rs:15:5:
+
+Traceback (most recent call last):
+  File "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22/bin/python", line 16, in <module>
+    exec(compile(text,str(p),'exec'),{'__name__':'__main__','__file__':str(p)})
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_cli.py", line 103, in <module>
+    main()
+    ~~~~^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_cli.py", line 48, in main
+    verifier.verify(path, data, expected)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_outputs.py", line 116, in verify
+    assert same(actual_axes, expected_coverage(data, expected, ROOT)), '覆盖轴全集/处置/实际证据不符'
+           ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 覆盖轴全集/处置/实际证据不符
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    revision_cli_and_python_record_negatives
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.51s
+
+error: test failed, to rerun pass `-p kernel --test revision_cli`
+     Running tests/revision_r2_cli.rs (target/debug/deps/revision_r2_cli-8728dafa1cffde10)
+
+running 1 test
+test revision_r2_cli_and_python_record_negatives ... FAILED
+
+failures:
+
+---- revision_r2_cli_and_python_record_negatives stdout ----
+
+thread 'revision_r2_cli_and_python_record_negatives' (304153) panicked at crates/kernel/tests/revision_r2_cli.rs:15:5:
+
+Traceback (most recent call last):
+  File "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22/bin/python", line 16, in <module>
+    exec(compile(text,str(p),'exec'),{'__name__':'__main__','__file__':str(p)})
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_r2_cli.py", line 147, in <module>
+    main(Path(directory))
+    ~~~~^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_r2_cli.py", line 55, in main
+    controls.append(verifier.verify(path, data, expected))
+                    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_outputs.py", line 116, in verify
+    assert same(actual_axes, expected_coverage(data, expected, ROOT)), '覆盖轴全集/处置/实际证据不符'
+           ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 覆盖轴全集/处置/实际证据不符
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    revision_r2_cli_and_python_record_negatives
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.48s
+
+error: test failed, to rerun pass `-p kernel --test revision_r2_cli`
+     Running tests/revision_r3_cli.rs (target/debug/deps/revision_r3_cli-8d0c1cc68ed29ba1)
+
+running 1 test
+test revision_r3_public_cli_regressions ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.45s
+
+     Running tests/revision_r4_cli.rs (target/debug/deps/revision_r4_cli-58776cb1dd0f3c30)
+
+running 1 test
+test revision_r4_public_cli_regressions ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.96s
+
+     Running tests/revision_r5_cli.rs (target/debug/deps/revision_r5_cli-1c88f989f3382336)
+
+running 1 test
+test revision_r5_public_cli_regressions ... FAILED
+
+failures:
+
+---- revision_r5_public_cli_regressions stdout ----
+
+thread 'revision_r5_public_cli_regressions' (306111) panicked at crates/kernel/tests/revision_r5_cli.rs:15:5:
+
+Traceback (most recent call last):
+  File "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22/bin/python", line 16, in <module>
+    exec(compile(text,str(p),'exec'),{'__name__':'__main__','__file__':str(p)})
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_r5_cli.py", line 202, in <module>
+    main()
+    ~~~~^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_r5_cli.py", line 93, in main
+    assert call(encoding + '-cycle-verify', 'verify-cycle', cert_path, cwd=ROOT.parent)['cycle_replayed']
+           ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_r5_cli.py", line 39, in call
+    assert result.returncode == code, (name, result.returncode, result.stdout, result.stderr)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('full_state_each_instant-cycle-verify', 2, '{\n  "evidence_scope": {\n    "context_bindings": [],\n    "direction": "diagnostic",\n    "fixed_parameter_lifecycle": "judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作",\n    "initial_state_coverage": {\n      "description": "一个显式种子及其实际已重放前缀；调试程序全部可能后态另核",\n      "exact_reachable_set_enumerated": false\n    },\n    "kind": "diagnostic",\n    "proof_sources": [],\n    "review_status": "author_checked",\n    "support_domain": [\n      "固定布局、设定、global/event-order-v1及整数时钟的受限工程执行",\n      "ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明"\n    ]\n  },\n  "execution_mode": "finite_concrete",\n  "fingerprints": [],\n  "input_history": null,\n  "open_items": [\n    "invalid_input input @ run_record_ref: 格式或producer与目标不符"\n  ],\n  "parameter_assignment": null,\n  "port_meeting": "shared_edge_opposite",\n  "producer": {\n    "claim": "装载停止，未形成游戏后继",\n    "kind": "kernel",\n    "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs"\n  },\n  "profile_id": "kernel_profile_v1",\n  "run_id": "kernel:load-stop",\n  "schema": "kernel-output-v4",\n  "status": "invalid_input",\n  "trace": null,\n  "uncovered_axes": [],\n  "validation_scope": null\n}\n', '')
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    revision_r5_public_cli_regressions
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.35s
+
+error: test failed, to rerun pass `-p kernel --test revision_r5_cli`
+     Running tests/round5_cli.rs (target/debug/deps/round5_cli-110510aa32f40868)
+
+running 1 test
+test round5_cli_resource_statistics_and_cycle_load_stop ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+
+     Running tests/round6_cli.rs (target/debug/deps/round6_cli-330f8d58b875abbb)
+
+running 1 test
+test round6_public_cli_regressions ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 19.50s
+
+error: 3 targets failed:
+    `-p kernel --test revision_cli`
+    `-p kernel --test revision_r2_cli`
+    `-p kernel --test revision_r5_cli`

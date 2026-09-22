@@ -332,10 +332,10 @@ fn transfer_capacity_and_empty_cooldown() {
         .contents
         .clear();
     e.state.progress[pi].cooldowns[0].remaining = Time::at(0);
-    assert_eq!(
-        e.transfer("south_box", "unit-test-transfer").unwrap(),
-        ("success".into(), "empty_box".into())
-    );
+    let (status, details) = e.transfer("south_box", "unit-test-transfer").unwrap();
+    assert_eq!(status, "success");
+    assert_eq!(serde_json::from_str::<Value>(&details).unwrap(),
+        json!({"cooldown_restarted": true, "retained": {}, "sent": {}}));
     assert_eq!(
         e.state.progress[pi].cooldowns[0]
             .remaining
@@ -438,9 +438,9 @@ fn completed_output_conflict_retains_batch() {
     assert_eq!(count(&e, "crusher:output:0"), 0);
     assert_eq!(e.state.progress[i].phase, "completed");
 }
-/// 受限转移§2.2、§3.4：身份不符批量删边，窗口到期不清身份锁存。
+/// 受限转移§2.2、§3.4：身份不符断边；当前身份条件满足且其它守卫解除后恢复。
 #[test]
-fn identity_latch_and_no_cross_disconnected_observation() {
+fn identity_current_condition_restores_disconnected_channel() {
     let mut e = engine("分流器三路轮询");
     e.input.gate_settings.get_mut("probe_gate_a").unwrap()["item"] = json!("蓝铁矿");
     for _ in 0..7 {
@@ -455,7 +455,9 @@ fn identity_latch_and_no_cross_disconnected_observation() {
     assert!(!e.active.contains(incoming));
     e.input.gate_settings.get_mut("probe_gate_a").unwrap()["item"] = json!("源矿");
     e.maintain_identity().unwrap();
-    assert!(!e.active.contains(incoming));
+    assert!(e.active.contains(incoming));
+    let g = &e.state.logistics.gate_counters[e.gate_index["probe_gate_a"]];
+    assert!(!g.blocked_reasons.contains(&"identity_mismatch".into()));
 }
 /// 受限转移§3.4：累计与窗口两原因并存，到期仅移除窗口。
 #[test]
@@ -850,19 +852,30 @@ fn bridge_two_independent_slots_run() {
     );
     assert_eq!(e.inventory_totals().unwrap(), total);
 }
-/// 受限转移§4.1：桥格独立不豁免同单位同种单格，第二轴同种在此刻拒收。
+/// R13桥例外、R23滞留：同种双轴同时占格、各自每tick一件，完整种子可恢复。
 #[test]
-fn bridge_same_item_cannot_occupy_both_axes() {
+fn bridge_same_item_occupies_both_axes_at_full_rate() {
     let mut e = fixture("bridge");
-    put(&mut e, "south_box:storage:0", "源矿", 1);
-    put(&mut e, "west_box:storage:0", "源矿", 1);
+    put(&mut e, "south_box:storage:0", "源矿", 4);
+    put(&mut e, "west_box:storage:0", "源矿", 4);
     let mut e = reload(e);
+    let total = e.inventory_totals().unwrap();
     e.step(true).unwrap();
-    assert_eq!(
-        count(&e, "bridge:vertical:0") + count(&e, "bridge:horizontal:0"),
-        1
-    );
+    for axis in ["vertical", "horizontal"] {
+        assert_eq!(count(&e, &format!("bridge:{axis}:0")), 1);
+    }
+    // 新入桥物品必须滞留，不能在该tick进入对端箱。
+    assert_eq!(count(&e, "north_box:storage:0"), 0);
+    assert_eq!(count(&e, "east_box:storage:0"), 0);
     e.validate_inventory().unwrap();
+    let mut e = reload(e);
+    for delivered in 1..=4 {
+        e.step(true).unwrap();
+        assert_eq!(count(&e, "north_box:storage:0"), delivered);
+        assert_eq!(count(&e, "east_box:storage:0"), delivered);
+        assert_eq!(e.inventory_totals().unwrap(), total);
+        e.validate_inventory().unwrap();
+    }
 }
 /// 受限转移§3.1：取货级先比较最大阻尼；较早接通的直连汇流器级仍输给较小阻尼。
 #[test]

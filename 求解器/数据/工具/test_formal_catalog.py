@@ -60,7 +60,7 @@ class FormalCatalogTests(unittest.TestCase):
             elif key == 'target': c['task']['targets']['精选荞愈胶囊']['value']='3/5'
             elif key == 'gate': units['物品准入口']['settings']['total_limit']['max']['value']='5001'
             elif key == 'cooldown': units['协议储存箱']['transfer']['cooldown_ticks']['value']='4'
-            else: units['桥接器']['inventory_rules']['same_item_across_slots']='exempt'
+            else: units['桥接器']['inventory_rules']['same_item_across_slots']='at_most_one_slot'
             with self.assertRaises(AssertionError,msg=key): verify(c)
 
     def test_live_catalog_passes(self):

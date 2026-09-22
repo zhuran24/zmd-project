@@ -281,7 +281,7 @@ def run(data, checkpoints=None):
         state['semantic_context']['tick_context']=decision({'window_start':time_value(t),'window_end':time_value(t+1),'movements':movements,'port_usage':[{'port':p,'quantity':quantity(n,'算术推论')} for p,n in sorted(usage.items())],'internal_passages':passages},'本时刻实际成功记录')
         from ledger_reference import warehouse_ledger
         ledger=warehouse_ledger(data,records,state)
-        ticks.append({'warehouse_ledger':ledger,'time':time_value(t),'events':records,'state':copy.deepcopy(state),'summary':summary(t),'closure':{'kind':'no_success_state_repeat','scan_rounds':rounds,'basis':['受限模型声明 time.instant_end','内核输入 §5.2']}})
+        ticks.append({'warehouse_ledger':ledger,'time':time_value(t),'events':records,'state':copy.deepcopy(state),'summary':summary(t),'closure':{'kind':'no_success_state_repeat','scan_rounds':rounds,'basis':['受限模型声明 time.instant_end','内核输入 §5.2','工程出口保留首次重复的完整扫描边界成员；一般真实唤醒对应为PC-06未完成义务']}})
     return ticks
 
 

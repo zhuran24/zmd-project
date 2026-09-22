@@ -110,7 +110,13 @@ def build_record(data, ticks, golden=None):
         checker.require([t['summary'] for t in ticks]==golden['ticks'], '黄金轨迹与有限重算不同')
     profile=validate_profile(data, checker.load_json(projection_path(data)))
     batches=sum(e['operation']=='manufacture_complete' for t in ticks for e in t['events'])
-    return {'schema':'kernel-output-v3','execution_mode':'finite_concrete','port_meeting':'shared_edge_opposite','run_id':'splitter_prefix_0_11' if is_splitter(data) else 'mixed_crusher_prefix_0_3','profile_id':data['parameters']['profile_id'],
+    return {'schema':'kernel-output-v4',
+            'evidence_scope':{'kind':'diagnostic','direction':'diagnostic',
+                'support_domain':['两个显式有限参考场景；逐事件重算，不覆盖桥或完整工厂'],
+                'fixed_parameter_lifecycle':'按当前配置的固定参数与输入组，有限前缀内无离线或玩家动作',
+                'context_bindings':[{'path':r['path'],'sha256':r['sha256']} for r in fingerprints(data)],
+                'initial_state_coverage':{'description':'一个显式种子的有限前缀','exact_reachable_set_enumerated':False},
+                'review_status':'author_checked','proof_sources':[]},'execution_mode':'finite_concrete','port_meeting':'shared_edge_opposite','run_id':'splitter_prefix_0_11' if is_splitter(data) else 'mixed_crusher_prefix_0_3','profile_id':data['parameters']['profile_id'],
             'producer':{'kind':'bounded_reference_checker','path':str(BASE/('check_splitter_trace.py' if is_splitter(data) else 'check_golden_trace.py')),
                         'claim':'有限重算；有黄金时另作手工摘要比较；不是 Rust 内核结果'},
             'status':'completed','fingerprints':fingerprints(data),'parameter_assignment':data['parameters'],
@@ -151,7 +157,7 @@ def validate_state(data, state):
         if role=='buffer':continue
         items={content['item'] for content in row['contents']}
         checker.require(len(items)<=1,'普通物品格混种')
-        if units[uid]['kind']=='协议储存箱':continue
+        if kinds[units[uid]['kind']]['inventory_rules']['same_item_across_slots']=='exempt':continue
         for item in items:
             key=(uid,item)
             checker.require(key not in occupied,'同单位同种物品跨普通格重复')

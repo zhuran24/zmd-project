@@ -1,0 +1,18 @@
+[
+  {
+    "file": "数据/样例/混做粉碎机两下游-参考运行记录.json",
+    "before": "6f280ceda0fbf6e5f0d8342bce3297b723517539dd08e6edef91a66fabf22bc0",
+    "after": "860fcfdeb9d000ec2f4ee0a04a697668cc2938459b02612b09cef5dd24771904",
+    "ticks": 4,
+    "physical_trace_unchanged": true,
+    "hand_golden_unchanged": true
+  },
+  {
+    "file": "数据/样例/分流器三路轮询-参考运行记录.json",
+    "before": "3a4c1222bb2eba9c2e7236d9f75b5e3371396c09b56da291520444fe5aa36086",
+    "after": "6e5873201266fd88ac5f6086ffe80cddd36203ac560359e94dce4ba169aa6538",
+    "ticks": 12,
+    "physical_trace_unchanged": true,
+    "hand_golden_unchanged": false
+  }
+]

@@ -8,7 +8,11 @@ fn round5_cli_resource_statistics_and_cycle_load_stop() {
         .canonicalize()
         .unwrap();
     let config = root.join("规格/内核配置-v1.json");
-    let out = root.join("crates/kernel/evidence/round5");
+    let out = std::env::var_os("KERNEL_TEST_EVIDENCE_DIR")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| root.join("crates/kernel/evidence/round5"))
+        .join("round5_cli");
+    std::fs::create_dir_all(&out).unwrap();
     let exported = out.join("relocated-seed.json");
     let process = Command::new(env!("CARGO_BIN_EXE_kernel"))
         .arg("seed")
@@ -73,7 +77,7 @@ fn round5_cli_resource_statistics_and_cycle_load_stop() {
         .unwrap();
     assert_eq!(process.status.code(), Some(2));
     let result: Value = serde_json::from_slice(&std::fs::read(&record).unwrap()).unwrap();
-    assert_eq!(result["schema"], "kernel-cycle-v2");
+    assert_eq!(result["schema"], "kernel-cycle-v3");
     assert_eq!(result["status"], "invalid_input");
     assert!(result["cycle"].is_null());
 }

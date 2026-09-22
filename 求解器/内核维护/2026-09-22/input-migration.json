@@ -1,0 +1,272 @@
+[
+  {
+    "file": "数据/样例/任务7内核/双门窗口恢复.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/任务7内核/同刻双箱争余量.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/任务7内核/成熟旧货重试.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/任务7内核/无线一满一可收.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/任务7内核/无线全拒收.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/任务7内核/无线多格全收.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/任务7内核/无线多格歧义.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/任务7内核/无线空箱.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/任务7内核/无线部分接收.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/任务7内核/生产环带.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/任务7内核/累计审计与窗口周期.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/任务7内核/累计调低保留.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/任务7内核/累计调高资格.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/任务7内核/装载与普通制造.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/任务7内核/身份实际切换.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/任务7内核/身份断边恢复.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/任务7内核/阻尼恢复.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/任务7内核/静止成熟与暂停键.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/传输拒收与暂停核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/分流器三路轮询.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/双成品制造砖.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/双成品满仓起动试作.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/密集制造闭环基础.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/密集制造闭环序0核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/密集制造闭环序1核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/密集制造闭环序2核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/密集制造闭环序3核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/密集制造闭环序4核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/密集制造闭环序5核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/密集结点循环种子核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/密集结点核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/密集结点闭环核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/桥接器双通路.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/混做粉碎机两下游.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/生产循环环带.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/研磨混做核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/轮询均分序0核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/轮询均分序1核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/轮询均分序2核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/轮询均分序3核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/轮询均分序4核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/轮询均分序5核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/轮询均分核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/阻尼切支恢复核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "数据/样例/阻尼连续带核验.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "crates/kernel/tests/fixtures/benchmark_1000.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "crates/kernel/tests/fixtures/benchmark_brick.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "crates/kernel/tests/fixtures/benchmark_brick_60.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "crates/kernel/tests/fixtures/bridge.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "crates/kernel/tests/fixtures/core_inbound.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "crates/kernel/tests/fixtures/priority.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "crates/kernel/tests/fixtures/revision_r2_branch_cut.json",
+    "value_changes": [],
+    "groups": "current registry"
+  },
+  {
+    "file": "crates/kernel/tests/fixtures/revision_r2_phase_control.json",
+    "value_changes": [],
+    "groups": "current registry"
+  }
+]

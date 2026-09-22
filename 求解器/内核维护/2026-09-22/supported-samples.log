@@ -1,0 +1,69 @@
+{
+  "status": "通过",
+  "scope": "静态结构及指定运行种子检查，不是全称运行认证",
+  "results": [
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "status": "完整运行输入检查通过（有限合成子集）",
+      "snapshot": "built_layout",
+      "anchor": {
+        "event": "blueprint_complete",
+        "side": "after"
+      },
+      "units": 14,
+      "occupied_cells": 153,
+      "physical_channels": 11,
+      "buffer_channels": 8,
+      "bridge_first_peers": [],
+      "counts_category": "算术推论（候选布局）",
+      "validation_category": "实测（工具）"
+    },
+    {
+      "file": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "status": "完整运行输入检查通过（有限合成子集）",
+      "snapshot": "built_layout",
+      "anchor": {
+        "event": "blueprint_complete",
+        "side": "after"
+      },
+      "units": 17,
+      "occupied_cells": 146,
+      "physical_channels": 13,
+      "buffer_channels": 0,
+      "bridge_first_peers": [],
+      "counts_category": "算术推论（候选布局）",
+      "validation_category": "实测（工具）"
+    }
+  ],
+  "negative_tests": [],
+  "representation_tests": [],
+  "readonly_source_hashes": {
+    "《明日方舟：终末地》游戏规则.txt": "4f04de50b2f743aec1da903f00f0f89f92f1aeba60eb4513320b71d0ee0a57fd",
+    "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
+  },
+  "axis_registry_sha256": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+  "axis_count": 99,
+  "axis_alignment": "全部字段名、已定值和生命周期逐项检查",
+  "document_checks": {
+    "axis_names_match": true,
+    "local_links_resolve": true
+  },
+  "artifact_sha256": {
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json": "035c5e221ae7b237355ec24063e9722c0ec3a69b1b6535fb1e052b192c5b9622",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json": "6e23df246caf6e6bf58615f3ade7ae05489ceb869263877473accdfa864b0d8f",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md": "4e19faa38b979fac58b5b7910248c255689c2da4ac2b6e974f47e5a0daa1cff6",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py": "847a1001c8c02987c80b8fac9a9142d2345743ec3bc4687cb1251dffd4f851e9",
+    "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/generate_examples.py": "11a47a1151ee21f34027eb322d594b49d5cdb8eab0120d0b4ba9f63162e7f162"
+  },
+  "unverified": [
+    "供电覆盖格集合",
+    "实际库存与进度",
+    "调试可达性",
+    "轮询与均分",
+    "实际混做及物流分配",
+    "离线接续",
+    "吞吐及全部可达循环达标",
+    "外部契约绑定与非空调试程序"
+  ]
+}

@@ -39,7 +39,7 @@ def unit_projection(rule_text, constraints, quantity):
                 'inventory': inventory, 'power_required': bool(functions),
                 'powered_functions': functions, 'basis': basis,
                 'inventory_rules': {
-                    'same_item_across_slots': 'exempt' if name == '协议储存箱' else 'at_most_one_slot',
+                    'same_item_across_slots': 'exempt' if name in {'协议储存箱', '桥接器'} else 'at_most_one_slot',
                     'excluded_roles': ['buffer'], 'basis': '游戏规则·物品格',
                     'scope': '单位内物品格；缓存格例外。仅在存在物品格时适用。'},
                 'switches': [{'function': f, 'settable': True, 'basis': '游戏规则·开关、设定'} for f in functions],
@@ -106,7 +106,7 @@ def unit_projection(rule_text, constraints, quantity):
             inventory = [slot(axis, 1, None, capacity_status='unresolved', item_policy='single_item')
                          for axis in ['vertical', 'horizontal']]
             extra = {'port_assignment': 'first_connected_peer',
-                     'notes': '两对端口各自拥有物品格，但同种物品在单位内只能占一个物品格，不能把两轴有格读成同种跨格豁免。容量例外的辖域未定；端口类型由先接端决定；轮询及分级按单位。'}
+                     'notes': '规则第13行明确豁免桥接器：两对端口各自拥有物品格，可同时存放同一种物品，各轴每tick至多1件。容量例外的辖域未定；端口类型由先接端决定；轮询及分级按单位。'}
         if name == '物品准入口':
             body = clauses[name]
             low, high, window, window_low, window_high = numbers(
@@ -130,9 +130,7 @@ def unit_projection(rule_text, constraints, quantity):
     units['协议储存箱'] = unit('协议储存箱', 'storage', body, (width, width), opposed(width),
         [slot('storage', count, capacity, item_policy='single_item_per_slot', numbered=True)],
         ['transfer'], ['协议储存箱', '传输'], port_category='算术推论',
-        transfer={'cooldown_ticks': quantity(cooldown), 'switch_settable': True, 'judgment_scope': 'unit',
-                  'cooldown_scope': 'unresolved', 'basis': '游戏规则·传输、判定、开关、设定',
-                  'note': '全箱一次判定已定；冷却按箱还是按格仍未定，见 T6。'})
+        transfer={'cooldown_ticks': quantity(cooldown), 'switch_settable': True, 'judgment_scope': 'unit', 'cooldown_scope': 'box', 'basis': '游戏规则L25、L36；任务书7 §1.1；主会话三审 §6', 'note': '一次单位判定按仓库可收余量尽量传输，余货留箱；即使物品格中没有物品也一样尝试（规则L36，owner 09-21 恢复该句），每次尝试后箱级 5 tick 冷却。', 'note_before': '一次单位判定按仓库可收余量尽量传输，余货留箱；箱级5 tick冷却已定，零传输时的冷却触发见规格T6。'})
     body = clauses['仓库取货口']
     width, _ = numbers(r'大小(\d+)x(\d+)', body)
     units['仓库取货口'] = unit('仓库取货口', 'storage', body, (0, 1),

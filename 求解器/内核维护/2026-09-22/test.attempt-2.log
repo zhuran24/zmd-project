@@ -1,0 +1,684 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+     Running unittests src/lib.rs (target/debug/deps/kernel-26241e85d1128675)
+
+running 100 tests
+test tests::integer_validation ... ok
+test tests::checkpoint_delta_negative_cases ... ok
+test tests::config_axes_and_all_stop_values ... ok
+test tests::core_inbound_physical_deposit ... FAILED
+test digest::known_vectors ... ok
+test tests::malformed_state_rejected ... FAILED
+test tests::bridge_same_item_occupies_both_axes_at_full_rate ... FAILED
+test tests::five_tick_recipe_completes_only_at_boundary ... FAILED
+test tests::full_and_delta_record_recompute ... FAILED
+test tests::catalog_and_geometry ... FAILED
+test tests::after_closure_restart ... FAILED
+test tests::bridge_two_independent_slots_run ... FAILED
+test tests::damping_no_terminal ... FAILED
+test tests::external_stop_positions ... FAILED
+test tests::manufacture_disabled_intake_and_pause ... FAILED
+test tests::completed_output_conflict_retains_batch ... FAILED
+test tests::coverage_five_states ... FAILED
+test tests::box_selectors ... FAILED
+test tests::byte_determinism_and_layout_permutation ... FAILED
+test tests::closure_and_resources ... FAILED
+test tests::damping_paths_and_missing_branch ... FAILED
+test tests::explicit_step_anchors ... FAILED
+test tests::explicit_ore_supply ... FAILED
+test tests::identity_latch_and_no_cross_disconnected_observation ... FAILED
+test tests::manufacturing_two_material_batch ... FAILED
+test tests::level_tie_reversal_changes_winner ... FAILED
+test tests::output_level_damping_priority ... FAILED
+test tests::revision::revision_gate_item_domain ... FAILED
+test tests::ore_history_horizon_stop ... FAILED
+test tests::revision::revision_independent_identity_audit ... FAILED
+test tests::revision::revision_manufacturing_axis_evidence ... FAILED
+test tests::membership_projection ... FAILED
+test tests::revision::revision_external_action_references ... FAILED
+test tests::revision_r2::revision_r2_damping_does_not_rebind_singleton ... FAILED
+test tests::revision::revision_initial_warehouse_labels ... FAILED
+test tests::revision_r2::revision_r2_fixed_branch_cut_and_reload ... FAILED
+test tests::revision::revision_pending_history_alias ... FAILED
+test tests::projections ... FAILED
+test tests::revision_r2::revision_r2_internal_passage_identity ... FAILED
+test tests::output_off_preserves_game_state ... FAILED
+test tests::revision::revision_warehouse_acceptance ... FAILED
+test tests::revision::revision_reports_and_after_closure_stop ... FAILED
+test tests::revision::revision_branch_relevance ... FAILED
+test tests::revision::revision_supply_order_intersection ... FAILED
+test tests::revision::revision_snapshot_objects ... FAILED
+test tests::revision::revision_ore_history_sufficiency ... FAILED
+test tests::revision::revision_ore_depletion_is_not_a_movement_guard ... FAILED
+test tests::revision_r2::revision_r2_phase_intersection ... FAILED
+test tests::revision_r2::revision_r2_required_input_shapes ... FAILED
+test tests::revision_r2::revision_r2_seed_consumed_identity ... FAILED
+test tests::revision_r2::revision_r2_unowned_global_events ... FAILED
+test tests::revision_r3::revision_r3_checkpoint_parameters_are_not_repaired ... FAILED
+test tests::revision_r4::revision_r4_path_runs_never_exercises_geometric_adjacency ... FAILED
+test tests::revision_r3::revision_r3_cycle_checks_prefix_before_recomputation ... FAILED
+test tests::revision_r3::revision_r3_malformed_seed_returns_stop_before_indexing ... FAILED
+test tests::revision_r3::revision_r3_bridge_moves_are_not_first_contact_events ... FAILED
+test tests::revision_r4::revision_r4_age_cohorts_seed_capacity_and_key ... FAILED
+test tests::revision_r2::revision_r2_rust_metadata_controls ... FAILED
+test tests::revision_r3::revision_r3_phase_type_and_domain_at_both_anchors ... FAILED
+test tests::revision_r3::revision_r3_window_deadline_respects_anchor_phase ... FAILED
+test tests::revision_r4::revision_r4_single_level_empty_branch_table_matches_full_table ... FAILED
+test tests::revision_r4::revision_r4_cohorts_manufacture_remove_and_arrival_age ... FAILED
+test tests::revision_r4::revision_r4_multilevel_branch_table_includes_dormant_subsets ... FAILED
+test tests::revision_r4::revision_r4_first_resumed_sweep_stop_preserves_checkpoint ... FAILED
+test tests::revision_r5::revision_r5_production_load_guards_ore_before_memory ... FAILED
+test tests::revision_r4::revision_r4_pending_trigger_is_closed_before_derivation_and_key ... FAILED
+test tests::revision_r3::revision_r3_sufficient_requires_both_positive_ores ... FAILED
+test tests::round5::round5_cycle_certificate_replay_and_tamper ... FAILED
+test tests::round5::round5_cycle_age_overflow_is_resource_not_wrap ... FAILED
+test tests::round5::round5_cache_differential ... FAILED
+test tests::round5::round5_completion_after_pause ... FAILED
+test tests::round5::round5_ledgers_conserve_every_species ... FAILED
+test tests::round5::round5_ore_return_candidate_stops_before_capacity_or_age ... FAILED
+test tests::round6::round6_compact_step_preserves_full_checkpoint ... FAILED
+test tests::round6::round6_independent_ledger_conservation_rejects_state_and_total_tampering ... FAILED
+test tests::round6::round6_hash_collisions_replay_every_candidate ... FAILED
+test tests::round5::round5_inventory_order_is_canonical ... FAILED
+test tests::round5::round5_supply_differential_and_last_ore ... FAILED
+test tests::round5::round5_seed_roundtrip ... FAILED
+test tests::round6::round6_no_record_retains_loaded_zero_prefix ... FAILED
+test tests::round5::round5_seed_tie_changes_rebuild_ring ... FAILED
+test tests::round6::round6_static_domain_reports_all_without_tick ... FAILED
+test tests::seed_and_parameter_negatives ... FAILED
+test tests::round6::round6_put_rejects_without_partial_write ... FAILED
+test tests::round6::round6_static_pass_does_not_replace_dynamic_d2 ... FAILED
+test tests::transfer_cooldown_pause ... FAILED
+test tests::total_exhaustion_survives_window_expiry ... FAILED
+test tests::round6::round6_test_only_two_product_recipe_keeps_buffer_exception ... FAILED
+test tests::stopped_engine_cannot_continue ... FAILED
+test tests::transfer_conservation ... FAILED
+test tests::warehouse_80000_and_recipe_conservation ... FAILED
+test tests::simultaneous_ring_restoration ... FAILED
+test tests::transfer_capacity_and_empty_cooldown ... FAILED
+test tests::transport_wrong_item_rejects ... FAILED
+test tests::warehouse_competition_atomic_stop ... FAILED
+test tests::warehouse_identity_monotone ... FAILED
+test tests::warehouse_single_unknown_with_assigned_empty ... FAILED
+test tests::warehouse_invalid_identity_and_order ... FAILED
+test tests::warehouse_unassigned_species_order ... FAILED
+test tests::three_examples_static ... ok
+
+failures:
+
+---- tests::core_inbound_physical_deposit stdout ----
+
+thread 'tests::core_inbound_physical_deposit' (263641) panicked at crates/kernel/src/tests.rs:819:64:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- tests::malformed_state_rejected stdout ----
+
+thread 'tests::malformed_state_rejected' (263653) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::bridge_same_item_occupies_both_axes_at_full_rate stdout ----
+
+thread 'tests::bridge_same_item_occupies_both_axes_at_full_rate' (263633) panicked at crates/kernel/src/tests.rs:819:64:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::five_tick_recipe_completes_only_at_boundary stdout ----
+
+thread 'tests::five_tick_recipe_completes_only_at_boundary' (263648) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::full_and_delta_record_recompute stdout ----
+
+thread 'tests::full_and_delta_record_recompute' (263649) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::catalog_and_geometry stdout ----
+
+thread 'tests::catalog_and_geometry' (263636) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::after_closure_restart stdout ----
+
+thread 'tests::after_closure_restart' (263631) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::bridge_two_independent_slots_run stdout ----
+
+thread 'tests::bridge_two_independent_slots_run' (263634) panicked at crates/kernel/src/tests.rs:819:64:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::damping_no_terminal stdout ----
+
+thread 'tests::damping_no_terminal' (263643) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::external_stop_positions stdout ----
+
+thread 'tests::external_stop_positions' (263647) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::manufacture_disabled_intake_and_pause stdout ----
+
+thread 'tests::manufacture_disabled_intake_and_pause' (263654) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::completed_output_conflict_retains_batch stdout ----
+
+thread 'tests::completed_output_conflict_retains_batch' (263639) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::coverage_five_states stdout ----
+
+thread 'tests::coverage_five_states' (263642) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::box_selectors stdout ----
+
+thread 'tests::box_selectors' (263632) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::byte_determinism_and_layout_permutation stdout ----
+
+thread 'tests::byte_determinism_and_layout_permutation' (263635) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::closure_and_resources stdout ----
+
+thread 'tests::closure_and_resources' (263638) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::damping_paths_and_missing_branch stdout ----
+
+thread 'tests::damping_paths_and_missing_branch' (263644) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::explicit_step_anchors stdout ----
+
+thread 'tests::explicit_step_anchors' (263646) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::explicit_ore_supply stdout ----
+
+thread 'tests::explicit_ore_supply' (263645) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::identity_latch_and_no_cross_disconnected_observation stdout ----
+
+thread 'tests::identity_latch_and_no_cross_disconnected_observation' (263650) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::manufacturing_two_material_batch stdout ----
+
+thread 'tests::manufacturing_two_material_batch' (263655) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::level_tie_reversal_changes_winner stdout ----
+
+thread 'tests::level_tie_reversal_changes_winner' (263652) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::output_level_damping_priority stdout ----
+
+thread 'tests::output_level_damping_priority' (263783) panicked at crates/kernel/src/tests.rs:819:64:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision::revision_gate_item_domain stdout ----
+
+thread 'tests::revision::revision_gate_item_domain' (263791) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::ore_history_horizon_stop stdout ----
+
+thread 'tests::ore_history_horizon_stop' (263781) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision::revision_independent_identity_audit stdout ----
+
+thread 'tests::revision::revision_independent_identity_audit' (263792) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision::revision_manufacturing_axis_evidence stdout ----
+
+thread 'tests::revision::revision_manufacturing_axis_evidence' (263794) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::membership_projection stdout ----
+
+thread 'tests::membership_projection' (263762) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision::revision_external_action_references stdout ----
+
+thread 'tests::revision::revision_external_action_references' (263790) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r2::revision_r2_damping_does_not_rebind_singleton stdout ----
+
+thread 'tests::revision_r2::revision_r2_damping_does_not_rebind_singleton' (263805) panicked at crates/kernel/src/tests.rs:819:64:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision::revision_initial_warehouse_labels stdout ----
+
+thread 'tests::revision::revision_initial_warehouse_labels' (263793) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r2::revision_r2_fixed_branch_cut_and_reload stdout ----
+
+thread 'tests::revision_r2::revision_r2_fixed_branch_cut_and_reload' (263807) panicked at crates/kernel/src/tests.rs:819:64:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision::revision_pending_history_alias stdout ----
+
+thread 'tests::revision::revision_pending_history_alias' (263798) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::projections stdout ----
+
+thread 'tests::projections' (263788) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r2::revision_r2_internal_passage_identity stdout ----
+
+thread 'tests::revision_r2::revision_r2_internal_passage_identity' (263813) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::output_off_preserves_game_state stdout ----
+
+thread 'tests::output_off_preserves_game_state' (263784) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision::revision_warehouse_acceptance stdout ----
+
+thread 'tests::revision::revision_warehouse_acceptance' (263804) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision::revision_reports_and_after_closure_stop stdout ----
+
+thread 'tests::revision::revision_reports_and_after_closure_stop' (263800) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision::revision_branch_relevance stdout ----
+
+thread 'tests::revision::revision_branch_relevance' (263789) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision::revision_supply_order_intersection stdout ----
+
+thread 'tests::revision::revision_supply_order_intersection' (263803) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision::revision_snapshot_objects stdout ----
+
+thread 'tests::revision::revision_snapshot_objects' (263801) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision::revision_ore_history_sufficiency stdout ----
+
+thread 'tests::revision::revision_ore_history_sufficiency' (263796) panicked at crates/kernel/src/tests.rs:819:64:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision::revision_ore_depletion_is_not_a_movement_guard stdout ----
+
+thread 'tests::revision::revision_ore_depletion_is_not_a_movement_guard' (263795) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r2::revision_r2_phase_intersection stdout ----
+
+thread 'tests::revision_r2::revision_r2_phase_intersection' (263814) panicked at crates/kernel/src/tests.rs:819:64:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r2::revision_r2_required_input_shapes stdout ----
+
+thread 'tests::revision_r2::revision_r2_required_input_shapes' (263840) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r2::revision_r2_seed_consumed_identity stdout ----
+
+thread 'tests::revision_r2::revision_r2_seed_consumed_identity' (263892) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r2::revision_r2_unowned_global_events stdout ----
+
+thread 'tests::revision_r2::revision_r2_unowned_global_events' (263920) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r3::revision_r3_checkpoint_parameters_are_not_repaired stdout ----
+
+thread 'tests::revision_r3::revision_r3_checkpoint_parameters_are_not_repaired' (263946) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r4::revision_r4_path_runs_never_exercises_geometric_adjacency stdout ----
+
+thread 'tests::revision_r4::revision_r4_path_runs_never_exercises_geometric_adjacency' (263964) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r3::revision_r3_cycle_checks_prefix_before_recomputation stdout ----
+
+thread 'tests::revision_r3::revision_r3_cycle_checks_prefix_before_recomputation' (263948) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r3::revision_r3_malformed_seed_returns_stop_before_indexing stdout ----
+
+thread 'tests::revision_r3::revision_r3_malformed_seed_returns_stop_before_indexing' (263950) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r3::revision_r3_bridge_moves_are_not_first_contact_events stdout ----
+
+thread 'tests::revision_r3::revision_r3_bridge_moves_are_not_first_contact_events' (263940) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r4::revision_r4_age_cohorts_seed_capacity_and_key stdout ----
+
+thread 'tests::revision_r4::revision_r4_age_cohorts_seed_capacity_and_key' (263957) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r2::revision_r2_rust_metadata_controls stdout ----
+
+thread 'tests::revision_r2::revision_r2_rust_metadata_controls' (263862) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r3::revision_r3_phase_type_and_domain_at_both_anchors stdout ----
+
+thread 'tests::revision_r3::revision_r3_phase_type_and_domain_at_both_anchors' (263951) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r3::revision_r3_window_deadline_respects_anchor_phase stdout ----
+
+thread 'tests::revision_r3::revision_r3_window_deadline_respects_anchor_phase' (263954) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r4::revision_r4_single_level_empty_branch_table_matches_full_table stdout ----
+
+thread 'tests::revision_r4::revision_r4_single_level_empty_branch_table_matches_full_table' (263970) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r4::revision_r4_cohorts_manufacture_remove_and_arrival_age stdout ----
+
+thread 'tests::revision_r4::revision_r4_cohorts_manufacture_remove_and_arrival_age' (263958) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r4::revision_r4_multilevel_branch_table_includes_dormant_subsets stdout ----
+
+thread 'tests::revision_r4::revision_r4_multilevel_branch_table_includes_dormant_subsets' (263962) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r4::revision_r4_first_resumed_sweep_stop_preserves_checkpoint stdout ----
+
+thread 'tests::revision_r4::revision_r4_first_resumed_sweep_stop_preserves_checkpoint' (263959) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r5::revision_r5_production_load_guards_ore_before_memory stdout ----
+
+thread 'tests::revision_r5::revision_r5_production_load_guards_ore_before_memory' (263971) panicked at crates/kernel/src/tests.rs:819:64:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r4::revision_r4_pending_trigger_is_closed_before_derivation_and_key stdout ----
+
+thread 'tests::revision_r4::revision_r4_pending_trigger_is_closed_before_derivation_and_key' (263969) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::revision_r3::revision_r3_sufficient_requires_both_positive_ores stdout ----
+
+thread 'tests::revision_r3::revision_r3_sufficient_requires_both_positive_ores' (263953) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round5::round5_cycle_certificate_replay_and_tamper stdout ----
+
+thread 'tests::round5::round5_cycle_certificate_replay_and_tamper' (263982) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round5::round5_cycle_age_overflow_is_resource_not_wrap stdout ----
+
+thread 'tests::round5::round5_cycle_age_overflow_is_resource_not_wrap' (263979) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round5::round5_cache_differential stdout ----
+
+thread 'tests::round5::round5_cache_differential' (263975) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round5::round5_completion_after_pause stdout ----
+
+thread 'tests::round5::round5_completion_after_pause' (263976) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round5::round5_ledgers_conserve_every_species stdout ----
+
+thread 'tests::round5::round5_ledgers_conserve_every_species' (264027) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round5::round5_ore_return_candidate_stops_before_capacity_or_age stdout ----
+
+thread 'tests::round5::round5_ore_return_candidate_stops_before_capacity_or_age' (264038) panicked at crates/kernel/src/tests.rs:819:64:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round6::round6_compact_step_preserves_full_checkpoint stdout ----
+
+thread 'tests::round6::round6_compact_step_preserves_full_checkpoint' (264087) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round6::round6_independent_ledger_conservation_rejects_state_and_total_tampering stdout ----
+
+thread 'tests::round6::round6_independent_ledger_conservation_rejects_state_and_total_tampering' (264100) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round6::round6_hash_collisions_replay_every_candidate stdout ----
+
+thread 'tests::round6::round6_hash_collisions_replay_every_candidate' (264088) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round5::round5_inventory_order_is_canonical stdout ----
+
+thread 'tests::round5::round5_inventory_order_is_canonical' (264001) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round5::round5_supply_differential_and_last_ore stdout ----
+
+thread 'tests::round5::round5_supply_differential_and_last_ore' (264072) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round5::round5_seed_roundtrip stdout ----
+
+thread 'tests::round5::round5_seed_roundtrip' (264059) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round6::round6_no_record_retains_loaded_zero_prefix stdout ----
+
+thread 'tests::round6::round6_no_record_retains_loaded_zero_prefix' (264109) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round5::round5_seed_tie_changes_rebuild_ring stdout ----
+
+thread 'tests::round5::round5_seed_tie_changes_rebuild_ring' (264060) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round6::round6_static_domain_reports_all_without_tick stdout ----
+
+thread 'tests::round6::round6_static_domain_reports_all_without_tick' (264118) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::seed_and_parameter_negatives stdout ----
+
+thread 'tests::seed_and_parameter_negatives' (264126) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round6::round6_put_rejects_without_partial_write stdout ----
+
+thread 'tests::round6::round6_put_rejects_without_partial_write' (264111) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round6::round6_static_pass_does_not_replace_dynamic_d2 stdout ----
+
+thread 'tests::round6::round6_static_pass_does_not_replace_dynamic_d2' (264123) panicked at crates/kernel/src/tests.rs:819:64:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::transfer_cooldown_pause stdout ----
+
+thread 'tests::transfer_cooldown_pause' (264143) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::total_exhaustion_survives_window_expiry stdout ----
+
+thread 'tests::total_exhaustion_survives_window_expiry' (264132) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::round6::round6_test_only_two_product_recipe_keeps_buffer_exception stdout ----
+
+thread 'tests::round6::round6_test_only_two_product_recipe_keeps_buffer_exception' (264125) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::stopped_engine_cannot_continue stdout ----
+
+thread 'tests::stopped_engine_cannot_continue' (264128) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::transfer_conservation stdout ----
+
+thread 'tests::transfer_conservation' (264135) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::warehouse_80000_and_recipe_conservation stdout ----
+
+thread 'tests::warehouse_80000_and_recipe_conservation' (264175) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::simultaneous_ring_restoration stdout ----
+
+thread 'tests::simultaneous_ring_restoration' (264127) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::transfer_capacity_and_empty_cooldown stdout ----
+
+thread 'tests::transfer_capacity_and_empty_cooldown' (264133) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::transport_wrong_item_rejects stdout ----
+
+thread 'tests::transport_wrong_item_rejects' (264147) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::warehouse_competition_atomic_stop stdout ----
+
+thread 'tests::warehouse_competition_atomic_stop' (264176) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::warehouse_identity_monotone stdout ----
+
+thread 'tests::warehouse_identity_monotone' (264207) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::warehouse_single_unknown_with_assigned_empty stdout ----
+
+thread 'tests::warehouse_single_unknown_with_assigned_empty' (264221) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::warehouse_invalid_identity_and_order stdout ----
+
+thread 'tests::warehouse_invalid_identity_and_order' (264217) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+---- tests::warehouse_unassigned_species_order stdout ----
+
+thread 'tests::warehouse_unassigned_species_order' (264245) panicked at crates/kernel/src/tests.rs:35:61:
+called `Result::unwrap()` on an `Err` value: Stop { status: "invalid_input", axis: "input", location: "parameter_values", reason: "当前值/生命周期与参数向量不符" }
+
+
+failures:
+    tests::after_closure_restart
+    tests::box_selectors
+    tests::bridge_same_item_occupies_both_axes_at_full_rate
+    tests::bridge_two_independent_slots_run
+    tests::byte_determinism_and_layout_permutation
+    tests::catalog_and_geometry
+    tests::closure_and_resources
+    tests::completed_output_conflict_retains_batch
+    tests::core_inbound_physical_deposit
+    tests::coverage_five_states
+    tests::damping_no_terminal
+    tests::damping_paths_and_missing_branch
+    tests::explicit_ore_supply
+    tests::explicit_step_anchors
+    tests::external_stop_positions
+    tests::five_tick_recipe_completes_only_at_boundary
+    tests::full_and_delta_record_recompute
+    tests::identity_latch_and_no_cross_disconnected_observation
+    tests::level_tie_reversal_changes_winner
+    tests::malformed_state_rejected
+    tests::manufacture_disabled_intake_and_pause
+    tests::manufacturing_two_material_batch
+    tests::membership_projection
+    tests::ore_history_horizon_stop
+    tests::output_level_damping_priority
+    tests::output_off_preserves_game_state
+    tests::projections
+    tests::revision::revision_branch_relevance
+    tests::revision::revision_external_action_references
+    tests::revision::revision_gate_item_domain
+    tests::revision::revision_independent_identity_audit
+    tests::revision::revision_initial_warehouse_labels
+    tests::revision::revision_manufacturing_axis_evidence
+    tests::revision::revision_ore_depletion_is_not_a_movement_guard
+    tests::revision::revision_ore_history_sufficiency
+    tests::revision::revision_pending_history_alias
+    tests::revision::revision_reports_and_after_closure_stop
+    tests::revision::revision_snapshot_objects
+    tests::revision::revision_supply_order_intersection
+    tests::revision::revision_warehouse_acceptance
+    tests::revision_r2::revision_r2_damping_does_not_rebind_singleton
+    tests::revision_r2::revision_r2_fixed_branch_cut_and_reload
+    tests::revision_r2::revision_r2_internal_passage_identity
+    tests::revision_r2::revision_r2_phase_intersection
+    tests::revision_r2::revision_r2_required_input_shapes
+    tests::revision_r2::revision_r2_rust_metadata_controls
+    tests::revision_r2::revision_r2_seed_consumed_identity
+    tests::revision_r2::revision_r2_unowned_global_events
+    tests::revision_r3::revision_r3_bridge_moves_are_not_first_contact_events
+    tests::revision_r3::revision_r3_checkpoint_parameters_are_not_repaired
+    tests::revision_r3::revision_r3_cycle_checks_prefix_before_recomputation
+    tests::revision_r3::revision_r3_malformed_seed_returns_stop_before_indexing
+    tests::revision_r3::revision_r3_phase_type_and_domain_at_both_anchors
+    tests::revision_r3::revision_r3_sufficient_requires_both_positive_ores
+    tests::revision_r3::revision_r3_window_deadline_respects_anchor_phase
+    tests::revision_r4::revision_r4_age_cohorts_seed_capacity_and_key
+    tests::revision_r4::revision_r4_cohorts_manufacture_remove_and_arrival_age
+    tests::revision_r4::revision_r4_first_resumed_sweep_stop_preserves_checkpoint
+    tests::revision_r4::revision_r4_multilevel_branch_table_includes_dormant_subsets
+    tests::revision_r4::revision_r4_path_runs_never_exercises_geometric_adjacency
+    tests::revision_r4::revision_r4_pending_trigger_is_closed_before_derivation_and_key
+    tests::revision_r4::revision_r4_single_level_empty_branch_table_matches_full_table
+    tests::revision_r5::revision_r5_production_load_guards_ore_before_memory
+    tests::round5::round5_cache_differential
+    tests::round5::round5_completion_after_pause
+    tests::round5::round5_cycle_age_overflow_is_resource_not_wrap
+    tests::round5::round5_cycle_certificate_replay_and_tamper
+    tests::round5::round5_inventory_order_is_canonical
+    tests::round5::round5_ledgers_conserve_every_species
+    tests::round5::round5_ore_return_candidate_stops_before_capacity_or_age
+    tests::round5::round5_seed_roundtrip
+    tests::round5::round5_seed_tie_changes_rebuild_ring
+    tests::round5::round5_supply_differential_and_last_ore
+    tests::round6::round6_compact_step_preserves_full_checkpoint
+    tests::round6::round6_hash_collisions_replay_every_candidate
+    tests::round6::round6_independent_ledger_conservation_rejects_state_and_total_tampering
+    tests::round6::round6_no_record_retains_loaded_zero_prefix
+    tests::round6::round6_put_rejects_without_partial_write
+    tests::round6::round6_static_domain_reports_all_without_tick
+    tests::round6::round6_static_pass_does_not_replace_dynamic_d2
+    tests::round6::round6_test_only_two_product_recipe_keeps_buffer_exception
+    tests::seed_and_parameter_negatives
+    tests::simultaneous_ring_restoration
+    tests::stopped_engine_cannot_continue
+    tests::total_exhaustion_survives_window_expiry
+    tests::transfer_capacity_and_empty_cooldown
+    tests::transfer_conservation
+    tests::transfer_cooldown_pause
+    tests::transport_wrong_item_rejects
+    tests::warehouse_80000_and_recipe_conservation
+    tests::warehouse_competition_atomic_stop
+    tests::warehouse_identity_monotone
+    tests::warehouse_invalid_identity_and_order
+    tests::warehouse_single_unknown_with_assigned_empty
+    tests::warehouse_unassigned_species_order
+
+test result: FAILED. 5 passed; 95 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+error: test failed, to rerun pass `-p kernel --lib`

@@ -1,0 +1,52 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running tests/revision_cli.rs (target/debug/deps/revision_cli-6e74e26d9cc8e0e1)
+
+running 1 test
+test revision_cli_and_python_record_negatives ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.52s
+
+     Running tests/revision_r2_cli.rs (target/debug/deps/revision_r2_cli-8728dafa1cffde10)
+
+running 1 test
+test revision_r2_cli_and_python_record_negatives ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 14.72s
+
+     Running tests/revision_r5_cli.rs (target/debug/deps/revision_r5_cli-1c88f989f3382336)
+
+running 1 test
+test revision_r5_public_cli_regressions ... FAILED
+
+failures:
+
+---- revision_r5_public_cli_regressions stdout ----
+
+thread 'revision_r5_public_cli_regressions' (316757) panicked at crates/kernel/tests/revision_r5_cli.rs:15:5:
+
+Traceback (most recent call last):
+  File "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22/bin/python", line 16, in <module>
+    exec(compile(text,str(p),'exec'),{'__name__':'__main__','__file__':str(p)})
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_r5_cli.py", line 202, in <module>
+    main()
+    ~~~~^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_r5_cli.py", line 113, in main
+    call('relative-reference-batch', 'verify-batch', reference_dir, cwd=ROOT.parent)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/revision_r5_cli.py", line 39, in call
+    assert result.returncode == code, (name, result.returncode, result.stdout, result.stderr)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('relative-reference-batch', 2, '', 'Traceback (most recent call last):\n  File "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_all.py", line 56, in <module>\n    if __name__==\'__main__\':main()\n                            ~~~~^^\n  File "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/verify_all.py", line 51, in main\n    ticks=audit_ledger(data,read(source))\n  File "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/audit_task7.py", line 19, in audit_ledger\n    catalog=json.loads(Path(data[\'catalog\'][\'path\']).read_text());kinds={u[\'id\']:u for u in catalog[\'units\']}\n                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\n  File "/usr/lib/python3.14/pathlib/__init__.py", line 787, in read_text\n    with self.open(mode=\'r\', encoding=encoding, errors=errors, newline=newline) as f:\n         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/usr/lib/python3.14/pathlib/__init__.py", line 771, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: \'../正式静态目录.json\'\n')
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    revision_r5_public_cli_regressions
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 16.00s
+
+error: test failed, to rerun pass `-p kernel --test revision_r5_cli`
+error: 1 target failed:
+    `-p kernel --test revision_r5_cli`

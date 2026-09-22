@@ -1,0 +1,168 @@
+   Compiling kernel v0.1.0 (/home/zhuran24/zmd-research-fresh/求解器/crates/kernel)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.36s
+     Running unittests src/lib.rs (target/debug/deps/kernel-26241e85d1128675)
+
+running 100 tests
+test tests::checkpoint_delta_negative_cases ... ok
+test tests::integer_validation ... ok
+test digest::known_vectors ... ok
+test tests::config_axes_and_all_stop_values ... ok
+test tests::membership_projection ... ok
+test tests::box_selectors ... ok
+test tests::completed_output_conflict_retains_batch ... ok
+test tests::damping_no_terminal ... ok
+test tests::catalog_and_geometry ... ok
+test tests::explicit_step_anchors ... ok
+test tests::ore_history_horizon_stop ... ok
+test tests::manufacturing_two_material_batch ... ok
+test tests::after_closure_restart ... ok
+test tests::manufacture_disabled_intake_and_pause ... ok
+test tests::core_inbound_physical_deposit ... ok
+test tests::level_tie_reversal_changes_winner ... ok
+test tests::bridge_two_independent_slots_run ... ok
+test tests::output_level_damping_priority ... ok
+test tests::identity_current_condition_restores_disconnected_channel ... ok
+test tests::closure_and_resources ... ok
+test tests::explicit_ore_supply ... ok
+test tests::revision::revision_independent_identity_audit ... ok
+test tests::bridge_same_item_occupies_both_axes_at_full_rate ... ok
+test tests::damping_paths_and_missing_branch ... ok
+test tests::five_tick_recipe_completes_only_at_boundary ... ok
+test tests::output_off_preserves_game_state ... ok
+test tests::revision_r2::revision_r2_damping_does_not_rebind_singleton ... ok
+test tests::revision::revision_ore_depletion_is_not_a_movement_guard ... ok
+test tests::revision::revision_branch_relevance ... ok
+test tests::revision::revision_warehouse_acceptance ... ok
+test tests::revision::revision_manufacturing_axis_evidence ... ok
+test tests::revision_r3::revision_r3_bridge_moves_are_not_first_contact_events ... ok
+test tests::coverage_five_states ... ok
+test tests::external_stop_positions ... ok
+test tests::revision_r2::revision_r2_internal_passage_identity ... ok
+test tests::malformed_state_rejected ... ok
+test tests::revision::revision_pending_history_alias ... ok
+test tests::projections ... ok
+test tests::revision::revision_initial_warehouse_labels ... ok
+test tests::revision::revision_supply_order_intersection ... ok
+test tests::revision::revision_gate_item_domain ... ok
+test tests::revision::revision_external_action_references ... ok
+test tests::revision::revision_snapshot_objects ... ok
+test tests::revision_r2::revision_r2_phase_intersection ... ok
+test tests::revision_r2::revision_r2_fixed_branch_cut_and_reload ... ok
+test tests::revision_r4::revision_r4_path_runs_never_exercises_geometric_adjacency ... ok
+test tests::revision::revision_ore_history_sufficiency ... ok
+test tests::round5::round5_cycle_age_overflow_is_resource_not_wrap ... ok
+test tests::revision_r4::revision_r4_cohorts_manufacture_remove_and_arrival_age ... ok
+test tests::round5::round5_completion_after_pause ... ok
+test tests::revision_r4::revision_r4_pending_trigger_is_closed_before_derivation_and_key ... ok
+test tests::revision_r4::revision_r4_multilevel_branch_table_includes_dormant_subsets ... ok
+test tests::byte_determinism_and_layout_permutation ... ok
+test tests::revision_r2::revision_r2_required_input_shapes ... ok
+test tests::revision_r2::revision_r2_seed_consumed_identity ... ok
+test tests::round5::round5_inventory_order_is_canonical ... ok
+test tests::revision_r4::revision_r4_age_cohorts_seed_capacity_and_key ... ok
+test tests::revision_r5::revision_r5_production_load_guards_ore_before_memory ... ok
+test tests::revision_r3::revision_r3_sufficient_requires_both_positive_ores ... ok
+test tests::revision_r3::revision_r3_window_deadline_respects_anchor_phase ... ok
+test tests::round5::round5_seed_tie_changes_rebuild_ring ... ok
+test tests::revision_r2::revision_r2_unowned_global_events ... ok
+test tests::round6::round6_put_rejects_without_partial_write ... ok
+test tests::round6::round6_static_domain_reports_all_without_tick ... ok
+test tests::revision_r4::revision_r4_first_resumed_sweep_stop_preserves_checkpoint ... ok
+test tests::round6::round6_compact_step_preserves_full_checkpoint ... ok
+test tests::round6::round6_test_only_two_product_recipe_keeps_buffer_exception ... ok
+test tests::round6::round6_independent_ledger_conservation_rejects_state_and_total_tampering ... ok
+test tests::simultaneous_ring_restoration ... ok
+test tests::stopped_engine_cannot_continue ... ok
+test tests::round5::round5_ore_return_candidate_stops_before_capacity_or_age ... ok
+test tests::transfer_conservation ... ok
+test tests::transfer_capacity_and_empty_cooldown ... ok
+test tests::revision_r3::revision_r3_checkpoint_parameters_are_not_repaired ... ok
+test tests::round5::round5_supply_differential_and_last_ore ... ok
+test tests::transport_wrong_item_rejects ... ok
+test tests::warehouse_competition_atomic_stop ... ok
+test tests::warehouse_invalid_identity_and_order ... ok
+test tests::warehouse_identity_monotone ... ok
+test tests::warehouse_80000_and_recipe_conservation ... ok
+test tests::warehouse_unassigned_species_order ... ok
+test tests::total_exhaustion_survives_window_expiry ... ok
+test tests::warehouse_single_unknown_with_assigned_empty ... ok
+test tests::three_examples_static ... ok
+test tests::transfer_cooldown_pause ... ok
+test tests::seed_and_parameter_negatives ... ok
+test tests::round6::round6_static_pass_does_not_replace_dynamic_d2 ... ok
+test tests::round5::round5_seed_roundtrip ... ok
+test tests::revision::revision_reports_and_after_closure_stop ... ok
+test tests::revision_r4::revision_r4_single_level_empty_branch_table_matches_full_table ... ok
+test tests::round6::round6_no_record_retains_loaded_zero_prefix ... ok
+test tests::full_and_delta_record_recompute ... ok
+test tests::round5::round5_ledgers_conserve_every_species ... ok
+test tests::revision_r3::revision_r3_phase_type_and_domain_at_both_anchors ... ok
+test tests::revision_r3::revision_r3_cycle_checks_prefix_before_recomputation ... ok
+test tests::revision_r3::revision_r3_malformed_seed_returns_stop_before_indexing ... ok
+test tests::round5::round5_cycle_certificate_replay_and_tamper ... ok
+test tests::round6::round6_hash_collisions_replay_every_candidate ... ok
+test tests::revision_r2::revision_r2_rust_metadata_controls ... ok
+test tests::round5::round5_cache_differential ... ok
+
+test result: ok. 100 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 58.76s
+
+     Running unittests src/main.rs (target/debug/deps/kernel-7b5e2fc753826063)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/reference.rs (target/debug/deps/reference-1613ad1990138602)
+
+running 3 tests
+test crusher_reference ... FAILED
+test splitter_reference ... FAILED
+test live_python_differential ... FAILED
+
+failures:
+
+---- crusher_reference stdout ----
+
+thread 'crusher_reference' (294368) panicked at crates/kernel/tests/reference.rs:26:13:
+assertion `left == right` failed: tick.closure.basis length
+  left: 3
+ right: 2
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- splitter_reference stdout ----
+
+thread 'splitter_reference' (294370) panicked at crates/kernel/tests/reference.rs:26:13:
+assertion `left == right` failed: tick.closure.basis length
+  left: 3
+ right: 2
+
+---- live_python_differential stdout ----
+
+thread 'live_python_differential' (294369) panicked at crates/kernel/tests/reference.rs:81:5:
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import json,sys;sys.path.insert(0,sys.argv[1]);import check_golden_trace as g;import check_examples as c;print(json.dumps({n:g.run(c.load_json(g.BASE/(n+'.json'))) for n in ['混做粉碎机两下游','分流器三路轮询']},ensure_ascii=False))
+                                                                                                                                 ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_golden_trace.py", line 17, in run
+    checker.check(data,input_path(data))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py", line 585, in check
+    validate_runtime(data, catalog, ports, channels, buffers)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/runtime_example.py", line 319, in validate_runtime
+    require(same_json(sem['parameter_values'],exp),'当前轴值/生命周期与参数输入不一致')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py", line 59, in require
+    raise CheckError(message)
+check_examples.CheckError: 当前轴值/生命周期与参数输入不一致
+
+
+
+failures:
+    crusher_reference
+    live_python_differential
+    splitter_reference
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+
+error: test failed, to rerun pass `-p kernel --test reference`

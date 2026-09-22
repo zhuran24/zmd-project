@@ -1,0 +1,17 @@
+{
+  "reader": "首次独立阅读交付物的维护者",
+  "checks": {
+    "current_vs_historical_separated": true,
+    "bounds_have_preconditions": true,
+    "all_required_deliverables_exist": true,
+    "plan_only_no_refactor_or_archive": true,
+    "test_failures_and_scope_limits_disclosed": true,
+    "no_claim_of_global_factory_certification": true,
+    "old_evidence_restored_by_full_hash": true
+  },
+  "followup_limit": "旧check_examples默认self-test不覆盖桥运行种子；已分别用Rust回归与Python状态校验验证桥例外。",
+  "files": [
+    "记录.md",
+    "../代码体检方案.md"
+  ]
+}

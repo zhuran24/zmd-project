@@ -1,0 +1,14 @@
+[
+  "数据/工具/formal_units.py",
+  "数据/工具/test_formal_catalog.py",
+  "数据/正式静态目录.json",
+  "数据/样例/runtime_record.py",
+  "数据/送料契约.md",
+  "规格/运行语义.md",
+  "规格/选择点清单.md",
+  "规格/受限转移定义.md",
+  "规格/参数扫描约减.md",
+  "crates/kernel/src/tests.rs",
+  "会议成果/任务书7执行/植物运行试点.md",
+  "会议成果/任务书7执行/密排布局.json"
+]

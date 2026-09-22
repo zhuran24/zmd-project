@@ -1,0 +1,539 @@
+{
+  "protected_unchanged": {
+    "《明日方舟：终末地》游戏规则.txt": true,
+    "求解任务.txt": true,
+    "求解约束.txt": true,
+    "候选约束.txt": true
+  },
+  "source_rows_exact": true,
+  "bridge_routes": [
+    {
+      "id": "M213_成品",
+      "actual_rate": null,
+      "service_contract": {
+        "kind": "independent_axis_service",
+        "initial": "source outputs, product paths and boxes empty; normal single batch buffers",
+        "minimum_same_source_batch_spacing_ticks": 5,
+        "completion_to_box_bound_ticks": 16,
+        "completion_to_warehouse_bound_ticks": 21,
+        "same_species_bridge_guard": "exempt under R13; capacity and residence checked per axis",
+        "preloaded_recovery_bound_ticks": 106,
+        "proof": "成品输出通路.md#4-突发在途恢复及产率账"
+      }
+    },
+    {
+      "id": "M214_成品",
+      "actual_rate": null,
+      "service_contract": {
+        "kind": "independent_axis_service",
+        "initial": "source outputs, product paths and boxes empty; normal single batch buffers",
+        "minimum_same_source_batch_spacing_ticks": 5,
+        "completion_to_box_bound_ticks": 8,
+        "completion_to_warehouse_bound_ticks": 13,
+        "same_species_bridge_guard": "exempt under R13; capacity and residence checked per axis",
+        "preloaded_recovery_bound_ticks": 106,
+        "proof": "成品输出通路.md#4-突发在途恢复及产率账"
+      }
+    },
+    {
+      "id": "M215_成品",
+      "actual_rate": null,
+      "service_contract": {
+        "kind": "independent_axis_service",
+        "initial": "source outputs, product paths and boxes empty; normal single batch buffers",
+        "minimum_same_source_batch_spacing_ticks": 5,
+        "completion_to_box_bound_ticks": 17,
+        "completion_to_warehouse_bound_ticks": 22,
+        "same_species_bridge_guard": "exempt under R13; capacity and residence checked per axis",
+        "preloaded_recovery_bound_ticks": 106,
+        "proof": "成品输出通路.md#4-突发在途恢复及产率账"
+      }
+    },
+    {
+      "id": "M216_成品",
+      "actual_rate": null,
+      "service_contract": {
+        "kind": "independent_axis_service",
+        "initial": "source outputs, product paths and boxes empty; normal single batch buffers",
+        "minimum_same_source_batch_spacing_ticks": 5,
+        "completion_to_box_bound_ticks": 16,
+        "completion_to_warehouse_bound_ticks": 21,
+        "same_species_bridge_guard": "exempt under R13; capacity and residence checked per axis",
+        "preloaded_recovery_bound_ticks": 106,
+        "proof": "成品输出通路.md#4-突发在途恢复及产率账"
+      }
+    },
+    {
+      "id": "M217_成品",
+      "actual_rate": null,
+      "service_contract": {
+        "kind": "independent_axis_service",
+        "initial": "source outputs, product paths and boxes empty; normal single batch buffers",
+        "minimum_same_source_batch_spacing_ticks": 5,
+        "completion_to_box_bound_ticks": 8,
+        "completion_to_warehouse_bound_ticks": 13,
+        "same_species_bridge_guard": "exempt under R13; capacity and residence checked per axis",
+        "preloaded_recovery_bound_ticks": 106,
+        "proof": "成品输出通路.md#4-突发在途恢复及产率账"
+      }
+    },
+    {
+      "id": "M218_成品",
+      "actual_rate": null,
+      "service_contract": {
+        "kind": "independent_axis_service",
+        "initial": "source outputs, product paths and boxes empty; normal single batch buffers",
+        "minimum_same_source_batch_spacing_ticks": 5,
+        "completion_to_box_bound_ticks": 17,
+        "completion_to_warehouse_bound_ticks": 22,
+        "same_species_bridge_guard": "exempt under R13; capacity and residence checked per axis",
+        "preloaded_recovery_bound_ticks": 106,
+        "proof": "成品输出通路.md#4-突发在途恢复及产率账"
+      }
+    }
+  ],
+  "historical_evidence_changes": [],
+  "hand_golden_unchanged": true,
+  "old_reference_records_unchanged": true,
+  "maintained_files": [
+    {
+      "path": "规格/运行语义.md",
+      "before": "91828504ba9575bd14e9cd3c7a1a712b135c45d871f18628892d4f449e76467d",
+      "after": "c41075d7a060c44b88f021549d537692b96a5e5da5fe4307c3ec08b038bb89f1"
+    },
+    {
+      "path": "规格/选择点清单.md",
+      "before": "5ed294dfe5f2e3c484d60644b609cf80e79871d46117ef7ac123fb9aeb81fa71",
+      "after": "e503612961cb6ae77a4ca4e8748574a62e5234cd9cda2eeb8c0e1fc55f84c48c"
+    },
+    {
+      "path": "规格/受限转移定义.md",
+      "before": "13f806a3c8e91e4550812d03a47bd5cb5943ba30584eb6cab8a9ccb659585cd2",
+      "after": "f93fe01d4f2e93f87f73c29a1d455be0e4295da3edeed6b82afdceadeaad208a"
+    },
+    {
+      "path": "规格/参数扫描约减.md",
+      "before": "487f5fa11a68df772758b07a9233adf6fec0cba3995480c8c7ee69b2e0a9016f",
+      "after": "f38054bc3cccc6f8095cdc47e4b940bac8001b5d642793f4ce378bed64c3d163"
+    },
+    {
+      "path": "数据/送料契约.md",
+      "before": "cd0d5c310aba6c096e146b664fb03afc9154e037b7a81b29f539fabe11c498c0",
+      "after": "3b55bea06e9a83c53252f85bc39a51a1987fa56ffb4fee5f6fb190fc3d81b56f"
+    },
+    {
+      "path": "数据/正式静态目录.json",
+      "before": "6e1d59212bd93c718f5010681f65a2281ddd26de928461a53fea224b238ea186",
+      "after": "0690960c37c1ebcd0d89aa57fa86b5ca9f5d83098330d1acc1fbf9b0be4ed60b"
+    },
+    {
+      "path": "数据/样例/桥接器双通路.json",
+      "before": "efcab7af7aea7ef76687ab570a67e79e5fcef7a4b33348f5c71c3e70d41f98bf",
+      "after": "aefcf4e716187c2d77bd8386b09707ab584329fbc6238d63bd03dc8655f77c57"
+    },
+    {
+      "path": "数据/样例/密集制造闭环序1核验.json",
+      "before": "8f133dc3dd698523e25875dbd931777c2abb47cd124d602b052e61ebfd7877af",
+      "after": "bcdbbe6993e30151d97f9430a84128287b90c6b6802b4b5ec226d82838abba29"
+    },
+    {
+      "path": "数据/样例/阻尼连续带核验.json",
+      "before": "5ac87c820f0faab69c92524891d275b45e7b9f85557259133bbce10a50b8f9f5",
+      "after": "c1ba091e68c0aa3e997dc8ccaae0cb4d5b38130deb5bd4c0ba90179fcd89b8b8"
+    },
+    {
+      "path": "数据/样例/kernel_profile_v1参数赋值.json",
+      "before": "726e96353f223ffc78bc64547c96f57cc87c8cf6941c10437fae80959bef95dd",
+      "after": "370e54a1d81f3d4df033b4cfbc3d81ee80ec4058796ee10a1534f2ec2fe48bc2"
+    },
+    {
+      "path": "数据/样例/check_golden_trace.py",
+      "before": "5b83ddcfda0e0838bbcf530fe877505ab7c4705f332c59a8cebd780c8e8391d3",
+      "after": "e7d4623e493dd5d1cc7688b1976f090177476da8b1b63a435ba6e261dce97039"
+    },
+    {
+      "path": "数据/样例/混做粉碎机两下游.json",
+      "before": "2942f3916d63c41d600d8226046cbd2a5bc05439161cfa1c2abd1702b75dd590",
+      "after": "035c5e221ae7b237355ec24063e9722c0ec3a69b1b6535fb1e052b192c5b9622"
+    },
+    {
+      "path": "数据/样例/轮询均分序2核验.json",
+      "before": "b46f166a53ae8fede859f6de3dc09a518d04370315a512e6743926a5aaf668ef",
+      "after": "a38b32a38b5929a083900d131629f08e3d4b3d9ce602d1a10881e3a3755c8f22"
+    },
+    {
+      "path": "数据/样例/传输拒收与暂停核验.json",
+      "before": "3540e7c79427e8779b24d9b0cb64f94534efb1be7cdc668672ce5bdb251f8536",
+      "after": "3bea89a2d3ffd266e38aff36424ee08d53992d95be189105316764bfcde9f682"
+    },
+    {
+      "path": "数据/样例/密集制造闭环序3核验.json",
+      "before": "8d358f99f9c944f3a20af1e0b8d21114a2c8577e95ddc3646c431a5cfb335ccb",
+      "after": "ce87ba4e0e382113217ed8ecafcbef0b39e522444c0a33725a0881a4a351796e"
+    },
+    {
+      "path": "数据/样例/轮询均分序3核验.json",
+      "before": "56b188a83d37367a2d4d5e2349f6be5c9ea4a4fe8d444762325f553327cef64a",
+      "after": "67683a3276232764500c14e99bf86f5c1145f6716f04695201b5ac1d77506379"
+    },
+    {
+      "path": "数据/样例/轮询均分序4核验.json",
+      "before": "d422c9d0fd762e4e78750e5274939a5708bb77236ceb5d08c3082ff8eadef87c",
+      "after": "82a084d7ed285f92beedcb535a33ffda0d5d4bcc4b7c7d161e458da2cf04d4c7"
+    },
+    {
+      "path": "数据/样例/轮询均分序5核验.json",
+      "before": "308ef0c3d2254c74926183e146a46cd31c771ad12ab27a5e237e453c48fce9d4",
+      "after": "de03648e8142df41cfa4a0d4be769fb619f111ce045c664bef72a4c0989c2754"
+    },
+    {
+      "path": "数据/样例/分流器三路轮询-参数赋值.json",
+      "before": "5438d527f0f8a7fcf5722cb3efcf16ac89aff7bb572e6d1ad8306b5befdaee6b",
+      "after": "496e7e51d19aa61a6d6dd39d18c02d86e7a29b0229f549c6d674c065f15b998a"
+    },
+    {
+      "path": "数据/样例/研磨混做核验.json",
+      "before": "49c67eb95424f012035e2191b22a85114a605cbbe28c05802cb80ab38a86db2d",
+      "after": "aa495fe00f92e344ad509254c3579d60e0a7ff9be2007904aa704890fa51ffd3"
+    },
+    {
+      "path": "数据/样例/密集制造闭环序4核验.json",
+      "before": "c373a7e6121c708156900fb08e0e687a09d96e864b898baa32ff10681762705f",
+      "after": "b4d1440949054c74992ba333ecb5ffdb6e718ebb94c6025da4aa459a9b6835ad"
+    },
+    {
+      "path": "数据/样例/阻尼切支恢复核验.json",
+      "before": "41314f930ed83acf1685f6ca9109be45b7ac2761ec1225a70e63ea2ecb43ccd6",
+      "after": "5e074a958664f6af1bc5c624a3aadeca03c1af5cb8ba6a99bd3c5b521d460a3b"
+    },
+    {
+      "path": "数据/样例/分流器三路轮询.json",
+      "before": "02ad753b54f31d04390b8672ebd4e316cef91d931fd96fec252c2fed82e863ee",
+      "after": "6e23df246caf6e6bf58615f3ade7ae05489ceb869263877473accdfa864b0d8f"
+    },
+    {
+      "path": "数据/样例/密集结点闭环核验.json",
+      "before": "513adc0b26d79af9ac04bc4946fa1f7ef76d7da9aea39f4fc9a51beff9792cef",
+      "after": "74576d808e585bb01d7ccb329b79e914ba8d95d064c808b270c5b723a4e6a149"
+    },
+    {
+      "path": "数据/样例/密集结点核验.json",
+      "before": "101c76982ccbd91a5ebf7396e37034ff538f43e7d2c6fe6642112d94abf38743",
+      "after": "cccf9562e6d5dd09590d921b75600f857605c880c0c501247a2548cb3c81d741"
+    },
+    {
+      "path": "数据/样例/check_examples.py",
+      "before": "51dc5dd24c158ed6a8b4aa181d9b2320f6d1d3a3ca6b5070a16f586f9d81c035",
+      "after": "847a1001c8c02987c80b8fac9a9142d2345743ec3bc4687cb1251dffd4f851e9"
+    },
+    {
+      "path": "数据/样例/轮询均分核验.json",
+      "before": "b28f4938782f2192507dc079e3f5a68f8f980be097e2a6bdf6d747b2a4897871",
+      "after": "9bfd864ed3adf9d77fca36aef3515b663c945cb8ca21714c8cbb679ab5a78d1c"
+    },
+    {
+      "path": "数据/样例/密集制造闭环序5核验.json",
+      "before": "bd12883e08a7b2c0e3b62fc1503411474be98ee60a3bed2815435b60a258c723",
+      "after": "2df1b17d7d8d488fd80d567f2bfde16a0e80955ee5b6478e9fbfd289951b3c6c"
+    },
+    {
+      "path": "数据/样例/双成品满仓起动试作.json",
+      "before": "98290f96f4c94d60f571152a6c6f2d5c182a2fe0ecabb5bd12b162dd231c916b",
+      "after": "25f58126a98c9d3841faf3db9ca4a6725826a77e10e5361baf53ed1add8ca467"
+    },
+    {
+      "path": "数据/样例/双成品制造砖.json",
+      "before": "7f1b8e8d595c5231f6abf54b16f0d4bfd19f7269e8cc74a25715374bdaad26da",
+      "after": "5a5214588e0463b2f5f0eabdc087b218f299218ff51b0ac229b864e676c53a4e"
+    },
+    {
+      "path": "数据/样例/生产循环环带.json",
+      "before": "6043e8736a6caad5d8ce52e7f64e25e3647db4cfdd731ed4f3fff8b2d95d279d",
+      "after": "820813f6f246732d740e799c67974ce3f736a4cdda3c46534a52ca4bb17fe239"
+    },
+    {
+      "path": "数据/样例/轮询均分序0核验.json",
+      "before": "b8571ed37ffcc98421b90dc073aa7413265a5c1c14a0c804b1bc7507282d75e7",
+      "after": "e3a86f133727953d90090d924015137068511969775f3ff7beaa834925b4432d"
+    },
+    {
+      "path": "数据/样例/密集制造闭环序0核验.json",
+      "before": "2925a08f55d2e36080b81ee757bad2c563c2691637343da20397576acbfabf93",
+      "after": "50ab82dc2be94e6da725f3d0270812141c54c5c4cdf1cd87edd35d7954f6a26f"
+    },
+    {
+      "path": "数据/样例/runtime_record.py",
+      "before": "190fa139ae0ec62208aa9eec6c50add849fcc68948cfd44009aa9f38c3dd2f0f",
+      "after": "95fe02df7b58b6f182e9273c1948cc10b4b7b5254ad65e20ff00d2476c0ffb69"
+    },
+    {
+      "path": "数据/样例/密集结点循环种子核验.json",
+      "before": "b6b8fbc58a15e266953b29bcd80ff99dc3b41eb656104a4636c04c44b6060dc6",
+      "after": "5f3a2f78b0e34cc7defaa8eea157d015efb9d23b280dfa26de014caa3e247077"
+    },
+    {
+      "path": "数据/样例/轮询均分序1核验.json",
+      "before": "581da2ea55995a864eb6fac94178822009e908b7a2a3f362e68c5a199c499647",
+      "after": "6f0d172382e83d30ce92af0ce3901be335166d31cb245a54b715313caf2bb2c3"
+    },
+    {
+      "path": "数据/样例/密集制造闭环基础.json",
+      "before": "d42cf79f293e34b61103123dddf32a32fff6ca3445a8dd0fc7509a15765ad0da",
+      "after": "872f9d31e0604b01adee6f0b9e85426364ad243205aed1982fc9df41e0a2dd5a"
+    },
+    {
+      "path": "数据/样例/runtime_example.py",
+      "before": "4114fb44444925b70b0f339776f132e8db060f33e694a5045f4da373107cc28b",
+      "after": "717e298b4180865b502e374327e4909e21ce4ba63f57ee9812d4a404317e602c"
+    },
+    {
+      "path": "数据/样例/密集制造闭环序2核验.json",
+      "before": "acd645d8d0a21709ef4fd3565a91e3da29e1190512337f0ec36204c9652a9fc2",
+      "after": "2c68f45837d4193a1a9a45eafe678c83e79a20551d9828522c60881ce732e0c4"
+    },
+    {
+      "path": "数据/样例/任务7内核/身份实际切换.json",
+      "before": "e64f05abed796a577c67627fb88eed741731e9866c077509baa98283936f85fd",
+      "after": "52042fc36036ebeca57c2ad6ed9503c7b7f8abac9396812d466f7336bd8740ba"
+    },
+    {
+      "path": "数据/样例/任务7内核/静止成熟与暂停键.json",
+      "before": "37c446288ece59bbb8075824be2f545127f5c2cf6d319812d5fba6f19defefb9",
+      "after": "ea4512bd2db0bb66f7f945eb7270640d28847d0e2742877d939fc313aed130ef"
+    },
+    {
+      "path": "数据/样例/任务7内核/累计调低保留.json",
+      "before": "8f89a485c8eab58c2c6fcf66834f24b0aa42772bff99417b646f07cd0cf0e64d",
+      "after": "38b5c57bfe9e6780cd3a88e37464d378a809016124a495ccd54ddd244b7182b6"
+    },
+    {
+      "path": "数据/样例/任务7内核/无线空箱.json",
+      "before": "ddbf9d986b72737c0c7219d73f692a0acf9e8d18a135c5a0f7168904ce33de39",
+      "after": "6d6e11952294748c5a7be136b4cf1c893295ad33043b188a44623003e41a1334"
+    },
+    {
+      "path": "数据/样例/任务7内核/同刻双箱争余量.json",
+      "before": "a91fbac14ca5c2753aa00d653040bbf8152adf04ee2716723208d79fa5108761",
+      "after": "4617532827e70cbdbf3f71eba44adb216112c1a7e6c5bce530d1d06ddb682ca3"
+    },
+    {
+      "path": "数据/样例/任务7内核/无线多格歧义.json",
+      "before": "3e8fed4d7974efb44f785e67036f46dbd6ffe3ac91302296b0ab7637ede2045e",
+      "after": "a331e7777964b7703f7efe9dca2f95c8541f2d1bffeca8938961802b0d18726e"
+    },
+    {
+      "path": "数据/样例/任务7内核/生产环带.json",
+      "before": "a212c71a64f32486a274958205427918b7f6ae013cd83eb8cd4b095ee5a80e17",
+      "after": "7faa88fcac488d7734153147520ebd2bd0f36b82e0fea2adb3063c2b94dbd1df"
+    },
+    {
+      "path": "数据/样例/任务7内核/无线多格全收.json",
+      "before": "fea651dfa6cbe91ad0b48f26e856b2f30339447f3639cd954ab1770521a01f49",
+      "after": "66b3831ad13b71bfede444e41733326114dee69c9c5d025db3f3987531cb570f"
+    },
+    {
+      "path": "数据/样例/任务7内核/成熟旧货重试.json",
+      "before": "6d576ab863d7a0b077497f25ba15b683bf27138f02afccd0511f5acdce5b5649",
+      "after": "22c938eb47af91b166a68795572dd9b8687778bde376ebddf7f5e0d7561217dd"
+    },
+    {
+      "path": "数据/样例/任务7内核/累计审计与窗口周期.json",
+      "before": "aeefd79eead27613ba4f81e85ecfb6fa7d5f0585e8e7648c11d8052f40ee2d54",
+      "after": "4a7f5888ce45af9bdd76d05a90bdbfb054925c8e20e21c16edca2061e7a65a5f"
+    },
+    {
+      "path": "数据/样例/任务7内核/阻尼恢复.json",
+      "before": "5a04d735d3fde1b275fe6c9b65a712ab64bf72a1bc0765c0a8dff8b17ad8a2eb",
+      "after": "6f533c14fe93238579642e19809d6352f1ba234f06dcb53a2e4f9bc39226acaa"
+    },
+    {
+      "path": "数据/样例/任务7内核/无线部分接收.json",
+      "before": "3c2918565ec16673309b020bc64d9277f7f7fd4e6154aa4fb01d9ea98a27987d",
+      "after": "03bdddff8bea59184b5f0b5d23c36edf40a1f2d78562c219b24bf9b07bfd0c88"
+    },
+    {
+      "path": "数据/样例/任务7内核/身份断边恢复.json",
+      "before": "59b3864c6184c2f9022512003db046ff012c8ac1ff3c7565c379c98acc7b0e6d",
+      "after": "49513625f5ddd9baf47b3dac2f019d7c8ffa19737c173a3616007013abe40c28"
+    },
+    {
+      "path": "数据/样例/任务7内核/无线全拒收.json",
+      "before": "509d08cf57ba6b0251e48abadef106eae90c6cf5fff2eec164c533af35e86110",
+      "after": "9b76ab5497499ae33e5513e1b8a8be41552c925677a8e507d7d2f742baa41006"
+    },
+    {
+      "path": "数据/样例/任务7内核/累计调高资格.json",
+      "before": "f1b835af4a3938c81644b1b1186fcfffdccbd29b9d9d9be1feb4ee8b4ab439ee",
+      "after": "6144bdf350fe9edf4e88f5e6c906771e3f8f3943c184629acfc9019bd4d23271"
+    },
+    {
+      "path": "数据/样例/任务7内核/装载与普通制造.json",
+      "before": "6ad3b9e25bbb25657abd9a74701e6e79c677806ffb5fae6f35dfcd68db402ac0",
+      "after": "f974e7aaf69e2641ddd51e3b7341d6c1925aceee36e0548ce0d3f58123a98be3"
+    },
+    {
+      "path": "数据/样例/任务7内核/无线一满一可收.json",
+      "before": "99e04ed52d8fc144a1f413ddabbd224f06c11799e0bba964716d336cc68bd126",
+      "after": "16f859071eeaee9c5df3e460df85c6caa26000f852e1eb8f1ac817b7e43bb707"
+    },
+    {
+      "path": "数据/样例/任务7内核/双门窗口恢复.json",
+      "before": "862dbe04ac471c3c914a5da3ac8f1d244504fd6b5bbab62c6819e432cf11217b",
+      "after": "9678fc9965e63ef9ce58292625aefd527b65ab19c7c0ed235f756b0664bd9fc8"
+    },
+    {
+      "path": "数据/工具/test_formal_catalog.py",
+      "before": "a858b65b6d40d1b460e4b455a8ab4ed4d8db7d853a60fdbc864df419f42f7118",
+      "after": "e3a7f7d7439e280b0acd52491180469f885b890243e815a026eac2af5658f46e"
+    },
+    {
+      "path": "数据/工具/formal_units.py",
+      "before": "311719cc7993f41424c4f7dac20703f2f80db467593ceccd34e88aaa2d0d6216",
+      "after": "b7be215a4369d97dba931ce8dbff1fabdc1f35936f11dfc9a8acdf9ffc4913f3"
+    },
+    {
+      "path": "数据/工具/formal_catalog.py",
+      "before": "757475a2b7533f47220d6d1d0d5911e60af3eaab9e5fdae7972d252a03d64d2d",
+      "after": "1fb220fe5f701248076c4200f5ca5ade5e2876e794998c3efe7d60f1be4b6613"
+    },
+    {
+      "path": "会议成果/主会话三审-0921.md",
+      "before": "4bd13b35399dbe2280dd43f24577a290903e86b1bfbdec4106bef07c0425a514",
+      "after": "a87564d78810a11903c014a6c18aa0ceacaeafed0071552fe91164240f753493"
+    },
+    {
+      "path": "会议成果/任务书7执行/密排布局.json",
+      "before": "7e7dae5f1ff28f389a7a9bcba9acc6eee71054926e588b41ceb3e2de24ac1fda",
+      "after": "a636414a0670a4c3bf7a309459996ccfd0b77171ca44f133176b8c2edf7a965d"
+    },
+    {
+      "path": "会议成果/任务书7执行/本轮成果.md",
+      "before": "c90e24a32c21f7494f1e34bf9d59cc3bc101a4ba5538d39bada74c3b61f2a04e",
+      "after": "1150728c04c3b2b901667f7ca91fe62bc70b42d6dd30196d9caa2e98f2c2880b"
+    },
+    {
+      "path": "会议成果/任务书7执行/成品输出通路.md",
+      "before": "51bc8f76c987348037a79fcbe395e4c536b7d1871a955b2bab2eb8e84561525a",
+      "after": "c4d00b3a93b4a19f8b2db68c6595d9414b12b16fce8302fda8d34b720bd97036"
+    },
+    {
+      "path": "会议成果/任务书7执行/植物运行试点.md",
+      "before": "fd9d55901a63b32d54519527a601d6141596e85c6a93fc57deddb3e811c68918",
+      "after": "f956c8eba779661f3521ce33aed246aed811dc18d11530646ed0015d8d0734a2"
+    },
+    {
+      "path": "会议成果/任务书7执行/整厂衔接.md",
+      "before": "a507409237a724c41bb40b192b98e0ae32dbd778913d17eabb56a2d442468233",
+      "after": "f96d217a003e6c938a4e7d6ee0ac36a9469e847a953898fcc52782ce20985ad4"
+    },
+    {
+      "path": "会议成果/任务书7执行/密排试点.md",
+      "before": "7538edae18c9f121245d600336955a3834ed5473db131dda86bf034b23850631",
+      "after": "3a08b38a25da49af9cdc6ad033c9097add86ca91e493c850084ae07db69a1206"
+    },
+    {
+      "path": "会议成果/任务书7执行/未决去向.md",
+      "before": "8bbf0c42addb970565c0a8440ccb9abb71f7908e04eda4bf6b259ee8c7ee54a5",
+      "after": "509420d19113b3b99cd4e081be71f7403f01d4edac40810c3e789b5e6acc1ead"
+    },
+    {
+      "path": "会议成果/任务书7执行/会议成果回填稿.md",
+      "before": "c62b2f35682d7fb27ab8bc0be2ab20758d1ccfb7f43f2341b64608133e850204",
+      "after": "8535d53263a4cc5af4018621e9d8ce17ccae22b3744896c779aca54ec8e13964"
+    },
+    {
+      "path": "crates/kernel/src/tests_round5.rs",
+      "before": "db6588fd4c08764e54da2e9b4d5489442513af159384fbbd8c738a2839e1fc27",
+      "after": "f3982a6c2c82290952d0f00bb0e882bbb4e661a805acffb4b24eda53bdeb0847"
+    },
+    {
+      "path": "crates/kernel/src/tests.rs",
+      "before": "b6eef060d7d8497eb4840c11d2da2055a19e109ce8a00205bb9d2f3a65f547b1",
+      "after": "ecc5298de83ad9ed04cea669633f7c1c01d5d73d34b739398be929be04aaf79f"
+    },
+    {
+      "path": "crates/kernel/tests/reference.rs",
+      "before": "2efc6e98295f769700baa4cd1d97fd4ecec11647e3a28432eba1218c960530bc",
+      "after": "8027138f168311543a128586022b41171f1d81f18923be9d33539e17b4d90cd6"
+    },
+    {
+      "path": "crates/kernel/tests/round5_cli.rs",
+      "before": "b6ffbe682c0a51e5ba73f1a81ebc47a7eedbf73c8e5fbf2a7b8e6bf7bc6c24f9",
+      "after": "a9b01c18829fd80c997bbce661449ad69f921fbb275aee0caa4328c1024eec44"
+    },
+    {
+      "path": "crates/kernel/tests/verify_outputs.py",
+      "before": "de9b8b43103933ad391c35886c29d5c45c1b7ea9c43c31c64a4aa38a6c3f2c6d",
+      "after": "e4ca6a08b043fe579fbbb19e03262829414b715f14187384a524679f4f64458a"
+    },
+    {
+      "path": "crates/kernel/tests/verify_all.py",
+      "before": "a490697e759dd169008f5323624af482c728f9a2d81d0263c2da5490d6038602",
+      "after": "2108f0634698826030f69b17424e64c33300b64c863be9a4435fc39243dff1c1"
+    },
+    {
+      "path": "crates/kernel/tests/coverage_audit.py",
+      "before": "57112336dbbcd8b27e557c7959d3c77f0cd3e20799109831009c252bcbfd4da3",
+      "after": "e375a0c93ca4f7bd6f150b4fcae5ab8500460c653fd645bbc52ed52b7859fceb"
+    },
+    {
+      "path": "crates/kernel/tests/revision_r5_cli.py",
+      "before": "014e226c1bbc23872fae6ff90d21d098c61c4ba3112f19a51ea6f2bbc04b1817",
+      "after": "c58b19cd12245127382d2802b859002eb8aa2452b81cced73a31fa33abcb0e62"
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/benchmark_brick.json",
+      "before": "ba51cd30be879860d09e517970cbcf3ba643b3f97eaa4030c234f37f222f2cbf",
+      "after": "88d9211ba5382023853cebccc1957a269f1e0cac5dd01fb631569ac36e997615"
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/benchmark_1000.json",
+      "before": "713db1d06d0455f55a8106c6c7cee9123d833b1cd2173a0cc3dbe819aeac10d7",
+      "after": "3b9cc029c021d7e048501127d7bc6d345804aad8fd34453e2ba5addc3ddd3eea"
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/priority.json",
+      "before": "15859f972862c73b3d42d31378241bd4a9381bb0ff0ca80db581893126cb8a38",
+      "after": "bcfdc298584d5a57faee7756e64a4e2474152ac92058cdd905bdc7840041ebc6"
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/bridge.json",
+      "before": "119c560cd29380a01c1ffeea1a24161eac972bf48843b9aee4a80595d40dc272",
+      "after": "a0e4a1835b77271d9d1b6777a2a0f47ad3ecc37c08c3877279df4ef0315fe904"
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/benchmark_brick_60.json",
+      "before": "6129cf2ece47c144520107193df19f419203a81de5d03da2aac430b32493b022",
+      "after": "8c66dfe368f139cd4e27648863ec99deab00aa385f63504813b61d8765bfa3d9"
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/revision_r2_phase_control.json",
+      "before": "2fea54d7b42382140e45d1a99c5f22d5a2849e9b1c781412c094e4ac355df020",
+      "after": "3c62010e24b98af963d12cbf64897890aa2693a217057d25c19539b106380a1d"
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+      "before": "b66b4d69d7b930a27a6ef7879ab104afa39cfaa33348eccddd3d40f6840d52a8",
+      "after": "1dcd913ecc9eae7d758d933132e4ee8f36fe52e58fb8b0938bd2813d46d99827"
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/revision_r2_branch_cut.json",
+      "before": "05169eaca9c3d2164417c2f97589f9c67923d16e3d8344e14b2a23e617819ca2",
+      "after": "783a1087d4642a1c4307a8ac4f0170dccf4a484b4f0dc264fca9b28b8e6fe77c"
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/core_inbound.json",
+      "before": "c0cb63fe3c9d9b236d1374874d4a43c168e9fd34ee364a9fc417e1e776d82033",
+      "after": "3ecb68421f87c6d8a78ee6d8e61497e184c153652b1286855f9478ffad86bddc"
+    }
+  ],
+  "concurrent_other_work": [],
+  "maintenance_file_types": [
+    "",
+    ".json",
+    ".log",
+    ".md",
+    ".py"
+  ],
+  "broken_delivery_links": []
+}

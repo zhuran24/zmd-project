@@ -11408,7 +11408,7 @@
       "damping": 3,
       "internal_damping_prefix": 3,
       "minimum_delay_ticks": 15,
-      "service_capacity_given_receiving_boundary": null,
+      "service_capacity_given_receiving_boundary": "1 item/tick per independent path, including same-species bridge axes; requires continuously receiving downstream",
       "physical_cells": 15,
       "transport_unit_ids": [
         "T_7_38",
@@ -11435,14 +11435,14 @@
         "LF312"
       ],
       "service_contract": {
-        "kind": "empty_output_spacing_proof",
+        "kind": "independent_axis_service",
         "initial": "source outputs, product paths and boxes empty; normal single batch buffers",
         "minimum_same_source_batch_spacing_ticks": 5,
         "completion_to_box_bound_ticks": 16,
         "completion_to_warehouse_bound_ticks": 21,
-        "same_species_bridge_guard": "at most one occupied axis per bridge",
-        "preloaded_recovery_bound_ticks": null,
-        "proof": "证据/终修/成品跨桥推导.md"
+        "same_species_bridge_guard": "exempt under R13; capacity and residence checked per axis",
+        "preloaded_recovery_bound_ticks": 106,
+        "proof": "成品输出通路.md#4-突发在途恢复及产率账"
       }
     },
     {
@@ -11494,7 +11494,7 @@
       "damping": 3,
       "internal_damping_prefix": 3,
       "minimum_delay_ticks": 7,
-      "service_capacity_given_receiving_boundary": null,
+      "service_capacity_given_receiving_boundary": "1 item/tick per independent path, including same-species bridge axes; requires continuously receiving downstream",
       "physical_cells": 7,
       "transport_unit_ids": [
         "T_18_38",
@@ -11513,14 +11513,14 @@
         "LF313"
       ],
       "service_contract": {
-        "kind": "empty_output_spacing_proof",
+        "kind": "independent_axis_service",
         "initial": "source outputs, product paths and boxes empty; normal single batch buffers",
         "minimum_same_source_batch_spacing_ticks": 5,
         "completion_to_box_bound_ticks": 8,
         "completion_to_warehouse_bound_ticks": 13,
-        "same_species_bridge_guard": "at most one occupied axis per bridge",
-        "preloaded_recovery_bound_ticks": null,
-        "proof": "证据/终修/成品跨桥推导.md"
+        "same_species_bridge_guard": "exempt under R13; capacity and residence checked per axis",
+        "preloaded_recovery_bound_ticks": 106,
+        "proof": "成品输出通路.md#4-突发在途恢复及产率账"
       }
     },
     {
@@ -11608,7 +11608,7 @@
       "damping": 5,
       "internal_damping_prefix": 5,
       "minimum_delay_ticks": 16,
-      "service_capacity_given_receiving_boundary": null,
+      "service_capacity_given_receiving_boundary": "1 item/tick per independent path, including same-species bridge axes; requires continuously receiving downstream",
       "physical_cells": 16,
       "transport_unit_ids": [
         "T_25_38",
@@ -11636,14 +11636,14 @@
         "LF314"
       ],
       "service_contract": {
-        "kind": "empty_output_spacing_proof",
+        "kind": "independent_axis_service",
         "initial": "source outputs, product paths and boxes empty; normal single batch buffers",
         "minimum_same_source_batch_spacing_ticks": 5,
-        "completion_to_box_bound_ticks": 18,
-        "completion_to_warehouse_bound_ticks": 23,
-        "same_species_bridge_guard": "at most one occupied axis per bridge",
-        "preloaded_recovery_bound_ticks": null,
-        "proof": "证据/终修/成品跨桥推导.md"
+        "completion_to_box_bound_ticks": 17,
+        "completion_to_warehouse_bound_ticks": 22,
+        "same_species_bridge_guard": "exempt under R13; capacity and residence checked per axis",
+        "preloaded_recovery_bound_ticks": 106,
+        "proof": "成品输出通路.md#4-突发在途恢复及产率账"
       }
     },
     {
@@ -11727,7 +11727,7 @@
       "damping": 3,
       "internal_damping_prefix": 3,
       "minimum_delay_ticks": 15,
-      "service_capacity_given_receiving_boundary": null,
+      "service_capacity_given_receiving_boundary": "1 item/tick per independent path, including same-species bridge axes; requires continuously receiving downstream",
       "physical_cells": 15,
       "transport_unit_ids": [
         "T_41_38",
@@ -11754,14 +11754,14 @@
         "LF112"
       ],
       "service_contract": {
-        "kind": "empty_output_spacing_proof",
+        "kind": "independent_axis_service",
         "initial": "source outputs, product paths and boxes empty; normal single batch buffers",
         "minimum_same_source_batch_spacing_ticks": 5,
         "completion_to_box_bound_ticks": 16,
         "completion_to_warehouse_bound_ticks": 21,
-        "same_species_bridge_guard": "at most one occupied axis per bridge",
-        "preloaded_recovery_bound_ticks": null,
-        "proof": "证据/终修/成品跨桥推导.md"
+        "same_species_bridge_guard": "exempt under R13; capacity and residence checked per axis",
+        "preloaded_recovery_bound_ticks": 106,
+        "proof": "成品输出通路.md#4-突发在途恢复及产率账"
       }
     },
     {
@@ -11813,7 +11813,7 @@
       "damping": 3,
       "internal_damping_prefix": 3,
       "minimum_delay_ticks": 7,
-      "service_capacity_given_receiving_boundary": null,
+      "service_capacity_given_receiving_boundary": "1 item/tick per independent path, including same-species bridge axes; requires continuously receiving downstream",
       "physical_cells": 7,
       "transport_unit_ids": [
         "T_52_38",
@@ -11832,14 +11832,14 @@
         "LF113"
       ],
       "service_contract": {
-        "kind": "empty_output_spacing_proof",
+        "kind": "independent_axis_service",
         "initial": "source outputs, product paths and boxes empty; normal single batch buffers",
         "minimum_same_source_batch_spacing_ticks": 5,
         "completion_to_box_bound_ticks": 8,
         "completion_to_warehouse_bound_ticks": 13,
-        "same_species_bridge_guard": "at most one occupied axis per bridge",
-        "preloaded_recovery_bound_ticks": null,
-        "proof": "证据/终修/成品跨桥推导.md"
+        "same_species_bridge_guard": "exempt under R13; capacity and residence checked per axis",
+        "preloaded_recovery_bound_ticks": 106,
+        "proof": "成品输出通路.md#4-突发在途恢复及产率账"
       }
     },
     {
@@ -11927,7 +11927,7 @@
       "damping": 5,
       "internal_damping_prefix": 5,
       "minimum_delay_ticks": 16,
-      "service_capacity_given_receiving_boundary": null,
+      "service_capacity_given_receiving_boundary": "1 item/tick per independent path, including same-species bridge axes; requires continuously receiving downstream",
       "physical_cells": 16,
       "transport_unit_ids": [
         "T_59_38",
@@ -11955,14 +11955,14 @@
         "LF114"
       ],
       "service_contract": {
-        "kind": "empty_output_spacing_proof",
+        "kind": "independent_axis_service",
         "initial": "source outputs, product paths and boxes empty; normal single batch buffers",
         "minimum_same_source_batch_spacing_ticks": 5,
-        "completion_to_box_bound_ticks": 18,
-        "completion_to_warehouse_bound_ticks": 23,
-        "same_species_bridge_guard": "at most one occupied axis per bridge",
-        "preloaded_recovery_bound_ticks": null,
-        "proof": "证据/终修/成品跨桥推导.md"
+        "completion_to_box_bound_ticks": 17,
+        "completion_to_warehouse_bound_ticks": 22,
+        "same_species_bridge_guard": "exempt under R13; capacity and residence checked per axis",
+        "preloaded_recovery_bound_ticks": 106,
+        "proof": "成品输出通路.md#4-突发在途恢复及产率账"
       }
     },
     {
@@ -23037,18 +23037,16 @@
   "product_start_contract": {
     "description": "六机输出与成品路径、末端箱清空；正常缓存每机≤1批；六末级任意次序/迟延开启；两箱先开并始终有电",
     "same_source_minimum_spacing_ticks": 5,
-    "bridge_guard": "R13: one same-species item per bridge across both axes",
-    "latency_proof": "证据/终修/成品跨桥推导.md",
-    "preloaded_recovery_bound_ticks": null
+    "bridge_guard": "R13 exemption: same species may occupy both axes",
+    "latency_proof": "成品输出通路.md",
+    "preloaded_recovery_bound_ticks": 106
   },
   "for_owner": [],
   "open_items": [
     "整厂余下207台及其逻辑边",
     "植物粉末到M150/M151的实际接收",
     "默认堵满释放与离线共同安全集合",
-    "无箱A=1113出货支路",
-    "修正空输出跨桥证明的独立复核",
-    "预装恢复的共享桥服务及联合积压界；106tick已撤回"
+    "无箱A=1113出货支路"
   ],
   "终修记录": [
     {
@@ -23059,6 +23057,10 @@
         "IE-04"
       ],
       "summary": "六条成品路撤逐路独立1/tick，改空输出条件等待16/21、8/13、18/23；恢复界null；其余62路标明本地服务及开放续路前件。几何、计划率、实际率null、认证false和L/U保持。"
+    },
+    {
+      "date": "2026-09-22",
+      "summary": "旧桥读法已退回：逐轴同种1/tick，六路服务字段恢复，长路17/22及条件恢复106；实际产率null、认证false保持。"
     }
   ]
 }

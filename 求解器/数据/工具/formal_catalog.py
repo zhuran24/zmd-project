@@ -103,7 +103,7 @@ def formal_projection(snapshot):
         if '：' in line:
             name, text = line.split('：', 1)
             task['conditions'].append({'name':name, 'text':text, 'basis':'求解任务·'+name})
-    assert len(task['conditions']) == 10
+    assert len(task['conditions']) == 11
     return {'constraints': rules, 'task': task, 'static_checks': {'constants': constants, 'material_flow': flow}}
 
 

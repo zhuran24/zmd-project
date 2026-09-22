@@ -1,0 +1,116 @@
+#!/usr/bin/env python3
+"""根据只读体检清单写维护方案；不执行重构或归档。"""
+from pathlib import Path
+import json
+R=Path.cwd();O=R/'内核维护/2026-09-22'
+fs=json.loads((O/'functions.json').read_text())['over_80'];archives=json.loads((O/'archive-inventory.json').read_text())['roots']
+ideas={
+('catalog.rs','load'):'分开目录字节锁、单位投影、配方投影与仓库容量解析；保留检查顺序和首个Stop。',
+('catalog.rs','build'):'拆占格/端口生成、桥定向、自动通道、供电集合；同一输入的全部集合及顺序逐字段比较。',
+('config.rs','name'):'这是轴枚举到字符串的单一映射，优先保留；若改为宏，逐一比较全部99项及序列化名称。',
+('cycle.rs','domain_condition'):'每个D条件独立谓词，聚合器维持D.1…D.5原优先次序；比较状态、location及证据。',
+('cycle.rs','encode_key'):'分别规范仓库、库存年龄/分组、进度、物流、事件；只抽函数，保留规范化次序与完整键。',
+('cycle.rs','search'):'拆预算推进、摘要候选、精确键确认、回放和结果封套；碰撞/预算停止与最后有效前缀必须相等。',
+('cycle_io.rs','verify_cycle_at'):'拆来源引用、前缀重放、周期端点、率账及证据范围验证；每个篡改样例的停止位置保持。',
+('engine.rs','prepare'):'拆静态索引、种子表、权限状态、依赖缓存装配；生产域守卫必须仍早于可动级派生。',
+('engine.rs','validate_seed'):'按锚点、库存、进度、参数、事件/截止时间、轮询拆只读校验；禁止抽取时改变首错优先级。',
+('event_identity.rs','seed_executed'):'拆事件注册、已执行来源与引用闭合；检查事件集合、重复/别名拒收和先后关系不变。',
+('input.rs','timeline'):'拆事件语法、等时关系、次序图、建造接通一致性；输出排序与每个拒收位置严格相等。',
+('input.rs','parse'):'拆顶层/来源、时间线、几何、设定、参数、运行接口；保持数据借用与错误先后，不引入默认值。',
+('input.rs','validate_runtime_interfaces'):'按配方序、输入槽序、相位和仲裁表拆校验；逐字段漏项/多项负例继续命中。',
+('input.rs','validate_branches'):'拆分支行、可用子集与路径一致性；保留空分支、多级、缺失域的停止。',
+('interfaces.rs','check_input_axes'):'按制造、传输、门、仓库、初始化拆轴检查；保留原顺序及未触发轴的处置。',
+('interfaces.rs','check_event_owners'):'拆端口/通道、单位动作、待办事件所有权；逐事件ID与别名拒绝一致。',
+('main.rs','run'):'参数解析与各子命令handler分离；CLI stdout/stderr、退出码、输出文件及相对路径解析保持。',
+('output.rs','run_record'):'拆锚点/预算驱动、轨迹编码、来源和范围封套；full/delta解码结果、审计字段及停止位置一致。',
+('polling.rs','group_levels'):'拆存货级、非运输取货级、无级侧；成员、阻尼、接通排序与稳定并列规则保持。',
+('polling.rs','refresh'):'拆活跃成员投影、幸存游标、当前级更新；批量断边/恢复与失败前移差分核验。',
+('seed.rs','derive_context'):'拆参数镜像、进度待办、轮询和边界上下文；重新seed字节及after_closure续跑轨迹保持。',
+('transition.rs','manufacture'):'拆匹配、开闸、扣料及开工提交；先校验后写入的事务边界与整批语义不动。',
+('transition.rs','move_channel'):'拆物理可动、双端授权、提交、失败前移、事件记录；返回值与库存/预算/游标原子后效严格比较。',
+('transition.rs','boundary'):'拆制造完成、窗口到期、冷却推进；同刻批处理的次序及事件ID不可调整。',
+('transition.rs','step_inner'):'拆时刻准备、一次模板扫描、重复状态判停、完整记录；首次重复成员与max_sweeps界保持。',
+('warehouse.rs','plan_receipt'):'拆已有格分配、空格选择、严格部分扣格歧义检查；全收/全拒收/部分收与未提交停止保持。',
+('lib.rs','check_categories'):'按JSON对象/数组/叶子递归分支提取，错误路径保持；保留未知字段和数值类别负例。',
+('lib.rs','validate'):'topology分阶段：语法与目录、单位/端口、配方流量、计数下界、尺寸和必要条件；原检查顺序及完整报告不动。',
+('validation.rs','catalog_unit_properties_match_formal_reference_values'):'按核心、制造、运输、箱、取货口、供电分成行为断言；独立期望常量保留，不能从被测目录反向生成。',
+('validation.rs','catalog_port_edges_match_formal_reference_layouts'):'按运输/非运输端口形状分表；共享断言helper只处理比较，不计算期望几何。',
+}
+rows=[]
+for f in fs:
+ key=(Path(f['file']).name,f['function']);assert key in ideas,key
+ rows.append(f"| `{f['file']}:{f['start']}` | `{f['function']}` | {f['lines']} | {ideas[key]} |")
+summary='\n'.join(f"| `{a['root']}/` | {a['files']} | {a['bytes']:,} |" for a in archives)
+text='''# 内核代码体检与结构维护方案
+
+日期：2026-09-22。状态：方案已交付，未执行本方案中的函数拆分、测试重排、死代码删除或快照搬迁。基线是桥规则退回与正式源重锁后的工作区；本轮实际修复和验证另见[记录](2026-09-22/记录.md)。
+
+## 1. 范围与等价标准
+
+工作区为`求解器/`，成员为`crates/kernel`和`crates/topology`；编译从该目录运行，只使用共享`target/`。kernel按固定布局与显式参数逐tick执行受限模型。维护不改变游戏读法、可接受输入集合、事件顺序、库存、轮询指针、门计数、冷却、产率、周期键或证据等级。正式三文件、候选约束、模拟器及Git均不纳入结构维护。
+
+“行为不变”按五层验收：同一输入的接受/拒绝结果及首个Stop；逐tick事件、完整StateSeed和物料台账；full_state/checkpoint_delta解码后的完整记录；周期精确键、回放、状态与证据范围；CLI退出码、stdout/stderr及文件格式。比较所有数组次序、类型和数值，不能只比较产率或最终库存。
+
+源码位置和来源哈希会随结构调整合法变化，因此双版本比较先分别验证各自指纹闭合，再只对显式列出的源码位置/哈希字段做映射；保留映射表与原始输出。事件、basis、Stop文本、状态和证书等级都不得作为“噪声”过滤。桥同种行为的本次修正属于前置基线变更，不能掺入后续纯结构差分。
+
+## 2. 编译告警、Clippy和死代码
+
+本轮`cargo build --workspace`成功，日志未报告编译告警；`cargo clippy --workspace --all-targets --message-format=json`退出0，未收到compiler-message告警。原始输出见[build.log](2026-09-22/build.log)、[clippy.log](2026-09-22/clippy.log)，工具版本和最终复核见记录。此结论仅限当前默认特性和现有target，并非所有可选平台均无问题。
+
+后续先固定工具链，保存`cargo metadata --no-deps`与`cargo test -- --list`，再运行同一build/test/clippy。每个新告警分别定责，先处理真实未使用项，再考虑风格；不使用`cargo fix`批量改写，不增加宽泛allow。全部既有告警结清后才考虑在独立验证命令加`-D warnings`，避免把工具链新增lint混作行为差异。
+
+当前未发现编译器报告的dead_code，也未发现活动源码的`allow(dead_code)`。词法单引用候选包括`value.rs`的`expecting/visit_*`、`digest.rs::known_vectors`、topology内的`legacy_machine_constants_equal_catalog`；前者是Serde trait回调，后两者是测试，均不能按文本调用次数删除。pub接口也不能因为仓库内没有直接调用就判死。
+
+死代码清理步骤：先按Cargo实际target和模块图区分活动、测试、历史探针；对每个候选登记定义、调用者、trait/serde/宏引用、CLI/API暴露及已有断言；无法证明无入口的保留。确认为无入口后一次只删除一组，跑build/clippy、测试清单差和完整回归，必要时运行覆盖该分支的输入。测试中唯一执行的防护代码不能以“生产没有调用”删除。删除只消除冗余，不顺手调整错误处理或公开结构。
+
+## 3. 超过80行的Rust函数及拆法
+
+清单覆盖两个crate当前`src/*.rs`与直接集成测试`tests/*.rs`，排除复核/证据快照、legacy_probes和target。行数从fn关键字到配对闭括号，含注释及空行，严格大于80；用Rust词法器屏蔽字符串/注释后配对，完整机器清单见[functions.json](2026-09-22/functions.json)和[只读脚本](2026-09-22/health_inventory.py)。本次共30个：28个运行/接口函数、2个集成测试函数。行号是基线定位，不是永久接口。
+
+| 文件与起行 | 函数 | 行数 | 拆分单元与专项安全网 |
+|---|---|---:|---|
+'''+ '\n'.join(rows)+'''
+
+拆分顺序：先CLI/目录解析，再只读验证和结果封套，再几何/轮询，最后转移和周期搜索。每步先以原函数调用新helper实现等价搬移，验证后才缩小可见性；不同时改集合类型、算法、缓存粒度、事务顺序或错误文本。`Config::name`等纯映射允许有理由地超过80行，80是审查阈值，不是强拆目标。
+
+## 4. 测试按行为组织
+
+当前单元测试入口`src/tests.rs`引用`tests_revision.rs`、`tests_revision_r2/r3/r4/r5.rs`、`tests_round5.rs`、`tests_round6.rs`；集成测试有revision各轮CLI、round5/round6 CLI及reference。轮次命名把同一机制散落多处，历史注释还容易把已替代行为继续当预期，本次装载与断言迁移已暴露这一问题。
+
+计划保留一个测试入口及`support`夹具helper，逐批移动到`tests/inventory.rs`、`manufacturing.rs`、`bridge.rs`、`gates.rs`、`polling.rs`、`warehouse.rs`、`seed_resume.rs`、`cycle_key.rs`、`cycle_replay.rs`、`event_identity.rs`和`stops.rs`。集成测试按`cli_paths`、`cli_records`、`cli_cycles`、`schema_tamper`、`reference_differential`组织；Python文件也用同一行为边界。实际目录与crate模块规则在实施时选定，避免与Cargo集成测试自动发现冲突。
+
+每次移动保存旧测试全名→新全名的双射及源断言块哈希，测试数、ignored数、fixture集合和负例类别不减；有重名就描述具体触发条件。先只搬文件和修改mod/path，再改helper归属；不要同时合并相近但不同的断言。记录输出统一通过可配置证据目录，禁止测试在历史证据目录就地覆盖。调整写入位置后仍由公开CLI读回真实文件验收，不能把端到端测试降成函数mock。
+
+## 5. 黄金记录和现有测试的安全网
+
+手工黄金是`数据/样例/混做粉碎机两下游-黄金轨迹.json`及配套md，必须保持原字节。当前`reference.rs`同时逐字段比较粉碎机4tick、分流器12tick的完整参考轨迹；独立Python现场重算再与Rust比对。新参考文件为两份`*-参考运行记录.json`，旧v3记录保留为历史，本次迁移的物理轨迹差为零，只有已登记参数/解释元数据更新。
+
+保存桥同种双轴满速、异种不串轴、运输滞留、制造整批/同种唯一、门窗口与累计/身份恢复、无线全收/部分收/全拒收、暂停恢复、库存守恒、缓存开关差分、摘要碰撞、资源上限、来源篡改、检查点恢复和周期诊断范围等现有回归。结构重构不得改黄金来适配代码；若差分失败，先定位首次不同事件或字段，撤回该步并解释原因。
+
+每批重构先跑所触机制，再跑工作区全套；接口/序列化变动还跑正向seed→check→run→verify-record、cycle→verify-cycle及现有篡改测试。输入固定同一哈希、参数、预算和起点；基线和候选可将二进制分别保存在同一个共享target内的不同命名位置，不另建target，不向维护记录目录放二进制。有限黄金证明的是覆盖输入上等价，不足以单独证明所有状态；同时审查抽取函数的输入输出、读写集及执行顺序一一对应。
+
+## 6. 证据快照整体归档与代码索引
+
+本轮只盘点，没有移动快照或删除文件。下表按维护开始时排除target、缓存和Git的文件字节统计，不是磁盘块占用。逐文件SHA-256、原路径和大小在[before.json](2026-09-22/before.json)；重复内容分组及嵌套Cargo清单在[archive-inventory.json](2026-09-22/archive-inventory.json)。全工作区共675组重复哈希，包含有意复用夹具，不能一概删除。
+
+| 证据根 | 文件数 | 文件字节合计 |
+|---|---:|---:|
+'''+summary+'''
+
+例如`数据/复核/复算-r4/隔离重跑/求解器/`、`数据/复核/r4-校验器证据/隔离副本/求解器/`及`数据/复核/否证-r4-2-证据/{snapshot,cases/...}/求解器/`包含重复工作区。另两根即使没有Cargo.toml，也有复制源码/规格/样例，不能只凭Cargo清单识别。还须同法检查`crates/*/evidence/`及其他复核/证据根。
+
+归档步骤与不变性门槛：
+
+1. 生成明确的“快照所属根”清单：路径、生成轮次、原来源、每个文件SHA-256/长度、链接目标及权限、被引用位置。先区分完整/部分仓库副本与原创审查/证书/脚本；原创证据留原位，不按重复文件逐个摘走。检查活动Cargo成员、include_str/include_bytes、Python import和测试fixture引用；被活动代码依赖的先解除误依赖或保留，不能直接搬。
+2. 目标统一为`求解器/归档/证据快照/<原相对路径>/`。每个已识别快照树整体移动，保留内部相对布局和全部文件，不做内容去重、不修改封存哈希、不重新标注旧规则为现行。目标已存在时先比完整清单，冲突即停，禁止覆盖合并。维护日期目录只存清单和日志。
+3. 移前先清点所有引用。历史文件中的旧路径保持原字节，由`归档/证据快照/索引.json`记录原路径→归档路径、原来源哈希和快照清单哈希；原位置只放简短md定位页，不放回指源码树的symlink。需要继续执行的审查脚本使用外部路径映射参数/启动器，不在快照内原地改路径。适配活跃文档链接时单列差异。
+4. 同一文件系统上逐树原子rename；写完成标记前核路径双射、文件数/字节数、全部SHA-256及链接/权限。原内容哈希相同只证明搬迁未改内容，不证明旧结论适用现行规则。回滚按映射反向rename，遇原路径新文件即停；不依赖Git恢复。
+5. 从代码索引显式排除`归档/**`、`**/复核/**`、`**/证据/**`、`**/evidence/**`、`target/**`、`.cargo-home/**`、`.codegraph/**`和历史探针。索引活动源码优先用allowlist：`crates/kernel/src`、`crates/kernel/tests`、`crates/topology/src`、`crates/topology/tests`及指定数据工具，随后按排除规则裁剪。资料全文检索另用显式目录，不能把历史实现当当前定义。
+6. `rg`采用独立`.ignore`或命令glob；IDE/rust-analyzer和现有`.codegraph`分别核实其实际支持的exclude配置，不能假定它们服从Git ignore。索引配置只列入下一次实施，不修改Git、不在本轮重启或清空运行中的索引服务。实施时记录索引文件清单和重复符号计数：当前唯一`Engine`定义命中活动源码，旧快照不得出现；文献检索仍能经归档索引定位原证据。
+7. 搬迁前后`cargo metadata`的活动targets、include/import引用解析、测试清单保持一致；全量测试与上述黄金差分通过，所有有效证据能按映射找到且校验原SHA。满足这些条件才宣告归档完成。若失败，按清单回滚已移树，不更改证据内容来消除报错。
+
+## 7. 分批交付与停止条件
+
+每批交付一份改动列表、输入/源码/工具链指纹、测试映射、命令与退出码、完整差分及读写顺序审查。发生事件次序、失败优先级、证书等级、接受域或物料账变化时停止该批，作为另一个行为问题调查，不能藏在清理里。先达到可重复的零行为差异，再进行下一批；长函数数目和文件数减少仅是维护指标，不是通过条件。
+'''
+(R/'内核维护/代码体检方案.md').write_text(text);print('plan written',len(text),'characters')

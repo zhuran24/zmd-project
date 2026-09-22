@@ -48,7 +48,9 @@ def main():
    assert p.returncode==0,(str(path),p.stdout,p.stderr)
   if mode=='verify-record':
    source=next((path.parent/row['path']).resolve() for row in data['fingerprints'] if row['role']=='input')
-   ticks=audit_ledger(data,read(source))
+   source_data=read(source)
+   source_data['catalog']['path']=str((source.parent/source_data['catalog']['path']).resolve())
+   ticks=audit_ledger(data,source_data)
    records.append(dict(path=str(path.resolve()),ticks=ticks))
   else:cycles.append(dict(path=str(path.resolve()),verification=cycle_results[path]))
   print('已核 '+path.name,file=sys.stderr,flush=True)

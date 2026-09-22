@@ -1,0 +1,20 @@
+{
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22/记录.md",
+  "reverted": [
+    "数据/正式静态目录.json：桥接器same_item_across_slots改为exempt，内核恢复同种双轴同时占格与各轴1件/tick。",
+    "数据/工具/formal_units.py及test_formal_catalog.py：生成器恢复桥例外，反例改为错误施加桥同种禁令。",
+    "数据/样例/runtime_record.py及数据/送料契约.md：Python校验和送料说明恢复桥同种跨轴例外，普通制造格守卫保留。",
+    "crates/kernel/src/tests.rs：旧同种拒收断言改为双轴满速、滞留、守恒及种子恢复验证。",
+    "规格/运行语义.md、选择点清单.md：撤桥同种跨轴守卫，两处09-22补记改为已退回。",
+    "规格/受限转移定义.md、参数扫描约减.md：撤桥同种互斥的收货守卫及读集理由，保留按单位调度依赖。",
+    "会议成果/任务书7执行/密排布局.json：恢复六路服务字段、长路17/22及条件恢复106，actual_rate仍为null。",
+    "成品输出通路.md、密排试点.md、整厂衔接.md：恢复逐轴服务、17/22条件等待与76/170物品格容量。",
+    "植物运行试点.md：撤满线桥必须异种以及单物种只能占一轴的限制。",
+    "本轮成果.md、未决去向.md、会议成果回填稿.md、主会话三审-0921.md：同步现行桥结论，旧裁定标为历史。"
+  ],
+  "relock": "规则 4f04de50b2f743aec1da903f00f0f89f92f1aeba60eb4513320b71d0ee0a57fd（114行）；任务 1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac（16行）；约束 f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6（126行）；目录 0690960c37c1ebcd0d89aa57fa86b5ca9f5d83098330d1acc1fbf9b0be4ed60b；debug/release构建及release seed/check均退出0。",
+  "plan_path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/代码体检方案.md",
+  "tests": "cargo test --workspace: 141 passed; 0 failed; 0 ignored；退出码0。",
+  "status": "ok",
+  "error": ""
+}

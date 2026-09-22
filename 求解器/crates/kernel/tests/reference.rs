@@ -48,7 +48,7 @@ fn differential(name: &str, golden: bool) {
     let path = r.join(format!("数据/样例/{name}.json"));
     let input = Input::load(&path, &config, false).unwrap();
     let mut engine = Engine::new(input).unwrap();
-    let record = read_json(&r.join(format!("数据/样例/{name}-运行记录-v3.json"))).unwrap();
+    let record = read_json(&r.join(format!("数据/样例/{name}-参考运行记录.json"))).unwrap();
     let expected = record["trace"]["ticks"].as_array().unwrap();
     let mut actual = Vec::new();
     for tick in expected {
@@ -86,7 +86,7 @@ fn live_python_differential() {
     let python: Value = serde_json::from_slice(&output.stdout).unwrap();
     let config = Config::parse(read_json(&r.join("规格/内核配置-v1.json")).unwrap()).unwrap();
     for name in ["混做粉碎机两下游", "分流器三路轮询"] {
-        let reference = read_json(&r.join(format!("数据/样例/{name}-运行记录-v3.json"))).unwrap();
+        let reference = read_json(&r.join(format!("数据/样例/{name}-参考运行记录.json"))).unwrap();
         compare(
             &python[name],
             &reference["trace"]["ticks"],

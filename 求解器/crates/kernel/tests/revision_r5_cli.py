@@ -80,7 +80,7 @@ def main():
         cert = copy.deepcopy(cycle)
         cert['run_record_ref'].update(path=str(relative.resolve()),
             sha256=hashlib.sha256(relative.read_bytes()).hexdigest(),
-            format='kernel-output-v3/' + encoding)
+            format='kernel-output-v4/' + encoding)
         for key in ('run_record_ref', 'replay_input_ref'):
             cert[key]['path'] = os.path.relpath(cert[key]['path'], cert_dir)
             cert[key]['producer']['path'] = os.path.relpath(cert[key]['producer']['path'], cert_dir)
@@ -94,7 +94,7 @@ def main():
         call(encoding + '-cycle-checkpoint', 'checkpoint', cert_path, '--out', E / (encoding + '-cycle-input.json'))
     call('relative-production-batch', 'verify-batch', package, cwd=ROOT.parent)
 
-    # 批量入口的独立参考支路也必须接受路径等价表示；黄金和全字段比较不放宽。
+    # 当前batch只接kernel v4；路径等价正例和参考生产者拒收分别验证。
     reference_dir = E / 'reference-package'
     for name in ('混做粉碎机两下游', '分流器三路轮询'):
         raw = read(BASE / (name + '.json'))
@@ -108,9 +108,15 @@ def main():
             positives.append(p)
             call(name + '-' + encoding, 'verify-record', p, cwd=ROOT.parent)
         bounded = build_record(raw, expected, read(BASE / '混做粉碎机两下游-黄金轨迹.json') if name.startswith('混做') else None)
-        p = save(reference_dir / (name + '-reference.json'), relative_record(bounded, reference_dir))
+        p = save(E / 'bounded-reference-package' / (name + '-reference.json'), relative_record(bounded, E / 'bounded-reference-package'))
         positives.append(p)
     call('relative-reference-batch', 'verify-batch', reference_dir, cwd=ROOT.parent)
+    rejected = subprocess.run([str(BIN), 'verify-batch', str(E / 'bounded-reference-package'),
+                               '--config', str(CFG)], cwd=ROOT.parent, capture_output=True, text=True)
+    assert rejected.returncode == 2 and not rejected.stdout.strip()
+    assert '当前批量入口仅支持kernel生产者' in rejected.stderr
+    (E / 'bounded-reference-batch-unsupported.log').write_text(rejected.stderr)
+    CASES.append(dict(name='bounded-reference-batch-unsupported', exit_code=2))
 
     # 有限模式允许矿量影响容量；生产装载含交叉游标试样一律先停于D.2。
     raw = read(ROOT / 'crates/kernel/tests/fixtures/core_inbound.json')

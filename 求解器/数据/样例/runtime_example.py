@@ -8,7 +8,7 @@ import check_examples as checker
 
 BASE = Path(__file__).resolve().parent
 PROFILE_PATH = BASE / 'kernel_profile_v1参数赋值.json'
-SUPPORTED_PROFILE_SHA256 = 'bb0864eec811a6a77065ede33af165ced5e31e384afb166eaa30af554589e34a'
+SUPPORTED_PROFILE_SHA256 = 'a6ecebadfb0e322726f22dd3967301691063965c45f56bd62e0d84965a810fee'
 
 
 def is_splitter(data):
@@ -316,7 +316,7 @@ def validate_runtime(data, catalog, ports, channels, buffers):
         require(isinstance(rows,list) and len(rows)==len(set(rows)) and set(rows)==set(expected_ids),'级仲裁/空格选择状态不完整')
     for key in ('judgment_context','pending_events','tick_context'):
         checker.decision(sem[key], {'specified'})
-    require(same_json(sem['parameter_values'],exp),'当前轴值/生命周期与参数输入不一致')
+    require(same_json(sorted(sem['parameter_values'],key=lambda row:row['axis']),sorted(exp,key=lambda row:row['axis'])),'当前轴值/生命周期与参数输入不一致')
     require(same_json(sem['judgment_context']['value'],{'instant':time_value(0),'phase':'before_boundary','order_scope':'global','round':0,'next_template':0,'ordered_events':[],'next_event':None}),'起点排序上下文不完整')
     require(sem['pending_events']['status']=='specified' and sem['pending_events']['value']==[],'起点待事件不符')
     require(sem['tick_context']['value']=={'window_start':time_value(0),'window_end':time_value(1),'movements':[],'port_usage':[],'internal_passages':[]},'起点端口额度/内部穿越不符')

@@ -1,0 +1,690 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running unittests src/lib.rs (target/debug/deps/kernel-26241e85d1128675)
+
+running 100 tests
+test tests::integer_validation ... ok
+test tests::checkpoint_delta_negative_cases ... ok
+test digest::known_vectors ... ok
+test tests::config_axes_and_all_stop_values ... ok
+test tests::malformed_state_rejected ... FAILED
+test tests::completed_output_conflict_retains_batch ... FAILED
+test tests::five_tick_recipe_completes_only_at_boundary ... FAILED
+test tests::after_closure_restart ... FAILED
+test tests::byte_determinism_and_layout_permutation ... FAILED
+test tests::damping_no_terminal ... FAILED
+test tests::explicit_ore_supply ... FAILED
+test tests::coverage_five_states ... FAILED
+test tests::external_stop_positions ... FAILED
+test tests::bridge_same_item_occupies_both_axes_at_full_rate ... FAILED
+test tests::catalog_and_geometry ... FAILED
+test tests::core_inbound_physical_deposit ... FAILED
+test tests::explicit_step_anchors ... FAILED
+test tests::box_selectors ... FAILED
+test tests::identity_latch_and_no_cross_disconnected_observation ... FAILED
+test tests::level_tie_reversal_changes_winner ... FAILED
+test tests::bridge_two_independent_slots_run ... FAILED
+test tests::closure_and_resources ... FAILED
+test tests::output_level_damping_priority ... FAILED
+test tests::manufacture_disabled_intake_and_pause ... FAILED
+test tests::output_off_preserves_game_state ... FAILED
+test tests::full_and_delta_record_recompute ... FAILED
+test tests::manufacturing_two_material_batch ... FAILED
+test tests::ore_history_horizon_stop ... FAILED
+test tests::revision::revision_initial_warehouse_labels ... FAILED
+test tests::revision::revision_branch_relevance ... FAILED
+test tests::revision::revision_external_action_references ... FAILED
+test tests::revision::revision_independent_identity_audit ... FAILED
+test tests::revision::revision_ore_depletion_is_not_a_movement_guard ... FAILED
+test tests::damping_paths_and_missing_branch ... FAILED
+test tests::revision::revision_pending_history_alias ... FAILED
+test tests::revision::revision_gate_item_domain ... FAILED
+test tests::revision::revision_ore_history_sufficiency ... FAILED
+test tests::revision::revision_manufacturing_axis_evidence ... FAILED
+test tests::membership_projection ... FAILED
+test tests::revision_r3::revision_r3_checkpoint_parameters_are_not_repaired ... FAILED
+test tests::revision_r2::revision_r2_required_input_shapes ... FAILED
+test tests::revision::revision_reports_and_after_closure_stop ... FAILED
+test tests::revision_r2::revision_r2_phase_intersection ... FAILED
+test tests::revision::revision_supply_order_intersection ... FAILED
+test tests::revision::revision_snapshot_objects ... FAILED
+test tests::revision_r3::revision_r3_sufficient_requires_both_positive_ores ... FAILED
+test tests::revision_r2::revision_r2_damping_does_not_rebind_singleton ... FAILED
+test tests::revision::revision_warehouse_acceptance ... FAILED
+test tests::revision_r2::revision_r2_internal_passage_identity ... FAILED
+test tests::revision_r3::revision_r3_malformed_seed_returns_stop_before_indexing ... FAILED
+test tests::revision_r2::revision_r2_rust_metadata_controls ... FAILED
+test tests::revision_r3::revision_r3_window_deadline_respects_anchor_phase ... FAILED
+test tests::revision_r3::revision_r3_phase_type_and_domain_at_both_anchors ... FAILED
+test tests::revision_r2::revision_r2_fixed_branch_cut_and_reload ... FAILED
+test tests::projections ... FAILED
+test tests::revision_r2::revision_r2_unowned_global_events ... FAILED
+test tests::revision_r3::revision_r3_cycle_checks_prefix_before_recomputation ... FAILED
+test tests::revision_r2::revision_r2_seed_consumed_identity ... FAILED
+test tests::revision_r4::revision_r4_age_cohorts_seed_capacity_and_key ... FAILED
+test tests::revision_r3::revision_r3_bridge_moves_are_not_first_contact_events ... FAILED
+test tests::revision_r4::revision_r4_cohorts_manufacture_remove_and_arrival_age ... FAILED
+test tests::revision_r4::revision_r4_first_resumed_sweep_stop_preserves_checkpoint ... FAILED
+test tests::revision_r4::revision_r4_multilevel_branch_table_includes_dormant_subsets ... FAILED
+test tests::revision_r4::revision_r4_pending_trigger_is_closed_before_derivation_and_key ... FAILED
+test tests::revision_r4::revision_r4_path_runs_never_exercises_geometric_adjacency ... FAILED
+test tests::round5::round5_cycle_age_overflow_is_resource_not_wrap ... FAILED
+test tests::round5::round5_cycle_certificate_replay_and_tamper ... FAILED
+test tests::round5::round5_ore_return_candidate_stops_before_capacity_or_age ... FAILED
+test tests::round5::round5_cache_differential ... FAILED
+test tests::round6::round6_independent_ledger_conservation_rejects_state_and_total_tampering ... FAILED
+test tests::round5::round5_inventory_order_is_canonical ... FAILED
+test tests::round6::round6_hash_collisions_replay_every_candidate ... FAILED
+test tests::round5::round5_seed_tie_changes_rebuild_ring ... FAILED
+test tests::round6::round6_no_record_retains_loaded_zero_prefix ... FAILED
+test tests::revision_r4::revision_r4_single_level_empty_branch_table_matches_full_table ... FAILED
+test tests::round6::round6_static_domain_reports_all_without_tick ... FAILED
+test tests::round5::round5_completion_after_pause ... FAILED
+test tests::round5::round5_supply_differential_and_last_ore ... FAILED
+test tests::round6::round6_compact_step_preserves_full_checkpoint ... FAILED
+test tests::round5::round5_seed_roundtrip ... FAILED
+test tests::round6::round6_put_rejects_without_partial_write ... FAILED
+test tests::round5::round5_ledgers_conserve_every_species ... FAILED
+test tests::round6::round6_static_pass_does_not_replace_dynamic_d2 ... FAILED
+test tests::round6::round6_test_only_two_product_recipe_keeps_buffer_exception ... FAILED
+test tests::revision_r5::revision_r5_production_load_guards_ore_before_memory ... FAILED
+test tests::seed_and_parameter_negatives ... FAILED
+test tests::simultaneous_ring_restoration ... FAILED
+test tests::three_examples_static ... FAILED
+test tests::stopped_engine_cannot_continue ... FAILED
+test tests::total_exhaustion_survives_window_expiry ... FAILED
+test tests::transfer_conservation ... FAILED
+test tests::transfer_cooldown_pause ... FAILED
+test tests::warehouse_identity_monotone ... FAILED
+test tests::transfer_capacity_and_empty_cooldown ... FAILED
+test tests::warehouse_invalid_identity_and_order ... FAILED
+test tests::warehouse_80000_and_recipe_conservation ... FAILED
+test tests::warehouse_single_unknown_with_assigned_empty ... FAILED
+test tests::transport_wrong_item_rejects ... FAILED
+test tests::warehouse_competition_atomic_stop ... FAILED
+test tests::warehouse_unassigned_species_order ... FAILED
+
+failures:
+
+---- tests::malformed_state_rejected stdout ----
+
+thread 'tests::malformed_state_rejected' (262479) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- tests::completed_output_conflict_retains_batch stdout ----
+
+thread 'tests::completed_output_conflict_retains_batch' (262465) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::five_tick_recipe_completes_only_at_boundary stdout ----
+
+thread 'tests::five_tick_recipe_completes_only_at_boundary' (262474) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::after_closure_restart stdout ----
+
+thread 'tests::after_closure_restart' (262457) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::byte_determinism_and_layout_permutation stdout ----
+
+thread 'tests::byte_determinism_and_layout_permutation' (262461) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::damping_no_terminal stdout ----
+
+thread 'tests::damping_no_terminal' (262469) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::explicit_ore_supply stdout ----
+
+thread 'tests::explicit_ore_supply' (262471) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::coverage_five_states stdout ----
+
+thread 'tests::coverage_five_states' (262468) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::external_stop_positions stdout ----
+
+thread 'tests::external_stop_positions' (262473) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::bridge_same_item_occupies_both_axes_at_full_rate stdout ----
+
+thread 'tests::bridge_same_item_occupies_both_axes_at_full_rate' (262459) panicked at crates/kernel/src/tests.rs:819:54:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::catalog_and_geometry stdout ----
+
+thread 'tests::catalog_and_geometry' (262462) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::core_inbound_physical_deposit stdout ----
+
+thread 'tests::core_inbound_physical_deposit' (262467) panicked at crates/kernel/src/tests.rs:819:54:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::explicit_step_anchors stdout ----
+
+thread 'tests::explicit_step_anchors' (262472) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::box_selectors stdout ----
+
+thread 'tests::box_selectors' (262458) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::identity_latch_and_no_cross_disconnected_observation stdout ----
+
+thread 'tests::identity_latch_and_no_cross_disconnected_observation' (262476) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::level_tie_reversal_changes_winner stdout ----
+
+thread 'tests::level_tie_reversal_changes_winner' (262478) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::bridge_two_independent_slots_run stdout ----
+
+thread 'tests::bridge_two_independent_slots_run' (262460) panicked at crates/kernel/src/tests.rs:819:54:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::closure_and_resources stdout ----
+
+thread 'tests::closure_and_resources' (262464) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::output_level_damping_priority stdout ----
+
+thread 'tests::output_level_damping_priority' (262542) panicked at crates/kernel/src/tests.rs:819:54:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::manufacture_disabled_intake_and_pause stdout ----
+
+thread 'tests::manufacture_disabled_intake_and_pause' (262480) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::output_off_preserves_game_state stdout ----
+
+thread 'tests::output_off_preserves_game_state' (262544) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::full_and_delta_record_recompute stdout ----
+
+thread 'tests::full_and_delta_record_recompute' (262475) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::manufacturing_two_material_batch stdout ----
+
+thread 'tests::manufacturing_two_material_batch' (262481) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::ore_history_horizon_stop stdout ----
+
+thread 'tests::ore_history_horizon_stop' (262521) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision::revision_initial_warehouse_labels stdout ----
+
+thread 'tests::revision::revision_initial_warehouse_labels' (262562) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision::revision_branch_relevance stdout ----
+
+thread 'tests::revision::revision_branch_relevance' (262552) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision::revision_external_action_references stdout ----
+
+thread 'tests::revision::revision_external_action_references' (262554) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision::revision_independent_identity_audit stdout ----
+
+thread 'tests::revision::revision_independent_identity_audit' (262557) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision::revision_ore_depletion_is_not_a_movement_guard stdout ----
+
+thread 'tests::revision::revision_ore_depletion_is_not_a_movement_guard' (262569) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::damping_paths_and_missing_branch stdout ----
+
+thread 'tests::damping_paths_and_missing_branch' (262470) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision::revision_pending_history_alias stdout ----
+
+thread 'tests::revision::revision_pending_history_alias' (262572) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision::revision_gate_item_domain stdout ----
+
+thread 'tests::revision::revision_gate_item_domain' (262555) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision::revision_ore_history_sufficiency stdout ----
+
+thread 'tests::revision::revision_ore_history_sufficiency' (262571) panicked at crates/kernel/src/tests.rs:819:54:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision::revision_manufacturing_axis_evidence stdout ----
+
+thread 'tests::revision::revision_manufacturing_axis_evidence' (262566) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::membership_projection stdout ----
+
+thread 'tests::membership_projection' (262509) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r3::revision_r3_checkpoint_parameters_are_not_repaired stdout ----
+
+thread 'tests::revision_r3::revision_r3_checkpoint_parameters_are_not_repaired' (262674) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r2::revision_r2_required_input_shapes stdout ----
+
+thread 'tests::revision_r2::revision_r2_required_input_shapes' (262654) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision::revision_reports_and_after_closure_stop stdout ----
+
+thread 'tests::revision::revision_reports_and_after_closure_stop' (262615) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r2::revision_r2_phase_intersection stdout ----
+
+thread 'tests::revision_r2::revision_r2_phase_intersection' (262649) panicked at crates/kernel/src/tests.rs:819:54:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision::revision_supply_order_intersection stdout ----
+
+thread 'tests::revision::revision_supply_order_intersection' (262617) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision::revision_snapshot_objects stdout ----
+
+thread 'tests::revision::revision_snapshot_objects' (262616) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r3::revision_r3_sufficient_requires_both_positive_ores stdout ----
+
+thread 'tests::revision_r3::revision_r3_sufficient_requires_both_positive_ores' (262686) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r2::revision_r2_damping_does_not_rebind_singleton stdout ----
+
+thread 'tests::revision_r2::revision_r2_damping_does_not_rebind_singleton' (262646) panicked at crates/kernel/src/tests.rs:819:54:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision::revision_warehouse_acceptance stdout ----
+
+thread 'tests::revision::revision_warehouse_acceptance' (262645) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r2::revision_r2_internal_passage_identity stdout ----
+
+thread 'tests::revision_r2::revision_r2_internal_passage_identity' (262648) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r3::revision_r3_malformed_seed_returns_stop_before_indexing stdout ----
+
+thread 'tests::revision_r3::revision_r3_malformed_seed_returns_stop_before_indexing' (262682) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r2::revision_r2_rust_metadata_controls stdout ----
+
+thread 'tests::revision_r2::revision_r2_rust_metadata_controls' (262661) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r3::revision_r3_window_deadline_respects_anchor_phase stdout ----
+
+thread 'tests::revision_r3::revision_r3_window_deadline_respects_anchor_phase' (262687) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r3::revision_r3_phase_type_and_domain_at_both_anchors stdout ----
+
+thread 'tests::revision_r3::revision_r3_phase_type_and_domain_at_both_anchors' (262685) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r2::revision_r2_fixed_branch_cut_and_reload stdout ----
+
+thread 'tests::revision_r2::revision_r2_fixed_branch_cut_and_reload' (262647) panicked at crates/kernel/src/tests.rs:819:54:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::projections stdout ----
+
+thread 'tests::projections' (262545) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r2::revision_r2_unowned_global_events stdout ----
+
+thread 'tests::revision_r2::revision_r2_unowned_global_events' (262666) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r3::revision_r3_cycle_checks_prefix_before_recomputation stdout ----
+
+thread 'tests::revision_r3::revision_r3_cycle_checks_prefix_before_recomputation' (262676) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r2::revision_r2_seed_consumed_identity stdout ----
+
+thread 'tests::revision_r2::revision_r2_seed_consumed_identity' (262663) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r4::revision_r4_age_cohorts_seed_capacity_and_key stdout ----
+
+thread 'tests::revision_r4::revision_r4_age_cohorts_seed_capacity_and_key' (262693) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r3::revision_r3_bridge_moves_are_not_first_contact_events stdout ----
+
+thread 'tests::revision_r3::revision_r3_bridge_moves_are_not_first_contact_events' (262673) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r4::revision_r4_cohorts_manufacture_remove_and_arrival_age stdout ----
+
+thread 'tests::revision_r4::revision_r4_cohorts_manufacture_remove_and_arrival_age' (262694) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r4::revision_r4_first_resumed_sweep_stop_preserves_checkpoint stdout ----
+
+thread 'tests::revision_r4::revision_r4_first_resumed_sweep_stop_preserves_checkpoint' (262711) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r4::revision_r4_multilevel_branch_table_includes_dormant_subsets stdout ----
+
+thread 'tests::revision_r4::revision_r4_multilevel_branch_table_includes_dormant_subsets' (262713) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r4::revision_r4_pending_trigger_is_closed_before_derivation_and_key stdout ----
+
+thread 'tests::revision_r4::revision_r4_pending_trigger_is_closed_before_derivation_and_key' (262757) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r4::revision_r4_path_runs_never_exercises_geometric_adjacency stdout ----
+
+thread 'tests::revision_r4::revision_r4_path_runs_never_exercises_geometric_adjacency' (262754) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round5::round5_cycle_age_overflow_is_resource_not_wrap stdout ----
+
+thread 'tests::round5::round5_cycle_age_overflow_is_resource_not_wrap' (262794) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round5::round5_cycle_certificate_replay_and_tamper stdout ----
+
+thread 'tests::round5::round5_cycle_certificate_replay_and_tamper' (262798) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round5::round5_ore_return_candidate_stops_before_capacity_or_age stdout ----
+
+thread 'tests::round5::round5_ore_return_candidate_stops_before_capacity_or_age' (262811) panicked at crates/kernel/src/tests.rs:819:54:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round5::round5_cache_differential stdout ----
+
+thread 'tests::round5::round5_cache_differential' (262778) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round6::round6_independent_ledger_conservation_rejects_state_and_total_tampering stdout ----
+
+thread 'tests::round6::round6_independent_ledger_conservation_rejects_state_and_total_tampering' (262824) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round5::round5_inventory_order_is_canonical stdout ----
+
+thread 'tests::round5::round5_inventory_order_is_canonical' (262802) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round6::round6_hash_collisions_replay_every_candidate stdout ----
+
+thread 'tests::round6::round6_hash_collisions_replay_every_candidate' (262822) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round5::round5_seed_tie_changes_rebuild_ring stdout ----
+
+thread 'tests::round5::round5_seed_tie_changes_rebuild_ring' (262817) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round6::round6_no_record_retains_loaded_zero_prefix stdout ----
+
+thread 'tests::round6::round6_no_record_retains_loaded_zero_prefix' (262826) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r4::revision_r4_single_level_empty_branch_table_matches_full_table stdout ----
+
+thread 'tests::revision_r4::revision_r4_single_level_empty_branch_table_matches_full_table' (262770) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round6::round6_static_domain_reports_all_without_tick stdout ----
+
+thread 'tests::round6::round6_static_domain_reports_all_without_tick' (262828) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round5::round5_completion_after_pause stdout ----
+
+thread 'tests::round5::round5_completion_after_pause' (262790) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round5::round5_supply_differential_and_last_ore stdout ----
+
+thread 'tests::round5::round5_supply_differential_and_last_ore' (262819) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round6::round6_compact_step_preserves_full_checkpoint stdout ----
+
+thread 'tests::round6::round6_compact_step_preserves_full_checkpoint' (262821) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round5::round5_seed_roundtrip stdout ----
+
+thread 'tests::round5::round5_seed_roundtrip' (262814) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round6::round6_put_rejects_without_partial_write stdout ----
+
+thread 'tests::round6::round6_put_rejects_without_partial_write' (262827) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round5::round5_ledgers_conserve_every_species stdout ----
+
+thread 'tests::round5::round5_ledgers_conserve_every_species' (262805) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round6::round6_static_pass_does_not_replace_dynamic_d2 stdout ----
+
+thread 'tests::round6::round6_static_pass_does_not_replace_dynamic_d2' (262834) panicked at crates/kernel/src/tests.rs:819:54:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::round6::round6_test_only_two_product_recipe_keeps_buffer_exception stdout ----
+
+thread 'tests::round6::round6_test_only_two_product_recipe_keeps_buffer_exception' (262853) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::revision_r5::revision_r5_production_load_guards_ore_before_memory stdout ----
+
+thread 'tests::revision_r5::revision_r5_production_load_guards_ore_before_memory' (262775) panicked at crates/kernel/src/tests.rs:819:54:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::seed_and_parameter_negatives stdout ----
+
+thread 'tests::seed_and_parameter_negatives' (262862) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::simultaneous_ring_restoration stdout ----
+
+thread 'tests::simultaneous_ring_restoration' (262863) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::three_examples_static stdout ----
+
+thread 'tests::three_examples_static' (262887) panicked at crates/kernel/src/tests.rs:113:48:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::stopped_engine_cannot_continue stdout ----
+
+thread 'tests::stopped_engine_cannot_continue' (262873) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::total_exhaustion_survives_window_expiry stdout ----
+
+thread 'tests::total_exhaustion_survives_window_expiry' (262910) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::transfer_conservation stdout ----
+
+thread 'tests::transfer_conservation' (262915) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::transfer_cooldown_pause stdout ----
+
+thread 'tests::transfer_cooldown_pause' (262916) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::warehouse_identity_monotone stdout ----
+
+thread 'tests::warehouse_identity_monotone' (262943) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::transfer_capacity_and_empty_cooldown stdout ----
+
+thread 'tests::transfer_capacity_and_empty_cooldown' (262913) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::warehouse_invalid_identity_and_order stdout ----
+
+thread 'tests::warehouse_invalid_identity_and_order' (262946) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::warehouse_80000_and_recipe_conservation stdout ----
+
+thread 'tests::warehouse_80000_and_recipe_conservation' (262940) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::warehouse_single_unknown_with_assigned_empty stdout ----
+
+thread 'tests::warehouse_single_unknown_with_assigned_empty' (262950) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::transport_wrong_item_rejects stdout ----
+
+thread 'tests::transport_wrong_item_rejects' (262937) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::warehouse_competition_atomic_stop stdout ----
+
+thread 'tests::warehouse_competition_atomic_stop' (262941) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+---- tests::warehouse_unassigned_species_order stdout ----
+
+thread 'tests::warehouse_unassigned_species_order' (262956) panicked at crates/kernel/src/tests.rs:35:51:
+called `Result::unwrap()` on an `Err` value: Stop { status: "unsupported", axis: "warehouse.periodic_lift", location: "parameters.fixedness_unproven.warehouse.periodic_lift", reason: "未支持的轴值" }
+
+
+failures:
+    tests::after_closure_restart
+    tests::box_selectors
+    tests::bridge_same_item_occupies_both_axes_at_full_rate
+    tests::bridge_two_independent_slots_run
+    tests::byte_determinism_and_layout_permutation
+    tests::catalog_and_geometry
+    tests::closure_and_resources
+    tests::completed_output_conflict_retains_batch
+    tests::core_inbound_physical_deposit
+    tests::coverage_five_states
+    tests::damping_no_terminal
+    tests::damping_paths_and_missing_branch
+    tests::explicit_ore_supply
+    tests::explicit_step_anchors
+    tests::external_stop_positions
+    tests::five_tick_recipe_completes_only_at_boundary
+    tests::full_and_delta_record_recompute
+    tests::identity_latch_and_no_cross_disconnected_observation
+    tests::level_tie_reversal_changes_winner
+    tests::malformed_state_rejected
+    tests::manufacture_disabled_intake_and_pause
+    tests::manufacturing_two_material_batch
+    tests::membership_projection
+    tests::ore_history_horizon_stop
+    tests::output_level_damping_priority
+    tests::output_off_preserves_game_state
+    tests::projections
+    tests::revision::revision_branch_relevance
+    tests::revision::revision_external_action_references
+    tests::revision::revision_gate_item_domain
+    tests::revision::revision_independent_identity_audit
+    tests::revision::revision_initial_warehouse_labels
+    tests::revision::revision_manufacturing_axis_evidence
+    tests::revision::revision_ore_depletion_is_not_a_movement_guard
+    tests::revision::revision_ore_history_sufficiency
+    tests::revision::revision_pending_history_alias
+    tests::revision::revision_reports_and_after_closure_stop
+    tests::revision::revision_snapshot_objects
+    tests::revision::revision_supply_order_intersection
+    tests::revision::revision_warehouse_acceptance
+    tests::revision_r2::revision_r2_damping_does_not_rebind_singleton
+    tests::revision_r2::revision_r2_fixed_branch_cut_and_reload
+    tests::revision_r2::revision_r2_internal_passage_identity
+    tests::revision_r2::revision_r2_phase_intersection
+    tests::revision_r2::revision_r2_required_input_shapes
+    tests::revision_r2::revision_r2_rust_metadata_controls
+    tests::revision_r2::revision_r2_seed_consumed_identity
+    tests::revision_r2::revision_r2_unowned_global_events
+    tests::revision_r3::revision_r3_bridge_moves_are_not_first_contact_events
+    tests::revision_r3::revision_r3_checkpoint_parameters_are_not_repaired
+    tests::revision_r3::revision_r3_cycle_checks_prefix_before_recomputation
+    tests::revision_r3::revision_r3_malformed_seed_returns_stop_before_indexing
+    tests::revision_r3::revision_r3_phase_type_and_domain_at_both_anchors
+    tests::revision_r3::revision_r3_sufficient_requires_both_positive_ores
+    tests::revision_r3::revision_r3_window_deadline_respects_anchor_phase
+    tests::revision_r4::revision_r4_age_cohorts_seed_capacity_and_key
+    tests::revision_r4::revision_r4_cohorts_manufacture_remove_and_arrival_age
+    tests::revision_r4::revision_r4_first_resumed_sweep_stop_preserves_checkpoint
+    tests::revision_r4::revision_r4_multilevel_branch_table_includes_dormant_subsets
+    tests::revision_r4::revision_r4_path_runs_never_exercises_geometric_adjacency
+    tests::revision_r4::revision_r4_pending_trigger_is_closed_before_derivation_and_key
+    tests::revision_r4::revision_r4_single_level_empty_branch_table_matches_full_table
+    tests::revision_r5::revision_r5_production_load_guards_ore_before_memory
+    tests::round5::round5_cache_differential
+    tests::round5::round5_completion_after_pause
+    tests::round5::round5_cycle_age_overflow_is_resource_not_wrap
+    tests::round5::round5_cycle_certificate_replay_and_tamper
+    tests::round5::round5_inventory_order_is_canonical
+    tests::round5::round5_ledgers_conserve_every_species
+    tests::round5::round5_ore_return_candidate_stops_before_capacity_or_age
+    tests::round5::round5_seed_roundtrip
+    tests::round5::round5_seed_tie_changes_rebuild_ring
+    tests::round5::round5_supply_differential_and_last_ore
+    tests::round6::round6_compact_step_preserves_full_checkpoint
+    tests::round6::round6_hash_collisions_replay_every_candidate
+    tests::round6::round6_independent_ledger_conservation_rejects_state_and_total_tampering
+    tests::round6::round6_no_record_retains_loaded_zero_prefix
+    tests::round6::round6_put_rejects_without_partial_write
+    tests::round6::round6_static_domain_reports_all_without_tick
+    tests::round6::round6_static_pass_does_not_replace_dynamic_d2
+    tests::round6::round6_test_only_two_product_recipe_keeps_buffer_exception
+    tests::seed_and_parameter_negatives
+    tests::simultaneous_ring_restoration
+    tests::stopped_engine_cannot_continue
+    tests::three_examples_static
+    tests::total_exhaustion_survives_window_expiry
+    tests::transfer_capacity_and_empty_cooldown
+    tests::transfer_conservation
+    tests::transfer_cooldown_pause
+    tests::transport_wrong_item_rejects
+    tests::warehouse_80000_and_recipe_conservation
+    tests::warehouse_competition_atomic_stop
+    tests::warehouse_identity_monotone
+    tests::warehouse_invalid_identity_and_order
+    tests::warehouse_single_unknown_with_assigned_empty
+    tests::warehouse_unassigned_species_order
+
+test result: FAILED. 4 passed; 96 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s
+
+error: test failed, to rerun pass `-p kernel --lib`

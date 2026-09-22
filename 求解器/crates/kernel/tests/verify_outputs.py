@@ -30,6 +30,7 @@ def expected_fingerprints(data, golden_match):
     paths += [('semantics', ROOT / '规格' / name) for name in
               ('受限转移定义.md', '运行语义.md', '内核输入.md', '内核输出.md')]
     paths.append(('schema', ROOT / '规格/内核输出.schema.json'))
+    paths.append(('semantics', ROOT / 'crates/kernel/周期键读取审计.md'))
     paths += [('checker', ROOT / 'crates/kernel/src' / name) for name in
               ('value.rs', 'config.rs', 'model.rs', 'catalog.rs', 'input.rs', 'interfaces.rs',
                'engine.rs', 'event_identity.rs', 'warehouse.rs', 'polling.rs', 'transition.rs',

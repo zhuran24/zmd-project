@@ -1,0 +1,20 @@
+[
+  {
+    "path": "crates/kernel/evidence/round5/relocated-seed.json",
+    "restored": true,
+    "expected_sha256": "e3d2b9f80ff1e1137614954585e4d9fee4ed1d525527433c2850f72746d6e758",
+    "source": "crates/kernel/复核/r4-测试与证据/relocated-seed.json"
+  },
+  {
+    "path": "crates/kernel/evidence/round5/resource-statistics.json",
+    "restored": true,
+    "expected_sha256": "345231e7f67ac71d8f8a7af9db7ed830791701982a0899c5f038e6febf6d86f7",
+    "source": "exact SHA-256 recovery of elapsed_ns serialization"
+  },
+  {
+    "path": "crates/kernel/evidence/round5/invalid-cycle-result.json",
+    "restored": true,
+    "expected_sha256": "06d6d63070d18fd3229d2bf516d6bb7288b86e92f169549279d170620dd365fd",
+    "source": "hash-verified v2 load-stop reconstructed from historical dependency manifest crates/kernel/evidence/revision-r4/cli/age-overflow-cycle-result.json"
+  }
+]

@@ -17,19 +17,7 @@ ROTATIONS = {"r0": 0, "r90": 1, "r180": 2, "r270": 3}
 DIRECTIONS = {"south": (0, -1), "north": (0, 1), "west": (-1, 0), "east": (1, 0)}
 INITIAL_ITEMS = {"源矿", "蓝铁矿", "荞花", "砂叶", "荞花种子", "砂叶种子"}
 AXIS_PATH = ROOT / "求解器/规格/选择点参数轴.md"
-KNOWN_VALUES = {
-    "polling.direct_peer": "physical_peer",
-    "gate.window_recovery": "on_expiry_if_other_guards",
-    "initialization.rotation_stage": "build_and_debug",
-    "transfer.judgment": "unit",
-    "manufacturing.port_slot_relation": "distributed",
-    "manufacturing.output_blocked": "retain_whole_batch",
-    "gate.limit_requires_identity": True,
-    "warehouse.capacity": {"value": "80000", "category": "条文直引"},
-    "warehouse.delivery_count": "actual_inbound",
-    "bridge.inventory_scope": "two_independent_axis_slots",
-    "bridge.scheduling_scope": "unit",
-}
+KNOWN_VALUES = {'polling.direct_peer': 'physical_peer', 'connection.port_meeting': 'shared_edge_opposite', 'initialization.rotation_stage': 'build_and_debug', 'gate.window_recovery': 'on_expiry_if_other_guards', 'transfer.judgment': 'unit', 'manufacturing.port_slot_relation': 'distributed', 'manufacturing.output_blocked': 'retain_whole_batch', 'gate.limit_requires_identity': True, 'warehouse.capacity': {'value': '80000', 'category': '条文直引'}, 'warehouse.delivery_count': 'actual_inbound', 'bridge.inventory_scope': 'two_independent_axis_slots', 'bridge.scheduling_scope': 'unit', 'judgment.order_scope': 'fixed_run_order', 'polling.both_failure': 'advance_authorized', 'transfer.cooldown_scope': 'box', 'transfer.failure_cooldown': 'every_attempt', 'transfer.partial_acceptance': 'max_receivable', 'gate.identity_recovery': 'current_conditions', 'gate.total_recovery': 'current_conditions', 'gate.window_clock': 'wall_clock', 'warehouse.acceptance': 'receivable_products', 'warehouse.acceptance_quantifier': 'all_candidate_and_actual_checks'}
 
 
 def axis_registry():
@@ -56,9 +44,9 @@ def axis_registry():
 
 NAMES = ["桥接器双通路.json", "分流器三路轮询.json", "混做粉碎机两下游.json"]
 SOURCE_HASHES = {
-    "《明日方舟：终末地》游戏规则.txt": "5aed27ab588fd34a75ac68262c54156b3eee0f45ff998e70a2f037806e7505ff",
+    "《明日方舟：终末地》游戏规则.txt": "4f04de50b2f743aec1da903f00f0f89f92f1aeba60eb4513320b71d0ee0a57fd",
     "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
-    "求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+    "求解约束.txt": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6"
 }
 
 
@@ -130,7 +118,7 @@ def rotate_cell(x, y, width, height, turns):
 def geometry(data, catalog, complete=True):
     """由共享目录推占格和端口；输入不能覆盖单位属性。"""
     # 本函数仅实现显式共边读法；其它谓词未审且未实现，不能默取几何默认。
-    meeting = data.get("parameters", {}).get("fixedness_unproven", {}).get("connection.port_meeting")
+    meeting = data.get("parameters", {}).get("fixed", {}).get("connection.port_meeting")
     require(meeting is not None, "unsupported: connection.port_meeting 须显式选择本版读法")
     decision(meeting)
     require(meeting["status"] == "specified" and meeting["value"] == "shared_edge_opposite",

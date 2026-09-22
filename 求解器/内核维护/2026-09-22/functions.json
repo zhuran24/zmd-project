@@ -1,0 +1,3279 @@
+{
+  "method": "Pygments Rust lexer strips comments/strings preserving newlines; count fn keyword to balanced closing brace inclusive; includes blank/comment lines; excludes archived and legacy crates",
+  "functions": [
+    {
+      "file": "crates/kernel/src/cache.rs",
+      "function": "invalidate_all",
+      "start": 10,
+      "end": 13,
+      "lines": 4,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cache.rs",
+      "function": "invalidate_unit",
+      "start": 15,
+      "end": 35,
+      "lines": 21,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cache.rs",
+      "function": "invalidate_slot",
+      "start": 36,
+      "end": 42,
+      "lines": 7,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cache.rs",
+      "function": "build_dependencies",
+      "start": 44,
+      "end": 61,
+      "lines": 18,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cache.rs",
+      "function": "set_cache_enabled",
+      "start": 63,
+      "end": 66,
+      "lines": 4,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cache.rs",
+      "function": "cached_physical",
+      "start": 67,
+      "end": 80,
+      "lines": 14,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/catalog.rs",
+      "function": "sha256",
+      "start": 48,
+      "end": 69,
+      "lines": 22,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/catalog.rs",
+      "function": "reference",
+      "start": 71,
+      "end": 80,
+      "lines": 10,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/catalog.rs",
+      "function": "load",
+      "start": 83,
+      "end": 223,
+      "lines": 141,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/catalog.rs",
+      "function": "slots",
+      "start": 225,
+      "end": 250,
+      "lines": 26,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/catalog.rs",
+      "function": "rotate",
+      "start": 287,
+      "end": 294,
+      "lines": 8,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/catalog.rs",
+      "function": "build",
+      "start": 297,
+      "end": 603,
+      "lines": 307,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/config.rs",
+      "function": "name",
+      "start": 209,
+      "end": 311,
+      "lines": 103,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/config.rs",
+      "function": "parse",
+      "start": 362,
+      "end": 388,
+      "lines": 27,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/config.rs",
+      "function": "validate",
+      "start": 390,
+      "end": 451,
+      "lines": 62,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/config.rs",
+      "function": "request",
+      "start": 453,
+      "end": 459,
+      "lines": 7,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/config.rs",
+      "function": "value",
+      "start": 463,
+      "end": 470,
+      "lines": 8,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/config.rs",
+      "function": "current",
+      "start": 472,
+      "end": 484,
+      "lines": 13,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "rational",
+      "start": 15,
+      "end": 47,
+      "lines": 33,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "difference",
+      "start": 49,
+      "end": 58,
+      "lines": 10,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "normalize",
+      "start": 59,
+      "end": 87,
+      "lines": 29,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "sort_rows",
+      "start": 88,
+      "end": 92,
+      "lines": 5,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "production_domain",
+      "start": 96,
+      "end": 101,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "domain_report",
+      "start": 103,
+      "end": 118,
+      "lines": 16,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "production_bound",
+      "start": 119,
+      "end": 137,
+      "lines": 19,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "domain_condition",
+      "start": 138,
+      "end": 284,
+      "lines": 147,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "check_production_candidates",
+      "start": 286,
+      "end": 305,
+      "lines": 20,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "cycle_key",
+      "start": 307,
+      "end": 310,
+      "lines": 4,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "cycle_key",
+      "start": 314,
+      "end": 320,
+      "lines": 7,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "encode_key",
+      "start": 321,
+      "end": 497,
+      "lines": 177,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "checkpoint_input",
+      "start": 500,
+      "end": 507,
+      "lines": 8,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "stop_value",
+      "start": 509,
+      "end": 511,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "acceptance",
+      "start": 512,
+      "end": 517,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "mapping_source",
+      "start": 519,
+      "end": 522,
+      "lines": 4,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "reception_scope",
+      "start": 523,
+      "end": 528,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "correspondence",
+      "start": 529,
+      "end": 544,
+      "lines": 16,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "default",
+      "start": 557,
+      "end": 566,
+      "lines": 10,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "digest",
+      "start": 568,
+      "end": 575,
+      "lines": 8,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "restore",
+      "start": 576,
+      "end": 581,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "restore_position",
+      "start": 583,
+      "end": 606,
+      "lines": 24,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "run_cycle",
+      "start": 608,
+      "end": 623,
+      "lines": 16,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "run_cycle_with_options",
+      "start": 624,
+      "end": 648,
+      "lines": 25,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "search",
+      "start": 650,
+      "end": 871,
+      "lines": 222,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle_io.rs",
+      "function": "write_json",
+      "start": 12,
+      "end": 19,
+      "lines": 8,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle_io.rs",
+      "function": "input_producer",
+      "start": 20,
+      "end": 22,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle_io.rs",
+      "function": "artifact_ref",
+      "start": 23,
+      "end": 28,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle_io.rs",
+      "function": "resolved",
+      "start": 29,
+      "end": 37,
+      "lines": 9,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle_io.rs",
+      "function": "load_ref",
+      "start": 38,
+      "end": 57,
+      "lines": 20,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle_io.rs",
+      "function": "canonical_fingerprints",
+      "start": 58,
+      "end": 74,
+      "lines": 17,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle_io.rs",
+      "function": "canonical_proof_sources",
+      "start": 76,
+      "end": 109,
+      "lines": 34,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle_io.rs",
+      "function": "source",
+      "start": 77,
+      "end": 85,
+      "lines": 9,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle_io.rs",
+      "function": "verify_cycle",
+      "start": 110,
+      "end": 112,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle_io.rs",
+      "function": "verify_cycle_at",
+      "start": 114,
+      "end": 344,
+      "lines": 231,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle_io.rs",
+      "function": "load_stopped_cycle",
+      "start": 346,
+      "end": 363,
+      "lines": 18,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle_io.rs",
+      "function": "attach_load_context",
+      "start": 365,
+      "end": 436,
+      "lines": 72,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/digest.rs",
+      "function": "sha256_bytes",
+      "start": 2,
+      "end": 61,
+      "lines": 60,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/digest.rs",
+      "function": "known_vectors",
+      "start": 63,
+      "end": 76,
+      "lines": 14,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "new",
+      "start": 64,
+      "end": 66,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "new_production",
+      "start": 68,
+      "end": 70,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "new_derived",
+      "start": 72,
+      "end": 74,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "construct",
+      "start": 75,
+      "end": 79,
+      "lines": 5,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "check_cycle_domain",
+      "start": 81,
+      "end": 88,
+      "lines": 8,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "prepare",
+      "start": 90,
+      "end": 369,
+      "lines": 280,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "validate_memory",
+      "start": 370,
+      "end": 380,
+      "lines": 11,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "validate_seed",
+      "start": 382,
+      "end": 902,
+      "lines": 521,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "validate_inventory",
+      "start": 904,
+      "end": 949,
+      "lines": 46,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "enabled",
+      "start": 951,
+      "end": 954,
+      "lines": 4,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "source",
+      "start": 956,
+      "end": 995,
+      "lines": 40,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "target",
+      "start": 997,
+      "end": 1054,
+      "lines": 58,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "physical",
+      "start": 1056,
+      "end": 1058,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "compute_physical",
+      "start": 1059,
+      "end": 1132,
+      "lines": 74,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "remove",
+      "start": 1134,
+      "end": 1172,
+      "lines": 39,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "put",
+      "start": 1174,
+      "end": 1220,
+      "lines": 47,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "allocate",
+      "start": 1222,
+      "end": 1227,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "execute",
+      "start": 1229,
+      "end": 1234,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "record",
+      "start": 1236,
+      "end": 1240,
+      "lines": 5,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/event_identity.rs",
+      "function": "identity",
+      "start": 7,
+      "end": 12,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/event_identity.rs",
+      "function": "seed_executed",
+      "start": 15,
+      "end": 113,
+      "lines": 99,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/event_identity.rs",
+      "function": "pending",
+      "start": 123,
+      "end": 172,
+      "lines": 50,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/event_identity.rs",
+      "function": "validate_event_identity",
+      "start": 176,
+      "end": 182,
+      "lines": 7,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/event_identity.rs",
+      "function": "new",
+      "start": 189,
+      "end": 203,
+      "lines": 15,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/event_identity.rs",
+      "function": "tick",
+      "start": 204,
+      "end": 266,
+      "lines": 63,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/input.rs",
+      "function": "permutation",
+      "start": 27,
+      "end": 37,
+      "lines": 11,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/input.rs",
+      "function": "timeline",
+      "start": 39,
+      "end": 299,
+      "lines": 261,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/input.rs",
+      "function": "load",
+      "start": 302,
+      "end": 304,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/input.rs",
+      "function": "parse_with_base",
+      "start": 306,
+      "end": 313,
+      "lines": 8,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/input.rs",
+      "function": "parse",
+      "start": 315,
+      "end": 760,
+      "lines": 446,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/input.rs",
+      "function": "validate_runtime_interfaces",
+      "start": 762,
+      "end": 853,
+      "lines": 92,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/input.rs",
+      "function": "damping_forks",
+      "start": 855,
+      "end": 910,
+      "lines": 56,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/input.rs",
+      "function": "validate_branches",
+      "start": 912,
+      "end": 993,
+      "lines": 82,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/input.rs",
+      "function": "validate_branch_paths",
+      "start": 995,
+      "end": 997,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/interfaces.rs",
+      "function": "check_input_axes",
+      "start": 7,
+      "end": 353,
+      "lines": 347,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/interfaces.rs",
+      "function": "check_event_owners",
+      "start": 355,
+      "end": 474,
+      "lines": 120,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/interfaces.rs",
+      "function": "check_action_references",
+      "start": 476,
+      "end": 533,
+      "lines": 58,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/ledger.rs",
+      "function": "empty_ledger",
+      "start": 18,
+      "end": 20,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/ledger.rs",
+      "function": "totals",
+      "start": 23,
+      "end": 55,
+      "lines": 33,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/ledger.rs",
+      "function": "sufficient",
+      "start": 59,
+      "end": 64,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/ledger.rs",
+      "function": "book",
+      "start": 66,
+      "end": 71,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/ledger.rs",
+      "function": "represent_products",
+      "start": 73,
+      "end": 93,
+      "lines": 21,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/ledger.rs",
+      "function": "verify_tick",
+      "start": 97,
+      "end": 146,
+      "lines": 50,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/ledger.rs",
+      "function": "counts",
+      "start": 98,
+      "end": 114,
+      "lines": 17,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/main.rs",
+      "function": "run",
+      "start": 9,
+      "end": 338,
+      "lines": 330,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/main.rs",
+      "function": "main",
+      "start": 340,
+      "end": 349,
+      "lines": 10,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "delta",
+      "start": 15,
+      "end": 40,
+      "lines": 26,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "walk",
+      "start": 17,
+      "end": 36,
+      "lines": 20,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "apply_delta",
+      "start": 42,
+      "end": 66,
+      "lines": 25,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "decode_trace",
+      "start": 68,
+      "end": 105,
+      "lines": 38,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "validate_projection",
+      "start": 107,
+      "end": 146,
+      "lines": 40,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "fingerprints",
+      "start": 148,
+      "end": 213,
+      "lines": 66,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "evidence_scope",
+      "start": 215,
+      "end": 225,
+      "lines": 11,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "coverage",
+      "start": 227,
+      "end": 234,
+      "lines": 8,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "coverage_with_manufacturing",
+      "start": 236,
+      "end": 307,
+      "lines": 72,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "manufacturing_evidence",
+      "start": 309,
+      "end": 378,
+      "lines": 70,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "manufacturing_phases",
+      "start": 380,
+      "end": 392,
+      "lines": 13,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "run_record",
+      "start": 394,
+      "end": 523,
+      "lines": 130,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "stopped_record",
+      "start": 525,
+      "end": 527,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "verify_record_events",
+      "start": 529,
+      "end": 549,
+      "lines": 21,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "canonical_record",
+      "start": 551,
+      "end": 561,
+      "lines": 11,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "record_input_path",
+      "start": 563,
+      "end": 569,
+      "lines": 7,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "verify_record",
+      "start": 571,
+      "end": 578,
+      "lines": 8,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "verify_record_at",
+      "start": 580,
+      "end": 621,
+      "lines": 42,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/polling.rs",
+      "function": "group_levels",
+      "start": 6,
+      "end": 94,
+      "lines": 89,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/polling.rs",
+      "function": "damping",
+      "start": 96,
+      "end": 165,
+      "lines": 70,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/polling.rs",
+      "function": "refresh",
+      "start": 167,
+      "end": 309,
+      "lines": 143,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/polling.rs",
+      "function": "grant",
+      "start": 311,
+      "end": 335,
+      "lines": 25,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/polling.rs",
+      "function": "advance",
+      "start": 337,
+      "end": 347,
+      "lines": 11,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/polling.rs",
+      "function": "rebuild_memory",
+      "start": 349,
+      "end": 364,
+      "lines": 16,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/polling.rs",
+      "function": "check_branch_graph",
+      "start": 366,
+      "end": 375,
+      "lines": 10,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/polling.rs",
+      "function": "rebuild_graph",
+      "start": 377,
+      "end": 418,
+      "lines": 42,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/polling.rs",
+      "function": "maintain_identity",
+      "start": 420,
+      "end": 472,
+      "lines": 53,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/seed.rs",
+      "function": "canonicalize_seed",
+      "start": 8,
+      "end": 74,
+      "lines": 67,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/seed.rs",
+      "function": "derive_context",
+      "start": 79,
+      "end": 219,
+      "lines": 141,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "root",
+      "start": 22,
+      "end": 27,
+      "lines": 6,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "config",
+      "start": 29,
+      "end": 31,
+      "lines": 3,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "engine",
+      "start": 33,
+      "end": 36,
+      "lines": 4,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "set_axis",
+      "start": 38,
+      "end": 54,
+      "lines": 17,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "empty",
+      "start": 56,
+      "end": 70,
+      "lines": 15,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "put",
+      "start": 72,
+      "end": 74,
+      "lines": 3,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "count",
+      "start": 76,
+      "end": 82,
+      "lines": 7,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "config_axes_and_all_stop_values",
+      "start": 85,
+      "end": 105,
+      "lines": 21,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "three_examples_static",
+      "start": 108,
+      "end": 115,
+      "lines": 8,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "projections",
+      "start": 118,
+      "end": 131,
+      "lines": 14,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "byte_determinism_and_layout_permutation",
+      "start": 134,
+      "end": 155,
+      "lines": 22,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "catalog_and_geometry",
+      "start": 158,
+      "end": 168,
+      "lines": 11,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "closure_and_resources",
+      "start": 171,
+      "end": 180,
+      "lines": 10,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "warehouse_identity_monotone",
+      "start": 183,
+      "end": 217,
+      "lines": 35,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "warehouse_competition_atomic_stop",
+      "start": 220,
+      "end": 237,
+      "lines": 18,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "warehouse_unassigned_species_order",
+      "start": 240,
+      "end": 255,
+      "lines": 16,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "warehouse_single_unknown_with_assigned_empty",
+      "start": 258,
+      "end": 277,
+      "lines": 20,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "warehouse_invalid_identity_and_order",
+      "start": 280,
+      "end": 307,
+      "lines": 28,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "transfer_capacity_and_empty_cooldown",
+      "start": 310,
+      "end": 346,
+      "lines": 37,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "transfer_conservation",
+      "start": 349,
+      "end": 366,
+      "lines": 18,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "box_selectors",
+      "start": 369,
+      "end": 386,
+      "lines": 18,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "manufacturing_two_material_batch",
+      "start": 389,
+      "end": 408,
+      "lines": 20,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "manufacture_disabled_intake_and_pause",
+      "start": 411,
+      "end": 423,
+      "lines": 13,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "completed_output_conflict_retains_batch",
+      "start": 426,
+      "end": 440,
+      "lines": 15,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "identity_current_condition_restores_disconnected_channel",
+      "start": 443,
+      "end": 461,
+      "lines": 19,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "total_exhaustion_survives_window_expiry",
+      "start": 464,
+      "end": 474,
+      "lines": 11,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "membership_projection",
+      "start": 477,
+      "end": 489,
+      "lines": 13,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "damping_paths_and_missing_branch",
+      "start": 492,
+      "end": 512,
+      "lines": 21,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "damping_no_terminal",
+      "start": 515,
+      "end": 521,
+      "lines": 7,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "warehouse_80000_and_recipe_conservation",
+      "start": 524,
+      "end": 556,
+      "lines": 33,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "external_stop_positions",
+      "start": 559,
+      "end": 583,
+      "lines": 25,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "checkpoint_delta_negative_cases",
+      "start": 586,
+      "end": 601,
+      "lines": 16,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "output_off_preserves_game_state",
+      "start": 604,
+      "end": 613,
+      "lines": 10,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "after_closure_restart",
+      "start": 616,
+      "end": 627,
+      "lines": 12,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "integer_validation",
+      "start": 630,
+      "end": 653,
+      "lines": 24,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "seed_and_parameter_negatives",
+      "start": 656,
+      "end": 706,
+      "lines": 51,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "ore_history_horizon_stop",
+      "start": 709,
+      "end": 715,
+      "lines": 7,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "full_and_delta_record_recompute",
+      "start": 718,
+      "end": 752,
+      "lines": 35,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "explicit_ore_supply",
+      "start": 755,
+      "end": 779,
+      "lines": 25,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "malformed_state_rejected",
+      "start": 782,
+      "end": 806,
+      "lines": 25,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "transport_wrong_item_rejects",
+      "start": 809,
+      "end": 816,
+      "lines": 8,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "fixture",
+      "start": 818,
+      "end": 822,
+      "lines": 5,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "reload",
+      "start": 824,
+      "end": 830,
+      "lines": 7,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "bridge_two_independent_slots_run",
+      "start": 833,
+      "end": 854,
+      "lines": 22,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "bridge_same_item_occupies_both_axes_at_full_rate",
+      "start": 857,
+      "end": 879,
+      "lines": 23,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "output_level_damping_priority",
+      "start": 882,
+      "end": 901,
+      "lines": 20,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "core_inbound_physical_deposit",
+      "start": 904,
+      "end": 915,
+      "lines": 12,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "level_tie_reversal_changes_winner",
+      "start": 918,
+      "end": 951,
+      "lines": 34,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "simultaneous_ring_restoration",
+      "start": 954,
+      "end": 968,
+      "lines": 15,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "transfer_cooldown_pause",
+      "start": 971,
+      "end": 995,
+      "lines": 25,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "five_tick_recipe_completes_only_at_boundary",
+      "start": 998,
+      "end": 1047,
+      "lines": 50,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "coverage_five_states",
+      "start": 1050,
+      "end": 1083,
+      "lines": 34,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "explicit_step_anchors",
+      "start": 1086,
+      "end": 1092,
+      "lines": 7,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests.rs",
+      "function": "stopped_engine_cannot_continue",
+      "start": 1095,
+      "end": 1103,
+      "lines": 9,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision.rs",
+      "function": "parse",
+      "start": 6,
+      "end": 8,
+      "lines": 3,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision.rs",
+      "function": "supply",
+      "start": 10,
+      "end": 21,
+      "lines": 12,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision.rs",
+      "function": "revision_snapshot_objects",
+      "start": 24,
+      "end": 48,
+      "lines": 25,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision.rs",
+      "function": "revision_gate_item_domain",
+      "start": 51,
+      "end": 72,
+      "lines": 22,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision.rs",
+      "function": "revision_initial_warehouse_labels",
+      "start": 75,
+      "end": 91,
+      "lines": 17,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision.rs",
+      "function": "revision_ore_history_sufficiency",
+      "start": 94,
+      "end": 129,
+      "lines": 36,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision.rs",
+      "function": "revision_ore_depletion_is_not_a_movement_guard",
+      "start": 132,
+      "end": 152,
+      "lines": 21,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision.rs",
+      "function": "revision_supply_order_intersection",
+      "start": 155,
+      "end": 188,
+      "lines": 34,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision.rs",
+      "function": "revision_external_action_references",
+      "start": 191,
+      "end": 228,
+      "lines": 38,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision.rs",
+      "function": "revision_pending_history_alias",
+      "start": 231,
+      "end": 263,
+      "lines": 33,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision.rs",
+      "function": "revision_independent_identity_audit",
+      "start": 266,
+      "end": 301,
+      "lines": 36,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision.rs",
+      "function": "revision_branch_relevance",
+      "start": 304,
+      "end": 312,
+      "lines": 9,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision.rs",
+      "function": "revision_manufacturing_axis_evidence",
+      "start": 315,
+      "end": 361,
+      "lines": 47,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision.rs",
+      "function": "revision_warehouse_acceptance",
+      "start": 364,
+      "end": 389,
+      "lines": 26,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision.rs",
+      "function": "revision_reports_and_after_closure_stop",
+      "start": 392,
+      "end": 418,
+      "lines": 27,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r2.rs",
+      "function": "load",
+      "start": 6,
+      "end": 8,
+      "lines": 3,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r2.rs",
+      "function": "relation",
+      "start": 10,
+      "end": 16,
+      "lines": 7,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r2.rs",
+      "function": "revision_r2_phase_intersection",
+      "start": 19,
+      "end": 72,
+      "lines": 54,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r2.rs",
+      "function": "revision_r2_fixed_branch_cut_and_reload",
+      "start": 75,
+      "end": 103,
+      "lines": 29,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r2.rs",
+      "function": "revision_r2_damping_does_not_rebind_singleton",
+      "start": 106,
+      "end": 111,
+      "lines": 6,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r2.rs",
+      "function": "revision_r2_unowned_global_events",
+      "start": 114,
+      "end": 142,
+      "lines": 29,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r2.rs",
+      "function": "revision_r2_required_input_shapes",
+      "start": 145,
+      "end": 186,
+      "lines": 42,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r2.rs",
+      "function": "revision_r2_seed_consumed_identity",
+      "start": 189,
+      "end": 234,
+      "lines": 46,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r2.rs",
+      "function": "revision_r2_internal_passage_identity",
+      "start": 237,
+      "end": 251,
+      "lines": 15,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r2.rs",
+      "function": "revision_r2_rust_metadata_controls",
+      "start": 254,
+      "end": 283,
+      "lines": 30,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r3.rs",
+      "function": "checkpoint",
+      "start": 4,
+      "end": 12,
+      "lines": 9,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r3.rs",
+      "function": "load",
+      "start": 13,
+      "end": 15,
+      "lines": 3,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r3.rs",
+      "function": "reject_both",
+      "start": 16,
+      "end": 19,
+      "lines": 4,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r3.rs",
+      "function": "revision_r3_checkpoint_parameters_are_not_repaired",
+      "start": 22,
+      "end": 58,
+      "lines": 37,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r3.rs",
+      "function": "revision_r3_phase_type_and_domain_at_both_anchors",
+      "start": 61,
+      "end": 97,
+      "lines": 37,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r3.rs",
+      "function": "revision_r3_window_deadline_respects_anchor_phase",
+      "start": 100,
+      "end": 143,
+      "lines": 44,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r3.rs",
+      "function": "state_before_boundary",
+      "start": 144,
+      "end": 147,
+      "lines": 4,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r3.rs",
+      "function": "revision_r3_sufficient_requires_both_positive_ores",
+      "start": 150,
+      "end": 171,
+      "lines": 22,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r3.rs",
+      "function": "revision_r3_malformed_seed_returns_stop_before_indexing",
+      "start": 174,
+      "end": 214,
+      "lines": 41,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r3.rs",
+      "function": "revision_r3_cycle_checks_prefix_before_recomputation",
+      "start": 217,
+      "end": 240,
+      "lines": 24,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r3.rs",
+      "function": "revision_r3_bridge_moves_are_not_first_contact_events",
+      "start": 243,
+      "end": 267,
+      "lines": 25,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r4.rs",
+      "function": "load",
+      "start": 4,
+      "end": 6,
+      "lines": 3,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r4.rs",
+      "function": "stock",
+      "start": 8,
+      "end": 16,
+      "lines": 9,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r4.rs",
+      "function": "cohort",
+      "start": 18,
+      "end": 20,
+      "lines": 3,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r4.rs",
+      "function": "revision_r4_age_cohorts_seed_capacity_and_key",
+      "start": 23,
+      "end": 92,
+      "lines": 70,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r4.rs",
+      "function": "revision_r4_cohorts_manufacture_remove_and_arrival_age",
+      "start": 95,
+      "end": 157,
+      "lines": 63,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r4.rs",
+      "function": "revision_r4_pending_trigger_is_closed_before_derivation_and_key",
+      "start": 160,
+      "end": 196,
+      "lines": 37,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r4.rs",
+      "function": "revision_r4_single_level_empty_branch_table_matches_full_table",
+      "start": 199,
+      "end": 229,
+      "lines": 31,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r4.rs",
+      "function": "revision_r4_multilevel_branch_table_includes_dormant_subsets",
+      "start": 232,
+      "end": 250,
+      "lines": 19,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r4.rs",
+      "function": "revision_r4_path_runs_never_exercises_geometric_adjacency",
+      "start": 253,
+      "end": 283,
+      "lines": 31,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r4.rs",
+      "function": "revision_r4_first_resumed_sweep_stop_preserves_checkpoint",
+      "start": 286,
+      "end": 317,
+      "lines": 32,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_revision_r5.rs",
+      "function": "revision_r5_production_load_guards_ore_before_memory",
+      "start": 5,
+      "end": 77,
+      "lines": 73,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round5.rs",
+      "function": "sample",
+      "start": 3,
+      "end": 5,
+      "lines": 3,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round5.rs",
+      "function": "round5_seed_roundtrip",
+      "start": 7,
+      "end": 22,
+      "lines": 16,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round5.rs",
+      "function": "round5_seed_tie_changes_rebuild_ring",
+      "start": 24,
+      "end": 38,
+      "lines": 15,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round5.rs",
+      "function": "round5_supply_differential_and_last_ore",
+      "start": 40,
+      "end": 103,
+      "lines": 64,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round5.rs",
+      "function": "warehouse_counts",
+      "start": 104,
+      "end": 115,
+      "lines": 12,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round5.rs",
+      "function": "round5_ledgers_conserve_every_species",
+      "start": 117,
+      "end": 144,
+      "lines": 28,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round5.rs",
+      "function": "round5_cycle_certificate_replay_and_tamper",
+      "start": 146,
+      "end": 172,
+      "lines": 27,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round5.rs",
+      "function": "round5_cache_differential",
+      "start": 174,
+      "end": 210,
+      "lines": 37,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round5.rs",
+      "function": "round5_completion_after_pause",
+      "start": 212,
+      "end": 229,
+      "lines": 18,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round5.rs",
+      "function": "round5_inventory_order_is_canonical",
+      "start": 232,
+      "end": 244,
+      "lines": 13,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round5.rs",
+      "function": "round5_ore_return_candidate_stops_before_capacity_or_age",
+      "start": 246,
+      "end": 279,
+      "lines": 34,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round5.rs",
+      "function": "round5_cycle_age_overflow_is_resource_not_wrap",
+      "start": 282,
+      "end": 308,
+      "lines": 27,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round6.rs",
+      "function": "round6_hash_collisions_replay_every_candidate",
+      "start": 4,
+      "end": 33,
+      "lines": 30,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round6.rs",
+      "function": "round6_compact_step_preserves_full_checkpoint",
+      "start": 35,
+      "end": 45,
+      "lines": 11,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round6.rs",
+      "function": "round6_no_record_retains_loaded_zero_prefix",
+      "start": 47,
+      "end": 69,
+      "lines": 23,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round6.rs",
+      "function": "round6_put_rejects_without_partial_write",
+      "start": 71,
+      "end": 82,
+      "lines": 12,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round6.rs",
+      "function": "round6_test_only_two_product_recipe_keeps_buffer_exception",
+      "start": 84,
+      "end": 105,
+      "lines": 22,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round6.rs",
+      "function": "round6_static_domain_reports_all_without_tick",
+      "start": 107,
+      "end": 127,
+      "lines": 21,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round6.rs",
+      "function": "round6_static_pass_does_not_replace_dynamic_d2",
+      "start": 129,
+      "end": 156,
+      "lines": 28,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/tests_round6.rs",
+      "function": "round6_independent_ledger_conservation_rejects_state_and_total_tampering",
+      "start": 159,
+      "end": 172,
+      "lines": 14,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "manufacture",
+      "start": 7,
+      "end": 120,
+      "lines": 114,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "precheck_new_event",
+      "start": 122,
+      "end": 128,
+      "lines": 7,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "move_channel",
+      "start": 130,
+      "end": 339,
+      "lines": 210,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "check_external_stops",
+      "start": 341,
+      "end": 410,
+      "lines": 70,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "boundary",
+      "start": 412,
+      "end": 523,
+      "lines": 112,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "check_ore_availability",
+      "start": 525,
+      "end": 547,
+      "lines": 23,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "ore_supply",
+      "start": 549,
+      "end": 612,
+      "lines": 64,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "closure_key",
+      "start": 614,
+      "end": 629,
+      "lines": 16,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "step_instant",
+      "start": 631,
+      "end": 638,
+      "lines": 8,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "step_tick",
+      "start": 640,
+      "end": 645,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "step",
+      "start": 647,
+      "end": 649,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "step_compact",
+      "start": 651,
+      "end": 653,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "step_with_snapshot",
+      "start": 654,
+      "end": 673,
+      "lines": 20,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "step_inner",
+      "start": 675,
+      "end": 803,
+      "lines": 129,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "summary",
+      "start": 805,
+      "end": 853,
+      "lines": 49,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "run_without_output",
+      "start": 855,
+      "end": 860,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "new",
+      "start": 16,
+      "end": 28,
+      "lines": 13,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "invalid",
+      "start": 30,
+      "end": 32,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "unsupported",
+      "start": 34,
+      "end": 36,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "fmt",
+      "start": 40,
+      "end": 46,
+      "lines": 7,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "fields",
+      "start": 50,
+      "end": 57,
+      "lines": 8,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "decode",
+      "start": 59,
+      "end": 61,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "read_json",
+      "start": 63,
+      "end": 73,
+      "lines": 11,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "deserialize",
+      "start": 77,
+      "end": 137,
+      "lines": 61,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "expecting",
+      "start": 82,
+      "end": 84,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "visit_unit",
+      "start": 86,
+      "end": 88,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "visit_bool",
+      "start": 90,
+      "end": 95,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "visit_i64",
+      "start": 97,
+      "end": 99,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "visit_u64",
+      "start": 101,
+      "end": 103,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "visit_str",
+      "start": 105,
+      "end": 110,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "visit_seq",
+      "start": 112,
+      "end": 121,
+      "lines": 10,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "visit_map",
+      "start": 123,
+      "end": 134,
+      "lines": 12,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "integer",
+      "start": 147,
+      "end": 195,
+      "lines": 49,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "calc",
+      "start": 197,
+      "end": 202,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "candidate",
+      "start": 204,
+      "end": 209,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "integer",
+      "start": 219,
+      "end": 224,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "at",
+      "start": 226,
+      "end": 231,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "add",
+      "start": 234,
+      "end": 237,
+      "lines": 4,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "num",
+      "start": 239,
+      "end": 241,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "instant",
+      "start": 243,
+      "end": 245,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "resolved",
+      "start": 255,
+      "end": 270,
+      "lines": 16,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "specified",
+      "start": 272,
+      "end": 278,
+      "lines": 7,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "validate_tree",
+      "start": 281,
+      "end": 316,
+      "lines": 36,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "q",
+      "start": 318,
+      "end": 320,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/value.rs",
+      "function": "tv",
+      "start": 322,
+      "end": 324,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/warehouse.rs",
+      "function": "acceptance_report",
+      "start": 11,
+      "end": 53,
+      "lines": 43,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/warehouse.rs",
+      "function": "warehouse_targets",
+      "start": 55,
+      "end": 103,
+      "lines": 49,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/warehouse.rs",
+      "function": "plan_deposit",
+      "start": 105,
+      "end": 111,
+      "lines": 7,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/warehouse.rs",
+      "function": "plan_receipt",
+      "start": 113,
+      "end": 194,
+      "lines": 82,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/warehouse.rs",
+      "function": "commit_deposit",
+      "start": 196,
+      "end": 249,
+      "lines": 54,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/warehouse.rs",
+      "function": "transfer",
+      "start": 251,
+      "end": 327,
+      "lines": 77,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/warehouse.rs",
+      "function": "inventory_totals",
+      "start": 329,
+      "end": 344,
+      "lines": 16,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/warehouse.rs",
+      "function": "empty_slots",
+      "start": 346,
+      "end": 354,
+      "lines": 9,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/warehouse.rs",
+      "function": "deposit",
+      "start": 356,
+      "end": 363,
+      "lines": 8,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/warehouse.rs",
+      "function": "reserved_slot",
+      "start": 366,
+      "end": 376,
+      "lines": 11,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/tests/reference.rs",
+      "function": "root",
+      "start": 6,
+      "end": 11,
+      "lines": 6,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/tests/reference.rs",
+      "function": "compare",
+      "start": 13,
+      "end": 33,
+      "lines": 21,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/tests/reference.rs",
+      "function": "crusher_reference",
+      "start": 36,
+      "end": 38,
+      "lines": 3,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/tests/reference.rs",
+      "function": "splitter_reference",
+      "start": 41,
+      "end": 43,
+      "lines": 3,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/tests/reference.rs",
+      "function": "differential",
+      "start": 45,
+      "end": 67,
+      "lines": 23,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/tests/reference.rs",
+      "function": "live_python_differential",
+      "start": 70,
+      "end": 103,
+      "lines": 34,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/tests/revision_cli.rs",
+      "function": "revision_cli_and_python_record_negatives",
+      "start": 6,
+      "end": 21,
+      "lines": 16,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/tests/revision_r2_cli.rs",
+      "function": "revision_r2_cli_and_python_record_negatives",
+      "start": 6,
+      "end": 21,
+      "lines": 16,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/tests/revision_r3_cli.rs",
+      "function": "revision_r3_public_cli_regressions",
+      "start": 5,
+      "end": 21,
+      "lines": 17,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/tests/revision_r4_cli.rs",
+      "function": "revision_r4_public_cli_regressions",
+      "start": 5,
+      "end": 13,
+      "lines": 9,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/tests/revision_r5_cli.rs",
+      "function": "revision_r5_public_cli_regressions",
+      "start": 5,
+      "end": 21,
+      "lines": 17,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/tests/round5_cli.rs",
+      "function": "round5_cli_resource_statistics_and_cycle_load_stop",
+      "start": 5,
+      "end": 79,
+      "lines": 75,
+      "test": true
+    },
+    {
+      "file": "crates/kernel/tests/round6_cli.rs",
+      "function": "round6_public_cli_regressions",
+      "start": 4,
+      "end": 17,
+      "lines": 14,
+      "test": true
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "integer",
+      "start": 9,
+      "end": 11,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "parse_rational",
+      "start": 12,
+      "end": 27,
+      "lines": 16,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "deserialize",
+      "start": 34,
+      "end": 50,
+      "lines": 17,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "number",
+      "start": 222,
+      "end": 224,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "count",
+      "start": 225,
+      "end": 227,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "catalog",
+      "start": 229,
+      "end": 231,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "load",
+      "start": 233,
+      "end": 284,
+      "lines": 52,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "required",
+      "start": 236,
+      "end": 243,
+      "lines": 8,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "label",
+      "start": 292,
+      "end": 298,
+      "lines": 7,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "check",
+      "start": 311,
+      "end": 317,
+      "lines": 7,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "unknown",
+      "start": 318,
+      "end": 324,
+      "lines": 7,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "failures",
+      "start": 325,
+      "end": 330,
+      "lines": 6,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "markdown",
+      "start": 331,
+      "end": 351,
+      "lines": 21,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "sum",
+      "start": 353,
+      "end": 355,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "qmap",
+      "start": 356,
+      "end": 358,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "add",
+      "start": 359,
+      "end": 361,
+      "lines": 3,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "material_origin_flow",
+      "start": 364,
+      "end": 378,
+      "lines": 15,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "check_categories",
+      "start": 380,
+      "end": 466,
+      "lines": 87,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "spec",
+      "start": 467,
+      "end": 477,
+      "lines": 11,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "as_i64",
+      "start": 479,
+      "end": 486,
+      "lines": 8,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "feed_interface_counts",
+      "start": 490,
+      "end": 494,
+      "lines": 5,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "validate",
+      "start": 496,
+      "end": 1330,
+      "lines": 835,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "legacy_machine_constants_equal_catalog",
+      "start": 1337,
+      "end": 1364,
+      "lines": 28,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/main.rs",
+      "function": "main",
+      "start": 2,
+      "end": 24,
+      "lines": 23,
+      "test": false
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "changed",
+      "start": 3,
+      "end": 7,
+      "lines": 5,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "rejects",
+      "start": 8,
+      "end": 16,
+      "lines": 9,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "candidate_passes_static_only",
+      "start": 18,
+      "end": 38,
+      "lines": 21,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "changed_channel_breaks_local_balance",
+      "start": 40,
+      "end": 45,
+      "lines": 6,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "wrong_target_recipe_is_rejected",
+      "start": 47,
+      "end": 52,
+      "lines": 6,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "overload_is_exact_and_not_rounded",
+      "start": 54,
+      "end": 63,
+      "lines": 10,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "shared_port_rates_are_summed",
+      "start": 65,
+      "end": 75,
+      "lines": 11,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "fabricated_capacity_cannot_relax_rule",
+      "start": 77,
+      "end": 82,
+      "lines": 6,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "false_actual_rate_is_not_a_certificate",
+      "start": 84,
+      "end": 92,
+      "lines": 9,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "duplicate_source_identity_is_rejected",
+      "start": 94,
+      "end": 103,
+      "lines": 10,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "zero_denominator_and_missing_fields_fail_loading",
+      "start": 105,
+      "end": 121,
+      "lines": 17,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "false_fanout_certification_is_rejected",
+      "start": 123,
+      "end": 128,
+      "lines": 6,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "wrong_target_cannot_redefine_task",
+      "start": 130,
+      "end": 135,
+      "lines": 6,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "unsupported_routing_fails_closed",
+      "start": 137,
+      "end": 142,
+      "lines": 6,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "multi_material_obligations_cannot_disappear",
+      "start": 144,
+      "end": 149,
+      "lines": 6,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "zero_rate_does_not_count_as_live_channel",
+      "start": 151,
+      "end": 156,
+      "lines": 6,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "every_formal_constraint_has_coverage_row",
+      "start": 158,
+      "end": 169,
+      "lines": 12,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "dedicated_ports_cannot_fork_without_transport_model",
+      "start": 172,
+      "end": 180,
+      "lines": 9,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "legacy_channels_and_storage_shortcut_are_rejected",
+      "start": 183,
+      "end": 192,
+      "lines": 10,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "logical_feed_ids_cannot_be_physical_or_buffer_channels",
+      "start": 195,
+      "end": 202,
+      "lines": 8,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "storage_split_counts_both_sides_and_deduplicates_item_rows",
+      "start": 205,
+      "end": 228,
+      "lines": 24,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "catalog_unit_properties_match_formal_reference_values",
+      "start": 231,
+      "end": 475,
+      "lines": 245,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "catalog_port_edges_match_formal_reference_layouts",
+      "start": 478,
+      "end": 565,
+      "lines": 88,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "edge",
+      "start": 482,
+      "end": 484,
+      "lines": 3,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "numeric_categories_have_field_semantics",
+      "start": 568,
+      "end": 581,
+      "lines": 14,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "same_item_multiport_and_mixed_recipe_obligations_are_required",
+      "start": 584,
+      "end": 617,
+      "lines": 34,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "full_speed_and_transport_projection_are_explicit_but_not_certified",
+      "start": 620,
+      "end": 664,
+      "lines": 45,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "storage_relay_cannot_double_material_origin_flow",
+      "start": 667,
+      "end": 684,
+      "lines": 18,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "invalid_ore_machine_is_not_counted_as_dedicated",
+      "start": 687,
+      "end": 706,
+      "lines": 20,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "plant_storage_condition_uses_current_machine_count",
+      "start": 709,
+      "end": 738,
+      "lines": 30,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "check_catalog_against_sources",
+      "start": 740,
+      "end": 759,
+      "lines": 20,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "catalog_is_checked_against_live_formal_sources",
+      "start": 762,
+      "end": 769,
+      "lines": 8,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "catalog_mutations_are_rejected_by_live_source_gate",
+      "start": 772,
+      "end": 823,
+      "lines": 52,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "catalog_full_field_mutation_regressions_pass",
+      "start": 826,
+      "end": 843,
+      "lines": 18,
+      "test": true
+    }
+  ],
+  "over_80": [
+    {
+      "file": "crates/kernel/src/catalog.rs",
+      "function": "load",
+      "start": 83,
+      "end": 223,
+      "lines": 141,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/catalog.rs",
+      "function": "build",
+      "start": 297,
+      "end": 603,
+      "lines": 307,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/config.rs",
+      "function": "name",
+      "start": 209,
+      "end": 311,
+      "lines": 103,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "domain_condition",
+      "start": 138,
+      "end": 284,
+      "lines": 147,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "encode_key",
+      "start": 321,
+      "end": 497,
+      "lines": 177,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle.rs",
+      "function": "search",
+      "start": 650,
+      "end": 871,
+      "lines": 222,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/cycle_io.rs",
+      "function": "verify_cycle_at",
+      "start": 114,
+      "end": 344,
+      "lines": 231,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "prepare",
+      "start": 90,
+      "end": 369,
+      "lines": 280,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/engine.rs",
+      "function": "validate_seed",
+      "start": 382,
+      "end": 902,
+      "lines": 521,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/event_identity.rs",
+      "function": "seed_executed",
+      "start": 15,
+      "end": 113,
+      "lines": 99,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/input.rs",
+      "function": "timeline",
+      "start": 39,
+      "end": 299,
+      "lines": 261,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/input.rs",
+      "function": "parse",
+      "start": 315,
+      "end": 760,
+      "lines": 446,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/input.rs",
+      "function": "validate_runtime_interfaces",
+      "start": 762,
+      "end": 853,
+      "lines": 92,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/input.rs",
+      "function": "validate_branches",
+      "start": 912,
+      "end": 993,
+      "lines": 82,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/interfaces.rs",
+      "function": "check_input_axes",
+      "start": 7,
+      "end": 353,
+      "lines": 347,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/interfaces.rs",
+      "function": "check_event_owners",
+      "start": 355,
+      "end": 474,
+      "lines": 120,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/main.rs",
+      "function": "run",
+      "start": 9,
+      "end": 338,
+      "lines": 330,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/output.rs",
+      "function": "run_record",
+      "start": 394,
+      "end": 523,
+      "lines": 130,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/polling.rs",
+      "function": "group_levels",
+      "start": 6,
+      "end": 94,
+      "lines": 89,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/polling.rs",
+      "function": "refresh",
+      "start": 167,
+      "end": 309,
+      "lines": 143,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/seed.rs",
+      "function": "derive_context",
+      "start": 79,
+      "end": 219,
+      "lines": 141,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "manufacture",
+      "start": 7,
+      "end": 120,
+      "lines": 114,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "move_channel",
+      "start": 130,
+      "end": 339,
+      "lines": 210,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "boundary",
+      "start": 412,
+      "end": 523,
+      "lines": 112,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/transition.rs",
+      "function": "step_inner",
+      "start": 675,
+      "end": 803,
+      "lines": 129,
+      "test": false
+    },
+    {
+      "file": "crates/kernel/src/warehouse.rs",
+      "function": "plan_receipt",
+      "start": 113,
+      "end": 194,
+      "lines": 82,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "check_categories",
+      "start": 380,
+      "end": 466,
+      "lines": 87,
+      "test": false
+    },
+    {
+      "file": "crates/topology/src/lib.rs",
+      "function": "validate",
+      "start": 496,
+      "end": 1330,
+      "lines": 835,
+      "test": false
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "catalog_unit_properties_match_formal_reference_values",
+      "start": 231,
+      "end": 475,
+      "lines": 245,
+      "test": true
+    },
+    {
+      "file": "crates/topology/tests/validation.rs",
+      "function": "catalog_port_edges_match_formal_reference_layouts",
+      "start": 478,
+      "end": 565,
+      "lines": 88,
+      "test": true
+    }
+  ]
+}

@@ -148,7 +148,7 @@ fn round5_cycle_certificate_replay_and_tamper() {
     let cfg = config();
     let path = root().join("规格/内核配置-v1.json");
     let result = crate::cycle::run_cycle(e.input, &cfg, &path, 50, 10000).unwrap();
-    assert_eq!(result["status"], "counterexample");
+    assert_eq!(result["status"], "diagnostic_cycle");
     assert!(num(&result["cycle"]["period"], "period").unwrap() > 0);
     assert_eq!(
         crate::cycle::verify_cycle(&result, &cfg, &path).unwrap()["cycle_replayed"],
@@ -282,7 +282,11 @@ fn round5_ore_return_candidate_stops_before_capacity_or_age() {
 fn round5_cycle_age_overflow_is_resource_not_wrap() {
     let mut e = sample("阻尼连续带核验");
     e.step(false).unwrap();
-    let slot = e.inv["source:storage:0"];
+    // 非运输年龄已按当前精确键投影删除；溢出负例须放在实际读取年龄的运输格。
+    let source = e.inv["source:storage:0"];
+    e.state.inventory[source].contents[0].entered_at = Some(Time::at(i64::MIN));
+    assert!(e.cycle_key().is_ok());
+    let slot = e.inv["belt_1:transport:0"];
     e.state.inventory[slot].contents[0].entered_at = Some(Time::at(i64::MIN));
     let stop = e.cycle_key().unwrap_err();
     assert_eq!(stop.status, "inconclusive");
@@ -297,10 +301,8 @@ fn round5_cycle_age_overflow_is_resource_not_wrap() {
         100,
         &Default::default(),
     )
-    .unwrap()
-    .0;
-    assert_eq!(result["status"], "inconclusive");
-    assert!(result["cycle"].is_null());
-    assert_eq!(result["budget"]["completed_ticks"], 0);
-    assert!(!result["seed"].is_null());
+    .unwrap_err();
+    // 运输年龄在装载派生可动性时即被读取，必须先停止，不能伪造已装载seed。
+    assert_eq!(result.status, "inconclusive");
+    assert_eq!(result.axis, "resource.integer");
 }
