@@ -125,7 +125,7 @@ write_json(OUT/'contract.json', contract)
 paths = [REPO/n for n in ['《明日方舟：终末地》游戏规则.txt','求解任务.txt','求解约束.txt','候选约束.txt']]
 paths += [SOURCE/n for n in ['design.py','channels.csv','machines.csv','fanout.json','scc.py']]
 paths += [SOURCE.parent/'纪要.md',SOURCE.parent/'seat-opus-1/共识草案-v45-5c9e556a.md', SOURCE.parent/'seat-opus-3.md']
-paths += [Path('/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1')/n for n in ['任务书.md','任务书2.md','gptpro_评审摘录.md']]
+paths += [(ROOT/'规格/复核/内核输入/复核-r4-可导出性-证据/任务依据')/n for n in ['任务书.md','任务书2.md','gptpro_评审摘录.md']]
 paths += [ROOT/'数据/正式静态目录.json']
 write_json(OUT/'来源清单.json', [{'path':str(p),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in paths])
 print('转换完成；逐机端口和物品速率与源 CSV 一致；正式配方与 design.py 一致。')

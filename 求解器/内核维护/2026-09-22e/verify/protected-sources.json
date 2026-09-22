@@ -1,0 +1,18 @@
+{
+  "《明日方舟：终末地》游戏规则.txt": {
+    "sha256": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+    "bytes": 7298
+  },
+  "求解任务.txt": {
+    "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "bytes": 1405
+  },
+  "求解约束.txt": {
+    "sha256": "a67c18dec5f6ae59c41e8620d270007f20c2d3e5b202521d0cca12f616bca3df",
+    "bytes": 34880
+  },
+  "候选约束.txt": {
+    "sha256": "e8c60f6b506f2c424745c33ec106237d172acc6a63c918632fd34a25e4504e1c",
+    "bytes": 298455
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "old-sha-rejection",
+  "argv": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "seed",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/verify/old-sha-input.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "started_utc": "2026-09-22T23:33:53.026974+00:00",
+  "finished_utc": "2026-09-22T23:33:53.594197+00:00",
+  "exit_code": 2,
+  "history_diff": {
+    "added": [],
+    "deleted": [],
+    "changed": []
+  },
+  "history_file_count": 3482
+}

@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "scope": "本轮正式来源、投影、56份活动引用、候选来源与两张覆盖表同步；不是规格全门禁通过",
+  "catalog_sha256": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a",
+  "constraints": 72,
+  "constants": 32,
+  "changed_rules": [
+    "矿系不入库",
+    "非成品零入库",
+    "回路守恒",
+    "回路存量",
+    "植株半分",
+    "1113 位置"
+  ],
+  "sources_unchanged": true,
+  "global_gate_blockers": [
+    {
+      "entry": "规格/check_revision.py",
+      "status": "FAIL",
+      "preexisting": true,
+      "reason": "旧 T12 周期末限制断言与 HEAD 文档不符；本轮不扩到规格总门禁重审"
+    },
+    {
+      "entry": "数据/样例/check_examples.py --self-test",
+      "status": "FAIL",
+      "preexisting": true,
+      "reason": "未改动的 runtime_example.validate_decision_tree 将桥轴 status/input_side/basis 误作 Decision status/value/basis"
+    },
+    {
+      "entry": "数据/工具/check_revision.py",
+      "status": "FAIL",
+      "reason": "依赖上述样例检查成功报告；目录、CSV、来源、覆盖检查已执行到该依赖处"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+[
+  {
+    "baseline": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/before-tests-history.json",
+    "baseline_file_sha256": "81d2c803c8384086363783ac8165fc8ccca31fe84554854ab3dc4fd6fe4c5e40",
+    "baseline_count": 3481,
+    "actual_count": 3482,
+    "changed": [],
+    "added": [
+      {
+        "path": "crates/kernel/复核/r3-测试与证据/密集制造闭环序3核验-重跑周期.json.gz",
+        "sha256": "838f8c2dee07a909b5ec91cca51f3a0c38b637a76b956a3c06782ce3b16165a5",
+        "bytes": 11867571,
+        "ignored": false
+      }
+    ],
+    "deleted": []
+  },
+  {
+    "baseline": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/initial-history.json",
+    "baseline_file_sha256": "9184e9cb044ac1cbb4f59db519c979222ef809657e11cc28da2b8cdb720adc64",
+    "baseline_count": 3481,
+    "actual_count": 3482,
+    "changed": [],
+    "added": [
+      {
+        "path": "crates/kernel/复核/r3-测试与证据/密集制造闭环序3核验-重跑周期.json.gz",
+        "sha256": "838f8c2dee07a909b5ec91cca51f3a0c38b637a76b956a3c06782ce3b16165a5",
+        "bytes": 11867571,
+        "ignored": false
+      }
+    ],
+    "deleted": []
+  },
+  {
+    "baseline": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/delivery-history.json",
+    "baseline_file_sha256": "1afbec1ea91520640e8de99ddb6f2ab667d146cd0b97a2832506c0c6147d399f",
+    "baseline_count": 3482,
+    "actual_count": 3482,
+    "changed": [],
+    "added": [],
+    "deleted": []
+  }
+]

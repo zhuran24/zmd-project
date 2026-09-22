@@ -1,0 +1,11 @@
+{
+  "report_sha256": "1042aa276ea4167f7983768a14c680bf29feaca8e7712256086f379b6bbddc8b",
+  "reviewed_entire_report": true,
+  "local_links_valid": true,
+  "status_matches_body": true,
+  "current_and_historical_counts_separated": true,
+  "test_counts_checked_against_logs": true,
+  "old_predicate_evaluation_not_misrepresented_as_old_binary_run": true,
+  "preexisting_issues_distinguished_from_new_regressions": true,
+  "parallel_commit_and_preflight_resolution_disclosed": true
+}

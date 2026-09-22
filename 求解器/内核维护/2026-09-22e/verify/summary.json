@@ -1,0 +1,37 @@
+{
+  "pass": false,
+  "issues": [
+    {
+      "id": "I-01",
+      "location": "规格/check_revision.py:115",
+      "issue": "T12 断言要求的操作精度、周期末均不在当前 T12 段落；既有验收入口失配"
+    },
+    {
+      "id": "I-02",
+      "location": "数据/样例/runtime_example.py:112-122",
+      "issue": "将 status/input_side/basis 桥轴对象错分为 status/value/basis Decision；当前源码仍有结构冲突"
+    },
+    {
+      "id": "I-03",
+      "location": "规格/内核配置-v1.json:404,514；规格/受限模型声明.md:56,71",
+      "issue": "partial_acceptance 和 identity_recovery 两项实现状态文字矛盾"
+    },
+    {
+      "id": "I-04",
+      "location": "内核维护/2026-09-22e/记录.md",
+      "issue": "五个无法恢复大文件和 gzip 来源未明的现状说明已过时；当前文件与测试前快照一致，gzip 来源已确认"
+    }
+  ],
+  "report_path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/核验.md",
+  "report_sha256": "1042aa276ea4167f7983768a14c680bf29feaca8e7712256086f379b6bbddc8b",
+  "rust_tests_passed": 134,
+  "migration_functional_checks_pass": true,
+  "history_changes_during_audit": {
+    "added": [],
+    "deleted": [],
+    "changed": []
+  },
+  "parallel_HEAD_change": "d049026a0237a0a623d2b49a8c31a8eb99804cf7",
+  "parallel_HEAD_change_affects_task": false,
+  "resolved_verifier_parser_error": "verifier-parser-correction.json"
+}

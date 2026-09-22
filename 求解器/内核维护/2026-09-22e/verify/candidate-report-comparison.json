@@ -1,0 +1,10 @@
+{
+  "actual_report_sha256": "b0cdd5cabbc0fae75912a9d6a62e20866813ce31189a3c20799cd92f802c7b95",
+  "document_sha256": "b0cdd5cabbc0fae75912a9d6a62e20866813ce31189a3c20799cd92f802c7b95",
+  "byte_equal": true,
+  "headers": [
+    "## 能检且通过（4924 项，算术推论）",
+    "## 能检且不通过（0 项，算术推论）",
+    "## 不能静态检（75 项，算术推论）"
+  ]
+}

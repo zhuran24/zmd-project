@@ -37,7 +37,7 @@ def parse_constraints(text):
             rows.append({'name': name, 'text': body, 'section': section,
                          'source_line': str(number),
                          'obligation': '目标须对其每种取值都达成' if section.startswith('不得依赖的量') else None})
-    assert len(rows) == 71 and all(r.get('basis') for r in rows)
+    assert len(rows) == 72 and all(r.get('basis') for r in rows)
     return rows
 
 
@@ -74,7 +74,6 @@ def formal_projection(snapshot):
         ('fill_count','封装进料',r'灌装机恰 \d+ 台时至少 (\d+) 台'),
         ('fill_inputs','封装进料',r'灌装机.*各有 至少 (\d+) 条'),
         ('fill_other_inputs','封装进料',r'第 \d+ 台恰 (\d+) 条'),
-        ('plant_trigger','矿系不入库',r'种植机恰 (\d+) 台'),
         ('product_sources','成品汇入',r'至少有 (\d+) 个来源'),
         ('product_inputs','通道下限',r'成品入库至少 (\d+) 条'),
         ('transport_s','运输端口收支',r'S ≥(\d+)'),
@@ -193,4 +192,4 @@ if __name__ == '__main__':
     except (AssertionError, KeyError, ValueError, TypeError) as error:
         print(f'目录回源失败：{error}', file=sys.stderr)
         sys.exit(1)
-    print('三份正式来源指纹与全文、71 条约束上下文、任务与阈值、18 条配方、18 类单位全部字段及数字类别一致。')
+    print('三份正式来源指纹与全文、72 条约束上下文、任务与阈值、18 条配方、18 类单位全部字段及数字类别一致。')

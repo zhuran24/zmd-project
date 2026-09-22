@@ -1,0 +1,11 @@
+{
+  "script": "explicit_checks.initial-parser.py",
+  "initial_error": "Expected | Fail | inside a markdown row; actual status is encoded by the report section heading.",
+  "initial_exit_code": 1,
+  "target_command_exit_code": 1,
+  "target_named_check": "矿系不入库/计划",
+  "corrected_parser": "Select the 能检且不通过 section, then the exact named row; select Unknown rows in 不能静态检.",
+  "source_or_result_modified": false,
+  "topology_rerun": false,
+  "corrected_result": "semantic-discriminator.json"
+}

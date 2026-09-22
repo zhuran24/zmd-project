@@ -1,0 +1,13 @@
+{
+  "status": "pass",
+  "scope": "交付记录的日期、当前/历史范围、链接、计数、来源与未通过项目自审；非新业务测试",
+  "business_files": 86,
+  "continuation_artifacts": 253,
+  "rust_final_passed": 134,
+  "python_passed": 8,
+  "global_spec_check": "failed",
+  "history_added": 1,
+  "history_modified": 0,
+  "task_status": "stopped_on_history_change",
+  "reviewed_utc": "2026-09-22T23:20:56.170963+00:00"
+}

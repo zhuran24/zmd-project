@@ -1,0 +1,70 @@
+[
+  {
+    "name": "kernel-seed",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "seed",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/positive-input.json",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/seed-output.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "status": null
+  },
+  {
+    "name": "kernel-check",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "check",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/seed-output.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "status": "input_checked"
+  },
+  {
+    "name": "kernel-run",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "run",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/seed-output.json",
+      "--ticks",
+      "6",
+      "--out",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/positive-run.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "status": "completed"
+  },
+  {
+    "name": "kernel-verify-record",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "verify-record",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/positive-run.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 0,
+    "status": "input_checked"
+  },
+  {
+    "name": "stale-catalog-negative",
+    "argv": [
+      "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+      "seed",
+      "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/stale-catalog-input.json",
+      "--config",
+      "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+    ],
+    "exit_code": 2,
+    "status": "invalid_input",
+    "reason": "invalid_input input @ /home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json: 源文件指纹不符",
+    "expected": "invalid_input: 源文件指纹不符"
+  }
+]

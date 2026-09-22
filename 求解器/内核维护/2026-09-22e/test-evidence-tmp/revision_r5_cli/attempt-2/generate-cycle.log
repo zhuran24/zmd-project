@@ -1,0 +1,2 @@
+{"command": ["/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel", "cycle", "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json", "--max-ticks", "50", "--out", "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/original-cycle.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "exit": 0}
+{"out":"/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/original-cycle.json","status":"diagnostic_cycle"}

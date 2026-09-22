@@ -1,0 +1,24 @@
+"矿系不入库/计划",
+        c.logical_feeds
+            .iter()
+            .filter(|e| e.target == c.core.id)
+            .all(|e| {
+                cat.task.targets.contains_key(&e.item)
+                    || (counts("种植机") != cat.count("plant_trigger")
+                        && [
+                            "荞花",
+                            "砂叶",
+                            "荞花种子",
+                            "砂叶种子",
+                            "荞花粉末",
+                            "砂叶粉末",
+                            "细磨荞花粉末",
+                        ]
+                        .contains(&e.item.as_str()))
+            }),
+        format!(
+            "种植机 {} 台；仅在台数等于正式下限时禁止植物系入库；无箱计划；据：矿系不入库",
+            counts("种植机")
+        ),
+    );
+    

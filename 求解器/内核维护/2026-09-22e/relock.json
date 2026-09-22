@@ -1,0 +1,895 @@
+{
+  "sources": {
+    "《明日方舟：终末地》游戏规则.txt": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+    "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "求解约束.txt": "a67c18dec5f6ae59c41e8620d270007f20c2d3e5b202521d0cca12f616bca3df"
+  },
+  "catalog_sha256": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a",
+  "inputs": [
+    {
+      "file": "crates/kernel/tests/fixtures/benchmark_1000.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "crates/kernel/tests/fixtures/benchmark_brick.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "crates/kernel/tests/fixtures/benchmark_brick_60.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "crates/kernel/tests/fixtures/bridge.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "crates/kernel/tests/fixtures/core_inbound.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "crates/kernel/tests/fixtures/priority.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "crates/kernel/tests/fixtures/revision_r2_branch_cut.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "crates/kernel/tests/fixtures/revision_r2_phase_control.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/kernel_profile_v1参数赋值.json",
+      "refs": [
+        {
+          "path": "../../规格/受限模型声明.md",
+          "before": "beca7dd638b255a66d82b9a94c7efdf0389bba778fb55adf547015a14b875b2c",
+          "after": "f427134b7307df16f3bcd709e47ad9dac5c48eeb2ffa393bbb47cf8ceec64719"
+        },
+        {
+          "path": "../../规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/双门窗口恢复.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/同刻双箱争余量.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/成熟旧货重试.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/无线一满一可收.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/无线全拒收.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/无线多格全收.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/无线多格歧义.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/无线空箱.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/无线部分接收.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/生产环带.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/累计审计与窗口周期.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/累计调低保留.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/累计调高资格.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/装载与普通制造.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/身份实际切换.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/身份断边恢复.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/阻尼恢复.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/任务7内核/静止成熟与暂停键.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/传输拒收与暂停核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/分流器三路轮询-参数赋值.json",
+      "refs": [
+        {
+          "path": "../../规格/受限模型声明.md",
+          "before": "beca7dd638b255a66d82b9a94c7efdf0389bba778fb55adf547015a14b875b2c",
+          "after": "f427134b7307df16f3bcd709e47ad9dac5c48eeb2ffa393bbb47cf8ceec64719"
+        },
+        {
+          "path": "../../规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/分流器三路轮询.json",
+      "refs": [
+        {
+          "path": "../正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "../../规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/双成品制造砖.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/双成品满仓起动试作.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/密集制造闭环基础.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/密集制造闭环序0核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/密集制造闭环序1核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/密集制造闭环序2核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/密集制造闭环序3核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/密集制造闭环序4核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/密集制造闭环序5核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/密集结点循环种子核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/密集结点核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/密集结点闭环核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/桥接器双通路.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/混做粉碎机两下游.json",
+      "refs": [
+        {
+          "path": "../正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "../../规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/生产循环环带.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/研磨混做核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/轮询均分序0核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/轮询均分序1核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/轮询均分序2核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/轮询均分序3核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/轮询均分序4核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/轮询均分序5核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/轮询均分核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/阻尼切支恢复核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    },
+    {
+      "file": "数据/样例/阻尼连续带核验.json",
+      "refs": [
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+          "before": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+          "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+        },
+        {
+          "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+          "before": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b",
+          "after": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+        }
+      ]
+    }
+  ],
+  "candidate_b_sources": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "before": "abc7a5867f6477eedb619c63a21c4a77144c57ad4567fdcfb696b3049d66a670",
+      "after": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "before": "10abf80fe6eefe647471eabe78da4053f77b489d3806722c501c6acb405a2864",
+      "after": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "before": "f6503e6c1568ae5ef05bb2dfac249df0a6a371bb24342e23ba77fafc813648b6",
+      "after": "a67c18dec5f6ae59c41e8620d270007f20c2d3e5b202521d0cca12f616bca3df"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/候选约束.txt",
+      "before": "a0ac3f9c82f371132b7de29fe47e4c6c587904680bc2786523de0c825fd5efd9",
+      "after": "e8c60f6b506f2c424745c33ec106237d172acc6a63c918632fd34a25e4504e1c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+      "before": "74d21a5bd37c6178f988a86a4aa78a03d1e4244ecff26f133bb5e700ada82e43",
+      "after": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+    }
+  ],
+  "relocated_byte_identical_sources": [
+    {
+      "before": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书.md",
+      "after": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r4-可导出性-证据/任务依据/任务书.md",
+      "sha256": "7d9a2b0701fd6c3fa44a16a62e6e7f5ffc048e191a1763fb337bfb9ffdfac407"
+    },
+    {
+      "before": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/任务书2.md",
+      "after": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r4-可导出性-证据/任务依据/任务书2.md",
+      "sha256": "e62e31d5c807a0674d3f8579e246b729ab82b81a9d8bb05ef4a7f4d360b6193e"
+    },
+    {
+      "before": "/tmp/claude-1000/-home-zhuran24-zmd-research-fresh/2a1af1b1-ede2-4b4a-8f95-41e78df48af0/scratchpad/step1/gptpro_评审摘录.md",
+      "after": "/home/zhuran24/zmd-research-fresh/求解器/规格/复核/内核输入/复核-r4-可导出性-证据/任务依据/gptpro_评审摘录.md",
+      "sha256": "acde1383748f230822f0c569b3303d867f4f33add2deaba140aa7d8073e7941a"
+    }
+  ],
+  "historical_outputs": "retained at their original bytes; test restoration separately recorded"
+}

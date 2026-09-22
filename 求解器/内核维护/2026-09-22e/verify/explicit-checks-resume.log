@@ -1,0 +1,35 @@
+{"name": "positive-seed", "argv": ["/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel", "seed", "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/verify/positive-input.json", "--out", "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/verify/positive-seed.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "started_utc": "2026-09-22T23:33:48.423493+00:00", "finished_utc": "2026-09-22T23:33:48.989614+00:00", "exit_code": 0, "history_diff": {"added": [], "deleted": [], "changed": []}, "history_file_count": 3482}
+{"name": "positive-check", "argv": ["/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel", "check", "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/verify/positive-seed.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "started_utc": "2026-09-22T23:33:49.532937+00:00", "finished_utc": "2026-09-22T23:33:50.086182+00:00", "exit_code": 0, "history_diff": {"added": [], "deleted": [], "changed": []}, "history_file_count": 3482}
+{"name": "positive-run", "argv": ["/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel", "run", "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/verify/positive-seed.json", "--ticks", "6", "--out", "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/verify/positive-record.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "started_utc": "2026-09-22T23:33:50.622950+00:00", "finished_utc": "2026-09-22T23:33:51.222042+00:00", "exit_code": 0, "history_diff": {"added": [], "deleted": [], "changed": []}, "history_file_count": 3482}
+{"name": "positive-verify-record", "argv": ["/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel", "verify-record", "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/verify/positive-record.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "started_utc": "2026-09-22T23:33:51.765833+00:00", "finished_utc": "2026-09-22T23:33:52.482792+00:00", "exit_code": 0, "history_diff": {"added": [], "deleted": [], "changed": []}, "history_file_count": 3482}
+{"name": "old-sha-rejection", "argv": ["/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel", "seed", "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/verify/old-sha-input.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh/求解器", "started_utc": "2026-09-22T23:33:53.026974+00:00", "finished_utc": "2026-09-22T23:33:53.594197+00:00", "exit_code": 2, "history_diff": {"added": [], "deleted": [], "changed": []}, "history_file_count": 3482}
+[
+  {
+    "name": "positive-seed",
+    "exit_code": 0,
+    "status": null
+  },
+  {
+    "name": "positive-check",
+    "exit_code": 0,
+    "status": "input_checked"
+  },
+  {
+    "name": "positive-run",
+    "exit_code": 0,
+    "status": "completed"
+  },
+  {
+    "name": "positive-verify-record",
+    "exit_code": 0,
+    "status": "input_checked"
+  },
+  {
+    "name": "old-sha-rejection",
+    "exit_code": 2,
+    "status": "invalid_input",
+    "reason": [
+      "invalid_input input @ /home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json: 源文件指纹不符"
+    ]
+  }
+]

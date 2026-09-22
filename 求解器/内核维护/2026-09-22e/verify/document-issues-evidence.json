@@ -1,0 +1,16 @@
+{
+  "T12": {
+    "contains_operation_precision": false,
+    "contains_end_of_period": false,
+    "body_same_as_HEAD": true,
+    "current_section": "\n仓库收得下成品。\n\n这句前提覆盖证书区间内两成品所有候选及实际入库检查；供电、路径、端口服务与冷却随生产系统另核。最终仓库取货指派全为原矿时，成品数量投影须核格标签、空格次序和全部引用非干扰。D.3保守域及扩大表示的条件见受限转移§6.5.2。依据任务L2、L7—10、L13，规则L13—14、L36、L41、L73。\n\n每种成品按ΔW=I−O−P记实际仓存，最终全矿指派给O=0。生产代表调整单独记账。正式完整周期到生产投影的前向对应与反向仓库/外部过程复原分别验收；具体完整循环采用§6.5.5，全部起点、参数和可达循环覆盖另附证明。接收中断后保存实际库存、指针、进度及冷却，恢复状态进入安全集合的证明由任务5/6承接。\n\n"
+  },
+  "unchanged_implementation_files": {
+    "求解器/数据/样例/runtime_example.py": true,
+    "求解器/规格/内核配置-v1.json": true
+  },
+  "coverage_loss": {
+    "transfer.partial_acceptance": "当前Rust传输函数仍为旧实现，任务8须迁移部分接收、残留格与台账",
+    "gate.identity_recovery": "当前Rust身份锁存实现待任务8替换；恢复后的接通记账、轮询和同刻组织仍待任务6"
+  }
+}

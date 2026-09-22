@@ -1,0 +1,24 @@
+{
+  "initial_preflight_pause": true,
+  "changed_existing_files": 0,
+  "archival_addition": [
+    {
+      "path": "crates/kernel/复核/r3-测试与证据/密集制造闭环序3核验-重跑周期.json.gz",
+      "sha256": "838f8c2dee07a909b5ec91cca51f3a0c38b637a76b956a3c06782ce3b16165a5",
+      "bytes": 11867571,
+      "ignored": false
+    }
+  ],
+  "provenance": {
+    "path": "求解器/crates/kernel/复核/r3-测试与证据/密集制造闭环序3核验-重跑周期.json.gz",
+    "decoded_sha256": "77787d90d936143ccca1ae021242bd201229e8e9cd6b28f6b82531e1bafb00af",
+    "raw_sha256": "77787d90d936143ccca1ae021242bd201229e8e9cd6b28f6b82531e1bafb00af",
+    "identical": true,
+    "git_commit": "e487600c268ba905512d38f7b0b7b9cd2458db23"
+  },
+  "current_head_history_status_clean": true,
+  "current_ignored_file_count": 1,
+  "criterion": "Historical tracked files compared with current HEAD; existing and ignored files compared with before-tests hashes. The one additional gzip is already in HEAD and decodes to the unchanged original. Subsequent commands compare all files with this audit initial snapshot.",
+  "initial_preflight_hard_stop_resolved_before_execution": true,
+  "test_period_history_changes": false
+}

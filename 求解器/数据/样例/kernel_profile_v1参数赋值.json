@@ -3,7 +3,7 @@
   "profile_id": "kernel_profile_v1",
   "profile_source": {
     "path": "../../规格/受限模型声明.md",
-    "sha256": "beca7dd638b255a66d82b9a94c7efdf0389bba778fb55adf547015a14b875b2c"
+    "sha256": "f427134b7307df16f3bcd709e47ad9dac5c48eeb2ffa393bbb47cf8ceec64719"
   },
   "configuration_source": {
     "path": "../../规格/内核配置-v1.json",
@@ -11,7 +11,7 @@
   },
   "axis_source": {
     "path": "../../规格/选择点参数轴.md",
-    "sha256": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b"
+    "sha256": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
   },
   "axes": [
     {

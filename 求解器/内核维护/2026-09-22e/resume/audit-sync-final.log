@@ -1,0 +1,25 @@
+{
+  "status": "pass",
+  "version": "2026-09-22-r23-constraints-72",
+  "catalog_sha256": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a",
+  "independently_rebuilt_from_HEAD_bytes_equal": true,
+  "constraints_before": 71,
+  "constraints_after": 72,
+  "constants_before": 33,
+  "constants_after": 32,
+  "unchanged": [
+    "task",
+    "units",
+    "recipes",
+    "material_flow",
+    "other_constants"
+  ],
+  "source_hashes": {
+    "《明日方舟：终末地》游戏规则.txt": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3",
+    "求解任务.txt": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac",
+    "求解约束.txt": "a67c18dec5f6ae59c41e8620d270007f20c2d3e5b202521d0cca12f616bca3df"
+  },
+  "source_hashes_checker_matches": true,
+  "candidate_source_count": 16
+}
+references checked: 56 changed inputs: 55

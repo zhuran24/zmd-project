@@ -1,0 +1,20 @@
+{
+  "name": "build-debug",
+  "argv": [
+    "cargo",
+    "build",
+    "--workspace",
+    "-j",
+    "4"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "started_utc": "2026-09-22T23:29:16.070720+00:00",
+  "finished_utc": "2026-09-22T23:29:16.867582+00:00",
+  "exit_code": 0,
+  "history_diff": {
+    "added": [],
+    "deleted": [],
+    "changed": []
+  },
+  "history_file_count": 3482
+}

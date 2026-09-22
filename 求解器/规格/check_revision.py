@@ -21,7 +21,7 @@ def check(condition, label):
 
 # 逐行比较原文，防止只计数而漏掉或错配行号。
 sections = coverage.split('## ')
-for section_index, filename, count in [(1, '《明日方舟：终末地》游戏规则.txt', 114), (2, '求解任务.txt', 15)]:
+for section_index, filename, count in [(1, '《明日方舟：终末地》游戏规则.txt', 114), (2, '求解任务.txt', 16)]:
     rows = [line.split('|')[1:-1] for line in sections[section_index].splitlines() if re.match(r'^\| \d+ \|', line)]
     source = (root / filename).read_text().splitlines()
     check(len(rows) == len(source) == count, f'{filename}：{count} 行覆盖')
@@ -34,13 +34,13 @@ for section_index, filename, count in [(1, '《明日方舟：终末地》游戏
 constraint_lines = (root / '求解约束.txt').read_text().splitlines()
 expected = [(i, line.split('：', 1)[0]) for i, line in enumerate(constraint_lines, 1) if '：' in line and not line.startswith(' ') and not line.endswith('：')]
 rows = [line.split('|')[1:-1] for line in sections[3].splitlines() if re.match(r'^\| \d+ \|', line)]
-check(len(expected) == len(rows) == 56, '正式约束 56 条覆盖')
+check(len(expected) == len(rows) == 72, '正式约束 72 条覆盖')
 for index, (row, (source_line, name)) in enumerate(zip(rows, expected), 1):
     assert int(row[0]) == index and int(row[1]) == source_line
     assert row[2].strip() == '约束·' + name
 results.append('正式约束：条款名与源行一致')
 
-fingerprints = json.loads((spec_dir / '第五轮规格修订/开工只读指纹.json').read_text())
+fingerprints = json.loads((spec_dir.parent / '内核维护/2026-09-22e/只读文件指纹.json').read_text())
 # 正式源与候选为只读；K线活动源码只记录当前字节，不冻结旧轮实现。
 protected_names = {'《明日方舟：终末地》游戏规则.txt', '求解任务.txt', '求解约束.txt', '候选约束.txt'}
 protected_fingerprints = {path: digest for path, digest in fingerprints.items() if Path(path).parent == root and Path(path).name in protected_names}

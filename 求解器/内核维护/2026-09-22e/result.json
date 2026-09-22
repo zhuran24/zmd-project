@@ -1,0 +1,37 @@
+{
+  "status": "synchronized_with_existing_gate_failures",
+  "catalog_version": "2026-09-22-r23-constraints-72",
+  "catalog_sha256": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a",
+  "rust_tests": {
+    "passed": 141,
+    "failed": 0,
+    "ignored": 0
+  },
+  "python_catalog_tests": {
+    "passed": 8,
+    "failed": 0
+  },
+  "positive_commands": 5,
+  "changed_files": 84,
+  "restored_preexisting_ignored_history_files": 5,
+  "protected_sources_unchanged": true,
+  "global_gate_blockers": [
+    {
+      "entry": "规格/check_revision.py",
+      "status": "FAIL",
+      "preexisting": true,
+      "reason": "旧 T12 周期末限制断言与 HEAD 文档不符；本轮不扩到规格总门禁重审"
+    },
+    {
+      "entry": "数据/样例/check_examples.py --self-test",
+      "status": "FAIL",
+      "preexisting": true,
+      "reason": "未改动的 runtime_example.validate_decision_tree 将桥轴 status/input_side/basis 误作 Decision status/value/basis"
+    },
+    {
+      "entry": "数据/工具/check_revision.py",
+      "status": "FAIL",
+      "reason": "依赖上述样例检查成功报告；目录、CSV、来源、覆盖检查已执行到该依赖处"
+    }
+  ]
+}

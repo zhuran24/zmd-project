@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py", line 136, in <module>
+    assert lifetime and '据：' in body and any(value in body for value in ['known', 'open', 'obligation', '输入/工程接口']), field
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: initialization.belt_shape_lifecycle

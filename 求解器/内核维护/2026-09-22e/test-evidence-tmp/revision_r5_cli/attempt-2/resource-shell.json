@@ -1,0 +1,288 @@
+{
+  "budget": {
+    "completed_ticks": 0,
+    "max_sweeps": 100000,
+    "max_ticks": 2
+  },
+  "cycle": null,
+  "domain_report": [
+    {
+      "condition": "D.1",
+      "evidence": [
+        "未完成装载：时差溢出"
+      ],
+      "locations": [
+        "PC|a:east:0|b:south:0"
+      ],
+      "scope": "not_checked",
+      "status": "unresolved"
+    },
+    {
+      "condition": "D.2",
+      "evidence": [
+        "未完成装载：时差溢出"
+      ],
+      "locations": [
+        "PC|a:east:0|b:south:0"
+      ],
+      "scope": "not_checked",
+      "status": "unresolved"
+    },
+    {
+      "condition": "D.3",
+      "evidence": [
+        "未完成装载：时差溢出"
+      ],
+      "locations": [
+        "PC|a:east:0|b:south:0"
+      ],
+      "scope": "not_checked",
+      "status": "unresolved"
+    },
+    {
+      "condition": "D.4",
+      "evidence": [
+        "未完成装载：时差溢出"
+      ],
+      "locations": [
+        "PC|a:east:0|b:south:0"
+      ],
+      "scope": "not_checked",
+      "status": "unresolved"
+    },
+    {
+      "condition": "D.5",
+      "evidence": [
+        "未完成装载：时差溢出"
+      ],
+      "locations": [
+        "PC|a:east:0|b:south:0"
+      ],
+      "scope": "not_checked",
+      "status": "unresolved"
+    }
+  ],
+  "environment_assumption": "仓库收得下成品。",
+  "evidence_scope": {
+    "context_bindings": [],
+    "direction": "diagnostic",
+    "fixed_parameter_lifecycle": "judgment.order_scope=fixed_run_order；judgment.order整场固定，回放和端点逐值核对；本段无离线或玩家动作",
+    "initial_state_coverage": {
+      "description": "一个显式种子及其实际已重放前缀；调试程序全部可能后态另核",
+      "exact_reachable_set_enumerated": false
+    },
+    "kind": "diagnostic",
+    "proof_sources": [],
+    "review_status": "author_checked",
+    "support_domain": [
+      "固定布局、设定、global/event-order-v1及整数时钟的受限工程执行",
+      "ordered_sweeps与retain_survivors为明示工程组织；一般失败环真实唤醒对应仍待证明"
+    ]
+  },
+  "execution_mode": "production_abstraction",
+  "fingerprints": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-2/resource-input.json",
+      "role": "input",
+      "sha256": "32cd8c4c36f3db8340c0ee0f9b9b3ae68902a66caac07a028f9ae5dcfa8a2778"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json",
+      "role": "profile",
+      "sha256": "a6ecebadfb0e322726f22dd3967301691063965c45f56bd62e0d84965a810fee"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/value.rs",
+      "role": "checker",
+      "sha256": "0cd34a9c7877861580caa0711e643575cbb9ce631a445919c69f093c2392d32b"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/config.rs",
+      "role": "checker",
+      "sha256": "69676c866f8030ea877e662fdb85f600618f23edd99e4262699997adf9786f5a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/model.rs",
+      "role": "checker",
+      "sha256": "6f4d3dfb5133b834ef52dba2fa398cee3f6e3f88f1da77630aaf66326e81a842"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/catalog.rs",
+      "role": "checker",
+      "sha256": "3a0a7c3e21b46d626928fca81e90a617bd55189b8e3f357019c529109510636f"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/input.rs",
+      "role": "checker",
+      "sha256": "d40bf539f789708e64e3a52d909a9a4a96819545a384b3906acba91f1e3d7c79"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/interfaces.rs",
+      "role": "checker",
+      "sha256": "3ee13ba29adc7ae58abf29e09f938900895f12908fa5b428b261b9909da9d919"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/engine.rs",
+      "role": "checker",
+      "sha256": "1c0f7bd68fef463bee4780f90be237e540f5e6fda680553a9fac9aa8933ec6d7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/event_identity.rs",
+      "role": "checker",
+      "sha256": "25a4f4442232845d2fedf80ed368fb02ce502f2c350e16e73355296183f3e70e"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/warehouse.rs",
+      "role": "checker",
+      "sha256": "6d50eb1678921d2f3621149d60766463e6c4ce4fd57e0978ae1af7253557d5f5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/polling.rs",
+      "role": "checker",
+      "sha256": "7d75aa6d73d0a76aaace36581e5aba0457db239cb7f3d59bb13c1610e551d26c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/transition.rs",
+      "role": "checker",
+      "sha256": "8d2d45792827cd813efd3fd38a39dee0318b999c9d3c7262bea9203c61f1bbb8"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/output.rs",
+      "role": "checker",
+      "sha256": "059ad007e43a2df0ab3a4d59a9264a6fd8371be75e08eb26d9f070f6738d12b2"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/ledger.rs",
+      "role": "checker",
+      "sha256": "f85ecea3240dd1ec0598a026bafe3b863c13220c7bdb7cdb0aa24c1e2577d9e7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle.rs",
+      "role": "checker",
+      "sha256": "d169699dde2e0e0a18b0ae8a441c9923811c0bc5330e317ed02ba5c68449200b"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cycle_io.rs",
+      "role": "checker",
+      "sha256": "93afc189315738f11780b04ac4ff5cbabf93afb2fabc04233ef5c3dd63f4de30"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/digest.rs",
+      "role": "checker",
+      "sha256": "e8d8d5c8df1f7124ec5739fa158a41b4d7ca662f1b246d3604994cbe81eb1ef0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/seed.rs",
+      "role": "checker",
+      "sha256": "35f7a669eba69516a2eeef9b66291ab1b5841ff79d7c165388bfd1bf8f6b03a5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/cache.rs",
+      "role": "checker",
+      "sha256": "3278f432f020daa2eef8b234a844b5b665f81cabce695ff1346205d729ef47c7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/lib.rs",
+      "role": "checker",
+      "sha256": "5d63008aa0f7b9c8a1da93dc96b13496398cc3fbad93c3775d709d77340b4c6a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/src/main.rs",
+      "role": "checker",
+      "sha256": "b38a6cf3afd455a7b440f4e86bb3c27e5684ff872d4c0a2bfa8b84368f9f651d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "role": "semantics",
+      "sha256": "1761baa60d1bf6d0445721040e3eb98e232489e4b2beaf5ac2ef6a56e68e01d0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "role": "semantics",
+      "sha256": "1d8078d7292a62697919d3d03a8dc6d3c4e596acfdfeaa000bf1ee11b5407a8b"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "role": "semantics",
+      "sha256": "c05815f1aebee1521e3dfdc817acacea872a6fd22ec2503642b8711b35d20148"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+      "role": "semantics",
+      "sha256": "e287c6e4bb388a814a5fe04d072084e29be494a0caff9b14388c34d67705bb3c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.schema.json",
+      "role": "schema",
+      "sha256": "c302365255678e1719ef0fd47cba50936ced68aac64b60bd6162f15a29c27ce8"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/周期键读取审计.md",
+      "role": "semantics",
+      "sha256": "b8b8d2cdd017f3d0c88d71f3885b865d0776c0c390fec645598fd1997ec9eea5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+      "role": "catalog",
+      "sha256": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "role": "axis_registry",
+      "sha256": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/《明日方舟：终末地》游戏规则.txt",
+      "role": "formal_source",
+      "sha256": "52df4c12ce90975b861a6a663bd37873e03c9549658d200dc7e95fabc4bc29f3"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解任务.txt",
+      "role": "formal_source",
+      "sha256": "1630ca1febec79b324aa3afb110be2d3330298e266c68b06415c3d1516108bac"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解约束.txt",
+      "role": "formal_source",
+      "sha256": "a67c18dec5f6ae59c41e8620d270007f20c2d3e5b202521d0cca12f616bca3df"
+    }
+  ],
+  "last_state": null,
+  "level": null,
+  "open_items": [
+    "inconclusive resource.integer @ PC|a:east:0|b:south:0: 时差溢出",
+    "装载诊断未独立复现；技术停止不证明布局无解"
+  ],
+  "parameter_point": null,
+  "port_meeting": "shared_edge_opposite",
+  "reading": {
+    "acceptance_quantifier": "unresolved",
+    "cycle_interpretation": "production_projection",
+    "port_meeting": "shared_edge_opposite",
+    "remaining_assumptions": [
+      "装载未成立，未形成可认证参数点"
+    ],
+    "warehouse_acceptance": "unresolved"
+  },
+  "record_mode": "referenced",
+  "replay_input_ref": null,
+  "result_id": "cycle:load-stop",
+  "run_record_ref": null,
+  "schema": "kernel-cycle-v3",
+  "seed": null,
+  "status": "inconclusive",
+  "stop": {
+    "axis": "resource.integer",
+    "event": "PC|a:east:0|b:south:0",
+    "kind": "resource",
+    "partial_events": [],
+    "reason": "时差溢出",
+    "time": null
+  },
+  "support_domain": {
+    "name": "phase_production_v1",
+    "uncovered": [
+      "完整输入未通过装载"
+    ]
+  }
+}

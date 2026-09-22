@@ -1,0 +1,33 @@
+{
+  "counts": {
+    "crates/kernel/evidence": 573,
+    "crates/kernel/复核": 2094,
+    "数据/复核": 815
+  },
+  "total_files": 3482,
+  "total_bytes": 1021912489,
+  "ignored_files": 1,
+  "history_git_status_clean": true,
+  "comparisons": [
+    {
+      "baseline": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/before-tests-history.json",
+      "changed": 0,
+      "added": 1,
+      "deleted": 0
+    },
+    {
+      "baseline": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/initial-history.json",
+      "changed": 0,
+      "added": 1,
+      "deleted": 0
+    },
+    {
+      "baseline": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/delivery-history.json",
+      "changed": 0,
+      "added": 0,
+      "deleted": 0
+    }
+  ],
+  "hard_stop": true,
+  "tests_started": false
+}

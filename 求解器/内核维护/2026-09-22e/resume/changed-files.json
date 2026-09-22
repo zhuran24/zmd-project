@@ -1,0 +1,1880 @@
+{
+  "business_file_count": 86,
+  "business_files": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_1000.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "0fe5ac004803a938ee27a581289457d48ae0e37c459f23082ad1b804807585f5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_brick.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "244bd5e365e718bd4a7cd63bafd2348d1e0a1979cc8a37145e0d7ce0d8c8fa18"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/benchmark_brick_60.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "6a31df084310c32632d8af0e1db30463890906a0258d99adb30a5853af73cd48"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/bridge.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "b7f615ab61278695dc13de56fba7d7c30f7f955497117f5ca6560c3ef41f6336"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/core_inbound.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "d0b097c7bb7c96ea707b714e523221e4cf19e341f68096dfcf5a9e22878baf99"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/priority.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "af3244496442e29907ae9018e80f104c105110a3fc278175d83e74fe5696f115"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/revision_r2_branch_cut.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "bb2c75a1d9bae831e02928b8630da81bb06fc0785ce26f7bddfd272baab3cb0f"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/kernel/tests/fixtures/revision_r2_phase_control.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "b2e1bbd438031cd0cc9fef995425594c618792360131495c94809fc1c758d802"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/src/lib.rs",
+      "change": "修改",
+      "description": "核心入库计划只接受两成品；删除台数豁免，按非成品零入库解释；三条实际循环义务保持 Unknown",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "bcca2c5f46391d5e83bf1f82b883274fbe85023fd742a500532c2b0cb4d7b709"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/crates/topology/tests/validation.rs",
+      "change": "修改",
+      "description": "72条覆盖；32/33台×19物品共38组核心检查正负例及三条 Unknown 断言",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "b91e98a043c5eaf0c8e01452af4e08b35c6ce12d59316e63646086f7578ee9bf"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/来源清单.json",
+      "change": "修改",
+      "description": "重锁当前正式源、候选和目录；三项临时来源迁至等字节存档，16项均核哈希",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "67a24026c155d3cbfeab11fa237c4c051bad7e0f35e59d05ca00514a19787c00"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/校验报告.md",
+      "change": "修改",
+      "description": "与本次 release topology 输出逐字节相等：4924通过、0失败、75未知",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "b0cdd5cabbc0fae75912a9d6a62e20866813ce31189a3c20799cd92f802c7b95"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/转换说明.md",
+      "change": "修改",
+      "description": "当前72条、来源重定位及未获运行认证的范围",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "08a5e124357aee992fe602456192111e41ddd2ed7a55c4112d2783b6fc7d6842"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/候选B/验证记录.md",
+      "change": "修改",
+      "description": "现行静态计数与2026-09-19历史验证分区，旧结果保留",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "ec8df02634ac9bd93523c4bd50a70428b4b088a0caa9601c19414368cef015ad"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/check_revision.py",
+      "change": "修改",
+      "description": "计数72；允许本轮输出写入内核维护目录",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "0e9c77de53372d3fc90c51a4f0757a84ab995d1f05a30654001e7c07199c40e3"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/convert_candidate_b.py",
+      "change": "修改",
+      "description": "失效临时任务来源改指 SHA 完全相同的仓库存档",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "ba46137954bd404cc3d2f130c2878ec99dc4ff88ed8e356a3cb0e4f6036725e9"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/formal_catalog.py",
+      "change": "修改",
+      "description": "约束计数72；删除 plant_trigger 提取",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "129cad47b1e7ec1d4b732e6cfcdc5415fb2d854223e71cac2afe6d7abc6405cf"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/工具/test_formal_catalog.py",
+      "change": "修改",
+      "description": "增加无 plant_trigger 投影成功和残留键拒收两项回归",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "61d96eef094ab552c4c26bfeaa5071e9705c3f2e1e6cd9b4d64f590f22408217"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/check_examples.py",
+      "change": "修改",
+      "description": "SOURCE_HASHES 重锁当前正式三源；未修改原样例结构检查逻辑",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "2cfa792ac0d5dd64f97be6c699018cf576f12ab9325967e16665653ed535d397"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/kernel_profile_v1参数赋值.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "33794007e15d39b2ccc40f1361b64676b82f0306f58b38076e185b18002503c7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/双门窗口恢复.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "4ef096a448ffd0eb021d529fb8c022befd1479266c361145360f4a9a764eddf5"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/同刻双箱争余量.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "3e0195455c2734b26a5be34029d7c52abc1e506e8d66611cbbfa7a94e847a2b9"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/成熟旧货重试.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "c7a5f5d4ed101976037365a9757d4b913353d8516187832e1f19a65cb343c5f4"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线一满一可收.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "e371843b68f943d4bd13939df41073167a6718d21068838a9ffd1046335d1594"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线全拒收.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "38baf6b14a32f76bdfd6c6420713d593465cd049512583648e792a29b87c5cbb"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线多格全收.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "f8d48847abb959346a669fc53608209ae6ff02c51203189a79e2bedeaf99cfbc"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线多格歧义.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "99a08cf59adf3a0c52bf20761d49c79158bbe75986ec28fd6a7da294a773f6b3"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线空箱.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "ab56d95e68f0609277a98bd788032eb5e983a1cd663ed12fc367916d4c9e311f"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/无线部分接收.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "9db2dd6a7b05982123e5b7061039e37a6600efa6e6de241a3979ea9dfc73dfa0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/生产环带.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "1af6bc7150e205c95468400fdc739a03d914f33958ecb973a721e2c9f58a5fb1"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计审计与窗口周期.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "f6e029124f1242614961dfb1aa990bba4a8998919ff63741fe7428d83bea438d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计调低保留.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "98eb49f5853256b0b41542ef164b46538169abf3095d0c5e84681a88889e5548"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/累计调高资格.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "161b9a8c348f72f24142653b63ee7e8cf2a259dd1b39fd201b1910791c106c9d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/装载与普通制造.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "fd9774355102406d52cee17dfe66a0f62253594bbe1b3473c7f1b48315529e6f"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/身份实际切换.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "cfb10be4592931940e2360b89e034502778197f8ffd3b5ab7e0c9492beaf5370"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/身份断边恢复.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "fd6f10abccaacd3514e2fc39ce004d052da42dfc7c3c434b1aa92ad7beb12e26"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/阻尼恢复.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "d0066b1f8a0f3bb9e24172a9cad6883f8c25ede02193b9a04f282be6377186e4"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/任务7内核/静止成熟与暂停键.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "d3520ce7f0228c99a6308ff6e2ab7d2dd4a198d2ee3a75992756fd9e8158185c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/传输拒收与暂停核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "1102ee6ad4ebe910c71a9fcd517fab3cc19b2871843755ef248ab6bbced08e2d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询-参数赋值.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "1c2135ad9f99e5c9b437b05e5e8fecbe7d7ae4367f0bb67bde83094bac2d5bf3"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/分流器三路轮询.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "13be9b82fb7f17804385523d535af9ff9a1d58562e7c8fc2cce69a6e58cfdfbf"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/双成品制造砖.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "3ff56378f05f7a00a5380b8ac182b1dfa9069a51b4ad7086d712158f1a27ae8b"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/双成品满仓起动试作.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "11c53d3cfdc71c9fe3e310f4d84ce8ce6a89ccd1d79923c7b165cd5bf27b4efe"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环基础.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "173bd8d4fbc2a2a673cfc968fe06ee5b0da3f0a6e3ac317ec57a801f302e7670"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序0核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "90ce0dbe4e92bfcb6625fa97895d0f7ec295508352f3daa0524348cc5184a83d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序1核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "49201c17c051b15d153d86727aaca7082d44a410141af8a43b58d7739fb6767f"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序2核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "8264069c0da39585363aa9c919cbca61c0c5c4f9a6bb78abe5e08ceba375c4df"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序3核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "8e9bdfface58807174cd3b1dfda77f5490e581df0a73998959a0f17bde3e1e50"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序4核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "8153f95f2569f82e42a4692c22fa6e1403624bef61b4a31edeeb30d8339641ff"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集制造闭环序5核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "ddf2cbba13248bc98d8a64d9fc304f0a16e6d7676484990e03a0fb4cad7f0269"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点循环种子核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "6b40a78a68c8a08f81afc2e576d6c400661976bbce3f9f1e26447afd7853468c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "616b95938709908640e6557de92b805c88ad7a959208e8fce83afa9593af5cb2"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/密集结点闭环核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "3a19d2e17d92dc1bb483b9ddb47cd3a970c67a81e22f3e6aa535fa664e20637d"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/桥接器双通路.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "ce07e43eab1569c132fa8cb3fd67167f0d47553e2aef3ccc4b03f3ead8ab9da3"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/混做粉碎机两下游.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "652cbb4cd722854f0b5990e448996a65a1e12e8bfc1df2a1a23de7ec631e9cd2"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/生产循环环带.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "92baa863313c706f56328abdd7e5afd959bedec8476cab7ba1529b59fda964d7"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/研磨混做核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "e0dbcd96040871e6e52f957f9c78e662ff0d77c1d078972ac989859f32c98228"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序0核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "48efcb8023bb81ad9b99ad4ff42f1349f8eed854e187092ab86776e9e5cba6bb"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序1核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "e0b56794c75aeefb5c182b1ac75e663068497a5cc07669d117836c0590641c33"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序2核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "a5146d477d685624cd79a064682d71e9fef5d34f95a7d882f0f346d00443d282"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序3核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "a0cb047fbf6ac3ebbec6be7940b3ecb971fee82bd79a121c7987ea30b8c66828"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序4核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "b3622c1633b89d2b701331e340adbdd4bb177aef8b5b97b2bb0541347f9b77b3"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分序5核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "b774c3779d3c7892ca81a128fc244a76603e1982b3b64fb7dafcdcf0b361c407"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/轮询均分核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "9d19b28c4b0c542822a694b7d253d97aebc918fd5b1fb17ff13e2e9e63736c6c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼切支恢复核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "ef2a5caf33f96a86643fefa08af44b2661dd3b756ddcf4333ffcaf988e0efcba"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/样例/阻尼连续带核验.json",
+      "change": "修改",
+      "description": "仅重锁实际变动的目录/参数轴或配置来源 SHA；数据内容不变，已逐对象比对 HEAD",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "cd6c268a3d29b6e65801439e2c9d0364071ed30986cb0a0db84ef5df8e0b7e00"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
+      "change": "修改",
+      "description": "sources/constraints/static_checks 独立重建字节相等；r23、72条、32常量",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/规则覆盖表.md",
+      "change": "修改",
+      "description": "规则114行、任务16行、约束72条及原据行映射",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "dee59b2fd7f73b6ed53f9923757c8218abfdc26599e9192689a6952cef1c0067"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/projections.py",
+      "change": "修改",
+      "description": "仅修改说明字符串：71条是固定旧版本，不是现行条数",
+      "provenance": "接续补充",
+      "sha256": "643adc88777d9f5ca314d295923fc6dd1b0f41530cd6743534ae4cdfbc31144a"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/检查器A/说明.md",
+      "change": "修改",
+      "description": "补明实现/61项旧自测绑定71条版本；当前72条尚未支持，不伪装升级",
+      "provenance": "接续补充",
+      "sha256": "ce6a3c4036f43e11db67e98393bdf886aa134859d7b4dcfbd7383d23de1d46fe"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/生成/代码/检查器乙.py",
+      "change": "修改",
+      "description": "输出说明删除写死71条，保留未实现及禁止全静态通过标记",
+      "provenance": "接续补充",
+      "sha256": "94955107cb474338923c30673a1240c02545cbb0b9471aa9ef9327ea45f8de47"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/构造/第一张全厂候选/生成/代码/检查器甲.py",
+      "change": "修改",
+      "description": "输出说明删除写死71条，保留全部实现与未通过边界",
+      "provenance": "接续补充",
+      "sha256": "33375962b4c6bd6040e857075d971346a4880b32047cb3c990bc7c47e7905bcb"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py",
+      "change": "修改",
+      "description": "任务16行、约束72条、本轮只读指纹；保留既有其余门禁及其失败",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "8ca05c4eb48989609de079904449c01c31c70a425b18ab8af9d6661162cfdab9"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/修订记录.md",
+      "change": "修改",
+      "description": "保留旧记录；登记r23目录、来源与本次接续安全验证结果和未通过项目",
+      "provenance": "接续补充",
+      "sha256": "e31a18bee9b40aa50d7f7b1d4c1f43ddeddf96bc2dfda5766fd9c5c182bea049"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输入.md",
+      "change": "修改",
+      "description": "更新现行正式源标签；原轴取值、接口和生命周期不变",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "c05815f1aebee1521e3dfdc817acacea872a6fd22ec2503642b8711b35d20148"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/内核输出.md",
+      "change": "修改",
+      "description": "更新现行正式源标签；原轴取值、接口和生命周期不变",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "e287c6e4bb388a814a5fe04d072084e29be494a0caff9b14388c34d67705bb3c"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限模型声明.md",
+      "change": "修改",
+      "description": "更新现行正式源标签；原轴取值、接口和生命周期不变",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "f427134b7307df16f3bcd709e47ad9dac5c48eeb2ffa393bbb47cf8ceec64719"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/受限转移定义.md",
+      "change": "修改",
+      "description": "当前来源标签与原证明绑定版本分开；未修改转移算法",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "1761baa60d1bf6d0445721040e3eb98e232489e4b2beaf5ac2ef6a56e68e01d0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/四件前置义务对照.md",
+      "change": "修改",
+      "description": "更新现行正式源标签；原轴取值、接口和生命周期不变",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "48ea405de037ca445de84c8aeba5d05fc44d0f1a74ade4886dbc9a517f9e1992"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/三种相位不改产量-v2.md",
+      "change": "修改",
+      "description": "当前植物零入库引用改引非成品零入库；旧被审指纹/范围明确保留，不重新认证历史证明",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "be483666ed31cc3cf05d615db979e7dc6816b104b4eb81c20b7217fe614df2a0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/回路总数决定论-v2.md",
+      "change": "修改",
+      "description": "当前植物零入库引用改引非成品零入库；旧被审指纹/范围明确保留，不重新认证历史证明",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "be00d0d772b652ea17bd3fad3809a80e79a67657b432b61cac0421802e917496"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/推导/总纲-流量存量相位.md",
+      "change": "修改",
+      "description": "当前植物零入库引用改引非成品零入库；旧被审指纹/范围明确保留，不重新认证历史证明",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "0effbef32c0e8eb2a902566669e9aeb3348e79881a4c73eff558fe4114635d45"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/规则覆盖表.md",
+      "change": "修改",
+      "description": "规则114行、任务16行、约束72条及语义去向；旧轮自核单独标为史料",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "1a5d501e9c2dea61e7d75c7271ce668e827a99d291f3da1482b527ba019449d6"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/运行语义.md",
+      "change": "修改",
+      "description": "三源指纹和条文依据同步；植物零入库不限台数，普通运行仍按实际余量接收",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "1d8078d7292a62697919d3d03a8dc6d3c4e596acfdfeaa000bf1ee11b5407a8b"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
+      "change": "修改",
+      "description": "更新现行正式源标签；原轴取值、接口和生命周期不变",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点清单.md",
+      "change": "修改",
+      "description": "更新现行正式源标签；原轴取值、接口和生命周期不变",
+      "provenance": "上一席改动已核对并保留（含并发期间的引用重锁）",
+      "sha256": "78497e2fc4fcfa6fedfe7c68715c2ab7ff2a5d273a0f1255bed283e5a2e95758"
+    }
+  ],
+  "continuation_artifact_count": 253,
+  "continuation_artifacts": [
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/check_positive.py",
+      "change": "新增",
+      "description": "本次接续复验/守卫/汇总脚本，不写历史目录"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/commands.json",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/final/commands.json",
+      "change": "新增",
+      "description": "最终正向链或旧 SHA 拒收对照的输入/输出/命令证据"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/final/kernel-check.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/final/kernel-run.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/final/kernel-seed.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/final/kernel-verify-record.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/final/positive-input.json",
+      "change": "新增",
+      "description": "最终正向链或旧 SHA 拒收对照的输入/输出/命令证据"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/final/positive-run.json",
+      "change": "新增",
+      "description": "最终正向链或旧 SHA 拒收对照的输入/输出/命令证据"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/final/positive-validation.json",
+      "change": "新增",
+      "description": "最终正向链或旧 SHA 拒收对照的输入/输出/命令证据"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/final/seed-output.json",
+      "change": "新增",
+      "description": "最终正向链或旧 SHA 拒收对照的输入/输出/命令证据"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/final/stale-catalog-input.json",
+      "change": "新增",
+      "description": "最终正向链或旧 SHA 拒收对照的输入/输出/命令证据"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/final/stale-catalog.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/kernel-check.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/kernel-run.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/kernel-seed.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/kernel-verify-record.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/positive-input.json",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/positive-run.json",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/positive-validation.json",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/seed-output.json",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/stale-catalog-input.json",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/positive/stale-catalog.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-complete-active-after.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-complete-active-before.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-complete-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-complete-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-complete-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-complete-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-complete.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-sync-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-sync-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-sync-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-sync-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-sync-final-active-after.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-sync-final-active-before.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-sync-final-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-sync-final-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-sync-final-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-sync-final-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-sync-final.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit-sync.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/audit_sync.py",
+      "change": "新增",
+      "description": "本次接续复验/守卫/汇总脚本，不写历史目录"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/build-debug-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/build-debug-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/build-debug-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/build-debug-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/build-debug.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/build-release-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/build-release-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/build-release-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/build-release-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/build-release.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/candidate-b-active-after.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/candidate-b-active-before.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/candidate-b-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/candidate-b-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/candidate-b-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/candidate-b-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/candidate-b.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-check-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-check-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-check-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-check-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-check-final-active-after.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-check-final-active-before.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-check-final-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-check-final-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-check-final-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-check-final-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-check-final.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-check.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-clippy-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-clippy-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-clippy-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-clippy-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-clippy-final-active-after.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-clippy-final-active-before.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-clippy-final-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-clippy-final-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-clippy-final-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-clippy-final-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-clippy-final.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/cargo-clippy.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/catalog-regressions-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/catalog-regressions-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/catalog-regressions-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/catalog-regressions-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/catalog-regressions.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/catalog-verify-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/catalog-verify-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/catalog-verify-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/catalog-verify-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/catalog-verify.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/changed-files.json",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/changed-files.md",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/command-results.json",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/commands.jsonl",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/concurrent-writer.json",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/delivery-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增1、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/delivery-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/delivery-snapshot-stop.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/examples-active-after.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/examples-active-before.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/examples-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/examples-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/examples-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/examples-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/examples.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/final-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/final-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/finish_record.py",
+      "change": "新增",
+      "description": "本次接续复验/守卫/汇总脚本，不写历史目录"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/grep-current-candidates.txt",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/grep-inventory.json",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/initial-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/initial-status.txt",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/initial-worktree.json",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/initial-worktree.patch",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-doc-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-doc-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-doc-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-doc-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-doc-final-active-after.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-doc-final-active-before.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-doc-final-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-doc-final-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-doc-final-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-doc-final-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-doc-final.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-doc.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-lib-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-lib-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-lib-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-lib-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-lib-final-active-after.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-lib-final-active-before.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-lib-final-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-lib-final-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-lib-final-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-lib-final-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-lib-final.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-lib.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-reference-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-reference-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-reference-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-reference-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-reference-final-active-after.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-reference-final-active-before.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-reference-final-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-reference-final-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-reference-final-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-reference-final-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-reference-final.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/kernel-reference.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/positive-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/positive-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/positive-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/positive-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/positive-final-active-after.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/positive-final-active-before.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/positive-final-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/positive-final-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/positive-final-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/positive-final-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/positive-final.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/positive.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/protected-sources.json",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/read-only-audit.json",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/reader-review.json",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/run_step.py",
+      "change": "新增",
+      "description": "本次接续复验/守卫/汇总脚本，不写历史目录"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/safe_suite.py",
+      "change": "新增",
+      "description": "本次接续复验/守卫/汇总脚本，不写历史目录"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/spec-check-final-active-after.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/spec-check-final-active-before.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/spec-check-final-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/spec-check-final-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/spec-check-final-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/spec-check-final-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/spec-check-final.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/spec-check-initial-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/spec-check-initial-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/spec-check-initial-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/spec-check-initial-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/spec-check-initial.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/structured-summary.json",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-cargo-check-final-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-cargo-check-final-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-cargo-check-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-cargo-check-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-cargo-clippy-final-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-cargo-clippy-final-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-cargo-clippy-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-cargo-clippy-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-kernel-doc-final-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-kernel-doc-final-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-kernel-doc-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-kernel-doc-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-kernel-lib-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-kernel-lib-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-kernel-reference-final-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-kernel-reference-final-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-kernel-reference-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-kernel-reference-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-topology-doc-final-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-topology-doc-final-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-topology-doc-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-topology-doc-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-topology-lib-final-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-topology-lib-final-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-topology-lib-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-topology-lib-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-topology-validation-final-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-topology-validation-final-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-topology-validation-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/suite-topology-validation-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/sync-audit.json",
+      "change": "新增",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-doc-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-doc-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-doc-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-doc-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-doc-final-active-after.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-doc-final-active-before.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-doc-final-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-doc-final-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-doc-final-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-doc-final-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-doc-final.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-doc.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-lib-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-lib-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-lib-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-lib-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-lib-final-active-after.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-lib-final-active-before.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-lib-final-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-lib-final-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-lib-final-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-lib-final-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-lib-final.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-lib.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-validation-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-validation-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-validation-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-validation-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-validation-final-active-after.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-validation-final-active-before.json",
+      "change": "新增",
+      "description": "活动源码/文档/输入 SHA-256 快照，用于排除并发漂移"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-validation-final-after-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-validation-final-after-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-validation-final-before-history-diff.json",
+      "change": "新增",
+      "description": "历史快照差异：新增0、删除0、修改0"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-validation-final-before-history.json",
+      "change": "新增",
+      "description": "含忽略文件的三个历史目录 SHA-256 快照"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-validation-final.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/topology-validation.log",
+      "change": "新增",
+      "description": "本次命令完整输出；返回码见接续 commands.jsonl"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/resume/上一席记录-并发任务结束.md",
+      "change": "新增",
+      "description": "上一席最终记录的字节原样存档；其命令与本次接续命令分开"
+    },
+    {
+      "path": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/记录.md",
+      "change": "更新",
+      "description": "接续核对、并发诊断、检索、指纹或完整交付清单"
+    }
+  ],
+  "excluded_parallel_work": [
+    "思路.txt",
+    "求解器/内核维护/代码体检方案.md"
+  ],
+  "note": "仅列接续核对保留的业务改动和接续产物；上一席原日志/隔离输出保留，不并入本次执行结果。"
+}

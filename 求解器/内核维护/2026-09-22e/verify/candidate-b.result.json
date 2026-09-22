@@ -1,0 +1,17 @@
+{
+  "name": "candidate-b",
+  "argv": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/topology",
+    "数据/候选B/contract.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "started_utc": "2026-09-22T23:34:49.638440+00:00",
+  "finished_utc": "2026-09-22T23:34:50.248232+00:00",
+  "exit_code": 0,
+  "history_diff": {
+    "added": [],
+    "deleted": [],
+    "changed": []
+  },
+  "history_file_count": 3482
+}

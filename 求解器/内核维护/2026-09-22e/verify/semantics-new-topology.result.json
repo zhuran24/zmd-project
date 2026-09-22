@@ -1,0 +1,17 @@
+{
+  "name": "semantics-new-topology",
+  "argv": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/topology",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/verify/semantics-33-growers-buckflower.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "started_utc": "2026-09-22T23:33:05.130698+00:00",
+  "finished_utc": "2026-09-22T23:33:05.942430+00:00",
+  "exit_code": 1,
+  "history_diff": {
+    "added": [],
+    "deleted": [],
+    "changed": []
+  },
+  "history_file_count": 3482
+}

@@ -1,0 +1,54 @@
+{
+  "tracked_files_requiring_restore": 0,
+  "new_untracked_files_deleted": 0,
+  "preexisting_ignored_files_restored": [
+    {
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/empty-branch-run-result.json",
+      "expected_sha256": "73485bf687f45adb96ed2d9562b46b6533ee574dfb6e2de7f17b6c4dc11c3ee0",
+      "test_sha256": "3d8992829f979ee8ddd98ccac5f88a9431f14b82c84a99f63f80fba07684e209",
+      "reconstructed_sha256": "73485bf687f45adb96ed2d9562b46b6533ee574dfb6e2de7f17b6c4dc11c3ee0",
+      "exact_match": true
+    },
+    {
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/full-branch-run-result.json",
+      "expected_sha256": "af176071aa580e7a48c538265052e39231a89de3c23b2382cb41bcb28e6eeea4",
+      "test_sha256": "6665ae8c47c54a062e1748d2cf265ef264eb4329f097e1a6e72249f109a62d7e",
+      "reconstructed_sha256": "af176071aa580e7a48c538265052e39231a89de3c23b2382cb41bcb28e6eeea4",
+      "exact_match": true
+    },
+    {
+      "path": "求解器/crates/kernel/evidence/revision-r4/cli/working-prefix-result.json",
+      "expected_sha256": "fc66bd29adfad14d07bd567fbea4b65fd5a328dc22355c6db644d4f04740c9e8",
+      "test_sha256": "d0d6d4830b71aded030573ad932c2b6ad9add5f0f71b4de14826cf8e867d6121",
+      "reconstructed_sha256": "fc66bd29adfad14d07bd567fbea4b65fd5a328dc22355c6db644d4f04740c9e8",
+      "exact_match": true
+    },
+    {
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/original-cycle.record.json",
+      "expected_sha256": "fb9bfb128b3e3cdc55ffb832f2cb9f9330833111852215ae59a83515dc369b13",
+      "test_sha256": "2d6f8a001fc061547a81bbefdfc929a4c852f3135eb5022ce1020b1bda87a53e",
+      "reconstructed_sha256": "fb9bfb128b3e3cdc55ffb832f2cb9f9330833111852215ae59a83515dc369b13",
+      "exact_match": true
+    },
+    {
+      "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/package/full_state_each_instant/records/record.json",
+      "expected_sha256": "67f4af5ab295a03432f4e081772b0283dfee50bc72f652720e920e35759572e2",
+      "test_sha256": "77776f0a8394a7ce08b1855e69de6266dbd3a8ddfcde7ba35c0e86248a0ac117",
+      "reconstructed_sha256": "67f4af5ab295a03432f4e081772b0283dfee50bc72f652720e920e35759572e2",
+      "exact_match": true
+    }
+  ],
+  "final_test_history_delta": {
+    "restored_tracked": 0,
+    "restored_preexisting_untracked": 0,
+    "deleted_untracked": 0,
+    "files": [],
+    "baseline_byte_equality": true
+  },
+  "initial_to_final_intentional_current_document_changes": [
+    "求解器/规格/推导/回路总数决定论-v2.md",
+    "求解器/规格/推导/三种相位不改产量-v2.md",
+    "求解器/规格/推导/总纲-流量存量相位.md"
+  ],
+  "all_other_initial_history_hashes_unchanged": true
+}

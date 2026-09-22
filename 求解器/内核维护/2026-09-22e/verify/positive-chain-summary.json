@@ -1,0 +1,35 @@
+{
+  "commands": [
+    {
+      "name": "positive-seed",
+      "exit_code": 0,
+      "status": null
+    },
+    {
+      "name": "positive-check",
+      "exit_code": 0,
+      "status": "input_checked"
+    },
+    {
+      "name": "positive-run",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "name": "positive-verify-record",
+      "exit_code": 0,
+      "status": "input_checked"
+    },
+    {
+      "name": "old-sha-rejection",
+      "exit_code": 2,
+      "status": "invalid_input",
+      "reason": [
+        "invalid_input input @ /home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json: 源文件指纹不符"
+      ]
+    }
+  ],
+  "old_catalog_sha256": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+  "binary_sha256": "c4208ba9c40292e0bfd0443e8098e5c2d2a33c3c79c201c341e29ba3e0643c06",
+  "scope": "6 tick finite execution and record verification; no whole-factory or universal cycle certification"
+}

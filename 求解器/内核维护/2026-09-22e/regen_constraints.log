@@ -1,0 +1,17 @@
+{
+  "version": "2026-09-22-r23-constraints-72",
+  "old_sha256": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff",
+  "sha256": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a",
+  "constraints_before": 71,
+  "constraints_after": 72,
+  "constants_before": 33,
+  "constants_after": 32,
+  "unchanged": [
+    "task",
+    "units",
+    "recipes",
+    "material_flow",
+    "other_constants"
+  ],
+  "verify": "pass"
+}

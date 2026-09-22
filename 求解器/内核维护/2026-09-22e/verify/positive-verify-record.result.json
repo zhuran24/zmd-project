@@ -1,0 +1,20 @@
+{
+  "name": "positive-verify-record",
+  "argv": [
+    "/home/zhuran24/zmd-research-fresh/求解器/target/release/kernel",
+    "verify-record",
+    "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/verify/positive-record.json",
+    "--config",
+    "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "started_utc": "2026-09-22T23:33:51.765833+00:00",
+  "finished_utc": "2026-09-22T23:33:52.482792+00:00",
+  "exit_code": 0,
+  "history_diff": {
+    "added": [],
+    "deleted": [],
+    "changed": []
+  },
+  "history_file_count": 3482
+}

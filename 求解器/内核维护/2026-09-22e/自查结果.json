@@ -1,0 +1,7 @@
+{
+  "status": "失败",
+  "scope": "数据总门禁；非同步独立审计",
+  "exit_code": 1,
+  "reason": "样例检查失败，缺少样例检查.json；原断言与退出日志保留于data-check.log",
+  "log": "data-check.log"
+}

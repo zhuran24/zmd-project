@@ -1,0 +1,317 @@
+{
+  "status": "PASS",
+  "scope": "本轮正式来源、投影、56份活动引用、候选来源与两张覆盖表同步；不是规格全门禁通过",
+  "catalog_sha256": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a",
+  "constraints": 72,
+  "constants": 32,
+  "changed_rules": [
+    "矿系不入库",
+    "非成品零入库",
+    "回路守恒",
+    "回路存量",
+    "植株半分",
+    "1113 位置"
+  ],
+  "reference_documents": [
+    {
+      "path": "数据/样例/kernel_profile_v1参数赋值.json",
+      "schema": "profile-assignment-v2",
+      "refs": 3
+    },
+    {
+      "path": "数据/样例/任务7内核/双门窗口恢复.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/任务7内核/同刻双箱争余量.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/任务7内核/成熟旧货重试.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/任务7内核/无线一满一可收.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/任务7内核/无线全拒收.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/任务7内核/无线多格全收.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/任务7内核/无线多格歧义.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/任务7内核/无线空箱.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/任务7内核/无线部分接收.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/任务7内核/生产环带.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/任务7内核/累计审计与窗口周期.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/任务7内核/累计调低保留.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/任务7内核/累计调高资格.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/任务7内核/装载与普通制造.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/任务7内核/身份实际切换.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/任务7内核/身份断边恢复.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/任务7内核/阻尼恢复.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/任务7内核/静止成熟与暂停键.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/传输拒收与暂停核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/分流器三路轮询-参数赋值.json",
+      "schema": "profile-assignment-v2",
+      "refs": 3
+    },
+    {
+      "path": "数据/样例/分流器三路轮询.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/双成品制造砖.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/双成品满仓起动试作.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/密集制造闭环基础.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/密集制造闭环序0核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/密集制造闭环序1核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/密集制造闭环序2核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/密集制造闭环序3核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/密集制造闭环序4核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/密集制造闭环序5核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/密集结点循环种子核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/密集结点核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/密集结点闭环核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/桥接器双通路.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/混做粉碎机两下游.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/生产循环环带.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/研磨混做核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/轮询均分序0核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/轮询均分序1核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/轮询均分序2核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/轮询均分序3核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/轮询均分序4核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/轮询均分序5核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/轮询均分核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/阻尼切支恢复核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "数据/样例/阻尼连续带核验.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/benchmark_1000.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/benchmark_brick.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/benchmark_brick_60.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/benchmark_candidate_b.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/bridge.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/core_inbound.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/priority.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/revision_r2_branch_cut.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    },
+    {
+      "path": "crates/kernel/tests/fixtures/revision_r2_phase_control.json",
+      "schema": "kernel-input-v3",
+      "refs": 2
+    }
+  ],
+  "sources_unchanged": true,
+  "global_gate_blockers": [
+    {
+      "entry": "规格/check_revision.py",
+      "status": "FAIL",
+      "preexisting": true,
+      "reason": "旧 T12 周期末限制断言与 HEAD 文档不符；本轮不扩到规格总门禁重审"
+    },
+    {
+      "entry": "数据/样例/check_examples.py --self-test",
+      "status": "FAIL",
+      "preexisting": true,
+      "reason": "未改动的 runtime_example.validate_decision_tree 将桥轴 status/input_side/basis 误作 Decision status/value/basis"
+    },
+    {
+      "entry": "数据/工具/check_revision.py",
+      "status": "FAIL",
+      "reason": "依赖上述样例检查成功报告；目录、CSV、来源、覆盖检查已执行到该依赖处"
+    }
+  ]
+}

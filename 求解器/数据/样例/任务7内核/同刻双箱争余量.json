@@ -1,7 +1,7 @@
 {
   "catalog": {
     "path": "/home/zhuran24/zmd-research-fresh/求解器/数据/正式静态目录.json",
-    "sha256": "6e609fbab15104489f7e00a03c64b3f89cd77668de26789622d78be27a0ee3ff"
+    "sha256": "bfbee742587e8e9a08c8231483bef578ee4494450447d0d783466cc28b29dd7a"
   },
   "construction": {
     "complete_event": "blueprint_complete",
@@ -2065,7 +2065,7 @@
   "parameters": {
     "axis_registry": {
       "path": "/home/zhuran24/zmd-research-fresh/求解器/规格/选择点参数轴.md",
-      "sha256": "38009f7951225a0792555fb9da3e15cd4189b1c3efb30e300e1dd2a35e9eea0b"
+      "sha256": "e67d6d62be965fc2beb211001685b4c60f567f9708ad7e80256d5fe8c17b4b97"
     },
     "fixed": {
       "bridge.inventory_scope": {

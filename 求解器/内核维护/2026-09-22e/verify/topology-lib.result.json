@@ -1,0 +1,24 @@
+{
+  "name": "topology-lib",
+  "argv": [
+    "cargo",
+    "test",
+    "-p",
+    "topology",
+    "--lib",
+    "-j",
+    "4",
+    "--",
+    "--test-threads=1"
+  ],
+  "cwd": "/home/zhuran24/zmd-research-fresh/求解器",
+  "started_utc": "2026-09-22T23:30:40.991055+00:00",
+  "finished_utc": "2026-09-22T23:30:41.780788+00:00",
+  "exit_code": 0,
+  "history_diff": {
+    "added": [],
+    "deleted": [],
+    "changed": []
+  },
+  "history_file_count": 3482
+}

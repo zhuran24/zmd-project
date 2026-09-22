@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--output-dir', type=Path, default=data/'修订验证/r4')
 args = parser.parse_args()
 output_dir = args.output_dir.resolve()
-assert output_dir.is_relative_to(data/'修订验证'), '自查输出限于数据/修订验证'
+assert any(output_dir.is_relative_to(base) for base in [data/'修订验证', root/'内核维护']), '自查输出限于数据/修订验证或内核维护'
 output_dir.mkdir(parents=True, exist_ok=True)
 # 报告自引用先建进行中标记，全部断言通过后再写成功结果。
 (output_dir/'自查结果.json').write_text(json.dumps({'status':'进行中'},ensure_ascii=False)+'\n')
@@ -26,7 +26,7 @@ feeds = contract['logical_feeds']
 machines = contract['machines']
 assert contract['schema'] == 'feeding-v2' and 'channels' not in contract
 assert len(catalog['units']) == 18 and len(catalog['recipes']) == 18
-assert len(catalog['constraints']) == 71
+assert len(catalog['constraints']) == 72
 assert len({u['id'] for u in catalog['units']}) == 18
 assert all(set(e['via']) == {'bridge','splitter','merger','gate'} for e in feeds)
 assert all(e['proven_actual_rate'] is None and e['id'].startswith('LF') for e in feeds)

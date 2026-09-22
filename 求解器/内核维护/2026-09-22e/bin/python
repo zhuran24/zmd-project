@@ -1,0 +1,19 @@
+#!/usr/bin/python
+"""仅重定向cargo test内六个Python CLI测试的证据输出；断言、输入及命令不变。"""
+import os,sys
+from pathlib import Path
+args=sys.argv[1:]
+while args and args[0]=='-B':args.pop(0)
+known={'revision_cli.py','revision_r2_cli.py','revision_r3_cli.py','revision_r4_cli.py','revision_r5_cli.py','round6_cli.py'}
+if not args or Path(args[0]).name not in known:
+ os.execv('/usr/bin/python',['/usr/bin/python','-B',*args])
+p=Path(args[0]).resolve();sys.argv=args;sys.path.insert(0,str(p.parent));text=p.read_text()
+base=Path(os.environ['KERNEL_TEST_EVIDENCE_DIR'])/p.stem
+i=1
+while (base/f'attempt-{i}').exists():i+=1
+out=base/f'attempt-{i}';out.mkdir(parents=True)
+for source in ["ROOT / 'crates/kernel/evidence/revision-r2'","ROOT / 'crates/kernel/evidence/round6/regressions/revision-r3'","ROOT / 'crates/kernel/evidence/revision-r4/cli'", "ROOT / 'crates/kernel/evidence/round6/revision-r5/cli'", "ROOT/'crates/kernel/evidence/round6/cli'"]:
+ text=text.replace(source,repr(str(out)))
+# 原表达式类型是Path，替换保持该类型。
+text=text.replace(repr(str(out)), 'Path('+repr(str(out))+')')
+exec(compile(text,str(p),'exec'),{'__name__':'__main__','__file__':str(p)})

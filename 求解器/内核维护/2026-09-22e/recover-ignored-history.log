@@ -1,0 +1,42 @@
+[
+  {
+    "path": "求解器/crates/kernel/evidence/revision-r4/cli/empty-branch-run-result.json",
+    "expected_sha256": "73485bf687f45adb96ed2d9562b46b6533ee574dfb6e2de7f17b6c4dc11c3ee0",
+    "test_sha256": "3d8992829f979ee8ddd98ccac5f88a9431f14b82c84a99f63f80fba07684e209",
+    "reconstructed_sha256": "ebeef855f6a8283c874d243e41b6fb885e976baaf3102ffad79219346b922c67",
+    "exact_match": false
+  },
+  {
+    "path": "求解器/crates/kernel/evidence/revision-r4/cli/full-branch-run-result.json",
+    "expected_sha256": "af176071aa580e7a48c538265052e39231a89de3c23b2382cb41bcb28e6eeea4",
+    "test_sha256": "6665ae8c47c54a062e1748d2cf265ef264eb4329f097e1a6e72249f109a62d7e",
+    "reconstructed_sha256": "b60af7a22e4cf986dad708375d21ae8a63082d80756727563773683e6da2f656",
+    "exact_match": false
+  },
+  {
+    "path": "求解器/crates/kernel/evidence/revision-r4/cli/working-prefix-result.json",
+    "expected_sha256": "fc66bd29adfad14d07bd567fbea4b65fd5a328dc22355c6db644d4f04740c9e8",
+    "test_sha256": "d0d6d4830b71aded030573ad932c2b6ad9add5f0f71b4de14826cf8e867d6121",
+    "reconstructed_sha256": "99b757e871b1a05fa540da46506a842bfd5e8ee40e7e3d704d872767f1293025",
+    "exact_match": false
+  },
+  {
+    "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/original-cycle.record.json",
+    "expected_sha256": "fb9bfb128b3e3cdc55ffb832f2cb9f9330833111852215ae59a83515dc369b13",
+    "test_sha256": "2d6f8a001fc061547a81bbefdfc929a4c852f3135eb5022ce1020b1bda87a53e",
+    "reconstructed_sha256": "5a6a249e7852a2b09db09848a8246be5207eb3bba2a6135da45ce8935f34c1d4",
+    "exact_match": false
+  },
+  {
+    "path": "求解器/crates/kernel/evidence/round6/revision-r5/cli/package/full_state_each_instant/records/record.json",
+    "expected_sha256": "67f4af5ab295a03432f4e081772b0283dfee50bc72f652720e920e35759572e2",
+    "test_sha256": "77776f0a8394a7ce08b1855e69de6266dbd3a8ddfcde7ba35c0e86248a0ac117",
+    "reconstructed_sha256": "d17407cb2dcfb9cff983581cfd4d1d418d0ddd39cda5e67693a0a528c991305c",
+    "exact_match": false
+  }
+]
+Traceback (most recent call last):
+  File "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/recover_ignored_history.py", line 41, in <module>
+    assert all(r['exact_match'] for r in rows)
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

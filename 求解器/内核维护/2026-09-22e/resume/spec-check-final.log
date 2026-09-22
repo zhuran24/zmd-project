@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py", line 115, in <module>
+    check('操作精度' in choice_sections['T12'] and '周期末' in choice_sections['T12'], 'T12包含成品拿取操作精度及周期末限制')
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zhuran24/zmd-research-fresh/求解器/规格/check_revision.py", line 18, in check
+    raise AssertionError(label)
+AssertionError: T12包含成品拿取操作精度及周期末限制

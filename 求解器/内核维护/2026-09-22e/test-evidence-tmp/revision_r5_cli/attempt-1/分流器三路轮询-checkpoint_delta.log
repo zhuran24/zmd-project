@@ -1,0 +1,5 @@
+{"command": ["/home/zhuran24/zmd-research-fresh/求解器/target/debug/kernel", "verify-record", "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/reference-package/分流器三路轮询-checkpoint_delta.json", "--config", "/home/zhuran24/zmd-research-fresh/求解器/规格/内核配置-v1.json"], "cwd": "/home/zhuran24/zmd-research-fresh", "exit": 0}
+{
+  "status": "input_checked",
+  "verified_record": "/home/zhuran24/zmd-research-fresh/求解器/内核维护/2026-09-22e/test-evidence-tmp/revision_r5_cli/attempt-1/reference-package/分流器三路轮询-checkpoint_delta.json"
+}

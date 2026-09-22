@@ -5,7 +5,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
-from formal_catalog import ROOT, SOURCE_NAMES, parse_constraints, verify
+from formal_catalog import ROOT, SOURCE_NAMES, formal_projection, parse_constraints, source_snapshot, verify
 
 
 def leaves(value, path=()):
@@ -65,6 +65,26 @@ class FormalCatalogTests(unittest.TestCase):
 
     def test_live_catalog_passes(self):
         verify(self.catalog)
+
+    def test_projection_succeeds_without_plant_trigger(self):
+        snapshot = source_snapshot()
+        mineral_rule = next(r for r in parse_constraints('\n'.join(snapshot[2]['lines']))
+                            if r['name'] == '矿系不入库')
+        self.assertNotIn('种植机', mineral_rule['text'])
+        projection = formal_projection(snapshot)
+        self.assertNotIn('plant_trigger', projection['static_checks']['constants'])
+        self.assertEqual(len(projection['constraints']), 72)
+        self.assertEqual(projection['static_checks'], self.catalog['static_checks'])
+        verify(self.catalog)
+
+    def test_stale_plant_trigger_constant_is_rejected(self):
+        changed = copy.deepcopy(self.catalog)
+        changed['static_checks']['constants']['plant_trigger'] = {
+            'quantity': {'value': '32', 'category': '条文直引'},
+            'basis': '求解约束·矿系不入库', 'source_excerpt': '种植机恰 32 台',
+        }
+        with self.assertRaisesRegex(AssertionError, r'static_checks.constants'):
+            verify(changed)
 
     def test_every_unit_and_recipe_leaf_is_guarded(self):
         counts = {}
